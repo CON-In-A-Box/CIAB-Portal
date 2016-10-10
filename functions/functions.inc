@@ -7,7 +7,7 @@ $FUNCTIONDIR    = dirname(__FILE__);
 $BASEDIR        = dirname($FUNCTIONDIR);
 $WEBSERVER      = $_SERVER['SERVER_NAME'];
 $BASEURL        = "http://" . $WEBSERVER;
-$MODULENAME     = "Hotel Allocation";
+$MODULENAME     = "ConCom Signin";
 
 // Static Variables
 $SITECONFIG     = $BASEDIR . '.ht_hotelalloc_config.php';
