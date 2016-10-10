@@ -1,2 +1,2 @@
-# CVGHotelSystem
-The hotel tracking system for CONvergence and other conventions
+# ConComSignIn
+The ConCom Signin Module for CON-In-A-Box
