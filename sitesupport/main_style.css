@@ -1,0 +1,505 @@
+@charset "utf-8";
+/* CSS Document */
+
+body {
+	background-color:#FFF;
+	font-family:Verdana, Geneva, sans-serif;
+	font-size: .9em;
+	width: 100%;
+	margin: 0;
+	padding: 0;
+	color:#000;
+}
+
+#container {
+	position:relative;
+	margin: 0;
+	padding: 0;
+	height:100%;
+}
+.found_bkgd#container {
+	background-image:url(../images/found_bkgd.png);
+	background-repeat:repeat;
+}
+#header {
+	background-color: #030;
+	position: relative;
+	height: 100px;
+	width: 100%;
+	padding-top: 1px;
+}
+.active_issues#header {
+	background-color:#006;
+}
+.open_messages#header {
+	background-color:#FF0;
+}
+.emergency#header {
+	background-color:#C00;
+}
+.public#header {
+	background-color:#030;
+}
+#logo {
+	background-color: #000;
+	padding: 10px 10px 10px 20px;
+	float: left;
+	width: 100px;
+}
+
+#header #header_text {
+	margin-left: 160px;
+}
+.active_issues#header #header_text .header_p {
+	font-size: 1em;
+	font-weight: bold;
+	color: #FFF;
+}
+.open_messages#header #header_text .header_p {
+	font-size: 1em;
+	font-weight: bold;
+	color: #000;
+}
+.public#header #header_text p {
+	font-size:1.8em;
+	font-weight:bold;
+	color:#FFF;
+}
+.emergency#header #header_text .header_p {
+	font-size: 1em;
+	font-weight: bold;
+	color: #FFF;
+}
+.active_issues#header #emergency_button {
+	background-image:url(../images/emergency_button.png);
+	background-repeat:no-repeat;
+	float:right;
+	width:162px;
+	height: 60px;
+	padding-left: 20px;
+	padding-top:8px;
+}
+.active_issues#header #emergency_button a{
+	font-family:Verdana, Geneva, sans-serif;
+	font-size:1.2em;
+	text-decoration:none;
+	color:#FFF;
+	font-weight:bold;
+}
+.open_messages#header #emergency_button {
+	background-image:url(../images/emergency_button.png);
+	background-repeat:no-repeat;
+	float:right;
+	width:162px;
+	height: 60px;
+	padding-left: 20px;
+	padding-top:8px;
+}
+.open_messages#header #emergency_button a{
+	font-family:Verdana, Geneva, sans-serif;
+	font-size:1.2em;
+	text-decoration:none;
+	color:#FFF;
+	font-weight:bold;
+}
+.emergency#header #emergency_button {
+	background-image:url(../images/emergency_button.png);
+	background-repeat:no-repeat;
+	float:right;
+	width:162px;
+	height: 60px;
+	padding-left: 20px;
+	padding-top:8px;
+}
+.emergency#header #emergency_button a{
+	font-family:Verdana, Geneva, sans-serif;
+	font-size:1.2em;
+	text-decoration:none;
+	color:#FFF;
+	font-weight:bold;
+}
+#main_nav {
+	margin: 0;
+	padding: 0;
+	background-color:#999;
+}
+#main_nav ul {
+    width: 100%;
+    float: left;
+ padding: 0;
+ margin-left: 0;
+ border-bottom: 1px solid #778;
+ font: bold .9em Verdana, sans-serif;
+}
+#main_nav ul li {
+	list-style: none;
+	margin: 0;
+	float: left;
+	}
+#main_nav ul li a {
+ padding: 12px 0.5em;
+ margin-left: 3px;
+ border: 1px solid #778;
+ border-bottom: none;
+ background-color: #333;
+ text-decoration: none;
+ display: block;
+ width: 7em;
+}
+#main_nav ul li a:link {
+ color: white;
+}
+#main_nav ul li a:link:hover, #main_nav ul li a:visited:hover {
+ background-image:url(../images/hover_tab.png);
+	background-position:center;
+ border-bottom: 1px solid white;
+color: #fff;
+}
+#main_nav ul li a#current {
+	background-image:url(../images/hover_tab.png);
+	background-position:center;
+ border-bottom: 1px solid white;
+color: #fff;
+margin-bottom: −1px;
+}
+#left_nav {
+	margin: 0;
+	padding: 0;
+	float:left;
+}
+#left_nav ul {
+    width: 100%;
+    float: left;
+ padding: 0;
+ margin-left: 0;
+ font: bold .8em Verdana, sans-serif;
+}
+#left_nav ul li {
+	list-style: none;
+	margin: 0;
+	}
+#left_nav ul li a {
+ padding: 12px 0.5em;
+ margin-left: .5em;
+ border: 1px solid #030;
+ background-color: #060;
+ text-decoration: none;
+ background-image:url(../images/green_tab.png);
+ display: block;
+ width: 9em;
+}
+#left_nav ul li a:link {
+ color: white;
+}
+#left_nav ul li a:link:hover, #left_nav ul li a:visited:hover {
+	background-image:url(../images/green_tab_hover.png);
+	background-position:center;
+ border-bottom: 1px solid white;
+color: #000;
+}
+#left_nav ul li a#current {
+	background-image:url(../images/green_tab_hover.png);
+ border: 1px solid white;
+color: #000;
+}
+#main_content {
+	margin-left: 10em;
+	margin-right: 5em;
+}
+.public#main_content {
+	margin-left: 7em;
+}
+.entry_chunk {
+	position:relative;
+}
+h1.log_entry_content {
+	font-size: 1.5em;
+}
+h2.log_entry_content {
+	font-size:1em;
+	margin-top:.1em;
+	margin-bottom:.1em;
+}
+p.entry_chunk {
+	margin-top:.1em;
+	margin-bottom:.1em;
+}
+#container #dynamic_content #main_content .entry_chunk .update_button {
+	float: right;
+	width:8em;
+	text-align:center;
+	margin-right:20em;
+}
+#container #dynamic_content #main_content .yellow_button {
+	float: right;
+	width:190px;
+	text-align:left;
+	margin-right:20em;
+}
+#container #dynamic_content #main_content .green_button {
+	float: right;
+	width:190px;
+	text-align:left;
+	margin-right:20em;
+}
+.update_button a {
+ text-decoration: none;
+ background-image: url(../images/green_button_sm.png);
+ display: block;
+ width: 6em;
+ padding: 12px 0.5em;
+ color:#FFF;
+ font-weight:bold;
+}
+.yellow_button a {
+ text-decoration: none;
+ background-image: url(../images/yellow_button_sm.png);
+ background-repeat:no-repeat;
+ display: block;
+ padding: 12px 2em;
+ color:#000;
+ font-weight:bold;
+}
+.green_button a {
+ text-decoration: none;
+ background-image: url(../images/green_button_sm.png);
+ background-repeat:no-repeat;
+ display: block;
+ padding: 10px 2em;
+ color:#fff;
+ font-weight:bold;
+}
+#container #dynamic_content #main_content #login_area {
+	background-image: url(../images/login_bkgd.png);
+	background-repeat: no-repeat;
+	float: right;
+	padding-left:25px;
+	width:260px;
+	height:270px;
+}
+#login_area h1{
+	font-size:1.4em;
+}
+#container #dynamic_content #main_content #login_area #login_form p .login_label {
+	font-weight: bold;
+}
+#container #dynamic_content #main_content .public li a {
+	font-size: 1.4em;
+	font-weight: bold;
+	color: #FFF;
+	text-decoration: none;
+	background-image: url(../images/public_button.png);
+	background-repeat: no-repeat;
+	display:block;
+	padding-left:15px;
+	padding-top:6px;
+	padding-bottom:20px;
+}
+.logentry table {
+	width:100%;
+	border:none;
+	border-collapse:collapse;
+}
+#container #dynamic_content #main_content .public {
+	list-style-type: none;
+}
+#container #dynamic_content #main_content #dutyboard {
+	border-collapse:collapse;
+}
+.dutyboard_label {
+	border-color:#333;
+	border-width:1px;
+	text-align:right;
+	font-weight:bold;
+}
+.clearfix:after {
+ content: ".";
+ display: block;
+ height: 0;
+ clear: both;
+ visibility: hidden;
+}
+/* for IE6 */
+* html .clearfix {
+ height: 1%;
+}
+/* for IE7 */
+*:first-child+html .clearfix {
+ min-height: 1px;
+}
+
+.clearfloat { /* this class should be placed on a div or break element and should be the final element before the close of a container that should fully contain a float */
+	clear:both;
+    height:0;
+    font-size: 1px;
+    line-height: 0px;
+}
+#container #dynamic_content #main_content form .log_entry caption {
+	text-align: left;
+	padding-left:1em;
+}
+#container #dynamic_content #main_content form .log_entry tr td{
+	vertical-align: top;
+	border-width:thin;
+}
+#dynamic_content .log_entry#main_content h1 {
+	font-size:1.3em;
+}
+textarea, text{
+	border-color:#999;
+}
+textarea:focus, text:focus {
+	background-color:#CCC;
+}
+#container #dynamic_content.main_screen #main_content .log_entry {
+	border-bottom: thin solid #666;
+	padding-top:1em;
+}
+.lostfound#main_content {
+	margin-left:2em;
+}
+#missing_main {
+	position:relative;
+	background-image:url(../images/lost_main_bkgd.png);
+	background-repeat:no-repeat;
+	height:350px;
+	margin-top:1em;
+	padding-left:2em;
+	padding-top:3em;
+}
+#found_main {
+	position:absolute;
+	left:380px;
+	background-image:url(../images/found_main_bkgd.png);
+	background-repeat:no-repeat;
+	height:350px;
+	width:350px;
+	padding-top:3em;
+	padding-left:2em;
+	margin-top:-3em;
+}
+#found_item_main {
+	background-image:url(../images/found_main_button.png);
+	text-decoration:none;
+	color:#FFF;
+	font-weight:bold;
+	font-size:1.7em;
+	display:block;
+	background-repeat:no-repeat;
+	height:52px;
+	padding-left:2.5em;
+	padding-top:8px;
+}
+#missing_item_main {
+	background-image:url(../images/missing_main_button.png);
+	text-decoration:none;
+	color:#000;
+	font-weight:bold;
+	font-size:1.7em;
+	display:block;
+	background-repeat:no-repeat;
+	height:52px;
+	padding-left: 2.5em;
+	padding-top: 8px;
+}
+p.found_main_desc{
+	font-size:1.5em;
+	font-weight:bold;
+	padding-left:2em;
+}
+p.missing_main_desc {
+	font-size:1.5em;
+	font-weight:bold;
+	padding-left:2em;
+}
+#lostfound_search_form h1 {
+	font-size:1.5em;
+}
+#lostfound_search_form h2 {
+	font-size:1.2em;
+}
+#lostfound_categories {
+	border-collapse:collapse;
+	border:none;
+}
+#lostfound_categories caption{
+	text-align:left;
+	font-size:1.2em;
+	font-weight:bold;
+}
+#lostfound_categories td {
+	vertical-align:top;
+	padding-right:1em;
+}
+.missing_bkgd#container {
+	background-image:url(../images/missing_pg_bkgd.png);
+	background-repeat: repeat;
+	}
+.missing_item p.item_info{
+	padding-left: 2em;
+	line-height:.2em;
+}
+.missing_item {
+	background-image:url(../images/missing_pg_bkgd.png);
+	background-repeat:repeat;
+	padding: 3px 10px;
+}
+h1.lostfound{
+	font-size:1.3em;
+}
+.found_item {
+	background-image:url(../images/found_bkgd.png);
+	background-repeat:repeat;
+	padding: 3px 10px;
+}
+.found_item p.item_info {
+	padding-left:2em;
+	line-height:.2em;
+}
+#lf_item_create {
+	background-image:url(../images/missing_main_button.png);
+	text-decoration:none;
+	margin-top:30px;
+	padding:13px 3em;
+	color:#000;
+	background-repeat:no-repeat;
+	display:block;
+	height:40px;
+	font-weight:bold;
+}
+#lostfound_notes {
+	border-collapse:collapse;
+}
+#lostfound_notes td.item_label {
+	width:6em;
+}
+#lostfound_notes td {
+	vertical-align:baseline;
+}
+#main_content #missing_item_create {
+	margin-top:1em;
+}
+#missing_item_create caption {
+	font-size:1.3em;
+	font-weight:bold;
+	text-align:left;
+	padding-bottom:0.5em;
+}
+#missing_item_create td.item_label {
+	font-weight:bold;
+	vertical-align:baseline;
+}
+#found_item_create caption {
+	font-size:1.3em;
+	font-weight:bold;
+	text-align:left;
+	padding-bottom:0.5em;
+}
+#missing_item_create td.item_label {
+	font-weight:bold;
+	vertical-align:baseline;
+}
+#found_item_create td.item_label {
+	font-weight:bold;
+	vertical-align:baseline;
+}

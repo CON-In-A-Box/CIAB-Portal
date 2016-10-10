@@ -1,2 +1,2 @@
-# CVGConComSignIn
-Signin Integration with NeonCRM
+# CVGHotelSystem
+The hotel tracking system for CONvergence and other conventions
