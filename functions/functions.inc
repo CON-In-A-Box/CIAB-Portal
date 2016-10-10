@@ -1,18 +1,18 @@
 <?php
 
 // Main setup function
+$MODULENAME  = "ConCom Signin";
+$BUILD       = explode(" ", '$Rev: 1 $'); // going to have to update this to support git, probably via filters
+$VERSION     = "0.1 Build: " . $BUILD[1]; // Major.Minor.Revision Format - This is a string, version names allowed
 
 // Discover Self Location
 $FUNCTIONDIR    = dirname(__FILE__);
 $BASEDIR        = dirname($FUNCTIONDIR);
 $WEBSERVER      = $_SERVER['SERVER_NAME'];
 $BASEURL        = "http://" . $WEBSERVER;
-$MODULENAME     = "ConCom Signin";
+$SITECONFIG     = $BASEDIR . '.ht_concomsignin_config.php'; // Location of the module config file
 
 // Static Variables
-$SITECONFIG     = $BASEDIR . '.ht_hotelalloc_config.php';
-$BUILD          = explode(" ", '$Rev: 1 $'); // going to have to update this to support git, probably via filters
-$VERSION        = "0.1 Build: " . $BUILD[1];
 $SITESUPPORTDIR = $BASEDIR . "/sitesupport";
 $PAGESDIR       = $BASEDIR . "/pages";
 
@@ -57,7 +57,7 @@ if (is_file($SITECONFIG)) {
 session_start();
 
 // Call the DB and funtions, we always need these
-require_once($FUNCTIONDIR . "/dbfunctions.inc");
+//require_once($FUNCTIONDIR . "/dbfunctions.inc"); // Not Needed for ConCom Module
 // Include NeonCRM for DB calls via API
 require_once($FUNCTIONDIR . "/neon.inc");
 
