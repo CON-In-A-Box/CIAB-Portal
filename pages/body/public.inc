@@ -10,14 +10,6 @@
     <div id="login_area">
     <h1>Log In</h1>
       <form action="index.php?Function=public" method="post" onsubmit="return validate_form(this)" name="Log In" id="login_form">
-        <?php
-          if(!empty($RETRY)) {
-            echo "<span class=\"login_error\">Login Incorrect, Please Try Again.";
-              echo "<a href:'https://www.z2systems.com/np/clients/ce/requestPassword.jsp'>Forgot Password?</a>";
-            echo "</span>\n";
-            break;
-          }
-        ?>
         <p>
           <span class="login_label">User Name or Email</span> <br />
           <input name="user" type="text" maxlength="50" /> <br />
@@ -25,8 +17,17 @@
           <input name="password" type="password" maxlength="50" /> <br />
           <input type="submit" value="Log In"/>
        </p>
+       <p>
+         echo "<a href:'https://www.z2systems.com/np/clients/ce/requestPassword.jsp'>Forgot Password?</a>";
+       </p>
      </form>
    </div><!--closes login_area div-->
+   <?php
+     if(!empty($RETRY)) {
+       echo "<span class=\"login_error\">Login Incorrect, Please Try Again.";
+       echo "</span>\n";
+     }
+   ?>
    <p>
      Please login - This is your login you have used to register for the CONvergence Convention.  Even if you are not yet registered for this year's convention, your previous years logins are still active.
    </p>
