@@ -8,14 +8,14 @@ $CONSITENAME = "CONvergence " . $MODULENAME; // Set to something that makes sens
 // Admin User - Must have until users are set up.
 // After that, you can add an astrix to the password which will make it unmatchable (IE: Locked)
 $ADMINUSER   = "Admin"; // Do not leave this blank
-$ADMINPASS   = "sWGjBbyIZsL7Q"; // Crypt hashed password (eg: obtained via htpasswd)
+$ADMINPASS   = "sWGjBbyIZsL7Q"; // *CRYPT HASHED* password (eg: obtained via htpasswd)
 
 // DBConfig, passwords, etc
 // Do not share this info
 $DBHOST      = "localhost"; // Where the DB Runs
 $DBUSER      = "con_concomsi-dev"; // The Database Username
 $DBNAME      = "con_concomsi"; // The Database Name
-$DBPASS      = "4JM%[8KTU9rT"; // Plain text database user's password
+$DBPASS      = "4JM%[8KTU9rT"; // *PLAIN TEXT* database user's password
 
 // NeonCRM DB API - Learn more about the API at http://help.neoncrm.com/api
 $NEONID      = 'xxx'; // Your company's Identifier

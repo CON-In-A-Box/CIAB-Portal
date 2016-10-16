@@ -33,7 +33,6 @@ require($PAGESDIR . '/base/header_end.inc');
 require($PAGESDIR . '/base/body_begin.inc');
 
 if (empty($noheader) && empty($_REQUEST['NoHeader'])) {
-  require($PAGESDIR . '/base/statusbar.inc');
   require($PAGESDIR . '/base/menubar.inc');
 }
 

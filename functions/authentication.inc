@@ -39,68 +39,19 @@ function doUserAndPasswordMatch($user, $password) {
   }
 }
 
-function CheckInteractiveStatus($id) {
-  // Is user allowed to access this Hotel system
-  if($id == -1) {
-    // Admin user is always allowed access
-    return(TRUE);
-  } else {
-    // Need to look up the access field we want from NeonCRM
-    $request = array( 
-      'method' => 'common/listCustomFields', 
-      'parameters' => array(
-        'searchCriteria.component' => 'Account',
-        'searchCriteria.search.name' => 'CVG Hotel System Access',
-        ),
-      );
-    $result = $neon->go($request);
-    
-    // Pick up Field ID and Option ID for "Full Access"
-    $AccessFieldID = $result['customFields']['customField']['fieldId'];
-    $AccessOptionID = $result['customFields']['customField']['fieldOptions']['fieldOption']['id']; //##==## Should veryify name of option "Full Access"
-    // Pull the user info to verify this system access
-    $search = array( 
-      'method' => 'account/listAccounts', 
-      'criteria' => array(
-        array( 'accountID', 'EQUAL', $id),
-      ),
-      'columns' => array(
-        'standardFields' => array('Account Id', 'First Name', 'Last Name'),
-        'customFields' => array($AccessFieldID),
-      ),
-      'page' => array(
-        'currentPage' => 1,
-        'pageSize' => 20,
-        'sortColumn' => 'Account Id',
-        'sortDirection' => 'ASC',
-      ),
-    );
-    $result = $neon->search($search);
-
-    if ($result) { //##==## Should Result verify the request and then we parse the result with yes or no?
-      return ($result[0]); //##==## Need results
-    } else {
-      return(FALSE);
-    }
-  }
-}
-
 function LoginUser($user, $password) {
   $result = doUserAndPasswordMatch($user, $password);
   if ($result) {
-    if (CheckInteractiveStatus($result['accountId'])) {
-      // Log in the User - Session started in Functions
-      $_SESSION['username'] = $user;
-      $_SESSION['FullName'] = $result['name'];
-      MakeLog("Login Allowed");
-      return(TRUE);
-    } else {
-      MakeLog($user . " not authorized for interaction session on this system, login denied");
-      LogoutUser();
-      return(FALSE);
-    }
+    // Log in the User - Session started in Functions
+    $_SESSION['username']  = $user; // Save the Username for easy forms
+    $_SESSION['fullName']  = $result['name']; // Save the FullName for ease
+    $_SESSION['accountId'] = $result['accountId']; //Save the ID for updates
+    // MakeLog("Login Allowed");
+    error_log("Notice: Login allowed for " . $user . " (" . $result['accountId'] . ") as " . $result['name'] . " at " . date('r'), 0);
+    return(TRUE);
   } else {
-    MakeLog("Failed Login Attempt by " . $user);
+    // MakeLog("Failed Login Attempt by " . $user);
+    error_log("WARN: Failed Login Attempt By " . $user . " at " . date('r'), 0);
     return(FALSE);
   }
 }
