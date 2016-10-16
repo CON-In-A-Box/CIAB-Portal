@@ -25,11 +25,13 @@
           <input name="password" type="password" maxlength="50" /> <br />
           <input type="submit" value="Log In"/>
        </p>
-       <p>
-         This is your login you used (or use) to register for the CONvergence Convention.  If you are not registered for the convention, please click here.
-       </p>
      </form>
    </div><!--closes login_area div-->
+   <p>
+     Please login - This is your login you have used to register for the CONvergence Convention.  Even if you are not registered for this year, your previous years logins are still active.
+   </p>
+   <p>If you have NEVER registered for the convention, please <a href:'https://www.z2systems.com/np/clients/ce/account.jsp'>create a account in the registration system</a>.  You do not need to register to create an account.
+   </p>
    <?php require($PAGESDIR . '/base/disclaimer.inc'); ?>
    </div><!--close main_content div-->
 </div><!--close dynamic_content div-->

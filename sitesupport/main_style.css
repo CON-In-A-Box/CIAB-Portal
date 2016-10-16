@@ -274,8 +274,8 @@ p.entry_chunk {
 	background-repeat: no-repeat;
 	float: right;
 	padding-left:25px;
-	width:260px;
-	height:270px;
+	width: 50%;
+	height: 50%;
 }
 #login_area h1{
 	font-size:1.4em;
