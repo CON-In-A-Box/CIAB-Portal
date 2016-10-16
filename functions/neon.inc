@@ -208,7 +208,10 @@ $keys = [
 $result = $Neon->login($keys);
 
 if ($result['operationResult'] != 'SUCCESS') {
-  echo "Failed to login to the NeonCRM System with OrgID " . $NEONID . ".  Check the login/API settings in " . $SITECONFIG . "!  Error returned: " . $result['responsemessage'];
+  echo "Failed to login to the NeonCRM System with OrgID " . $NEONID . ".  Check the login/API settings in " . $SITECONFIG . "!  Error returned: ";
+  echo "<pre>";
+    print_r($result);
+  echo "</pre>";
   die();
 }
 
