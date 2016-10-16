@@ -10,7 +10,7 @@ $FUNCTIONDIR    = dirname(__FILE__);
 $BASEDIR        = dirname($FUNCTIONDIR);
 $WEBSERVER      = $_SERVER['SERVER_NAME'];
 $BASEURL        = "http://" . $WEBSERVER;
-$SITECONFIG     = $BASEDIR . '.ht_concomsignin_config.php'; // Location of the module config file
+$SITECONFIG     = $BASEDIR . '/.ht_concomsignin_config.php'; // Location of the module config file
 
 // Static Variables
 $SITESUPPORTDIR = $BASEDIR . "/sitesupport";
@@ -60,5 +60,6 @@ session_start();
 //require_once($FUNCTIONDIR . "/dbfunctions.inc"); // Not Needed for ConCom Module
 // Include NeonCRM for DB calls via API
 require_once($FUNCTIONDIR . "/neon.inc");
+require_once($FUNCTIONDIR . "/authentication.inc");
 
 ?>
