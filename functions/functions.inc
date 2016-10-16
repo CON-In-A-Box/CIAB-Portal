@@ -60,6 +60,6 @@ session_start();
 //require_once($FUNCTIONDIR . "/dbfunctions.inc"); // Not Needed for ConCom Module
 // Include NeonCRM for DB calls via API
 require_once($FUNCTIONDIR . "/neon.inc");
-require_once($FUNCTIONDIR . "/authentication.inc");
+require_once($FUNCTIONDIR . "/authentication.inc"); // Maybe this should be in "public-pre"
 
 ?>

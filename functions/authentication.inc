@@ -29,7 +29,7 @@ function doUserAndPasswordMatch($user, $password) {
         'password' => $password,
       ],
     ];
-    $result = $neon->go($request);
+    $result = $Neon->go($request);
 
     if ($result['operationResult'] == 'SUCCESS') {
       return $result;
