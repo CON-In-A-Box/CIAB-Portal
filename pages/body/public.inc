@@ -24,7 +24,7 @@
    </div><!--closes login_area div-->
    <?php
      if(!empty($RETRY)) {
-       echo "<h2>Login Incorrect, Please Try Again.</h2>";
+       echo "<h2>Login Incorrect, Please Try Again.</h2><hr>";
      }
    ?>
    <p>

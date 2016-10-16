@@ -47,11 +47,11 @@ function LoginUser($user, $password) {
     $_SESSION['fullName']  = $result['name']; // Save the FullName for ease
     $_SESSION['accountId'] = $result['accountId']; //Save the ID for updates
     // MakeLog("Login Allowed");
-    error_log("Notice: Login allowed for " . $user . " (" . $result['accountId'] . ") as " . $result['name'] . " at " . date('r'), 0);
+    //error_log("Notice: Login allowed for " . $user . " (" . $result['accountId'] . ") as " . $result['name'] . " at " . date('r'), 0);
     return(TRUE);
   } else {
     // MakeLog("Failed Login Attempt by " . $user);
-    error_log("WARN: Failed Login Attempt By " . $user . " at " . date('r'), 0);
+    //error_log("WARN: Failed Login Attempt By " . $user . " at " . date('r'), 0);
     return(FALSE);
   }
 }
