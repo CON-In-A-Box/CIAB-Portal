@@ -18,7 +18,7 @@
           <input type="submit" value="Log In"/>
        </p>
        <p>
-         echo "<a href:'https://www.z2systems.com/np/clients/ce/requestPassword.jsp'>Forgot Password?</a>";
+         <a href='https://www.z2systems.com/np/clients/ce/requestPassword.jsp'>Forgot Password?</a>
        </p>
      </form>
    </div><!--closes login_area div-->
