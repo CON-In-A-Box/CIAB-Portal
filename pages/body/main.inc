@@ -9,6 +9,6 @@
 </div><!--left_nav-->
 <div id="main_content">
 <?php
-  echo "<h2>Welcome " . $_session['fullName'] . " - " . $_session['accountId'] . "!</h2>";
+  echo "<h2>Welcome " . $_SESSION['fullName'] . " - " . $_SESSION['accountId'] . "!</h2>";
 ?>
 </div><!--close main_content div-->
