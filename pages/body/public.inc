@@ -33,6 +33,6 @@
    <p>
      If you have NEVER registered for the convention, please <a href='https://www.z2systems.com/np/clients/ce/account.jsp'>create a account in the registration system</a>.  You do not need to register for the convention to create an account in the system.
    </p>
-   <?php require($PAGESDIR . '/base/disclaimer.inc'); ?>
    </div><!--close main_content div-->
+   <?php require($PAGESDIR . '/base/disclaimer.inc'); ?>
 </div><!--close dynamic_content div-->
