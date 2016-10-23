@@ -28,10 +28,10 @@
      }
    ?>
    <p>
-     Please login - This is your login you have used to register for the CONvergence Convention.  Even if you are not yet registered for this year's convention, your previous years logins are still active.
+     Please login - This is the login that you have used to register for the CONvergence Convention.  Even if you are not yet registered for this year's convention, your previous years logins are still active.
    </p>
    <p>
-     If you have NEVER registered for the convention, please <a href:'https://www.z2systems.com/np/clients/ce/account.jsp'>create a account in the registration system</a>.  You do not need to register for the convention to create an account in the system.
+     If you have NEVER registered for the convention, please <a href='https://www.z2systems.com/np/clients/ce/account.jsp'>create a account in the registration system</a>.  You do not need to register for the convention to create an account in the system.
    </p>
    <?php require($PAGESDIR . '/base/disclaimer.inc'); ?>
    </div><!--close main_content div-->
