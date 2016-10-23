@@ -144,9 +144,9 @@ body {
  background-color: #333;
  text-decoration: none;
  display: block;
- width: 7em;
+ width: 10em;
 }
-#main_nav ul li a:link {
+#main_nav ul li a:link a:visited {
  color: white;
 }
 #main_nav ul li a:link:hover, #main_nav ul li a:visited:hover {
