@@ -12,6 +12,14 @@
 
 // Display all, with links to menu items
 
+  echo "<p>Address on file:</p>\n";
+
+  echo "<p>Email on file:</p>\n";
+  
+  echo "<p>Telephone Number on file:</p>\n";
+
+  echo "<p>ConCom status:</p>\n";
+
 // Look up Hotel info - FUTURE
 
 // Look up Registration Status - FUTURE - but possible! :)
