@@ -24,7 +24,7 @@ function goSite($Site=FALSE) {
 	if($Site != FALSE) {
 		header ("Location: " . $Site);
 	} else {
-		header ("Location: /index.php?Function=home");
+		header ("Location: /index.php?Function=main");
 	}
 	exit(); // Dump this run, assume the new page will start from scratch
 }
