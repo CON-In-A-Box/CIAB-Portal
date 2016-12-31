@@ -6,9 +6,22 @@
 <?php
   echo "<h2>Welcome " . $_SESSION['fullName'] . " - " . $_SESSION['accountId'] . "!</h2>";
 
-// Lookup Adddress info (including email)
+// Lookup Account Info (Address, Email, Phone, ConCom Status/Custom Fields
+  $request = [
+    'method' => 'account/retrieveIndividualAccount',
+    'parameters' => [
+      'accountId' => $_SESSION['accountID'],
+    ],
+  ];
+  $result = $GLOBALS['Neon']->go($request);
 
-// Lookup ConCom info (combine with previous?)
+  if ($result['operationResult'] == 'SUCCESS') {
+    return $result; ##==##
+  } else {
+    return FALSE;  // Impossible error - Throw exception and die
+  }
+
+// Get a list of Custom Fields so we can deal with ConCom Info
 
 // Display all, with links to menu items
 
