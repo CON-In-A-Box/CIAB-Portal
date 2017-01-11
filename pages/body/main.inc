@@ -13,23 +13,37 @@
       'accountId' => $_SESSION['accountID'],
     ],
   ];
-  $result = $GLOBALS['Neon']->go($request);
+  $accountResult = $GLOBALS['Neon']->go($request);
 
-  if ($result['operationResult'] == 'SUCCESS') {
-    return $result; ##==##
-  } else {
-    return FALSE;  // Impossible error - Throw exception and die
+  if ($accountResult['operationResult'] != 'SUCCESS') {
+    die("Impossible error during account retrieval!"); // Impossible error - Throw exception and die
   }
 
 // Get a list of Custom Fields so we can deal with ConCom Info
+  $request = [
+    'method' => 'common/listCustomFields',
+    'parameters' => [
+      'searchCriteria.component' => "Individual",
+    ],
+  ];
+  $customResult = $GLOBALS['Neon']->go($request);
+
+  if ($customResult['operationResult'] != 'SUCCESS') {
+    die("Impossible error during custom fields!"); // Impossible error - Throw exception and die
+  }
 
 // Display all, with links to menu items
 
-  echo "<p>Address on file:</p>\n";
+  echo "<p>Address on file:<br />\n";
+  echo $accountResult['address'] . "<br />\n";
+  echo $accountResult['address'] . "<br />\n";
+  echo $accountResult['city'] . ", " . $accountResult['state'] . " " . $accountResult['zip'] . "</p>\n";
 
-  echo "<p>Email on file:</p>\n";
-  
-  echo "<p>Telephone Number on file:</p>\n";
+  echo "<p>Email on file: ";
+  echo $accountResult['email'] . "</p>\n";
+
+  echo "<p>Telephone Number on file: ";
+  echo $accountResult['phone'] . "</p>\n";
 
   echo "<p>ConCom status:</p>\n";
 
