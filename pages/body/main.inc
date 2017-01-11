@@ -10,13 +10,13 @@
   echo "<table width=100%><tr><td width=50%>\n";
     echo "<p>Address on file:<br />\n";
     echo $_SESSION['accountInfo']['individualAccount']['primaryContact']['addresses']['address']['0']['addressLine1'] . "<br />\n";
-    if ( isset( $_SESSION['accountInfo']['individualAccount']['primaryContact']['addresses']['address']['0']['addressLine2'] ) && !empty( $_SESSION['accountInfo']['individualAccount']['primaryContact']['addresses']['address']['0']['addressLine2'] ) {
+    if ( isset( $_SESSION['accountInfo']['individualAccount']['primaryContact']['addresses']['address']['0']['addressLine2'] ) && !empty( $_SESSION['accountInfo']['individualAccount']['primaryContact']['addresses']['address']['0']['addressLine2'] )) {
       echo $_SESSION['accountInfo']['individualAccount']['primaryContact']['addresses']['address']['0']['addressLine2'] . "<br />\n";
     }
-    if ( isset( $_SESSION['accountInfo']['individualAccount']['primaryContact']['addresses']['address']['0']['addressLine3'] ) && !empty( $_SESSION['accountInfo']['individualAccount']['primaryContact']['addresses']['address']['0']['addressLine3'] ) {
+    if ( isset( $_SESSION['accountInfo']['individualAccount']['primaryContact']['addresses']['address']['0']['addressLine3'] ) && !empty( $_SESSION['accountInfo']['individualAccount']['primaryContact']['addresses']['address']['0']['addressLine3'] )) {
       echo $_SESSION['accountInfo']['individualAccount']['primaryContact']['addresses']['address']['0']['addressLine3'] . "<br />\n";
     }
-    if ( isset( $_SESSION['accountInfo']['individualAccount']['primaryContact']['addresses']['address']['0']['addressLine4'] ) && !empty( $_SESSION['accountInfo']['individualAccount']['primaryContact']['addresses']['address']['0']['addressLine4'] ) {
+    if ( isset( $_SESSION['accountInfo']['individualAccount']['primaryContact']['addresses']['address']['0']['addressLine4'] ) && !empty( $_SESSION['accountInfo']['individualAccount']['primaryContact']['addresses']['address']['0']['addressLine4'] )) {
       echo $_SESSION['accountInfo']['individualAccount']['primaryContact']['addresses']['address']['0']['addressLine4'] . "<br />\n";
     }
     echo $_SESSION['accountInfo']['individualAccount']['primaryContact']['addresses']['address']['0']['city'] . ", ";
