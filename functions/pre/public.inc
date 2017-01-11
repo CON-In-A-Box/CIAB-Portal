@@ -10,7 +10,34 @@ if (isset($_COOKIE[session_name()])) {
 if (!empty($_REQUEST['user'])) {
   require_once($FUNCTIONDIR . "/authentication.inc");
   if (LoginUser($_REQUEST['user'],$_REQUEST['password'])) {
-      goSite(); // goto default
+    // Collect User and Custom Field Data for Session
+    $request = [
+      'method' => 'account/retrieveIndividualAccount',
+      'parameters' => [
+        'accountId' => $_SESSION['accountId'],
+      ],
+    ];
+    $result = $GLOBALS['Neon']->go($request);
+    if ( isset( $result['operationResult'] ) && $result['operationResult'] == 'SUCCESS' ) {
+      $_SESSION['accountInfo'] = $result;
+    } else {
+      die("Impossible error during Account Lookup");
+    }
+    
+    $request = [
+      'method' => 'common/listCustomFields',
+      'parameters' => [
+        'searchCriteria.component' => "Individual",
+      ],
+    ];
+    $result = $GLOBALS['Neon']->go($request);
+    if ( isset( $result['operationResult'] ) && $result['operationResult'] == 'SUCCESS' ) {
+      $_SESSION['customFields'] = $result;
+    } else {
+      die("Impossible error during Custom Fields Download");
+    }
+
+    goSite(); // goto default
   } else {
     $RETRY=1; // Bad password or not authorized to use system
   }
