@@ -122,7 +122,6 @@ body {
 	margin: 0;
 	padding: 0;
 	background-color:#999;
-	border-right: medium solid gray;
 }
 #main_nav ul {
     width: 100%;
@@ -168,6 +167,7 @@ margin-bottom: −1px;
 	margin: 0;
 	padding: 0;
 	float:left;
+	border-right: medium solid gray;
 }
 #left_nav ul {
     width: 100%;
