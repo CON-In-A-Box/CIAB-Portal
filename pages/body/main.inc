@@ -2,7 +2,7 @@
 <div id="left_nav" class="main_screen">
 
 <?php
-  echo "<p style=\"font-weight:bold;\">" . $_SESSION['fullName'] . " - " . $_SESSION['accountId'] . "</p>\n";
+  echo "<p style=\"font-weight:bold;\">" . $_SESSION['fullName'] . "</p>\n";
 
   echo "<p><span style=\"font-weight:bold;\">Address:</span><br />\n";
   echo $_SESSION['addr1'] . "<br />\n";
@@ -29,7 +29,7 @@
 </div><!--left_nav-->
 <div id="main_content">
 <?php
-  echo "<h2>Welcome " . $_SESSION['fullName'] . " - " . $_SESSION['accountId'] . "!</h2>";
+  echo "<h2>Welcome " . $_SESSION['fullName'] . "!</h2>";
 
   // Display all, with links to menu items
 

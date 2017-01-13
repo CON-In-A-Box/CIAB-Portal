@@ -122,6 +122,7 @@ body {
 	margin: 0;
 	padding: 0;
 	background-color:#999;
+	border-right: medium solid gray;
 }
 #main_nav ul {
     width: 100%;
