@@ -1,34 +1,35 @@
 <div id="dynamic_content" class="main_screen">
 <div id="left_nav" class="main_screen">
 
+<?php
+  echo "<p><span style=\"font-weight:bold;\">Address:</span><br />\n";
+  echo $_SESSION['addr1'] . "<br />\n";
+  if ( isset( $_SESSION['addr2'] ) && !empty( $_SESSION['addr2'] )) {
+    echo $_SESSION['addr2'] . "<br />\n";
+  }
+  if ( isset( $_SESSION['addr3'] ) && !empty( $_SESSION['addr3'] )) {
+    echo $_SESSION['addr3'] . "<br />\n";
+  }
+  if ( isset( $_SESSION['addr4'] ) && !empty( $_SESSION['addr4'] )) {
+    echo $_SESSION['addr4'] . "<br />\n";
+  }
+  echo $_SESSION['city'] . ", ";
+  echo $_SESSION['state'] . " ";
+  echo $_SESSION['zip'] . "</p>\n";
+
+  echo "<p><span style=\"font-weight:bold;\">Email:</span> ";
+  echo $_SESSION['email'] . "<br />\n";
+
+  echo "<span style=\"font-weight:bold;\">Telephone Number:</span> ";
+  echo $_SESSION['phone'] . "</p>\n";
+?>
+
 </div><!--left_nav-->
 <div id="main_content">
 <?php
   echo "<h2>Welcome " . $_SESSION['fullName'] . " - " . $_SESSION['accountId'] . "!</h2>";
 
   // Display all, with links to menu items
-  echo "<table width=100%><tr><td width=50%>\n";
-    echo "<p><span style=\"font-weight:bold;\">Address:</span><br />\n";
-    echo $_SESSION['addr1'] . "<br />\n";
-    if ( isset( $_SESSION['addr2'] ) && !empty( $_SESSION['addr2'] )) {
-      echo $_SESSION['addr2'] . "<br />\n";
-    }
-    if ( isset( $_SESSION['addr3'] ) && !empty( $_SESSION['addr3'] )) {
-      echo $_SESSION['addr3'] . "<br />\n";
-    }
-    if ( isset( $_SESSION['addr4'] ) && !empty( $_SESSION['addr4'] )) {
-      echo $_SESSION['addr4'] . "<br />\n";
-    }
-    echo $_SESSION['city'] . ", ";
-    echo $_SESSION['state'] . " ";
-    echo $_SESSION['zip'] . "</p>\n";
-  echo "</td><td>\n";
-    echo "<p>Email: ";
-    echo $_SESSION['email'] . "</p>\n";
-
-    echo "<p>Telephone Number: ";
-    echo $_SESSION['phone'] . "</p>\n";
-  echo "</td></tr></table>\n";
 
   echo "<p>ConCom status:</p>\n";
 
