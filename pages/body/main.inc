@@ -8,7 +8,7 @@
 
   // Display all, with links to menu items
   echo "<table width=100%><tr><td width=50%>\n";
-    echo "<p><span style=font weight: bold;>Address:</span><br />\n";
+    echo "<p><span style=font-weight: bold;>Address:</span><br />\n";
     echo $_SESSION['addr1'] . "<br />\n";
     if ( isset( $_SESSION['addr2'] ) && !empty( $_SESSION['addr2'] )) {
       echo $_SESSION['addr2'] . "<br />\n";
