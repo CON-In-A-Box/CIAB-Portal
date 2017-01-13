@@ -12,7 +12,7 @@
   echo "\n\n";
   print_r($_SESSION['customFields']);
 
-  echo "\n\nGit Status:\n"
+  echo "\n\nGit Status:\n";
   system("git pull");
   
   echo "</pre>\n";
