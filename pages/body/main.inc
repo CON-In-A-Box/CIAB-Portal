@@ -9,25 +9,25 @@
   // Display all, with links to menu items
   echo "<table width=100%><tr><td width=50%>\n";
     echo "<p>Address on file:<br />\n";
-    echo $_SESSION['accountInfo']['individualAccount']['primaryContact']['addresses']['address']['0']['addressLine1'] . "<br />\n";
-    if ( isset( $_SESSION['accountInfo']['individualAccount']['primaryContact']['addresses']['address']['0']['addressLine2'] ) && !empty( $_SESSION['accountInfo']['individualAccount']['primaryContact']['addresses']['address']['0']['addressLine2'] )) {
-      echo $_SESSION['accountInfo']['individualAccount']['primaryContact']['addresses']['address']['0']['addressLine2'] . "<br />\n";
+    echo $_SESSION['addr1'] . "<br />\n";
+    if ( isset( $_SESSION['addr2'] ) && !empty( $_SESSION['addr2'] )) {
+      echo $_SESSION['addr2'] . "<br />\n";
     }
-    if ( isset( $_SESSION['accountInfo']['individualAccount']['primaryContact']['addresses']['address']['0']['addressLine3'] ) && !empty( $_SESSION['accountInfo']['individualAccount']['primaryContact']['addresses']['address']['0']['addressLine3'] )) {
-      echo $_SESSION['accountInfo']['individualAccount']['primaryContact']['addresses']['address']['0']['addressLine3'] . "<br />\n";
+    if ( isset( $_SESSION['addr3'] ) && !empty( $_SESSION['addr3'] )) {
+      echo $_SESSION['addr3'] . "<br />\n";
     }
-    if ( isset( $_SESSION['accountInfo']['individualAccount']['primaryContact']['addresses']['address']['0']['addressLine4'] ) && !empty( $_SESSION['accountInfo']['individualAccount']['primaryContact']['addresses']['address']['0']['addressLine4'] )) {
-      echo $_SESSION['accountInfo']['individualAccount']['primaryContact']['addresses']['address']['0']['addressLine4'] . "<br />\n";
+    if ( isset( $_SESSION['addr4'] ) && !empty( $_SESSION['addr4'] )) {
+      echo $_SESSION['addr4'] . "<br />\n";
     }
-    echo $_SESSION['accountInfo']['individualAccount']['primaryContact']['addresses']['address']['0']['city'] . ", ";
-    echo $_SESSION['accountInfo']['individualAccount']['primaryContact']['addresses']['address']['0']['state']['code'] . " ";
-    echo $_SESSION['accountInfo']['individualAccount']['primaryContact']['addresses']['address']['0']['zipCode'] . "</p>\n";
+    echo $_SESSION['city'] . ", ";
+    echo $_SESSION['state'] . " ";
+    echo $_SESSION['zip'] . "</p>\n";
   echo "</td><td>\n";
-    echo "<p>Email on file: ";
-    echo $_SESSION['accountInfo']['individualAccount']['primaryContact']['email1'] . "</p>\n";
+    echo "<p>Email: ";
+    echo $_SESSION['email'] . "</p>\n";
 
-    echo "<p>Telephone Number on file: ";
-    echo $_SESSION['accountInfo']['individualAccount']['primaryContact']['phone1'] . "</p>\n";
+    echo "<p>Telephone Number: ";
+    echo $_SESSION['phone'] . "</p>\n";
   echo "</td></tr></table>\n";
 
   echo "<p>ConCom status:</p>\n";

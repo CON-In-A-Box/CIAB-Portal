@@ -19,7 +19,16 @@ if (!empty($_REQUEST['user'])) {
     ];
     $result = $GLOBALS['Neon']->go($request);
     if ( isset( $result['operationResult'] ) && $result['operationResult'] == 'SUCCESS' ) {
-      $_SESSION['accountInfo'] = $result;
+      $_SESSION['accountInfo'] = $result; // TESTING ONLY
+      $_SESSION['addr1'] = $result['individualAccount']['primaryContact']['addresses']['address']['0']['addressLine1'];
+      $_SESSION['addr2'] = $result['individualAccount']['primaryContact']['addresses']['address']['0']['addressLine2'];
+      $_SESSION['addr3'] = $result['individualAccount']['primaryContact']['addresses']['address']['0']['addressLine3'];
+      $_SESSION['addr4'] = $result['individualAccount']['primaryContact']['addresses']['address']['0']['addressLine4'];
+      $_SESSION['city']  = $result['individualAccount']['primaryContact']['addresses']['address']['0']['city'];
+      $_SESSION['state'] = $result['individualAccount']['primaryContact']['addresses']['address']['0']['state']['code'];
+      $_SESSION['zip']   = $result['individualAccount']['primaryContact']['addresses']['address']['0']['zipCode'];
+      $_SESSION['email'] = $result['individualAccount']['primaryContact']['email1'];
+      $_SESSION['phone'] = $result['individualAccount']['primaryContact']['phone1'];
     } else {
       die("Impossible error during Account Lookup");
     }

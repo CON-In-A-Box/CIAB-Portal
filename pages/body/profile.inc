@@ -11,6 +11,10 @@
   print_r($_SESSION['accountInfo']['individualAccount']['customFieldDataList']);
   echo "\n\n";
   print_r($_SESSION['customFields']);
+  
+  system("git pull");
+  
   echo "</pre>\n";
+  
 ?>
 </div><!--close main_content div-->
