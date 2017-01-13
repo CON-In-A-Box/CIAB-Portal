@@ -27,7 +27,7 @@ if (!empty($_REQUEST['user'])) {
     $request = [
       'method' => 'common/listCustomFields',
       'parameters' => [
-        'searchCriteria.component' => "Individual",
+        'searchCriteria.component' => "Account",
       ],
     ];
     $result = $GLOBALS['Neon']->go($request);
