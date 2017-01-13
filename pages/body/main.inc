@@ -2,6 +2,8 @@
 <div id="left_nav" class="main_screen">
 
 <?php
+  echo "<p style=\"font-weight:bold;\">" . $_SESSION['fullName'] . " - " . $_SESSION['accountId'] . "</p>\n";
+
   echo "<p><span style=\"font-weight:bold;\">Address:</span><br />\n";
   echo $_SESSION['addr1'] . "<br />\n";
   if ( isset( $_SESSION['addr2'] ) && !empty( $_SESSION['addr2'] )) {
@@ -17,10 +19,10 @@
   echo $_SESSION['state'] . " ";
   echo $_SESSION['zip'] . "</p>\n";
 
-  echo "<p><span style=\"font-weight:bold;\">Email:</span> ";
-  echo $_SESSION['email'] . "<br />\n";
+  echo "<p><span style=\"font-weight:bold;\">Email:</span><br />";
+  echo $_SESSION['email'] . "</p>\n";
 
-  echo "<span style=\"font-weight:bold;\">Telephone Number:</span> ";
+  echo "<p><span style=\"font-weight:bold;\">Telephone Number:</span><br />";
   echo $_SESSION['phone'] . "</p>\n";
 ?>
 
