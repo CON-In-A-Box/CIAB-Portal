@@ -11,6 +11,7 @@
   echo "Returned Custom Field Data:\n";
   print_r($_SESSION['accountInfo']['individualAccount']['customFieldDataList']);
   echo "\n\n";
+  print_r($_SESSION['customField']);
   echo "Parsed Custom Field Data:\n";
   echo "\n\n";
   print_r($_SESSION['customFields']);
