@@ -10,7 +10,30 @@ if (isset($_COOKIE[session_name()])) {
 if (!empty($_REQUEST['user'])) {
   require_once($FUNCTIONDIR . "/authentication.inc");
   if (LoginUser($_REQUEST['user'],$_REQUEST['password'])) {
-    // Collect User and Custom Field Data for Session
+    // Custom Field Data for Session
+    $request = [
+      'method' => 'common/listCustomFields',
+      'parameters' => [
+        'searchCriteria.component' => "Account",
+      ],
+    ];
+    $result = $GLOBALS['Neon']->go($request);
+    if ( isset( $result['operationResult'] ) && $result['operationResult'] == 'SUCCESS' ) {
+      foreach ($result['customFields']['customField'] as $val) {
+        $_SESSION['definedFields'][$val['fieldId']] = $val['fieldName'];
+        if ( isset( $val['fieldOptions'] ) {
+          foreach ($val['fieldOptions']['fieldOption'] as $fval) {
+            $_SESSION['definedFields'][$fval['id']] = $fval['name'];
+          }
+          unset($fval);
+        }
+      }
+      unset($val);
+    } else {
+      die("Impossible error during Defined Custom Fields Download");
+    }
+
+    // Account info about User for Session
     $request = [
       'method' => 'account/retrieveIndividualAccount',
       'parameters' => [
@@ -31,28 +54,16 @@ if (!empty($_REQUEST['user'])) {
       $_SESSION['phone'] = &$_SESSION['accountInfo']['individualAccount']['primaryContact']['phone1'];
       foreach ($result['individualAccount']['customFieldDataList']['customFieldData'] as $val) {
         if ( isset( $val['fieldValue'] )) {
-          $_SESSION['customField'][$val['fieldId']][] = $val['fieldValue'];
+          $_SESSION['customFields'][$val['fieldId']][] = $val['fieldValue'];
         } elseif ( isset( $val['fieldOptionId'] )) {
-          $_SESSION['customField'][$val['fieldId']][] = $val['fieldOptionId'];
+          $_SESSION['customFields'][$val['fieldId']][] = $val['fieldOptionId'];
         } else {
-          die("Impossible error during Account Custom Value formatting");
+          die("Impossible error during Account Custom fields formatting");
         }
       }
+      unset($val);
     } else {
       die("Impossible error during Account Lookup");
-    }
-    
-    $request = [
-      'method' => 'common/listCustomFields',
-      'parameters' => [
-        'searchCriteria.component' => "Account",
-      ],
-    ];
-    $result = $GLOBALS['Neon']->go($request);
-    if ( isset( $result['operationResult'] ) && $result['operationResult'] == 'SUCCESS' ) {
-      $_SESSION['customFields'] = $result;
-    } else {
-      die("Impossible error during Custom Fields Download");
     }
 
     goSite(); // goto default

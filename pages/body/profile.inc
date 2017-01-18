@@ -8,8 +8,11 @@
 
   // TEST ONLY!!!!
   echo "<pre>\n";
-  echo "Returned Custom Field Data:\n";
-  print_r($_SESSION['accountInfo']['individualAccount']['customFieldDataList']);
+  echo "Defined Custom fields from Neon:\n";
+  print_r($_SESSION['definedFields']);
+//  echo "\n\n";
+//  echo "Returned Custom Field Data:\n";
+//  print_r($_SESSION['accountInfo']['individualAccount']['customFieldDataList']);
 //  echo "\n\n";
 //  echo "Building process:\n";
 //  foreach ($_SESSION['accountInfo']['individualAccount']['customFieldDataList']['customFieldData'] as $val) {
@@ -17,9 +20,6 @@
 //  }
   echo "\n\n";
   echo "Parsed Custom Field Data:\n";
-  print_r($_SESSION['customField']);
-  echo "\n\n";
-  echo "Defined Custom fields from Neon:\n";
   print_r($_SESSION['customFields']);
 
   echo "\n\nGit Status:\n";
