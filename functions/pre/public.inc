@@ -21,7 +21,7 @@ if (!empty($_REQUEST['user'])) {
     if ( isset( $result['operationResult'] ) && $result['operationResult'] == 'SUCCESS' ) {
       foreach ($result['customFields']['customField'] as $val) {
         $_SESSION['definedFields'][$val['fieldId']] = $val['fieldName'];
-        if ( isset( $val['fieldOptions'] ) {
+        if ( isset( $val['fieldOptions'] )) {
           foreach ($val['fieldOptions']['fieldOption'] as $fval) {
             $_SESSION['definedFields'][$fval['id']] = $fval['name'];
           }
