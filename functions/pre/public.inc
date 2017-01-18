@@ -28,22 +28,20 @@ if (!empty($_REQUEST['user'])) {
             $_SESSION['definedFields'][$fval['id']] = $fval['name'];
           }
           unset($fval);
+          if ($val['fieldName'] == "CVGConCom Years Served") {
+            foreach ($val['fieldOptions']['fieldOption'] as $fval) {
+              $_SESSION['definedFields']['conComYears'][$fval['id']] = $fval['name'];
+            }
+            unset($fval);
+          } elsefi ($val['fieldName'] == "2017 Official Meeting Attendance") {
+            foreach ($val['fieldOptions']['fieldOption'] as $fval) {
+              $_SESSION['definedFields']['2017Meetings'][$fval['id']] = $fval['name'];
+            }
+            unset($fval);
+          }
         }
       }
-      unset($val);
-      
-      // Collect a list of ConCom Years
-      foreach ($result['customFields']['customField'][array_search('CVGConCom Years Served', $_SESSION['definedFields'])]['fieldOptions']['fieldOption'] as $val) {
-        $_SESSION['definedFields']['conComYears'][$val['id']] = $val['name'];
-      }
-      unset($val);
-      
-      // Collect a list of 2017 Offical Meetings
-      foreach ($result['customFields']['customField'][array_search('2017 Official Meeting Attendance', $_SESSION['definedFields'])]['fieldOptions']['fieldOption'] as $val) {
-        $_SESSION['definedFields']['2017Meetings'][$val['id']] = $val['name'];
-      }
-      unset($val);
-      
+      unset($val);      
     } else {
       die("Impossible error during Defined Custom Fields Download");
     }

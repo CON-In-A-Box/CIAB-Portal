@@ -49,12 +49,12 @@
   
   echo "<p>2017 Meeting attendace:\n";
   echo "<ul>\n";
-  foreach( $_SESSION['definedFields']['conComYears'] as $val ) {
+  foreach( $_SESSION['definedFields']['2017Meetings'] as $val ) {
     echo "<li>" . $val['name'] . " - ";
     if ( isset( $_SESSION['customFields'][$val['id']] ) && array_key_exists( $val['id'], $_SESSION['customFields'][$val['id']] )) {
-      echo "On ConCom";
+      echo "Checked In";
     } else {
-      echo "Not On ConCom";
+      echo "Not Checked In";
     }
     echo "</li>\n";
   }
