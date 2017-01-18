@@ -41,11 +41,26 @@
       $tmp = explode(",", $val);
       echo "<li> " . $tmp[1] . " of " . $tmp[0]. "</li>\n";
     }
+    unset($val);
     echo "</ul></p>\n";
   } else {
     echo "Not currently on ConCom</p>\n";
   }
   
+  echo "<p>2017 Meeting attendace:\n";
+  echo "<ul>\n";
+  foreach( $_SESSION['definedFields'][array_search('CVGConCom Current Position', $_SESSION['definedFields'])]['fieldOptions']['fieldOption'] as $val ) {
+    echo "<li>" . $val['name'] . " - ";
+    if ( isset( $_SESSION['customFields'][$val['id']] ) && in_array( $val['id'], $_SESSION['customFields'][$val['id']] )) {
+      echo "Checked In";
+    } else {
+      echo "Not Checked In";
+    }
+    echo "</li>\n";
+  }
+  unset($val);
+  echo "</ul></p>\n";
+
 // Look up Hotel info - FUTURE
 
 // Look up Registration Status - FUTURE - but possible! :)
