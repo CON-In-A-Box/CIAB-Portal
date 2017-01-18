@@ -33,7 +33,7 @@ if (!empty($_REQUEST['user'])) {
               $_SESSION['definedFields']['conComYears'][$fval['id']] = $fval['name'];
             }
             unset($fval);
-          } elsefi ($val['fieldName'] == "2017 Official Meeting Attendance") {
+          } elseif ($val['fieldName'] == "2017 Official Meeting Attendance") {
             foreach ($val['fieldOptions']['fieldOption'] as $fval) {
               $_SESSION['definedFields']['2017Meetings'][$fval['id']] = $fval['name'];
             }
@@ -83,7 +83,6 @@ if (!empty($_REQUEST['user'])) {
 
     // If we got here, then we are golden.  Map the custom fields for easy use
     // We care about (so far) Current ConCom Positions and ConCom Years Served
-//    $tmpConComPosition = array_serch('CVGConCom Current Position', $_SESSION['definedFields']);
     $_SESSION['customFields']['currConComPos'] = &$_SESSION['customFields'][array_search('CVGConCom Current Position', $_SESSION['definedFields'])];
 
     goSite(); // goto default

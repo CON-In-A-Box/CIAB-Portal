@@ -49,24 +49,25 @@
   
   echo "<p>2017 Meeting attendace:\n";
   echo "<ul>\n";
-  foreach( $_SESSION['definedFields']['2017Meetings'] as $val ) {
-    echo "<li>" . $val['name'] . " - ";
-    if ( isset( $_SESSION['customFields'][$val['id']] ) && array_key_exists( $val['id'], $_SESSION['customFields'][$val['id']] )) {
+  foreach( $_SESSION['definedFields']['2017Meetings'] as $key => $val ) {
+    echo "<li>" . $val . " - ";
+    if ( isset( $_SESSION['customFields'] ) && array_key_exists( $key, $_SESSION['customFields'] )) {
       echo "Checked In";
     } else {
       echo "Not Checked In";
     }
     echo "</li>\n";
   }
+  unset($key);
   unset($val);
   echo "</ul></p>\n";
   
   
   echo "<p>Previous ConCom Years Served:\n";
   echo "<ul>\n";
-  foreach( $_SESSION['definedFields']['conComYears'] as $val ) {
-    echo "<li>" . $val['name'] . " - ";
-    if ( isset( $_SESSION['customFields'][$val['id']] ) && array_key_exists( $val['id'], $_SESSION['customFields'][$val['id']] )) {
+  foreach( $_SESSION['definedFields']['conComYears'] as $key => $val ) {
+    echo "<li>" . $val . " - ";
+    if ( isset( $_SESSION['customFields'] ) && array_key_exists( $key, $_SESSION['customFields'] )) {
       echo "On ConCom";
     } else {
       echo "Not On ConCom";
