@@ -33,7 +33,7 @@
 
   // Display all, with links to menu items
 
-  echo "<p>ConCom status:</p>\n";
+  echo "<p style=\"font-weight:bold;\">ConCom status:</p>\n";
 
 // Look up Hotel info - FUTURE
 
