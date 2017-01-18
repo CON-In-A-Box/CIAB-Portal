@@ -10,11 +10,11 @@
   echo "<pre>\n";
   echo "Returned Custom Field Data:\n";
   print_r($_SESSION['accountInfo']['individualAccount']['customFieldDataList']);
-  echo "\n\n";
-  echo "Building process:\n";
-  foreach ($_SESSION['accountInfo']['individualAccount']['customFieldDataList']['customFieldData'] as $val) {
-    echo $val . "\n";
-  }
+//  echo "\n\n";
+//  echo "Building process:\n";
+//  foreach ($_SESSION['accountInfo']['individualAccount']['customFieldDataList']['customFieldData'] as $val) {
+//    print_r($val);
+//  }
   echo "\n\n";
   echo "Parsed Custom Field Data:\n";
   print_r($_SESSION['customField']);
