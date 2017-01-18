@@ -38,7 +38,7 @@
   if ( isset( $_SESSION['customFields']['currConComPos'])) {
     echo "<ul>\n";
     foreach( $_SESSION['customFields']['currConComPos'] as $val ) {
-      $tmp = explode($val, ",");
+      $tmp = explode(",", $val);
       echo "<li> " . $tmp[1] . " of " . $tmp[0]. "</li>\n";
     }
     echo "</ul></p>\n";
