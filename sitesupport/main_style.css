@@ -145,7 +145,7 @@ body {
  background-color: #333;
  text-decoration: none;
  display: block;
- width: 10em;
+ width: 11em;
 }
 #main_nav ul li a:link {
  color: white;
@@ -158,6 +158,13 @@ color: #fff;
 }
 #main_nav ul li a#current {
 	background-image:url(../images/hover_tab.png);
+	background-position:center;
+ border-bottom: 1px solid white;
+color: #fff;
+margin-bottom: −1px;
+}
+#main_nav ul li a#signin {
+	background-image:url(../images/green_tab.png);
 	background-position:center;
  border-bottom: 1px solid white;
 color: #fff;
