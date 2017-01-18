@@ -2,6 +2,7 @@
 <div id="left_nav" class="main_screen">
 
 <?php
+  echo "<img src=\"https://www.z2systems.com/neon/resource/ce/images/account/" . $_SESSION['accountId'] . "/0_medium.jpg\">\n";
   echo "<p style=\"font-weight:bold;\">" . $_SESSION['fullName'] . "</p>\n";
 
   echo "<p><span style=\"font-weight:bold;\">Address:</span><br />\n";
@@ -33,8 +34,18 @@
 
   // Display all, with links to menu items
 
-  echo "<p style=\"font-weight:bold;\">ConCom status:</p>\n";
-
+  echo "<p>Current ConCom Status:\n";
+  if ( isset( $_SESSION['customFields']['currConComPos')) {
+    echo "<ul>\n";
+    foreach( $_SESSION['customFields']['currConComPos'] as $val ) {
+      $tmp = explode($val, ",");
+      echo "<li> " . $val[1] . " of " . $val[0]. "</li>\n";
+    }
+    echo "</ul></p>\n";
+  } else {
+    echo "Not currently on ConCom</p>\n";
+  }
+  
 // Look up Hotel info - FUTURE
 
 // Look up Registration Status - FUTURE - but possible! :)
