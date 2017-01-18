@@ -20,6 +20,7 @@ if (!empty($_REQUEST['user'])) {
     ];
     $result = $GLOBALS['Neon']->go($request);
     if ( isset( $result['operationResult'] ) && $result['operationResult'] == 'SUCCESS' ) {
+      $_SESSION['definedFields']['customField'] = $result['customFields']['customField'];
       foreach ($result['customFields']['customField'] as $val) {
         $_SESSION['definedFields'][$val['fieldId']] = $val['fieldName'];
         if ( isset( $val['fieldOptions'] )) {
@@ -30,6 +31,19 @@ if (!empty($_REQUEST['user'])) {
         }
       }
       unset($val);
+      
+      // Collect a list of ConCom Years
+      foreach ($result['customFields']['customField'][array_search('CVGConCom Years Served', $_SESSION['definedFields'])]['fieldOptions']['fieldOption'] as $val) {
+        $_SESSION['definedFields']['conComYears'][$val['id']] = $val['name'];
+      }
+      unset($val);
+      
+      // Collect a list of 2017 Offical Meetings
+      foreach ($result['customFields']['customField'][array_search('2017 Official Meeting Attendance', $_SESSION['definedFields'])]['fieldOptions']['fieldOption'] as $val) {
+        $_SESSION['definedFields']['2017Meetings'][$val['id']] = $val['name'];
+      }
+      unset($val);
+      
     } else {
       die("Impossible error during Defined Custom Fields Download");
     }
