@@ -72,7 +72,7 @@ if (!empty($_REQUEST['user'])) {
     // If we got here, then we are golden.  Map the custom fields for easy use
     // We care about (so far) Current ConCom Positions and ConCom Years Served
 //    $tmpConComPosition = array_serch('CVGConCom Current Position', $_SESSION['definedFields']);
-    $_SESSION['customFields']['currConComPos'] = &$_SESSION['customFields'][array_serch('CVGConCom Current Position', $_SESSION['definedFields'])];
+    $_SESSION['customFields']['currConComPos'] = &$_SESSION['customFields'][array_search('CVGConCom Current Position', $_SESSION['definedFields'])];
 
     goSite(); // goto default
   } else {

@@ -35,11 +35,11 @@
   // Display all, with links to menu items
 
   echo "<p>Current ConCom Status:\n";
-  if ( isset( $_SESSION['customFields']['currConComPos')) {
+  if ( isset( $_SESSION['customFields']['currConComPos'])) {
     echo "<ul>\n";
     foreach( $_SESSION['customFields']['currConComPos'] as $val ) {
       $tmp = explode($val, ",");
-      echo "<li> " . $val[1] . " of " . $val[0]. "</li>\n";
+      echo "<li> " . $tmp[1] . " of " . $tmp[0]. "</li>\n";
     }
     echo "</ul></p>\n";
   } else {
