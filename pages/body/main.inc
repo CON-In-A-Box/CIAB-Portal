@@ -47,11 +47,11 @@
     echo "Not currently on ConCom</p>\n";
   }
   
-  echo "<p>2017 Meeting attendace:\n";
+  echo "<p>2017 Meeting attendance:\n";
   echo "<ul>\n";
   foreach( $_SESSION['definedFields']['2017Meetings'] as $key => $val ) {
     echo "<li>" . $val . " - ";
-    if ( isset( $_SESSION['customFields'] ) && array_key_exists( $key, $_SESSION['customFields'] )) {
+    if ( isset( $_SESSION['customFields'][array_search('2017 Official Meeting Attendance', $_SESSION['definedFields'])] ) && in_array( $key, $_SESSION['customFields'][array_search('2017 Official Meeting Attendance', $_SESSION['definedFields'])] )) {
       echo "Checked In";
     } else {
       echo "Not Checked In";
@@ -67,7 +67,7 @@
   echo "<ul>\n";
   foreach( $_SESSION['definedFields']['conComYears'] as $key => $val ) {
     echo "<li>" . $val . " - ";
-    if ( isset( $_SESSION['customFields'] ) && array_key_exists( $key, $_SESSION['customFields'] )) {
+    if ( isset( $_SESSION['customFields'][array_search('CVGConCom Years Served', $_SESSION['definedFields'])] ) && in_array( $key, $_SESSION['customFields'][array_search('CVGConCom Years Served', $_SESSION['definedFields'])] )) {
       echo "On ConCom";
     } else {
       echo "Not On ConCom";
