@@ -30,7 +30,13 @@ if (!empty($_REQUEST['user'])) {
       $_SESSION['email'] = &$_SESSION['accountInfo']['individualAccount']['primaryContact']['email1'];
       $_SESSION['phone'] = &$_SESSION['accountInfo']['individualAccount']['primaryContact']['phone1'];
       foreach ($result['individualAccount']['customFieldDataList']['customFieldData'] as $val) {
-        $_SESSION['customField'][$val['fieldId']][] = $val['fieldOptionId'];
+        if ( isset( $val['fieldValue'] ) {
+          $_SESSION['customField'][$val['fieldId']][] = $val['fieldValue'];
+        } elseif ( isset( $val['fieldOptionId']  {
+          $_SESSION['customField'][$val['fieldId']][] = $val['fieldOptionId'];
+        } else {
+          die("Impossible error during Account Custom Value formatting");
+        }
       }
     } else {
       die("Impossible error during Account Lookup");
