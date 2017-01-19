@@ -30,7 +30,7 @@
 </div><!--left_nav-->
 <div id="main_content">
 <?php
-  echo "<h2>Welcome " . $_SESSION['fullName'] . "!</h2>";
+  echo "<h2>Welcome " . $_SESSION['preferredName'] . "!</h2>";
 
   // Display all, with links to menu items
 

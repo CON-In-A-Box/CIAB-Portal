@@ -170,6 +170,13 @@ margin-bottom: −1px;
 color: #fff;
 margin-bottom: −1px;
 }
+#main_nav ul li a#logout {
+	background-image:url(../images/pink_tabs.png);
+	background-position:center;
+ border-bottom: 1px solid white;
+color: #fff;
+margin-bottom: −1px;
+}
 #left_nav {
 	margin: 0;
 	padding: 0 .5em 0 0;

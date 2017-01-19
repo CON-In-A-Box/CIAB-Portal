@@ -56,6 +56,11 @@ if (!empty($_REQUEST['user'])) {
     $result = $GLOBALS['Neon']->go($request);
     if ( isset( $result['operationResult'] ) && $result['operationResult'] == 'SUCCESS' ) {
       $_SESSION['accountInfo'] = $result;
+      if ( isset ( $_SESSION['accountInfo']['individualAccount']['primaryContact']['preferredName'] )) {
+        $_SESSION['preferredName'] = &$_SESSION['accountInfo']['individualAccount']['primaryContact']['preferredName'];
+      } else {
+        $_SESSION['preferredName'] = &$_SESSION['fullName'];
+      }
       $_SESSION['addr1'] = &$_SESSION['accountInfo']['individualAccount']['primaryContact']['addresses']['address']['0']['addressLine1'];
       $_SESSION['addr2'] = &$_SESSION['accountInfo']['individualAccount']['primaryContact']['addresses']['address']['0']['addressLine2'];
       $_SESSION['addr3'] = &$_SESSION['accountInfo']['individualAccount']['primaryContact']['addresses']['address']['0']['addressLine3'];
