@@ -1,7 +1,7 @@
 <?php
 
 // Main setup function
-$MODULENAME  = "ConCom Signin";
+$MODULENAME  = "Meeting Signin";
 $BUILD       = explode(" ", '$Rev: 1 $'); // going to have to update this to support git, probably via filters
 $VERSION     = "0.1 Build: " . $BUILD[1]; // Major.Minor.Revision Format - This is a string, version names allowed
 
@@ -10,7 +10,7 @@ $FUNCTIONDIR    = dirname(__FILE__);
 $BASEDIR        = dirname($FUNCTIONDIR);
 $WEBSERVER      = $_SERVER['SERVER_NAME'];
 $BASEURL        = "http://" . $WEBSERVER;
-$SITECONFIG     = $BASEDIR . '/.ht_concomsignin_config.php'; // Location of the module config file
+$SITECONFIG     = $BASEDIR . '/.ht_meetingsignin_config.php'; // Location of the module config file
 
 // Static Variables
 $SITESUPPORTDIR = $BASEDIR . "/sitesupport";
