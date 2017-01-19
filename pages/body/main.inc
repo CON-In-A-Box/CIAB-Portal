@@ -78,19 +78,19 @@
   echo "</ul></p>\n";
 
 // Look up Hotel info - FUTURE
-  echo "<hr>\n";
-  $time = microtime(true);
-  $request = [
-    'method' => 'event/retrieveEventAttendees',
-    'parameters' => [
-      'eventId' => "152",
-      'page.pageSize' => "200",
-    ],
-  ];
-  $result = $GLOBALS['Neon']->go($request);
-  if ( isset( $result['operationResult'] ) && $result['operationResult'] == 'SUCCESS' ) {
-    echo "Done: " . sprintf('%f', $time) . "\n";
-  }
+//  echo "<hr>\n";
+//  $time = microtime(true);
+//  $request = [
+//    'method' => 'event/retrieveEventAttendees',
+//    'parameters' => [
+//      'eventId' => "152",
+//      'page.pageSize' => "200",
+//    ],
+//  ];
+//  $result = $GLOBALS['Neon']->go($request);
+//  if ( isset( $result['operationResult'] ) && $result['operationResult'] == 'SUCCESS' ) {
+//    echo "Done: " . sprintf('%f', $time) . "\n";
+//  }
 // Look up Registration Status - FUTURE - but possible! :)
 
 ?>
