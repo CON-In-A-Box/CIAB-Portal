@@ -78,7 +78,8 @@
   echo "</ul></p>\n";
 
 // Look up Hotel info - FUTURE
-  echo "<hr>\n<pre>\n";
+  echo "<hr>\n";
+  $time = microtime(true);
   $request = [
     'method' => 'event/retrieveEventAttendees',
     'parameters' => [
@@ -88,9 +89,8 @@
   ];
   $result = $GLOBALS['Neon']->go($request);
   if ( isset( $result['operationResult'] ) && $result['operationResult'] == 'SUCCESS' ) {
-    print_r($result);
+    echo "Done: " . sprintf('%f', $time) . "\n";
   }
-  echo "</pre>\n";
 // Look up Registration Status - FUTURE - but possible! :)
 
 ?>
