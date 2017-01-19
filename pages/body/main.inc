@@ -78,17 +78,19 @@
   echo "</ul></p>\n";
 
 // Look up Hotel info - FUTURE
-  echo "<hr>\n";
+  echo "<hr>\n<pre>\n";
   $request = [
     'method' => 'event/retrieveEventAttendees',
     'parameters' => [
       'eventId' => "152",
+      'page.pageSize' => "200",
     ],
   ];
   $result = $GLOBALS['Neon']->go($request);
   if ( isset( $result['operationResult'] ) && $result['operationResult'] == 'SUCCESS' ) {
     print_r($result);
   }
+  echo "</pre>\n";
 // Look up Registration Status - FUTURE - but possible! :)
 
 ?>
