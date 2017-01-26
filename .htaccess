@@ -2,8 +2,13 @@ ErrorDocument 403 /sitesupport/index.php
 
 # Block 'hidden' files
 <FilesMatch "^\.(ht|svn|git)">
-  Order allow,deny
-  Deny from all
+  <IfModule !mod_access_compat.c>
+    Require all denied
+  </IfModule>
+  <IfModule mod_access_compat.c>
+    Order deny,allow
+    Deny from all
+  </IfModule>
 </FilesMatch>
 
 # Don't show directory listings for URLs which map to a directory.

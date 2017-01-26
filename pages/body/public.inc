@@ -1,5 +1,5 @@
 <div id="header" class="public">
-  <? require($PAGESDIR . '/base/logo.inc'); ?>
+  <?php require($PAGESDIR . '/base/logo.inc'); ?>
   <div id="header_text">
     <p><?php echo $CONSITENAME; ?></p>
   </div><!--close header_text div-->
