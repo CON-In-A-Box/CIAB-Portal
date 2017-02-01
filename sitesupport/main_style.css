@@ -10,7 +10,21 @@ body {
 	padding: 0;
 	color:#000;
 }
-
+table {
+  border-collapse: collapse;
+}
+tr:nth-child(odd) {
+  background-color: #f2f2f2;
+}
+th {
+  background-color: white;
+  text-align: left;
+}
+td {
+  border-top: 1px solid black;
+  border-bottom: 1px solid black;
+  padding: 5px;
+}
 #container {
 	position:relative;
 	margin: 0;
@@ -28,15 +42,6 @@ body {
 	width: 100%;
 	padding-top: 1px;
 }
-.active_issues#header {
-	background-color:#006;
-}
-.open_messages#header {
-	background-color:#FF0;
-}
-.emergency#header {
-	background-color:#C00;
-}
 .public#header {
 	background-color:#030;
 }
@@ -46,7 +51,6 @@ body {
 	float: left;
 	width: 100px;
 }
-
 #header #header_text {
 	margin-left: 160px;
 }
@@ -64,59 +68,6 @@ body {
 	font-size:1.8em;
 	font-weight:bold;
 	color:#FFF;
-}
-.emergency#header #header_text .header_p {
-	font-size: 1em;
-	font-weight: bold;
-	color: #FFF;
-}
-.active_issues#header #emergency_button {
-	background-image:url(../images/emergency_button.png);
-	background-repeat:no-repeat;
-	float:right;
-	width:162px;
-	height: 60px;
-	padding-left: 20px;
-	padding-top:8px;
-}
-.active_issues#header #emergency_button a{
-	font-family:Verdana, Geneva, sans-serif;
-	font-size:1.2em;
-	text-decoration:none;
-	color:#FFF;
-	font-weight:bold;
-}
-.open_messages#header #emergency_button {
-	background-image:url(../images/emergency_button.png);
-	background-repeat:no-repeat;
-	float:right;
-	width:162px;
-	height: 60px;
-	padding-left: 20px;
-	padding-top:8px;
-}
-.open_messages#header #emergency_button a{
-	font-family:Verdana, Geneva, sans-serif;
-	font-size:1.2em;
-	text-decoration:none;
-	color:#FFF;
-	font-weight:bold;
-}
-.emergency#header #emergency_button {
-	background-image:url(../images/emergency_button.png);
-	background-repeat:no-repeat;
-	float:right;
-	width:162px;
-	height: 60px;
-	padding-left: 20px;
-	padding-top:8px;
-}
-.emergency#header #emergency_button a{
-	font-family:Verdana, Geneva, sans-serif;
-	font-size:1.2em;
-	text-decoration:none;
-	color:#FFF;
-	font-weight:bold;
 }
 #main_nav {
 	margin: 0;
@@ -158,13 +109,6 @@ color: #fff;
 }
 #main_nav ul li a#current {
 	background-image:url(../images/hover_tab.png);
-	background-position:center;
- border-bottom: 1px solid white;
-color: #fff;
-margin-bottom: −1px;
-}
-#main_nav ul li a#signin {
-	background-image:url(../images/green_tab.png);
 	background-position:center;
  border-bottom: 1px solid white;
 color: #fff;
@@ -311,22 +255,8 @@ p.entry_chunk {
 	padding-top:6px;
 	padding-bottom:20px;
 }
-.logentry table {
-	width:100%;
-	border:none;
-	border-collapse:collapse;
-}
 #container #dynamic_content #main_content .public {
 	list-style-type: none;
-}
-#container #dynamic_content #main_content #dutyboard {
-	border-collapse:collapse;
-}
-.dutyboard_label {
-	border-color:#333;
-	border-width:1px;
-	text-align:right;
-	font-weight:bold;
 }
 .clearfix:after {
  content: ".";
@@ -350,174 +280,11 @@ p.entry_chunk {
     font-size: 1px;
     line-height: 0px;
 }
-#container #dynamic_content #main_content form .log_entry caption {
-	text-align: left;
-	padding-left:1em;
-}
-#container #dynamic_content #main_content form .log_entry tr td{
-	vertical-align: top;
-	border-width:thin;
-}
-#dynamic_content .log_entry#main_content h1 {
-	font-size:1.3em;
-}
 textarea, text{
 	border-color:#999;
 }
 textarea:focus, text:focus {
 	background-color:#CCC;
-}
-#container #dynamic_content.main_screen #main_content .log_entry {
-	border-bottom: thin solid #666;
-	padding-top:1em;
-}
-.lostfound#main_content {
-	margin-left:2em;
-}
-#missing_main {
-	position:relative;
-	background-image:url(../images/lost_main_bkgd.png);
-	background-repeat:no-repeat;
-	height:350px;
-	margin-top:1em;
-	padding-left:2em;
-	padding-top:3em;
-}
-#found_main {
-	position:absolute;
-	left:380px;
-	background-image:url(../images/found_main_bkgd.png);
-	background-repeat:no-repeat;
-	height:350px;
-	width:350px;
-	padding-top:3em;
-	padding-left:2em;
-	margin-top:-3em;
-}
-#found_item_main {
-	background-image:url(../images/found_main_button.png);
-	text-decoration:none;
-	color:#FFF;
-	font-weight:bold;
-	font-size:1.7em;
-	display:block;
-	background-repeat:no-repeat;
-	height:52px;
-	padding-left:2.5em;
-	padding-top:8px;
-}
-#missing_item_main {
-	background-image:url(../images/missing_main_button.png);
-	text-decoration:none;
-	color:#000;
-	font-weight:bold;
-	font-size:1.7em;
-	display:block;
-	background-repeat:no-repeat;
-	height:52px;
-	padding-left: 2.5em;
-	padding-top: 8px;
-}
-p.found_main_desc{
-	font-size:1.5em;
-	font-weight:bold;
-	padding-left:2em;
-}
-p.missing_main_desc {
-	font-size:1.5em;
-	font-weight:bold;
-	padding-left:2em;
-}
-#lostfound_search_form h1 {
-	font-size:1.5em;
-}
-#lostfound_search_form h2 {
-	font-size:1.2em;
-}
-#lostfound_categories {
-	border-collapse:collapse;
-	border:none;
-}
-#lostfound_categories caption{
-	text-align:left;
-	font-size:1.2em;
-	font-weight:bold;
-}
-#lostfound_categories td {
-	vertical-align:top;
-	padding-right:1em;
-}
-.missing_bkgd#container {
-	background-image:url(../images/missing_pg_bkgd.png);
-	background-repeat: repeat;
-	}
-.missing_item p.item_info{
-	padding-left: 2em;
-	line-height:.2em;
-}
-.missing_item {
-	background-image:url(../images/missing_pg_bkgd.png);
-	background-repeat:repeat;
-	padding: 3px 10px;
-}
-h1.lostfound{
-	font-size:1.3em;
-}
-.found_item {
-	background-image:url(../images/found_bkgd.png);
-	background-repeat:repeat;
-	padding: 3px 10px;
-}
-.found_item p.item_info {
-	padding-left:2em;
-	line-height:.2em;
-}
-#lf_item_create {
-	background-image:url(../images/missing_main_button.png);
-	text-decoration:none;
-	margin-top:30px;
-	padding:13px 3em;
-	color:#000;
-	background-repeat:no-repeat;
-	display:block;
-	height:40px;
-	font-weight:bold;
-}
-#lostfound_notes {
-	border-collapse:collapse;
-}
-#lostfound_notes td.item_label {
-	width:6em;
-}
-#lostfound_notes td {
-	vertical-align:baseline;
-}
-#main_content #missing_item_create {
-	margin-top:1em;
-}
-#missing_item_create caption {
-	font-size:1.3em;
-	font-weight:bold;
-	text-align:left;
-	padding-bottom:0.5em;
-}
-#missing_item_create td.item_label {
-	font-weight:bold;
-	vertical-align:baseline;
-}
-#found_item_create caption {
-	font-size:1.3em;
-	font-weight:bold;
-	text-align:left;
-	padding-bottom:0.5em;
-}
-#missing_item_create td.item_label {
-	font-weight:bold;
-	vertical-align:baseline;
-}
-#found_item_create td.item_label {
-	font-weight:bold;
-	vertical-align:baseline;
 }
 #disclaimer {
   width: 100%;

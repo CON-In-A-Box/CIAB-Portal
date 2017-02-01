@@ -18,8 +18,8 @@ if(empty($_REQUEST['Function'])) {
 }
 
 // Pre-header process  <process_preheader>
-if (is_file($FUNCTIONDIR . '/pre/' . $_REQUEST['Function'] . '.inc')) {
-  require($FUNCTIONDIR . '/pre/' . $_REQUEST['Function'] . '.inc');
+if (is_file($PAGESDIR . '/pre/' . $_REQUEST['Function'] . '.inc')) {
+  require($PAGESDIR . '/pre/' . $_REQUEST['Function'] . '.inc');
 }
 
 // Header <process_header>

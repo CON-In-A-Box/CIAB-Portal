@@ -2,13 +2,6 @@
 <div id="main_nav" class="clearfix">
 <ul>
  <li><a <?php if ($_REQUEST['Function'] == 'main') echo "id=\"current\""; ?> href="index.php?Function=main" title="Main Page">Main</a></li>
- <li><a <?php
-   if ($_REQUEST['Function'] == 'signin') {
-     echo "id=\"current\""; 
-   } else {
-     echo "id=\"signin\"";
-   } 
- ?>href="index.php?Function=signin" title="Meeting Sign In">Sign In</a></li>
  <li><a <?php if ($_REQUEST['Function'] == 'register') echo "id=\"current\""; ?>href="index.php?Function=register" title="Check if I am Registered for CONvergence">Check if Registered</a></li>
  <li><a <?php if ($_REQUEST['Function'] == 'list') echo "id=\"current\""; ?>href="index.php?Function=list" title="The Current ConCom List List">Current ConCom</a></li>
  <li><a <?php if ($_REQUEST['Function'] == 'profile') echo "id=\"current\""; ?>href="index.php?Function=profile" title="Update Profile Informaiton In Neon">Profile</a></li>

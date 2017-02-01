@@ -1,33 +1,5 @@
 <div id="dynamic_content" class="main_screen">
-<div id="left_nav" class="main_screen">
-
-<?php
-  echo "<img src=\"https://www.z2systems.com/neon/resource/ce/images/account/" . $_SESSION['accountId'] . "/0_medium.jpg\">\n";
-  echo "<p style=\"font-weight:bold;\">" . $_SESSION['fullName'] . "</p>\n";
-
-  echo "<p><span style=\"font-weight:bold;\">Address:</span><br />\n";
-  echo $_SESSION['addr1'] . "<br />\n";
-  if ( isset( $_SESSION['addr2'] ) && !empty( $_SESSION['addr2'] )) {
-    echo $_SESSION['addr2'] . "<br />\n";
-  }
-  if ( isset( $_SESSION['addr3'] ) && !empty( $_SESSION['addr3'] )) {
-    echo $_SESSION['addr3'] . "<br />\n";
-  }
-  if ( isset( $_SESSION['addr4'] ) && !empty( $_SESSION['addr4'] )) {
-    echo $_SESSION['addr4'] . "<br />\n";
-  }
-  echo $_SESSION['city'] . ", ";
-  echo $_SESSION['state'] . " ";
-  echo $_SESSION['zip'] . "</p>\n";
-
-  echo "<p><span style=\"font-weight:bold;\">Email:</span><br />";
-  echo $_SESSION['email'] . "</p>\n";
-
-  echo "<p><span style=\"font-weight:bold;\">Telephone Number:</span><br />";
-  echo $_SESSION['phone'] . "</p>\n";
-?>
-
-</div><!--left_nav-->
+<?php require($PAGESDIR . '/base/leftnav.inc'); ?>
 <div id="main_content" style="text-align:center;">
 <h2>To update your profile information:</h2>
 <img src="images/Neon-MainScreen.png" alt="Main login page" style="border:5px solid black;">

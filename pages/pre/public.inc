@@ -45,8 +45,8 @@ if (!empty($_REQUEST['user'])) {
     } else {
       die("Impossible error during Defined Custom Fields Download");
     }
-    natcasesort($_SESSION['definedFields']['conComYears']);
-    natcasesort($_SESSION['definedFields']['2017Meetings']);
+    arsort($_SESSION['definedFields']['conComYears']);
+    arsort($_SESSION['definedFields']['2017Meetings']);
 
     // Account info about User for Session
     $request = [
