@@ -97,6 +97,31 @@ class Neon
   }
 
   /*
+   * TK Updated General purpose API request to be executed after login
+   * Allows for NeonCRMs oddity with updating custom files by stripping [0-9] from field names so
+   * multiple same-name parameters can be passed to the API call. - Use with Caution - Very
+   * indescriminate about removing ANY pattern that matches %5B[0-9]+%5D (EG: [1] [2] [55])
+   */
+  public function go1($request) {
+    if (isset($request['method'])) {
+      $str = null;
+      if (isset($request['parameters'])) {
+        $str = http_build_query($request['parameters']);
+        $str = preg_replace('/%5B[0-9]+%5D/simU', '', $str);
+      }
+      $parameters = 'responseType=json&userSessionId=' . $this->getSession() . '&' . $str;
+      $build = array();
+      $build['method'] = $request['method'];
+      $build['parameters'] = $parameters;
+      $go = $this->api($build);
+      reset($go);
+      $first_key = key($go);
+      $go = $go[$first_key];
+      return $go;
+    }
+  }
+
+  /*
    * search
    * works with listaccounts, listmemberships, listdonations, etc
    */
