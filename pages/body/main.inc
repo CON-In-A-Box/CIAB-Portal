@@ -11,9 +11,14 @@
   if ( isset( $_SESSION['customFields']['currConComPos'])) {
     foreach( $_SESSION['customFields']['currConComPos'] as $val ) {
       $tmp = explode(",", $val);
-      echo "<tr><td>" . $tmp[1] . " of " . $tmp[0]. "</td></tr>\n";
+      echo "<tr><td>" . $tmp[1] . " of " . $tmp[0];
+      if ( isset( $tmp[2] )) {
+        echo " - Note: " . $tmp[2];
+      }
+      echo "</td></tr>\n";
     }
     unset($val);
+    unset($tmp);
   } else {
     echo "<tr><th>Not currently on ConCom</th></tr>\n";
   }

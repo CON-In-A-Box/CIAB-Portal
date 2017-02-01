@@ -14,6 +14,13 @@ ErrorDocument 403 /sitesupport/index.php
 # Don't show directory listings for URLs which map to a directory.
 Options -Indexes
 
+# Session Timeout - 1 hour
+<IfModule mod_php5.c>
+    #Session timeout
+    php_value session.cookie_lifetime 3600
+    php_value session.gc_maxlifetime 3600
+</IfModule>
+
 # Cache Control - From www.askapache.com
 # 3 Month
 <FilesMatch ".(flv|gif|jpg|jpeg|png|ico|swf)$">
