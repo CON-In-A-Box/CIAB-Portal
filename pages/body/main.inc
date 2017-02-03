@@ -10,15 +10,20 @@
   echo "<tr><th>Current ConCom Status</th></tr>\n";
   if ( isset( $_SESSION['customFields']['currConComPos'])) {
     foreach( $_SESSION['customFields']['currConComPos'] as $val ) {
-      $tmp = explode(",", $val);
-      echo "<tr><td>" . $tmp[1] . " of " . $tmp[0];
-      if ( isset( $tmp[2] )) {
-        echo " - Note: " . $tmp[2];
+      $positionsHeld = explode("|", $val);
+      foreach( $positionsHeld as $pos) {
+        $tmp = explode(",", $pos);
+        echo "<tr><td>" . $tmp[1] . " of " . $tmp[0];
+        if ( isset( $tmp[2] )) {
+          echo " - Note: " . $tmp[2];
+        }
+        echo "</td></tr>\n";
       }
-      echo "</td></tr>\n";
+      unset($pos);
+      unset($tmp);
     }
     unset($val);
-    unset($tmp);
+    unset($positionsHeld);
   } else {
     echo "<tr><th>Not currently on ConCom</th></tr>\n";
   }
@@ -53,7 +58,7 @@
   unset($key);
   unset($val);
   unset($nowDate);
-  echo "<th>Missing Check Info?</th>\n";
+  echo "<th>Missing Sign In Info?</th>\n";
   echo "</table>\n";
   echo "<p>&nbsp;</p>";
   
