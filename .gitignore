@@ -38,3 +38,4 @@ Thumbs.db
 # Project files #
 #################
 .ht_meetingsignin_config.php
+error_log
