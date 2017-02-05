@@ -13,17 +13,22 @@ body {
 table {
   border-collapse: collapse;
 }
+tr {
+  border-left: 1px solid black;
+  border-right: 1px solid black;
+}
 tr:nth-child(odd) {
   background-color: #f2f2f2;
 }
 th {
   background-color: white;
   text-align: left;
+  padding: 2px;
 }
 td {
   border-top: 1px solid black;
   border-bottom: 1px solid black;
-  padding: 5px;
+  padding: 2px;
 }
 #container {
 	position:relative;
@@ -121,6 +126,20 @@ margin-bottom: −1px;
 color: #fff;
 margin-bottom: −1px;
 }
+#main_nav ul li a#admin {
+	background-image:url(../images/yellow_button.png);
+	background-position:center;
+ border-bottom: 1px solid white;
+color: #fff;
+margin-bottom: −1px;
+}
+#main_nav ul li a#list {
+	background-image:url(../images/green_button.png);
+	background-position:center;
+ border-bottom: 1px solid white;
+color: #fff;
+margin-bottom: −1px;
+}
 #left_nav {
 	margin: 0;
 	padding: 0 .5em 0 0;
@@ -183,6 +202,23 @@ h2.log_entry_content {
 p.entry_chunk {
 	margin-top:.1em;
 	margin-bottom:.1em;
+}
+#dynamic_content #main_content table tr#table_head th {
+  background-color: #b4a7d6;
+  border: 1px solid black;
+  padding: 5px;
+  text-align: center;
+}
+#dynamic_content #main_content table tr#division th {
+  text-decoration: underline;
+  background-color: #b4a7d6;
+  border: 1px dotted black;
+  padding: 5px;
+}
+#dynamic_content #main_content table tr#department th {
+  background-color: #b7e1cd;
+  border: 1px dotted black;
+  padding: 5px;
 }
 #container #dynamic_content #main_content .entry_chunk .update_button {
 	float: right;

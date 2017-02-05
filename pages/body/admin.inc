@@ -2,11 +2,11 @@
 <?php require($PAGESDIR . '/base/leftnav.inc'); ?>
 <div id="main_content">
 <?php
-require_once($FUNCTIONDIR . "/divisional.inc");
+  echo "<h2>Welcome " . $_SESSION['preferredName'] . "!</h2>";
 
-echo "<pre>\n";
-ConComListDisplay();
-echo "</pre>\n";
+  // Display all, with links to menu items
+
+  echo "You have to wait... this isn't ready!\n";
 
 ?>
 </div><!--close main_content div-->
