@@ -4,6 +4,7 @@
 if (isset($_COOKIE[session_name()])) {
   require_once($FUNCTIONDIR . "/authentication.inc");
   LogoutUser();
+  session_start();
 }
 
 // Check if there is a login attempt
