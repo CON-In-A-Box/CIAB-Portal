@@ -1,15 +1,11 @@
 <?php
+require_once($FUNCTIONDIR . "/authentication.inc");
 
 // Clear any previous login info
-if (isset($_COOKIE[session_name()])) {
-  require_once($FUNCTIONDIR . "/authentication.inc");
-  LogoutUser();
-  session_start();
-}
+LogoutUser();
 
 // Check if there is a login attempt
 if (!empty($_REQUEST['user'])) {
-  require_once($FUNCTIONDIR . "/authentication.inc");
   if (LoginUser($_REQUEST['user'],$_REQUEST['password'])) {
   
     // Custom Field Data for Session - Parse it to an easy to use array

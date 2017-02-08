@@ -14,7 +14,6 @@ if(empty($_REQUEST['Function'])) {
     // if no username is set and we are not calling a public page, redirect for login needs
     goSite('/index.php?Function=public');
   }
-
 }
 
 // Pre-header process  <process_preheader>

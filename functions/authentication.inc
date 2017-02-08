@@ -2,11 +2,11 @@
 // Various Authentication needed routines - Relies on NeonCRM
 
 function LogoutUser() {
-  $_SESSION=[];
-  if (isset($_COOKIE[session_name()])) {
-    setcookie(session_name(), '', time()-42000, '/');
-  }
-  session_destroy();
+  // Since we check for username, clearing the session logs the user out.  Cookie has no useful info.
+  // No need to destroy the session since it will time out anyway, and has no helpful info
+  $tmp = $_SESSION['neonSession'];
+  $_SESSION = [];
+  $_SESSION['neonSession'] = $tmp;
 }
 
 function doUserAndPasswordMatch($user, $password) {

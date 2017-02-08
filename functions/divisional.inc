@@ -3,7 +3,7 @@
 // the place to keep all the division info - easy to edit
 $Divisions = [ "Activities", "Administration", "External Relations and Communications", "Facilities", "Hospitality", "Productions", "Systems", "Committees", "Corporate Staff", ];
 
-$ConComPositions = [ "Head", "SubHead", "Specialist" ];
+$ConComPositions = [ "Head", "Sub-Head", "Specialist" ];
 
 $Departments = [
   "Accessibility & Inclusion" => [
@@ -51,7 +51,7 @@ $Departments = [
     "Division" => "Activities",
     "Email" => "cinemarex@convergence-con.org",
   ],
-  "COF2E2" => [ 
+  "CoF2E2" => [ 
     "Division" => "Hospitality",
     "Email" => "cof2e2@convergence-con.org",
   ],
@@ -154,7 +154,7 @@ $Departments = [
     "Division" => "Facilities",
     "Email" => "logistics@convergence-con.org",
   ],
-  "Main Stage" => [ 
+  "MainStage" => [ 
     "Division" => "Productions",
     "Email" => "mainstage@convergence-con.org",
   ],
@@ -227,7 +227,7 @@ $Departments = [
     "Division" => "Corporate Staff",
     "Email" => "secretary@convergenceevents.org",
   ],
-  "Smoker's Paradise" => [ 
+  "Smokers Paradise" => [ 
     "Division" => "Hospitality",
     "Email" => "smokersparadise@convergence-con.org",
   ],
@@ -267,7 +267,7 @@ $Departments = [
     "Division" => "Administration",
     "Email" => "volunteers@convergence-con.org",
   ],
-  "WebTeam" => [ 
+  "Webteam" => [ 
     "Division" => "External Relations and Communications",
     "Email" => "webteam@convergence-con.org",
   ],
@@ -290,6 +290,67 @@ function getOtherDepartmentEmails($dep) {
     return($GLOBALS['Departments'][$dep]['OtherEmails']);
   } else {
     return(null);
+  }
+}
+
+function AddConComPosition($accountid, $department, $position, $note) {
+  $request = [
+      'method' => 'account/retrieveIndividualAccount',
+      'parameters' => [
+      'accountId' => $accountid,
+    ],
+  ];
+  $result = $GLOBALS['Neon']->go($request);
+  if ( isset( $result['operationResult'] ) && $result['operationResult'] == 'SUCCESS' ) {
+    $conComFieldId = array_search('CVGConCom Current Position', $_SESSION['definedFields']);
+
+    foreach ($result['individualAccount']['customFieldDataList']['customFieldData'] as $key => $val) {
+      if ( isset( $val['fieldId'] ) && $val['fieldId'] == $conComFieldId ) {
+        // Append the position info to the current list of concom positions
+        $currentPos = $val['fieldValue'];
+        $currentPos .= "|" . $department . "," . $position . "," . $note;
+        $result['individualAccount']['customFieldDataList']['customFieldData'][$key]['fieldValue'] = $currentPos;
+      }
+    }
+    if ( empty($currentPos)) {
+      // Add the option since it doesn't exist.  Since arrays count from 0, the number of current entries
+      // makes a perfect 'next' entry to use.
+      $i = count($result['individualAccount']['customFieldDataList']['customFieldData']);
+      $result['individualAccount']['customFieldDataList']['customFieldData'][$i]['fieldValue'] = $department . "," . $position . "," . $note;
+      $result['individualAccount']['customFieldDataList']['customFieldData'][$i]['fieldId'] = $conComFieldId;
+    }
+
+    $request = [
+       'method' => 'account/editIndividualAccount',
+       'parameters' => [
+         'individualAccount.accountId' => $result['individualAccount']['accountId'],
+         'individualAccount.primaryContact.contactId' => $result['individualAccount']['primaryContact']['contactId'],
+         'individualAccount.primaryContact.firstName' => $result['individualAccount']['primaryContact']['firstName'],
+         'individualAccount.primaryContact.lastName' => $result['individualAccount']['primaryContact']['lastName'],
+       ],
+     ];
+
+    foreach ($result['individualAccount']['customFieldDataList']['customFieldData'] as $key => $val) {
+      $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldId[' . $key . ']'] = $val['fieldId'];
+      if ( isset( $val['fieldValue'] )) {
+        $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldOptionId[' . $key . ']'] = '';
+        $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldValue[' . $key . ']'] = $val['fieldValue'];
+      } elseif ( isset( $val['fieldOptionId'] )) {
+        $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldOptionId[' . $key . ']'] = $val['fieldOptionId'];
+        $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldValue[' . $key . ']'] = '';
+      }
+    }
+    unset($val);
+    unset($key);
+
+    $result2 = $GLOBALS['Neon']->go1($request);
+
+
+    if ( isset( $result2['operationResult'] ) && $result['operationResult'] == 'SUCCESS' ) {
+      return TRUE;
+    } else {
+      return FALSE;
+    }
   }
 }
 
@@ -367,6 +428,14 @@ function ConComListBuildSearch($page) {
 function ConComListBuild() {
   foreach( $GLOBALS['Departments'] as $kdep => $dep) {
     if( $dep['Division'] != $kdep ) {
+      if( !empty($dep['OtherEmails'])) {
+        $addEmail=explode("|", $dep['OtherEmails']);
+        foreach($addEmail as $tmp) {
+          $dep['Email'] .= "<br />" . $tmp;
+        }
+        unset($tmp);
+      }
+
       $fullConComList[] = [
         'Division' => $dep['Division'],
         'Department' => $kdep,
@@ -424,7 +493,16 @@ function ConComListDisplay() {
       echo "<th>Note</th>\n";
     echo "</tr>\n";
     foreach( $Divisions as $div) {
-      echo "<tr id=\"division\"><th>Division</th><th>" . $div . "</th><th></th><th></th><th>Division</th><th>" . GetDepartmentEmail($div) . "</th><th></th></tr>\n";
+      echo "<tr id=\"division\"><th>Division</th><th>" . $div . "</th><th></th><th></th><th>Division</th><th>" . GetDepartmentEmail($div);
+      if(getOtherDepartmentEmails($div)) {
+        $tmp = explode("|", getOtherDepartmentEmails($div));
+        foreach($tmp as $eMail) {
+          echo "<br />" . $eMail;
+        }
+        unset($eMail);
+        unset($tmp);
+      }
+      echo "</th><th></th></tr>\n";
       if ( isset($printList[$div]['Division Director'])) {
         foreach( $printList[$div]['Division Director'] as $pos) {
           foreach( $pos as $kfName => $fName) {
@@ -435,6 +513,7 @@ function ConComListDisplay() {
             unset($tmp);
           }
         }
+        unset($pos);
       }
       if ( isset($printList[$div]['Division Support'])) {
         foreach( $printList[$div]['Division Support'] as $pos) {
@@ -446,25 +525,38 @@ function ConComListDisplay() {
             unset($tmp);
           }
         }
+        unset($pos);
       }
       foreach( $printList[$div] as $kdep => $dep) {
         if($div != 'Corporate Staff' && $kdep != "Division Director" && $kdep != "Division Support") {
-          echo "<tr id=\"department\"><th>$kdep</th><th>" . $div . "</th><th></th><th></th><th>Department</th><th>" . GetDepartmentEmail($kdep) . "</th><th></th></tr>\n";
+          echo "<tr id=\"department\"><th>$kdep</th><th>" . $div . "</th><th></th><th></th><th>Department</th><th>" . GetDepartmentEmail($kdep);
+          if(getOtherDepartmentEmails($kdep)) {
+            $tmp = explode("|", getOtherDepartmentEmails($kdep));
+            foreach($tmp as $eMail) {
+              echo "<br />" . $eMail;
+            }
+            unset($eMail);
+            unset($tmp);
+          }
+          echo "</th><th></th></tr>\n";
         }
-        foreach( $ConComPositions as $pos) {
-          if( isset($dep[$pos])) {
-            foreach( $dep[$pos] as $kfName => $fName) {
-              foreach( $fName as $klName => $lName) {
-                $tmp = explode("|", $lName);
-                echo "<tr>\n";
-                  echo "<td>" . $kdep . "</td>\n";
-                  echo "<td>" . $div . "</td>\n";
-                  echo "<td>" . $kfName . "</td>\n";
-                  echo "<td>" . $klName . "</td>\n";
-                  echo "<td>" . $pos . "</td>\n";
-                  echo "<td>" . $tmp[0] . "</td>\n";
-                  echo "<td>" . $tmp[1] . "</td>\n";
-                echo "</tr>\n";
+        if($kdep != "Division Director" && $kdep != "Division Support") {
+          foreach( $ConComPositions as $pos) {
+            if( isset($dep[$pos])) {
+              foreach( $dep[$pos] as $kfName => $fName) {
+                foreach( $fName as $klName => $lName) {
+                  $tmp = explode("|", $lName);
+                  echo "<tr>\n";
+                    echo "<td>" . $kdep . "</td>\n";
+                    echo "<td>" . $div . "</td>\n";
+                    echo "<td>" . $kfName . "</td>\n";
+                    echo "<td>" . $klName . "</td>\n";
+                    echo "<td>" . $pos . "</td>\n";
+                    echo "<td>" . $tmp[0] . "</td>\n";
+                    echo "<td>" . $tmp[1] . "</td>\n";
+                  echo "</tr>\n";
+                }
+                unset($tmp);
               }
             }
           }

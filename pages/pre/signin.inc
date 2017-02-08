@@ -32,6 +32,8 @@ unset($key);
 $result = $GLOBALS['Neon']->go1($request);
 
 if ( isset( $result['operationResult'] ) && $result['operationResult'] == 'SUCCESS' ) {
+  // Add the option since it doesn't exist.  Since arrays count from 0, the number of current entries
+  // makes a perfect 'next' entry to use.
   $i = count($_SESSION['accountInfo']['individualAccount']['customFieldDataList']['customFieldData']);
   $_SESSION['accountInfo']['individualAccount']['customFieldDataList']['customFieldData'][$i]['fieldId'] = $_REQUEST['AttendField'];
   $_SESSION['accountInfo']['individualAccount']['customFieldDataList']['customFieldData'][$i]['fieldOptionId'] = $_REQUEST['DateFeed'];

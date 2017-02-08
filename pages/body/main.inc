@@ -14,7 +14,7 @@
       foreach( $positionsHeld as $pos) {
         $tmp = explode(",", $pos);
         echo "<tr><td>" . $tmp[1] . " of " . $tmp[0];
-        if ( isset( $tmp[2] )) {
+        if ( !empty( $tmp[2] )) {
           echo " - Note: " . $tmp[2];
         }
         echo "</td></tr>\n";
