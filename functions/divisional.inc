@@ -508,7 +508,7 @@ function ConComListDisplay() {
           foreach( $pos as $kfName => $fName) {
             foreach( $fName as $klName => $lName) {
               $tmp = explode("|", $lName);
-              echo "<tr><td>Division Director</td><td>" . $div . "</td><td>" . $kfName . "</td><td>" . $klName . "</td><td>Director</td><td>" . $tmp[0] . "</td><td>" . $tmp[1] . "</td></tr>\n";
+              echo "<tr><td>Division Director</td><td>" . $div . "</td><td>" . $kfName . "</td><td>" . $klName . "</td><td>Director</td><td>" . GetDepartmentEmail($div) . "</td><td>" . $tmp[1] . "</td></tr>\n";
             }
             unset($tmp);
           }
@@ -528,32 +528,36 @@ function ConComListDisplay() {
         unset($pos);
       }
       foreach( $printList[$div] as $kdep => $dep) {
-        if($div != 'Corporate Staff' && $kdep != "Division Director" && $kdep != "Division Support") {
-          echo "<tr id=\"department\"><th>$kdep</th><th>" . $div . "</th><th></th><th></th><th>Department</th><th>" . GetDepartmentEmail($kdep);
+        if($div != 'Corporate Staff' && $kdep != 'Division Director' && $kdep != 'Division Support') {
+          echo "<tr id='department'><th>$kdep</th><th>" . $div . "</th><th></th><th></th><th>Department</th><th>" . GetDepartmentEmail($kdep);
           if(getOtherDepartmentEmails($kdep)) {
-            $tmp = explode("|", getOtherDepartmentEmails($kdep));
+            $tmp = explode('|', getOtherDepartmentEmails($kdep));
             foreach($tmp as $eMail) {
               echo "<br />" . $eMail;
             }
             unset($eMail);
             unset($tmp);
           }
-          echo "</th><th></th></tr>\n";
+          echo '</th><th></th></tr>\n';
         }
-        if($kdep != "Division Director" && $kdep != "Division Support") {
+        if($kdep != 'Division Director' && $kdep != 'Division Support') {
           foreach( $ConComPositions as $pos) {
             if( isset($dep[$pos])) {
               foreach( $dep[$pos] as $kfName => $fName) {
                 foreach( $fName as $klName => $lName) {
-                  $tmp = explode("|", $lName);
+                  $tmp = explode('|', $lName);
                   echo "<tr>\n";
                     echo "<td>" . $kdep . "</td>\n";
                     echo "<td>" . $div . "</td>\n";
                     echo "<td>" . $kfName . "</td>\n";
                     echo "<td>" . $klName . "</td>\n";
                     echo "<td>" . $pos . "</td>\n";
-                    echo "<td>" . $tmp[0] . "</td>\n";
-                    echo "<td>" . $tmp[1] . "</td>\n";
+                    if ($div == 'Corporate Staff' ) {
+                      echo '<td>' . GetDepartmentEmail($kdep) . "</td>\n";
+                    } else {
+                      echo '<td>' . $tmp[0] . "</td>\n";
+                    }
+                    echo '<td>' . $tmp[1] . "</td>\n";
                   echo "</tr>\n";
                 }
                 unset($tmp);
