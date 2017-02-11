@@ -51,5 +51,10 @@
 
   echo "You have to wait... this isn't ready!\n";
 
+
+  require_once($FUNCTIONDIR . "/divisional.inc");
+  ConComListDisplay();
+
+
 ?>
 </div><!--close main_content div-->

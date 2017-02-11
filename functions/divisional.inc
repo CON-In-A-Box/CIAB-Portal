@@ -446,11 +446,12 @@ function ConComListBuildSearch($page) {
       foreach( $positionsHeld as $pos) {
         $tmp = explode(",", $pos);
         $line = [
-          'Division'       => getDivision($tmp[0]),
-          'Department'     => $tmp[0],
-          'Position'       => $tmp[1],
-          'Last Name'      => $val['Last Name'],
-          'Email'          => $val['Email 1'],
+          'Account ID' => $val['Account ID'],
+          'Division'   => getDivision($tmp[0]),
+          'Department' => $tmp[0],
+          'Position'   => $tmp[1],
+          'Last Name'  => $val['Last Name'],
+          'Email'      => $val['Email 1'],
         ];
 
         if (empty($val['Preferred Name'])) {
@@ -508,6 +509,7 @@ function ConComListBuild() {
         'Last Name' => '',
         'Email' => $dep['Email'],
         'Note' => '',
+        'Account ID' => '',
       ];
     }
   }
@@ -539,7 +541,7 @@ function ConComListDisplay() {
   $list = ConComListBuild();
   // Put each entry into a divisional/department mapped array
   foreach($list as $line) {
-    $printList[$line['Division']][$line['Department']][$line['Position']][$line['First Name']][$line['Last Name']] = $line['Email'] . "|" . $line['Note'];
+    $printList[$line['Division']][$line['Department']][$line['Position']][$line['First Name']][$line['Last Name']] = $line['Email'] . '|' . $line['Note'] . '|' . $line['Account ID'];
   }
   
   // Sort everything so we don't have to later
@@ -622,6 +624,9 @@ function ConComListDisplay() {
                       echo '<td>' . $tmp[0] . "</td>\n";
                     }
                     echo '<td>' . $tmp[1] . "</td>\n";
+                    if($_REQUEST['Function'] == 'admin') {
+                      echo "<td style=\"background-color: #ff0000;\"><a href=\"index.php?Function=admin?Remove=" . $tmp[2] . "&Department=" . $kdep . "&Position=" . $pos . "\">Remove</a>\n";
+                    }
                   echo "</tr>\n";
                 }
                 unset($tmp);

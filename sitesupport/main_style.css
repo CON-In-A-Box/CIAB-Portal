@@ -80,12 +80,12 @@ td {
 	background-color:#999;
 }
 #main_nav ul {
-    width: 100%;
-    float: left;
- padding: 0;
- margin-left: 0;
- border-bottom: 1px solid #778;
- font: bold .9em Verdana, sans-serif;
+  width: 100%;
+  float: left;
+  padding: 0;
+  margin-left: 0;
+  border-bottom: 1px solid #778;
+  font: bold .9em Verdana, sans-serif;
 }
 #main_nav ul li {
 	list-style: none;
@@ -93,52 +93,51 @@ td {
 	float: left;
 	}
 #main_nav ul li a {
- padding: 12px 0.5em;
- margin-left: 3px;
- border: 1px solid #778;
- color: white;
- border-bottom: none;
- background-color: #333;
- text-decoration: none;
- display: block;
- width: 11em;
+  padding: 12px 0.5em;
+  margin-left: 3px;
+  border: 1px solid #778;
+  color: white;
+  border-bottom: none;
+  background-color: #333;
+  text-decoration: none;
+  display: block;
+  width: 11em;
 }
 #main_nav ul li a:link {
- color: white;
+  color: white;
 }
 #main_nav ul li a:link:hover, #main_nav ul li a:visited:hover {
- background-image:url(../images/hover_tab.png);
+  background-image:url(../images/hover_tab.png);
 	background-position:center;
- border-bottom: 1px solid white;
-color: #fff;
+  border-bottom: 1px solid white;
+  color: #fff;
 }
 #main_nav ul li a#current {
-	background-image:url(../images/hover_tab.png);
 	background-position:center;
- border-bottom: 1px solid white;
-color: #fff;
-margin-bottom: −1px;
+  border-bottom: 1px solid white;
+  color: #fff;
+ margin-bottom: −1px;
 }
 #main_nav ul li a#logout {
 	background-image:url(../images/emergency_button.png);
 	background-position:center;
- border-bottom: 1px solid white;
-color: #fff;
-margin-bottom: −1px;
+  border-bottom: 1px solid white;
+  color: #fff;
+  margin-bottom: −1px;
 }
 #main_nav ul li a#admin {
 	background-image:url(../images/yellow_button.png);
 	background-position:center;
- border-bottom: 1px solid white;
-color: #fff;
-margin-bottom: −1px;
+  border-bottom: 1px solid white;
+  color: #fff;
+  margin-bottom: −1px;
 }
 #main_nav ul li a#list {
 	background-image:url(../images/green_button.png);
 	background-position:center;
- border-bottom: 1px solid white;
-color: #fff;
-margin-bottom: −1px;
+  border-bottom: 1px solid white;
+  color: #fff;
+  margin-bottom: −1px;
 }
 #left_nav {
 	margin: 0;
