@@ -7,8 +7,8 @@
   // Display all, with links to menu items
 
   echo "<table>\n";
-  echo "<tr><th>Current ConCom Status</th></tr>\n";
   if ( isset( $_SESSION['customFields']['currConComPos'])) {
+    echo "<tr><th>Current ConCom Status</th></tr>\n";
     foreach( $_SESSION['customFields']['currConComPos'] as $val ) {
       $positionsHeld = explode("|", $val);
       foreach( $positionsHeld as $pos) {
@@ -27,7 +27,7 @@
   } else {
     echo "<tr><th>Not currently on ConCom</th></tr>\n";
   }
-  echo "<th>Need to update? - Coming soon</th>\n";
+  echo "<tr><th>Need to update? - Coming soon</th></tr>\n";
   echo "</table>\n";
   echo "<p>&nbsp;</p>";
   

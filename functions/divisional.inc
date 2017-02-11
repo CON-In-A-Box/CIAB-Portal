@@ -354,6 +354,70 @@ function AddConComPosition($accountid, $department, $position, $note) {
   }
 }
 
+function RemoveConComPosition($accountid, $department, $position) {
+  $request = [
+      'method' => 'account/retrieveIndividualAccount',
+      'parameters' => [
+      'accountId' => $accountid,
+    ],
+  ];
+  $result = $GLOBALS['Neon']->go($request);
+  if ( isset( $result['operationResult'] ) && $result['operationResult'] == 'SUCCESS' ) {
+    $conComFieldId = array_search('CVGConCom Current Position', $_SESSION['definedFields']);
+
+    foreach ($result['individualAccount']['customFieldDataList']['customFieldData'] as $key => $val) {
+      if ( isset( $val['fieldId'] ) && $val['fieldId'] == $conComFieldId ) {
+        // Remove only the position in question from the current list of concom positions
+        $currentPos = '';
+        $pos = explode('|', $val['fieldValue']);
+        foreach($pos as $entry) {
+          $field = explode(',', $entry);
+          if($field[0] != $department || $field[1] != $position) {
+            if(isset($currentPos)) {
+              $currentPos .= '|';
+            }
+            $currentPos .= $entry;
+          }
+          unset($field);
+        }
+        $result['individualAccount']['customFieldDataList']['customFieldData'][$key]['fieldValue'] = $currentPos;
+      }
+    }
+
+    $request = [
+       'method' => 'account/editIndividualAccount',
+       'parameters' => [
+         'individualAccount.accountId' => $result['individualAccount']['accountId'],
+         'individualAccount.primaryContact.contactId' => $result['individualAccount']['primaryContact']['contactId'],
+         'individualAccount.primaryContact.firstName' => $result['individualAccount']['primaryContact']['firstName'],
+         'individualAccount.primaryContact.lastName' => $result['individualAccount']['primaryContact']['lastName'],
+       ],
+     ];
+
+    foreach ($result['individualAccount']['customFieldDataList']['customFieldData'] as $key => $val) {
+      $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldId[' . $key . ']'] = $val['fieldId'];
+      if ( isset( $val['fieldValue'] )) {
+        $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldOptionId[' . $key . ']'] = '';
+        $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldValue[' . $key . ']'] = $val['fieldValue'];
+      } elseif ( isset( $val['fieldOptionId'] )) {
+        $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldOptionId[' . $key . ']'] = $val['fieldOptionId'];
+        $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldValue[' . $key . ']'] = '';
+      }
+    }
+    unset($val);
+    unset($key);
+
+    $result2 = $GLOBALS['Neon']->go1($request);
+
+
+    if ( isset( $result2['operationResult'] ) && $result['operationResult'] == 'SUCCESS' ) {
+      return TRUE;
+    } else {
+      return FALSE;
+    }
+  }
+}
+
 function ConComListBuildSearch($page) {
   $conComFieldId = array_search('CVGConCom Current Position', $_SESSION['definedFields']);
 
@@ -493,9 +557,9 @@ function ConComListDisplay() {
       echo "<th>Note</th>\n";
     echo "</tr>\n";
     foreach( $Divisions as $div) {
-      echo "<tr id=\"division\"><th>Division</th><th>" . $div . "</th><th></th><th></th><th>Division</th><th>" . GetDepartmentEmail($div);
+      echo "<tr id=\"division\"><th id=\"" . $div . "\">Division</th><th>" . $div . "</th><th colspan=2><a href=\"#main_nav\">Go to Top</a></th><th>Division</th><th>" . GetDepartmentEmail($div);
       if(getOtherDepartmentEmails($div)) {
-        $tmp = explode("|", getOtherDepartmentEmails($div));
+        $tmp = explode('|', getOtherDepartmentEmails($div));
         foreach($tmp as $eMail) {
           echo "<br />" . $eMail;
         }
@@ -507,7 +571,7 @@ function ConComListDisplay() {
         foreach( $printList[$div]['Division Director'] as $pos) {
           foreach( $pos as $kfName => $fName) {
             foreach( $fName as $klName => $lName) {
-              $tmp = explode("|", $lName);
+              $tmp = explode('|', $lName);
               echo "<tr><td>Division Director</td><td>" . $div . "</td><td>" . $kfName . "</td><td>" . $klName . "</td><td>Director</td><td>" . GetDepartmentEmail($div) . "</td><td>" . $tmp[1] . "</td></tr>\n";
             }
             unset($tmp);
@@ -538,7 +602,7 @@ function ConComListDisplay() {
             unset($eMail);
             unset($tmp);
           }
-          echo '</th><th></th></tr>\n';
+          echo "</th><th></th></tr>\n";
         }
         if($kdep != 'Division Director' && $kdep != 'Division Support') {
           foreach( $ConComPositions as $pos) {
@@ -547,11 +611,11 @@ function ConComListDisplay() {
                 foreach( $fName as $klName => $lName) {
                   $tmp = explode('|', $lName);
                   echo "<tr>\n";
-                    echo "<td>" . $kdep . "</td>\n";
-                    echo "<td>" . $div . "</td>\n";
-                    echo "<td>" . $kfName . "</td>\n";
-                    echo "<td>" . $klName . "</td>\n";
-                    echo "<td>" . $pos . "</td>\n";
+                    echo '<td>' . $kdep . "</td>\n";
+                    echo '<td>' . $div . "</td>\n";
+                    echo '<td>' . $kfName . "</td>\n";
+                    echo '<td>' . $klName . "</td>\n";
+                    echo '<td>' . $pos . "</td>\n";
                     if ($div == 'Corporate Staff' ) {
                       echo '<td>' . GetDepartmentEmail($kdep) . "</td>\n";
                     } else {

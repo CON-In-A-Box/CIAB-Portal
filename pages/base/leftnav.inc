@@ -33,6 +33,20 @@
     echo "<p><span style=\"font-weight:bold;\">Telephone Number:</span><br />";
     echo $_SESSION['phone'] . "</p>\n";
   }
+  
+  if($_REQUEST['Function'] == 'list') {
+    require_once($FUNCTIONDIR . "/divisional.inc");
+
+    echo "<div id=\"left_list\"><!-- ConCom Left Nav List -->\n";
+    echo "<h3>Jump to Section</h3>\n";
+    echo "<ul>\n";
+    foreach($Divisions as $div) {
+      echo "<li><a href=\"#" . $div . "\">" . $div . "</a></li>\n";
+    }
+    echo "</ul>\n";
+    echo "</div><!-- End ConCom Left Nav List -->\n";
+  }
+
 ?>
 
 </div><!--left_nav-->

@@ -146,41 +146,6 @@ margin-bottom: −1px;
 	float:left;
 	border-right: medium solid gray;
 }
-#left_nav ul {
-    width: 100%;
-    float: left;
- padding: 0;
- margin-left: 0;
- font: bold .8em Verdana, sans-serif;
-}
-#left_nav ul li {
-	list-style: none;
-	margin: 0;
-	}
-#left_nav ul li a {
- padding: 12px 0.5em;
- margin-left: .5em;
- border: 1px solid #030;
- background-color: #060;
- text-decoration: none;
- background-image:url(../images/green_tab.png);
- display: block;
- width: 9em;
-}
-#left_nav ul li a:link {
- color: white;
-}
-#left_nav ul li a:link:hover, #left_nav ul li a:visited:hover {
-	background-image:url(../images/green_tab_hover.png);
-	background-position:center;
- border-bottom: 1px solid white;
-color: #000;
-}
-#left_nav ul li a#current {
-	background-image:url(../images/green_tab_hover.png);
- border: 1px solid white;
-color: #000;
-}
 #main_content {
 	margin-left: 12em;
 	margin-right: 5em;
@@ -278,6 +243,17 @@ p.entry_chunk {
 }
 #container #dynamic_content #main_content #login_area #login_form p .login_label {
 	font-weight: bold;
+}
+#left_list {
+  width: 10.5em;
+	margin: 0;
+	padding-top: 20px;
+	padding-bottom: 20px;
+	border-top: medium solid gray;
+	border-bottom: medium solid gray;
+}
+#left_list ul li {
+  padding: 5px;
 }
 #container #dynamic_content #main_content .public li a {
 	font-size: 1.4em;
