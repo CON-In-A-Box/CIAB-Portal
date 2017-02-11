@@ -625,7 +625,7 @@ function ConComListDisplay() {
                     }
                     echo '<td>' . $tmp[1] . "</td>\n";
                     if($_REQUEST['Function'] == 'admin') {
-                      echo "<td style=\"background-color: #ff0000;\"><a href=\"index.php?Function=admin?Remove=" . $tmp[2] . "&Department=" . $kdep . "&Position=" . $pos . "\">Remove</a>\n";
+                      echo "<td style=\"background-color: #ff0000;\"><a href=\"index.php?Function=admin&Remove=" . $tmp[2] . "&Department=" . $kdep . "&Position=" . $pos . "\">Remove</a>\n";
                     }
                   echo "</tr>\n";
                 }
