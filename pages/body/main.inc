@@ -8,7 +8,7 @@
 
   echo "<table>\n";
   if ( isset( $_SESSION['customFields']['currConComPos'])) {
-    echo "<tr><th>Current ConCom Status</th></tr>\n";
+    echo "<tr><th style=\"text-align:center;\">Current ConCom Status</th></tr>\n";
     foreach( $_SESSION['customFields']['currConComPos'] as $val ) {
       $positionsHeld = explode("|", $val);
       foreach( $positionsHeld as $pos) {
@@ -27,12 +27,12 @@
   } else {
     echo "<tr><th>Not currently on ConCom</th></tr>\n";
   }
-  echo "<tr><th>Need to update? - Coming soon</th></tr>\n";
+  echo "<tr><th style=\"text-align:center;\">Need to update? - Coming soon</th></tr>\n";
   echo "</table>\n";
   echo "<p>&nbsp;</p>";
   
   echo "<table>\n";
-  echo "<tr><th colspan=3>2017 Meeting Attendance</th></tr>\n";
+  echo "<tr><th style=\"text-align:center;\" colspan=3>2017 Meeting Attendance</th></tr>\n";
   $nowDate = date("Ymd");
   $attendKey = array_search('2017 Official Meeting Attendance', $_SESSION['definedFields']);
   foreach( $_SESSION['definedFields']['2017Meetings'] as $key => $val ) {
@@ -58,12 +58,12 @@
   unset($key);
   unset($val);
   unset($nowDate);
-  echo "<th colspan=3>Missing Sign In Info? - Coming soon</th>\n";
+  echo "<th style=\"text-align:center;\" colspan=3>Missing Sign In Info? - Coming soon</th>\n";
   echo "</table>\n";
   echo "<p>&nbsp;</p>";
   
   echo "<table>\n";
-  echo "<tr><th colspan=2>Previous ConCom Years Served</th></tr>";
+  echo "<tr><th style=\"text-align:center;\" colspan=2>Previous ConCom Years Served</th></tr>";
   foreach( $_SESSION['definedFields']['conComYears'] as $key => $val ) {
     echo "<tr><td>" . $val . "</td>";
     if ( isset( $_SESSION['customFields'][array_search('CVGConCom Years Served', $_SESSION['definedFields'])] ) && in_array( $key, $_SESSION['customFields'][array_search('CVGConCom Years Served', $_SESSION['definedFields'])] )) {
@@ -74,7 +74,7 @@
     echo "</td></tr>\n";
   }
   unset($val);
-  echo "<th colspan=2>Missing ConCom Years? - Coming soon</th>\n";
+  echo "<th style=\"text-align:center;\" colspan=2>Missing ConCom Years? - Coming soon</th>\n";
   echo "</table>\n";
 
 ?>

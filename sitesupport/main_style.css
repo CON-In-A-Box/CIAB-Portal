@@ -21,8 +21,11 @@ tr:nth-child(odd) {
   background-color: #f2f2f2;
 }
 th {
-  background-color: white;
   text-align: left;
+  border-top: 1px solid black;
+  border-bottom: 1px solid black;
+  border-left: 1px dotted black;
+  border-right: 1px dotted black;
   padding: 2px;
 }
 td {
@@ -169,19 +172,16 @@ p.entry_chunk {
 }
 #dynamic_content #main_content table tr#table_head th {
   background-color: #b4a7d6;
-  border: 1px solid black;
   padding: 5px;
   text-align: center;
 }
 #dynamic_content #main_content table tr#division th {
   text-decoration: underline;
   background-color: #b4a7d6;
-  border: 1px dotted black;
   padding: 5px;
 }
 #dynamic_content #main_content table tr#department th {
   background-color: #b7e1cd;
-  border: 1px dotted black;
   padding: 5px;
 }
 #container #dynamic_content #main_content .entry_chunk .update_button {

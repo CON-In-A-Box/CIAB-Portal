@@ -4,7 +4,7 @@
 <?php
   echo "<h2>Welcome " . $_SESSION['preferredName'] . "!</h2>\n";
 
-  if( isset($_REQUEST['DoFeed'])) {
+/*  if( isset($_REQUEST['DoFeed'])) {
     require_once($FUNCTIONDIR . "/divisional.inc");
 
     foreach(file($FUNCTIONDIR . "/directadd.feed", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
@@ -46,15 +46,9 @@
       }
     }
   }
-
+*/
   // Display all, with links to menu items
-
   echo "You have to wait... this isn't ready!\n";
-
-
-  require_once($FUNCTIONDIR . "/divisional.inc");
-  ConComListDisplay();
-
 
 ?>
 </div><!--close main_content div-->
