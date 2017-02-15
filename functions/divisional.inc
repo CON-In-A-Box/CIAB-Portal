@@ -611,7 +611,7 @@ function ConComListDisplay() {
               echo "</td>";
               // System Admins can remove anyone
               if(isset($_SESSION['IS_ADMIN'])) {
-                echo '<td style="background-color: #ff0000;"><a href="index.php?Function=list&Remove=' . $tmp[2] . '&Department=' . $div . '&Position=Director">Remove</a></td>';
+                echo '<td style="background-color: #ff0000;"><a href="index.php?Function=list&Remove=' . $tmp[2] . '&Department=' . $div . '&Position=Director" onclick="return confirm(\'Are you sure you want to remove ' . $kfName . ' ' . $klName . ' from ' . $div . '?\');">Remove</a></td>';
               }
               echo "</tr>\n";
             }
@@ -641,7 +641,7 @@ function ConComListDisplay() {
               }
               echo '</td>';
               if(isset($_SESSION['IS_ADMIN']) || $currentDivDirector) {
-                echo '<td style="background-color: #ff0000;"><a href="index.php?Function=list&Remove=' . $tmp[2] . '&Department=' . $div . '&Position=Specialist">Remove</a></td>';
+                echo '<td style="background-color: #ff0000;"><a href="index.php?Function=list&Remove=' . $tmp[2] . '&Department=' . $div . '&Position=Specialist" onclick="return confirm(\'Are you sure you want to remove ' . $kfName . ' ' . $klName . ' from ' . $div . '?\');">Remove</a></td>';
               }
               echo "</tr>\n";
             }
@@ -650,6 +650,10 @@ function ConComListDisplay() {
         }
         unset($pos);
       }
+      if($div != 'Committees' && $div != 'Corporate Staff') {
+        echo '<tr><td style="text-align:center;" colspan=8><a href="index.php?Function=list&AddDepartment=' . $div . '">Add someone to ' . $div . '</a></td></tr>' . "\n";
+      }
+      // Departments
       foreach( $printList[$div] as $kdep => $dep) {
         $currentDepHead = FALSE;
         if($div != 'Corporate Staff' && $kdep != 'Division Director' && $kdep != 'Division Support') {
@@ -684,8 +688,12 @@ function ConComListDisplay() {
                     echo '<td>' . $div . '</td>';
                   }
                   echo '<td>' . $kfName . '</td>';
-                  echo '<td>' . $klName . '</td>';
-                  echo '<td>' . $pos . '</td>';
+                  if ($div == 'Corporate Staff' || $div == 'Committees') {
+                    echo '<td colspan=2>' . $klName . '</td>';
+                  } else {
+                    echo '<td>' . $klName . '</td>';
+                    echo '<td>' . $pos . '</td>';
+                  }
                   if ($div == 'Corporate Staff' ) {
                     echo '<td>' . GetDepartmentEmail($kdep) . '</td>';
                   } else {
@@ -718,7 +726,7 @@ function ConComListDisplay() {
                   }
                   echo '</td>';
                   if(isset($_SESSION['IS_ADMIN']) || $currentDivDirector || ($currentDepHead && $pos != "Head")) {
-                    echo '<td style="background-color: #ff0000;"><a href="index.php?Function=list&Remove=' . $tmp[2] . '&Department=' . $kdep . '&Position=' . $pos . '">Remove</a></td>';
+                    echo '<td style="background-color: #ff0000;"><a href="index.php?Function=list&Remove=' . $tmp[2] . '&Department=' . $kdep . '&Position=' . $pos . '" onclick="return confirm(\'Are you sure you want to remove ' . $kfName . ' ' . $klName . ' from ' . $kdep . '?\');">Remove</a></td>';
                   }
 
                   echo "</tr>\n";
@@ -729,7 +737,7 @@ function ConComListDisplay() {
           }
         }
         if(($div != 'Corporate Staff' && $kdep != 'Division Director' && $kdep != 'Division Support') && (isset($_SESSION['IS_ADMIN']) || $currentDivDirector || ($currentDepHead && $pos != "Head"))) {
-          echo '<tr><td style="text-align:center;" colspan=8>Add someone to the ' . $kdep . ' department</td></td>' . "\n";
+          echo '<tr><td style="text-align:center;" colspan=8><a href="index.php?Function=list&AddDepartment=' . $kdep . '">Add someone to ' . $kdep . '</a></td></tr>' . "\n";
         }
       }
     }
