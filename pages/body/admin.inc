@@ -110,7 +110,7 @@ $searchCriteria = filter_input_array( INPUT_POST, $arguments );
 $search = [ 
   'method' => 'account/listAccounts', 
   'columns' => [
-    'standardFields' => ['First Name', 'Last Name', 'Email 1', 'City', 'State'],
+    'standardFields' => ['Account ID', 'First Name', 'Last Name', 'Email 1', 'City', 'State'],
   ],
   'page' => [
     'currentPage' => 1,
@@ -141,7 +141,7 @@ if ( !empty( $search['criteria'] ) ) {
 }
 
 ?>
-<form action="index.php?Function=lookup" method="POST" class="form-inline">
+<form action="index.php?Function=admin" method="POST" class="form-inline">
   <fieldset>
     <legend>Basic NeonCRM Account Search</legend>
     <p>
@@ -161,12 +161,18 @@ if ( !empty( $search['criteria'] ) ) {
   <table class="table table-striped">
     <tr>
       <th>Name</th>
+      <th>Account ID</th>
       <th>Email</th>
       <th>Location</th>
     </tr>
     <?php foreach($result['searchResults'] as $r): ?>
       <tr>
         <td><?php echo $r['First Name']; ?> <?php echo $r['Last Name']; ?></td>
+        <td>
+          <a href="https://www.z2systems.com/np/admin/account/accountDetails.do?id=<?php echo $r['Account ID']; ?>" target=_blank>
+            <?php echo $r['Account ID']; ?>
+          </a>
+        </td>
         <td><?php echo $r['Email 1']; ?></td>
         <td><?php echo $r['City']; ?> <?php echo $r['State']; ?></td>
       </tr>
