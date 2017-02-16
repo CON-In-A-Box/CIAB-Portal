@@ -3,7 +3,7 @@
 // Main setup function
 $MODULENAME  = "Meeting Signin";
 $BUILD       = explode(" ", '$Rev: 1 $'); // going to have to update this to support git, probably via filters
-$VERSION     = "0.1 Build: " . $BUILD[1]; // Major.Minor.Revision Format - This is a string, version names allowed
+$VERSION     = "1.0 Build: " . $BUILD[1] . " - Captain America"; // Major.Minor.Revision Format - This is a string, version names allowed
 
 // Discover Self Location
 $FUNCTIONDIR    = dirname(__FILE__);

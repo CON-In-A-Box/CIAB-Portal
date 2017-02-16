@@ -650,7 +650,7 @@ function ConComListDisplay() {
         }
         unset($pos);
       }
-      if($div != 'Committees' && $div != 'Corporate Staff') {
+      if($div != 'Committees' && $div != 'Corporate Staff' && isset($_SESSION['IS_ADMIN'])) {
         echo '<tr><td style="text-align:center;" colspan=8><a href="index.php?Function=list&AddDepartment=' . $div . '">Add someone to ' . $div . '</a></td></tr>' . "\n";
       }
       // Departments
@@ -716,11 +716,11 @@ function ConComListDisplay() {
                     if($pos == 'Head') {
                       $currentDepHead = TRUE;
                       if(isset($_SESSION['HEAD_OF'])) {
-                        if(!in_array($div, $_SESSION['HEAD_OF'])) {
-                          $_SESSION['HEAD_OF'][] = $div;
+                        if(!in_array($kdep, $_SESSION['HEAD_OF'])) {
+                          $_SESSION['HEAD_OF'][] = $kdep;
                         }
                       } else {
-                        $_SESSION['HEAD_OF'][] = $div;
+                        $_SESSION['HEAD_OF'][] = $kdep;
                       }
                     }
                   }
