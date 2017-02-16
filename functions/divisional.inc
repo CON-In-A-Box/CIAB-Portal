@@ -650,7 +650,7 @@ function ConComListDisplay() {
         }
         unset($pos);
       }
-      if($div != 'Committees' && $div != 'Corporate Staff' && isset($_SESSION['IS_ADMIN'])) {
+      if($div != 'Committees' && $div != 'Corporate Staff' && (isset($_SESSION['IS_ADMIN']) || $currentDivDirector)) {
         echo '<tr><td style="text-align:center;" colspan=8><a href="index.php?Function=list&AddDepartment=' . $div . '">Add someone to ' . $div . '</a></td></tr>' . "\n";
       }
       // Departments
