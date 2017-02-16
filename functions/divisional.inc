@@ -659,9 +659,9 @@ function ConComListDisplay() {
         if($div != 'Corporate Staff' && $kdep != 'Division Director' && $kdep != 'Division Support') {
           echo '<tr id="department">';
           if($div == 'Committees') {
-            echo '<th colspan=5>' . $kdep . '</th>';
+            echo '<th id="' . $kdep . '" colspan=5>' . $kdep . '</th>';
           } else {
-            echo '<th>' . $kdep . '</th><th colspan=4>' . $div . '</th>';
+            echo '<th id="' . $kdep . '">' . $kdep . '</th><th colspan=4>' . $div . '</th>';
           }
           echo '<th colspan=3>' . GetDepartmentEmail($kdep);
           if(getOtherDepartmentEmails($kdep)) {

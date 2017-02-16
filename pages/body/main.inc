@@ -27,7 +27,6 @@
   } else {
     echo "<tr><th>Not currently on ConCom</th></tr>\n";
   }
-  echo "<tr><th style=\"text-align:center;\">Need to update? - Coming soon</th></tr>\n";
   echo "</table>\n";
   echo "<p>&nbsp;</p>";
   
@@ -58,7 +57,6 @@
   unset($key);
   unset($val);
   unset($nowDate);
-  echo "<th style=\"text-align:center;\" colspan=3>Missing Sign In Info? - Coming soon</th>\n";
   echo "</table>\n";
   echo "<p>&nbsp;</p>";
   
@@ -74,7 +72,6 @@
     echo "</td></tr>\n";
   }
   unset($val);
-  echo "<th style=\"text-align:center;\" colspan=2>Missing ConCom Years? - Coming soon</th>\n";
   echo "</table>\n";
 
 ?>

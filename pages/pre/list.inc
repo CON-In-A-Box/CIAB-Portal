@@ -8,7 +8,7 @@
     require_once($FUNCTIONDIR . "/divisional.inc");
     if(isset($_SESSION['IS_ADMIN']) || (isset($_SESSION['DIR_OF']) && in_array(getDivision($_REQUEST['Department']), $_SESSION['DIR_OF'])) || (isset($_SESSION['HEAD_OF']) && in_array($_REQUEST['Department'], $_SESSION['HEAD_OF']))) {
       RemoveConComPosition($_REQUEST['Remove'], $_REQUEST['Department'], $_REQUEST['Position']);
-      goSite('index.php?Function=list');
+      goSite('index.php?Function=list#' . $_REQUEST['Department']);
     } else {
       // Made a request without the right cedentials - Reset just in case
       goSite();

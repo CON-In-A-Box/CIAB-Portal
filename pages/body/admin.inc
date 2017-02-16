@@ -4,19 +4,21 @@
 <?php
   echo "<h2>Welcome " . $_SESSION['preferredName'] . "!</h2>\n";
 
-/*  if( isset($_REQUEST['DoFeed'])) {
+  if( isset($_REQUEST['DoFeed'])) {
     require_once($FUNCTIONDIR . "/divisional.inc");
+    $attendKey = array_search('2017 Official Meeting Attendance', $_SESSION['definedFields']);
+    $dateOption = array_search('2016-09-25 - September ConCom', $_SESSION['definedFields']['2017Meetings']);
 
     foreach(file($FUNCTIONDIR . "/directadd.feed", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
       flush();
       $feed = explode(",", $line);
 
-      echo "Updating " . $feed[2] . " " . $feed[3] . " (" . $feed[5] . ") as " . $feed[4] . " in " . $feed[0] . ":";
+      echo "Updating " . $feed[0] . " " . $feed[1] . " - " . $feed[2] . ":";
 
       $search = [ 
         'method' => 'account/listAccounts', 
         'criteria' => [
-          ['Email', 'EQUAL', $feed[5]],
+          ['Email', 'EQUAL', $feed[2]],
         ],
         'columns' => [
           'standardFields' => ['Account ID', 'First Name', 'Last Name', 'Preferred Name', 'Email 1'],
@@ -32,7 +34,10 @@
 
       if ( isset( $result['operationResult'] ) && $result['operationResult'] == 'SUCCESS' ) {
         if ( count($result['searchResults']) == 1 ) {
-          $update=AddConComPosition($result['searchResults'][0]['Account ID'], $feed[0], $feed[4], $feed[6]);
+          
+//          $update=AddConComPosition($result['searchResults'][0]['Account ID'], $feed[0], $feed[4], $feed[6]);
+$update = TRUE;
+echo 'calling ' . $attendKey . ' for ' . $dateOption;
           if ($update) {
             echo "Complete.<br />\n";
           } else {
@@ -46,7 +51,7 @@
       }
     }
   }
-*/
+
   // Display all, with links to menu items
   echo "You have to wait... this isn't ready!\n";
 
