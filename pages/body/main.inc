@@ -4,8 +4,7 @@
 <?php
   echo "<h2>Welcome " . $_SESSION['preferredName'] . "!</h2>";
 
-  // Display all, with links to menu items
-
+  // Display Current ConCom Status
   echo "<table>\n";
   if ( isset( $_SESSION['customFields']['currConComPos'])) {
     echo "<tr><th style=\"text-align:center;\">Current ConCom Status</th></tr>\n";
@@ -30,6 +29,7 @@
   echo "</table>\n";
   echo "<p>&nbsp;</p>";
   
+  // Display Meeting Sign In Info
   echo "<table>\n";
   echo "<tr><th style=\"text-align:center;\" colspan=3>2017 Meeting Attendance</th></tr>\n";
   $nowDate = date("Ymd");
@@ -60,6 +60,8 @@
   echo "</table>\n";
   echo "<p>&nbsp;</p>";
   
+  // Display ConCom Service History
+  /* // Hide this info until ready for updates
   echo "<table>\n";
   echo "<tr><th style=\"text-align:center;\" colspan=2>Previous ConCom Years Served</th></tr>";
   foreach( $_SESSION['definedFields']['conComYears'] as $key => $val ) {
@@ -73,6 +75,7 @@
   }
   unset($val);
   echo "</table>\n";
+  */
 
 ?>
 </div><!--close main_content div-->
