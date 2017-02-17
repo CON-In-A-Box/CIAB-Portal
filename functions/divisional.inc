@@ -305,7 +305,6 @@ function AddConComPosition($accountid, $department, $position, $note) {
     $conComFieldId = array_search('CVGConCom Current Position', $_SESSION['definedFields']);
 
     $key = array_search($conComFieldId, array_column($result['individualAccount']['customFieldDataList']['customFieldData'], 'fieldId'));
-    // if the department is already assigned to this user, wipe it and replace it with the new info
     if($key === FALSE) {
       // Add the option since it doesn't exist.  Since arrays count from 0, the number of current entries
       // makes a perfect 'next' entry to use.
@@ -313,6 +312,7 @@ function AddConComPosition($accountid, $department, $position, $note) {
       $result['individualAccount']['customFieldDataList']['customFieldData'][$i]['fieldId'] = $conComFieldId;
       $result['individualAccount']['customFieldDataList']['customFieldData'][$i]['fieldValue'] = $department . "," . $position . "," . $note;
     } else {
+      // if the department is already assigned to this user, wipe it and replace it with the new info
       if(preg_match('/^' . $department . '/', $result['individualAccount']['customFieldDataList']['customFieldData'][$key]['fieldValue']) || preg_match('/\|' . $department . '/', $result['individualAccount']['customFieldDataList']['customFieldData'][$key]['fieldValue'])) {
         RemoveConComPosition($accountid, $department, $position);
         return AddConComPosition($accountid, $department, $position, $note);
