@@ -347,6 +347,22 @@ function AddConComPosition($accountid, $department, $position, $note) {
 
 
     if ( isset( $result2['operationResult'] ) && $result2['operationResult'] == 'SUCCESS' ) {
+      // Notify the Division Director, so they know
+//      $to = getDivision($department);
+$to = 'systems@convergenceevents.org';
+      $subject = 'ConCom Division addition to ' . $department;
+      if(empty($result['individualAccount']['primaryContact']['preferredName'])) {
+        $name = $result['individualAccount']['primaryContact']['firstName'];
+      } else {
+        $name = $result['individualAccount']['primaryContact']['preferredName'];
+      }
+      $name .= $result['individualAccount']['primaryContact']['lastName'];
+      $message = $_SESSION['fullName'] . ' has added ' . $name . " to " . $department . '.';
+      $headers = 'From: noreply@convergence-con.org' . "\r\n";
+      $headers .= 'Reply-To: noreply@convergence-con.org';
+      
+      mail($to, $subject, $message, $headers);
+
       return TRUE;
     } else {
       print_r($result2);
