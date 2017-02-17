@@ -366,9 +366,6 @@ function RemoveConComPosition($accountid, $department, $position) {
     $conComFieldId = array_search('CVGConCom Current Position', $_SESSION['definedFields']);
 
     foreach ($result['individualAccount']['customFieldDataList']['customFieldData'] as $key => $val) {
-echo "<pre>Before:\n";
-print_r($result['individualAccount']['customFieldDataList']['customFieldData'][$key]);
-echo "</pre>";
       if ( isset( $val['fieldId'] ) && $val['fieldId'] == $conComFieldId ) {
         // Remove only the position in question from the current list of concom positions
         $currentPos = '';
@@ -383,7 +380,7 @@ echo "</pre>";
           }
           unset($field);
         }
-        if(empty($surrentPos)) {
+        if(empty($currentPos)) {
           unset($result['individualAccount']['customFieldDataList']['customFieldData'][$key]);
         } else {
           $result['individualAccount']['customFieldDataList']['customFieldData'][$key]['fieldValue'] = $currentPos;
