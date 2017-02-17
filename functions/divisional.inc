@@ -314,7 +314,7 @@ function AddConComPosition($accountid, $department, $position, $note) {
     } else {
       // if the department is already assigned to this user, wipe it and replace it with the new info
       if(preg_match('/^' . $department . '/', $result['individualAccount']['customFieldDataList']['customFieldData'][$key]['fieldValue']) || preg_match('/\|' . $department . '/', $result['individualAccount']['customFieldDataList']['customFieldData'][$key]['fieldValue'])) {
-        RemoveConComPosition($accountid, $department, $position);
+        RemoveConComPosition($accountid, $department, 'ALL');
         return AddConComPosition($accountid, $department, $position, $note);
       }
       $result['individualAccount']['customFieldDataList']['customFieldData'][$key]['fieldValue'] .= "|" . $department . "," . $position . "," . $note;
@@ -373,7 +373,9 @@ function RemoveConComPosition($accountid, $department, $position) {
         $pos = explode('|', $val['fieldValue']);
         foreach($pos as $entry) {
           $field = explode(',', $entry);
-          if($field[0] != $department || $field[1] != $position) {
+          if($field[0] == $department && ($field[1] == $position || $position == 'ALL')) {
+            // This is the entry we are deleting
+          } else {
             if(!empty($currentPos)) {
               $currentPos .= '|';
             }
