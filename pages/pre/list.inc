@@ -46,6 +46,7 @@
     }
     if ( isset( $searchCriteria['lastName'] ) && !empty( $searchCriteria['lastName'] ) ) {
       $search['criteria'][] = ['Last Name', 'EQUAL', $searchCriteria['lastName']];
+      $search['page']['sortColumn'] = 'First Name';
     }
     if ( isset( $searchCriteria['email'] ) && !empty( $searchCriteria['email'] ) ) {
       $search['criteria'][] = ['Email', 'EQUAL', $searchCriteria['email']];

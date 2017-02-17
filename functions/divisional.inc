@@ -304,20 +304,20 @@ function AddConComPosition($accountid, $department, $position, $note) {
   if ( isset( $result['operationResult'] ) && $result['operationResult'] == 'SUCCESS' ) {
     $conComFieldId = array_search('CVGConCom Current Position', $_SESSION['definedFields']);
 
-    foreach ($result['individualAccount']['customFieldDataList']['customFieldData'] as $key => $val) {
-      if ( isset( $val['fieldId'] ) && $val['fieldId'] == $conComFieldId ) {
-        // Append the position info to the current list of concom positions
-        $currentPos = $val['fieldValue'];
-        $currentPos .= "|" . $department . "," . $position . "," . $note;
-        $result['individualAccount']['customFieldDataList']['customFieldData'][$key]['fieldValue'] = $currentPos;
-      }
-    }
-    if ( empty($currentPos)) {
+    $key = array_search($conComFieldId, array_column($result['individualAccount']['customFieldDataList']['customFieldData'], 'fieldId'));
+    // if the department is already assigned to this user, wipe it and replace it with the new info
+    if($key === FALSE) {
       // Add the option since it doesn't exist.  Since arrays count from 0, the number of current entries
       // makes a perfect 'next' entry to use.
       $i = count($result['individualAccount']['customFieldDataList']['customFieldData']);
-      $result['individualAccount']['customFieldDataList']['customFieldData'][$i]['fieldValue'] = $department . "," . $position . "," . $note;
       $result['individualAccount']['customFieldDataList']['customFieldData'][$i]['fieldId'] = $conComFieldId;
+      $result['individualAccount']['customFieldDataList']['customFieldData'][$i]['fieldValue'] = $department . "," . $position . "," . $note;
+    } else {
+      if(preg_match('/^' . $department . '/', $result['individualAccount']['customFieldDataList']['customFieldData'][$key]['fieldValue']) || preg_match('/\|' . $department . '/', $result['individualAccount']['customFieldDataList']['customFieldData'][$key]['fieldValue'])) {
+        RemoveConComPosition($accountid, $department, $position);
+        return AddConComPosition($accountid, $department, $position, $note);
+      }
+      $result['individualAccount']['customFieldDataList']['customFieldData'][$key]['fieldValue'] .= "|" . $department . "," . $position . "," . $note;
     }
 
     $request = [
@@ -349,7 +349,8 @@ function AddConComPosition($accountid, $department, $position, $note) {
     if ( isset( $result2['operationResult'] ) && $result2['operationResult'] == 'SUCCESS' ) {
       return TRUE;
     } else {
-      return FALSE;
+      print_r($result2);
+      die("Failed to apply remove to Neon!");
     }
   }
 }
@@ -417,7 +418,7 @@ function RemoveConComPosition($accountid, $department, $position) {
       return TRUE;
     } else {
       print_r($result2);
-      return FALSE;
+      die("Failed to apply remove to Neon!");
     }
   }
 }
