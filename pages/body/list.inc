@@ -1,8 +1,4 @@
-<div id="dynamic_content" class="main_screen">
-<?php
-require($PAGESDIR . '/base/leftnav.inc');
-?>
-<div id="main_content">
+<div id="main_content" class="w3-cell w3-cell-top w3-mobile">
 <?php
 require_once($FUNCTIONDIR . "/divisional.inc");
 

@@ -78,7 +78,7 @@
     echo '<hr>';
 
     if(isset($result['page']['totalResults']) && $result['page']['totalResults'] >= 1) {
-      echo '<table>';
+      echo '<table class="w3-table w3-striped w3-bordered">';
       echo '<tr><th>Name</th><th>Email</th><th>Location</th></tr>' . "\n";
       foreach($result['searchResults'] as $r) {
         echo '<tr>';

@@ -1,7 +1,5 @@
 <body>
-<!-- Do we want this? -->
 <script>
-history.forward();
+  history.forward();
 </script>
-<!-- end want this? -->
 

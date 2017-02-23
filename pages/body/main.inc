@@ -1,11 +1,10 @@
-<div id="dynamic_content" class="main_screen">
 <?php require($PAGESDIR . '/base/leftnav.inc'); ?>
-<div id="main_content">
+<div id="main_content" class="w3-cell w3-cell-top w3-mobile">
 <?php
   echo "<h2>Welcome " . $_SESSION['preferredName'] . "!</h2>";
 
   // Display Current ConCom Status
-  echo "<table>\n";
+  echo "<table class='w3-table w3-striped w3-bordered'>\n";
   if ( isset( $_SESSION['customFields']['currConComPos'])) {
     echo "<tr><th style=\"text-align:center;\">Current ConCom Status</th></tr>\n";
     foreach( $_SESSION['customFields']['currConComPos'] as $val ) {
@@ -30,7 +29,7 @@
   echo "<p>&nbsp;</p>";
   
   // Display Meeting Sign In Info
-  echo "<table>\n";
+  echo "<table class='w3-table w3-striped w3-bordered'>\n";
   echo "<tr><th style=\"text-align:center;\" colspan=3>2017 Meeting Attendance</th></tr>\n";
   $nowDate = date("Ymd");
   $attendKey = array_search('2017 Official Meeting Attendance', $_SESSION['definedFields']);
@@ -62,7 +61,7 @@
   
   // Display ConCom Service History
   /* // Hide this info until ready for updates
-  echo "<table>\n";
+  echo "<table class='w3-table w3-striped w3-bordered'>\n";
   echo "<tr><th style=\"text-align:center;\" colspan=2>Previous ConCom Years Served</th></tr>";
   foreach( $_SESSION['definedFields']['conComYears'] as $key => $val ) {
     echo "<tr><td>" . $val . "</td>";

@@ -585,23 +585,34 @@ function ConComListDisplay() {
   ksort_recursive($printList);
   
   // Start the crazy print routine!
-  echo "<table>\n";
-    echo '<tr id="table_head">';
-      echo '<th>Department</th>';
-      echo '<th>Division</th>';
-      echo '<th>First Name</th>';
-      echo '<th>Last Name</th>';
-      echo '<th>Position</th>';
-      echo '<th>Email</th>';
-      echo '<th colspan=2>Note</th>';
+  echo "<div class='w3-responsive'>";
+  echo "<table class='w3-table w3-striped w3-bordered w3-border w3-hoverable'>\n";
+    echo '<tr id="table_head" class="w3-purple">';
+      echo '<th class="w3-center">Department</th>';
+      echo '<th class="w3-center">Division</th>';
+      echo '<th class="w3-center">First Name</th>';
+      echo '<th class="w3-center">Last Name</th>';
+      echo '<th class="w3-center">Position</th>';
+      echo '<th class="w3-center">Email</th>';
+      echo '<th class="w3-center" colspan=2>Note</th>';
     echo "</tr>\n";
     foreach( $Divisions as $div) {
       $currentDivDirector = FALSE;
-      echo '<tr id="division"><th id="' . $div . '" style="text-align:center;" colspan=2>' . $div;
+      echo '<tr id="division" class="w3-purple"><th id="' . $div . '" class="w3-center" colspan=2>' . $div;
       if($div != 'Committees' && $div != 'Corporate Staff') {
         echo ' Division';
       }
-      echo '</th><th style="text-align:center;" colspan=3><a href="#main_nav">Go to Top</a></th><th colspan=3>' . GetDepartmentEmail($div);
+      echo '</th><th class="w3-center" colspan=3>';
+      echo '<div class="w3-dropdown-hover w3-purple">';
+      echo '  Go To Section';
+      echo '  <div class="w3-dropdown-content w3-purple">';
+      echo '    <a href="#main_nav" class="w3-border">Top of Page</a>';
+      foreach($Divisions as $menuDiv) {
+        echo '    <a href="#' . $menuDiv . '" class="w3-border">' . $menuDiv . '</a>';
+      }
+      echo '  </div>';
+      echo '</div>';
+      echo '</th><th colspan=3>' . GetDepartmentEmail($div);
       if(getOtherDepartmentEmails($div)) {
         $tmp = explode('|', getOtherDepartmentEmails($div));
         foreach($tmp as $eMail) {
@@ -641,7 +652,7 @@ function ConComListDisplay() {
               echo "</td>";
               // System Admins can remove anyone
               if(isset($_SESSION['IS_ADMIN'])) {
-                echo '<td style="background-color: #ff0000;"><a href="index.php?Function=list&Remove=' . $tmp[2] . '&Department=' . $div . '&Position=Director" onclick="return confirm(\'Are you sure you want to remove ' . $kfName . ' ' . $klName . ' from ' . $div . '?\');">Remove</a></td>';
+                echo '<td class="w3-red"><a href="index.php?Function=list&Remove=' . $tmp[2] . '&Department=' . $div . '&Position=Director" onclick="return confirm(\'Are you sure you want to remove ' . $kfName . ' ' . $klName . ' from ' . $div . '?\');">Remove</a></td>';
               }
               echo "</tr>\n";
             }
@@ -671,7 +682,7 @@ function ConComListDisplay() {
               }
               echo '</td>';
               if(isset($_SESSION['IS_ADMIN']) || $currentDivDirector) {
-                echo '<td style="background-color: #ff0000;"><a href="index.php?Function=list&Remove=' . $tmp[2] . '&Department=' . $div . '&Position=Specialist" onclick="return confirm(\'Are you sure you want to remove ' . $kfName . ' ' . $klName . ' from ' . $div . '?\');">Remove</a></td>';
+                echo '<td class="w3-red"><a href="index.php?Function=list&Remove=' . $tmp[2] . '&Department=' . $div . '&Position=Specialist" onclick="return confirm(\'Are you sure you want to remove ' . $kfName . ' ' . $klName . ' from ' . $div . '?\');">Remove</a></td>';
               }
               echo "</tr>\n";
             }
@@ -681,13 +692,13 @@ function ConComListDisplay() {
         unset($pos);
       }
       if($div != 'Committees' && $div != 'Corporate Staff' && (isset($_SESSION['IS_ADMIN']) || $currentDivDirector)) {
-        echo '<tr><td style="text-align:center;" colspan=8><a href="index.php?Function=list&AddDepartment=' . $div . '">Add someone to ' . $div . '</a></td></tr>' . "\n";
+        echo '<tr><td class="w3-center" colspan=8><a href="index.php?Function=list&AddDepartment=' . $div . '">Add someone to ' . $div . '</a></td></tr>' . "\n";
       }
       // Departments
       foreach( $printList[$div] as $kdep => $dep) {
         $currentDepHead = FALSE;
         if($div != 'Corporate Staff' && $kdep != 'Division Director' && $kdep != 'Division Support') {
-          echo '<tr id="department">';
+          echo '<tr id="department" class="w3-green">';
           if($div == 'Committees') {
             echo '<th id="' . $kdep . '" colspan=5>' . $kdep . '</th>';
           } else {
@@ -756,7 +767,7 @@ function ConComListDisplay() {
                   }
                   echo '</td>';
                   if(isset($_SESSION['IS_ADMIN']) || $currentDivDirector || ($currentDepHead && $pos != "Head")) {
-                    echo '<td style="background-color: #ff0000;"><a href="index.php?Function=list&Remove=' . $tmp[2] . '&Department=' . $kdep . '&Position=' . $pos . '" onclick="return confirm(\'Are you sure you want to remove ' . $kfName . ' ' . $klName . ' from ' . $kdep . '?\');">Remove</a></td>';
+                    echo '<td class="w3-red"><a href="index.php?Function=list&Remove=' . $tmp[2] . '&Department=' . $kdep . '&Position=' . $pos . '" onclick="return confirm(\'Are you sure you want to remove ' . $kfName . ' ' . $klName . ' from ' . $kdep . '?\');">Remove</a></td>';
                   }
 
                   echo "</tr>\n";
@@ -767,11 +778,12 @@ function ConComListDisplay() {
           }
         }
         if(($div != 'Corporate Staff' && $kdep != 'Division Director' && $kdep != 'Division Support') && (isset($_SESSION['IS_ADMIN']) || $currentDivDirector || ($currentDepHead && $pos != "Head"))) {
-          echo '<tr><td style="text-align:center;" colspan=8><a href="index.php?Function=list&AddDepartment=' . $kdep . '">Add someone to ' . $kdep . '</a></td></tr>' . "\n";
+          echo '<tr><td class="w3-center" colspan=8><a href="index.php?Function=list&AddDepartment=' . $kdep . '">Add someone to ' . $kdep . '</a></td></tr>' . "\n";
         }
       }
     }
   echo "</table>\n";
+  echo "</div>";
 
 }
 ?>
