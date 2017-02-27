@@ -350,12 +350,16 @@ function AddConComPosition($accountid, $department, $position, $note) {
       // Notify the Division Director, so they know
       $to = getDivision($department);
       $subject = 'ConCom Division addition to ' . $department;
-      if(empty($result['individualAccount']['primaryContact']['preferredName'])) {
+      if(empty($result['individualAccount']['customFieldDataList']['customFieldData'][$preferredFirstName]['fieldValue'])) {
         $name = $result['individualAccount']['primaryContact']['firstName'];
       } else {
-        $name = $result['individualAccount']['primaryContact']['preferredName'];
+        $name = $result['individualAccount']['customFieldDataList']['customFieldData'][$preferredFirstName]['fieldValue'];
       }
-      $name .= $result['individualAccount']['primaryContact']['lastName'];
+      if(empty($result['individualAccount']['customFieldDataList']['customFieldData'][$preferredLastName]['fieldValue'])) {
+        $name .= " " . $result['individualAccount']['primaryContact']['lastName'];
+      } else {
+        $name .= " " . $result['individualAccount']['customFieldDataList']['customFieldData'][$preferredLastName]['fieldValue'];
+      }
       $message = $_SESSION['fullName'] . ' has added ' . $name . " to " . $department . ' as ' . $position . '.';
       $headers = 'From: noreply@convergence-con.org' . "\r\n";
       $headers .= 'Reply-To: noreply@convergence-con.org';
@@ -435,12 +439,19 @@ function RemoveConComPosition($accountid, $department, $position) {
       // Notify the Division Director, so they know
       $to = getDivision($department);
       $subject = 'ConCom Division Removal to ' . $department;
-      if(empty($result['individualAccount']['primaryContact']['preferredName'])) {
+      $preferredFirstName = array_search('Preferred First Name', $_SESSION['definedFields']);
+      $preferredLastName = array_search('Preferred Last Name', $_SESSION['definedFields']);
+
+      if(empty($result['individualAccount']['customFieldDataList']['customFieldData'][$preferredFirstName]['fieldValue'])) {
         $name = $result['individualAccount']['primaryContact']['firstName'];
       } else {
-        $name = $result['individualAccount']['primaryContact']['preferredName'];
+        $name = $result['individualAccount']['customFieldDataList']['customFieldData'][$preferredFirstName]['fieldValue'];
       }
-      $name .= $result['individualAccount']['primaryContact']['lastName'];
+      if(empty($result['individualAccount']['customFieldDataList']['customFieldData'][$preferredLastName]['fieldValue'])) {
+        $name .= " " . $result['individualAccount']['primaryContact']['lastName'];
+      } else {
+        $name .= " " . $result['individualAccount']['customFieldDataList']['customFieldData'][$preferredLastName]['fieldValue'];
+      }
       $message = $_SESSION['fullName'] . ' has removed ' . $name . " from " . $department . '.';
       $headers = 'From: noreply@convergence-con.org' . "\r\n";
       $headers .= 'Reply-To: noreply@convergence-con.org';
@@ -457,6 +468,8 @@ function RemoveConComPosition($accountid, $department, $position) {
 
 function ConComListBuildSearch($page) {
   $conComFieldId = array_search('CVGConCom Current Position', $_SESSION['definedFields']);
+  $preferredFirstName = array_search('Preferred First Name', $_SESSION['definedFields']);
+  $preferredLastName = array_search('Preferred Last Name', $_SESSION['definedFields']);
 
   $search = [ 
     'method' => 'account/listAccounts', 
@@ -464,8 +477,8 @@ function ConComListBuildSearch($page) {
       [$conComFieldId, 'NOT_BLANK', ''],
     ],
     'columns' => [
-      'standardFields' => ['Account ID', 'First Name', 'Last Name', 'Preferred Name', 'Email 1'],
-      'customFields' => [$conComFieldId],
+      'standardFields' => ['Account ID', 'First Name', 'Last Name', 'Email 1'],
+      'customFields' => [$conComFieldId, $preferredFirstName, $preferredLastName],
     ],
     'page' => [
       'currentPage' => $page,
@@ -487,14 +500,19 @@ function ConComListBuildSearch($page) {
           'Division'   => getDivision($tmp[0]),
           'Department' => $tmp[0],
           'Position'   => $tmp[1],
-          'Last Name'  => $val['Last Name'],
           'Email'      => $val['Email 1'],
         ];
 
-        if (empty($val['Preferred Name'])) {
+        if (empty($val['Preferred First Name'])) {
           $line['First Name'] = $val['First Name'];
         } else {
-          $line['First Name'] = $val['Preferred Name'];
+          $line['First Name'] = $val['Preferred First Name'];
+        }
+
+        if (empty($val['Preferred Last Name'])) {
+          $line['Last Name'] = $val['Last Name'];
+        } else {
+          $line['Last Name'] = $val['Preferred Last Name'];
         }
 
         if (isset($tmp[2])) {
@@ -522,6 +540,11 @@ function ConComListBuildSearch($page) {
     }
     unset($val);
   } else {
+    echo "<pre>\n";
+      echo $preferredFirstName . "\n";
+      echo $preferredLastName . "\n";
+      print_r($result);
+    echo "</pre>\n";
     die("Could not retrieve ConComList");
   }
   return $return;
