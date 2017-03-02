@@ -505,6 +505,7 @@ function ConComListBuildSearch($page) {
         ];
         } else {
           echo "<pre>\n";
+          echo "Please report this error and output!\n";
           print_r($val);
           print_r($tmp);
           die();
