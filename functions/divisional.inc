@@ -349,6 +349,8 @@ function AddConComPosition($accountid, $department, $position, $note) {
     if ( isset( $result2['operationResult'] ) && $result2['operationResult'] == 'SUCCESS' ) {
       // Notify the Division Director, so they know
       $to = getDivision($department);
+      $preferredFirstName = array_search('Preferred First Name', $_SESSION['definedFields']);
+      $preferredLastName = array_search('Preferred Last Name', $_SESSION['definedFields']);
       $subject = 'ConCom Division addition to ' . $department;
       if(empty($result['individualAccount']['customFieldDataList']['customFieldData'][$preferredFirstName]['fieldValue'])) {
         $name = $result['individualAccount']['primaryContact']['firstName'];
