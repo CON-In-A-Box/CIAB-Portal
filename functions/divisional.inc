@@ -495,6 +495,7 @@ function ConComListBuildSearch($page) {
       $positionsHeld = explode("|", $val['CVGConCom Current Position']);
       foreach( $positionsHeld as $pos) {
         $tmp = explode(",", $pos);
+        if(getDivision($tmp[0])) {
         $line = [
           'Account ID' => $val['Account ID'],
           'Division'   => getDivision($tmp[0]),
@@ -502,6 +503,12 @@ function ConComListBuildSearch($page) {
           'Position'   => $tmp[1],
           'Email'      => $val['Email 1'],
         ];
+        } else {
+          echo "<pre>\n";
+          print_r($val);
+          print_r($tmp);
+          die();
+        }
 
         if (empty($val['Preferred First Name'])) {
           $line['First Name'] = $val['First Name'];
@@ -631,7 +638,7 @@ function ConComListDisplay() {
       echo '  <div class="w3-dropdown-content w3-purple">';
       echo '    <a href="#main_nav" class="w3-border">Top of Page</a>';
       foreach($Divisions as $menuDiv) {
-        echo '    <a href="#' . $menuDiv . '" class="w3-border">' . $menuDiv . '</a>';
+        echo '    <a href="#' . urlencode($menuDiv) . '" class="w3-border">' . $menuDiv . '</a>';
       }
       echo '  </div>';
       echo '</div>';
@@ -675,7 +682,7 @@ function ConComListDisplay() {
               echo "</td>";
               // System Admins can remove anyone
               if(isset($_SESSION['IS_ADMIN'])) {
-                echo '<td class="w3-red"><a href="index.php?Function=list&Remove=' . $tmp[2] . '&Department=' . $div . '&Position=Director" onclick="return confirm(\'Are you sure you want to remove ' . $kfName . ' ' . $klName . ' from ' . $div . '?\');">Remove</a></td>';
+                echo '<td class="w3-red"><a href="index.php?Function=list&Remove=' . urlencode($tmp[2]) . '&Department=' . urlencode($div) . '&Position=Director" onclick="return confirm(\'Are you sure you want to remove ' . $kfName . ' ' . $klName . ' from ' . $div . '?\');">Remove</a></td>';
               }
               echo "</tr>\n";
             }
@@ -705,7 +712,7 @@ function ConComListDisplay() {
               }
               echo '</td>';
               if(isset($_SESSION['IS_ADMIN']) || $currentDivDirector) {
-                echo '<td class="w3-red"><a href="index.php?Function=list&Remove=' . $tmp[2] . '&Department=' . $div . '&Position=Specialist" onclick="return confirm(\'Are you sure you want to remove ' . $kfName . ' ' . $klName . ' from ' . $div . '?\');">Remove</a></td>';
+                echo '<td class="w3-red"><a href="index.php?Function=list&Remove=' . urlencode($tmp[2]) . '&Department=' . urlencode($div) . '&Position=Specialist" onclick="return confirm(\'Are you sure you want to remove ' . $kfName . ' ' . $klName . ' from ' . $div . '?\');">Remove</a></td>';
               }
               echo "</tr>\n";
             }
@@ -790,7 +797,7 @@ function ConComListDisplay() {
                   }
                   echo '</td>';
                   if(isset($_SESSION['IS_ADMIN']) || $currentDivDirector || ($currentDepHead && $pos != "Head")) {
-                    echo '<td class="w3-red"><a href="index.php?Function=list&Remove=' . $tmp[2] . '&Department=' . $kdep . '&Position=' . $pos . '" onclick="return confirm(\'Are you sure you want to remove ' . $kfName . ' ' . $klName . ' from ' . $kdep . '?\');">Remove</a></td>';
+                    echo '<td class="w3-red"><a href="index.php?Function=list&Remove=' . urlencode($tmp[2]) . '&Department=' . urlencode($kdep) . '&Position=' . $pos . '" onclick="return confirm(\'Are you sure you want to remove ' . $kfName . ' ' . $klName . ' from ' . $kdep . '?\');">Remove</a></td>';
                   }
 
                   echo "</tr>\n";
@@ -801,7 +808,7 @@ function ConComListDisplay() {
           }
         }
         if(($div != 'Corporate Staff' && $kdep != 'Division Director' && $kdep != 'Division Support') && (isset($_SESSION['IS_ADMIN']) || $currentDivDirector || ($currentDepHead && $pos != "Head"))) {
-          echo '<tr><td class="w3-center" colspan=8><a href="index.php?Function=list&AddDepartment=' . $kdep . '">Add someone to ' . $kdep . '</a></td></tr>' . "\n";
+          echo '<tr><td class="w3-center" colspan=8><a href="index.php?Function=list&AddDepartment=' . urlencode($kdep) . '">Add someone to ' . $kdep . '</a></td></tr>' . "\n";
         }
       }
     }
