@@ -42,8 +42,14 @@ if (!empty($_REQUEST['user'])) {
     } else {
       die("Impossible error during Defined Custom Fields Download");
     }
+
+    // Sort everything so displays come out correct always
     arsort($_SESSION['definedFields']['conComYears']);
     arsort($_SESSION['definedFields']['2017Meetings']);
+
+    // Be ready if there is a preferred name need in the next section
+    $preferredFirstName = array_search('Preferred First Name', $_SESSION['definedFields']);
+    $preferredLastName = array_search('Preferred Last Name', $_SESSION['definedFields']);
 
     // Account info about User for Session
     $request = [
@@ -55,11 +61,6 @@ if (!empty($_REQUEST['user'])) {
     $result = $GLOBALS['Neon']->go($request);
     if ( isset( $result['operationResult'] ) && $result['operationResult'] == 'SUCCESS' ) {
       $_SESSION['accountInfo'] = $result;
-      if ( isset ( $_SESSION['accountInfo']['individualAccount']['primaryContact']['preferredName'] )) {
-        $_SESSION['preferredName'] = &$_SESSION['accountInfo']['individualAccount']['primaryContact']['preferredName'];
-      } else {
-        $_SESSION['preferredName'] = &$_SESSION['fullName'];
-      }
       $_SESSION['contactId'] = &$_SESSION['accountInfo']['individualAccount']['primaryContact']['contactId'];
       $_SESSION['firstName'] = &$_SESSION['accountInfo']['individualAccount']['primaryContact']['firstName'];
       $_SESSION['lastName'] = &$_SESSION['accountInfo']['individualAccount']['primaryContact']['lastName'];
@@ -89,6 +90,24 @@ if (!empty($_REQUEST['user'])) {
     }
 
     // If we got here, then we are golden.  Map the custom fields for easy use
+
+    // Support Preferred name
+    if (isset($_SESSION['customFields'][$preferredFirstName])) {
+      $_SESSION['preferredFirstName'] = &$_SESSION['customFields'][$preferredFirstName][0];
+      $_SESSION['preferredName'] = $_SESSION['preferredFirstName'];
+    } else {
+      $_SESSION['preferredFirstName'] = &$_SESSION['firstName'];
+      $_SESSION['preferredName'] = $_SESSION['firstName'];
+    }
+    $_SESSION['preferredName'] .= " ";
+    if (isset($_SESSION['customFields'][$preferredLastName])) {
+      $_SESSION['preferredLastName'] = &$_SESSION['customFields'][$preferredLastName][0];
+      $_SESSION['preferredName'] .= $_SESSION['preferredLastName'];
+    } else {
+      $_SESSION['preferredLastName'] = &$_SESSION['lastName'];
+      $_SESSION['preferredName'] .= $_SESSION['lastName'];
+    }
+
     // We care about (so far) Current ConCom Positions and ConCom Years Served
     $_SESSION['customFields']['currConComPos'] = &$_SESSION['customFields'][array_search('CVGConCom Current Position', $_SESSION['definedFields'])];
 

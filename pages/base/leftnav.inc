@@ -1,7 +1,8 @@
 <div id="left_nav" class="w3-cell w3-cell-top w3-border w3-mobile">
 <?php
   echo "<img src=\"https://www.z2systems.com/neon/resource/ce/images/account/" . $_SESSION['accountId'] . "/0_medium.jpg\" onerror=\"this.src='http://probablyprogramming.com/wp-content/uploads/2009/03/handtinyblack.gif'\">\n";
-  echo "<p style=\"font-weight:bold;\">" . $_SESSION['fullName'] . "</p>\n";
+
+  echo "<p style=\"font-weight:bold;\">" . $_SESSION['preferredName'] . "</p>\n";
 
   if ( isset( $_SESSION['addr1'] ) && !empty( $_SESSION['addr1'] )) {
     echo "<p><span style=\"font-weight:bold;\">Address:</span><br />\n";
