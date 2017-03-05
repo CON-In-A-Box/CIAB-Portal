@@ -51,7 +51,7 @@
   <a class="w3-bar-item w3-button w3-right w3-hide-large w3-hide-medium"
     href="javascript:void(0)"
     onclick="myMenuBar()">
-    &#9776;
+    <i class="fa fa-bars"></i>
   </a>
 </div><!--close main_nav div-->
 
