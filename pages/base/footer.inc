@@ -1,6 +1,6 @@
 <footer class="w3-container">
   <?php
-    if($pubtest[0] == "public") {
+    if($_REQUEST['Function'] == "public") {
       require($PAGESDIR . '/base/disclaimer.inc');
     }
   ?>

@@ -6,9 +6,7 @@ require_once('functions/functions.inc');
 if(empty($_REQUEST['Function'])) {
   goSite('/index.php?Function=public');
 } else {
-  $pubtest = str_split($_REQUEST['Function'], 6);
-
-  if($pubtest[0] == "public") {
+  if($_REQUEST['Function'] == "public") {
     $noheader=TRUE; // public pages don't need statusbars or logmenus
   } elseif (empty($_SESSION['username'])) {
     // if no username is set and we are not calling a public page, redirect for login needs
