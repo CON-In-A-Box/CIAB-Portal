@@ -607,11 +607,28 @@ function ksort_recursive(&$array) {
 
 function DumpConComList() {
   global $Divisions, $Departments, $ConComPositions;
-  $conComFieldId = array_search('CVGConCom Current Position', $_SESSION['definedFields']);
+  
+  // Custom Field Data for Session - Parse it to an easy to use array
+  $request = [
+    'method' => 'common/listCustomFields',
+    'parameters' => [
+      'searchCriteria.component' => "Account",
+    ],
+  ];
+  $result = $GLOBALS['Neon']->go($request);
+  if ( isset( $result['operationResult'] ) && $result['operationResult'] == 'SUCCESS' ) {
+    foreach ($result['customFields']['customField'] as $val) {
+      if($val['fieldName'] == 'CVGConCom Current Position') {
+        $conComFieldId = $val['fieldId'];
+      }
+    }
+  } else {
+    die("Failed to pull Custom Fields");
+  }
 
   foreach( $Departments as $kdep => $dep) {
     if($dep['Division'] != 'Corporate Staff') {
-      echo $dep['Email'] . "<br />\n";
+      echo $dep['Email'] . "\n";
     }
   }
 
@@ -640,12 +657,12 @@ function DumpConComList() {
       $runPage = $result['page']['totalPage'];
       $i++;
       foreach( $result['searchResults'] as $val ) {
-        echo $val['Email 1'] . "<br />\n";
+        echo $val['Email 1'] . "\n";
       }
     }
   }
   foreach($Divisions as $div) {
-    echo GetDepartmentEmail($div) . "<br />\n";
+    echo GetDepartmentEmail($div) . "\n";
   }
 }
 

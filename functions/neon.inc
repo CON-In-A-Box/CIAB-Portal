@@ -240,4 +240,13 @@ if ($result['operationResult'] != 'SUCCESS') {
   die();
 }
 
+// Support DeepLinks by testing
+function validateDeepLink($deepLinkId) {
+  if($deepLinkId == $GLOBALS['DUMPSECURE']) {
+    return(TRUE);
+  } else {
+    // Do search for DeepLink Info based on Function
+  }
+}
+
 ?>

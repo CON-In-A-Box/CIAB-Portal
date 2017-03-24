@@ -3,13 +3,16 @@
 // CON-In-A-Box Site Config (module)
 
 // Module and Site Specific Variables
-$CONSITENAME = "CONvergence " . $MODULENAME; // Set to something that makes sense for your site
+$CONHOST     = "CONvergence"; // Who is hosting this site
+$CONSITENAME = $CONHOST . " " . $MODULENAME; // Set to something that makes sense for your site
 
 // Admin User - Must have until users are set up.
 // After that, you can add an astrix to the password which will make it unmatchable (IE: Locked)
 $ADMINUSER     = "Admin"; // Do not leave this blank
 $ADMINPASS     = "s*GjBbyIZsL7Q"; // *CRYPT HASHED* password (eg: obtained via htpasswd)
 $ADMINACCOUNTS = [ 42, 31337 ]; // Array of Neon account IDs that are considered system admins
+$DUMPSECURE    = 'qweriouy2938465oieusrey'; // A very secure id to pull raw concom list - Please set unique for your site
+$ALLOCATIONS   = [ 42, 8008 ]; // Array of Neon account IDs that have access to the hotel allocation system
 
 // DBConfig, passwords, etc
 // Do not share this info
