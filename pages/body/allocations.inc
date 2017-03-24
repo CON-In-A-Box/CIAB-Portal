@@ -3,5 +3,7 @@
 <?php
 echo "<h2>Welcome " . $_SESSION['preferredName'] . "!</h2>\n";
 
+require_once($FUNCTIONDIR . "/divisional.inc");
+DumpConComList();
 ?>
 </div><!--close main_content div-->

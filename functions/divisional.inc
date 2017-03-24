@@ -605,9 +605,53 @@ function ksort_recursive(&$array) {
     }
 }
 
+function DumpConComList() {
+  global $Divisions, $Departments, $ConComPositions;
+  $conComFieldId = array_search('CVGConCom Current Position', $_SESSION['definedFields']);
+
+  foreach( $Departments as $kdep => $dep) {
+    if($dep['Division'] != 'Corporate Staff') {
+      echo $dep['Email'] . "<br />\n";
+    }
+  }
+
+  $i=1;
+  $runPage=1;
+  while ( $i <= $runPage ) {
+    $search = [ 
+      'method' => 'account/listAccounts', 
+      'criteria' => [
+        [$conComFieldId, 'NOT_BLANK', ''],
+      ],
+      'columns' => [
+        'standardFields' => ['Account ID', 'Email 1'],
+        'customFields' => [$conComFieldId],
+      ],
+      'page' => [
+        'currentPage' => $i,
+        'pageSize' => 200,
+        'sortColumn' => 'Account ID',
+        'sortDirection' => 'ASC',
+      ],
+    ];
+    $result = $GLOBALS['Neon']->search($search);
+
+    if ( isset( $result['operationResult'] ) && $result['operationResult'] == 'SUCCESS' ) {
+      $runPage = $result['page']['totalPage'];
+      $i++;
+      foreach( $result['searchResults'] as $val ) {
+        echo $val['Email 1'] . "<br />\n";
+      }
+    }
+  }
+  foreach($Divisions as $div) {
+    echo GetDepartmentEmail($div) . "<br />\n";
+  }
+}
+
 function ConComListDisplay() {
   global $Divisions, $ConComPositions;
-  
+
   $list = ConComListBuild();
   // Put each entry into a divisional/department mapped array
   foreach($list as $line) {
@@ -629,7 +673,7 @@ function ConComListDisplay() {
       echo '<th class="w3-center">Email</th>';
       echo '<th class="w3-center" colspan=2>Note</th>';
     echo "</tr>\n";
-    foreach( $Divisions as $div) {
+    foreach($Divisions as $div) {
       $currentDivDirector = FALSE;
       echo '<tr id="division" class="w3-purple"><th id="' . $div . '" class="w3-center" colspan=2>' . $div;
       if($div != 'Committees' && $div != 'Corporate Staff') {
