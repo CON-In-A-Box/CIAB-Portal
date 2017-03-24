@@ -180,5 +180,17 @@ if ( !empty( $search['criteria'] ) ) {
 <?php else: ?>
   <p><?php echo $message; ?></p>
 <?php endif; ?>
-
 </div><!--close main_content div-->
+
+<!-- Debug code for admins, just in case -->
+<p></p>
+<div class="w3-bar">
+  <div class="w3-dropdown-hover">
+    <button class="w3-bar-item w3-button w3-tiny">Debug Array Information</button>
+    <div class="w3-dropdown-content w3-small">
+      <pre>
+        <?php print_r($_SESSION); ?>
+      </pre>
+    </div>
+  </div>
+</div>

@@ -110,6 +110,11 @@ if (!empty($_REQUEST['user'])) {
 
     // We care about (so far) Current ConCom Positions and ConCom Years Served
     $_SESSION['customFields']['currConComPos'] = &$_SESSION['customFields'][array_search('CVGConCom Current Position', $_SESSION['definedFields'])];
+    
+    // If the logged in user is a System Admin (defined in the config file), note it
+    if(in_array($_SESSION['accountId'], $ALLOCATIONS)) {
+      $_SESSION['IS_ALLOCATIONS'] = TRUE;
+    }
 
     // If the logged in user is a System Admin (defined in the config file), note it
     if(in_array($_SESSION['accountId'], $ADMINACCOUNTS)) {

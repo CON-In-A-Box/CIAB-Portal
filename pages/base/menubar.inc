@@ -23,7 +23,7 @@
   </a>
   <?php if ( isset( $_SESSION['customFields']['currConComPos'])) { ?>
     <a class="w3-bar-item w3-button w3-hide-small
-      <?php if ($_REQUEST['Function'] == 'list') echo " w3-green"; ?>"
+      <?php if ($_REQUEST['Function'] == 'list') { echo " w3-green"; } else { echo " w3-teal"; } ?>"
       href="index.php?Function=list" title="The Current ConCom List List">
       <i class="fa fa-phone"></i>
       ConCom List
@@ -35,9 +35,17 @@
     <i class="fa fa-user"></i>
     Profile
   </a>
+  <?php if(isset($_SESSION['IS_ALLOCATIONS'])) { ?>
+    <a class="w3-bar-item w3-button w3-hide-small
+      <?php if ($_REQUEST['Function'] == 'allocaitons') { echo " w3-green"; } else { echo " w3-yellow"; } ?>"
+      href="index.php?Function=allocations" title="Hotel Allocations">
+      <i class="fa fa-bed"></i>
+      Hotel Allocations
+    </a>
+  <?php } ?>
   <?php if(isset($_SESSION['IS_ADMIN'])) { ?>
     <a class="w3-bar-item w3-button w3-hide-small
-      <?php if ($_REQUEST['Function'] == 'admin') echo " w3-green"; ?>"
+      <?php if ($_REQUEST['Function'] == 'admin') { echo " w3-green"; } else { echo " w3-yellow"; } ?>"
       href="index.php?Function=admin" title="Oh the adminitration">
       <i class="fa fa-key"></i>
       Administration
@@ -64,7 +72,7 @@
   </a>
   <?php if ( isset( $_SESSION['customFields']['currConComPos'])) { ?>
     <a class="w3-bar-item w3-button
-      <?php if ($_REQUEST['Function'] == 'list') { echo " w3-green"; } else { echo " w3-teal"; } ?>"
+      <?php if ($_REQUEST['Function'] == 'list') echo " w3-green"; ?>"
       href="index.php?Function=list" title="The Current ConCom List List">
       <i class="fa fa-phone"></i>
       ConCom List
@@ -76,9 +84,17 @@
     <i class="fa fa-user"></i>
     Profile
   </a>
+  <?php if(isset($_SESSION['IS_ALLOCATIONS'])) { ?>
+    <a class="w3-bar-item w3-button
+      <?php if ($_REQUEST['Function'] == 'allocations') echo " w3-green"; ?>"
+      href="index.php?Function=allocations" title="Hotel Allocations">
+      <i class="fa fa-bed"></i>
+      Hotel Allocations
+    </a>
+  <?php } ?>
   <?php if(isset($_SESSION['IS_ADMIN'])) { ?>
     <a class="w3-bar-item w3-button
-      <?php if ($_REQUEST['Function'] == 'admin') { echo " w3-green"; } else {echo " w3-yellow"; } ?>"
+      <?php if ($_REQUEST['Function'] == 'admin') echo " w3-green"; ?>"
       href="index.php?Function=admin" title="Oh the adminitration">
       <i class="fa fa-key"></i>
       Administration
