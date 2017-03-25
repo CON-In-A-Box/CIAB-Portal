@@ -72,7 +72,7 @@ if( isset($_REQUEST['DoFeed'])) {
         $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldOptionId[' . $i . ']'] = $kingBed;
       } elseif($feed[3] == 'Two Double Beds') {
         $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldOptionId[' . $i . ']'] = $queenBed;
-      } elseif($feed[3] == 'No Peference') {
+      } elseif($feed[3] == 'No Preference') {
         $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldOptionId[' . $i . ']'] = $noBed;
       }
       $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldValue[' . $i . ']']      = '';
