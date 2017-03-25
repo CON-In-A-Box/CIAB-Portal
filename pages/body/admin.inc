@@ -3,100 +3,117 @@
 <?php
 echo "<h2>Welcome " . $_SESSION['preferredName'] . "!</h2>\n";
 
-/*
-  if( isset($_REQUEST['DoFeed'])) {
-    require_once($FUNCTIONDIR . "/divisional.inc");
-    $attendKey = array_search('2017 Official Meeting Attendance', $_SESSION['definedFields']);
-    $dateOption = array_search('2017-02-12 - February ConCom', $_SESSION['definedFields']['2017Meetings']);
 
-    foreach(file($FUNCTIONDIR . "/directadd.feed", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
-//    $myTest = [ "Thomas,Keeley,tskeeley@gmail.com" ]; // TESTING
-//    foreach($myTest as $line) { // TESTING
-      flush();
-      $feed = explode(",", $line);
+if( isset($_REQUEST['DoFeed'])) {
+  echo "<hr><h3>Starting DeFeed Routine:</h3>\n";
+  $lottery = array_search('Lottery Status', $_SESSION['definedFields']);
+  $status = array_search('Entered', $_SESSION['definedFields']['Lottery Status']);  
+  $bedPref = array_search('Bed Preference', $_SESSION['definedFields']);
+  $noBed = array_search('No Preference', $_SESSION['definedFields']['Bed Preference']);
+  $kingBed = array_search('One King', $_SESSION['definedFields']['Bed Preference']);
+  $queenBed = array_search('Two Queens', $_SESSION['definedFields']['Bed Preference']);
+  $hotelPri = array_search('Hotel Qualifier', $_SESSION['definedFields']);
+  $volPri = array_search('Volunteer Qualifier', $_SESSION['definedFields']['Hotel Qualifier']);
+  $adaPri = array_search('ADA Wheelchair', $_SESSION['definedFields']['Hotel Qualifier']);
+  $adoPri = array_search('ADA Other', $_SESSION['definedFields']['Hotel Qualifier']);
 
-      echo "Updating " . $feed[0] . " " . $feed[1] . " - " . $feed[2] . ":";
+  foreach(file($FUNCTIONDIR . "/directadd.feed", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
+//  $myTest = [ "3218,Thomas,Keeley,King Bed,Volunteer|ADO" ]; // TESTING
+//  foreach($myTest as $line) { // TESTING
+    flush();
+    $feed = explode(",", $line);
+    $qual = explode("|", $feed[4]);
 
-      $search = [ 
-        'method' => 'account/listAccounts', 
-        'criteria' => [
-          ['Email', 'EQUAL', $feed[2]],
-        ],
-        'columns' => [
-          'standardFields' => ['Account ID', 'First Name', 'Last Name', 'Preferred Name', 'Email 1'],
-        ],
-        'page' => [
-          'currentPage' => 1,
-          'pageSize' => 200,
-          'sortColumn' => 'Account ID',
-          'sortDirection' => 'ASC',
+    echo "Updating " . $feed[0] . " - " . $feed[1] . " " . $feed[2] . ":";
+
+    $request = [
+      'method' => 'account/retrieveIndividualAccount',
+      'parameters' => [
+        'accountId' => $feed[0],
+      ],
+    ];
+    $result = $GLOBALS['Neon']->go($request);
+
+    if ( isset( $result['operationResult'] ) && $result['operationResult'] == 'SUCCESS' ) {
+      $request = [
+        'method' => 'account/editIndividualAccount',
+        'parameters' => [
+          'individualAccount.accountId' => $result['individualAccount']['accountId'],
+          'individualAccount.primaryContact.contactId' => $result['individualAccount']['primaryContact']['contactId'],
+          'individualAccount.primaryContact.firstName' => $result['individualAccount']['primaryContact']['firstName'],
+          'individualAccount.primaryContact.lastName' => $result['individualAccount']['primaryContact']['lastName'],
         ],
       ];
-      $result = $GLOBALS['Neon']->search($search);
 
-      if ( isset( $result['operationResult'] ) && $result['operationResult'] == 'SUCCESS' ) {
-        if ( count($result['searchResults']) == 1 ) {
-          $request = [
-            'method' => 'account/retrieveIndividualAccount',
-            'parameters' => [
-              'accountId' => $result['searchResults'][0]['Account ID'],
-            ],
-          ];
-          $result2 = $GLOBALS['Neon']->go($request);
-
-          if ( isset( $result2['operationResult'] ) && $result2['operationResult'] == 'SUCCESS' ) {
-            $request = [
-              'method' => 'account/editIndividualAccount',
-              'parameters' => [
-                'individualAccount.accountId' => $result2['individualAccount']['accountId'],
-                'individualAccount.primaryContact.contactId' => $result2['individualAccount']['primaryContact']['contactId'],
-                'individualAccount.primaryContact.firstName' => $result2['individualAccount']['primaryContact']['firstName'],
-                'individualAccount.primaryContact.lastName' => $result2['individualAccount']['primaryContact']['lastName'],
-                'individualAccount.customFieldDataList.customFieldData.fieldId' => $attendKey,
-                'individualAccount.customFieldDataList.customFieldData.fieldOptionId' => $dateOption,
-                'individualAccount.customFieldDataList.customFieldData.fieldValue' => '',
-              ],
-            ];
-
-            foreach ($result2['individualAccount']['customFieldDataList']['customFieldData'] as $key => $val) {
-              $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldId[' . $key . ']'] = $val['fieldId'];
-              if ( isset( $val['fieldValue'] )) {
-                $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldOptionId[' . $key . ']'] = '';
-                $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldValue[' . $key . ']'] = $val['fieldValue'];
-              } elseif ( isset( $val['fieldOptionId'] )) {
-                $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldOptionId[' . $key . ']'] = $val['fieldOptionId'];
-                $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldValue[' . $key . ']'] = '';
-              }
-            }
-            unset($val);
-            unset($key);
-
-            $result = $GLOBALS['Neon']->go1($request);
-
-            if ( isset( $result['operationResult'] ) && $result['operationResult'] == 'SUCCESS' ) {
-//            if(TRUE) {  // TESTING
-              echo "Complete.<br />\n";
-            } else {
-              echo "FAILED to update, Manually check.<br />\n";
-            }
-          } else {
-            echo "FAILED to retreive account information.<br />\n";
-          }
-        } elseif ( count($result['searchResults']) == 0 ) {
-          echo "Cannot update - Missing Email address.<br />";
-        } else {
-          echo "Cannot update - Multiple records with this Email address.<br />";
+      foreach ($result['individualAccount']['customFieldDataList']['customFieldData'] as $key => $val) {
+        $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldId[' . $key . ']'] = $val['fieldId'];
+        if ( isset( $val['fieldValue'] )) {
+          $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldOptionId[' . $key . ']'] = '';
+          $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldValue[' . $key . ']'] = $val['fieldValue'];
+        } elseif ( isset( $val['fieldOptionId'] )) {
+          $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldOptionId[' . $key . ']'] = $val['fieldOptionId'];
+          $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldValue[' . $key . ']'] = '';
         }
-      } else {
-        echo "FAILED Account Lookup by Email<br />\n";
       }
-    unset($request);
-    unset($result);
-    unset($result2);
-    unset($feed);
+      unset($val);
+      unset($key);
+      
+      $i = 1000000; // If you have more than 1 Million fields.... dude, give up!
+
+      // Enter the Lottery
+      $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldId[' . $i . ']']       = $lottery;
+      $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldOptionId[' . $i . ']'] = $status;
+      $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldValue[' . $i . ']']    = '';
+      $i++;
+
+      // Set Bed Type
+      $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldId[' . $i . ']']         = $bedPref;
+      if($feed[3] == 'King Bed') {
+        $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldOptionId[' . $i . ']'] = $kingBed;
+      } elseif($feed[3] == 'Two Double Beds') {
+        $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldOptionId[' . $i . ']'] = $queenBed;
+      } elseif($feed[3] == 'No Peference') {
+        $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldOptionId[' . $i . ']'] = $noBed;
+      }
+      $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldValue[' . $i . ']']      = '';
+      $i++;
+
+      // Set Hotel Piority
+      if($feed[4] != 'NONE') {
+        foreach($qual as $val) {
+          $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldId[' . $i . ']'] = $hotelPri;
+          if($val == "Volunteer") {
+            $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldOptionId[' . $i . ']'] = $volPri;
+          } elseif($val == "ADA") {
+            $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldOptionId[' . $i . ']'] = $adaPri;
+          } elseif($val == "ADO") {
+            $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldOptionId[' . $i . ']'] = $adoPri;
+          }
+          $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldValue[' . $i . ']']      = '';
+          $i++;
+        }
+      }
+
+      $result2 = $GLOBALS['Neon']->go1($request);
+
+      if ( isset( $result2['operationResult'] ) && $result2['operationResult'] == 'SUCCESS' ) {
+//      if(TRUE) {  // TESTING
+        echo "Complete.<br />\n";
+      } else {
+        echo "FAILED to update, Manually check.<br />\n";
+      }
+    } else {
+      echo "FAILED to retreive account information.<br />\n";
     }
   }
-*/
+  unset($request);
+  unset($result);
+  unset($result2);
+  unset($feed);
+  echo "<h3>End of DoFeed Routine</h3>\n<hr>\n";
+}
+
+
   /* Retrieve and sanitize POST data */
 $arguments = [
   'firstName' => FILTER_SANITIZE_SPECIAL_CHARS,

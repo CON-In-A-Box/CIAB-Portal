@@ -1,4 +1,5 @@
 <?php
+require_once($FUNCTIONDIR . '/allocations.inc');
 if(!empty($_REQUEST['DeepLink'])) { ?>
   <header class="w3-cell-row w3-green w3-mobile">
     <?php require($PAGESDIR . '/base/logo.inc'); ?>
@@ -14,8 +15,12 @@ if(!empty($_REQUEST['DeepLink'])) { ?>
 <?php
   echo "<h2>Welcome " . $_SESSION['preferredName'] . "!</h2>\n";
 }
-
-
-
 ?>
+<div>
+<?php
+  foreach($AllocRooms['DT'] as $room => $mod) {
+    echo $room . "," . $mod['Type'] . "," . $mod['Reserve'] . "<br />\n";
+  }
+?>
+</div>
 </div><!--close main_content div-->

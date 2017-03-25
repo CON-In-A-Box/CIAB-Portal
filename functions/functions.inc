@@ -17,7 +17,7 @@ $SITESUPPORTDIR = $BASEDIR . "/sitesupport";
 $PAGESDIR       = $BASEDIR . "/pages";
 
 // Set a Date stamp for use anywhere
-$DS             = uniqid();
+$DS             = uniqid('', TRUE);
 
 // Basic site redirector
 function goSite($Site=FALSE) {

@@ -35,6 +35,21 @@ if (!empty($_REQUEST['user'])) {
               $_SESSION['definedFields']['2017Meetings'][$fval['id']] = $fval['name'];
             }
             unset($fval);
+          } elseif ($val['fieldName'] == "Lottery Status") {
+            foreach ($val['fieldOptions']['fieldOption'] as $fval) {
+              $_SESSION['definedFields']['Lottery Status'][$fval['id']] = $fval['name'];
+            }
+            unset($fval);
+          } elseif ($val['fieldName'] == "Bed Preference") {
+            foreach ($val['fieldOptions']['fieldOption'] as $fval) {
+              $_SESSION['definedFields']['Bed Preference'][$fval['id']] = $fval['name'];
+            }
+            unset($fval);
+          } elseif ($val['fieldName'] == "Hotel Qualifier") {
+            foreach ($val['fieldOptions']['fieldOption'] as $fval) {
+              $_SESSION['definedFields']['Hotel Qualifier'][$fval['id']] = $fval['name'];
+            }
+            unset($fval);
           }
         }
       }

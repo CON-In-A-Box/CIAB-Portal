@@ -246,6 +246,7 @@ function validateDeepLink($deepLinkId) {
     return(TRUE);
   } else {
     // Do search for DeepLink Info based on Function
+    // Search customfields where pending function equals DeepLinkId - Should never return more than one
   }
 }
 
