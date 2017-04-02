@@ -702,7 +702,8 @@ function ConComListDisplay() {
       echo '  <div class="w3-dropdown-content w3-purple">';
       echo '    <a href="#main_nav" class="w3-border">Top of Page</a>';
       foreach($Divisions as $menuDiv) {
-        echo '    <a href="#' . urlencode($menuDiv) . '" class="w3-border">' . $menuDiv . '</a>';
+        // ##==## Likely need to add some translation here to blot out '&'
+        echo '    <a href="#' . $menuDiv . '" class="w3-border">' . $menuDiv . '</a>';
       }
       echo '  </div>';
       echo '</div>';
