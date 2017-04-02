@@ -320,7 +320,7 @@ $AllocRooms = [
     ],
     "0422" => [
       "Type" => "Double",
-      "Reserve" => "IWBlock",
+      "Reserve" => "ADO",
     ],
     "0451" => [
       "Type" => "King",
@@ -776,7 +776,7 @@ $AllocRooms = [
     ],
     "0655" => [
       "Type" => "King",
-      "Reserve" => "",
+      "Reserve" => "IWBlock",
     ],
     "0656" => [
       "Type" => "HC",
@@ -784,7 +784,7 @@ $AllocRooms = [
     ],
     "0657" => [
       "Type" => "King",
-      "Reserve" => "",
+      "Reserve" => "IWBlock",
     ],
     "0658" => [
       "Type" => "HC",
@@ -792,11 +792,11 @@ $AllocRooms = [
     ],
     "0659" => [
       "Type" => "King",
-      "Reserve" => "",
+      "Reserve" => "IWBlock",
     ],
     "0660" => [
       "Type" => "King",
-      "Reserve" => "",
+      "Reserve" => "IWBlock",
     ],
     "0661" => [
       "Type" => "King",
@@ -836,7 +836,7 @@ $AllocRooms = [
     ],
     "0670" => [
       "Type" => "King",
-      "Reserve" => "",
+      "Reserve" => "IWBlock",
     ],
     "0671" => [
       "Type" => "King",
@@ -928,63 +928,63 @@ $AllocRooms = [
     ],
     "0710" => [
       "Type" => "Double",
-      "Reserve" => "",
+      "Reserve" => "Parties",
     ],
     "0711" => [
       "Type" => "Double",
-      "Reserve" => "",
+      "Reserve" => "Parties",
     ],
     "0712" => [
       "Type" => "Double",
-      "Reserve" => "",
+      "Reserve" => "Parties",
     ],
     "0713" => [
       "Type" => "Double",
-      "Reserve" => "",
+      "Reserve" => "Parties",
     ],
     "0714" => [
       "Type" => "Double",
-      "Reserve" => "",
+      "Reserve" => "Parties",
     ],
     "0715" => [
       "Type" => "Double",
-      "Reserve" => "",
+      "Reserve" => "Parties",
     ],
     "0716" => [
       "Type" => "Double",
-      "Reserve" => "",
+      "Reserve" => "Parties",
     ],
     "0717" => [
       "Type" => "Double",
-      "Reserve" => "",
+      "Reserve" => "Parties",
     ],
     "0718" => [
       "Type" => "Double",
-      "Reserve" => "",
+      "Reserve" => "Parties",
     ],
     "0719" => [
       "Type" => "Double",
-      "Reserve" => "",
+      "Reserve" => "Parties",
     ],
     "0720" => [
       "Type" => "Double",
-      "Reserve" => "",
+      "Reserve" => "Parties",
     ],
     "0722" => [
       "Type" => "Double",
-      "Reserve" => "",
+      "Reserve" => "Parties",
     ],
     "0751" => [
       "Type" => "Double",
-      "Reserve" => "CVGSpecial",
+      "Reserve" => "Guests",
     ],
     "0753" => [
       "Type" => "King",
-      "Reserve" => "CVGSpecial",
+      "Reserve" => "Guests",
     ],
     "0755" => [
       "Type" => "King",
-      "Reserve" => "CVGSpecial",
+      "Reserve" => "Guests",
     ],
     "0756" => [
       "Type" => "HC",
@@ -992,15 +992,15 @@ $AllocRooms = [
     ],
     "0757" => [
       "Type" => "King",
-      "Reserve" => "IWBlock",
+      "Reserve" => "Guests",
     ],
     "0758" => [
       "Type" => "HC",
-      "Reserve" => "IWBlock",
+      "Reserve" => "ADA",
     ],
     "0759" => [
       "Type" => "King",
-      "Reserve" => "CVGSpecial",
+      "Reserve" => "Guests",
     ],
     "0760" => [
       "Type" => "King",
@@ -1048,47 +1048,47 @@ $AllocRooms = [
     ],
     "0771" => [
       "Type" => "King",
-      "Reserve" => "",
+      "Reserve" => "Guests",
     ],
     "0772" => [
       "Type" => "King",
-      "Reserve" => "",
+      "Reserve" => "Guests",
     ],
     "0773" => [
       "Type" => "King",
-      "Reserve" => "",
+      "Reserve" => "Guests",
     ],
     "0774" => [
       "Type" => "King",
-      "Reserve" => "",
+      "Reserve" => "Guests",
     ],
     "0775" => [
       "Type" => "King",
-      "Reserve" => "",
+      "Reserve" => "Guests",
     ],
     "0776" => [
       "Type" => "King",
-      "Reserve" => "",
+      "Reserve" => "Guests",
     ],
     "0777" => [
       "Type" => "King",
-      "Reserve" => "",
+      "Reserve" => "Guests",
     ],
     "0778" => [
       "Type" => "King",
-      "Reserve" => "",
+      "Reserve" => "Guests",
     ],
     "0779" => [
       "Type" => "King",
-      "Reserve" => "",
+      "Reserve" => "Guests",
     ],
     "0780" => [
       "Type" => "King",
-      "Reserve" => "",
+      "Reserve" => "Guests",
     ],
     "0781" => [
       "Type" => "King",
-      "Reserve" => "",
+      "Reserve" => "Guests",
     ],
     "0782" => [
       "Type" => "King",
@@ -1100,7 +1100,7 @@ $AllocRooms = [
     ],
     "0784" => [
       "Type" => "King",
-      "Reserve" => "Board",
+      "Reserve" => "Guests",
     ],
     "0801" => [
       "Type" => "Double",
@@ -1188,7 +1188,7 @@ $AllocRooms = [
     ],
     "0851" => [
       "Type" => "Double",
-      "Reserve" => "",
+      "Reserve" => "TKBlock",
     ],
     "0852" => [
       "Type" => "Double",
@@ -1208,7 +1208,7 @@ $AllocRooms = [
     ],
     "0856" => [
       "Type" => "HC",
-      "Reserve" => "TKBlock",
+      "Reserve" => "ADA",
     ],
     "0857" => [
       "Type" => "King",
@@ -1244,7 +1244,7 @@ $AllocRooms = [
     ],
     "0865" => [
       "Type" => "King",
-      "Reserve" => "Board",
+      "Reserve" => "TKBlock",
     ],
     "0866" => [
       "Type" => "King",
@@ -1304,11 +1304,11 @@ $AllocRooms = [
     ],
     "0880" => [
       "Type" => "King",
-      "Reserve" => "Board",
+      "Reserve" => "TKBlock",
     ],
     "0881" => [
       "Type" => "King",
-      "Reserve" => "TKBlock",
+      "Reserve" => "Board",
     ],
     "0882" => [
       "Type" => "Suite",

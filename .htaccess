@@ -1,5 +1,13 @@
 ErrorDocument 403 /sitesupport/index.php
 
+<IfModule mod_ssl.c>
+  <IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{HTTPS} off
+    RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+  </IfModule>
+</IfModule>
+
 # Block 'hidden' files
 <FilesMatch "^\.(ht|svn|git)">
   <IfModule !mod_access_compat.c>

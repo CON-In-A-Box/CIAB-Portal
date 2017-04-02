@@ -15,12 +15,12 @@ if(!empty($_REQUEST['DeepLink'])) { ?>
 <?php
   echo "<h2>Welcome " . $_SESSION['preferredName'] . "!</h2>\n";
 }
+
+
+
+//foreach($AllocRooms['DT'] as $room => $mod) {
+//  echo $room . "," . $mod['Type'] . "," . $mod['Reserve'] . "<br />\n";
+//}
+
 ?>
-<div>
-<?php
-  foreach($AllocRooms['DT'] as $room => $mod) {
-    echo $room . "," . $mod['Type'] . "," . $mod['Reserve'] . "<br />\n";
-  }
-?>
-</div>
 </div><!--close main_content div-->
