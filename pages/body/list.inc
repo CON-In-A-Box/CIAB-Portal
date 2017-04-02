@@ -2,6 +2,20 @@
 <?php
 require_once($FUNCTIONDIR . "/divisional.inc");
 
-ConComListDisplay();
+// if this is an update, but we don't have the right permissions, ignore it.
+if(isset($_REQUEST['AddDepartment'])) {
+  if(isset($_REQUEST['accountId'])) {
+    if(!isset($_REQUEST['Position'])) {
+      // We have someone, lets get their position
+      doConComAddAssign($_REQUEST['AddDepartment'], $_REQUEST['accountId'], $_REQUEST['Name']);
+    }
+  } else {
+    // begin search
+    doConComAddSearch($_REQUEST['AddDepartment']);
+  }
+} else {
+  ConComListDisplay();
+}
+
 ?>
 </div><!--close main_content div-->

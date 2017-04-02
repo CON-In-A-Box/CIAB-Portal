@@ -136,13 +136,7 @@
           }
           AddConComPosition($_REQUEST['accountId'], $_REQUEST['AddDepartment'], $_REQUEST['Position'], $note);
           goSite('index.php?Function=list#' . $_REQUEST['AddDepartment']);
-        } else {
-          // We have someone, lets get their position
-          doConComAddAssign($_REQUEST['AddDepartment'], $_REQUEST['accountId'], $_REQUEST['Name']);
         }
-      } else {
-        // begin search
-        doConComAddSearch($_REQUEST['AddDepartment']);
       }
     } else {
       // Made a request without the right cedentials - Reset just in case
