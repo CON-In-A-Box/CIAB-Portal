@@ -3,7 +3,7 @@
 <h2>To check to see if you are registered for CONvergence:</h2>
 
 <img src="images/Neon-MainScreen.png" alt="Main login page" style="border:5px solid black;">
-<p>Click the 'Update' button below which will take you to the Neon Login page (above).  Login using the same credentials you used to signin here.</p>
+<p>Click the 'Get Started' button below which will take you to the Neon Login page (above).  Login using the same credentials you used to signin here.</p>
 
 <p>&nbsp;</p>
 
@@ -19,8 +19,12 @@ If you are registered for this year, the top listing will show the current conve
 
 <p>&nbsp;</p>
 
+<p>After you have finished, you will need to close that window.</p>
+
+<p>&nbsp;</p>
+
 <p>
-<a href="https://www.z2systems.com/np/clients/ce/login.jsp" class="w3-btn w3-round-xlarge w3-green">Click here to get started!</a>
+<a onclick="Profile=window.open('https://www.z2systems.com/np/clients/ce/login.jsp', 'Profile Update', 'height=800,width=1000'); return false;" class="w3-btn w3-green w3-round-xlarge">Click here to get started!</a>
 </p>
 
 </div><!--close main_content div-->

@@ -3,7 +3,7 @@
 <h2>To update your profile information:</h2>
 
 <img src="images/Neon-MainScreen.png" alt="Main login page" style="border:5px solid black;">
-<p>Click the 'Update' button below which will take you to the Neon Login page (above).  Login using the same credentials you used to signin here.</p>
+<p>Click the 'Get Started' button below which will take you to the Neon Login page (above).  Login using the same credentials you used to signin here.</p>
 
 <p>&nbsp;</p>
 
@@ -13,8 +13,12 @@ Use the drop down menu to select 'Update my profile' which will give you a form 
 
 <p>&nbsp;</p>
 
+<p>After you have finished and submitted your updated, you will need to close that window.  If you wish to see your updates on this page, you will need to logout and relog in to refresh the information displayed here.</p>
+
+<p>&nbsp;</p>
+
 <p>
-<a href="https://www.z2systems.com/np/clients/ce/login.jsp" class="w3-btn w3-green w3-round-xlarge">Click here to get started!</a>
+<a onclick="Profile=window.open('https://www.z2systems.com/np/clients/ce/login.jsp', 'Profile Update', 'height=800,width=1000'); return false;" class="w3-btn w3-green w3-round-xlarge">Click here to get started!</a>
 </p>
 
 </div><!--close main_content div-->
