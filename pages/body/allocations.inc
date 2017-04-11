@@ -13,14 +13,35 @@ if(!empty($_REQUEST['DeepLink'])) { ?>
 ?>
   <div id="main_content"  class="w3-cell w3-cell-top w3-mobile">
 <?php
-  echo "<h2>Welcome " . $_SESSION['preferredName'] . "!</h2>\n";
 }
 
-
-
-//foreach($AllocRooms['DT'] as $room => $mod) {
-//  echo $room . "," . $mod['Type'] . "," . $mod['Reserve'] . "<br />\n";
-//}
-
+$counts = totalAvailableRooms('DT');
 ?>
-</div><!--close main_content div-->
+    <div class='w3-responsive'>
+      <table class='w3-table-all w3-hoverable'>
+        <tr class='w3-blue'>
+          <th class='w3-center' colspan=6>
+            Doubletree by Hilton
+          </th>
+        </tr>
+        <tr class='w3=blue'>
+          <th class='w3-white'></th>
+          <th>Total</th>
+          <th>King</th>
+          <th>Double</th>
+          <th>Suite</th>
+          <th>HC</th>
+        </tr>
+        <tr>
+<?php
+echo '<td>Total in Hotel</td>' . "\n";
+echo '<td>' . $counts['Total'] . "</td>\n";
+echo '<td>' . $counts['King'] . "</td>\n";
+echo '<td>' . $counts['Double'] . "</td>\n";
+echo '<td>' . $counts['Suite'] . "</td>\n";
+echo '<td>' . $counts['HC'] . "</td>\n";
+?>
+        </tr>
+      </table>
+    </div>
+  </div><!--close main_content div-->

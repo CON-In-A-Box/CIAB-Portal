@@ -680,7 +680,7 @@ function ConComListDisplay() {
   
   // Start the crazy print routine!
   echo "<div class='w3-responsive'>";
-  echo "<table class='w3-table w3-striped w3-bordered w3-border w3-hoverable'>\n";
+  echo "<table class='w3-table-all w3-hoverable'>\n";
     echo '<tr id="table_head" class="w3-purple">';
       echo '<th class="w3-center">Department</th>';
       echo '<th class="w3-center">Division</th>';

@@ -2300,3 +2300,25 @@ $AllocRooms = [
     ],
   ],
 ];
+
+function totalAvailableRooms($hotel) {
+  global $AllocRooms;
+  foreach ($AllocRooms[$hotel] as $room) {
+    if(empty($counts[$room['Type']])) {
+      $counts[$room['Type']] = 1;
+    } else {
+      $counts[$room['Type']]++;
+    }
+    if(!empty($room['Reserve'])) {
+      if(empty($counts[$room['Reserve']])) {
+        $counts[$room['Reserve']] = 1;
+      } else {
+        $counts[$room['Reserve']]++;
+      }
+    }
+  }
+  $counts['Total'] = count($AllocRooms[$hotel]);
+  return $counts;
+}
+
+?>
