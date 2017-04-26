@@ -190,7 +190,7 @@ $Departments = [
     "Division" => "Administration",
     "Email" => "partners@convergence-con.org",
   ],
-  "Partner Seach" => [
+  "Partner Search" => [
     "Division" => "Committees",
     "Email" => "partnersearch@convergence-con.org",
   ],
