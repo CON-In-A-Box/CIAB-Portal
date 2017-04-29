@@ -150,23 +150,6 @@
         $_SESSION['preferredLastName'] = &$_SESSION['lastName'];
         $_SESSION['preferredName'] .= $_SESSION['lastName'];
       }
-    } else {
-      echo "<pre>\n";
-      print_r($_SESSION['accountInfo']);
-      
-      echo '=======';
-      
-      print_r($result);
-      
-      echo '=======';
-      
-      print_r($_POST);
-      echo '=======';
-      
-      print_r($request);
-
-      echo "</pre>\n";
-      
     }
   }
 ?>
