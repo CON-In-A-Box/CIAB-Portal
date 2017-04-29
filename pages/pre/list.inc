@@ -7,8 +7,15 @@
   require_once($FUNCTIONDIR . "/divisional.inc");
   if(isset($_REQUEST['Remove']) && isset($_REQUEST['Department']) && isset($_REQUEST['Position'])) {
     if(isset($_SESSION['IS_ADMIN']) || (isset($_SESSION['DIR_OF']) && in_array(getDivision($_REQUEST['Department']), $_SESSION['DIR_OF'])) || (isset($_SESSION['HEAD_OF']) && in_array($_REQUEST['Department'], $_SESSION['HEAD_OF']))) {
-      RemoveConComPosition($_REQUEST['Remove'], $_REQUEST['Department'], $_REQUEST['Position']);
-      goSite('index.php?Function=list#' . $_REQUEST['Department']);
+      // Retrieve and sanitize POST data
+      $arguments = [
+        'Remove'      => FILTER_SANITIZE_NUMBER_INT,
+        'Department'  => FILTER_SANITIZE_SPECIAL_CHARS,
+        'Position'    => FILTER_SANITIZE_SPECIAL_CHARS,
+      ];
+      $removeData = filter_input_array( INPUT_POST, $arguments );
+      RemoveConComPosition($removeData['Remove'], $removeData['Department'], $removeData['Position']);
+      goSite('index.php?Function=list#' . $removeData['Department']);
     } else {
       // Made a request without the right cedentials - Reset just in case
       goSite();
@@ -129,13 +136,16 @@
       if(isset($_REQUEST['accountId'])) {
         if(isset($_REQUEST['Position'])) {
           // apply change
-          if(empty($_REQUEST['note'])) {
-            $note = '';
-          } else {
-            $note = $_REQUEST['note'];
-          }
-          AddConComPosition($_REQUEST['accountId'], $_REQUEST['AddDepartment'], $_REQUEST['Position'], $note);
-          goSite('index.php?Function=list#' . $_REQUEST['AddDepartment']);
+          // Retrieve and sanitize POST data
+          $arguments = [
+            'accountId'      => FILTER_SANITIZE_NUMBER_INT,
+            'AddDepartment'  => FILTER_SANITIZE_SPECIAL_CHARS,
+            'Position'       => FILTER_SANITIZE_SPECIAL_CHARS,
+            'note'           => FILTER_SANITIZE_SPECIAL_CHARS,
+          ];
+          $addData = filter_input_array( INPUT_POST, $arguments, TRUE );
+          AddConComPosition($addData['accountId'], $addData['AddDepartment'], $addData['Position'], $addData['note']);
+          goSite('index.php?Function=list#' . $addData['AddDepartment']);
         }
       }
     } else {

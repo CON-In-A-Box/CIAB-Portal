@@ -11,15 +11,15 @@
     if ( isset( $_SESSION['addr2'] ) && !empty( $_SESSION['addr2'] )) {
       echo $_SESSION['addr2'] . "<br />\n";
     }
-    if ( isset( $_SESSION['addr3'] ) && !empty( $_SESSION['addr3'] )) {
-      echo $_SESSION['addr3'] . "<br />\n";
-    }
-    if ( isset( $_SESSION['addr4'] ) && !empty( $_SESSION['addr4'] )) {
-      echo $_SESSION['addr4'] . "<br />\n";
-    }
     if ( isset( $_SESSION['city'] ) && !empty( $_SESSION['city'] )) {
       echo $_SESSION['city'] . ", ";
+    }
+    if ( isset( $_SESSION['state'] ) && !empty( $_SESSION['state'] )) {    
       echo $_SESSION['state'] . " ";
+    } elseif ( isset( $_SESSION['accountInfo']['individualAccount']['primaryContact']['addresses']['address']['0']['province'] ) && !empty( $_SESSION['accountInfo']['individualAccount']['primaryContact']['addresses']['address']['0']['province'] )) {
+      echo $_SESSION['accountInfo']['individualAccount']['primaryContact']['addresses']['address']['0']['province'];
+    }
+    if ( isset( $_SESSION['zip'] ) && !empty( $_SESSION['zip'] )) {    
       echo $_SESSION['zip'] . "</p>\n";
     }
   }

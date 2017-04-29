@@ -17,7 +17,7 @@
     ?>
 
     <form action="index.php?Function=public" method="post" onsubmit="return validate_form(this)" name="Log In" id="login_form" class="w3-container">
-      <label class="w3-label">User Name or Email</label>
+      <label class="w3-label">Email Address</label>
       <input name="user" type="text" class="w3-input w3-border">
 
       <p></p>
@@ -35,10 +35,10 @@
   </div>
   <div class="w3-container w3-cell w3-twothird">
     <p>
-      Please sign in using the same email or username and password you have used to register for CONvergence in the past.
+      Please sign in using the same email address and password you have used to register for CONvergence in the past.
     </p>
     <p>
-      If you have NEVER registered for CONvergence using your email or username before, <a href='https://www.z2systems.com/np/clients/ce/account.jsp'>click here to create an account in the registration system</a>.  You do not need to register for the convention to create an account in the system.
+      If you have NEVER registered for CONvergence using your email before, <a href='https://www.z2systems.com/np/clients/ce/account.jsp'>click here to create an account in the registration system</a>.  You do not need to register for the convention to create an account in the system.
     </p>
   </div>
 </div>
