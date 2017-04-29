@@ -113,7 +113,7 @@ if(isset($_SESSION['customFields'][$preferredLastName][0])) {
       <input type="text" name="addressLine2" value="<?php echo $_SESSION['addr2']; ?>" class="w3-input w3-border">
       
       <input type="text" name="city" value="<?php echo $_SESSION['city']; ?>" class="w3-input w3-border w3-half" placeholder="City (Required)">
-      <select name="state" class="w3-select w3-border w3-quarter">
+      <select name="state" onChange="ExpandOut(this.value, 'otherCountries')" class="w3-select w3-border w3-quarter">
         <option value=""<?php
 if(empty($_SESSION['state'])) {
   echo " selected";
@@ -142,7 +142,8 @@ if ( isset( $result['operationResult'] ) && $result['operationResult'] == 'SUCCE
         <input type="text" name="zipCode" value="<?php echo $_SESSION['zip']; ?>" class="w3-input w3-border w3-right-align w3-col l8 m7 s7" placeholder="Zip Code (Required)">
         <input type="text" name="zipPlus4" value="<?php if(isset($_SESSION['accountInfo']['individualAccount']['primaryContact']['addresses']['address']['0']['zipCodeSuffix'])) { echo $_SESSION['accountInfo']['individualAccount']['primaryContact']['addresses']['address']['0']['zipCodeSuffix']; } ?>" class="w3-input w3-border w3-col l4 m5 s5" placeholder="Zip+4">
       </div>
-      <select name="country" class="w3-select w3-border w3-twothird">
+      
+      <select name="country" class="w3-select w3-border">
         <option value="">Select Country</option>
 <?php
 $request = [
@@ -150,6 +151,7 @@ $request = [
 ];
 
 $result = $GLOBALS['Neon']->go($request);
+
 if ( isset( $result['operationResult'] ) && $result['operationResult'] == 'SUCCESS' ) {
   foreach ($result['countries']['country'] as $line) {
     echo '<option value="' . $line['id'] . '"';
@@ -163,11 +165,27 @@ if ( isset( $result['operationResult'] ) && $result['operationResult'] == 'SUCCE
 }
 ?>
       </select>
-      <input type="text" name="province" value="<?php if(isset($_SESSION['accountInfo']['individualAccount']['primaryContact']['addresses']['address']['0']['province'])) { echo $_SESSION['accountInfo']['individualAccount']['primaryContact']['addresses']['address']['0']['province']; } ?>" class="w3-input w3-border w3-third w3-gray" placeholder="Province (Foreign Only)">
+      <div id="otherCountries" class="w3-hide">
+        <input type="text" name="province" value="<?php if(isset($_SESSION['accountInfo']['individualAccount']['primaryContact']['addresses']['address']['0']['province'])) { echo $_SESSION['accountInfo']['individualAccount']['primaryContact']['addresses']['address']['0']['province']; } ?>" class="w3-input w3-border w3-gray" placeholder="Province (Foreign Only)">
+      </div>
     </div>
   </div>
   
   <p></p>
   <button class="w3-button w3-block w3-brown">Update Profile</button>
 </form>
+<script>
+function ExpandOut(val, id) {
+    var x = document.getElementById(id);
+    if (val === '') {
+        if (x.className.indexOf("w3-show") == -1) {
+            x.className += " w3-show";
+        }
+    } else {
+        if (x.className.indexOf("w3-show") != -1) {
+            x.className = x.className.replace(" w3-show", "");
+        }
+    }
+}
+</script>
 </div><!--close main_content div-->
