@@ -11,14 +11,14 @@ if (!empty($_POST)) {
     'other2' => FILTER_SANITIZE_SPECIAL_CHARS,
     'other3' => FILTER_SANITIZE_SPECIAL_CHARS,
   ];
-  $updateData = filter_input_array( INPUT_POST|INPUT_GET, $arguments );
+  $updateData = filter_input_array( INPUT_POST, $arguments );
 
   $request = [
     'method' => 'account/retrieveIndividualAccount',
     'parameters' => [
       'accountId' => $updateData['accountId'],
     ],
-  ];
+  ];  
   $result = $GLOBALS['Neon']->go($request);
 
   if ( isset( $result['operationResult'] ) && $result['operationResult'] == 'SUCCESS' ) {
@@ -122,11 +122,13 @@ if (!empty($_POST)) {
       buildSessionData($_SESSION['accountId']);
     } else {
       echo "<pre>";
+      echo "From editIndividual:\n";
       print_r($result2);
       echo "</pre>";
     }
   } else {
     echo "<pre>";
+    echo "From retriveIndividual:\n";
     print_r($result);
     echo "</pre>";
   }

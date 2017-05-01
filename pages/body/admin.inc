@@ -120,7 +120,11 @@ $arguments = [
   'lastName'  => FILTER_SANITIZE_SPECIAL_CHARS,
   'email'     => FILTER_SANITIZE_EMAIL,
 ];
-$searchCriteria = filter_input_array( INPUT_POST|INPUT_GET, $arguments );
+if (!empty($_POST)) {
+  $removeData = filter_input_array( INPUT_POST, $arguments );
+} else {
+  $removeData = filter_input_array( INPUT_GET, $arguments );
+}
 
 // Formulate the search query
 $search = [ 

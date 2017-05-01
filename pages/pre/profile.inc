@@ -25,7 +25,11 @@
       'country'            => FILTER_SANITIZE_NUMBER_INT,
       'province'           => FILTER_SANITIZE_SPECIAL_CHARS,
     ];
-    $updateData = filter_input_array( INPUT_POST|INPUT_GET, $arguments );
+    if (!empty($_POST)) {
+      $removeData = filter_input_array( INPUT_POST, $arguments );
+    } else {
+      $removeData = filter_input_array( INPUT_GET, $arguments );
+    }
 
     // Formulate the update
     $request = [ 
