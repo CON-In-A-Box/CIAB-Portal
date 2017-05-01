@@ -121,8 +121,12 @@ if (!empty($_REQUEST['user'])) {
       $_SESSION['preferredName'] .= $_SESSION['lastName'];
     }
 
-    // We care about (so far) Current ConCom Positions and ConCom Years Served
+    // Current ConCom Positions and ConCom Years Served
     $_SESSION['customFields']['currConComPos'] = &$_SESSION['customFields'][array_search('CVGConCom Current Position', $_SESSION['definedFields'])];
+
+    // Current Hotel Lottery Status
+    $_SESSION['customFields']['hotelLotteryStatus'] = &$_SESSION['customFields'][array_search('Lottery Status', $_SESSION['definedFields'])];
+    $_SESSION['customFields']['hotelAssignedRoom'] = &$_SESSION['customFields'][array_search('Room Assigned', $_SESSION['definedFields'])];
     
     // If the logged in user is a System Admin (defined in the config file), note it
     if(in_array($_SESSION['accountId'], $ALLOCATIONS)) {

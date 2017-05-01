@@ -23,7 +23,7 @@
   </a>
   <?php if ( isset( $_SESSION['customFields']['currConComPos'])) { ?>
     <a class="w3-bar-item w3-button w3-hide-small
-      <?php if ($_REQUEST['Function'] == 'list') { echo " w3-green"; } else { echo " w3-teal"; } ?>"
+      <?php if ($_REQUEST['Function'] == 'list') { echo " w3-green"; } else { echo " w3-black"; } ?>"
       href="index.php?Function=list" title="The Current ConCom List List">
       <i class="fa fa-phone"></i>
       ConCom List

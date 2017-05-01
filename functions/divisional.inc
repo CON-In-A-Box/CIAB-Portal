@@ -378,8 +378,8 @@ function AddConComPosition($accountid, $department, $position, $note) {
 
 function RemoveConComPosition($accountid, $department, $position) {
   $request = [
-      'method' => 'account/retrieveIndividualAccount',
-      'parameters' => [
+    'method' => 'account/retrieveIndividualAccount',
+    'parameters' => [
       'accountId' => $accountid,
     ],
   ];

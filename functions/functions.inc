@@ -2,8 +2,8 @@
 
 // Main setup function
 $MODULENAME  = "Member Portal";
-$BUILD       = explode(" ", '$Rev: 1 $'); // going to have to update this to support git, probably via filters
-$VERSION     = "1.0 Build: " . $BUILD[1] . " - Captain America"; // Major.Minor.Revision Format - This is a string, version names allowed
+$BUILD       = explode(" ", '$Rev: 134 $'); // going to have to update this to support git, probably via filters
+$VERSION     = "1.3 - Captain America, Build: " . $BUILD[1]; // Major.Minor.Revision Format - This is a string, version names allowed
 
 // Discover Self Location
 $FUNCTIONDIR    = dirname(__FILE__);
@@ -56,8 +56,6 @@ if (is_file($SITECONFIG)) {
 // Start the session so we are ready to go no matter what we do!
 session_start();
 
-// Call the DB and funtions, we always need these
-//require_once($FUNCTIONDIR . "/dbfunctions.inc"); // Not Needed for ConCom Module
 // Include NeonCRM for DB calls via API
 require_once($FUNCTIONDIR . "/neon.inc");
 
