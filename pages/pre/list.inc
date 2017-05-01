@@ -13,7 +13,7 @@
         'Department'  => FILTER_SANITIZE_SPECIAL_CHARS,
         'Position'    => FILTER_SANITIZE_SPECIAL_CHARS,
       ];
-      $removeData = filter_input_array( INPUT_POST, $arguments );
+      $removeData = filter_input_array( INPUT_POST|INPUT_GET, $arguments );
       RemoveConComPosition($removeData['Remove'], $removeData['Department'], $removeData['Position']);
       goSite('index.php?Function=list#' . $removeData['Department']);
     } else {
@@ -31,7 +31,7 @@
       'lastName'  => FILTER_SANITIZE_SPECIAL_CHARS,
       'email'     => FILTER_SANITIZE_EMAIL,
     ];
-    $searchCriteria = filter_input_array( INPUT_POST, $arguments );
+    $searchCriteria = filter_input_array( INPUT_POST|INPUT_GET, $arguments );
 
     // Formulate the search query
     $search = [ 
@@ -143,7 +143,7 @@
             'Position'       => FILTER_SANITIZE_SPECIAL_CHARS,
             'note'           => FILTER_SANITIZE_SPECIAL_CHARS,
           ];
-          $addData = filter_input_array( INPUT_POST, $arguments, TRUE );
+          $addData = filter_input_array( INPUT_POST|INPUT_GET, $arguments, TRUE );
           AddConComPosition($addData['accountId'], $addData['AddDepartment'], $addData['Position'], $addData['note']);
           goSite('index.php?Function=list#' . $addData['AddDepartment']);
         }
