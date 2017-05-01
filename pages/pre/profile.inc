@@ -25,7 +25,7 @@
       'country'            => FILTER_SANITIZE_NUMBER_INT,
       'province'           => FILTER_SANITIZE_SPECIAL_CHARS,
     ];
-    $updateData = filter_input_array( INPUT_POST, $arguments );
+    $updateData = filter_input_array( INPUT_POST|INPUT_GET, $arguments );
 
     // Formulate the update
     $request = [ 
@@ -69,7 +69,7 @@
       }
     }
     unset($val);
-    unset($key);buildSessionData
+    unset($key);
 
     // Update the Preferred Names
     $preferredFirstName = array_search('Preferred First Name', $_SESSION['definedFields']);

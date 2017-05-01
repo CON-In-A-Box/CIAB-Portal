@@ -11,7 +11,7 @@ if (!empty($_POST)) {
     'other2' => FILTER_SANITIZE_SPECIAL_CHARS,
     'other3' => FILTER_SANITIZE_SPECIAL_CHARS,
   ];
-  $updateData = filter_input_array( INPUT_POST, $arguments );
+  $updateData = filter_input_array( INPUT_POST|INPUT_GET, $arguments );
 
   $request = [
     'method' => 'account/retrieveIndividualAccount',

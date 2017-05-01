@@ -462,9 +462,15 @@ function RemoveConComPosition($accountid, $department, $position) {
 
       return TRUE;
     } else {
+      echo "<pre>";
       print_r($result2);
+      echo "</pre>";
       die("Failed to apply remove to Neon!");
     }
+  } else {
+    echo "<pre>";
+    print_r($result);
+    echo "</pre>";
   }
 }
 
