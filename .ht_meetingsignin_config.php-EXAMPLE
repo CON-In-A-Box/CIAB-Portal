@@ -8,6 +8,7 @@ $CONSITENAME = $CONHOST . " " . $MODULENAME; // Set to something that makes sens
 
 // Admin User - Must have until users are set up.
 // After that, you can add an astrix to the password which will make it unmatchable (IE: Locked)
+$ADMINEMAIL    = "tskeeley@gmail.com"; // Where do we send errors, likely the developer
 $ADMINUSER     = "Admin"; // Do not leave this blank
 $ADMINPASS     = "s*GjBbyIZsL7Q"; // *CRYPT HASHED* password (eg: obtained via htpasswd)
 $ADMINACCOUNTS = [ 42, 31337 ]; // Array of Neon account IDs that are considered system admins

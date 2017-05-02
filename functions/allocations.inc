@@ -78,10 +78,6 @@ $AllocRooms = [
       "Type" => "Suite",
       "Reserve" => "CVGNeeds",
     ],
-    "0119" => [
-      "Type" => "Double",
-      "Reserve" => "CVGNeeds",
-    ],
     "0123" => [
       "Type" => "King",
       "Reserve" => "Parties",

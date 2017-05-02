@@ -121,16 +121,10 @@ if (!empty($_POST)) {
       // Refresh Account info from Neon
       buildSessionData($_SESSION['accountId']);
     } else {
-      echo "<pre>";
-      echo "From editIndividual:\n";
-      print_r($result2);
-      echo "</pre>";
+      sendError("From editIndividual - " . __FILE__ . " API Fail", $result2);
     }
   } else {
-    echo "<pre>";
-    echo "From retriveIndividual:\n";
-    print_r($result);
-    echo "</pre>";
+    sendError("From retriveIndividual - " . __FILE__ . " API Fail", $result);
   }
 }
 ?>

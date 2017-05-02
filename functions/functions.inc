@@ -53,6 +53,21 @@ if (is_file($SITECONFIG)) {
   die();
 }
 
+function sendError($msg, $arrChunk=NULL) {
+  $to = $ADMINEMAIL; // need to make this modifyable
+  $subject = 'SIGNIN ERROR';
+
+  $message = $msg;
+  if (!empty($arrChunk)) {
+    $message .= print_r($arrChunk, true);
+  }
+  $headers = 'From: noreply@convergence-con.org' . "\r\n";
+  $headers .= 'Reply-To: noreply@convergence-con.org';
+
+  mail($to, $subject, $message, $headers);
+  trigger_error($msg);
+}
+
 // Start the session so we are ready to go no matter what we do!
 session_start();
 

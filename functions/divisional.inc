@@ -462,15 +462,10 @@ function RemoveConComPosition($accountid, $department, $position) {
 
       return TRUE;
     } else {
-      echo "<pre>";
-      print_r($result2);
-      echo "</pre>";
-      die("Failed to apply remove to Neon!");
+      sendError("Failed to apply remove to Neon " . __FILE__, $result2);
     }
   } else {
-    echo "<pre>";
-    print_r($result);
-    echo "</pre>";
+    sendError("Retrieve failed " . __FILE__, $result);
   }
 }
 
@@ -512,11 +507,7 @@ function ConComListBuildSearch($page) {
           'Email'      => $val['Email 1'],
         ];
         } else {
-          echo "<pre>\n";
-          echo "Please report this error and output!\n";
-          print_r($val);
-          print_r($tmp);
-          die();
+          sendError("getDivision failed for " . $tmp[0] . " in " . __FILE__, $result);
         }
 
         if (empty($val['Preferred First Name'])) {
@@ -556,12 +547,7 @@ function ConComListBuildSearch($page) {
     }
     unset($val);
   } else {
-    echo "<pre>\n";
-      echo $preferredFirstName . "\n";
-      echo $preferredLastName . "\n";
-      print_r($result);
-    echo "</pre>\n";
-    die("Could not retrieve ConComList");
+    sendError("Could not retrieve ConComList " . __FILE__, $result);
   }
   return $return;
 }
