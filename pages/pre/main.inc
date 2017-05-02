@@ -120,6 +120,13 @@ if (!empty($_POST)) {
     if ( isset( $result2['operationResult'] ) && $result2['operationResult'] == 'SUCCESS' ) {
       // Refresh Account info from Neon
       buildSessionData($_SESSION['accountId']);
+      require_once($FUNCTIONDIR . "/allocations.inc");
+      if ( $updateData['accept'] == 'Yes' ) {
+        $rooms = explode('|', $updateData['rooms']);
+        foreach($rooms as $room) {
+          sendAddToHotel($room);
+        }
+      }
     } else {
       sendError("From editIndividual - " . __FILE__ . " API Fail", $result2);
     }

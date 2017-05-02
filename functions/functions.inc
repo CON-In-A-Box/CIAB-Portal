@@ -54,7 +54,7 @@ if (is_file($SITECONFIG)) {
 }
 
 function sendError($msg, $arrChunk=NULL) {
-  $to = $ADMINEMAIL; // need to make this modifyable
+  $to = $GLOBALS['ADMINEMAIL']; // need to make this modifyable
   $subject = 'SIGNIN ERROR';
 
   $message = $msg;
