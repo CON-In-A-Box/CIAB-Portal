@@ -61,15 +61,40 @@
         'individualAccount.primaryContact.addresses.address.province' => $updateData['province'],
       ],
     ];
+
+    $preferredFirstName = array_search('Preferred First Name', $_SESSION['definedFields']);
+    $preferredLastName = array_search('Preferred Last Name', $_SESSION['definedFields']);
+    
+    $i = count($_SESSION['accountInfo']['individualAccount']['customFieldDataList']['customFieldData']);
+    // Verify fieldId is in place - potential for manual add to lottery or override
+    $key = array_search($preferredFirstName, array_column($_SESSION['accountInfo']['individualAccount']['customFieldDataList']['customFieldData'], 'fieldId'));
+    if($key === FALSE && !empty($updateData['preferredFirstName'])) {
+      $_SESSION['accountInfo']['individualAccount']['customFieldDataList']['customFieldData'][$i]['fieldId'] = $preferredFirstName;
+      $_SESSION['accountInfo']['individualAccount']['customFieldDataList']['customFieldData'][$i]['fieldValue'] = $updateData['preferredFirstName'];
+      $i++;
+    }
+    unset($key);
+    $key = array_search($preferredLastName, array_column($_SESSION['accountInfo']['individualAccount']['customFieldDataList']['customFieldData'], 'fieldId'));
+    if($key === FALSE && !empty($updateData['preferredLastName'])) {
+      $_SESSION['accountInfo']['individualAccount']['customFieldDataList']['customFieldData'][$i]['fieldId'] = $preferredLastName;
+      $_SESSION['accountInfo']['individualAccount']['customFieldDataList']['customFieldData'][$i]['fieldValue'] = $updateData['preferredLastName'];
+      $i++;
+    }
+    unset($key);
+    unset($i);
     
     foreach ($_SESSION['accountInfo']['individualAccount']['customFieldDataList']['customFieldData'] as $key => $val) {
-      $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldId[' . $key . ']'] = $val['fieldId'];
-      if ( isset( $val['fieldValue'] )) {
-        $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldOptionId[' . $key . ']'] = '';
-        $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldValue[' . $key . ']'] = $val['fieldValue'];
-      } elseif ( isset( $val['fieldOptionId'] )) {
-        $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldOptionId[' . $key . ']'] = $val['fieldOptionId'];
-        $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldValue[' . $key . ']'] = '';
+      if($val['fieldId'] == $preferredFirstName && empty($updateData['preferredFirstName'])) {
+      } elseif($val['fieldId'] == $preferredLastName && empty($updateData['preferredLastName']))  {
+      } else {
+        $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldId[' . $key . ']'] = $val['fieldId'];
+        if ( isset( $val['fieldValue'] )) {
+          $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldOptionId[' . $key . ']'] = '';
+          $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldValue[' . $key . ']'] = $val['fieldValue'];
+        } elseif ( isset( $val['fieldOptionId'] )) {
+          $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldOptionId[' . $key . ']'] = $val['fieldOptionId'];
+          $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldValue[' . $key . ']'] = '';
+        }
       }
     }
     unset($val);
@@ -102,6 +127,8 @@
     if ( isset( $result['operationResult'] ) && $result['operationResult'] == 'SUCCESS' ) {
       // Refresh Account info from Neon
       buildSessionData($_SESSION['accountId']);
+    } else {
+      sendError("Profile Update Failed", $result);
     }
   }
 ?>

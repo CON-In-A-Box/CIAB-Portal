@@ -36,9 +36,9 @@
       'email'     => FILTER_SANITIZE_EMAIL,
     ];
     if (!empty($_POST)) {
-      $removeData = filter_input_array( INPUT_POST, $arguments );
+      $searchCriteria = filter_input_array( INPUT_POST, $arguments );
     } else {
-      $removeData = filter_input_array( INPUT_GET, $arguments );
+      $searchCriteria = filter_input_array( INPUT_GET, $arguments );
     }
 
     // Formulate the search query
@@ -151,7 +151,12 @@
             'Position'       => FILTER_SANITIZE_SPECIAL_CHARS,
             'note'           => FILTER_SANITIZE_SPECIAL_CHARS,
           ];
-          $addData = filter_input_array( INPUT_POST|INPUT_GET, $arguments, TRUE );
+          if (!empty($_POST)) {
+            $addData = filter_input_array( INPUT_POST, $arguments, TRUE );
+          } else {
+            $addData = filter_input_array( INPUT_GET, $arguments, TRUE );
+          }
+
           AddConComPosition($addData['accountId'], $addData['AddDepartment'], $addData['Position'], $addData['note']);
           goSite('index.php?Function=list#' . $addData['AddDepartment']);
         }

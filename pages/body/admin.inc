@@ -121,9 +121,9 @@ $arguments = [
   'email'     => FILTER_SANITIZE_EMAIL,
 ];
 if (!empty($_POST)) {
-  $removeData = filter_input_array( INPUT_POST, $arguments );
+  $searchCriteria = filter_input_array( INPUT_POST, $arguments );
 } else {
-  $removeData = filter_input_array( INPUT_GET, $arguments );
+  $searchCriteria = filter_input_array( INPUT_GET, $arguments );
 }
 
 // Formulate the search query
