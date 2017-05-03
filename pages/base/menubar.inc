@@ -28,6 +28,13 @@
       <i class="fa fa-phone"></i>
       ConCom List
     </a>
+<!--    <a class="w3-bar-item w3-button w3-hide-small<?php
+      if ($_REQUEST['Function'] == 'volhours') { echo " w3-green"; } else { echo " w3-black"; }
+      ?>" href="index.php?Function=volhours" title="Track Volunteer's hours">
+      <i class="fa fa-clock-o"></i>
+      Enter Hours
+    </a>
+-->
   <?php } ?>
   <a class="w3-bar-item w3-button w3-hide-small<?php
     if ($_REQUEST['Function'] == 'profile') echo " w3-green";
@@ -77,6 +84,13 @@
       <i class="fa fa-phone"></i>
       ConCom List
     </a>
+<!--    <a class="w3-bar-item w3-button<?php
+      if ($_REQUEST['Function'] == 'volhours') echo " w3-green";
+      ?>" href="index.php?Function=volhours" title="Track Volunteer's Hours">
+      <i class="fa fa-clock-o"></i>
+      Enter Hours
+    </a>
+-->
   <?php } ?>
   <a class="w3-bar-item w3-button<?php
     if ($_REQUEST['Function'] == 'profile') echo " w3-green";
