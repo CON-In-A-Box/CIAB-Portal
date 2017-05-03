@@ -26,9 +26,9 @@
       'province'           => FILTER_SANITIZE_SPECIAL_CHARS,
     ];
     if (!empty($_POST)) {
-      $removeData = filter_input_array( INPUT_POST, $arguments );
+      $updateData = filter_input_array( INPUT_POST, $arguments );
     } else {
-      $removeData = filter_input_array( INPUT_GET, $arguments );
+      $updateData = filter_input_array( INPUT_GET, $arguments );
     }
 
     // Formulate the update
