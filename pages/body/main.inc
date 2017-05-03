@@ -71,7 +71,7 @@ if ( isset( $_SESSION['customFields']['hotelLotteryStatus']) && $_SESSION['custo
             }
             var txt = "This info will be sent to the hotel, please verify it is accurate.\n\n";
             txt = txt + "<?php
-              echo $_SESSION['preferredName'] . '\n' . $_SESSION['addr1'] . '\n';
+              echo $_SESSION['firstName'] . ' ' . $_SESSION['lastName'] . '\n' . $_SESSION['addr1'] . '\n';
               if (!empty($_SESSION['addr2'])) {
                 echo $_SESSION['addr2'] . '\n';
               }
