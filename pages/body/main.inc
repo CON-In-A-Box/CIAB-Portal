@@ -135,8 +135,8 @@ if ( isset( $_SESSION['customFields']['hotelLotteryStatus']) && $_SESSION['custo
               echo "</td></tr>\n";
             }
 
-            echo "<tr><td class='w3-brown'>\n";
-              echo "<div class='w3-wide w3-large w3-center'>\n";
+            echo "<tr><td>\n";
+              echo "<div class='w3-brown w3-wide w3-large w3-center'>\n";
                 echo "Do you want this room?\n";
               echo "</div>\n";
             echo "</td></tr>\n";
@@ -146,15 +146,23 @@ if ( isset( $_SESSION['customFields']['hotelLotteryStatus']) && $_SESSION['custo
                 echo "This info is required for a hotel room\n";
               echo "</div>\n";
               echo "<div class='w3-container w3-lime'>\n";
-                echo "Check In: <input type='date' name='checkIn' min='2017-07-01' max='2017-07-08'>\n";
-                echo "Check Out: <input type='date' name='checkOut' min='2017-07-07' max='2017-07-12'>\n";
+                echo "<div class='w3-half w3-khaki'>\n";
+                  echo "<label>Check In</label>\n";
+                  echo "<input class='w3-input w3-border' type='date' name='checkIn' min='2017-07-01' max='2017-07-08'>\n";
+                echo "</div>\n";
+                echo "<div class='w3-half w3-khaki'>\n";
+                  echo "<label>Check Out</label>\n";
+                  echo "<input class='w3-input w3-border' type='date' name='checkOut' min='2017-07-07' max='2017-07-12'>\n";
+                echo "</div>\n";
               echo "</div>\n";
               echo "<div class='w3-container w3-lime'>\n";
-                echo "Other people staying with you:\n";
-                echo "<div class='w3-container'>\n";
-                  echo "<input type='text' name='other1' class='w3-input w3-border' placeholder='Full Legal Name'>\n";
-                  echo "<input type='text' name='other2' class='w3-input w3-border' placeholder='Full Legal Name'>\n";
-                  echo "<input type='text' name='other3' class='w3-input w3-border' placeholder='Full Legal Name'>\n";
+                echo "<div class='w3-khaki'>\n";
+                  echo "Other people staying with you:\n";
+                  echo "<div class='w3-container'>\n";
+                    echo "<input type='text' name='other1' class='w3-input w3-border' placeholder='Full Legal Name'>\n";
+                    echo "<input type='text' name='other2' class='w3-input w3-border' placeholder='Full Legal Name'>\n";
+                    echo "<input type='text' name='other3' class='w3-input w3-border' placeholder='Full Legal Name'>\n";
+                  echo "</div>\n";
                 echo "</div>\n";
               echo "</div>\n";  
               echo "<button class='w3-button w3-block w3-large w3-green' type=submit name='accept' value='Yes' onclick='return funcClickYes();'><b>Yes, I want it!</b></button>\n";

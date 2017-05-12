@@ -194,6 +194,7 @@ if(!empty($_REQUEST['DeepLink'])) { ?>
               }
             } else {
               echo $set['Reserve'] . "<br />\n";
+              echo "<span class='w3-blue'>UNASSIGNED</span><br />\n";
             }
           echo "</div>\n";
         echo "</div>\n";
