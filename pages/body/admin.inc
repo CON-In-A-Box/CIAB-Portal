@@ -3,7 +3,7 @@
 <?php
 echo "<h2>Welcome " . $_SESSION['preferredName'] . "!</h2>\n";
 
-
+/*
 if( isset($_REQUEST['DoFeed'])) {
   echo "<hr><h3>Starting DeFeed Routine:</h3>\n";
   $lottery = array_search('Lottery Status', $_SESSION['definedFields']);
@@ -112,9 +112,9 @@ if( isset($_REQUEST['DoFeed'])) {
   unset($feed);
   echo "<h3>End of DoFeed Routine</h3>\n<hr>\n";
 }
+*/
 
-
-  /* Retrieve and sanitize POST data */
+/* Retrieve and sanitize POST data */
 $arguments = [
   'firstName' => FILTER_SANITIZE_SPECIAL_CHARS,
   'lastName'  => FILTER_SANITIZE_SPECIAL_CHARS,

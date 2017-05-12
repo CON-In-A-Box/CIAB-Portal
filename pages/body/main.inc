@@ -61,12 +61,21 @@ if ( isset( $_SESSION['customFields']['hotelLotteryStatus']) && $_SESSION['custo
           function funcClickYes() {
             var cidate = document.forms["lotteryAccept"]["checkIn"].value;
             var codate = document.forms["lotteryAccept"]["checkOut"].value;
+            var re = /^(\d{4})-(\d{2})-(\d{2})$/;
             if (cidate==null||cidate=="") {
               alert("Select a valid Check In date");
               return false;
             }
+            if (!cidate.match(re)) {
+              alert("Check In date must be in the yyyy-mm-dd format");
+              return false;
+            }
             if (codate==null||codate=="") {
               alert("Select a valid Check Out date");
+              return false;
+            }
+            if (!codate.match(re)) {
+              alert("Check Out date must be in the yyyy-mm-dd format");
               return false;
             }
             var txt = "This info will be sent to the hotel, please verify it is accurate.\n\n";
@@ -93,22 +102,30 @@ if ( isset( $_SESSION['customFields']['hotelLotteryStatus']) && $_SESSION['custo
           $rooms = explode("|", $_SESSION['customFields']['hotelAssignedRoom'][0]);
           echo "<form action='index.php?Function=main' method='post' name='lotteryAccept' id='LotteryYesNo'>\n";
             echo "<input type=hidden name='accountId' value='" . $_SESSION['accountId'] . "'>\n";
+            // We shouldn't be passing the room info to the page, but it was easier on first draft.  Good clean up opportunity
             echo "<input type=hidden name='rooms' value='" . $_SESSION['customFields']['hotelAssignedRoom'][0] . "'>\n";
 
+            $i=1;
             foreach($rooms as $room) {
               echo "<tr><td>\n";
                 echo "<div class='w3-container w3-center w3-border'>\n";
-                  echo "Your room is waiting for you at the ";
+                  if($i == 1) {
+                    echo "Your room is waiting for you at the ";
+                  } else {
+                    echo "Room " . $i . " is waiting for you at the ";
+                  }
+                  $i++;
                   $roomPrefix = explode("-", $room);
                   foreach($AllocHotels as $hkey => $hotel) {
                     if($roomPrefix[0] == $hotel['Prefix']) {
                       echo $hkey . "<br />\n";
                     }
                   }
-                  echo "The room is a " . $AllocRooms[$roomPrefix[0]][$roomPrefix[1]]['Type'] . " bed in the ";
+                  $roomNumber = substr($roomPrefix[1], 2);
+                  $floor = substr($roomPrefix[1], 0, 2);
+                  echo "The room is a " . $AllocRooms[$roomPrefix[0]][$floor][$roomNumber]['Type'] . " bed in the ";
 
-                  $roomNum = substr($roomPrefix[1], -2, 2);
-                  if($roomNum < 50) {
+                  if($roomNumber < 50) {
                     echo "South/Tall";
                   } else {
                     echo "North/Short";

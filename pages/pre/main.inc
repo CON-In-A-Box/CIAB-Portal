@@ -54,7 +54,7 @@ if (!empty($_POST)) {
           $result['individualAccount']['customFieldDataList']['customFieldData'][$key]['fieldOptionId'] = $declinedStatusFieldId;
         }
       } elseif (isset( $val['fieldId'] ) && $val['fieldId'] == $roomAssignedFieldId) {
-        if ( $updateData['accept'] == 'Yes' && !empty($updateData['rooms'])) {
+        if ( $updateData['accept'] == 'Yes' && !empty($updateData['rooms'])) { // We shouldn't be passing room info to the page
           $result['individualAccount']['customFieldDataList']['customFieldData'][$key]['fieldValue'] = $updateData['rooms'];
         } elseif ( $updateData['accept'] == "No" || empty($updateData['room'])) {
           unset($result['individualAccount']['customFieldDataList']['customFieldData'][$key]);
