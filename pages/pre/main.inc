@@ -124,7 +124,7 @@ if (!empty($_POST)) {
       if ( $updateData['accept'] == 'Yes' ) {
         $rooms = explode('|', $updateData['rooms']);
         foreach($rooms as $room) {
-          sendAddToHotel($room);
+          sendChangeToHotel($room);
         }
       }
     } else {

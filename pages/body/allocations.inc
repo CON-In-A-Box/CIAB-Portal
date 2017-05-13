@@ -10,7 +10,39 @@ if(!empty($_REQUEST['DeepLink'])) { ?>
 <?php
 } else {
   echo '<div id="main_content" class="w3-container">' . "\n";
-    if (empty($_REQUEST['Hotel']) || empty($_REQUEST['Floor'])) {
+    if (!empty($_REQUEST['Do']) && !empty($_REQUEST['From'])) {
+      if(empty($_REQUEST['To'])) {
+        echo '<div class="w3-container w3-orange">' . "\n";
+          echo '<div class="w3-panel w3-center">' . "\n";
+            echo 'Moving ' . $_SESSION['AllocInfo'][$_REQUEST['From']]['First Name'] . ' ' . $_SESSION['AllocInfo'][$_REQUEST['From']]['Last Name'] . ' from ' . $_REQUEST['From'] . ' to:' . "\n";
+          echo "</div>\n";
+        
+          echo '<form name="MoveTo" method="post" action="index.php?Function=allocations" class="w3-container">' . "\n";
+            echo '<input type=hidden name="Do" value="' . $_REQUEST['Do'] . '">' . "\n";
+            echo '<input type=hidden name="From" value="' . $_REQUEST['From'] . '">' . "\n";
+            
+            echo '<select class="w3-select" name="To" required>' . "\n";
+              echo '<option value="" disabled selected>Choose destination room</option>' . "\n";
+              $roomSet = explode('-', $_REQUEST['From']);
+              foreach($AllocRooms[$roomSet[0]] as $floor => $rooms) {
+                foreach($rooms as $room => $set) {
+                  $roomLabel = $roomSet[0] . '-' . $floor . $room;
+                  echo '<option value="' . $roomLabel . '">' . $roomLabel . "</option>\n";
+                }
+              }
+            echo "</select>\n";
+            echo '<div class="w3-bar">' . "\n";
+              echo '<a class="w3-button w3-third w3-left w3-yellow" href="index.php?Function=allocations">Cancel</a>' . "\n";
+              echo '<button class="w3-button w3-third w3-right w3-green">Make the move</button>' . "\n";
+            echo "</div>\n";
+          echo "</form>\n";
+        echo "</div>\n";
+      } else {
+        // Do the move
+        
+        echo "moving";
+      }
+    } elseif (empty($_REQUEST['Hotel']) || empty($_REQUEST['Floor'])) {
 
       /* Retrieve and sanitize POST data */
       $arguments = [
@@ -171,7 +203,6 @@ if(!empty($_REQUEST['DeepLink'])) { ?>
     if(empty($_SESSION['AllocInfo'])) {
       $_SESSION['AllocInfo'] = populateAllocInfo();
     }
-
     $l=0;
     $r=0;
     echo "<div class='w3-container w3-cell-row'>\n";
@@ -206,22 +237,23 @@ if(!empty($_REQUEST['DeepLink'])) { ?>
           } else {
             echo $set['Reserve'] . "<br />\n";
           }
-              echo $_SESSION['AllocInfo'][$roomLabel]['First Name'] . ' ' . $_SESSION['AllocInfo'][$roomLabel]['Last Name'] . "<br />\n";
-              if(empty($_SESSION['AllocInfo'][$roomLabel]['Check In'])) {
-                echo "<span class='w3-khaki'>PENDING ACCEPT</span><br />\n";
-              } else {
-                echo $_SESSION['AllocInfo'][$roomLabel]['Check In'] . ' - ' . $_SESSION['AllocInfo'][$roomLabel]['Check Out'] . "<br />\n";
-              }
-            } else {
-              echo $set['Reserve'] . "<br />\n";
-              echo "<span class='w3-blue'>UNASSIGNED</span><br />\n";
-            }
-          echo "</div>\n";
-        echo "</div>\n";
+
+          echo $_SESSION['AllocInfo'][$roomLabel]['First Name'] . ' ' . $_SESSION['AllocInfo'][$roomLabel]['Last Name'] . "\n";
+          echo '<a class="w3-button w3-padding-small w3-tiny w3-round-xxlarge" href="index.php?Function=allocations&Do=MOVE&From=' . $roomLabel . '">Move</a><br />' . "\n";
+          if(empty($_SESSION['AllocInfo'][$roomLabel]['Check In'])) {
+            echo "<span class='w3-khaki'>PENDING ACCEPT</span><br />\n";
+          } else {
+            echo $_SESSION['AllocInfo'][$roomLabel]['Check In'] . ' - ' . $_SESSION['AllocInfo'][$roomLabel]['Check Out'] . "<br />\n";
+          }
+        } else {
+          echo $set['Reserve'] . "<br />\n";
+          echo "<span class='w3-blue'>UNASSIGNED</span><br />\n";
+        }
+      echo "</div>\n";
+    echo "</div>\n";
     }
     echo "</div>\n";
   }
-
   echo '</div><!--close main_content div-->';
 }
 ?>

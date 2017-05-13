@@ -2334,7 +2334,7 @@ $AllocRooms = [
   ],
 ];
 
-function sendAddToHotel($room) {
+function sendChangeToHotel($room) {
 /*  Pending Function - not tested
   // send add update to the hotel
   $assignedRoomFieldId = array_search('Room Assigned', $_SESSION['definedFields']);
