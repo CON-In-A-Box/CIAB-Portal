@@ -172,20 +172,40 @@ if(!empty($_REQUEST['DeepLink'])) { ?>
       $_SESSION['AllocInfo'] = populateAllocInfo();
     }
 
+    $l=0;
+    $r=0;
+    echo "<div class='w3-container w3-cell-row'>\n";
     foreach($AllocRooms[$AllocHotels[$_REQUEST['Hotel']]['Prefix']][$_REQUEST['Floor']] as $room => $set) {
-      echo '<div class="w3-row">' . "\n";
-        echo '<div class="w3-col w3-border">' . "\n";
-          $roomLabel = $AllocHotels[$_REQUEST['Hotel']]['Prefix'] . '-' . $_REQUEST['Floor'] . $room;
-          echo $roomLabel . ' | ' . $set['Type'] . "<br />\n";
-          echo '<div class="w3-container">' . "\n";
-            if(isset($_SESSION['AllocInfo'][$roomLabel])) {
-              if(!empty($_SESSION['AllocInfo'][$roomLabel]['Hotel Override Category'])) {
-                echo $_SESSION['AllocInfo'][$roomLabel]['Hotel Override Category'] . "<br />\n";
-              } elseif(!empty($_SESSION['AllocInfo'][$roomLabel]['Hotel Qualifier'])) {
-                echo $_SESSION['AllocInfo'][$roomLabel]['Hotel Qualifier'] . "<br />\n";
-              } else {
-                echo $set['Reserve'] . "<br />\n";
-              }
+      if($room %2 == 0) { // would be on the left side - Arbitrary
+        if($l == 1) { //next row
+          $l=1;
+          $r=0;
+          echo "</div>\n<div class='w3-container w3-cell-row'>\n";
+        } else {
+          $l=1;
+        }
+        echo '<div class="w3-cell w3-half w3-border w3-left">' . "\n";
+      } else { // would be on the right side - Arbitrary
+        if($l ==1 || $r == 1) { //next row
+          $l=0;
+          $r=1;
+          echo "</div>\n<div class='w3-container w3-cell-row'>\n";
+        } else {
+          $r=1;
+        }
+        echo '<div class="w3-cell w3-half w3-border w3-right">' . "\n";
+      }
+      $roomLabel = $AllocHotels[$_REQUEST['Hotel']]['Prefix'] . '-' . $_REQUEST['Floor'] . $room;
+      echo $roomLabel . ' | ' . $set['Type'] . "<br />\n";
+      echo '<div class="w3-container">' . "\n";
+        if(isset($_SESSION['AllocInfo'][$roomLabel])) {
+          if(!empty($_SESSION['AllocInfo'][$roomLabel]['Hotel Override Category'])) {
+            echo $_SESSION['AllocInfo'][$roomLabel]['Hotel Override Category'] . "<br />\n";
+          } elseif(!empty($_SESSION['AllocInfo'][$roomLabel]['Hotel Qualifier'])) {
+            echo $_SESSION['AllocInfo'][$roomLabel]['Hotel Qualifier'] . "<br />\n";
+          } else {
+            echo $set['Reserve'] . "<br />\n";
+          }
               echo $_SESSION['AllocInfo'][$roomLabel]['First Name'] . ' ' . $_SESSION['AllocInfo'][$roomLabel]['Last Name'] . "<br />\n";
               if(empty($_SESSION['AllocInfo'][$roomLabel]['Check In'])) {
                 echo "<span class='w3-khaki'>PENDING ACCEPT</span><br />\n";
@@ -198,8 +218,8 @@ if(!empty($_REQUEST['DeepLink'])) { ?>
             }
           echo "</div>\n";
         echo "</div>\n";
-      echo "</div>\n";
     }
+    echo "</div>\n";
   }
 
   echo '</div><!--close main_content div-->';
