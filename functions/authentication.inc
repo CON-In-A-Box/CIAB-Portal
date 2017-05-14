@@ -3,10 +3,9 @@
 
 function LogoutUser() {
   // Since we check for username, clearing the session logs the user out.  Cookie has no useful info.
-  // No need to destroy the session since it will time out anyway, and has no helpful info
-  $tmp = $_SESSION['neonSession'];
+  // Because of that, we do not need to destroy the session, all the data and info is gone anyway.
+  $GLOBALS['Neon']->logout();
   $_SESSION = [];
-  $_SESSION['neonSession'] = $tmp;
 }
 
 function doUserAndPasswordMatch($user, $password) {

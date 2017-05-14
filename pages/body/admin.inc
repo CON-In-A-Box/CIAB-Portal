@@ -119,6 +119,8 @@ $arguments = [
   'firstName' => FILTER_SANITIZE_SPECIAL_CHARS,
   'lastName'  => FILTER_SANITIZE_SPECIAL_CHARS,
   'email'     => FILTER_SANITIZE_EMAIL,
+  'ID'        => FILTER_SANITIZE_SPECIAL_CHARS,
+
 ];
 if (!empty($_POST)) {
   $searchCriteria = filter_input_array( INPUT_POST, $arguments );
@@ -189,7 +191,7 @@ if ( !empty( $search['criteria'] ) ) {
       <tr>
         <td><?php echo $r['First Name']; ?> <?php echo $r['Last Name']; ?></td>
         <td>
-          <a href="https://www.z2systems.com/np/admin/account/accountDetails.do?id=<?php echo $r['Account ID']; ?>" target=_blank>
+          <a href="index.php?Function=admin&ID=<?php echo $r['Account ID']; ?>" class="w3-button">
             <?php echo $r['Account ID']; ?>
           </a>
         </td>
@@ -200,18 +202,34 @@ if ( !empty( $search['criteria'] ) ) {
   </table>
 <?php else: ?>
   <p><?php echo $message; ?></p>
-<?php endif; ?>
+<?php
+endif;
+
+if(!empty($searchCriteria['ID'])) {
+  unset($result);
+  $result = $Neon->pullIndividualAccount($searchCriteria['ID']);
+  echo '<pre>';
+  print_r($result);
+  echo '</pre>';
+}
+?>
 </div><!--close main_content div-->
 
 <!-- Debug code for admins, just in case -->
 <p></p>
-<div class="w3-bar">
-  <div class="w3-dropdown-hover">
-    <button class="w3-bar-item w3-button w3-tiny">Debug Array Information</button>
-    <div class="w3-dropdown-content w3-small">
-      <pre>
-        <?php print_r($_SESSION); ?>
-      </pre>
-    </div>
+<script>
+function myDebug() {
+    var x = document.getElementById("DebugInfo");
+    if (x.className.indexOf("w3-show") == -1) {
+        x.className += " w3-show";
+    } else {
+        x.className = x.className.replace(" w3-show", "");
+    }
+}
+</script>
+<div class="w3-dropdown-click">
+  <button class="w3-button w3-tiny" onclick="myDebug()">Debug Array Information</button>
+  <div id="DebugInfo" class="w3-dropdown-content w3-small">
+    <pre><?php print_r($_SESSION); ?></pre>
   </div>
 </div>

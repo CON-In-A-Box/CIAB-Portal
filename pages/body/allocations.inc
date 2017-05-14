@@ -1,17 +1,18 @@
 <?php
 require_once($FUNCTIONDIR . '/allocations.inc');
-if(!empty($_REQUEST['DeepLink'])) { ?>
-  <header class="w3-cell-row w3-green w3-mobile">
-    <?php require($PAGESDIR . '/base/logo.inc'); ?>
-    <div class="w3-container w3-cell w3-mobile">
-      <h2><?php echo $CONHOST . " Hotel Allocations Portal"; ?></h2>
-    </div><!--close header text div-->
-  </header><!--close header div-->
-<?php
-} else {
-  echo '<div id="main_content" class="w3-container">' . "\n";
-    if (!empty($_REQUEST['Do']) && !empty($_REQUEST['From'])) {
-      if(empty($_REQUEST['To'])) {
+echo '<div id="main_content" class="w3-container">' . "\n";
+  if(!empty($_REQUEST['DeepLink'])) { // Handle defined and allowed deeplinks
+    echo '<header class="w3-cell-row w3-green w3-mobile">';
+      require($PAGESDIR . '/base/logo.inc');
+      echo '<div class="w3-container w3-cell w3-mobile">';
+        echo '<h2>';
+          echo $CONHOST . " Hotel Allocations Portal";
+        echo '</h2>';
+      echo '</div><!--close header text div-->';
+    echo '</header><!--close header div-->';
+  } else { // Not a deeplink, So setup the regular page
+    if (!empty($_REQUEST['Do']) && $_REQUEST['Do'] == "MOVE" && !empty($_REQUEST['From'])) { // We are moving someone
+      if(empty($_REQUEST['To'])) { // Collect where we are moving them to
         echo '<div class="w3-container w3-orange">' . "\n";
           echo '<div class="w3-panel w3-center">' . "\n";
             echo 'Moving ' . $_SESSION['AllocInfo'][$_REQUEST['From']]['First Name'] . ' ' . $_SESSION['AllocInfo'][$_REQUEST['From']]['Last Name'] . ' from ' . $_REQUEST['From'] . ' to:' . "\n";
@@ -37,13 +38,102 @@ if(!empty($_REQUEST['DeepLink'])) { ?>
             echo "</div>\n";
           echo "</form>\n";
         echo "</div>\n";
-      } else {
-        // Do the move
-        
-        echo "moving";
-      }
-    } elseif (empty($_REQUEST['Hotel']) || empty($_REQUEST['Floor'])) {
+      } else { // We've got all the info, do the move
+        /* Retrieve and sanitize submitted data */
+        $arguments = [
+          'To'   => FILTER_SANITIZE_SPECIAL_CHARS,
+          'From' => FILTER_SANITIZE_SPECIAL_CHARS,
+          'Do'   => FILTER_SANITIZE_SPECIAL_CHARS,
+        ];
+        if (!empty($_POST)) {
+          $requestInfo = filter_input_array( INPUT_POST, $arguments );
+        } else {
+          $requestInfo = filter_input_array( INPUT_GET, $arguments );
+        }
 
+        // Formulate the search query
+        $assignedRoomFieldId = array_search('Room Assigned', $_SESSION['definedFields']);
+        
+        // Pull the full info of the person moving and save the current Alloc info for room we are moving to
+        $personFrom = $GLOBALS['Neon']->pullIndividualAccount($_SESSION['AllocInfo'][$requestInfo['From']]['Account ID']);
+        if(isset($_SESSION['AllocInfo'][$requestInfo['To']])) {
+          $holding = $_SESSION['AllocInfo'][$requestInfo['To']];
+        }
+
+        // Update the Room that this person is in
+        foreach ($personFrom['individualAccount']['customFieldDataList']['customFieldData'] as $key => $val) {
+          if(isset( $val['fieldId'] ) && $val['fieldId'] == $assignedRoomFieldId) {
+            $rooms = explode('|', $personFrom['individualAccount']['customFieldDataList']['customFieldData'][$key]['fieldValue']);
+            $newRooms = [];
+            foreach($rooms as $room) {
+              if($room == $requestInfo['From']) {
+                $newRooms[] = $requestInfo['To'];
+              } else {
+                $newRooms[] = $room;
+              }
+            }
+            $rooms = implode('|', $newRooms);
+            $personFrom['individualAccount']['customFieldDataList']['customFieldData'][$key]['fieldValue'] = $rooms;
+            unset($room);
+            unset($rooms);
+            unset($newRooms);
+          }
+        }
+        
+        // Push out the persons new info
+        if($GLOBALS['Neon']->pushIndividualAccount($personFrom)) {
+          $_SESSION['AllocInfo'][$requestInfo['To']] = $_SESSION['AllocInfo'][$requestInfo['From']];
+          echo '<p class="w3-panel w3-green">';
+            echo 'Successfully moved ' . $_SESSION['AllocInfo'][$requestInfo['To']]['First Name'] . ' ' . $_SESSION['AllocInfo'][$requestInfo['To']]['Last Name'] . ' from ' . $requestInfo['From'] . ' to ' . $requestInfo['To'];
+          echo '</p>';
+          
+          // If there was someone in the room moved to, swap them
+          if(isset($holding)) {
+            $personTo = $GLOBALS['Neon']->pullIndividualAccount($holding['Account ID']);
+            
+            // Swap and Update the Room that this person is in
+            foreach ($personTo['individualAccount']['customFieldDataList']['customFieldData'] as $key => $val) {
+              if(isset($val['fieldId']) && $val['fieldId'] == $assignedRoomFieldId) {
+                $rooms = explode('|', $personTo['individualAccount']['customFieldDataList']['customFieldData'][$key]['fieldValue']);
+                $newRooms = [];
+                foreach($rooms as $room) {
+                  if($room == $requestInfo['To']) {
+                    $newRooms[] = $requestInfo['From'];
+                  } else {
+                    $newRooms[] = $room;
+                  }
+                }
+                $rooms = implode('|', $newRooms);
+                $personTo['individualAccount']['customFieldDataList']['customFieldData'][$key]['fieldValue'] = $rooms;
+                unset($room);
+                unset($rooms);
+                unset($newRooms);
+              }
+            }
+
+            // Push out the persons new info
+            if($GLOBALS['Neon']->pushIndividualAccount($personTo)) {
+              $_SESSION['AllocInfo'][$requestInfo['From']] = $holding;
+              echo '<p class="w3-panel w3-yellow">';
+                echo 'Successfully moved ' . $_SESSION['AllocInfo'][$requestInfo['From']]['First Name'] . ' ' . $_SESSION['AllocInfo'][$requestInfo['From']]['Last Name'] . ' from ' . $requestInfo['To'] . ' to ' . $requestInfo['From'];
+              echo '</p>';
+            }
+          } else { // No one in the room, we can just clear the old one.
+            unset($_SESSION['AllocInfo'][$requestInfo['From']]);
+          }
+        }
+        $roomSetFrom = explode('-', $requestInfo['From']);
+        $hotelFrom = array_search($roomSetFrom[0], array_column($AllocHotels, 'Prefix'));
+        $floorFrom = substr($roomSetFrom[1], 0, 2);
+        $roomSetTo = explode('-', $requestInfo['To']);
+        $hotelTo = array_search($roomSetTo[0], array_column($AllocHotels, 'Prefix'));
+        $floorTo = substr($roomSetTo[1], 0, 2);
+        echo '<div class="w3-bar-block">';
+          echo '<a href="index.php?Function=allocations&Hotel=' . $hotelFrom . '&Floor=' . $floorFrom . '" class="w3-button w3-half">Return to floor ' . $floorFrom . '</a>';
+          echo '<a href="index.php?Function=allocations&Hotel=' . $hotelTo . '&Floor=' . $floorTo . '" class="w3-button w3-half">Goto floor ' . $floorTo . '</a>';
+        echo '</div>';
+      }
+    } elseif (empty($_REQUEST['Hotel']) || empty($_REQUEST['Floor'])) { // Default page - Give search, and list hotel floors. Waitlist?
       /* Retrieve and sanitize POST data */
       $arguments = [
         'firstName' => FILTER_SANITIZE_SPECIAL_CHARS,
@@ -153,13 +243,13 @@ if(!empty($_REQUEST['DeepLink'])) { ?>
                 <div class="w3-quarter"><?php echo $r['First Name'] . " " . $r['Last Name']; ?></div>
                 <div class="w3-quarter"><?php echo $r['Email 1']; ?></div>
                 <?php
-                  if(empty($r['Lottery Status'])) {
-                    echo '<div class="w3-quarter">Not Entered</div>' . "\n";
-                  } elseif($r['Lottery Status'] == "Entered") {
-                    echo '<div class="w3-quarter">On Wait List' . "</div>\n";
-                  } else {
-                    echo '<div class="w3-quarter">' . $r['Lottery Status'] . "</div>\n";
-                  }
+                if(empty($r['Lottery Status'])) {
+                  echo '<div class="w3-quarter">Not Entered</div>' . "\n";
+                } elseif($r['Lottery Status'] == "Entered") {
+                  echo '<div class="w3-quarter">On Wait List' . "</div>\n";
+                } else {
+                  echo '<div class="w3-quarter">' . $r['Lottery Status'] . "</div>\n";
+                }
                 ?>
                 <div class="w3-quarter"><?php echo $r['Room Assigned']; ?></div>
               </div>
@@ -173,7 +263,7 @@ if(!empty($_REQUEST['DeepLink'])) { ?>
             echo "</div>\n";
           echo "</div>\n";
         }
-        echo "</div>\n";
+      echo "</div>\n";
       echo "<hr>\n";
       foreach ($AllocHotels as $hotel => $set) {
         echo '<div class="w3-row w3-black">' . "\n";
@@ -182,78 +272,79 @@ if(!empty($_REQUEST['DeepLink'])) { ?>
           $i=0;
           echo '<div class="w3-container">' . "\n";
             echo "<div class='w3-row'>\n";
-          foreach ($AllocRooms[$set['Prefix']] as $floor => $set) {
-            if($i == 4) {
-              $i=0;
-              echo "</div>\n";
-              echo '<div class="w3-row">' . "\n";
-            }
-            echo "<a href='index.php?Function=allocations&Hotel=" . $hotel . "&Floor=" . $floor . "'" . ' class="w3-col s3 m3 l3 w3-button w3-border">' . $floor . "</a>\n";
-            $i++;
-          }
+              foreach ($AllocRooms[$set['Prefix']] as $floor => $set) {
+                if($i == 4) {
+                  $i=0;
+                  echo "</div>\n";
+                  echo '<div class="w3-row">' . "\n";
+                }
+                echo "<a href='index.php?Function=allocations&Hotel=" . $hotel . "&Floor=" . $floor . "'" . ' class="w3-col s3 m3 l3 w3-button w3-border">' . $floor . "</a>\n";
+                $i++;
+              }
+            echo "</div>\n";
           echo "</div>\n";
         echo "</div>\n";
-      echo "</div>\n";
-    }
-  } else {
-    echo '<div class="w3-row">' . "\n";
-      echo '<div class="w3-col w3-button w3-black w3-center">' . $_REQUEST['Hotel'] . ", Floor " . $_REQUEST['Floor'] . "</div>\n";
-    echo "</div>\n";
-    
-    if(empty($_SESSION['AllocInfo'])) {
-      $_SESSION['AllocInfo'] = populateAllocInfo();
-    }
-    $l=0;
-    $r=0;
-    echo "<div class='w3-container w3-cell-row'>\n";
-    foreach($AllocRooms[$AllocHotels[$_REQUEST['Hotel']]['Prefix']][$_REQUEST['Floor']] as $room => $set) {
-      if($room %2 == 0) { // would be on the left side - Arbitrary
-        if($l == 1) { //next row
-          $l=1;
-          $r=0;
-          echo "</div>\n<div class='w3-container w3-cell-row'>\n";
-        } else {
-          $l=1;
-        }
-        echo '<div class="w3-cell w3-half w3-border w3-left">' . "\n";
-      } else { // would be on the right side - Arbitrary
-        if($l ==1 || $r == 1) { //next row
-          $l=0;
-          $r=1;
-          echo "</div>\n<div class='w3-container w3-cell-row'>\n";
-        } else {
-          $r=1;
-        }
-        echo '<div class="w3-cell w3-half w3-border w3-right">' . "\n";
       }
-      $roomLabel = $AllocHotels[$_REQUEST['Hotel']]['Prefix'] . '-' . $_REQUEST['Floor'] . $room;
-      echo $roomLabel . ' | ' . $set['Type'] . "<br />\n";
-      echo '<div class="w3-container">' . "\n";
-        if(isset($_SESSION['AllocInfo'][$roomLabel])) {
-          if(!empty($_SESSION['AllocInfo'][$roomLabel]['Hotel Override Category'])) {
-            echo $_SESSION['AllocInfo'][$roomLabel]['Hotel Override Category'] . "<br />\n";
-          } elseif(!empty($_SESSION['AllocInfo'][$roomLabel]['Hotel Qualifier'])) {
-            echo $_SESSION['AllocInfo'][$roomLabel]['Hotel Qualifier'] . "<br />\n";
-          } else {
-            echo $set['Reserve'] . "<br />\n";
-          }
+    } else { // Give a floor Map
+      echo '<div class="w3-row">' . "\n";
+        echo '<div class="w3-col w3-button w3-black w3-center">' . $_REQUEST['Hotel'] . ", Floor " . $_REQUEST['Floor'] . "</div>\n";
+      echo "</div>\n";
 
-          echo $_SESSION['AllocInfo'][$roomLabel]['First Name'] . ' ' . $_SESSION['AllocInfo'][$roomLabel]['Last Name'] . "\n";
-          echo '<a class="w3-button w3-padding-small w3-tiny w3-round-xxlarge" href="index.php?Function=allocations&Do=MOVE&From=' . $roomLabel . '">Move</a><br />' . "\n";
-          if(empty($_SESSION['AllocInfo'][$roomLabel]['Check In'])) {
-            echo "<span class='w3-khaki'>PENDING ACCEPT</span><br />\n";
-          } else {
-            echo $_SESSION['AllocInfo'][$roomLabel]['Check In'] . ' - ' . $_SESSION['AllocInfo'][$roomLabel]['Check Out'] . "<br />\n";
+      // Verify we have Current Allocation Information to work with
+      unset($_SESSION['AllocInfo']);
+      $_SESSION['AllocInfo'] = populateAllocInfo();
+      
+      $l=0;
+      $r=0;
+      echo "<div class='w3-container w3-cell-row'>\n";
+        foreach($AllocRooms[$AllocHotels[$_REQUEST['Hotel']]['Prefix']][$_REQUEST['Floor']] as $room => $set) {
+          if($room %2 == 0) { // would be on the left side - Arbitrary
+            if($l == 1) { //next row
+              $l=1;
+              $r=0;
+              echo "</div>\n<div class='w3-container w3-cell-row'>\n";
+            } else {
+              $l=1;
+            }
+            echo '<div class="w3-cell w3-half w3-border w3-left">' . "\n";
+          } else { // would be on the right side - Arbitrary
+            if($l ==1 || $r == 1) { //next row
+              $l=0;
+              $r=1;
+              echo "</div>\n<div class='w3-container w3-cell-row'>\n";
+            } else {
+              $r=1;
+            }
+            echo '<div class="w3-cell w3-half w3-border w3-right">' . "\n";
           }
-        } else {
-          echo $set['Reserve'] . "<br />\n";
-          echo "<span class='w3-blue'>UNASSIGNED</span><br />\n";
+            $roomLabel = $AllocHotels[$_REQUEST['Hotel']]['Prefix'] . '-' . $_REQUEST['Floor'] . $room;
+            echo $roomLabel . ' | ' . $set['Type'] . "<br />\n";
+            echo '<div class="w3-container">' . "\n";
+              if(isset($_SESSION['AllocInfo'][$roomLabel])) {
+                if(!empty($_SESSION['AllocInfo'][$roomLabel]['Hotel Override Category'])) {
+                  echo $_SESSION['AllocInfo'][$roomLabel]['Hotel Override Category'] . "<br />\n";
+                } elseif(!empty($_SESSION['AllocInfo'][$roomLabel]['Hotel Qualifier'])) {
+                  echo $_SESSION['AllocInfo'][$roomLabel]['Hotel Qualifier'] . "<br />\n";
+                } else {
+                  echo $set['Reserve'] . "<br />\n";
+                }
+
+                echo $_SESSION['AllocInfo'][$roomLabel]['First Name'] . ' ' . $_SESSION['AllocInfo'][$roomLabel]['Last Name'] . "\n";
+                echo '<a class="w3-button w3-padding-small w3-tiny w3-round-xxlarge" href="index.php?Function=allocations&Do=MOVE&From=' . $roomLabel . '">Move</a><br />' . "\n";
+                if(empty($_SESSION['AllocInfo'][$roomLabel]['Check In'])) {
+                  echo "<span class='w3-khaki'>PENDING ACCEPT</span><br />\n";
+                } else {
+                  echo $_SESSION['AllocInfo'][$roomLabel]['Check In'] . ' - ' . $_SESSION['AllocInfo'][$roomLabel]['Check Out'] . "<br />\n";
+                }
+              } else {
+                echo $set['Reserve'] . "<br />\n";
+                echo "<span class='w3-blue'>UNASSIGNED</span><br />\n";
+              }
+            echo "</div>\n";
+          echo "</div>\n";
         }
       echo "</div>\n";
-    echo "</div>\n";
     }
-    echo "</div>\n";
   }
-  echo '</div><!--close main_content div-->';
-}
+echo '</div><!--close main_content div-->';
 ?>

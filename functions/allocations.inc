@@ -2441,6 +2441,7 @@ function updateRoomsInfo($page) {
 
     foreach($result['searchResults'] as $val) {
       $rooms = explode('|', $val['Room Assigned']);
+      unset($val['Room Assigned']); // Don't keep the raw room info in alloc, if changes happen, it would be wrong until refresh
       foreach($rooms as $room) {
         $return['list'][$room] = $val;
       }
@@ -2448,6 +2449,7 @@ function updateRoomsInfo($page) {
     }
   } else {
     sendError("Could not retrieve RoomList " . __FILE__, $result);
+    $return = FALSE;
   }
   return $return;
 }

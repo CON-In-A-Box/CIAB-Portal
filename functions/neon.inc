@@ -9,16 +9,10 @@
  * Pulled 12/20/2015
  */
 
-$_SESSION['neonSession'] = null;
-
 class Neon 
 {
-  /*
-   * Abstracted HTTP request, used by other class methods
-   */
-  private function api($request) {
-    $method = $request['method'];
-    $parameters = $request['parameters'];
+  // Abstracted HTTP request, used by other class methods
+  private function apiCore($method, $parameters) {
     $url = 'https://api.neoncrm.com/neonws/services/api/' . $method;
     $ch = curl_init();
     curl_setopt($ch,CURLOPT_URL, $url);
@@ -29,12 +23,47 @@ class Neon
     $result = curl_exec($ch);
     curl_close($ch);
     $result = json_decode($result, TRUE);
+    reset($result);
+    $first_key = key($result);
+    $result = $result[$first_key];
+    return $result;
+  }
+
+  // Calls to NeonCRM go via this api except to login
+  private function api($request) {
+    // If we don't have a NeonCRM Session, get logged in
+    if(!$this->getSession()) {
+      $this->login();
+    }
+    // Set up to make the NeonCRM call
+    $method = $request['method'];
+    $parameters = 'responseType=json&userSessionId=' . $this->getSession();
+    $parameters .= $request['parameters'];
+    // Make the call
+    $result = $this->apiCore($method, $parameters);
+    // Check for obvious errors, maybe we timed out?
+    if($result['operationResult'] != 'SUCCESS') {
+      switch($result['errors']['error'][0]['errorCode']) {
+        case "2": // NeonCRM Crashed, we can't serive this call
+          sendError("Could not login to the NeonCRM System with OrgID " . $NEONID . ".  Check the login/API settings in " . $SITECONFIG . ". Error from " . __FILE__, $result);
+          die("Unable to connect to NeonCRM");
+        break;
+        case "4": // Invalid Session, try logging in again and rerun the call
+          unset($_SESSION['neonSession']);
+          unset($result);
+          $this->login();
+          $result = $this->apiCore($method, $parameters);
+        break;
+        case "5": // API Permissions
+          sendError($NEONID . " does not have enough permissions to make this call.  Consult with your administrator. Error from " . __FILE__, $result);
+          die("API Permissions Failure");
+        break;
+      }
+    }
     return $result;
   }
   
-  /*
-   * Retrieves the session ID
-   */
+  // Retrieves the session ID
   private function getSession() {
     if (isset($_SESSION['neonSession'])) {
       return $_SESSION['neonSession'];
@@ -42,36 +71,41 @@ class Neon
       return null;
     }
   }
-  
-  /*
-   * Saves the session ID
-   */
+
+  // Saves the session ID
   private function setSession($session) {
     $_SESSION['neonSession'] = $session;
   }
-  
-  /*
-   * Executes a login and stores the Session ID.
-   */
-  public function login($keys) {
-    if (isset($keys['orgId']) && isset($keys['apiKey'])) {
-      $request = array();
-      $request['method'] = 'common/login';
-      $request['parameters'] = '&login.apiKey=' . $keys['apiKey'] . '&login.orgid=' . $keys['orgId'];
-      $response = $this->api($request);
-      reset($response);
-      $first_key = key($response);
-      $response = $response[$first_key];
-      if ($response['operationResult'] == 'SUCCESS') {
+
+  // Executes a login and stores the Session ID.
+  public function login() {
+    if (isset($GLOBALS['NEONID']) && isset($GLOBALS['NEONKEY'])) {
+      $method = 'common/login';
+      $parameters = '&login.apiKey=' . $GLOBALS['NEONKEY'] . '&login.orgid=' . $GLOBALS['NEONID'];
+      $response = $this->apiCore($method, $parameters);
+      if($response['operationResult'] == 'SUCCESS') {
         $this->setSession($response['userSessionId']);
-        return $response;
-      } 
-      else {
-        return $response;
-      } 
-    } 
-    else {
-      return null;
+        return TRUE;
+      } else {
+        if($response['errors']['error'][0]['errorCode'] == "2") {
+          echo "NeonCRM seems to be down, please try again later.";
+        } else {
+          sendError("Could not login to the NeonCRM System with OrgID " . $NEONID . ".  Check the login/API settings in " . $SITECONFIG . ". Error from " . __FILE__, $response);
+          return $response;
+        }
+        die("Unable to connect to NeonCRM");
+      }
+    } else {
+      sendError("NeonCRM credentials have not been set yet.  Check the login/API settings in " . $SITECONFIG . ".  Error From " . __FILE__, $response);
+      die("CIAB Not Configured");
+    }
+  }
+
+  // Hard and dirty Logout (invalidate session) from Neon
+  public function logout() {
+    if($this->getSession()) {
+      $this->go(['method' => 'common/logout']);
+      unset($_SESSION['neonSession']);
     }
   }
 
@@ -83,15 +117,12 @@ class Neon
       $str = null;
       if (isset($request['parameters'])) {
         $str = http_build_query($request['parameters']);
-        }
-      $parameters = 'responseType=json&userSessionId=' . $this->getSession() . '&' . $str;
+      }
+      $parameters = '&' . $str;
       $build = array();
       $build['method'] = $request['method'];
       $build['parameters'] = $parameters;
       $go = $this->api($build);
-      reset($go);
-      $first_key = key($go);
-      $go = $go[$first_key];
       return $go;
     }
   }
@@ -109,14 +140,11 @@ class Neon
         $str = http_build_query($request['parameters']);
         $str = preg_replace('/%5B[0-9]+%5D/simU', '', $str);
       }
-      $parameters = 'responseType=json&userSessionId=' . $this->getSession() . '&' . $str;
+      $parameters = '&' . $str;
       $build = array();
       $build['method'] = $request['method'];
       $build['parameters'] = $parameters;
       $go = $this->api($build);
-      reset($go);
-      $first_key = key($go);
-      $go = $go[$first_key];
       return $go;
     }
   }
@@ -165,8 +193,7 @@ class Neon
         $paging = $paging . '&page.sortDirection=' . $request['page']['sortDirection'];
         }
 
-      $addon = 'responseType=json&userSessionId=' . $this->getSession();
-      $parameters = $addon . $criteria . $standard . $custom . $paging;
+      $parameters = $criteria . $standard . $custom . $paging;
       $build = array();
       $build['method'] = $request['method'];
       $build['parameters'] = $parameters;
@@ -182,9 +209,6 @@ class Neon
    * Parses the server response for list requests
    */
   private function parseListRequest($data) {
-    reset($data);
-    $first_key = key($data);
-    $data = $data[$first_key];
     $result = array();
     if ($data['operationResult'] == 'SUCCESS') {
       $people = array();
@@ -222,23 +246,60 @@ class Neon
   public function rebuildNeonData() {
     ##==## Boy is this gonna be fun!
   }
+  
+  public function pullIndividualAccount($accountId) {
+    // Refresh Account info from Neon to verify update
+    $request = [
+      'method' => 'account/retrieveIndividualAccount',
+      'parameters' => [
+        'accountId' => $accountId,
+      ],
+    ];
+
+    $result = $this->go($request);
+    if ( isset( $result['operationResult'] ) && $result['operationResult'] == 'SUCCESS' ) {
+      return $result;
+    } else {
+      sendError("Could not retrieve IndividualAccount for account " . $accountId . " in " . __FILE__, $result);
+      return null;
+    }
+  }
+
+  public function pushIndividualAccount($pulledInfo) {
+    $request = [
+      'method' => 'account/editIndividualAccount',
+      'parameters' => [
+        'individualAccount.accountId' => $pulledInfo['individualAccount']['accountId'],
+        'individualAccount.primaryContact.contactId' => $pulledInfo['individualAccount']['primaryContact']['contactId'],
+        'individualAccount.primaryContact.firstName' => $pulledInfo['individualAccount']['primaryContact']['firstName'],
+        'individualAccount.primaryContact.lastName' => $pulledInfo['individualAccount']['primaryContact']['lastName'],
+      ],
+    ];
+
+    foreach ($pulledInfo['individualAccount']['customFieldDataList']['customFieldData'] as $key => $val) {
+      $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldId[' . $key . ']'] = $val['fieldId'];
+      if ( isset( $val['fieldValue'] )) {
+        $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldOptionId[' . $key . ']'] = '';
+        $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldValue[' . $key . ']'] = $val['fieldValue'];
+      } elseif ( isset( $val['fieldOptionId'] )) {
+        $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldOptionId[' . $key . ']'] = $val['fieldOptionId'];
+        $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldValue[' . $key . ']'] = '';
+      }
+    }
+
+    $result = $this->go1($request);
+
+    if ( isset( $result['operationResult'] ) && $result['operationResult'] == 'SUCCESS' ) {
+      return $result;
+    } else {
+      sendError("Could not retrieve IndividualAccount for account " . $accountId . " in " . __FILE__, $result);
+      return null;
+    }
+  }
 }
 
 /* Start the NeonCRM Session */
 $Neon = new Neon();
-$keys = [
-  'orgId'=>$NEONID,
-  'apiKey'=>$NEONKEY,
-  ]; 
-$result = $Neon->login($keys);
-
-if ($result['operationResult'] != 'SUCCESS') {
-  echo "Failed to login to the NeonCRM System with OrgID " . $NEONID . ".  Check the login/API settings in " . $SITECONFIG . "!  Error returned: ";
-  echo "<pre>";
-    print_r($result);
-  echo "</pre>";
-  die();
-}
 
 // Support DeepLinks by testing
 function validateDeepLink($deepLinkId) {
@@ -252,14 +313,7 @@ function validateDeepLink($deepLinkId) {
 
 function buildSessionData($accountId) {
   // Refresh Account info from Neon to verify update
-  $request = [
-    'method' => 'account/retrieveIndividualAccount',
-    'parameters' => [
-      'accountId' => $accountId,
-    ],
-  ];
-  
-  $result = $GLOBALS['Neon']->go($request);
+  $result = $GLOBALS['Neon']->pullIndividualAccount($accountId);
   if ( isset( $result['operationResult'] ) && $result['operationResult'] == 'SUCCESS' ) {
     $_SESSION['accountInfo'] = $result;
     $_SESSION['contactId'] = &$_SESSION['accountInfo']['individualAccount']['primaryContact']['contactId'];
