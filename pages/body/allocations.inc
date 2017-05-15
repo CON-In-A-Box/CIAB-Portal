@@ -32,7 +32,15 @@ echo '<div id="main_content" class="w3-container">' . "\n";
               foreach($AllocRooms[$roomSet[0]] as $floor => $rooms) {
                 foreach($rooms as $room => $set) {
                   $roomLabel = $roomSet[0] . '-' . $floor . $room;
-                  echo '<option value="' . $roomLabel . '">' . $roomLabel . "</option>\n";
+                  echo '<option value="' . $roomLabel . '">' . $roomLabel;
+                  if(isset($_SESSION['AllocInfo'][$roomLabel])) {
+                    echo ' - ' . $_SESSION['AllocInfo'][$roomLabel]['First Name'] . ' ' . $_SESSION['AllocInfo'][$roomLabel]['Last Name'];
+                  } else {
+                    if(!empty($set['Reserve'])) {
+                      echo ' (' . $set['Reserve'] . ')';
+                    }
+                  }
+                  echo "</option>\n";
                 }
               }
             echo "</select>\n";
