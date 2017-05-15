@@ -44,7 +44,7 @@ class Neon
     // Check for obvious errors, maybe we timed out?
     if($result['operationResult'] != 'SUCCESS') {
       switch($result['errors']['error'][0]['errorCode']) {
-        case "2": // NeonCRM Crashed, we can't serive this call
+        case "2": // NeonCRM Crashed, we can't serve this call
           sendError("Could not login to the NeonCRM System with OrgID " . $NEONID . ".  Check the login/API settings in " . $SITECONFIG . ". Error from " . __FILE__, $result);
           die("Unable to connect to NeonCRM");
         break;
@@ -52,6 +52,8 @@ class Neon
           unset($_SESSION['neonSession']);
           unset($result);
           $this->login();
+          $parameters = 'responseType=json&userSessionId=' . $this->getSession(); // rebuild with new session id
+          $parameters .= $request['parameters'];
           $result = $this->apiCore($method, $parameters);
         break;
         case "5": // API Permissions
@@ -295,6 +297,109 @@ class Neon
       sendError("Could not retrieve IndividualAccount for account " . $accountId . " in " . __FILE__, $result);
       return null;
     }
+  }
+  
+  public function doGeneralSearch() {
+    /* Retrieve and sanitize POST data */
+    $arguments = [
+      'firstName' => FILTER_SANITIZE_SPECIAL_CHARS,
+      'lastName'  => FILTER_SANITIZE_SPECIAL_CHARS,
+      'To'        => FILTER_SANITIZE_SPECIAL_CHARS,
+      'From'      => FILTER_SANITIZE_SPECIAL_CHARS,
+      'Do'        => FILTER_SANITIZE_SPECIAL_CHARS,
+      'email'     => FILTER_SANITIZE_EMAIL,
+    ];
+    if (!empty($_POST)) {
+      $searchCriteria = filter_input_array( INPUT_POST, $arguments );
+    } else {
+      $searchCriteria = filter_input_array( INPUT_GET, $arguments );
+    }
+
+    // Formulate the search query
+    $assignedRoomFieldId   = array_search('Room Assigned', $_SESSION['definedFields']);
+    $overrideCatFieldId    = array_search('Hotel Override Category', $_SESSION['definedFields']);
+    $overrideRoomFieldId   = array_search('Hotel Override', $_SESSION['definedFields']);
+    $lotteryStatusFieldId  = array_search('Lottery Status', $_SESSION['definedFields']);
+    $qualifierFieldId      = array_search('Hotel Qualifier', $_SESSION['definedFields']);
+    $roomPreferenceFieldId = array_search('Bed Preference', $_SESSION['definedFields']);
+    $checkInFieldId        = array_search('Check In', $_SESSION['definedFields']);
+    $checkOutFieldId       = array_search('Check Out', $_SESSION['definedFields']);
+    $other1FieldId         = array_search('Other In Room 1', $_SESSION['definedFields']);
+    $other2FieldId         = array_search('Other In Room 2', $_SESSION['definedFields']);
+    $other3FieldId         = array_search('Other In Room 3', $_SESSION['definedFields']);
+
+    $search = [ 
+      'method' => 'account/listAccounts', 
+      'columns' => [
+        'standardFields' => ['Account ID', 'First Name', 'Last Name', 'Email 1', 'City', 'State'],
+        'customFields' => [
+          $assignedRoomFieldId,
+          $overrideCatFieldId,
+          $overrideRoomFieldId,
+          $lotteryStatusFieldId,
+          $qualifierFieldId,
+          $roomPreferenceFieldId,
+          $checkInFieldId,
+          $checkOutFieldId,
+          $other1FieldId,
+          $other2FieldId,
+          $other3FieldId,
+        ],
+      ],
+      'page' => [
+        'currentPage' => 1,
+        'pageSize' => 200,
+        'sortColumn' => 'Last Name',
+        'sortDirection' => 'ASC',
+      ],
+    ];
+
+    // Some search criteria are variable based on our POST data. Add them to the query if applicable
+    if ( isset( $searchCriteria['firstName'] ) && !empty( $searchCriteria['firstName'] ) ) {
+      $search['criteria'][] = ['First Name', 'EQUAL', $searchCriteria['firstName']];
+    }
+    if ( isset( $searchCriteria['lastName'] ) && !empty( $searchCriteria['lastName'] ) ) {
+      $search['criteria'][] = ['Last Name', 'EQUAL', $searchCriteria['lastName']];
+    }
+    if ( isset( $searchCriteria['email'] ) && !empty( $searchCriteria['email'] ) ) {
+      $search['criteria'][] = ['Email', 'EQUAL', $searchCriteria['email']];
+    }
+
+    // If there are search criteria present, execute the search query
+    if ( !empty( $search['criteria'] ) ) {
+      $result = $GLOBALS['Neon']->search($search);
+      $result['message'] = 'No results match your search.';
+    } else {
+      $result = [];
+      $result['message'] = 'You must specify search criteria.';
+    }
+
+    echo '<form action="index.php?Function=' . $_REQUEST['Function'] . '" method="POST">';
+      foreach($searchCriteria as $field => $value) {
+        if(!empty($value)) {
+          echo '<input type=hidden name="' . $field . '" value="' . $value . '">';
+        }
+      }
+      echo '<div class="w3-row w3-green">';
+        echo '<div>';
+          echo 'NeonCRM Account Search';
+          echo '<button class="w3-button w3-brown w3-right" style="padding: 0px 16px;">Search</button>';
+        echo '</div>';
+        echo '<div class="w3-container">';
+          echo '<div class="w3-half">';
+            echo '<input type="text" class="w3-input w3-border" name="firstName" placeholder="First Name" value="' . htmlentities( $searchCriteria['firstName']) . '" />';
+          echo '</div>';
+          echo '<div class="w3-half">';
+            echo '<input type="text" class="w3-input w3-border" name="lastName" placeholder="Last Name" value="' . htmlentities( $searchCriteria['lastName']) . '" />';
+          echo '</div>';
+          echo '<div>';
+            echo '<input type="text" class="w3-input w3-border" name="email" placeholder="Email" value="' . htmlentities( $searchCriteria['email']) . '" />';
+          echo '</div>';
+          echo '<button class="w3-button w3-block w3-brown">Search</button>';
+        echo '</div>';
+      echo '</div>';
+    echo '</form>';
+    return $result;
   }
 }
 

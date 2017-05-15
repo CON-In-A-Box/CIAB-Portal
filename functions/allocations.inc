@@ -918,67 +918,67 @@ $AllocRooms = [
       ],
       "06" => [
         "Type" => "Double",
-        "Reserve" => "Parties",
+        "Reserve" => "",
       ],
       "07" => [
         "Type" => "Double",
-        "Reserve" => "Parties",
+        "Reserve" => "",
       ],
       "08" => [
         "Type" => "Double",
-        "Reserve" => "Parties",
+        "Reserve" => "",
       ],
       "09" => [
         "Type" => "Double",
-        "Reserve" => "Parties",
+        "Reserve" => "",
       ],
       "10" => [
         "Type" => "Double",
-        "Reserve" => "Parties",
+        "Reserve" => "",
       ],
       "11" => [
         "Type" => "Double",
-        "Reserve" => "Parties",
+        "Reserve" => "",
       ],
       "12" => [
         "Type" => "Double",
-        "Reserve" => "Parties",
+        "Reserve" => "",
       ],
       "13" => [
         "Type" => "Double",
-        "Reserve" => "Parties",
+        "Reserve" => "",
       ],
       "14" => [
         "Type" => "Double",
-        "Reserve" => "Parties",
+        "Reserve" => "",
       ],
       "15" => [
         "Type" => "Double",
-        "Reserve" => "Parties",
+        "Reserve" => "",
       ],
       "16" => [
         "Type" => "Double",
-        "Reserve" => "Parties",
+        "Reserve" => "",
       ],
       "17" => [
         "Type" => "Double",
-        "Reserve" => "Parties",
+        "Reserve" => "",
       ],
       "18" => [
         "Type" => "Double",
-        "Reserve" => "Parties",
+        "Reserve" => "",
       ],
       "19" => [
         "Type" => "Double",
-        "Reserve" => "Parties",
+        "Reserve" => "",
       ],
       "20" => [
         "Type" => "Double",
-        "Reserve" => "Parties",
+        "Reserve" => "",
       ],
       "22" => [
         "Type" => "Double",
-        "Reserve" => "Parties",
+        "Reserve" => "",
       ],
       "51" => [
         "Type" => "Double",
@@ -1334,7 +1334,7 @@ $AllocRooms = [
       ],
       "03" => [
         "Type" => "King",
-        "Reserve" => "InvParticipant",
+        "Reserve" => "",
       ],
       "04" => [
         "Type" => "Double",
@@ -1460,7 +1460,7 @@ $AllocRooms = [
       ],
       "13" => [
         "Type" => "King",
-        "Reserve" => "InvParticipant",
+        "Reserve" => "",
       ],
       "14" => [
         "Type" => "Double",
@@ -1476,7 +1476,7 @@ $AllocRooms = [
       ],
       "17" => [
         "Type" => "King",
-        "Reserve" => "InvParticipant",
+        "Reserve" => "",
       ],
       "18" => [
         "Type" => "Double",
@@ -1522,7 +1522,7 @@ $AllocRooms = [
       ],
       "07" => [
         "Type" => "King",
-        "Reserve" => "InvParticipant",
+        "Reserve" => "",
       ],
       "08" => [
         "Type" => "Double",
@@ -1608,7 +1608,7 @@ $AllocRooms = [
       ],
       "07" => [
         "Type" => "King",
-        "Reserve" => "InvParticipant",
+        "Reserve" => "",
       ],
       "08" => [
         "Type" => "Double",
@@ -1632,7 +1632,7 @@ $AllocRooms = [
       ],
       "13" => [
         "Type" => "King",
-        "Reserve" => "IWBlock",
+        "Reserve" => "",
       ],
       "14" => [
         "Type" => "Double",
@@ -1866,7 +1866,7 @@ $AllocRooms = [
       ],
       "07" => [
         "Type" => "King",
-        "Reserve" => "Parties",
+        "Reserve" => "",
       ],
       "09" => [
         "Type" => "King",
@@ -1972,7 +1972,7 @@ $AllocRooms = [
       ],
       "13" => [
         "Type" => "King",
-        "Reserve" => "InvParticipant",
+        "Reserve" => "",
       ],
       "14" => [
         "Type" => "Double",
@@ -2096,7 +2096,7 @@ $AllocRooms = [
       ],
       "02" => [
         "Type" => "Double",
-        "Reserve" => "InvParticipant",
+        "Reserve" => "",
       ],
       "03" => [
         "Type" => "King",
@@ -2148,7 +2148,7 @@ $AllocRooms = [
       ],
       "15" => [
         "Type" => "King",
-        "Reserve" => "InvParticipant",
+        "Reserve" => "",
       ],
       "16" => [
         "Type" => "King",
