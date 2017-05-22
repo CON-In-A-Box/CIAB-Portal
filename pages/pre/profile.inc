@@ -16,6 +16,7 @@
       'email3'             => FILTER_SANITIZE_EMAIL,
       'phone1'             => FILTER_SANITIZE_SPECIAL_CHARS,
       'phone2'             => FILTER_SANITIZE_SPECIAL_CHARS,
+      'conComDisplayPhone' => FILTER_SANITIZE_SPECIAL_CHARS,
       'addressLine1'       => FILTER_SANITIZE_SPECIAL_CHARS,
       'addressLine2'       => FILTER_SANITIZE_SPECIAL_CHARS,
       'city'               => FILTER_SANITIZE_SPECIAL_CHARS,
@@ -64,7 +65,8 @@
 
     $preferredFirstName = array_search('Preferred First Name', $_SESSION['definedFields']);
     $preferredLastName = array_search('Preferred Last Name', $_SESSION['definedFields']);
-    
+    $cvgConComPhoneDisplay = array_search('CVGConCom Publish Phone', $_SESSION['definedFields']);
+
     $i = count($_SESSION['accountInfo']['individualAccount']['customFieldDataList']['customFieldData']);
     // Verify fieldId is in place - potential for manual add to lottery or override
     $key = array_search($preferredFirstName, array_column($_SESSION['accountInfo']['individualAccount']['customFieldDataList']['customFieldData'], 'fieldId'));
@@ -80,9 +82,16 @@
       $_SESSION['accountInfo']['individualAccount']['customFieldDataList']['customFieldData'][$i]['fieldValue'] = $updateData['preferredLastName'];
       $i++;
     }
+    $key = array_search($cvgConComPhoneDisplay, array_column($_SESSION['accountInfo']['individualAccount']['customFieldDataList']['customFieldData'], 'fieldId'));
+    if($key === FALSE && !empty($updateData['conComDisplayPhone'])) {
+      $_SESSION['accountInfo']['individualAccount']['customFieldDataList']['customFieldData'][$i]['fieldId'] = $cvgConComPhoneDisplay;
+      $_SESSION['accountInfo']['individualAccount']['customFieldDataList']['customFieldData'][$i]['fieldValue'] = $updateData['conComDisplayPhone'];
+      $i++;
+    }
     unset($key);
     unset($i);
     
+    // add custom field data, watch for updated fields, if empty, drop them to clear them from Neon
     foreach ($_SESSION['accountInfo']['individualAccount']['customFieldDataList']['customFieldData'] as $key => $val) {
       if($val['fieldId'] == $preferredFirstName) {
         if(!empty($updateData['preferredFirstName'])) {
@@ -95,6 +104,12 @@
           $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldId[' . $key . ']'] = $val['fieldId'];
           $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldOptionId[' . $key . ']'] = '';
           $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldValue[' . $key . ']'] = $updateData['preferredLastName'];
+        }
+      } elseif($val['fieldId'] == $cvgConComPhoneDisplay) {
+        if (!empty($updateData['conComDisplayPhone']))  {
+          $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldId[' . $key . ']'] = $val['fieldId'];
+          $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldOptionId[' . $key . ']'] = '';
+          $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldValue[' . $key . ']'] = $updateData['conComDisplayPhone'];
         }
       } else {
         $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldId[' . $key . ']'] = $val['fieldId'];

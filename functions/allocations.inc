@@ -360,7 +360,7 @@ $AllocRooms = [
       ],
       "60" => [
         "Type" => "Double",
-        "Reserve" => "IWBlock",
+        "Reserve" => "",
       ],
       "61" => [
         "Type" => "Double",

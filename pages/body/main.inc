@@ -1,40 +1,8 @@
 <?php require($PAGESDIR . '/base/leftnav.inc'); ?>
 <div id="main_content" class="w3-cell w3-cell-top w3-mobile">
 <?php
-echo "<div class='w3-container'>\n";
-  echo "<h2>Welcome " . $_SESSION['preferredName'] . "!</h2>\n";
-echo "</div>\n";
-
-// Display Meeting Sign In Info
-echo "<div class='w3-container w3-green'>\n";
-  echo "<table class='w3-table w3-striped w3-bordered w3-white'>\n";
-    echo "<tr><th class='w3-center w3-green' colspan=3>2017 Official Meeting Attendance</th></tr>\n";
-    $nowDate = date("Ymd");
-    $attendKey = array_search('2017 Official Meeting Attendance', $_SESSION['definedFields']);
-    foreach( $_SESSION['definedFields']['2017Meetings'] as $key => $val ) {
-      $ldate = explode("-", $val);
-      $checkDate = $ldate[0] . $ldate[1] . rtrim($ldate[2]);
-      if ( $nowDate >= $checkDate ) {
-        echo "<tr><td>" . $ldate[1] . "/" . rtrim($ldate[2]) . "/" . $ldate[0]. "</td>";
-        echo "<td>" . ltrim($ldate[3]) . "</td>";
-        if ( isset( $_SESSION['customFields'][$attendKey]) && in_array( $key, $_SESSION['customFields'][$attendKey] )) {
-          echo "<td class='w3-lime'>Checked In";
-        } else {
-          if ($nowDate == $checkDate) {
-            echo "<td class='w3-yellow'><a href='index.php?Function=signin&AttendField=" . $attendKey . "&DateFeed=" . $key . "'>Sign In Now!</a>";
-          } else {
-            echo "<td>Not Checked In";
-          }
-        }
-        echo "</td></tr>\n";
-      }
-      unset($ldate);
-      unset($checkDate);
-    }
-    unset($key);
-    unset($val);
-    unset($nowDate);
-  echo "</table>\n";
+echo '<div class="w3-container w3-center">';
+  echo '<b>Welcome ' . $_SESSION['preferredName'] . '!</b>';
 echo "</div>\n";
 
 // Display Hotel Information
@@ -189,6 +157,38 @@ if ( isset( $_SESSION['customFields']['hotelLotteryStatus']) && $_SESSION['custo
   echo "</div>\n";
 }
   
+// Display Meeting Sign In Info
+echo "<div class='w3-container w3-green'>\n";
+  echo "<table class='w3-table w3-striped w3-bordered w3-white'>\n";
+    echo "<tr><th class='w3-center w3-green' colspan=3>2017 Official Meeting Attendance</th></tr>\n";
+    $nowDate = date("Ymd");
+    $attendKey = array_search('2017 Official Meeting Attendance', $_SESSION['definedFields']);
+    foreach( $_SESSION['definedFields']['2017Meetings'] as $key => $val ) {
+      $ldate = explode("-", $val);
+      $checkDate = $ldate[0] . $ldate[1] . rtrim($ldate[2]);
+      if ( $nowDate >= $checkDate ) {
+        echo "<tr><td>" . $ldate[1] . "/" . rtrim($ldate[2]) . "/" . $ldate[0]. "</td>";
+        echo "<td>" . ltrim($ldate[3]) . "</td>";
+        if ( isset( $_SESSION['customFields'][$attendKey]) && in_array( $key, $_SESSION['customFields'][$attendKey] )) {
+          echo "<td class='w3-lime'>Checked In";
+        } else {
+          if ($nowDate == $checkDate) {
+            echo "<td class='w3-yellow'><a href='index.php?Function=signin&AttendField=" . $attendKey . "&DateFeed=" . $key . "'>Sign In Now!</a>";
+          } else {
+            echo "<td>Not Checked In";
+          }
+        }
+        echo "</td></tr>\n";
+      }
+      unset($ldate);
+      unset($checkDate);
+    }
+    unset($key);
+    unset($val);
+    unset($nowDate);
+  echo "</table>\n";
+echo "</div>\n";
+
 // Display Current ConCom Status
 if ( isset( $_SESSION['customFields']['currConComPos'])) {
   echo "<div class='w3-container w3-black'>\n";

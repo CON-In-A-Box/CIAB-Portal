@@ -1,6 +1,6 @@
-<div id="left_nav" class="w3-cell w3-cell-top w3-border w3-mobile">
 <?php
-  echo "<img src=\"https://www.z2systems.com/neon/resource/ce/images/account/" . $_SESSION['accountId'] . "/0_medium.jpg\" onerror=\"this.src='http://probablyprogramming.com/wp-content/uploads/2009/03/handtinyblack.gif'\">\n";
+echo '<div id="left_nav" class="w3-cell w3-border w3-hide-small">';
+  echo '<img src="https://www.z2systems.com/neon/resource/ce/images/account/' . $_SESSION['accountId'] . '/0_medium.jpg" onerror=' . "'this.src=" . '"http://probablyprogramming.com/wp-content/uploads/2009/03/handtinyblack.gif"' . "'>";
 
   echo "<p style=\"font-weight:bold;\">" . $_SESSION['preferredName'] . "</p>\n";
 
@@ -20,19 +20,18 @@
       echo $_SESSION['accountInfo']['individualAccount']['primaryContact']['addresses']['address']['0']['province'];
     }
     if ( isset( $_SESSION['zip'] ) && !empty( $_SESSION['zip'] )) {    
-      echo $_SESSION['zip'] . "</p>\n";
+      echo '<br />' . $_SESSION['zip'] . "</p>\n";
     }
   }
 
   if ( isset( $_SESSION['email'] ) && !empty( $_SESSION['email'] )) {
-    echo "<p><span style=\"font-weight:bold;\">Email:</span><br />";
-    echo $_SESSION['email'] . "</p>\n";
+    echo "<p><b>Email:</b><br />";
+    echo '<span class="w3-tiny">' . $_SESSION['email'] . "</span></p>\n";
   }
 
   if ( isset( $_SESSION['phone'] ) && !empty( $_SESSION['phone'] )) {
-    echo "<p><span style=\"font-weight:bold;\">Telephone Number:</span><br />";
-    echo $_SESSION['phone'] . "</p>\n";
+    echo "<p><b>Telephone Number:</b><br />";
+    echo $_SESSION['phone'] . '</p>';
   }
+  echo '</div><!--left_nav-->';
 ?>
-</div><!--left_nav-->
-
