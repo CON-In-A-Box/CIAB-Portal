@@ -5,6 +5,15 @@ echo '<div class="w3-container w3-center">';
   echo '<b>Welcome ' . $_SESSION['preferredName'] . '!</b>';
 echo "</div>\n";
 
+// If this person is on ConCom, but hasn't elected about their phone number, nudge them
+$cvgConComPhoneDisplay = array_search('CVGConCom Publish Phone', $_SESSION['definedFields']);
+if ( isset( $_SESSION['customFields']['currConComPos']) && empty($_SESSION['customFields'][$cvgConComPhoneDisplay])) {
+  echo '<p class="w3-container w3-center">';
+    echo "We've noticed you haven't decided about your phone number.<br />";
+    echo 'Please <a href="index.php?Function=profile">Update Your Profile</a> to make that selection.';
+  echo '</p>';
+}
+
 // Display Hotel Information
 if ( isset( $_SESSION['customFields']['hotelLotteryStatus']) && $_SESSION['customFields']['hotelLotteryStatus'][0] != array_search('Declined', $_SESSION['definedFields'])) {
   require_once($FUNCTIONDIR . '/allocations.inc');
@@ -148,8 +157,8 @@ if ( isset( $_SESSION['customFields']['hotelLotteryStatus']) && $_SESSION['custo
           echo "</td></tr>\n";
           break;
         case "Assigned":
-          echo "<tr><td>\n";
-          echo "You have a room.  Don't forget to contact the Hotel and use yoru credit card to secure it!\n";
+          echo "<tr><td class='w3-center'>\n";
+          echo "The hotel sent you a confirmation.<br />Don't forget to contact the Hotel and use your credit card to secure it!\n";
           echo "</td></tr>\n";
           break;
       }
