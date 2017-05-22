@@ -100,26 +100,28 @@ if(isset($_SESSION['customFields'][$preferredLastName][0])) {
     <div class="w3-container">
       <input type="text" name="phone1" value="<?php if(isset($_SESSION['accountInfo']['individualAccount']['primaryContact']['phone1'])) { echo $_SESSION['accountInfo']['individualAccount']['primaryContact']['phone1']; } ?>" class="w3-input w3-border w3-half" placeholder="Primary (Required)">
       <input type="text" name="phone2" value="<?php if(isset($_SESSION['accountInfo']['individualAccount']['primaryContact']['phone2'])) { echo $_SESSION['accountInfo']['individualAccount']['primaryContact']['phone2']; } ?>" class="w3-input w3-border w3-half" placeholder="Other">
-      <div class="w3-row">
-        <span class="w3-right-align w3-col m7 l6">Display Phone number on the ConCom list?</span>
-        <select name="conComDisplayPhone" class="w3-col m5 l6" required>
-          <?php
-          if(empty($_SESSION['customFields'][$cvgConComPhoneDisplay])) {
-            echo '<option value="" disabled selected>Choose</option>';
-          }
-          echo '<option value="TRUE"';
-          if(isset($_SESSION['customFields'][$cvgConComPhoneDisplay]) && $_SESSION['customFields'][$cvgConComPhoneDisplay] == "TRUE") {
-            echo ' selected';
-          }
-          echo '>Yes</option>';
-          echo '<option value="FALSE"';
-          if(isset($_SESSION['customFields'][$cvgConComPhoneDisplay]) && $_SESSION['customFields'][$cvgConComPhoneDisplay] == "FALSE") {
-            echo ' selected';
-          }
-          echo '>No</option>';
-          ?>
-        </select>
-      </div>
+      <?php
+      if ( isset( $_SESSION['customFields']['currConComPos'])) {
+        echo '<div class="w3-row">';
+          echo '<span class="w3-right-align w3-col m7 l6">Display Phone number on the ConCom list?</span>';
+          echo '<select name="conComDisplayPhone" class="w3-col m5 l6" required>';
+            if(empty($_SESSION['customFields'][$cvgConComPhoneDisplay])) {
+              echo '<option value="" disabled selected>Choose</option>';
+            }
+            echo '<option value="TRUE"';
+            if(isset($_SESSION['customFields'][$cvgConComPhoneDisplay]) && $_SESSION['customFields'][$cvgConComPhoneDisplay] == "TRUE") {
+              echo ' selected';
+            }
+            echo '>Yes</option>';
+            echo '<option value="FALSE"';
+            if(isset($_SESSION['customFields'][$cvgConComPhoneDisplay]) && $_SESSION['customFields'][$cvgConComPhoneDisplay] == "FALSE") {
+              echo ' selected';
+            }
+            echo '>No</option>';
+          echo '</select>';
+        echo '</div>';
+      }
+      ?>
     </div>
   </div>
 
