@@ -127,6 +127,9 @@ if (!empty($_REQUEST['user'])) {
     // Current Hotel Lottery Status
     $_SESSION['customFields']['hotelLotteryStatus'] = &$_SESSION['customFields'][array_search('Lottery Status', $_SESSION['definedFields'])];
     $_SESSION['customFields']['hotelAssignedRoom'] = &$_SESSION['customFields'][array_search('Room Assigned', $_SESSION['definedFields'])];
+    $_SESSION['customFields']['hotelRoomConfirmation'] = &$_SESSION['customFields'][array_search('Hotel Room Confirmation', $_SESSION['definedFields'])];
+    $_SESSION['customFields']['hotelRoomCheckIn'] = &$_SESSION['customFields'][array_search('Check In', $_SESSION['definedFields'])];
+    $_SESSION['customFields']['hotelRoomCheckOut'] = &$_SESSION['customFields'][array_search('Check Out', $_SESSION['definedFields'])];
     
     // If the logged in user is a System Admin (defined in the config file), note it
     if(in_array($_SESSION['accountId'], $ALLOCATIONS)) {

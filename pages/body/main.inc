@@ -100,14 +100,18 @@ if ( isset( $_SESSION['customFields']['hotelLotteryStatus']) && $_SESSION['custo
                   }
                   $roomNumber = substr($roomPrefix[1], 2);
                   $floor = substr($roomPrefix[1], 0, 2);
-                  echo "The room is a " . $AllocRooms[$roomPrefix[0]][$floor][$roomNumber]['Type'] . " bed in the ";
+                  if($floor > 2) {
+                    echo "The room is a " . $AllocRooms[$roomPrefix[0]][$floor][$roomNumber]['Type'] . " bed in the ";
 
-                  if($roomNumber < 50) {
-                    echo "South/Tall";
+                    if($roomNumber < 50) {
+                      echo "South/Tall";
+                    } else {
+                      echo "North/Short";
+                    }
+                    echo "Tower\n";
                   } else {
-                    echo "North/Short";
+                    echo "The room is a party cabana (you are hosting a room party).";
                   }
-                  echo "Tower\n";
                 echo "</div>\n";
               echo "</td></tr>\n";
             }
@@ -160,6 +164,41 @@ if ( isset( $_SESSION['customFields']['hotelLotteryStatus']) && $_SESSION['custo
           echo "<tr><td class='w3-center'>\n";
           echo "The hotel sent you a confirmation.<br />Don't forget to contact the Hotel and use your credit card to secure it!\n";
           echo "</td></tr>\n";
+          $rooms = explode("|", $_SESSION['customFields']['hotelAssignedRoom'][0]);
+          $i=0;
+          $confs = explode("|", $_SESSION['customFields']['hotelRoomConfirmation'][0]);
+          $checkIns = explode("|", $_SESSION['customFields']['hotelRoomCheckIn'][0]);
+          $checkOuts = explode("|", $_SESSION['customFields']['hotelRoomCheckOut'][0]);
+          foreach($rooms as $room) {
+            echo '<tr><td class="w3-center">';
+            if($i == 0) {
+              echo 'Your room ';
+            } else {
+              $tmp = $i+1;
+              echo 'Room ' . $tmp . ' ';
+              unset($tmp);
+            }
+            echo 'has confirmation # ';
+            if(isset($confs[$i])) {
+              echo $confs[$i]; // breakfix for when hotel doesn't give individual confirmation numbers
+            } else {
+              echo $confs[0]; // unless the system has been overrridden, index 0 must exist
+            }
+            echo '<br />Checking in: ';
+            if(isset($checkIns[$i])) {
+              echo $checkIns[$i];
+            } else {
+              echo $checkIns[0];
+            }
+            echo ', Checking out: ';
+            if(isset($checkOuts[$i])) {
+              echo $checkOuts[$i];
+            } else {
+              echo $checkOuts[0];
+            }
+            echo '</td></tr>';
+            $i++;
+          }
           break;
       }
     echo "</table>\n";
