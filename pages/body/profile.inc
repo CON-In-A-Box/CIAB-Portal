@@ -105,16 +105,16 @@ if(isset($_SESSION['customFields'][$preferredLastName][0])) {
         echo '<div class="w3-row">';
           echo '<span class="w3-right-align w3-col m7 l6">Display Phone number on the ConCom list?</span>';
           echo '<select name="conComDisplayPhone" class="w3-col m5 l6" required>';
-            if(empty($_SESSION['customFields'][$cvgConComPhoneDisplay])) {
+            if(empty($_SESSION['customFields'][$cvgConComPhoneDisplay][0])) {
               echo '<option value="" disabled selected>Choose</option>';
             }
             echo '<option value="TRUE"';
-            if(isset($_SESSION['customFields'][$cvgConComPhoneDisplay]) && $_SESSION['customFields'][$cvgConComPhoneDisplay] == "TRUE") {
+            if(isset($_SESSION['customFields'][$cvgConComPhoneDisplay][0]) && $_SESSION['customFields'][$cvgConComPhoneDisplay][0] == "TRUE") {
               echo ' selected';
             }
             echo '>Yes</option>';
             echo '<option value="FALSE"';
-            if(isset($_SESSION['customFields'][$cvgConComPhoneDisplay]) && $_SESSION['customFields'][$cvgConComPhoneDisplay] == "FALSE") {
+            if(isset($_SESSION['customFields'][$cvgConComPhoneDisplay][0]) && $_SESSION['customFields'][$cvgConComPhoneDisplay][0] == "FALSE") {
               echo ' selected';
             }
             echo '>No</option>';
