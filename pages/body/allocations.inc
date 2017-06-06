@@ -25,22 +25,29 @@ echo '<div id="main_content" class="w3-container">' . "\n";
           echo '<form name="MoveTo" method="post" action="index.php?Function=allocations" class="w3-container">' . "\n";
             echo '<input type=hidden name="Do" value="' . $_REQUEST['Do'] . '">' . "\n";
             echo '<input type=hidden name="From" value="' . $_REQUEST['From'] . '">' . "\n";
-            
+
+            $lotteryStatusFieldId  = array_search('Lottery Status', $_SESSION['definedFields']);
+            $lotteryStatusWaiting  = array_search('Waiting On Hotel Assignment', $_SESSION['definedFields']);
+
             echo '<select class="w3-select" name="To" required>' . "\n";
               echo '<option value="" disabled selected>Choose destination room</option>' . "\n";
               $roomSet = explode('-', $_REQUEST['From']);
               foreach($AllocRooms[$roomSet[0]] as $floor => $rooms) {
                 foreach($rooms as $room => $set) {
                   $roomLabel = $roomSet[0] . '-' . $floor . $room;
-                  echo '<option value="' . $roomLabel . '">' . $roomLabel;
                   if(isset($_SESSION['AllocInfo'][$roomLabel])) {
-                    echo ' - ' . $_SESSION['AllocInfo'][$roomLabel]['First Name'] . ' ' . $_SESSION['AllocInfo'][$roomLabel]['Last Name'];
+                    if(empty($_SESSION['AllocInfo'][$roomLabel][$lotteryStatusFieldId]) || ($_SESSION['AllocInfo'][$roomLabel][$lotteryStatusFieldId] != $lotteryStatusWaiting)) { // Do not display names that are still waiting on the hotel to accept
+                      echo '<option value="' . $roomLabel . '">' . $roomLabel;
+                      echo ' - ' . $_SESSION['AllocInfo'][$roomLabel]['First Name'] . ' ' . $_SESSION['AllocInfo'][$roomLabel]['Last Name'];
+                      echo "</option>\n";
+                    }
                   } else {
+                    echo '<option value="' . $roomLabel . '">' . $roomLabel;
                     if(!empty($set['Reserve'])) {
                       echo ' (' . $set['Reserve'] . ')';
                     }
+                    echo "</option>\n";
                   }
-                  echo "</option>\n";
                 }
               }
             echo "</select>\n";
@@ -65,7 +72,11 @@ echo '<div id="main_content" class="w3-container">' . "\n";
 
         // Formulate the search query
         $assignedRoomFieldId = array_search('Room Assigned', $_SESSION['definedFields']);
-        
+        $lotteryStatusFieldId  = array_search('Lottery Status', $_SESSION['definedFields']);
+        $lotteryStatusEntered  = array_search('Entered', $_SESSION['definedFields']);
+        $lotteryStatusDefault  = array_search('Waiting On Accept', $_SESSION['definedFields']);
+        $lotteryStatusWaiting  = array_search('Waiting On Hotel Assignment', $_SESSION['definedFields']);
+
         // Pull the full info of the person moving and save the current Alloc info for room we are moving to
         $personFrom = $Neon->pullIndividualAccount($_SESSION['AllocInfo'][$requestInfo['From']]['Account ID']);
         if(isset($_SESSION['AllocInfo'][$requestInfo['To']])) {
@@ -89,6 +100,21 @@ echo '<div id="main_content" class="w3-container">' . "\n";
             unset($room);
             unset($rooms);
             unset($newRooms);
+          } elseif(isset( $val['fieldId'] ) && $val['fieldId'] == $lotteryStatusFieldId) {
+            if(empty($val['fieldOptionId'])) {
+              $person['individualAccount']['customFieldDataList']['customFieldData'][$key]['fieldOptionId'] = $lotteryStatusDefault;
+            } else {
+              switch ($val['fieldOptionId']) {
+                case $lotteryStatusDefault:
+                case $lotteryStatusWaiting:
+                  break;
+                case $lotteryStatusEntered:
+                  $person['individualAccount']['customFieldDataList']['customFieldData'][$key]['fieldOptionId'] = $lotteryStatusDefault;
+                  break;
+                default:
+                  $person['individualAccount']['customFieldDataList']['customFieldData'][$key]['fieldOptionId'] = $lotteryStatusWaiting;
+              }
+            }
           }
         }
         
@@ -114,12 +140,27 @@ echo '<div id="main_content" class="w3-container">' . "\n";
                   } else {
                     $newRooms[] = $room;
                   }
-                }
+                } 
                 $rooms = implode('|', $newRooms);
                 $personTo['individualAccount']['customFieldDataList']['customFieldData'][$key]['fieldValue'] = $rooms;
                 unset($room);
                 unset($rooms);
                 unset($newRooms);
+              } elseif(isset( $val['fieldId'] ) && $val['fieldId'] == $lotteryStatusFieldId) {
+                if(empty($val['fieldOptionId'])) {
+                  $person['individualAccount']['customFieldDataList']['customFieldData'][$key]['fieldOptionId'] = $lotteryStatusDefault;
+                } else {
+                  switch ($val['fieldOptionId']) {
+                    case $lotteryStatusDefault:
+                    case $lotteryStatusWaiting:
+                      break;
+                    case $lotteryStatusEntered:
+                      $person['individualAccount']['customFieldDataList']['customFieldData'][$key]['fieldOptionId'] = $lotteryStatusDefault;
+                      break;
+                    default:
+                      $person['individualAccount']['customFieldDataList']['customFieldData'][$key]['fieldOptionId'] = $lotteryStatusWaiting;
+                  }
+                }
               }
             }
 
@@ -222,6 +263,7 @@ echo '<div id="main_content" class="w3-container">' . "\n";
           $assignedRoomFieldId = array_search('Room Assigned', $_SESSION['definedFields']);
           $overrideCatFieldId    = array_search('Hotel Override Category', $_SESSION['definedFields']);
           $lotteryStatusFieldId  = array_search('Lottery Status', $_SESSION['definedFields']);
+          $lotteryStatusEntered  = array_search('Entered', $_SESSION['definedFields']);
           $lotteryStatusDefault  = array_search('Waiting On Accept', $_SESSION['definedFields']);
           $lotteryStatusWaiting  = array_search('Waiting On Hotel Assignment', $_SESSION['definedFields']);
           $roomPreferenceFieldId = array_search('Bed Preference', $_SESSION['definedFields']);
@@ -263,8 +305,21 @@ echo '<div id="main_content" class="w3-container">' . "\n";
                   unset($rooms);
                   unset($newRooms);
                 }
-              } elseif($val['fieldId'] == $lotteryStatusFieldId && (empty($val['fieldOptionId']) || $val['fieldOptionId'] != $lotteryStatusWaiting)) {
-                $person['individualAccount']['customFieldDataList']['customFieldData'][$key]['fieldOptionId'] = $lotteryStatusDefault;
+              } elseif($val['fieldId'] == $lotteryStatusFieldId) {
+                if(empty($val['fieldOptionId'])) {
+                  $person['individualAccount']['customFieldDataList']['customFieldData'][$key]['fieldOptionId'] = $lotteryStatusDefault;
+                } else {
+                  switch ($val['fieldOptionId']) {
+                    case $lotteryStatusDefault:
+                    case $lotteryStatusWaiting:
+                      break;
+                    case $lotteryStatusEntered:
+                      $person['individualAccount']['customFieldDataList']['customFieldData'][$key]['fieldOptionId'] = $lotteryStatusDefault;
+                      break;
+                    default:
+                      $person['individualAccount']['customFieldDataList']['customFieldData'][$key]['fieldOptionId'] = $lotteryStatusWaiting;
+                  }
+                }
               } elseif($val['fieldId'] == $roomPreferenceFieldId && empty($val['fieldOptionId'])) {
                 $person['individualAccount']['customFieldDataList']['customFieldData'][$key]['fieldOptionId'] = $roomPreferenceDefault;
               }
@@ -308,7 +363,11 @@ echo '<div id="main_content" class="w3-container">' . "\n";
             foreach($result['searchResults'] as $r) {
               echo '<div class="w3-row w3-white">';
                 echo '<div class="w3-quarter">' . $r['First Name'] . ' ' . $r['Last Name'] . '</div>';
-                echo '<div class="w3-quarter">' . $r['Email 1'] . '</div>';
+                if(empty($r['Email 1'])) {
+                  echo '<div class="w3-quarter">NONE</div>';
+                } else {
+                  echo '<div class="w3-quarter">' . $r['Email 1'] . '</div>';
+                }
                 if(empty($r['Lottery Status'])) {
                   echo '<div class="w3-quarter">Not Entered</div>' . "\n";
                 } elseif($r['Lottery Status'] == "Entered") {
@@ -386,18 +445,32 @@ echo '<div id="main_content" class="w3-container">' . "\n";
             echo '<div class="w3-container">' . "\n";
               if(isset($_SESSION['AllocInfo'][$roomLabel])) {
                 if(!empty($_SESSION['AllocInfo'][$roomLabel]['Hotel Override Category'])) {
-                  echo $_SESSION['AllocInfo'][$roomLabel]['Hotel Override Category'] . "<br />\n";
+                  echo $_SESSION['AllocInfo'][$roomLabel]['Hotel Override Category'];
                 } elseif(!empty($_SESSION['AllocInfo'][$roomLabel]['Hotel Qualifier'])) {
-                  echo $_SESSION['AllocInfo'][$roomLabel]['Hotel Qualifier'] . "<br />\n";
+                  echo $_SESSION['AllocInfo'][$roomLabel]['Hotel Qualifier'];
                 } else {
-                  echo $set['Reserve'] . "<br />\n";
+                  echo $set['Reserve'];
                 }
 
-                echo $_SESSION['AllocInfo'][$roomLabel]['First Name'] . ' ' . $_SESSION['AllocInfo'][$roomLabel]['Last Name'] . "\n";
-                echo '<a class="w3-button w3-padding-small w3-tiny w3-round-xxlarge" href="index.php?Function=allocations&Do=MOVE&From=' . $roomLabel . '">Move</a><br />' . "\n";
-                if(empty($_SESSION['AllocInfo'][$roomLabel]['Check In'])) {
-                  echo "<span class='w3-khaki'>PENDING ACCEPT</span><br />\n";
-                } else {
+                if(isset($_SESSION['AllocInfo'][$roomLabel]['Hotel Room Confirmation'])) {
+                  echo ' - Conf# ' . $_SESSION['AllocInfo'][$roomLabel]['Hotel Room Confirmation'];
+                }
+                
+                echo '<br />';
+
+                echo $_SESSION['AllocInfo'][$roomLabel]['First Name'] . ' ' . $_SESSION['AllocInfo'][$roomLabel]['Last Name'];
+                if(isset($_SESSION['AllocInfo'][$roomLabel]['Lottery Status'])) {
+                  if($_SESSION['AllocInfo'][$roomLabel]['Lottery Status'] == 'Waiting On Accept') {
+                    echo '<a class="w3-button w3-padding-small w3-tiny w3-round-xxlarge" href="index.php?Function=allocations&Do=MOVE&From=' . $roomLabel . '">Move</a><br />';
+                    echo '<span class="w3-khaki">PENDING ACCEPT</span>';
+                  } elseif($_SESSION['AllocInfo'][$roomLabel]['Lottery Status'] == 'Waiting On Hotel Assignment') {
+                    echo ' - PENDING HOTEL';
+                  } else {
+                    echo '<a class="w3-button w3-padding-small w3-tiny w3-round-xxlarge" href="index.php?Function=allocations&Do=MOVE&From=' . $roomLabel . '">Move</a>';
+                  }
+                }
+                echo '<br />' . "\n";
+                if(isset($_SESSION['AllocInfo'][$roomLabel]['Check In'])) {
                   echo $_SESSION['AllocInfo'][$roomLabel]['Check In'] . ' - ' . $_SESSION['AllocInfo'][$roomLabel]['Check Out'] . "<br />\n";
                 }
               } else {

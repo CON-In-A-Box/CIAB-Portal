@@ -2392,6 +2392,7 @@ function updateRoomsInfo($page) {
   $overrideCatFieldId    = array_search('Hotel Override Category', $_SESSION['definedFields']);
   $overrideRoomFieldId   = array_search('Hotel Override', $_SESSION['definedFields']);
   $lotteryStatusFieldId  = array_search('Lottery Status', $_SESSION['definedFields']);
+  $confirmationFieldId   = array_search('Hotel Room Confirmation', $_SESSION['definedFields']);
   $qualifierFieldId      = array_search('Hotel Qualifier', $_SESSION['definedFields']);
   $roomPreferenceFieldId = array_search('Bed Preference', $_SESSION['definedFields']);
   $checkInFieldId        = array_search('Check In', $_SESSION['definedFields']);
@@ -2418,6 +2419,7 @@ function updateRoomsInfo($page) {
         $overrideCatFieldId,
         $overrideRoomFieldId,
         $lotteryStatusFieldId,
+        $confirmationFieldId,
         $qualifierFieldId,
         $roomPreferenceFieldId,
         $checkInFieldId,
