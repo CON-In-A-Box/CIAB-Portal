@@ -17,12 +17,12 @@ function calculateHours() {
 if(isset($_REQUEST['ID'])) {
   echo 'value=' . $_REQUEST['ID'] . ' ';
 }
-?>placeholder="Volunteer Badge Number">
+?>placeholder="Volunteer Badge Number (no letters)">
 
 <div class="w3-row">
   <div class="w3-col l3 m3 s4">
     <label>Actual Hours</label>
-    <input class="w3-input w3-border" type=number name="hours" id="hours" min=0 max=20 onchange="calculateHours();" title="Actual Hours Worked, to the half hour)" pattern="\d+(\.\d)?" value=1 required>
+    <input class="w3-input w3-border" type=text name="hours" id="hours" onchange="calculateHours();" title="Actual Hours Worked, to the quarter hour.  Less than 20!)" pattern="([1-9]|1[0-9])(\.[257](5)?)?" value=1 required>
   </div>
   <div class="w3-col l9 m9 s8">
     <label>End time</label>
@@ -30,10 +30,14 @@ if(isset($_REQUEST['ID'])) {
       echo date('Y-m-d');
       echo 'T' . date('H') . ':';
       $min = date('i');
-      if($min < 30) {
+      if($min < 15) {
         echo "00";
-      } else {
+      } elseif($min < 30) {
+        echo "15";
+      } elseif($min < 45) {
         echo "30";
+      } else {
+        echo "45";
       }
     ?>" required>
   </div>
