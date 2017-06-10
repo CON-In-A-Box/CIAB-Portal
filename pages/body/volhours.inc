@@ -63,11 +63,11 @@ if(isset($_REQUEST['ID'])) {
     $depset = explode('|', $_SESSION['customFields']['currConComPos'][0]);
     foreach($depset as $set) {
       $dep = explode(',', $set);
-      echo '<option value="' . $dep . '"';
+      echo '<option value="' . $dep[0] . '"';
       if(isset($_REQUEST['department']) && $_REQUEST['department'] == $dep) {
         echo " selected";
       }
-      echo '>' . $dep . "</option>";
+      echo '>' . $dep[0] . "</option>";
     }
   }
   ?>
