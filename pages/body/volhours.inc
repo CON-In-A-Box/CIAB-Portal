@@ -71,6 +71,7 @@ if(isset($_REQUEST['ID'])) {
     }
   }
   ?>
+</select>
 <div class="w3-container w3-center">
 
   <p name=summery>
