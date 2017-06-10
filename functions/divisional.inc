@@ -590,13 +590,6 @@ function ConComListBuild() {
   return($fullConComList);
 }
 
-function ksort_recursive(&$array) {
-    if (is_array($array)) {
-        ksort($array);
-        array_walk($array, 'ksort_recursive');
-    }
-}
-
 function DumpConComList() {
   global $Divisions, $Departments, $ConComPositions;
   

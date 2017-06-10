@@ -47,12 +47,36 @@ if(isset($_REQUEST['ID'])) {
   <option value=2>Double - 1 hour = 2 hours credit</option>
 </select>
 
+<label>Department worked</label>
+<select class="w3-select w3-border" name="department" id="department">
+  <?php
+  if(strpos($_SESSION['customFields']['currConComPos'][0], 'Volunteers') !== false || isset($_SESSION['IS_ADMIN'])) {
+    require_once($FUNCTIONDIR . "/divisional.inc");
+    foreach($Departments as $dep => $set) {
+      echo '<option value="' . $dep . '"';
+      if(isset($_REQUEST['department']) && $_REQUEST['department'] == $dep) {
+        echo " selected";
+      }
+      echo '>' . $dep . "</option>";
+    }
+  } else {
+    $depset = explode('|', $_SESSION['customFields']['currConComPos'][0]);
+    foreach($depset as $set) {
+      $dep = explode(',', $set);
+      echo '<option value="' . $dep . '"';
+      if(isset($_REQUEST['department']) && $_REQUEST['department'] == $dep) {
+        echo " selected";
+      }
+      echo '>' . $dep . "</option>";
+    }
+  }
+  ?>
 <div class="w3-container w3-center">
 
   <p name=summery>
     Crediting
     <span id="totalhours">1</span>
-    hours to
+    hour(s) to
     <span id="volunteername">a Volunteer</span>
   </p>
   <p>
