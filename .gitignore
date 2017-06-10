@@ -38,6 +38,7 @@ Thumbs.db
 # Project files #
 #################
 .ht_meetingsignin_config.php
+.ht_google_api.json
 favicon.ico
 favicon.gif
 error_log

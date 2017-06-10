@@ -2473,21 +2473,36 @@ function populateAllocInfo() {
 
 function totalAvailableRooms($hotel) {
   global $AllocRooms;
-  foreach ($AllocRooms[$hotel] as $room) {
-    if(empty($counts[$room['Type']])) {
-      $counts[$room['Type']] = 1;
-    } else {
-      $counts[$room['Type']]++;
-    }
-    if(!empty($room['Reserve'])) {
-      if(empty($counts[$room['Reserve']])) {
-        $counts[$room['Reserve']] = 1;
+  $counts=[];
+  foreach($AllocRooms[$hotel] as $floor => $rooms) {
+    foreach($rooms as $room => $set) {
+      @++$counts['Totals']['Total'];
+      @++$counts['Totals']['Type'][$set['Type']];
+      $roomLabel=$hotel . '-' . $floor . $room;
+      if(isset($_SESSION['AllocInfo'][$roomLabel])) {
+        @++$counts['Assigned']['Total'];
+        @++$counts['Assigned']['Type'][$set['Type']];
+        if(isset($_SESSION['AllocInfo'][$roomLabel]['Hotel Override Category'])) {
+          @++$counts['Totals']['Reserve'][$_SESSION['AllocInfo'][$roomLabel]['Hotel Override Category']];
+          @++$counts['Assigned']['Reserve'][$_SESSION['AllocInfo'][$roomLabel]['Hotel Override Category']];
+        } else {
+          @++$counts['Totals']['Reserve']['Unreserved'];
+          @++$counts['Assigned']['Reserve']['Unreserved'];
+        }
       } else {
-        $counts[$room['Reserve']]++;
+        @++$counts['Unassigned']['Total'];
+        @++$counts['Unassigned']['Type'][$set['Type']];
+        if(isset($set['Reserve'])) {
+          @++$counts['Totals']['Reserve'][$set['Reserve']];
+          @++$counts['Unassigned']['Reserve'][$set['Reserve']];
+        } else {
+          @++$counts['Totals']['Reserve']['Unreserved'];
+          @++$counts['Unassigned']['Reserve']['Unreserved'];
+        }
       }
     }
   }
-  $counts['Total'] = count($AllocRooms[$hotel]);
+  ksort_recursive($counts);
   return $counts;
 }
 

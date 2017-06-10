@@ -266,6 +266,7 @@ echo '<div id="main_content" class="w3-container">' . "\n";
           $lotteryStatusEntered  = array_search('Entered', $_SESSION['definedFields']);
           $lotteryStatusDefault  = array_search('Waiting On Accept', $_SESSION['definedFields']);
           $lotteryStatusWaiting  = array_search('Waiting On Hotel Assignment', $_SESSION['definedFields']);
+          $lotteryStatusAssigned = array_search('Assigned', $_SESSION['definedFields']);
           $roomPreferenceFieldId = array_search('Bed Preference', $_SESSION['definedFields']);
           $roomPreferenceDefault = array_search('No Preference', $_SESSION['definedFields']);
 
@@ -316,8 +317,11 @@ echo '<div id="main_content" class="w3-container">' . "\n";
                     case $lotteryStatusEntered:
                       $person['individualAccount']['customFieldDataList']['customFieldData'][$key]['fieldOptionId'] = $lotteryStatusDefault;
                       break;
-                    default:
+                    case $lotteryStatusAssigned:
                       $person['individualAccount']['customFieldDataList']['customFieldData'][$key]['fieldOptionId'] = $lotteryStatusWaiting;
+                      break;
+                    default:
+                      $person['individualAccount']['customFieldDataList']['customFieldData'][$key]['fieldOptionId'] = $lotteryStatusDefault;
                   }
                 }
               } elseif($val['fieldId'] == $roomPreferenceFieldId && empty($val['fieldOptionId'])) {
@@ -406,6 +410,67 @@ echo '<div id="main_content" class="w3-container">' . "\n";
               }
             echo "</div>\n";
           echo "</div>\n";
+          
+          $numbers=totalAvailableRooms($AllocHotels[$hotel]['Prefix']);
+          echo '<div class="w3-container">';
+            echo '<div class="w3-bar">';
+              echo '<div class="w3-bar-item w3-center w3-border">';
+                echo 'Total In Hotel:<br />';
+                echo $numbers['Totals']['Total'];
+              echo '</div>';
+              foreach($numbers['Totals']['Type'] as $type => $count) {
+                echo '<div class="w3-bar-item w3-center w3-border">';
+                  echo 'Total ' . $type . ':<br />';
+                  echo $count;
+                echo '</div>';
+              }
+//              foreach($numbers['Totals']['Reserve'] as $type => $count) {
+//                echo '<div class="w3-bar-item w3-center w3-border">';
+//                  echo 'Total Reserved ' . $type . ':<br />';
+//                  echo $count;
+//                echo '</div>';
+//              }
+
+            echo '</div>';
+            echo '<div class="w3-bar">';
+              echo '<div class="w3-bar-item w3-center w3-border">';
+                echo 'Assigned In Hotel:<br />';
+                echo $numbers['Assigned']['Total'];
+              echo '</div>';
+              foreach($numbers['Assigned']['Type'] as $type => $count) {
+                echo '<div class="w3-bar-item w3-center w3-border">';
+                  echo 'Assigned ' . $type . ':<br />';
+                  echo $count;
+                echo '</div>';
+              }
+//              foreach($numbers['Assigned']['Reserve'] as $type => $count) {
+//                echo '<div class="w3-bar-item w3-center w3-border">';
+//                  echo 'Assigned Reserved ' . $type . ':<br />';
+//                  echo $count;
+//                echo '</div>';
+//              }
+
+            echo '</div>';
+            echo '<div class="w3-bar">';
+              echo '<div class="w3-bar-item w3-center w3-border">';
+                echo 'Unassigned In Hotel:<br />';
+                echo $numbers['Unassigned']['Total'];
+              echo '</div>';
+              foreach($numbers['Unassigned']['Type'] as $type => $count) {
+                echo '<div class="w3-bar-item w3-center w3-border">';
+                  echo 'Unassigned ' . $type . ':<br />';
+                  echo $count;
+                echo '</div>';
+              }
+//              foreach($numbers['Unassigned']['Reserve'] as $type => $count) {
+//                echo '<div class="w3-bar-item w3-center w3-border">';
+//                  echo 'Unassigned Reserved ' . $type . ':<br />';
+//                  echo $count;
+//                echo '</div>';
+//              }
+
+            echo '</div>';
+          echo '</div>';
         echo "</div>\n";
       }
     } else { // Give a floor Map
