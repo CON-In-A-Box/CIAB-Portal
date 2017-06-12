@@ -2473,6 +2473,9 @@ function populateAllocInfo() {
 
 function totalAvailableRooms($hotel) {
   global $AllocRooms;
+  if(empty($_SESSION['AllocInfo'])) {
+      $_SESSION['AllocInfo'] = populateAllocInfo();
+  }
   $counts=[];
   foreach($AllocRooms[$hotel] as $floor => $rooms) {
     foreach($rooms as $room => $set) {
