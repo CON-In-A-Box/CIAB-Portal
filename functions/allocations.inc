@@ -2494,7 +2494,9 @@ function totalAvailableRooms($hotel) {
         }
       } else {
         @++$counts['Unassigned']['Total'];
+        @$counts['Rooms']['Total'][] = $hotel . '-' . $floor . $room;
         @++$counts['Unassigned']['Type'][$set['Type']];
+        @$counts['Rooms']['Type'][$set['Type']][] = $hotel . '-' . $floor . $room;
         if(isset($set['Reserve'])) {
           @++$counts['Totals']['Reserve'][$set['Reserve']];
           @++$counts['Unassigned']['Reserve'][$set['Reserve']];

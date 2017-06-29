@@ -452,14 +452,28 @@ echo '<div id="main_content" class="w3-container">' . "\n";
 
             echo '</div>';
             echo '<div class="w3-bar">';
-              echo '<div class="w3-bar-item w3-center w3-border">';
-                echo 'Unassigned In Hotel:<br />';
-                echo $numbers['Unassigned']['Total'];
+              echo '<div class="w3-dropdown-hover">';
+                echo '<button class="w3-bar-item w3-center w3-border">';
+                  echo 'Unassigned In Hotel:<br />';
+                  echo $numbers['Unassigned']['Total'];
+                echo '</button>';
+                echo '<div class="w3-dropdown-content">';
+                  foreach($numbers['Rooms']['Total'] as $listroom) {
+                    echo $listroom . '<br />';
+                  }
+                echo '</div>';
               echo '</div>';
               foreach($numbers['Unassigned']['Type'] as $type => $count) {
-                echo '<div class="w3-bar-item w3-center w3-border">';
-                  echo 'Unassigned ' . $type . ':<br />';
-                  echo $count;
+                echo '<div class="w3-dropdown-hover">';
+                  echo '<button class="w3-bar-item w3-center w3-border">';
+                    echo 'Unassigned ' . $type . ':<br />';
+                    echo $count;
+                  echo '</button>';
+                  echo '<div class="w3-dropdown-content">';
+                    foreach($numbers['Rooms']['Type'][$type] as $listroom) {
+                      echo $listroom . '<br />';
+                    }
+                  echo '</div>';
                 echo '</div>';
               }
 //              foreach($numbers['Unassigned']['Reserve'] as $type => $count) {
@@ -468,16 +482,27 @@ echo '<div id="main_content" class="w3-container">' . "\n";
 //                  echo $count;
 //                echo '</div>';
 //              }
-
             echo '</div>';
           echo '</div>';
         echo "</div>\n";
       }
     } else { // Give a floor Map
-      echo '<div class="w3-row">' . "\n";
-        echo '<div class="w3-col w3-button w3-black w3-center">' . $_REQUEST['Hotel'] . ", Floor " . $_REQUEST['Floor'] . "</div>\n";
-      echo "</div>\n";
+      echo '<div class="w3-bar w3-black">' . "\n";
+        $floorSet = array_keys($AllocRooms[$AllocHotels[$_REQUEST['Hotel']]['Prefix']]);
+        $floorIndex = array_search($_REQUEST['Floor'], $floorSet);
+        if($floorIndex > 0) {
+          $nextFloor = $floorSet[$floorIndex-1];
+          echo '<a class="w3-bar-item w3-gray w3-left w3-button" href="index.php?Function=allocations&Hotel=' . $_REQUEST['Hotel'] . '&Floor=' . $nextFloor . '"><i class="fa fa-arrow-down"></i> Floor ' . $nextFloor . '</a>';
+        }
 
+        echo '<div class="w3-bar-item w3-button">' . $_REQUEST['Hotel'] . ", Floor " . $_REQUEST['Floor'] . "</div>\n";
+
+        if($floorIndex < count($floorSet)-1) {
+          $nextFloor = $floorSet[$floorIndex+1];
+          echo '<a class="w3-bar-item w3-gray w3-right w3-button" href="index.php?Function=allocations&Hotel=' . $_REQUEST['Hotel'] . '&Floor=' . $nextFloor . '"><i class="fa fa-arrow-up"></i> Floor ' . $nextFloor . '</a>';
+        }
+
+      echo "</div>\n";
       // Verify we have Current Allocation Information to work with
       unset($_SESSION['AllocInfo']);
       $_SESSION['AllocInfo'] = populateAllocInfo();
