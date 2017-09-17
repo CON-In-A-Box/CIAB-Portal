@@ -168,7 +168,7 @@ $Departments = [
   ],
   "Member Advocates" => [ 
     "Division" => "Committees",
-    "Email" => "memberadvocats@convergence-con.org",
+    "Email" => "memberadvocates@convergence-con.org",
   ],
   "Merchandise" => [ 
     "Division" => "Administration",
