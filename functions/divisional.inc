@@ -612,9 +612,9 @@ function DumpConComList() {
   }
 
   foreach( $Departments as $kdep => $dep) {
-    if($dep['Division'] != 'Corporate Staff' && $dep['Division'] != 'Committees') {
+    //if($dep['Division'] != 'Corporate Staff' && $dep['Division'] != 'Committees') {
       echo $dep['Email'] . "\n";
-    }
+    //}
   }
 
   $i=1;
