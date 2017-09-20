@@ -6,8 +6,8 @@ $Divisions = [ "Activities", "Administration", "External Relations and Communica
 $ConComPositions = [ "Head", "Sub-Head", "Specialist" ];
 
 $Departments = [
-  "Accessibility & Inclusion" => [
-    "Division" => "Facilities",
+  "Accessibility and Inclusion" => [
+    "Division" => "External Relations and Communications",
     "Email" => "accessibility@convergence-con.org",
     "OtherEmails" => "asl@convergence-con.org",
   ],
@@ -119,7 +119,7 @@ $Departments = [
   "Gaming" => [ 
     "Division" => "Activities",
     "Email" => "gaming@convergence-con.org",
-    "OtherEmails" => "rpggaming@convergence-con.org|langaming@convergence-con.org|cardgaming@convergence-con.org|boardgaming@convergence-con.org",
+    "OtherEmails" => "gaming-board@convergence-con.org|gaming-card@convergence-con.org|gaming-computer@convergence-con.org|gaming-consuite@convergence-con.org|gaming-rpg@convergence-con.org",
   ],
   "Guest Search" => [ 
     "Division" => "Committees",
@@ -141,6 +141,11 @@ $Departments = [
     "Division" => "Facilities",
     "Email" => "hotel@convergence-con.org",
   ],
+//  "Infomation Table" => [ 
+//    "Division" => "Hospitality",
+//    "Email" => "informationtable@convergence-con.org",
+//    "OtherEmails" => "lostfound@convergence-con.org",
+//  ],
   "Invited Participants" => [ 
     "Division" => "Activities",
     "Email" => "pros@convergence-con.org",
@@ -163,7 +168,7 @@ $Departments = [
     "Email" => "masquerade@convergence-con.org",
   ],
   "Meeting Childcare" => [ 
-    "Division" => "Systems",
+    "Division" => "Facilities",
     "Email" => "childcare@convergence-con.org",
   ],
   "Member Advocates" => [ 
@@ -181,10 +186,6 @@ $Departments = [
   "Operations" => [ 
     "Division" => "Hospitality",
     "Email" => "operations@convergence-con.org",
-  ],
-  "Parties" => [
-    "Division" => "Hospitality",
-    "Email" => "parties@convergence-con.org",
   ],
   "Partner Management" => [
     "Division" => "Administration",
@@ -223,6 +224,10 @@ $Departments = [
     "Division" => "Facilities",
     "Email" => "resume@convergence-con.org",
   ],
+  "Room Parties" => [
+    "Division" => "Hospitality",
+    "Email" => "parties@convergence-con.org",
+  ],
   "Secretary" => [ 
     "Division" => "Corporate Staff",
     "Email" => "secretary@convergenceevents.org",
@@ -244,12 +249,16 @@ $Departments = [
     "Email" => "systems@convergenceevents.org",
   ],
   "Teen Room" => [ 
-    "Division" => "Hospitality",
+    "Division" => "Activites",
     "Email" => "teens@convergence-con.org",
   ],
   "Theater Nippon" => [ 
     "Division" => "Activities",
     "Email" => "theaternippon@convergence-con.org",
+  ],
+  "Transportation" => [
+    "Division" => "Facilities",
+    "Email" => "transportation@convergence-con.org",
   ],
   "Treasurer" => [ 
     "Division" => "Corporate Staff",
@@ -258,6 +267,10 @@ $Departments = [
   "Vice-President" => [ 
     "Division" => "Corporate Staff",
     "Email" => "vicepresident@convergenceevents.org",
+  ],
+  "Video" => [ 
+    "Division" => "Productions",
+    "Email" => "video@convergence-con.org",
   ],
   "Volunteer Den" => [ 
     "Division" => "Hospitality",

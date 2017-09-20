@@ -30,9 +30,9 @@ if (!empty($_REQUEST['user'])) {
               $_SESSION['definedFields']['conComYears'][$fval['id']] = $fval['name'];
             }
             unset($fval);
-          } elseif ($val['fieldName'] == "2017 Official Meeting Attendance") {
+          } elseif ($val['fieldName'] == "Official Meeting Attendance") {
             foreach ($val['fieldOptions']['fieldOption'] as $fval) {
-              $_SESSION['definedFields']['2017Meetings'][$fval['id']] = $fval['name'];
+              $_SESSION['definedFields']['Meetings'][$fval['id']] = $fval['name'];
             }
             unset($fval);
           } elseif ($val['fieldName'] == "Lottery Status") {
@@ -60,7 +60,7 @@ if (!empty($_REQUEST['user'])) {
 
     // Sort everything so displays come out correct always
     arsort($_SESSION['definedFields']['conComYears']);
-    arsort($_SESSION['definedFields']['2017Meetings']);
+    arsort($_SESSION['definedFields']['Meetings']);
 
     // Be ready if there is a preferred name need in the next section
     $preferredFirstName = array_search('Preferred First Name', $_SESSION['definedFields']);

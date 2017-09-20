@@ -14,6 +14,7 @@ if ( isset( $_SESSION['customFields']['currConComPos']) && empty($_SESSION['cust
   echo '</p>';
 }
 
+/*
 // Display Hotel Information
 if ( isset( $_SESSION['customFields']['hotelLotteryStatus']) && $_SESSION['customFields']['hotelLotteryStatus'][0] != array_search('Declined', $_SESSION['definedFields'])) {
   require_once($FUNCTIONDIR . '/allocations.inc');
@@ -204,14 +205,15 @@ if ( isset( $_SESSION['customFields']['hotelLotteryStatus']) && $_SESSION['custo
     echo "</table>\n";
   echo "</div>\n";
 }
-  
+*/
+
 // Display Meeting Sign In Info
 echo "<div class='w3-container w3-green'>\n";
   echo "<table class='w3-table w3-striped w3-bordered w3-white'>\n";
-    echo "<tr><th class='w3-center w3-green' colspan=3>2017 Official Meeting Attendance</th></tr>\n";
+    echo "<tr><th class='w3-center w3-green' colspan=3>Official Meeting Attendance</th></tr>\n";
     $nowDate = date("Ymd");
-    $attendKey = array_search('2017 Official Meeting Attendance', $_SESSION['definedFields']);
-    foreach( $_SESSION['definedFields']['2017Meetings'] as $key => $val ) {
+    $attendKey = array_search('Official Meeting Attendance', $_SESSION['definedFields']);
+    foreach( $_SESSION['definedFields']['Meetings'] as $key => $val ) {
       $ldate = explode("-", $val);
       $checkDate = $ldate[0] . $ldate[1] . rtrim($ldate[2]);
       if ( $nowDate >= $checkDate ) {
