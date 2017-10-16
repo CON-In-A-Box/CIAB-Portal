@@ -59,7 +59,7 @@ $Departments = [
     "Division" => "Committees",
     "Email" => "info@convergenceevents.org",
   ],
-  "Connie's Quantum Sandbox" => [ 
+  "Connies Quantum Sandbox" => [ 
     "Division" => "Activities",
     "Email" => "sandbox@convergence-con.org",
   ],
@@ -226,7 +226,7 @@ $Departments = [
   ],
   "Room Parties" => [
     "Division" => "Hospitality",
-    "Email" => "parties@convergence-con.org",
+    "Email" => "roomparties@convergence-con.org",
   ],
   "Secretary" => [ 
     "Division" => "Corporate Staff",
