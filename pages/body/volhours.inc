@@ -1,11 +1,28 @@
 <script>
-function lookupId(id) {
-  document.getElementById('volunteername').innerHTML = id
-}
+  function lookupId(id) {
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        document.getElementById('volunteername').innerHTML =
+        this.responseText;
+      } else {
+        document.getElementById('volunteername').innerHTML = id + " <i class='fa fa-spinner w3-spin'></i>";
+      }
+    };
+    xhttp.open("GET", "index.php?Function=volhours&volunteerId=" + id, true);
+    xhttp.send();
 
-function calculateHours() {
-  document.getElementById('totalhours').innerHTML = document.getElementById('hours').value * document.getElementById('modifier').value
-}
+
+  }
+
+  function calculateHours() {
+    var hours = document.getElementById('hours').value * document.getElementById('modifier').value;
+    var tag = " hours";
+    if (hours == 1) {
+      tag = " hour";
+    }
+    document.getElementById('totalhours').innerHTML = hours + tag;
+  }
 </script>
 
 <div id="main_content" class="w3-cell w3-cell-top w3-mobile">
@@ -13,7 +30,7 @@ function calculateHours() {
 <form class="w3-container" method="post" action="index.php?Function=volhours">
 
 <label>Volunteer Badge Number</label>
-<input class="w3-input w3-border" type=text name="volunteer" id="volunteer" onchange="lookupId(this.value);" <?php
+<input class="w3-input w3-border" type=number name="volunteer" id="volunteer" onchange="lookupId(this.value);" <?php
 if(isset($_REQUEST['ID'])) {
   echo 'value=' . $_REQUEST['ID'] . ' ';
 }
@@ -80,8 +97,8 @@ if(isset($_REQUEST['ID'])) {
 
   <p name=summery>
     Crediting
-    <span id="totalhours">1</span>
-    hour(s) to
+    <span id="totalhours">1 hour</span>
+    to
     <span id="volunteername">a Volunteer</span>
   </p>
   <p>
@@ -92,7 +109,7 @@ if(isset($_REQUEST['ID'])) {
   </p>
 
   <?php
-    if(strpos($_SESSION['customFields']['currConComPos'][0], 'Volunteers') !== false || isset($_SESSION['IS_ADMIN'])) {
+    if(isset($_SESSION['IS_VOLUNTEERS']) || isset($_SESSION['IS_ADMIN'])) {
       echo '<label class="w3-left">Entering for</label>';
       echo '<input class="w3-input w3-border" type=text';
     } else {
@@ -102,6 +119,9 @@ if(isset($_REQUEST['ID'])) {
   ?>
 </div>
 
-<button class="w3-button w3-block w3-brown">Submit Hours</button>
+<div class="w3-bar">
+  <button class="w3-bar-item w3-button w3-ripple w3-green" style="width:50%">Submit Hours</button>
+  <button class="w3-bar-item w3-button w3-ripple w3-khaki" style="width:50%">Clear Form</button>
+</div>
 </form>
 </div><!--close main_content div-->

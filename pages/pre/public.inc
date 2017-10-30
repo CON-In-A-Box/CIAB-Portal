@@ -131,9 +131,14 @@ if (!empty($_REQUEST['user'])) {
     $_SESSION['customFields']['hotelRoomCheckIn'] = &$_SESSION['customFields'][array_search('Check In', $_SESSION['definedFields'])];
     $_SESSION['customFields']['hotelRoomCheckOut'] = &$_SESSION['customFields'][array_search('Check Out', $_SESSION['definedFields'])];
     
-    // If the logged in user is a System Admin (defined in the config file), note it
-    if(in_array($_SESSION['accountId'], $ALLOCATIONS)) {
+    // If the logged in user is allocations, note it
+    if(strpos($_SESSION['customFields']['currConComPos'][0], 'Allocations') !== false) {
       $_SESSION['IS_ALLOCATIONS'] = TRUE;
+    }
+
+    // If the logged in user is allocations, note it
+    if(strpos($_SESSION['customFields']['currConComPos'][0], 'Volunteers') !== false) {
+      $_SESSION['IS_VOLUNTEERS'] = TRUE;
     }
 
     // If the logged in user is a System Admin (defined in the config file), note it
