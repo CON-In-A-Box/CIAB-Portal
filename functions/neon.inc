@@ -45,7 +45,7 @@ class Neon
     if($result['operationResult'] != 'SUCCESS') {
       switch($result['errors']['error'][0]['errorCode']) {
         case "2": // NeonCRM Crashed, we can't serve this call
-          sendError("Could not login to the NeonCRM System with OrgID " . $NEONID . ".  Check the login/API settings in " . $SITECONFIG . ". Error from " . __FILE__, $result);
+          sendError("Could not login to the NeonCRM System with OrgID " . $GLOBALS['NEONID'] . ".  Check the login/API settings in " . $GLOBALS['SITECONFIG'] . ". Error from " . __FILE__, $result);
           die("Unable to connect to NeonCRM");
         break;
         case "4": // Invalid Session, try logging in again and rerun the call
@@ -57,7 +57,7 @@ class Neon
           $result = $this->apiCore($method, $parameters);
         break;
         case "5": // API Permissions
-          sendError($NEONID . " does not have enough permissions to make this call.  Consult with your administrator. Error from " . __FILE__, $result);
+          sendError($GLOBALS['NEONID'] . " does not have enough permissions to make this call.  Consult with your administrator. Error from " . __FILE__, $result);
           die("API Permissions Failure");
         break;
       }

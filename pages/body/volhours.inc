@@ -16,7 +16,7 @@
   }
 
   function calculateHours() {
-    var hours = document.getElementById('ActualHoursWorked_c').value * document.getElementById('TimeModifier_c').value;
+    var hours = document.getElementById('hours').value * document.getElementById('modifier').value;
     var tag = " hours";
     if (hours == 1) {
       tag = " hour";
