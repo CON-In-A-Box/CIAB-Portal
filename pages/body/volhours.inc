@@ -16,7 +16,7 @@
   }
 
   function calculateHours() {
-    var hours = document.getElementById('hours').value * document.getElementById('modifier').value;
+    var hours = document.getElementById('ActualHoursWorked_c').value * document.getElementById('TimeModifier_c').value;
     var tag = " hours";
     if (hours == 1) {
       tag = " hour";
@@ -27,10 +27,27 @@
 
 <div id="main_content" class="w3-cell w3-cell-top w3-mobile">
 
+<?php
+if(isset($updateComplete)) {
+  if($updateComplete === TRUE) {
+?>
+<div class="w3-block w3-center w3-green">
+  Hours Recorded
+<?php
+  } else {
+?>
+<div class="w3-block w3-center w3-red">
+  Hour Recording Failed!!  Error!
+<?php
+  }
+}
+?>
+</div>
+
 <form class="w3-container" method="post" action="index.php?Function=volhours">
 
 <label>Volunteer Badge Number</label>
-<input class="w3-input w3-border" type=number name="volunteer" id="volunteer" onchange="lookupId(this.value);" <?php
+<input class="w3-input w3-border" type=number name="VolunteerID_c" id="volunteer" onchange="lookupId(this.value);" <?php
 if(isset($_REQUEST['ID'])) {
   echo 'value=' . $_REQUEST['ID'] . ' ';
 }
@@ -39,11 +56,11 @@ if(isset($_REQUEST['ID'])) {
 <div class="w3-row">
   <div class="w3-col l3 m3 s4">
     <label>Actual Hours</label>
-    <input class="w3-input w3-border" type=text name="hours" id="hours" onchange="calculateHours();" title="Actual Hours Worked, to the quarter hour.  Less than 20!)" pattern="([1-9]|1[0-9])(\.[257](5)?)?" value=1 required>
+    <input class="w3-input w3-border" type=text name="ActualHoursWorked_c" id="hours" onchange="calculateHours();" title="Actual Hours Worked, to the quarter hour.  Less than 20!)" pattern="([1-9]|1[0-9])(\.[257](5)?)?" value=1 required>
   </div>
   <div class="w3-col l9 m9 s8">
     <label>End time</label>
-    <input class="w3-input w3-border" type="datetime-local" name="datetime" id="datetime" pattern="\d{4}-\d{2}-\d{2}T\d{2}:\d{2}" value="<?php
+    <input class="w3-input w3-border" type="datetime-local" name="EndDateTime_c" id="datetime" pattern="\d{4}-\d{2}-\d{2}T\d{2}:\d{2}" value="<?php
       echo date('Y-m-d');
       echo 'T' . date('H') . ':';
       $min = date('i');
@@ -61,7 +78,7 @@ if(isset($_REQUEST['ID'])) {
 </div>
 
 <label>Volunteer Time Modifier - Must be per policy</label>
-<select class="w3-select w3-border" name="modifier" id="modifier" onchange="calculateHours();">
+<select class="w3-select w3-border" name="TimeModifier_c" id="modifier" onchange="calculateHours();">
   <option value=1 selected>Normal - 1 hour = 1 hour</option>
   <option value=0.5>Half Time - 1 hour = 0.5 hours credit</option>
   <option value=1.5>Time Plus Half - 1 hour = 1.5 hours credit</option>
@@ -69,7 +86,7 @@ if(isset($_REQUEST['ID'])) {
 </select>
 
 <label>Department worked</label>
-<select class="w3-select w3-border" name="department" id="department">
+<select class="w3-select w3-border" name="DepartmentWorked_c" id="department">
   <?php
   if(strpos($_SESSION['customFields']['currConComPos'][0], 'Volunteers') !== false || isset($_SESSION['IS_ADMIN'])) {
     require_once($FUNCTIONDIR . "/divisional.inc");
@@ -115,7 +132,7 @@ if(isset($_REQUEST['ID'])) {
     } else {
       echo '<input type=hidden';
     }
-    echo ' name="enterer" value="' . $_SESSION['preferredName'] . '" required>';
+    echo ' name="AuthorizedBy_c" value="' . $_SESSION['preferredName'] . '" required>';
   ?>
 </div>
 
