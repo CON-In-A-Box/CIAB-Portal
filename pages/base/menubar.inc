@@ -18,7 +18,7 @@
     </a>
     <?php if ( isset( $_SESSION['customFields']['currConComPos'])) { ?>
       <?php if(isset($_SESSION['IS_ALLOCATIONS']) || isset($_SESSION['IS_ADMIN'])) { ?>
-      <a class="w3-bar-item w3-button w3-hide-small w3-hide-medium<?php
+      <a class="w3-bar-item w3-button<?php
         if ($_REQUEST['Function'] == 'volhours') echo " w3-green";
         ?>" href="index.php?Function=volhours" title="Track Volunteer's hours">
         <i class="fa fa-clock-o"></i>
@@ -39,7 +39,7 @@
       Profile
     </a>
     <?php if(isset($_SESSION['IS_VOLUNTEERS']) || isset($_SESSION['IS_ADMIN'])) { ?>
-      <a class="w3-bar-item w3-button<?php
+      <a class="w3-bar-item w3-button w3-hide-small w3-hide-medium<?php
         if ($_REQUEST['Function'] == 'volunteers') { echo " w3-green"; } else { echo " w3-yellow"; }
         ?>" href="index.php?Function=volunteers" title="Volunteers">
         <i class="fa fa-users"></i>
@@ -76,14 +76,6 @@
     <!--Responsive menu for tables and moblie-->
     <div id="main_nav_list" class="w3-bar-block w3-hide w3-hide-large">
       <?php if ( isset( $_SESSION['customFields']['currConComPos'])) { ?>
-        <?php if(isset($_SESSION['IS_ALLOCATIONS']) || isset($_SESSION['IS_ADMIN'])) { ?>
-        <a class="w3-bar-item w3-button<?php
-          if ($_REQUEST['Function'] == 'volhours') echo " w3-green";
-            ?>" href="index.php?Function=volhours" title="Track Volunteer's Hours">
-          <i class="fa fa-clock-o"></i>
-          Enter Hours
-        </a>
-        <?php } ?>
         <a class="w3-bar-item w3-button<?php
           if ($_REQUEST['Function'] == 'list') echo " w3-green";
           ?>" href="index.php?Function=list" title="The Current ConCom List List">
