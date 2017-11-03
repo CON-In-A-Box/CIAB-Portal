@@ -7,13 +7,13 @@
   if (!empty($_REQUEST)) {
     // Retrieve and sanitize POST data
     $arguments = [
-      'VolunteerID_c'       => FILTER_SANITIZE_NUMBER_FLOAT,
-      'ActualHoursWorked_c' => FILTER_SANITIZE_NUMBER_FLOAT,
+      'VolunteerID_c'       => FILTER_SANITIZE_NUMBER_INT,
+      'ActualHoursWorked_c' => FILTER_VALIDATE_FLOAT,
       'EndDateTime_c'       => FILTER_SANITIZE_SPECIAL_CHARS,
-      'TimeModifier_c'      => FILTER_SANITIZE_NUMBER_FLOAT,
+      'TimeModifier_c'      => FILTER_VALIDATE_FLOAT,
       'DepartmentWorked_c'  => FILTER_SANITIZE_SPECIAL_CHARS,
       'AuthorizedBy_c'      => FILTER_SANITIZE_SPECIAL_CHARS,
-      'volunteerId'         => FILTER_SANITIZE_NUMBER_FLOAT,
+      'volunteerId'         => FILTER_SANITIZE_NUMBER_INT,
     ];
     if (!empty($_POST)) {
       $updateData = filter_input_array( INPUT_POST, $arguments );
@@ -44,7 +44,8 @@
         $updateComplete = TRUE;
       } else {
         $updateComplete = FALSE;
-        sendError("Fail to record Volunteer hours " . __FILE__, $result);
+        sendError("Fail to record Volunteer hours " . __FILE__, array_merge($request, $result));
+$handoff = array_merge($request, $result);
       }
 
     } elseif (!empty($updateData['volunteerId'])) {
@@ -83,12 +84,11 @@
               echo $r['Last Name'];
             }
           }
-          echo " (" . $updateData['volunteerId'] . ")";
         } else {
-          echo $updateData['volunteerId'] . " - Not Found";
+          echo "Not Found";
         }
       } else {
-        echo $updateData['volunteerId'] . " - Lookup Error";
+        echo "Lookup Error";
       }
 
       exit();

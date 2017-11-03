@@ -1,10 +1,13 @@
 <div id="main_content" class="w3-cell w3-cell-top w3-mobile">
 
 <?php
+function VolHoursSearch($page) {
   $request = [
     'method' => 'customObjectRecord/listCustomObjectRecords',
     'parameters' => [
       'objectApiName' => 'VolHourEntries_c',
+      'page.currentPage' => $page,
+      'page.pageSize' => 200,
     ],
   ];
 
@@ -21,6 +24,7 @@
   $result = $GLOBALS['Neon']->go1($request);
 
   if ( isset( $result['operationResult'] ) && $result['operationResult'] == 'SUCCESS' ) {
+    $return['pages'] = $result['page']['totalPage'];
     foreach($result['searchResults']['nameValuePairs'] as $record) {
       foreach($record as $field) {
         foreach($field as $key => $val) {
@@ -29,7 +33,18 @@
         echo "<br />\n";
       }
     }
+    return $return;
   } else {
     sendError("Fail to display Volunteer Hours " . __FILE__, $result);
   }
+}
+
+$i=1;
+$runPage=1;
+while ( $i <= $runPage ) {
+  $result = VolHoursSearch($i);
+  $runPage = $result['pages'];
+  $i++;
+}
+
 ?>
