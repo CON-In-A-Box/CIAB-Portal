@@ -59,7 +59,7 @@ function sendError($msg, $arrChunk=NULL) {
 
   $message = $msg;
   if (!empty($arrChunk)) {
-    $message .= print_r($arrChunk, true);
+    $message .= "\n\n" . print_r($arrChunk, true);
   }
   $headers = 'From: noreply@convergence-con.org' . "\r\n";
   $headers .= 'Reply-To: noreply@convergence-con.org';
