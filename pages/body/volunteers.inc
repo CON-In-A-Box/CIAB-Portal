@@ -11,7 +11,7 @@ function VolHoursSearch($page) {
     ],
   ];
 
-  $fields = ['VolunteerID_c.id', 'ActualHoursWorked_c', 'EndDateTime_c', 'TimeModifier_c', 'DepartmentWorked_c', 'AuthorizedBy_c'];
+  $fields = ['VolunteerID_c.id', 'ActualHoursWorked_c', 'EndDateTime_c', 'TimeModifier_c', 'DepartmentWorked_c', 'EnteredBy_c', 'AuthorizedBy_c'];
   foreach($fields as $key => $field) {
     $request['parameters']['customObjectOutputFieldList.customObjectOutputField.label[' . $key . ']'] = $field;
     $request['parameters']['customObjectOutputFieldList.customObjectOutputField.columnName[' . $key . ']'] = $field;

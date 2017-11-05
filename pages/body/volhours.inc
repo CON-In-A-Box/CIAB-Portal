@@ -8,15 +8,18 @@
         if (this.responseText == "Not Found") {
           document.getElementById('volunteer').value = "";
           document.getElementById('volunteer').classList.add('w3-red');
+          document.getElementById('submitbtn').disabled = true;
           document.getElementById('volunteername').innerHTML = "a Volunteer";
           document.getElementById('lookupname').innerHTML = id + " not found";
         } else if (this.responseText == "Lookup Error") {
           document.getElementById('volunteer').value = "";
           document.getElementById('volunteer').classList.add('w3-red');
+          document.getElementById('submitbtn').disabled = true;
           document.getElementById('volunteername').innerHTML = "a Volunteer";
           document.getElementById('lookupname').innerHTML = id + " lookup error";
         } else {
           document.getElementById('volunteer').classList.remove('w3-red');
+          document.getElementById('submitbtn').disabled = false;
           document.getElementById('volunteername').innerHTML = this.responseText + ' (' + id + ')';
           document.getElementById('lookupname').innerHTML = this.responseText;
         }
@@ -200,6 +203,7 @@ echo "</pre>\n";
         echo '<input type=hidden';
       }
       echo ' name="AuthorizedBy_c" value="' . $_SESSION['preferredName'] . '" required>';
+      echo '<input type=hidden name="EnteredBy_c" value="' . $_SESSION['preferredName'] . '" required>';
     ?>
   </div>
 </div>
@@ -207,7 +211,7 @@ echo "</pre>\n";
 <div class='w3-bar'>
   <div class="w3-bar-item">
     <div class="w3-bar">
-      <button class="w3-button w3-ripple w3-green">Submit Hours</button>
+      <button id="submitbtn" class="w3-button w3-ripple w3-green" disabled>Submit Hours</button>
       <button class="w3-button w3-ripple w3-khaki">Clear Form</button>
     </div>
   </div>

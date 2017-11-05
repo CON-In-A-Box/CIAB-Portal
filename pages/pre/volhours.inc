@@ -12,6 +12,7 @@
       'EndDateTime_c'       => FILTER_SANITIZE_SPECIAL_CHARS,
       'TimeModifier_c'      => FILTER_VALIDATE_FLOAT,
       'DepartmentWorked_c'  => FILTER_SANITIZE_SPECIAL_CHARS,
+      'EnteredBy_c'         => FILTER_SANITIZE_SPECIAL_CHARS,
       'AuthorizedBy_c'      => FILTER_SANITIZE_SPECIAL_CHARS,
       'volunteerId'         => FILTER_SANITIZE_NUMBER_INT,
     ];
@@ -21,7 +22,7 @@
       $updateData = filter_input_array( INPUT_GET, $arguments );
     }
 
-    if (!empty($updateData['VolunteerID_c']) && !empty($updateData['ActualHoursWorked_c']) && !empty($updateData['EndDateTime_c']) && !empty($updateData['TimeModifier_c']) && !empty($updateData['DepartmentWorked_c']) && !empty($updateData['AuthorizedBy_c'])) {
+    if (!empty($updateData['VolunteerID_c']) && !empty($updateData['ActualHoursWorked_c']) && !empty($updateData['EndDateTime_c']) && !empty($updateData['TimeModifier_c']) && !empty($updateData['DepartmentWorked_c']) && !empty($updateData['EnteredBy_c']) && !empty($updateData['AuthorizedBy_c'])) {
       $request = [
         'method' => 'customObjectRecord/createCustomObjectRecord',
         'parameters' => [
@@ -29,7 +30,7 @@
         ],
       ];
 
-      $fields = ['VolunteerID_c', 'ActualHoursWorked_c', 'EndDateTime_c', 'TimeModifier_c', 'DepartmentWorked_c', 'AuthorizedBy_c'];
+      $fields = ['VolunteerID_c', 'ActualHoursWorked_c', 'EndDateTime_c', 'TimeModifier_c', 'DepartmentWorked_c', 'EnteredBy_c', 'AuthorizedBy_c'];
       foreach($fields as $key => $field) {
         $request['parameters']['customObjectRecord.customObjectRecordDataList.customObjectRecordData.name[' . $key . ']'] = $field;
         $request['parameters']['customObjectRecord.customObjectRecordDataList.customObjectRecordData.value[' . $key . ']'] = $updateData[$field];
