@@ -92,7 +92,7 @@ class Neon
         if($response['errors']['error'][0]['errorCode'] == "2") {
           echo "NeonCRM seems to be down, please try again later.";
         } else {
-          sendError("Could not login to the NeonCRM System with OrgID " . $NEONID . ".  Check the login/API settings in " . $SITECONFIG . ". Error from " . __FILE__, $response);
+          sendError("Could not login to the NeonCRM System with OrgID " . $GLOBALS['NEONID'] . ".  Check the login/API settings in " . $GLOBALS['SITECONFIG'] . ". Error from " . __FILE__, $response);
           return $response;
         }
         die("Unable to connect to NeonCRM");
