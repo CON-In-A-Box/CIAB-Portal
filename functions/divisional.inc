@@ -249,7 +249,7 @@ $Departments = [
     "Email" => "systems@convergenceevents.org",
   ],
   "Teen Room" => [ 
-    "Division" => "Activites",
+    "Division" => "Activities",
     "Email" => "teens@convergence-con.org",
   ],
   "Theater Nippon" => [ 
