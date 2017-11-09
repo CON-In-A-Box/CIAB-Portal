@@ -75,10 +75,9 @@ $Departments = [
     "Division" => "External Relations and Communications",
     "Email" => "creativeservices@convergence-con.org",
   ],
-  "CVG-TV/Video" => [ 
+  "CVG-TV" => [ 
     "Division" => "Productions",
     "Email" => "cvgtv@convergence-con.org",
-    "OtherEmails" => "video@convergence-con.org",
   ],
   "Dealers Room" => [ 
     "Division" => "External Relations and Communications",
