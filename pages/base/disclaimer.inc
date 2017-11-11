@@ -1,20 +1,33 @@
+<?php
+$year = date('Y');
+?>
 <p></p>
 <div class="w3-bar">
   <div class="w3-dropdown-hover">
     <button class="w3-bar-item w3-button w3-tiny"><img src="images/dualXicon.png" style="height: 2em; width: 2em;" alt="Dual X Icon - Con-In-A-Box"> Information</button>
     <div class="w3-dropdown-content">
       <div class="w3-panel w3-leftbar w3-sand">
-        Con-In-A-Box&trade;
+        <div class="w3-large w3-center">
+          Con-In-A-Box&trade;
 <?php
-echo ' - In use by: ' . $CONHOST . "\n";
-echo ' - Included Modules: ' . $MODULENAME . ' v-' . $VERSION . "\n";
+echo 'In use by ' . $CONHOST;
+?>
+          <hr />
+        </div>
+<?php
+echo '<div class="w3-small">';
+echo 'Included Modules:';
+echo '<ul>';
+echo '<li>' . $MODULENAME . ' v-' . $VERSION . "</li>";
+echo '</ul>';
+echo "</div>\n";
 ?>
       </div>
 
       <div class="w3-panel w3-leftbar w3-small w3-lime">
         All parts of Con-In-A-Box&trade;, including but not limited to the Dual-X icon, CON-In-A-Box&trade; logo, name CON-In-A-Box&trade;, scripts, programs, coding, styles, data models, CGI, HTML, custom PHP, structure, feeds, or methods, except where otherwise protected (exceptions include but not limited to the Neon-php library maintained by z2systems, the Speller Pages Project from Sourceforge.net protected under the GNU Public License, or the PHP-Fortune script from Henrik Aasted Sorensen) are:
         <div class="w3-container w3-center w3-large">
-          &copy; Copyright 2005-2017 Thomas S. Keeley
+          &copy; Copyright 2005-<?php echo $year; ?> - Thomas S. Keeley
         </div>
       </div>
 

@@ -1,10 +1,31 @@
 <div id="main_content" class="w3-cell w3-cell-top w3-mobile">
 
+<?php
+if(isset($updateComplete)) {
+  if($updateComplete === TRUE) {
+?>
+<div class="w3-block w3-center w3-green">
+  Hours Recorded
+<?php
+  } else {
+?>
+<div class="w3-block w3-center w3-red">
+  Hour Recording Failed!!  Error!
+  <pre>
+<?php
+print_r($handoff);
+echo "</pre>\n";
+  }
+}
+?>
+</div>
+
 <script>
   function lookupId(id) {
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
       if (this.readyState == 4 && this.status == 200) {
+        var subsetstring = " is on ConCom";
         if (this.responseText == "Not Found") {
           document.getElementById('volunteer').value = "";
           document.getElementById('volunteer').classList.add('w3-red');
@@ -17,6 +38,12 @@
           document.getElementById('submitbtn').disabled = true;
           document.getElementById('volunteername').innerHTML = "a Volunteer";
           document.getElementById('lookupname').innerHTML = id + " lookup error";
+        } else if (this.responseText.indexOf(subsetstring) !== -1) {
+          document.getElementById('volunteer').value = "";
+          document.getElementById('volunteer').classList.add('w3-red');
+          document.getElementById('submitbtn').disabled = true;
+          document.getElementById('volunteername').innerHTML = "a Volunteer";
+          document.getElementById('lookupname').innerHTML = this.responseText + ' (' +id + ')';
         } else {
           document.getElementById('volunteer').classList.remove('w3-red');
           document.getElementById('submitbtn').disabled = false;
@@ -46,26 +73,6 @@
     document.getElementById('actualhours').value = Number(hours);
   }
 </script>
-
-<?php
-if(isset($updateComplete)) {
-  if($updateComplete === TRUE) {
-?>
-<div class="w3-block w3-center w3-green">
-  Hours Recorded
-<?php
-  } else {
-?>
-<div class="w3-block w3-center w3-red">
-  Hour Recording Failed!!  Error!
-  <pre>
-<?php
-print_r($handoff);
-echo "</pre>\n";
-  }
-}
-?>
-</div>
 
 <form method="post" action="index.php?Function=volhours">
 

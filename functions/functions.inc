@@ -2,8 +2,8 @@
 
 // Main setup function
 $MODULENAME  = "Member Portal";
-$BUILD       = explode(" ", '$Rev: 134 $'); // going to have to update this to support git, probably via filters
-$VERSION     = "1.3 - Captain America, Build: " . $BUILD[1]; // Major.Minor.Revision Format - This is a string, version names allowed
+$BUILD       = "134";
+$VERSION     = "1.3 - Captain America, Build: " . $BUILD; // Major.Minor.Revision Format - This is a string, version names allowed
 
 // Discover Self Location
 $FUNCTIONDIR    = dirname(__FILE__);

@@ -52,12 +52,13 @@ $handoff = array_merge($request, $result);
     } elseif (!empty($updateData['volunteerId'])) {
       $preferredFirstName = array_search('Preferred First Name', $_SESSION['definedFields']);
       $preferredLastName = array_search('Preferred Last Name', $_SESSION['definedFields']);
+      $currentConCom = array_search('CVGConCom Current Position', $_SESSION['definedFields']);
 
       $search = [ 
         'method' => 'account/listAccounts', 
         'columns' => [
           'standardFields' => ['Account ID', 'First Name', 'Last Name'],
-          'customFields' => [$preferredFirstName, $preferredLastName],
+          'customFields' => [$preferredFirstName, $preferredLastName, $currentConCom],
         ],
         'criteria' => [
           ['Account ID', 'EQUAL', $updateData['volunteerId'],],
@@ -83,6 +84,9 @@ $handoff = array_merge($request, $result);
               echo $r['Preferred Last Name'];
             } else {
               echo $r['Last Name'];
+            }
+            if(!empty($r['CVGConCom Current Position'])) {
+              echo " is on ConCom";
             }
           }
         } else {
