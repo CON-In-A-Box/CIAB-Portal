@@ -12,6 +12,9 @@ $WEBSERVER      = $_SERVER['SERVER_NAME'];
 $BASEURL        = "http://" . $WEBSERVER;
 $SITECONFIG     = $BASEDIR . '/.ht_meetingsignin_config.php'; // Location of the module config file
 
+// Data
+$DATADIR        = $BASEDIR . '/data';
+
 // Static Variables
 $SITESUPPORTDIR = $BASEDIR . "/sitesupport";
 $PAGESDIR       = $BASEDIR . "/pages";
