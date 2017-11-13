@@ -9,7 +9,8 @@ $AllocHotels = array();
 if (isset($DATADIR)) {
     $hotels = array_filter(scandir($DATADIR . '/hotels'), function($item) {
         global $DATADIR;
-        return !is_dir($DATADIR . '/hotels/' . $item);
+        $ext = pathinfo($item, PATHINFO_EXTENSION);
+        return (!is_dir($DATADIR . '/hotels/' . $item) && $ext=='json');
     });
     foreach ($hotels as $hotel) {
         $hotel_data = file_get_contents($DATADIR . '/hotels/' . $hotel);
