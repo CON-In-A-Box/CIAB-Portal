@@ -28,16 +28,8 @@ function getDivision($dep) {
   return($GLOBALS['Departments'][$dep]['Division']);
 }
 
-function getDepartmentEmail($dep) {
+function getDepartmentEmails($dep) {
   return($GLOBALS['Departments'][$dep]['Email']);
-}
-
-function getOtherDepartmentEmails($dep) {
-  if(isset($GLOBALS['Departments'][$dep]['OtherEmails'])) {
-    return($GLOBALS['Departments'][$dep]['OtherEmails']);
-  } else {
-    return(null);
-  }
 }
 
 function AddConComPosition($accountid, $department, $position, $note) {
@@ -95,7 +87,7 @@ function AddConComPosition($accountid, $department, $position, $note) {
 
     if ( isset( $result2['operationResult'] ) && $result2['operationResult'] == 'SUCCESS' ) {
       // Notify the Division Director, so they know
-      $to = getDepartmentEmail(getDivision($department));
+      $to = getDepartmentEmails(getDivision($department))[0];
       $preferredFirstName = array_search('Preferred First Name', $_SESSION['definedFields']);
       $preferredLastName = array_search('Preferred Last Name', $_SESSION['definedFields']);
       $subject = 'ConCom Division addition to ' . $department;
@@ -186,7 +178,7 @@ function RemoveConComPosition($accountid, $department, $position) {
 
     if ( isset( $result2['operationResult'] ) && $result2['operationResult'] == 'SUCCESS' ) {
       // Notify the Division Director, so they know
-      $to = getDepartmentEmail(getDivision($department));
+      $to = getDepartmentEmails(getDivision($department))[0];
       $subject = 'ConCom Division Removal to ' . $department;
       $preferredFirstName = array_search('Preferred First Name', $_SESSION['definedFields']);
       $preferredLastName = array_search('Preferred Last Name', $_SESSION['definedFields']);
@@ -302,13 +294,6 @@ function ConComListBuildSearch($page) {
 function ConComListBuild() {
   foreach( $GLOBALS['Departments'] as $kdep => $dep) {
     if( $dep['Division'] != $kdep ) {
-      if( !empty($dep['OtherEmails'])) {
-        $addEmail=explode("|", $dep['OtherEmails']);
-        foreach($addEmail as $tmp) {
-          $dep['Email'] .= "<br />" . $tmp;
-        }
-        unset($tmp);
-      }
 
       $fullConComList[] = [
         'Division' => $dep['Division'],
@@ -316,7 +301,7 @@ function ConComListBuild() {
         'Position' => 'Department',
         'First Name' => '',
         'Last Name' => '',
-        'Email' => $dep['Email'],
+        'Email' => implode("<br />", $dep['Email']),
         'Note' => '',
         'Account ID' => '',
       ];
@@ -360,7 +345,7 @@ function DumpConComList() {
 
   foreach( $Departments as $kdep => $dep) {
     //if($dep['Division'] != 'Corporate Staff' && $dep['Division'] != 'Committees') {
-      echo $dep['Email'] . "\n";
+      echo $dep['Email'][0] . "\n";
     //}
   }
 
@@ -394,7 +379,7 @@ function DumpConComList() {
     }
   }
   foreach($Divisions as $div) {
-    echo GetDepartmentEmail($div) . "\n";
+    echo getDepartmentEmails($div)[0] . "\n";
   }
 }
 
@@ -439,15 +424,8 @@ function ConComListDisplay() {
       }
       echo '  </div>';
       echo '</div>';
-      echo '</th><th colspan=3>' . GetDepartmentEmail($div);
-      if(getOtherDepartmentEmails($div)) {
-        $tmp = explode('|', getOtherDepartmentEmails($div));
-        foreach($tmp as $eMail) {
-          echo '<br />' . $eMail;
-        }
-        unset($eMail);
-        unset($tmp);
-      }
+      echo '</th><th colspan=3>';
+      echo implode('<br />', getDepartmentEmails($div));
       echo "</th></tr>\n";
       // Division Directors
       if ( isset($printList[$div]['Division Director'])) {
@@ -455,7 +433,7 @@ function ConComListDisplay() {
           foreach( $pos as $kfName => $fName) {
             foreach( $fName as $klName => $lName) {
               $tmp = explode('|', $lName);
-              echo '<tr><td>Division Director</td><td>' . $div . '</td><td>' . $kfName . '</td><td>' . $klName . '</td><td>Director</td><td>' . GetDepartmentEmail($div) . '</td>';
+              echo '<tr><td>Division Director</td><td>' . $div . '</td><td>' . $kfName . '</td><td>' . $klName . '</td><td>Director</td><td>' . GetDepartmentEmail($div)[0] . '</td>';
               if(isset($_SESSION['IS_ADMIN'])) {
                 echo '<td>';
               } else {
@@ -531,15 +509,8 @@ function ConComListDisplay() {
           } else {
             echo '<th id="' . $kdep . '">' . $kdep . '</th><th colspan=4>' . $div . '</th>';
           }
-          echo '<th colspan=3>' . GetDepartmentEmail($kdep);
-          if(getOtherDepartmentEmails($kdep)) {
-            $tmp = explode('|', getOtherDepartmentEmails($kdep));
-            foreach($tmp as $eMail) {
-              echo "<br />" . $eMail;
-            }
-            unset($eMail);
-            unset($tmp);
-          }
+          echo '<th colspan=3>';
+          echo implode('<br />', getDepartmentEmails($kdep));
           echo "</th></tr>\n";
         }
         if($kdep != 'Division Director' && $kdep != 'Division Support') {
@@ -563,7 +534,7 @@ function ConComListDisplay() {
                     echo '<td>' . $pos . '</td>';
                   }
                   if ($div == 'Corporate Staff' ) {
-                    echo '<td>' . GetDepartmentEmail($kdep) . '</td>';
+                    echo '<td>' . getDepartmentEmails($kdep)[0] . '</td>';
                   } else {
                     echo '<td>' . $tmp[0] . '</td>';
                   }
