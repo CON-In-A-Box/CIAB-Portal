@@ -433,7 +433,7 @@ function ConComListDisplay() {
           foreach( $pos as $kfName => $fName) {
             foreach( $fName as $klName => $lName) {
               $tmp = explode('|', $lName);
-              echo '<tr><td>Division Director</td><td>' . $div . '</td><td>' . $kfName . '</td><td>' . $klName . '</td><td>Director</td><td>' . GetDepartmentEmail($div)[0] . '</td>';
+                  echo '<tr><td>Division Director</td><td>' . $div . '</td><td>' . $kfName . '</td><td>' . $klName . '</td><td>Director</td><td>' . getDepartmentEmails($div)[0] . '</td>';
               if(isset($_SESSION['IS_ADMIN'])) {
                 echo '<td>';
               } else {
