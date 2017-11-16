@@ -1,0 +1,41 @@
+Note: This needs more info and setup!
+
+Steps to bring a test environment online.
+Thomas Keeley, 2017
+
+Prepare the Environment:
+- Install the following:
+-- Apache2
+-- PHP7
+-- Apache2 mod_php7
+-- Git (yeah, I know, but if I don't say it....)
+
+Set the code location (working directory)  EG: /home/tskeeley/Documents/Repositories/CIAB
+- git clone
+
+Configure Apache2 either as a virtual host or the only host running:
+- Set the document root to the working directory
+- Set the directory options for the working directory as permissive with indexes
+-- <Directory "<working directory">
+--   Options Indexes
+--   AllowOverride all
+--   <IfModule mod_access_compat.c>
+--     Order allow,deny
+--     Allow from all
+--   </IfModule>
+--   <IfModule !mod_access_compat.c>
+--     Require all granted
+--    </IfModule>
+-- </Directory>
+- Note: You can turn on ssl as well if you so choose, of course.
+
+Configure CIAB in the Working Directory:
+- copy .ht_meetingsignin_config.php-EXAMPLE to .ht_meetingsignin_config.php
+- edit .ht_meetingsignin_config.php
+-- update ADMINEMAIL to yourself
+-- update ADMINPASS (if you want, not needed generally, unless doing barebones deployment, which the code isn't fully supporting yet, that I know of)
+-- update ADMINACCOUNTS to include your NeonCRM AccountID (helps you see everything)
+-- update DB entries if using a database, not implemented yet (soon though)
+-- update NEONID and NEONKEY to the NeonCRM Test instance
+
+Start apache, point your browser to localhost and enjoy testing!
