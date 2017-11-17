@@ -1,13 +1,13 @@
 <div id="main_content" class="w3-cell w3-cell-top w3-mobile">
 
 <?php
-if(isset($updateComplete)) {
-  if($updateComplete === TRUE) {
+if (isset($updateComplete)) {
+    if ($updateComplete === true) {
 ?>
 <div class="w3-block w3-center w3-green">
   Hours Recorded
 <?php
-  } else {
+    } else {
 ?>
 <div class="w3-block w3-center w3-red">
   Hour Recording Failed!!  Error!
@@ -15,7 +15,7 @@ if(isset($updateComplete)) {
 <?php
 print_r($handoff);
 echo "</pre>\n";
-  }
+    }
 }
 ?>
 </div>
@@ -81,10 +81,10 @@ echo "</pre>\n";
     <label>Volunteer Badge Number</label>
     <div class='w3-bar'>
       <input class="w3-input w3-border w3-bar-item" type=number name="VolunteerID_c" id="volunteer" onchange="lookupId(this.value);" <?php
-        if(isset($_REQUEST['ID'])) {
-          echo 'value=' . $_REQUEST['ID'] . ' ';
+        if (isset($_REQUEST['ID'])) {
+            echo 'value='.$_REQUEST['ID'].' ';
         }
-      ?>placeholder="(no letters)" required>
+        ?>placeholder="(no letters)" required>
       <span class='w3-bar-item' id='lookupname'></span>
     </div>
   </div>
@@ -128,18 +128,18 @@ echo "</pre>\n";
   <div class='w3-bar-item'>
     <label>Date/Time that the Shift Ended</label>
     <input class="w3-input w3-border" type="datetime-local" name="EndDateTime_c" id="datetime" pattern="\d{4}-\d{2}-\d{2}T\d{2}:\d{2}" value="<?php
-      echo date('Y-m-d');
-      echo 'T' . date('H') . ':';
-      $min = date('i');
-      if($min < 15) {
+    echo date('Y-m-d');
+    echo 'T'.date('H').':';
+    $min = date('i');
+    if ($min < 15) {
         echo "00";
-      } elseif($min < 30) {
+    } elseif ($min < 30) {
         echo "15";
-      } elseif($min < 45) {
+    } elseif ($min < 45) {
         echo "30";
-      } else {
+    } else {
         echo "45";
-      }
+    }
     ?>" required>
   </div>
 </div>
@@ -157,28 +157,28 @@ echo "</pre>\n";
   <div class='w3-block'>
     <label>Department worked</label><br />
     <select class="w3-select w3-border" style="width:auto" name="DepartmentWorked_c" id="department">
-      <?php
-      if(strpos($_SESSION['customFields']['currConComPos'][0], 'Volunteers') !== false || isset($_SESSION['IS_ADMIN'])) {
-        require_once($FUNCTIONDIR . "/divisional.inc");
-        foreach($Departments as $dep => $set) {
-          echo '<option value="' . $dep . '"';
-          if(isset($_REQUEST['department']) && $_REQUEST['department'] == $dep) {
-            echo " selected";
-          }
-          echo '>' . $dep . "</option>\n";
+        <?php
+        if (strpos($_SESSION['customFields']['currConComPos'][0], 'Volunteers') !== false || isset($_SESSION['IS_ADMIN'])) {
+            require_once($FUNCTIONDIR."/divisional.inc");
+            foreach ($Departments as $dep => $set) {
+                echo '<option value="'.$dep.'"';
+                if (isset($_REQUEST['department']) && $_REQUEST['department'] == $dep) {
+                    echo " selected";
+                }
+                echo '>'.$dep."</option>\n";
+            }
+        } else {
+            $depset = explode('|', $_SESSION['customFields']['currConComPos'][0]);
+            foreach ($depset as $set) {
+                $dep = explode(',', $set);
+                echo '<option value="'.$dep[0].'"';
+                if (isset($_REQUEST['department']) && $_REQUEST['department'] == $dep) {
+                    echo " selected";
+                }
+                echo '>'.$dep[0]."</option>\n";
+            }
         }
-      } else {
-        $depset = explode('|', $_SESSION['customFields']['currConComPos'][0]);
-        foreach($depset as $set) {
-          $dep = explode(',', $set);
-          echo '<option value="' . $dep[0] . '"';
-          if(isset($_REQUEST['department']) && $_REQUEST['department'] == $dep) {
-            echo " selected";
-          }
-          echo '>' . $dep[0] . "</option>\n";
-        }
-      }
-      ?>
+        ?>
     </select>
   </div>
 </div>
@@ -203,14 +203,14 @@ echo "</pre>\n";
 <div class='w3-bar'>
   <div class="w3-bar-item">
     <?php
-      if(isset($_SESSION['IS_VOLUNTEERS']) || isset($_SESSION['IS_ADMIN'])) {
+    if (isset($_SESSION['IS_VOLUNTEERS']) || isset($_SESSION['IS_ADMIN'])) {
         echo '<label class="w3-left">Hours Authorized By</label>';
         echo '<input class="w3-input w3-border" type=text';
-      } else {
+    } else {
         echo '<input type=hidden';
-      }
-      echo ' name="AuthorizedBy_c" value="' . $_SESSION['preferredName'] . '" required>';
-      echo '<input type=hidden name="EnteredBy_c" value="' . $_SESSION['preferredName'] . '" required>';
+    }
+    echo ' name="AuthorizedBy_c" value="'.$_SESSION['preferredName'].'" required>';
+    echo '<input type=hidden name="EnteredBy_c" value="'.$_SESSION['preferredName'].'" required>';
     ?>
   </div>
 </div>

@@ -1,5 +1,5 @@
 <header class="w3-cell-row w3-green w3-mobile">
-  <?php require($PAGESDIR . '/base/logo.inc'); ?>
+  <?php require($PAGESDIR.'/base/logo.inc'); ?>
   <div class="w3-container w3-cell w3-mobile">
     <h2><?php echo $CONSITENAME; ?></h2>
   </div><!--close header text div-->
@@ -9,11 +9,11 @@
     <h2>Log In</h2>
     
     <?php
-      if(!empty($RETRY)) {
+    if (!empty($RETRY)) {
         echo '<hr>';
         echo 'Login Incorrect, Please Try Again.';
         echo "<hr>\n";
-      }
+    }
     ?>
 
     <form action="index.php?Function=public" method="post" onsubmit="return validate_form(this)" name="Log In" id="login_form" class="w3-container">

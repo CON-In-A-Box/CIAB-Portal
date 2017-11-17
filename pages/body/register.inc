@@ -1,4 +1,4 @@
-<?php require($PAGESDIR . '/base/leftnav.inc'); ?>
+<?php require($PAGESDIR.'/base/leftnav.inc'); ?>
 <div id="main_content" class="w3-cell w3-cell-top w3-mobile">
 <h2>To check to see if you are registered for CONvergence:</h2>
 
