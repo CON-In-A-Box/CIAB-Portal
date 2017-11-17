@@ -15,13 +15,13 @@ require_once('neon.php');
 echo "<p>hi</p>\n";
 $neon = new Neon();
 $keys = array(
-  'orgId'=>$neonId, 
-  'apiKey'=>$neonKey,
-  ); 
+  'orgId' => $neonId,
+  'apiKey' => $neonKey,
+  );
 $neon->login($keys);
 
-$request = array( 
-  'method' => 'common/listCustomFields', 
+$request = array(
+  'method' => 'common/listCustomFields',
   'parameters' => array(
     'searchCriteria.component' => 'Event',
     ),

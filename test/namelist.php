@@ -13,8 +13,8 @@ require_once('neon.php');
 <?
 echo "<p>hi</p>\n";
 
-$search = array( 
-  'method' => 'account/listAccounts', 
+$search = array(
+  'method' => 'account/listAccounts',
   'criteria' => array(
     array( 'Last Name', 'EQUAL', 'Keeley'),
   ),
