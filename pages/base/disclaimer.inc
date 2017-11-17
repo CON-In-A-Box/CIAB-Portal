@@ -10,7 +10,7 @@ $year = date('Y');
         <div class="w3-large w3-center">
           Con-In-A-Box&trade;
 <?php
-echo 'In use by ' . $CONHOST;
+echo 'In use by '.$CONHOST;
 ?>
           <hr />
         </div>
@@ -18,7 +18,7 @@ echo 'In use by ' . $CONHOST;
 echo '<div class="w3-small">';
 echo 'Included Modules:';
 echo '<ul>';
-echo '<li>' . $MODULENAME . ' v-' . $VERSION . "</li>";
+echo '<li>'.$MODULENAME.' v-'.$VERSION."</li>";
 echo '</ul>';
 echo "</div>\n";
 ?>
