@@ -15,15 +15,15 @@ if (!empty($_POST)) {
 
     $result = $Neon->pullIndividualAccount($updateData['accountId']);
 
-    $hotelStatusFieldId = array_search('Lottery Status', $_SESSION['definedFields']);
-    $roomAssignedFieldId = array_search('Room Assigned', $_SESSION['definedFields']);
-    $acceptStatusFieldId = array_search('Waiting On Hotel Assignment', $_SESSION['definedFields']);
-    $declinedStatusFieldId = array_search('Declined', $_SESSION['definedFields']);
-    $checkInFieldId = array_search('Check In', $_SESSION['definedFields']);
-    $checkOutFieldId = array_search('Check Out', $_SESSION['definedFields']);
-    $other1FieldId = array_search('Other In Room 1', $_SESSION['definedFields']);
-    $other2FieldId = array_search('Other In Room 2', $_SESSION['definedFields']);
-    $other3FieldId = array_search('Other In Room 3', $_SESSION['definedFields']);
+    $hotelStatusFieldId = search_definedFields('Lottery Status');
+    $roomAssignedFieldId = search_definedFields('Room Assigned');
+    $acceptStatusFieldId = search_definedFields('Waiting On Hotel Assignment');
+    $declinedStatusFieldId = search_definedFields('Declined');
+    $checkInFieldId = search_definedFields('Check In');
+    $checkOutFieldId = search_definedFields('Check Out');
+    $other1FieldId = search_definedFields('Other In Room 1');
+    $other2FieldId = search_definedFields('Other In Room 2');
+    $other3FieldId = search_definedFields('Other In Room 3');
 
     $keyCheck = [ $hotelStatusFieldId, $roomAssignedFieldId, $checkInFieldId, $checkOutFieldId, $other1FieldId, $other2FieldId, $other3FieldId, ];
     

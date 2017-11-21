@@ -6,13 +6,13 @@ echo "<h2>Welcome ".$_SESSION['preferredName']."!</h2>\n";
 /*
 if( isset($_REQUEST['DoFeed'])) {
 echo "<hr><h3>Starting DeFeed Routine:</h3>\n";
-$lottery = array_search('Lottery Status', $_SESSION['definedFields']);
+$lottery = search_definedFields('Lottery Status');
 $status = array_search('Entered', $_SESSION['definedFields']['Lottery Status']);  
-$bedPref = array_search('Bed Preference', $_SESSION['definedFields']);
+$bedPref = search_definedFields('Bed Preference');
 $noBed = array_search('No Preference', $_SESSION['definedFields']['Bed Preference']);
 $kingBed = array_search('One King', $_SESSION['definedFields']['Bed Preference']);
 $queenBed = array_search('Two Queens', $_SESSION['definedFields']['Bed Preference']);
-$hotelPri = array_search('Hotel Qualifier', $_SESSION['definedFields']);
+$hotelPri = search_definedFields('Hotel Qualifier');
 $volPri = array_search('Volunteer Qualifier', $_SESSION['definedFields']['Hotel Qualifier']);
 $adaPri = array_search('ADA Wheelchair', $_SESSION['definedFields']['Hotel Qualifier']);
 $adoPri = array_search('ADA Other', $_SESSION['definedFields']['Hotel Qualifier']);

@@ -316,17 +316,17 @@ class Neon
     }
 
     // Formulate the search query
-    $assignedRoomFieldId   = array_search('Room Assigned', $_SESSION['definedFields']);
-    $overrideCatFieldId    = array_search('Hotel Override Category', $_SESSION['definedFields']);
-    $overrideRoomFieldId   = array_search('Hotel Override', $_SESSION['definedFields']);
-    $lotteryStatusFieldId  = array_search('Lottery Status', $_SESSION['definedFields']);
-    $qualifierFieldId      = array_search('Hotel Qualifier', $_SESSION['definedFields']);
-    $roomPreferenceFieldId = array_search('Bed Preference', $_SESSION['definedFields']);
-    $checkInFieldId        = array_search('Check In', $_SESSION['definedFields']);
-    $checkOutFieldId       = array_search('Check Out', $_SESSION['definedFields']);
-    $other1FieldId         = array_search('Other In Room 1', $_SESSION['definedFields']);
-    $other2FieldId         = array_search('Other In Room 2', $_SESSION['definedFields']);
-    $other3FieldId         = array_search('Other In Room 3', $_SESSION['definedFields']);
+    $assignedRoomFieldId   = search_definedFields('Room Assigned');
+    $overrideCatFieldId    = search_definedFields('Hotel Override Category');
+    $overrideRoomFieldId   = search_definedFields('Hotel Override');
+    $lotteryStatusFieldId  = search_definedFields('Lottery Status');
+    $qualifierFieldId      = search_definedFields('Hotel Qualifier');
+    $roomPreferenceFieldId = search_definedFields('Bed Preference');
+    $checkInFieldId        = search_definedFields('Check In');
+    $checkOutFieldId       = search_definedFields('Check Out');
+    $other1FieldId         = search_definedFields('Other In Room 1');
+    $other2FieldId         = search_definedFields('Other In Room 2');
+    $other3FieldId         = search_definedFields('Other In Room 3');
 
     $search = [ 
       'method' => 'account/listAccounts', 
@@ -450,7 +450,7 @@ function buildSessionData($accountId) {
 
   // If we got here, then we are golden.  Map the custom fields for easy use
   // Support Preferred name
-  $preferredFirstName = array_search('Preferred First Name', $_SESSION['definedFields']);
+  $preferredFirstName = search_definedFields('Preferred First Name');
   if (isset($_SESSION['customFields'][$preferredFirstName])) {
     $_SESSION['preferredFirstName'] = &$_SESSION['customFields'][$preferredFirstName][0];
     $_SESSION['preferredName'] = $_SESSION['preferredFirstName'];
@@ -460,7 +460,7 @@ function buildSessionData($accountId) {
   }
   $_SESSION['preferredName'] .= " ";
 
-  $preferredLastName = array_search('Preferred Last Name', $_SESSION['definedFields']);
+  $preferredLastName = search_definedFields('Preferred Last Name');
   if (isset($_SESSION['customFields'][$preferredLastName])) {
     $_SESSION['preferredLastName'] = &$_SESSION['customFields'][$preferredLastName][0];
     $_SESSION['preferredName'] .= $_SESSION['preferredLastName'];
@@ -470,11 +470,11 @@ function buildSessionData($accountId) {
   }
   
   // Current ConCom Positions and ConCom Years Served
-  $_SESSION['customFields']['currConComPos'] = &$_SESSION['customFields'][array_search('CVGConCom Current Position', $_SESSION['definedFields'])];
+  $_SESSION['customFields']['currConComPos'] = &$_SESSION['customFields'][search_definedFields('CVGConCom Current Position')];
 
   // Current Hotel Lottery Status
-  $_SESSION['customFields']['hotelLotteryStatus'] = &$_SESSION['customFields'][array_search('Lottery Status', $_SESSION['definedFields'])];
-  $_SESSION['customFields']['hotelAssignedRoom'] = &$_SESSION['customFields'][array_search('Room Assigned', $_SESSION['definedFields'])];
+  $_SESSION['customFields']['hotelLotteryStatus'] = &$_SESSION['customFields'][search_definedFields('Lottery Status')];
+  $_SESSION['customFields']['hotelAssignedRoom'] = &$_SESSION['customFields'][search_definedFields('Room Assigned')];
   
 }
 ?>

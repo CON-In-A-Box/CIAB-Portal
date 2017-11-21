@@ -26,8 +26,8 @@ if (!empty($_REQUEST['DeepLink'])) { // Handle defined and allowed deeplinks
             echo '<input type=hidden name="Do" value="'.$_REQUEST['Do'].'">'."\n";
             echo '<input type=hidden name="From" value="'.$_REQUEST['From'].'">'."\n";
 
-            $lotteryStatusFieldId  = array_search('Lottery Status', $_SESSION['definedFields']);
-            $lotteryStatusWaiting  = array_search('Waiting On Hotel Assignment', $_SESSION['definedFields']);
+            $lotteryStatusFieldId  = search_definedFields('Lottery Status');
+            $lotteryStatusWaiting  = search_definedFields('Waiting On Hotel Assignment');
 
             echo '<select class="w3-select" name="To" required>'."\n";
             echo '<option value="" disabled selected>Choose destination room</option>'."\n";
@@ -71,11 +71,11 @@ if (!empty($_REQUEST['DeepLink'])) { // Handle defined and allowed deeplinks
             }
 
             // Formulate the search query
-            $assignedRoomFieldId = array_search('Room Assigned', $_SESSION['definedFields']);
-            $lotteryStatusFieldId  = array_search('Lottery Status', $_SESSION['definedFields']);
-            $lotteryStatusEntered  = array_search('Entered', $_SESSION['definedFields']);
-            $lotteryStatusDefault  = array_search('Waiting On Accept', $_SESSION['definedFields']);
-            $lotteryStatusWaiting  = array_search('Waiting On Hotel Assignment', $_SESSION['definedFields']);
+            $assignedRoomFieldId = search_definedFields('Room Assigned');
+            $lotteryStatusFieldId  = search_definedFields('Lottery Status');
+            $lotteryStatusEntered  = search_definedFields('Entered');
+            $lotteryStatusDefault  = search_definedFields('Waiting On Accept');
+            $lotteryStatusWaiting  = search_definedFields('Waiting On Hotel Assignment');
 
             // Pull the full info of the person moving and save the current Alloc info for room we are moving to
             $personFrom = $Neon->pullIndividualAccount($_SESSION['AllocInfo'][$requestInfo['From']]['Account ID']);
@@ -260,15 +260,15 @@ if (!empty($_REQUEST['DeepLink'])) { // Handle defined and allowed deeplinks
                 }
 
                 // Formulate the search query
-                $assignedRoomFieldId = array_search('Room Assigned', $_SESSION['definedFields']);
-                $overrideCatFieldId    = array_search('Hotel Override Category', $_SESSION['definedFields']);
-                $lotteryStatusFieldId  = array_search('Lottery Status', $_SESSION['definedFields']);
-                $lotteryStatusEntered  = array_search('Entered', $_SESSION['definedFields']);
-                $lotteryStatusDefault  = array_search('Waiting On Accept', $_SESSION['definedFields']);
-                $lotteryStatusWaiting  = array_search('Waiting On Hotel Assignment', $_SESSION['definedFields']);
-                $lotteryStatusAssigned = array_search('Assigned', $_SESSION['definedFields']);
-                $roomPreferenceFieldId = array_search('Bed Preference', $_SESSION['definedFields']);
-                $roomPreferenceDefault = array_search('No Preference', $_SESSION['definedFields']);
+                $assignedRoomFieldId = search_definedFields('Room Assigned');
+                $overrideCatFieldId    = search_definedFields('Hotel Override Category');
+                $lotteryStatusFieldId  = search_definedFields('Lottery Status');
+                $lotteryStatusEntered  = search_definedFields('Entered');
+                $lotteryStatusDefault  = search_definedFields('Waiting On Accept');
+                $lotteryStatusWaiting  = search_definedFields('Waiting On Hotel Assignment');
+                $lotteryStatusAssigned = search_definedFields('Assigned');
+                $roomPreferenceFieldId = search_definedFields('Bed Preference');
+                $roomPreferenceDefault = search_definedFields('No Preference');
 
                 // Pull the full info of the person moving and save the current Alloc info for room we are moving to
                 $person = $Neon->pullIndividualAccount($requestInfo['accountId']);
