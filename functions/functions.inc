@@ -3,49 +3,52 @@
 // Main setup function
 $MODULENAME  = "Member Portal";
 $BUILD       = "134";
-$VERSION     = "1.3 - Captain America, Build: " . $BUILD; // Major.Minor.Revision Format - This is a string, version names allowed
+$VERSION     = "1.3 - Captain America, Build: ".$BUILD; // Major.Minor.Revision Format - This is a string, version names allowed
 
 // Discover Self Location
 $FUNCTIONDIR    = dirname(__FILE__);
 $BASEDIR        = dirname($FUNCTIONDIR);
 $WEBSERVER      = $_SERVER['SERVER_NAME'];
-$BASEURL        = "http://" . $WEBSERVER;
-$SITECONFIG     = $BASEDIR . '/.ht_meetingsignin_config.php'; // Location of the module config file
+$BASEURL        = "http://".$WEBSERVER;
+$SITECONFIG     = $BASEDIR.'/.ht_meetingsignin_config.php'; // Location of the module config file
 
 // Data
-$DATADIR        = $BASEDIR . '/data';
+$DATADIR        = $BASEDIR.'/data';
 
 // Static Variables
-$SITESUPPORTDIR = $BASEDIR . "/sitesupport";
-$PAGESDIR       = $BASEDIR . "/pages";
+$SITESUPPORTDIR = $BASEDIR."/sitesupport";
+$PAGESDIR       = $BASEDIR."/pages";
 
 // Set a Date stamp for use anywhere
-$DS             = uniqid('', TRUE);
+$DS             = uniqid('', true);
 
 // Basic site redirector
-function goSite($Site=FALSE) {
-	if($Site != FALSE) {
-		header ("Location: " . $Site);
-	} else {
-		header ("Location: /index.php?Function=main");
-	}
-	exit(); // Dump this run, assume the new page will start from scratch
+function goSite($Site = false)
+{
+    if ($Site != false) {
+        header("Location: ".$Site);
+    } else {
+        header("Location: /index.php?Function=main");
+    }
+    exit(); // Dump this run, assume the new page will start from scratch
+
 }
+
 
 // Load Site Specific info
 if (is_file($SITECONFIG)) {
-  require_once($SITECONFIG);
+    require_once($SITECONFIG);
 } else {
-  // Give a default config file
-  echo '
+    // Give a default config file
+    echo '
     <html>
-      <head>CON-In-A-Box Site Config (' . $MODULENAME . ' module)</head>
+      <head>CON-In-A-Box Site Config ('.$MODULENAME.' module)</head>
     <body>
       <pre>
-        SITE CONFIGURATION ERROR -- ' . $SITECONFIG . ' missing.
+        SITE CONFIGURATION ERROR -- '.$SITECONFIG.' missing.
         
 	Please see the
-	>> ' . $SITECONFIG .'-EXAMPLE <<
+	>> '.$SITECONFIG.'-EXAMPLE <<
 	config file, update it for your location, and copy/rename it correctly.
         
         Note: This file should have limited permissions to protect your system
@@ -53,35 +56,40 @@ if (is_file($SITECONFIG)) {
       </pre>
     </body>
   </html>';
-  die();
+    die();
 }
 
-function sendError($msg, $arrChunk=NULL) {
-  $to = $GLOBALS['ADMINEMAIL'];
-  $subject = 'SIGNIN ERROR';
 
-  $message = $msg;
-  if (!empty($arrChunk)) {
-    $message .= "\n\n" . print_r($arrChunk, true);
-  }
-  $headers = 'From: noreply@convergence-con.org' . "\r\n";
-  $headers .= 'Reply-To: noreply@convergence-con.org';
+function sendError($msg, $arrChunk = null)
+{
+    $to = $GLOBALS['ADMINEMAIL'];
+    $subject = 'SIGNIN ERROR';
 
-  mail($to, $subject, $message, $headers);
-  trigger_error($msg);
+    $message = $msg;
+    if (!empty($arrChunk)) {
+        $message .= "\n\n".print_r($arrChunk, true);
+    }
+    $headers = 'From: noreply@convergence-con.org'."\r\n";
+    $headers .= 'Reply-To: noreply@convergence-con.org';
+
+    mail($to, $subject, $message, $headers);
+    trigger_error($msg);
+
 }
 
-function ksort_recursive(&$array) {
+
+function ksort_recursive(&$array)
+{
     if (is_array($array)) {
         ksort($array);
         array_walk($array, 'ksort_recursive');
     }
+
 }
+
 
 // Start the session so we are ready to go no matter what we do!
 session_start();
 
 // Include NeonCRM for DB calls via API
-require_once($FUNCTIONDIR . "/neon.inc");
-
-?>
+require_once($FUNCTIONDIR."/neon.inc");

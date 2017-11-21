@@ -14,11 +14,11 @@ require_once('neon.php');
 echo "<p>hi</p>\n";
 
 $request = [
-  'method' => 'event/retrieveEventAttendees', 
-  'parameters' => [
-    'eventId' => 132,
-    'page.currentPage' => 2,
-    'page.pageSize' => 20,
+'method' => 'event/retrieveEventAttendees',
+'parameters' => [
+'eventId' => 132,
+'page.currentPage' => 2,
+'page.pageSize' => 20,
   ],
 ];
 $result = $neon->go($request);

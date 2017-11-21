@@ -13,8 +13,8 @@ require_once('functions/neon.inc');
 <?
 echo "<p>hi</p>\n";
 
-$request = array( 
-  'method' => 'common/listCustomFields', 
+$request = array(
+  'method' => 'common/listCustomFields',
   'parameters' => array(
     'searchCriteria.component' => 'Event',
     ),
@@ -25,8 +25,8 @@ echo "<pre>\n";
 var_dump($result);
 echo "</pre>\n";
 
-$search = array( 
-  'method' => 'account/listAccounts', 
+$search = array(
+  'method' => 'account/listAccounts',
   'criteria' => array(
     array( 'First Name', 'EQUAL', 'Thomas'),
     array( 'Last Name', 'EQUAL', 'Keeley'),

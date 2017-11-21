@@ -1,20 +1,20 @@
 <div id="main_content" class="w3-cell w3-cell-top w3-mobile">
 <?php
-require_once($FUNCTIONDIR . "/divisional.inc");
+require_once($FUNCTIONDIR."/divisional.inc");
 
 // if this is an update, but we don't have the right permissions, ignore it.
-if(isset($_REQUEST['AddDepartment'])) {
-  if(isset($_REQUEST['accountId'])) {
-    if(!isset($_REQUEST['Position'])) {
-      // We have someone, lets get their position
-      doConComAddAssign($_REQUEST['AddDepartment'], $_REQUEST['accountId'], $_REQUEST['Name']);
+if (isset($_REQUEST['AddDepartment'])) {
+    if (isset($_REQUEST['accountId'])) {
+        if (!isset($_REQUEST['Position'])) {
+            // We have someone, lets get their position
+            doConComAddAssign($_REQUEST['AddDepartment'], $_REQUEST['accountId'], $_REQUEST['Name']);
+        }
+    } else {
+        // begin search
+        doConComAddSearch($_REQUEST['AddDepartment']);
     }
-  } else {
-    // begin search
-    doConComAddSearch($_REQUEST['AddDepartment']);
-  }
 } else {
-  ConComListDisplay();
+    ConComListDisplay();
 }
 
 ?>
