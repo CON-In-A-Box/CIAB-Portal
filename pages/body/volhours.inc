@@ -25,39 +25,33 @@ echo "</pre>\n";
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
       if (this.readyState == 4 && this.status == 200) {
-        var subsetstring = " is on ConCom";
-        if (this.responseText == "Not Found") {
+        var response = JSON.parse(this.responseText);
+        var name = response['First Name']+' '+response['Last Name'];
+        var uid = response['Id'];
+        if (response['ConCom']) {
+          document.getElementById('volunteer').value = "";
+          document.getElementById('volunteer').classList.add('w3-red');
+          document.getElementById('submitbtn').disabled = true;
+          document.getElementById('volunteername').innerHTML = "a Volunteer";
+          document.getElementById('lookupname').innerHTML = name + ' is on ConCom (' + uid + ')';
+        } else {
+          document.getElementById('volunteer').classList.remove('w3-red');
+          document.getElementById('submitbtn').disabled = false;
+          document.getElementById('volunteername').innerHTML = name + ' (' + uid + ')';
+          document.getElementById('lookupname').innerHTML = name;
+        }
+      } else if (this.readyState == 4 && this.status == 404) {
           document.getElementById('volunteer').value = "";
           document.getElementById('volunteer').classList.add('w3-red');
           document.getElementById('submitbtn').disabled = true;
           document.getElementById('volunteername').innerHTML = "a Volunteer";
           document.getElementById('lookupname').innerHTML = id + " not found";
-        } else if (this.responseText == "Lookup Error") {
-          document.getElementById('volunteer').value = "";
-          document.getElementById('volunteer').classList.add('w3-red');
-          document.getElementById('submitbtn').disabled = true;
-          document.getElementById('volunteername').innerHTML = "a Volunteer";
-          document.getElementById('lookupname').innerHTML = id + " lookup error";
-        } else if (this.responseText.indexOf(subsetstring) !== -1) {
-          document.getElementById('volunteer').value = "";
-          document.getElementById('volunteer').classList.add('w3-red');
-          document.getElementById('submitbtn').disabled = true;
-          document.getElementById('volunteername').innerHTML = "a Volunteer";
-          document.getElementById('lookupname').innerHTML = this.responseText + ' (' +id + ')';
-        } else {
-          document.getElementById('volunteer').classList.remove('w3-red');
-          document.getElementById('submitbtn').disabled = false;
-          document.getElementById('volunteername').innerHTML = this.responseText + ' (' + id + ')';
-          document.getElementById('lookupname').innerHTML = this.responseText;
-        }
       } else {
         document.getElementById('volunteername').innerHTML = id + " <i class='fa fa-spinner w3-spin'></i>";
       }
     };
     xhttp.open("GET", "index.php?Function=volhours&volunteerId=" + id, true);
     xhttp.send();
-
-
   }
 
   function calculateHours() {

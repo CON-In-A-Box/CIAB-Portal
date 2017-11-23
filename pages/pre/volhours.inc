@@ -53,13 +53,9 @@ if (!empty($_REQUEST)) {
         $user = lookup_user_by_id($updateData['volunteerId']);
 
         if (!empty($user)) {
-            echo $user[0]['First Name'];
-            echo " ";
-            echo $user[0]['Last Name'];
-            if (array_key_exists('ConCom', $user[0]))
-                echo " is on ConCom";
+            echo json_encode($user[0]);
         } else {
-            echo "Not Found";
+            header("HTTP/1.0 404 Not Found");
         }
 
         exit();
