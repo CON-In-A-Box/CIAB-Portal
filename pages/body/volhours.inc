@@ -72,13 +72,13 @@ echo "</pre>\n";
 
 <div class='w3-bar'>
   <div class='w3-bar-item'>
-    <label>Volunteer Badge Number</label>
+    <label>Volunteer Badge Number or E-Mail</label>
     <div class='w3-bar'>
-      <input class="w3-input w3-border w3-bar-item" type=number name="VolunteerID_c" id="volunteer" onchange="lookupId(this.value);" <?php
+      <input class="w3-input w3-border w3-bar-item" name="VolunteerID_c" id="volunteer" onchange="lookupId(this.value);" <?php
         if (isset($_REQUEST['ID'])) {
             echo 'value='.$_REQUEST['ID'].' ';
         }
-        ?>placeholder="(no letters)" required>
+        ?>placeholder="(badge # or email)" required>
       <span class='w3-bar-item' id='lookupname'></span>
     </div>
   </div>

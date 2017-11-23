@@ -14,7 +14,7 @@ if (!empty($_REQUEST)) {
     'DepartmentWorked_c'  => FILTER_SANITIZE_SPECIAL_CHARS,
     'EnteredBy_c'         => FILTER_SANITIZE_SPECIAL_CHARS,
     'AuthorizedBy_c'      => FILTER_SANITIZE_SPECIAL_CHARS,
-    'volunteerId'         => FILTER_SANITIZE_NUMBER_INT,
+    'volunteerId'         => FILTER_SANITIZE_SPECIAL_CHARS,
     ];
     if (!empty($_POST)) {
         $updateData = filter_input_array(INPUT_POST, $arguments);
@@ -50,7 +50,11 @@ if (!empty($_REQUEST)) {
         }
     } elseif (!empty($updateData['volunteerId'])) {
         require_once($FUNCTIONDIR."/users.inc");
-        $user = lookup_user_by_id($updateData['volunteerId']);
+        if (is_numeric($updateData['volunteerId'])) {
+            $user = lookup_user_by_id($updateData['volunteerId']);
+        } else {
+            $user = lookup_users_by_email($updateData['volunteerId']);
+        }
 
         if (!empty($user)) {
             echo json_encode($user[0]);
