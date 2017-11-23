@@ -6,7 +6,7 @@ echo '<b>Welcome '.$_SESSION['preferredName'].'!</b>';
 echo "</div>\n";
 
 // If this person is on ConCom, but hasn't elected about their phone number, nudge them
-$cvgConComPhoneDisplay = array_search('CVGConCom Publish Phone', $_SESSION['definedFields']);
+$cvgConComPhoneDisplay = search_definedFields('CVGConCom Publish Phone');
 if (isset($_SESSION['customFields']['currConComPos']) && empty($_SESSION['customFields'][$cvgConComPhoneDisplay])) {
     echo '<p class="w3-container w3-center">';
     echo "We've noticed you haven't decided about your phone number.<br />";
@@ -16,7 +16,7 @@ if (isset($_SESSION['customFields']['currConComPos']) && empty($_SESSION['custom
 
 /*
 // Display Hotel Information
-if ( isset( $_SESSION['customFields']['hotelLotteryStatus']) && $_SESSION['customFields']['hotelLotteryStatus'][0] != array_search('Declined', $_SESSION['definedFields'])) {
+if ( isset( $_SESSION['customFields']['hotelLotteryStatus']) && $_SESSION['customFields']['hotelLotteryStatus'][0] != search_definedFields('Declined')) {
 require_once($FUNCTIONDIR . '/allocations.inc');
 echo "<div class='w3-container w3-purple'>\n";
 echo "<table class='w3-table w3-striped w3-bordered w3-white'>\n";
@@ -212,7 +212,7 @@ echo "<div class='w3-container w3-green'>\n";
 echo "<table class='w3-table w3-striped w3-bordered w3-white'>\n";
 echo "<tr><th class='w3-center w3-green' colspan=3>Official Meeting Attendance</th></tr>\n";
 $nowDate = date("Ymd");
-$attendKey = array_search('Official Meeting Attendance', $_SESSION['definedFields']);
+$attendKey = search_definedFields('Official Meeting Attendance');
 foreach ($_SESSION['definedFields']['Meetings'] as $key => $val) {
     $ldate = explode("-", $val);
     $checkDate = $ldate[0].$ldate[1].rtrim($ldate[2]);
@@ -270,7 +270,7 @@ echo "<table class='w3-table w3-striped w3-bordered'>\n";
 echo "<tr><th style=\"text-align:center;\" colspan=2>Previous ConCom Years Served</th></tr>";
 foreach( $_SESSION['definedFields']['conComYears'] as $key => $val ) {
 echo "<tr><td>" . $val . "</td>";
-if ( isset( $_SESSION['customFields'][array_search('CVGConCom Years Served', $_SESSION['definedFields'])] ) && in_array( $key, $_SESSION['customFields'][array_search('CVGConCom Years Served', $_SESSION['definedFields'])] )) {
+if ( isset( $_SESSION['customFields'][search_definedFields('CVGConCom Years Served')] ) && in_array( $key, $_SESSION['customFields'][search_definedFields('CVGConCom Years Served')] )) {
 echo "<td style='background-color:green'>On ConCom";
 } else {
 echo "<td>Not On ConCom";

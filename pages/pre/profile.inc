@@ -63,9 +63,9 @@ if (!empty($_POST)) {
     ],
     ];
 
-    $preferredFirstName = array_search('Preferred First Name', $_SESSION['definedFields']);
-    $preferredLastName = array_search('Preferred Last Name', $_SESSION['definedFields']);
-    $cvgConComPhoneDisplay = array_search('CVGConCom Publish Phone', $_SESSION['definedFields']);
+    $preferredFirstName = search_definedFields('Preferred First Name');
+    $preferredLastName = search_definedFields('Preferred Last Name');
+    $cvgConComPhoneDisplay = search_definedFields('CVGConCom Publish Phone');
 
     $i = count($_SESSION['accountInfo']['individualAccount']['customFieldDataList']['customFieldData']);
     // Verify fieldId is in place - potential for manual add to lottery or override

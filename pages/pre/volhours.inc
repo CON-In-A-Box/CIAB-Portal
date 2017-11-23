@@ -49,9 +49,9 @@ if (!empty($_REQUEST)) {
             $handoff = array_merge($request, $result);
         }
     } elseif (!empty($updateData['volunteerId'])) {
-        $preferredFirstName = array_search('Preferred First Name', $_SESSION['definedFields']);
-        $preferredLastName = array_search('Preferred Last Name', $_SESSION['definedFields']);
-        $currentConCom = array_search('CVGConCom Current Position', $_SESSION['definedFields']);
+        $preferredFirstName = search_definedFields('Preferred First Name');
+        $preferredLastName = search_definedFields('Preferred Last Name');
+        $currentConCom = search_definedFields('CVGConCom Current Position');
 
         $search = [
         'method' => 'account/listAccounts',

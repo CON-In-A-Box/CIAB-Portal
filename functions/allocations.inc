@@ -36,12 +36,12 @@ function sendChangeToHotel($room)
 {
     /*  Pending Function - not tested
     // send add update to the hotel
-    $assignedRoomFieldId = array_search('Room Assigned', $_SESSION['definedFields']);
-    $checkInFieldId = array_search('Check In', $_SESSION['definedFields']);
-    $checkOutFieldId = array_search('Check Out', $_SESSION['definedFields']);
-    $other1FieldId = array_search('Other In Room 1', $_SESSION['definedFields']);
-    $other2FieldId = array_search('Other In Room 2', $_SESSION['definedFields']);
-    $other3FieldId = array_search('Other In Room 3', $_SESSION['definedFields']);
+    $assignedRoomFieldId = search_definedFields('Room Assigned');
+    $checkInFieldId = search_definedFields('Check In');
+    $checkOutFieldId = search_definedFields('Check Out');
+    $other1FieldId = search_definedFields('Other In Room 1');
+    $other2FieldId = search_definedFields('Other In Room 2');
+    $other3FieldId = search_definedFields('Other In Room 3');
 
     $search = [ 
     'method' => 'account/listAccounts', 
@@ -90,18 +90,18 @@ function sendChangeToHotel($room)
 
 function updateRoomsInfo($page)
 {
-    $assignedRoomFieldId   = array_search('Room Assigned', $_SESSION['definedFields']);
-    $overrideCatFieldId    = array_search('Hotel Override Category', $_SESSION['definedFields']);
-    $overrideRoomFieldId   = array_search('Hotel Override', $_SESSION['definedFields']);
-    $lotteryStatusFieldId  = array_search('Lottery Status', $_SESSION['definedFields']);
-    $confirmationFieldId   = array_search('Hotel Room Confirmation', $_SESSION['definedFields']);
-    $qualifierFieldId      = array_search('Hotel Qualifier', $_SESSION['definedFields']);
-    $roomPreferenceFieldId = array_search('Bed Preference', $_SESSION['definedFields']);
-    $checkInFieldId        = array_search('Check In', $_SESSION['definedFields']);
-    $checkOutFieldId       = array_search('Check Out', $_SESSION['definedFields']);
-    $other1FieldId         = array_search('Other In Room 1', $_SESSION['definedFields']);
-    $other2FieldId         = array_search('Other In Room 2', $_SESSION['definedFields']);
-    $other3FieldId         = array_search('Other In Room 3', $_SESSION['definedFields']);
+    $assignedRoomFieldId   = search_definedFields('Room Assigned');
+    $overrideCatFieldId    = search_definedFields('Hotel Override Category');
+    $overrideRoomFieldId   = search_definedFields('Hotel Override');
+    $lotteryStatusFieldId  = search_definedFields('Lottery Status');
+    $confirmationFieldId   = search_definedFields('Hotel Room Confirmation');
+    $qualifierFieldId      = search_definedFields('Hotel Qualifier');
+    $roomPreferenceFieldId = search_definedFields('Bed Preference');
+    $checkInFieldId        = search_definedFields('Check In');
+    $checkOutFieldId       = search_definedFields('Check Out');
+    $other1FieldId         = search_definedFields('Other In Room 1');
+    $other2FieldId         = search_definedFields('Other In Room 2');
+    $other3FieldId         = search_definedFields('Other In Room 3');
 
     $search = [
     'method' => 'account/listAccounts',

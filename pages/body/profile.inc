@@ -1,9 +1,9 @@
 <?php
 
 // Going to need the actual fields for this
-$preferredFirstName = array_search('Preferred First Name', $_SESSION['definedFields']);
-$preferredLastName = array_search('Preferred Last Name', $_SESSION['definedFields']);
-$cvgConComPhoneDisplay = array_search('CVGConCom Publish Phone', $_SESSION['definedFields']);
+$preferredFirstName = search_definedFields('Preferred First Name');
+$preferredLastName = search_definedFields('Preferred Last Name');
+$cvgConComPhoneDisplay = search_definedFields('CVGConCom Publish Phone');
 
 // Dirty Hack - if country isn't set, default to the first country in the list
 if (empty($_SESSION['accountInfo']['individualAccount']['primaryContact']['addresses']['address']['0']['country']['id'])) {

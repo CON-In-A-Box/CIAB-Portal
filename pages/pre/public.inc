@@ -62,8 +62,8 @@ if (!empty($_REQUEST['user'])) {
         arsort($_SESSION['definedFields']['Meetings']);
 
     // Be ready if there is a preferred name need in the next section
-        $preferredFirstName = array_search('Preferred First Name', $_SESSION['definedFields']);
-        $preferredLastName = array_search('Preferred Last Name', $_SESSION['definedFields']);
+        $preferredFirstName = search_definedFields('Preferred First Name');
+        $preferredLastName = search_definedFields('Preferred Last Name');
 
     // Account info about User for Session
         $request = [
@@ -121,14 +121,14 @@ if (!empty($_REQUEST['user'])) {
         }
 
     // Current ConCom Positions and ConCom Years Served
-        $_SESSION['customFields']['currConComPos'] = &$_SESSION['customFields'][array_search('CVGConCom Current Position', $_SESSION['definedFields'])];
+        $_SESSION['customFields']['currConComPos'] = &$_SESSION['customFields'][search_definedFields('CVGConCom Current Position')];
 
     // Current Hotel Lottery Status
-        $_SESSION['customFields']['hotelLotteryStatus'] = &$_SESSION['customFields'][array_search('Lottery Status', $_SESSION['definedFields'])];
-        $_SESSION['customFields']['hotelAssignedRoom'] = &$_SESSION['customFields'][array_search('Room Assigned', $_SESSION['definedFields'])];
-        $_SESSION['customFields']['hotelRoomConfirmation'] = &$_SESSION['customFields'][array_search('Hotel Room Confirmation', $_SESSION['definedFields'])];
-        $_SESSION['customFields']['hotelRoomCheckIn'] = &$_SESSION['customFields'][array_search('Check In', $_SESSION['definedFields'])];
-        $_SESSION['customFields']['hotelRoomCheckOut'] = &$_SESSION['customFields'][array_search('Check Out', $_SESSION['definedFields'])];
+        $_SESSION['customFields']['hotelLotteryStatus'] = &$_SESSION['customFields'][search_definedFields('Lottery Status')];
+        $_SESSION['customFields']['hotelAssignedRoom'] = &$_SESSION['customFields'][search_definedFields('Room Assigned')];
+        $_SESSION['customFields']['hotelRoomConfirmation'] = &$_SESSION['customFields'][search_definedFields('Hotel Room Confirmation')];
+        $_SESSION['customFields']['hotelRoomCheckIn'] = &$_SESSION['customFields'][search_definedFields('Check In')];
+        $_SESSION['customFields']['hotelRoomCheckOut'] = &$_SESSION['customFields'][search_definedFields('Check Out')];
     
     // If the logged in user is allocations, note it
         if (strpos($_SESSION['customFields']['currConComPos'][0], 'Allocations') !== false) {

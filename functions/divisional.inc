@@ -49,7 +49,7 @@ function AddConComPosition($accountid, $department, $position, $note)
     ];
     $result = $GLOBALS['Neon']->go($request);
     if (isset($result['operationResult']) && $result['operationResult'] == 'SUCCESS') {
-        $conComFieldId = array_search('CVGConCom Current Position', $_SESSION['definedFields']);
+        $conComFieldId = search_definedFields('CVGConCom Current Position');
 
         $key = array_search($conComFieldId, array_column($result['individualAccount']['customFieldDataList']['customFieldData'], 'fieldId'));
         if ($key === false) {
@@ -96,8 +96,8 @@ function AddConComPosition($accountid, $department, $position, $note)
         if (isset($result2['operationResult']) && $result2['operationResult'] == 'SUCCESS') {
             // Notify the Division Director, so they know
             $to = getDepartmentEmails(getDivision($department))[0];
-            $preferredFirstName = array_search('Preferred First Name', $_SESSION['definedFields']);
-            $preferredLastName = array_search('Preferred Last Name', $_SESSION['definedFields']);
+            $preferredFirstName = search_definedFields('Preferred First Name');
+            $preferredLastName = search_definedFields('Preferred Last Name');
             $subject = 'ConCom Division addition to '.$department;
             if (empty($result['individualAccount']['customFieldDataList']['customFieldData'][$preferredFirstName]['fieldValue'])) {
                 $name = $result['individualAccount']['primaryContact']['firstName'];
@@ -135,7 +135,7 @@ function RemoveConComPosition($accountid, $department, $position)
     ];
     $result = $GLOBALS['Neon']->go($request);
     if (isset($result['operationResult']) && $result['operationResult'] == 'SUCCESS') {
-        $conComFieldId = array_search('CVGConCom Current Position', $_SESSION['definedFields']);
+        $conComFieldId = search_definedFields('CVGConCom Current Position');
 
         foreach ($result['individualAccount']['customFieldDataList']['customFieldData'] as $key => $val) {
             if (isset($val['fieldId']) && $val['fieldId'] == $conComFieldId) {
@@ -191,8 +191,8 @@ function RemoveConComPosition($accountid, $department, $position)
             // Notify the Division Director, so they know
             $to = getDepartmentEmails(getDivision($department))[0];
             $subject = 'ConCom Division Removal to '.$department;
-            $preferredFirstName = array_search('Preferred First Name', $_SESSION['definedFields']);
-            $preferredLastName = array_search('Preferred Last Name', $_SESSION['definedFields']);
+            $preferredFirstName = search_definedFields('Preferred First Name');
+            $preferredLastName = search_definedFields('Preferred Last Name');
 
             if (empty($result['individualAccount']['customFieldDataList']['customFieldData'][$preferredFirstName]['fieldValue'])) {
                 $name = $result['individualAccount']['primaryContact']['firstName'];
@@ -223,9 +223,9 @@ function RemoveConComPosition($accountid, $department, $position)
 
 function ConComListBuildSearch($page)
 {
-    $conComFieldId = array_search('CVGConCom Current Position', $_SESSION['definedFields']);
-    $preferredFirstName = array_search('Preferred First Name', $_SESSION['definedFields']);
-    $preferredLastName = array_search('Preferred Last Name', $_SESSION['definedFields']);
+    $conComFieldId = search_definedFields('CVGConCom Current Position');
+    $preferredFirstName = search_definedFields('Preferred First Name');
+    $preferredLastName = search_definedFields('Preferred Last Name');
 
     $search = [
     'method' => 'account/listAccounts',

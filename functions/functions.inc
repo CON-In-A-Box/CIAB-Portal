@@ -88,6 +88,16 @@ function ksort_recursive(&$array)
 }
 
 
+function search_definedFields($key)
+{
+    if (isset($_SESSION) && array_key_exists('definedFields', $_SESSION)) {
+        return array_search($key, $_SESSION['definedFields']);
+    }
+    return false;
+
+}
+
+
 // Start the session so we are ready to go no matter what we do!
 session_start();
 
