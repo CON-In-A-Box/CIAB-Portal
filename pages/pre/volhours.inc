@@ -14,7 +14,7 @@ if (!empty($_REQUEST)) {
     'DepartmentWorked_c'  => FILTER_SANITIZE_SPECIAL_CHARS,
     'EnteredBy_c'         => FILTER_SANITIZE_SPECIAL_CHARS,
     'AuthorizedBy_c'      => FILTER_SANITIZE_SPECIAL_CHARS,
-    'volunteerId'         => FILTER_SANITIZE_NUMBER_INT,
+    'volunteerId'         => FILTER_SANITIZE_SPECIAL_CHARS,
     ];
     if (!empty($_POST)) {
         $updateData = filter_input_array(INPUT_POST, $arguments);
@@ -49,50 +49,17 @@ if (!empty($_REQUEST)) {
             $handoff = array_merge($request, $result);
         }
     } elseif (!empty($updateData['volunteerId'])) {
-        $preferredFirstName = search_definedFields('Preferred First Name');
-        $preferredLastName = search_definedFields('Preferred Last Name');
-        $currentConCom = search_definedFields('CVGConCom Current Position');
-
-        $search = [
-        'method' => 'account/listAccounts',
-        'columns' => [
-        'standardFields' => ['Account ID', 'First Name', 'Last Name'],
-        'customFields' => [$preferredFirstName, $preferredLastName, $currentConCom],
-        ],
-        'criteria' => [
-        ['Account ID', 'EQUAL', $updateData['volunteerId'],],
-        ],
-        'page' => [
-        'currentPage' => 1,
-        'pageSize' => 2,
-        'sortColumn' => 'Last Name',
-        'sortDirection' => 'ASC',
-        ],
-        ];
-        $result = $GLOBALS['Neon']->search($search);
-        if (isset($result['operationResult']) && $result['operationResult'] == 'SUCCESS') {
-            if (isset($result['page']['totalResults']) && $result['page']['totalResults'] == 1) {
-                foreach ($result['searchResults'] as $r) {
-                    if (!empty($r['Preferred First Name'])) {
-                        echo $r['Preferred First Name'];
-                    } else {
-                        echo $r['First Name'];
-                    }
-                    echo " ";
-                    if (!empty($r['Preferred Last Name'])) {
-                        echo $r['Preferred Last Name'];
-                    } else {
-                        echo $r['Last Name'];
-                    }
-                    if (!empty($r['CVGConCom Current Position'])) {
-                        echo " is on ConCom";
-                    }
-                }
-            } else {
-                echo "Not Found";
-            }
+        require_once($FUNCTIONDIR."/users.inc");
+        if (is_numeric($updateData['volunteerId'])) {
+            $user = lookup_user_by_id($updateData['volunteerId']);
         } else {
-            echo "Lookup Error";
+            $user = lookup_users_by_email($updateData['volunteerId']);
+        }
+
+        if (!empty($user)) {
+            echo json_encode($user[0]);
+        } else {
+            header("HTTP/1.0 404 Not Found");
         }
 
         exit();
