@@ -2,54 +2,15 @@
 
 <?php
 
-
-function VolHoursSearch($page)
-{
-    $request = [
-    'method' => 'customObjectRecord/listCustomObjectRecords',
-    'parameters' => [
-    'objectApiName' => 'VolHourEntries_c',
-    'page.currentPage' => $page,
-    'page.pageSize' => 200,
-    ],
-    ];
-
-    $fields = ['VolunteerID_c.id', 'ActualHoursWorked_c', 'EndDateTime_c', 'TimeModifier_c', 'DepartmentWorked_c', 'EnteredBy_c', 'AuthorizedBy_c'];
-    foreach ($fields as $key => $field) {
-        $request['parameters']['customObjectOutputFieldList.customObjectOutputField.label['.$key.']'] = $field;
-        $request['parameters']['customObjectOutputFieldList.customObjectOutputField.columnName['.$key.']'] = $field;
-        echo "$field,";
-    }
+include_once($FUNCTIONDIR.'/volunteer.inc');
+$data = get_volunteer_hours_for_user();
+if (!empty($data)) {
+    echo implode(array_keys($data[0]), ',');
     echo "<br />\n";
-    unset($key);
-    unset($value);
-
-    $result = $GLOBALS['Neon']->go1($request);
-
-    if (isset($result['operationResult']) && $result['operationResult'] == 'SUCCESS') {
-        $return['pages'] = $result['page']['totalPage'];
-        foreach ($result['searchResults']['nameValuePairs'] as $record) {
-            foreach ($record as $field) {
-                foreach ($field as $key => $val) {
-                    echo $val['value'].",";
-                }
-                echo "<br />\n";
-            }
-        }
-        return $return;
-    } else {
-        sendError("Fail to display Volunteer Hours ".__FILE__, $result);
+    foreach ($data as $record) {
+        echo implode($record, ',');
+        echo "<br />\n";
     }
-
-}
-
-
-$i = 1;
-$runPage = 1;
-while ($i <= $runPage) {
-    $result = VolHoursSearch($i);
-    $runPage = $result['pages'];
-    $i++;
 }
 
 ?>
