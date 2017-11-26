@@ -36,6 +36,7 @@ echo "</pre>\n";
           document.getElementById('lookupname').innerHTML = name + ' is on ConCom (' + uid + ')';
         } else {
           document.getElementById('volunteer').classList.remove('w3-red');
+          document.getElementById('volunteer').value = uid;
           document.getElementById('submitbtn').disabled = false;
           document.getElementById('volunteername').innerHTML = name + ' (' + uid + ')';
           document.getElementById('lookupname').innerHTML = name;
