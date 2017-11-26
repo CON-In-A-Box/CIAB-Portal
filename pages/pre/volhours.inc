@@ -50,11 +50,7 @@ if (!empty($_REQUEST)) {
         }
     } elseif (!empty($updateData['volunteerId'])) {
         require_once($FUNCTIONDIR."/users.inc");
-        if (is_numeric($updateData['volunteerId'])) {
-            $user = lookup_user_by_id($updateData['volunteerId']);
-        } else {
-            $user = lookup_users_by_email($updateData['volunteerId']);
-        }
+        $user = lookup_users_by_key($updateData['volunteerId']);
 
         if (!empty($user)) {
             echo json_encode($user[0]);
