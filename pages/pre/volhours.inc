@@ -50,6 +50,7 @@ if (!empty($_REQUEST)) {
         }
     } elseif (!empty($updateData['volunteerId'])) {
         require_once($FUNCTIONDIR."/users.inc");
+        require_once($FUNCTIONDIR."/volunteer.inc");
         if (is_numeric($updateData['volunteerId'])) {
             $user = lookup_user_by_id($updateData['volunteerId']);
         } else {
@@ -57,6 +58,10 @@ if (!empty($_REQUEST)) {
         }
 
         if (!empty($user)) {
+            $vol_past = get_volunteer_hours_for_user($user[0]['Id']);
+            if (!empty($vol_past)) {
+                $user[0]['volunteer'] = $vol_past;
+            }
             echo json_encode($user[0]);
         } else {
             header("HTTP/1.0 404 Not Found");
