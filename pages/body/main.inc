@@ -282,5 +282,33 @@ echo "</table>\n";
 echo "</div>\n";
 */
 
+
+// Display Current Volunteer Status
+require_once($FUNCTIONDIR.'/volunteer.inc');
+$data = get_volunteer_hours_for_user($_SESSION['accountId']);
+if ($data && !empty($data)) {
+    echo "<div class='w3-container w3-green'>\n";
+    echo "<table class='w3-table w3-striped w3-bordered w3-white'>\n";
+    echo "<tr><th class='w3-center w3-green' colspan=2>Current Volunteer Status</th></tr>\n";
+    $output = array();
+    $total = 0;
+    foreach ($data as $entry) {
+        if (array_key_exists($entry['DepartmentWorked_c'], $output)) {
+            $output[$entry['DepartmentWorked_c']] += $entry['ActualHoursWorked_c'];
+        } else {
+            $output[$entry['DepartmentWorked_c']] = $entry['ActualHoursWorked_c'];
+        }
+        $total += $entry['ActualHoursWorked_c'];
+    }
+    foreach ($output as $dept => $hours) {
+        echo "<tr><td>".$dept.'</td>';
+        echo "<td>".$hours.' hours</td>';
+        echo "</tr>\n";
+    }
+    echo "<tr><th class='w3-center w3-green' colspan=2>Total:  ".$total." hours</th></tr>\n";
+    echo "</table>\n";
+    echo "</div>\n";
+}
+
 ?>
 </div><!--close main_content div-->

@@ -36,9 +36,46 @@ echo "</pre>\n";
           document.getElementById('lookupname').innerHTML = name + ' is on ConCom (' + uid + ')';
         } else {
           document.getElementById('volunteer').classList.remove('w3-red');
+          document.getElementById('volunteer').value = uid;
           document.getElementById('submitbtn').disabled = false;
           document.getElementById('volunteername').innerHTML = name + ' (' + uid + ')';
           document.getElementById('lookupname').innerHTML = name;
+
+          var depts = document.getElementById('department');
+
+         /* Clean out old highlighted departments */
+          for (i=0; i < depts.length; i++) {
+            if (depts[i].text[0] == '*' || depts[i].text[0]=='-') {
+                depts[i+1].selected = true;
+                depts.remove(i);
+                i--;
+            }
+          }
+<?php
+if (strpos($_SESSION['customFields']['currConComPos'][0], 'Volunteers') !== false || isset($_SESSION['IS_ADMIN'])) {
+    echo <<<EOT
+    if ('volunteer' in response) {
+      var past = [];
+      var option = document.createElement("option");
+      option.text = "------------------";
+      option.disabled = true;
+      depts.add(option, 0);
+
+      for (var i = 0, len = response['volunteer'].length; i < len; i++) {
+        var dept = response['volunteer'][i];
+        if (past.indexOf(dept['DepartmentWorked_c']) == -1) {
+          var option = document.createElement("option");
+          option.selected = true;
+          option.value= dept['DepartmentWorked_c'];
+          option.text = '* '+dept['DepartmentWorked_c'];
+          depts.add(option, 0);
+          past.push(dept['DepartmentWorked_c']);
+        }
+      }
+    }
+EOT;
+}
+?>
         }
       } else if (this.readyState == 4 && this.status == 404) {
           document.getElementById('volunteer').value = "";
