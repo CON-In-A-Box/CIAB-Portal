@@ -51,11 +51,8 @@ if (!empty($_REQUEST)) {
     } elseif (!empty($updateData['volunteerId'])) {
         require_once($FUNCTIONDIR."/users.inc");
         require_once($FUNCTIONDIR."/volunteer.inc");
-        if (is_numeric($updateData['volunteerId'])) {
-            $user = lookup_user_by_id($updateData['volunteerId']);
-        } else {
-            $user = lookup_users_by_email($updateData['volunteerId']);
-        }
+
+        $user = lookup_users_by_key($updateData['volunteerId']);
 
         if (!empty($user)) {
             $vol_past = get_volunteer_hours_for_user($user[0]['Id']);
