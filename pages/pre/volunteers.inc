@@ -1,2 +1,23 @@
 <?php
-;
+
+if (!empty($_REQUEST)) {
+    // Retrieve and sanitize POST data
+    $arguments = [
+    'lookupId'         => FILTER_SANITIZE_SPECIAL_CHARS,
+    ];
+
+    $updateData = filter_input_array(INPUT_GET, $arguments);
+
+    if (!empty($updateData['lookupId'])) {
+        require_once($FUNCTIONDIR."/users.inc");
+
+        $user = lookup_users_by_key($updateData['lookupId']);
+
+        if (!empty($user)) {
+            echo json_encode($user[0]);
+        } else {
+            header("HTTP/1.0 404 Not Found");
+        }
+        exit();
+    }
+}
