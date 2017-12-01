@@ -103,6 +103,24 @@ EOT;
     document.getElementById('totalhours').innerHTML = creditHours + tag;
     document.getElementById('actualhours').value = Number(hours);
   }
+
+  function reset_form() {
+    document.getElementById('volunteer').value = "";
+    document.getElementById('volunteer').classList.remove('w3-red');
+    document.getElementById('submitbtn').disabled = true;
+    document.getElementById('volunteername').innerHTML = "a Volunteer";
+    document.getElementById('lookupname').innerHTML = "";
+
+     /* Clean out old highlighted departments */
+      var depts = document.getElementById('department');
+      for (i=0; i < depts.length; i++) {
+        if (depts[i].text[0] == '*' || depts[i].text[0]=='-') {
+            depts[i+1].selected = true;
+            depts.remove(i);
+            i--;
+        }
+      }
+  }
 </script>
 
 <form method="post" action="index.php?Function=volhours">
@@ -251,7 +269,7 @@ EOT;
   <div class="w3-bar-item">
     <div class="w3-bar">
       <button id="submitbtn" class="w3-button w3-ripple w3-green" disabled>Submit Hours</button>
-      <button class="w3-button w3-ripple w3-khaki">Clear Form</button>
+      <button class="w3-button w3-ripple w3-khaki" type="button" onclick="reset_form()">Clear Form</button>
     </div>
   </div>
 </div>
