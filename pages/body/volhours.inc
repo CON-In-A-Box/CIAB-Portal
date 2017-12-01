@@ -77,12 +77,20 @@ EOT;
 }
 ?>
         }
-      } else if (this.readyState == 4 && this.status == 404) {
+      } else if (this.readyState == 4 ) {
           document.getElementById('volunteer').value = "";
           document.getElementById('volunteer').classList.add('w3-red');
           document.getElementById('submitbtn').disabled = true;
           document.getElementById('volunteername').innerHTML = "a Volunteer";
-          document.getElementById('lookupname').innerHTML = id + " not found";
+          if (this.status == 404) {
+            document.getElementById('lookupname').innerHTML = id + " not found";
+          } else if (this.status == 400) {
+            document.getElementById('lookupname').innerHTML = id + " invalid lookup";
+          } else if (this.status == 409) {
+            document.getElementById('lookupname').innerHTML = id + " not unique";
+          } else {
+            document.getElementById('lookupname').innerHTML = id + " unknown error";
+          }
       } else {
         document.getElementById('volunteername').innerHTML = id + " <i class='fa fa-spinner w3-spin'></i>";
       }

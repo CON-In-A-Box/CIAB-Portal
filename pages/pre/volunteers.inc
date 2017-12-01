@@ -11,12 +11,13 @@ if (!empty($_REQUEST)) {
     if (!empty($updateData['lookupId'])) {
         require_once($FUNCTIONDIR."/users.inc");
 
-        $user = lookup_users_by_key($updateData['lookupId']);
+        $data = lookup_users_by_key($updateData['lookupId']);
 
-        if (!empty($user)) {
+        if (!$data['code']) {
+            $user = $data['users'];
             echo json_encode($user[0]);
         } else {
-            header("HTTP/1.0 404 Not Found");
+            header("HTTP/1.0 ".$data['code']);
         }
         exit();
     }
