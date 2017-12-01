@@ -1,7 +1,7 @@
 <?php
 
 
-function _lookup_user($criteria)
+function _lookup_user($criteria, $max_users)
 {
     global $Neon;
     $preferredFirstName = search_definedFields('Preferred First Name');
@@ -17,7 +17,7 @@ function _lookup_user($criteria)
     'criteria' => $criteria,
     'page' => [
     'currentPage' => 1,
-    'pageSize' => 2,
+    'pageSize' => $max_users,
     'sortColumn' => 'Last Name',
     'sortDirection' => 'ASC',
     ],
@@ -26,62 +26,69 @@ function _lookup_user($criteria)
     if (isset($results['operationResult']) &&
         $results['operationResult'] == 'SUCCESS' &&
         isset($results['page']['totalResults']) &&
-        $results['page']['totalResults'] == 1) {
-        $user = array();
-        $result = $results['searchResults'][0];
+        $results['page']['totalResults'] > 0) {
+        if ($results['page']['totalResults'] <= $max_users) {
+            $output = ['code'=>null, 'users'=>array()];
+            for ($i = 0; $i < $results['page']['totalResults']; $i++) {
+                $user = array();
+                $result = $results['searchResults'][$i];
 
-        $user['Id'] = $result['Account ID'];
-        if (!empty($result['Preferred First Name'])) {
-            $user['First Name'] = $result['Preferred First Name'];
-        } else {
-            $user['First Name'] = $result['First Name'];
+                $user['Id'] = $result['Account ID'];
+                if (!empty($result['Preferred First Name'])) {
+                    $user['First Name'] = $result['Preferred First Name'];
+                } else {
+                    $user['First Name'] = $result['First Name'];
+                }
+                if (!empty($result['Preferred Last Name'])) {
+                    $user['Last Name'] = $result['Preferred Last Name'];
+                } else {
+                    $user['Last Name'] = $result['Last Name'];
+                }
+                if (!empty($result['CVGConCom Current Position'])) {
+                    $user['ConCom'] = $result['CVGConCom Current Position'];
+                }
+                if (!empty($result['Email 1'])) {
+                    $user['Email'] = $result['Email 1'];
+                }
+                array_push($output['users'], $user);
+            }
+            return $output;
+            } else {
+            return array('code'=>'409 Conflict', 'users'=>array());
         }
-        echo " ";
-        if (!empty($result['Preferred Last Name'])) {
-            $user['Last Name'] = $result['Preferred Last Name'];
-        } else {
-            $user['Last Name'] = $result['Last Name'];
-        }
-        if (!empty($result['CVGConCom Current Position'])) {
-            $user['ConCom'] = $result['CVGConCom Current Position'];
-        }
-        if (!empty($result['Email 1'])) {
-            $user['Email'] = $result['Email 1'];
-        }
-        return array($user);
     }
-    return array();
+    return array('code'=>'404 Not Found', 'users'=>array());
 
 }
 
 
 function lookup_user_by_id($id)
 {
-    return _lookup_user([['Account ID', 'EQUAL', $id]]);
+    return _lookup_user([['Account ID', 'EQUAL', $id]], 1);
 
 }
 
 
-function lookup_users_by_email($email)
+function lookup_users_by_email($email, $max)
 {
-    return _lookup_user([['Email', 'EQUAL', $email]]);
+    return _lookup_user([['Email', 'EQUAL', $email]], $max);
 
 }
 
 
-function lookup_users_by_name($name)
+function lookup_users_by_name($name, $max)
 {
     $names = explode(" ", $name);
     if (count($names) != 2) {
-        return array();
+        return ['code'=>'400 Bad Request', 'users'=>array()];
     }
     return _lookup_user([['First Name', 'EQUAL', $names[0]],
-                         ['Last Name', 'EQUAL', $names[1]]]);
+                         ['Last Name', 'EQUAL', $names[1]]], $max);
 
 }
 
 
-function lookup_users_by_key($key)
+function lookup_users_by_key($key, $max=1)
 {
     if (is_numeric($key) ||
         (strtoupper($key)[0] == 'A' && is_numeric(substr($key, 1)))) {
@@ -91,9 +98,9 @@ function lookup_users_by_key($key)
             return lookup_user_by_id($key);
         }
     } elseif (strpos($key, '@') !== false) {
-        return lookup_users_by_email($key);
+        return lookup_users_by_email($key, $max);
     } else {
-        return lookup_users_by_name($key);
+        return lookup_users_by_name($key, $max);
     }
 
 }
