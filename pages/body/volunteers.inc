@@ -52,6 +52,7 @@ if (isset($uid)) {
  }
 ?>
         placeholder="(badge #, email, Name)" required>
+      <button type="button" class="w3-button w3-bar-item w3-border icon-barcode button-scan" onclick="QuaggaApp.init('volunteer', lookupId)"></button>
       <span class='w3-bar-item' id='spinner'></span>
     </div>
   </div>
