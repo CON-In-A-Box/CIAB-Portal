@@ -3,7 +3,7 @@ $uid = null;
 if (!empty($_REQUEST)) {
     // Retrieve and sanitize POST data
     $arguments = [
-        'volunteerId'         => FILTER_SANITIZE_SPECIAL_CHARS,
+    'volunteerId'         => FILTER_SANITIZE_SPECIAL_CHARS,
     ];
     $updateData = filter_input_array(INPUT_GET, $arguments);
     $uid = $updateData['volunteerId'];
@@ -49,7 +49,7 @@ if (!empty($_REQUEST)) {
 <?php
 if (isset($uid)) {
     echo 'value='.$uid.' ';
- }
+}
 ?>
         placeholder="(badge #, email, Name)" required>
       <button type="button" class="w3-button w3-bar-item w3-border icon-barcode button-scan" onclick="QuaggaApp.init('volunteer', lookupId)"></button>
@@ -64,8 +64,8 @@ if (isset($uid)) {
 <table class='w3-table w3-striped w3-bordered w3-white'>
 <?php
 
-include_once($FUNCTIONDIR.'/volunteer.inc');
-include_once($FUNCTIONDIR.'/users.inc');
+require_once $FUNCTIONDIR.'/volunteer.inc';
+require_once $FUNCTIONDIR.'/users.inc';
 $data = get_volunteer_hours_for_user($uid);
 $total = 0;
 if (!empty($data)) {
@@ -74,9 +74,9 @@ if (!empty($data)) {
     echo "</th></tr>\n";
     foreach ($data as $key => $record) {
         $total += $record['ActualHoursWorked_c'];
-         echo "<tr><td>";
-         echo implode($record, '</td><td>');
-         echo "</td></tr>\n";
+        echo "<tr><td>";
+        echo implode($record, '</td><td>');
+        echo "</td></tr>\n";
     }
 }
 echo "</table>";
