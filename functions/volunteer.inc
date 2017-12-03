@@ -72,3 +72,44 @@ function get_volunteer_hours_for_user($id = null)
     return $data;
 
 }
+
+
+function record_volunteer_hours(
+    $id,
+    $hours,
+    $end,
+    $modifier,
+    $department,
+    $enterer,
+    $authorized
+) {
+    global $Neon;
+
+    $request = [
+    'method' => 'customObjectRecord/createCustomObjectRecord',
+    'parameters' => [
+    'customObjectRecord.objectApiName' => 'VolHourEntries_c',
+            ],
+        ];
+
+    $fields = ['VolunteerID_c' => (int)$id, 'ActualHoursWorked_c' => $hours,
+    'EndDateTime_c' => $end, 'TimeModifier_c' => $modifier,
+    'DepartmentWorked_c' => $department, 'EnteredBy_c' => $enterer,
+    'AuthorizedBy_c' => $authorized];
+
+    $index = 0;
+    foreach ($fields as $key => $data) {
+        $request['parameters']['customObjectRecord.customObjectRecordDataList.customObjectRecordData.name['.$index.']'] = $key;
+        $request['parameters']['customObjectRecord.customObjectRecordDataList.customObjectRecordData.value['.$index.']'] = $data;
+        $index++;
+    }
+
+    $result = $Neon->go1($request);
+
+    if (isset($result['operationResult']) && $result['operationResult'] == 'SUCCESS') {
+        return null;
+    }
+
+    return array_merge($request, $result);
+
+}
