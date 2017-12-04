@@ -73,7 +73,7 @@ if (!empty($data)) {
     echo implode(array_keys($data[0]), '</th><th>');
     echo "</th></tr>\n";
     foreach ($data as $key => $record) {
-        $total += $record['ActualHoursWorked_c'];
+        $total += $record['ActualHoursWorked_c'] * $record['TimeModifier_c'];
          echo "<tr><td>";
          echo implode($record, '</td><td>');
          echo "</td></tr>\n";

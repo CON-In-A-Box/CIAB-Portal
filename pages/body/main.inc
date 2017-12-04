@@ -294,11 +294,11 @@ if ($data && !empty($data)) {
     $total = 0;
     foreach ($data as $entry) {
         if (array_key_exists($entry['DepartmentWorked_c'], $output)) {
-            $output[$entry['DepartmentWorked_c']] += $entry['ActualHoursWorked_c'];
+            $output[$entry['DepartmentWorked_c']] += $entry['ActualHoursWorked_c'] * $entry['TimeModifier_c'];
         } else {
-            $output[$entry['DepartmentWorked_c']] = $entry['ActualHoursWorked_c'];
+            $output[$entry['DepartmentWorked_c']] = $entry['ActualHoursWorked_c'] * $entry['TimeModifier_c'];;
         }
-        $total += $entry['ActualHoursWorked_c'];
+        $total += $entry['ActualHoursWorked_c'] * $entry['TimeModifier_c'];
     }
     foreach ($output as $dept => $hours) {
         echo "<tr><td>".$dept.'</td>';
