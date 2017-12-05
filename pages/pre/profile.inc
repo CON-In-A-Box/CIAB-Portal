@@ -128,7 +128,8 @@ if (!empty($_POST)) {
     $result = $GLOBALS['Neon']->go1($request);
     
     if (isset($result['operationResult']) && $result['operationResult'] == 'SUCCESS') {
-      // Refresh Account info from Neon
+        require_once($FUNCTIONDIR."/session.inc");
+        // Refresh Account info from Neon
         buildSessionData($_SESSION['accountId']);
     } else {
         sendError("Profile Update Failed", $result);
