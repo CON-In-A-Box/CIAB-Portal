@@ -4,6 +4,8 @@ if (empty($_SESSION['customFields']['currConComPos'])) {
     goSite();
 }
 
+require_once $FUNCTIONDIR."/volunteer.inc";
+
 if (!empty($_REQUEST)) {
     // Retrieve and sanitize POST data
     $arguments = [
@@ -22,46 +24,39 @@ if (!empty($_REQUEST)) {
         $updateData = filter_input_array(INPUT_GET, $arguments);
     }
 
-    if (!empty($updateData['VolunteerID_c']) && !empty($updateData['ActualHoursWorked_c']) && !empty($updateData['EndDateTime_c']) && !empty($updateData['TimeModifier_c']) && !empty($updateData['DepartmentWorked_c']) && !empty($updateData['EnteredBy_c']) && !empty($updateData['AuthorizedBy_c'])) {
-        $request = [
-        'method' => 'customObjectRecord/createCustomObjectRecord',
-        'parameters' => [
-        'customObjectRecord.objectApiName' => 'VolHourEntries_c',
-        ],
-        ];
+    if (!empty($updateData['VolunteerID_c'])
+        && !empty($updateData['ActualHoursWorked_c'])
+        && !empty($updateData['EndDateTime_c'])
+        && !empty($updateData['TimeModifier_c'])
+        && !empty($updateData['DepartmentWorked_c'])
+        && !empty($updateData['EnteredBy_c'])
+        && !empty($updateData['AuthorizedBy_c'])
+    ) {
+        $handoff = record_volunteer_hours(
+            $updateData['VolunteerID_c'],
+            $updateData['ActualHoursWorked_c'],
+            $updateData['EndDateTime_c'],
+            $updateData['TimeModifier_c'],
+            $updateData['DepartmentWorked_c'],
+            $updateData['EnteredBy_c'],
+            $updateData['AuthorizedBy_c']
+        );
 
-        $fields = ['VolunteerID_c', 'ActualHoursWorked_c', 'EndDateTime_c', 'TimeModifier_c', 'DepartmentWorked_c', 'EnteredBy_c', 'AuthorizedBy_c'];
-        foreach ($fields as $key => $field) {
-            $request['parameters']['customObjectRecord.customObjectRecordDataList.customObjectRecordData.name['.$key.']'] = $field;
-            $request['parameters']['customObjectRecord.customObjectRecordDataList.customObjectRecordData.value['.$key.']'] = $updateData[$field];
-        }
-
-        unset($key);
-        unset($value);
-
-        $result = $GLOBALS['Neon']->go1($request);
-
-        if (isset($result['operationResult']) && $result['operationResult'] == 'SUCCESS') {
-            $updateComplete = true;
-        } else {
-            $updateComplete = false;
-            sendError("Fail to record Volunteer hours ".__FILE__, array_merge($request, $result));
-            $handoff = array_merge($request, $result);
-        }
+        $updateComplete = ($handoff === null);
     } elseif (!empty($updateData['volunteerId'])) {
-        require_once($FUNCTIONDIR."/users.inc");
-        require_once($FUNCTIONDIR."/volunteer.inc");
+        include_once $FUNCTIONDIR."/users.inc";
 
-        $user = lookup_users_by_key($updateData['volunteerId']);
+        $data = lookup_users_by_key($updateData['volunteerId']);
 
-        if (!empty($user)) {
-            $vol_past = get_volunteer_hours_for_user($user[0]['Id']);
+        if (!$data['code']) {
+            $user = $data['users'][0];
+            $vol_past = get_volunteer_hours_for_user($user['Id']);
             if (!empty($vol_past)) {
-                $user[0]['volunteer'] = $vol_past;
+                $user['volunteer'] = $vol_past;
             }
-            echo json_encode($user[0]);
+            echo json_encode($user);
         } else {
-            header("HTTP/1.0 404 Not Found");
+            header("HTTP/1.0 ".$data['code']);
         }
 
         exit();

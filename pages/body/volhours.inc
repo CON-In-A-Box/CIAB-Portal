@@ -3,24 +3,23 @@
 <?php
 if (isset($updateComplete)) {
     if ($updateComplete === true) {
-?>
-<div class="w3-block w3-center w3-green">
-  Hours Recorded
-<?php
+        echo '<div class="w3-block w3-center w3-green">';
+        echo "Hours Recorded";
+        echo "</div>\n";
     } else {
-?>
-<div class="w3-block w3-center w3-red">
-  Hour Recording Failed!!  Error!
-  <pre>
-<?php
-print_r($handoff);
-echo "</pre>\n";
+        echo '<div class="w3-block w3-center w3-red">';
+        echo 'Hour Recording Failed!!  Error!';
+        echo "</div>\n";
+        $output = print_r($handoff, true);
+        $output = trim(preg_replace('~[\r\n]+~', '\\n', $output));
+        echo "<script> console.log('".$output."'); </script>\n";
     }
 }
 ?>
-</div>
 
 <script>
+  var vol_past = null;
+
   function lookupId(id) {
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
@@ -76,13 +75,25 @@ if (strpos($_SESSION['customFields']['currConComPos'][0], 'Volunteers') !== fals
 EOT;
 }
 ?>
+        if ('volunteer' in response) {
+            vol_past = response['volunteer'];
+            checkHours();
         }
-      } else if (this.readyState == 4 && this.status == 404) {
+        }
+      } else if (this.readyState == 4 ) {
           document.getElementById('volunteer').value = "";
           document.getElementById('volunteer').classList.add('w3-red');
           document.getElementById('submitbtn').disabled = true;
           document.getElementById('volunteername').innerHTML = "a Volunteer";
-          document.getElementById('lookupname').innerHTML = id + " not found";
+          if (this.status == 404) {
+            document.getElementById('lookupname').innerHTML = id + " not found";
+          } else if (this.status == 400) {
+            document.getElementById('lookupname').innerHTML = id + " invalid lookup";
+          } else if (this.status == 409) {
+            document.getElementById('lookupname').innerHTML = id + " not unique";
+          } else {
+            document.getElementById('lookupname').innerHTML = id + " unknown error";
+          }
       } else {
         document.getElementById('volunteername').innerHTML = id + " <i class='fa fa-spinner w3-spin'></i>";
       }
@@ -102,6 +113,7 @@ EOT;
     }
     document.getElementById('totalhours').innerHTML = creditHours + tag;
     document.getElementById('actualhours').value = Number(hours);
+    checkHours();
   }
 
   function reset_form() {
@@ -120,8 +132,31 @@ EOT;
             i--;
         }
       }
+    document.getElementById('message').innerHTML = "";
+    document.getElementById('datetime').classList.remove('w3-red');
+  }
+
+  function checkHours() {
+    document.getElementById('datetime').classList.remove('w3-red');
+    document.getElementById('message').innerHTML = "";
+
+    if (vol_past && vol_past.length) {
+        var last_shift = vol_past[vol_past.length-1];
+        var last_end = new Date(last_shift['EndDateTime_c']);
+        var new_shift = new Date(document.getElementById('datetime').value);
+        var hours = Number(document.getElementById('hours').value);
+        var mins  = Number(document.getElementById('minutes').value);
+        new_shift.setHours(new_shift.getHours() - hours);
+        new_shift.setMinutes(new_shift.getMinutes() - mins);
+        if (new_shift < last_end) {
+            document.getElementById('datetime').classList.add('w3-red');
+            document.getElementById('message').innerHTML = 'Overlapping with ' + last_shift['DepartmentWorked_c'] + ' ( ' + last_end + ' ) ';
+        }
+    }
   }
 </script>
+
+<div id="message" class='w3-block w3-center w3-red'></div>
 
 <form method="post" action="index.php?Function=volhours">
 
@@ -190,7 +225,7 @@ EOT;
     } else {
         echo "45";
     }
-    ?>" required>
+    ?>" required onchange="checkHours();">
   </div>
 </div>
 

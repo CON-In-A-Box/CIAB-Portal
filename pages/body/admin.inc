@@ -3,6 +3,7 @@
 <?php
 echo "<h2>Welcome ".$_SESSION['preferredName']."!</h2>\n";
 
+require_once($FUNCTIONDIR.'/users.inc');
 /*
 if( isset($_REQUEST['DoFeed'])) {
 echo "<hr><h3>Starting DeFeed Routine:</h3>\n";
@@ -128,34 +129,17 @@ if (!empty($_POST)) {
     $searchCriteria = filter_input_array(INPUT_GET, $arguments);
 }
 
-// Formulate the search query
-$search = [
-'method' => 'account/listAccounts',
-'columns' => [
-'standardFields' => ['Account ID', 'First Name', 'Last Name', 'Email 1', 'City', 'State'],
-  ],
-'page' => [
-'currentPage' => 1,
-'pageSize' => 200,
-'sortColumn' => 'Last Name',
-'sortDirection' => 'ASC',
-  ],
-];
-
-// Some search criteria are variable based on our POST data. Add them to the query if applicable
-if (isset($searchCriteria['firstName']) && !empty($searchCriteria['firstName'])) {
-    $search['criteria'][] = ['First Name', 'EQUAL', $searchCriteria['firstName']];
-}
-if (isset($searchCriteria['lastName']) && !empty($searchCriteria['lastName'])) {
-    $search['criteria'][] = ['Last Name', 'EQUAL', $searchCriteria['lastName']];
-}
-if (isset($searchCriteria['email']) && !empty($searchCriteria['email'])) {
-    $search['criteria'][] = ['Email', 'EQUAL', $searchCriteria['email']];
-}
-
 // If there are search criteria present, execute the search query
-if (!empty($search['criteria'])) {
-    $result = $GLOBALS['Neon']->search($search);
+if (!empty($searchCriteria['firstName']) ||
+    !empty($searchCriteria['lastName']) ||
+    !empty($searchCriteria['email'])) {
+    $result = lookup_users_by_name_email(
+        $searchCriteria['firstName'],
+        $searchCriteria['lastName'],
+        $searchCriteria['email'],
+        ['City', 'State'],
+        200
+    );
     $message = 'No results match your search.';
 } else {
     $result = null;
@@ -179,7 +163,7 @@ if (!empty($search['criteria'])) {
   </fieldset>
 </form>
 <hr>
-<?php if (isset($result['page']['totalResults']) && $result['page']['totalResults'] >= 1) : ?>
+<?php if ($result && !$result['code']) : ?>
   <table class="table table-striped">
     <tr>
       <th>Name</th>
@@ -187,15 +171,15 @@ if (!empty($search['criteria'])) {
       <th>Email</th>
       <th>Location</th>
     </tr>
-    <?php foreach ($result['searchResults'] as $r) : ?>
+    <?php foreach ($result['users'] as $r) : ?>
       <tr>
         <td><?php echo $r['First Name']; ?> <?php echo $r['Last Name']; ?></td>
         <td>
-          <a href="index.php?Function=admin&ID=<?php echo $r['Account ID']; ?>" class="w3-button">
-            <?php echo $r['Account ID']; ?>
+          <a href="index.php?Function=admin&ID=<?php echo $r['Id']; ?>" class="w3-button">
+            <?php echo $r['Id']; ?>
           </a>
         </td>
-        <td><?php echo $r['Email 1']; ?></td>
+        <td><?php echo $r['Email']; ?></td>
         <td><?php echo $r['City']; ?> <?php echo $r['State']; ?></td>
       </tr>
     <?php endforeach; ?>
