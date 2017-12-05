@@ -18,6 +18,8 @@ if (isset($updateComplete)) {
 ?>
 
 <script>
+  var vol_past = null;
+
   function lookupId(id) {
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
@@ -73,6 +75,10 @@ if (strpos($_SESSION['customFields']['currConComPos'][0], 'Volunteers') !== fals
 EOT;
 }
 ?>
+        if ('volunteer' in response) {
+            vol_past = response['volunteer'];
+            checkHours();
+        }
         }
       } else if (this.readyState == 4 ) {
           document.getElementById('volunteer').value = "";
@@ -107,6 +113,7 @@ EOT;
     }
     document.getElementById('totalhours').innerHTML = creditHours + tag;
     document.getElementById('actualhours').value = Number(hours);
+    checkHours();
   }
 
   function reset_form() {
@@ -125,8 +132,31 @@ EOT;
             i--;
         }
       }
+    document.getElementById('message').innerHTML = "";
+    document.getElementById('datetime').classList.remove('w3-red');
+  }
+
+  function checkHours() {
+    document.getElementById('datetime').classList.remove('w3-red');
+    document.getElementById('message').innerHTML = "";
+
+    if (vol_past && vol_past.length) {
+        var last_shift = vol_past[vol_past.length-1];
+        var last_end = new Date(last_shift['EndDateTime_c']);
+        var new_shift = new Date(document.getElementById('datetime').value);
+        var hours = Number(document.getElementById('hours').value);
+        var mins  = Number(document.getElementById('minutes').value);
+        new_shift.setHours(new_shift.getHours() - hours);
+        new_shift.setMinutes(new_shift.getMinutes() - mins);
+        if (new_shift < last_end) {
+            document.getElementById('datetime').classList.add('w3-red');
+            document.getElementById('message').innerHTML = 'Overlapping with ' + last_shift['DepartmentWorked_c'] + ' ( ' + last_end + ' ) ';
+        }
+    }
   }
 </script>
+
+<div id="message" class='w3-block w3-center w3-red'></div>
 
 <form method="post" action="index.php?Function=volhours">
 
@@ -195,7 +225,7 @@ EOT;
     } else {
         echo "45";
     }
-    ?>" required>
+    ?>" required onchange="checkHours();">
   </div>
 </div>
 
