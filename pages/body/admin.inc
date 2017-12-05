@@ -191,7 +191,7 @@ endif;
 
 if (!empty($searchCriteria['ID'])) {
     unset($result);
-    $result = $Neon->pullIndividualAccount($searchCriteria['ID']);
+    $result = pullIndividualAccount($searchCriteria['ID']);
     echo '<pre>';
     print_r($result);
     echo '</pre>';

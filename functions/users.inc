@@ -130,3 +130,61 @@ function lookup_users_by_name_email($first, $last, $email, $fields, $max_users =
     return _lookup_user($criteria, $max_users, $fields);
 
 }
+
+
+function pullIndividualAccount($accountId)
+{
+    global $Neon;
+    // Refresh Account info from Neon to verify update
+    $request = [
+    'method' => 'account/retrieveIndividualAccount',
+    'parameters' => [
+    'accountId' => $accountId,
+      ],
+    ];
+
+    $result = $Neon->go($request);
+    if (isset($result['operationResult']) && $result['operationResult'] == 'SUCCESS') {
+        return $result;
+    } else {
+        sendError("Could not retrieve IndividualAccount for account ".$accountId." in ".__FILE__, $result);
+        return null;
+    }
+
+}
+
+
+function pushIndividualAccount($pulledInfo)
+{
+    global $Neon;
+    $request = [
+    'method' => 'account/editIndividualAccount',
+    'parameters' => [
+    'individualAccount.accountId' => $pulledInfo['individualAccount']['accountId'],
+    'individualAccount.primaryContact.contactId' => $pulledInfo['individualAccount']['primaryContact']['contactId'],
+    'individualAccount.primaryContact.firstName' => $pulledInfo['individualAccount']['primaryContact']['firstName'],
+    'individualAccount.primaryContact.lastName' => $pulledInfo['individualAccount']['primaryContact']['lastName'],
+      ],
+    ];
+
+    foreach ($pulledInfo['individualAccount']['customFieldDataList']['customFieldData'] as $key => $val) {
+        $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldId['.$key.']'] = $val['fieldId'];
+        if (isset($val['fieldValue'])) {
+            $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldOptionId['.$key.']'] = '';
+            $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldValue['.$key.']'] = $val['fieldValue'];
+        } elseif (isset($val['fieldOptionId'])) {
+            $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldOptionId['.$key.']'] = $val['fieldOptionId'];
+            $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldValue['.$key.']'] = '';
+        }
+    }
+
+    $result = $Neon->go1($request);
+
+    if (isset($result['operationResult']) && $result['operationResult'] == 'SUCCESS') {
+        return $result;
+    } else {
+        sendError("Could not retrieve IndividualAccount for account ".$accountId." in ".__FILE__, $result);
+        return null;
+    }
+
+}

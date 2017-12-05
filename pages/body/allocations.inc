@@ -1,5 +1,6 @@
 <?php
 require_once($FUNCTIONDIR.'/allocations.inc');
+require_once($FUNCTIONDIR.'/users.inc');
 echo '<div id="main_content" class="w3-container">'."\n";
 if (!empty($_REQUEST['DeepLink'])) { // Handle defined and allowed deeplinks
     echo '<header class="w3-cell-row w3-green w3-mobile">';
@@ -78,7 +79,7 @@ if (!empty($_REQUEST['DeepLink'])) { // Handle defined and allowed deeplinks
             $lotteryStatusWaiting  = search_definedFields('Waiting On Hotel Assignment');
 
             // Pull the full info of the person moving and save the current Alloc info for room we are moving to
-            $personFrom = $Neon->pullIndividualAccount($_SESSION['AllocInfo'][$requestInfo['From']]['Account ID']);
+            $personFrom = pullIndividualAccount($_SESSION['AllocInfo'][$requestInfo['From']]['Account ID']);
             if (isset($_SESSION['AllocInfo'][$requestInfo['To']])) {
                 $holding = $_SESSION['AllocInfo'][$requestInfo['To']];
             }
@@ -119,7 +120,7 @@ if (!empty($_REQUEST['DeepLink'])) { // Handle defined and allowed deeplinks
             }
         
             // Push out the persons new info
-            if ($Neon->pushIndividualAccount($personFrom)) {
+            if (pushIndividualAccount($personFrom)) {
                 $_SESSION['AllocInfo'][$requestInfo['To']] = $_SESSION['AllocInfo'][$requestInfo['From']];
                 echo '<p class="w3-panel w3-green">';
                 echo 'Successfully moved '.$_SESSION['AllocInfo'][$requestInfo['To']]['First Name'].' '.$_SESSION['AllocInfo'][$requestInfo['To']]['Last Name'].' from '.$requestInfo['From'].' to '.$requestInfo['To'];
@@ -127,7 +128,7 @@ if (!empty($_REQUEST['DeepLink'])) { // Handle defined and allowed deeplinks
           
                 // If there was someone in the room moved to, swap them
                 if (isset($holding)) {
-                    $personTo = $Neon->pullIndividualAccount($holding['Account ID']);
+                    $personTo = pullIndividualAccount($holding['Account ID']);
             
                     // Swap and Update the Room that this person is in
                     foreach ($personTo['individualAccount']['customFieldDataList']['customFieldData'] as $key => $val) {
@@ -165,7 +166,7 @@ if (!empty($_REQUEST['DeepLink'])) { // Handle defined and allowed deeplinks
                     }
 
                     // Push out the persons new info
-                    if ($Neon->pushIndividualAccount($personTo)) {
+                    if (pushIndividualAccount($personTo)) {
                         $_SESSION['AllocInfo'][$requestInfo['From']] = $holding;
                         echo '<p class="w3-panel w3-yellow">';
                         echo 'Successfully moved '.$_SESSION['AllocInfo'][$requestInfo['From']]['First Name'].' '.$_SESSION['AllocInfo'][$requestInfo['From']]['Last Name'].' from '.$requestInfo['To'].' to '.$requestInfo['From'];
@@ -271,7 +272,7 @@ if (!empty($_REQUEST['DeepLink'])) { // Handle defined and allowed deeplinks
                 $roomPreferenceDefault = search_definedFields('No Preference');
 
                 // Pull the full info of the person moving and save the current Alloc info for room we are moving to
-                $person = $Neon->pullIndividualAccount($requestInfo['accountId']);
+                $person = pullIndividualAccount($requestInfo['accountId']);
 
                 // Verify fieldId is in place in case they don't have the fields in place before now
                 $keyCheck = [ $lotteryStatusFieldId, $assignedRoomFieldId, $roomPreferenceFieldId, ];
@@ -331,7 +332,7 @@ if (!empty($_REQUEST['DeepLink'])) { // Handle defined and allowed deeplinks
                 }
 
                 // Push out the persons new info
-                if ($Neon->pushIndividualAccount($person)) {
+                if (pushIndividualAccount($person)) {
                     echo '<p class="w3-panel w3-green">';
                     echo 'Successfully assigned '.$person['individualAccount']['primaryContact']['firstName'].' '.$person['individualAccount']['primaryContact']['lastName'].' to '.$requestInfo['To'];
                     echo '</p>';

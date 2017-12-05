@@ -249,56 +249,6 @@ class Neon
     ##==## Boy is this gonna be fun!
   }
   
-  public function pullIndividualAccount($accountId) {
-    // Refresh Account info from Neon to verify update
-    $request = [
-      'method' => 'account/retrieveIndividualAccount',
-      'parameters' => [
-        'accountId' => $accountId,
-      ],
-    ];
-
-    $result = $this->go($request);
-    if ( isset( $result['operationResult'] ) && $result['operationResult'] == 'SUCCESS' ) {
-      return $result;
-    } else {
-      sendError("Could not retrieve IndividualAccount for account " . $accountId . " in " . __FILE__, $result);
-      return null;
-    }
-  }
-
-  public function pushIndividualAccount($pulledInfo) {
-    $request = [
-      'method' => 'account/editIndividualAccount',
-      'parameters' => [
-        'individualAccount.accountId' => $pulledInfo['individualAccount']['accountId'],
-        'individualAccount.primaryContact.contactId' => $pulledInfo['individualAccount']['primaryContact']['contactId'],
-        'individualAccount.primaryContact.firstName' => $pulledInfo['individualAccount']['primaryContact']['firstName'],
-        'individualAccount.primaryContact.lastName' => $pulledInfo['individualAccount']['primaryContact']['lastName'],
-      ],
-    ];
-
-    foreach ($pulledInfo['individualAccount']['customFieldDataList']['customFieldData'] as $key => $val) {
-      $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldId[' . $key . ']'] = $val['fieldId'];
-      if ( isset( $val['fieldValue'] )) {
-        $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldOptionId[' . $key . ']'] = '';
-        $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldValue[' . $key . ']'] = $val['fieldValue'];
-      } elseif ( isset( $val['fieldOptionId'] )) {
-        $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldOptionId[' . $key . ']'] = $val['fieldOptionId'];
-        $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldValue[' . $key . ']'] = '';
-      }
-    }
-
-    $result = $this->go1($request);
-
-    if ( isset( $result['operationResult'] ) && $result['operationResult'] == 'SUCCESS' ) {
-      return $result;
-    } else {
-      sendError("Could not retrieve IndividualAccount for account " . $accountId . " in " . __FILE__, $result);
-      return null;
-    }
-  }
-  
   public function doGeneralSearch() {
     /* Retrieve and sanitize POST data */
     $arguments = [
@@ -418,7 +368,8 @@ function validateDeepLink($deepLinkId) {
 
 function buildSessionData($accountId) {
   // Refresh Account info from Neon to verify update
-  $result = $GLOBALS['Neon']->pullIndividualAccount($accountId);
+  require_once($FUNCTIONDIR."/users.inc");
+  $result = pullIndividualAccount($accountId);
   if ( isset( $result['operationResult'] ) && $result['operationResult'] == 'SUCCESS' ) {
     $_SESSION['accountInfo'] = $result;
     $_SESSION['contactId'] = &$_SESSION['accountInfo']['individualAccount']['primaryContact']['contactId'];

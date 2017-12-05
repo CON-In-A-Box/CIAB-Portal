@@ -1,5 +1,5 @@
 <?php
-
+require_once($FUNCTIONDIR.'/users.inc');
 if (!empty($_POST)) {
     $arguments = [
     'accountId' => FILTER_SANITIZE_NUMBER_INT,
@@ -13,7 +13,7 @@ if (!empty($_POST)) {
     ];
     $updateData = filter_input_array(INPUT_POST, $arguments);
 
-    $result = $Neon->pullIndividualAccount($updateData['accountId']);
+    $result = pullIndividualAccount($updateData['accountId']);
 
     $hotelStatusFieldId = search_definedFields('Lottery Status');
     $roomAssignedFieldId = search_definedFields('Room Assigned');
@@ -85,7 +85,7 @@ if (!empty($_POST)) {
         }
     }
 
-    if ($Neon->pushIndividualAccount($result)) {
+    if (pushIndividualAccount($result)) {
     // Refresh Account info from Neon
         buildSessionData($_SESSION['accountId']);
         require_once($FUNCTIONDIR."/allocations.inc");
