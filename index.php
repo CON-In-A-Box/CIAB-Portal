@@ -6,6 +6,7 @@ require_once('functions/functions.inc');
 if (empty($_REQUEST['Function'])) {
     goSite('/index.php?Function=public');
 } elseif (!empty($_REQUEST['DeepLink'])) {
+    require_once(dirname(__FILE__).'/functions/session.inc');
     if (validateDeepLink($_REQUEST['DeepLink'])) {
         // Allow only approved DeepLink Functions - Need to make this an array search
         if ($_REQUEST['Function'] == 'allocations') {

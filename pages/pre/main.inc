@@ -86,7 +86,8 @@ if (!empty($_POST)) {
     }
 
     if (pushIndividualAccount($result)) {
-    // Refresh Account info from Neon
+        // Refresh Account info from Neon
+        require_once($FUNCTIONDIR.'/session.inc');
         buildSessionData($_SESSION['accountId']);
         require_once($FUNCTIONDIR."/allocations.inc");
         if ($updateData['accept'] == 'Yes') {
