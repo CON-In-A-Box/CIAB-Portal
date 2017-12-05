@@ -3,22 +3,19 @@
 <?php
 if (isset($updateComplete)) {
     if ($updateComplete === true) {
-?>
-<div class="w3-block w3-center w3-green">
-  Hours Recorded
-<?php
+        echo '<div class="w3-block w3-center w3-green">';
+        echo "Hours Recorded";
+        echo "</div>\n";
     } else {
-?>
-<div class="w3-block w3-center w3-red">
-  Hour Recording Failed!!  Error!
-  <pre>
-<?php
-print_r($handoff);
-echo "</pre>\n";
+        echo '<div class="w3-block w3-center w3-red">';
+        echo 'Hour Recording Failed!!  Error!';
+        echo "</div>\n";
+        $output = print_r($handoff, true);
+        $output = trim(preg_replace('~[\r\n]+~', '\\n', $output));
+        echo "<script> console.log('".$output."'); </script>\n";
     }
 }
 ?>
-</div>
 
 <script>
   function lookupId(id) {
