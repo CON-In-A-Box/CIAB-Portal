@@ -5,6 +5,7 @@ if (empty($_SESSION['customFields']['currConComPos'])) {
 }
 
 require_once($FUNCTIONDIR."/divisional.inc");
+require_once($FUNCTIONDIR.'/users.inc');
 if (isset($_REQUEST['Remove']) && isset($_REQUEST['Department']) && isset($_REQUEST['Position'])) {
     if (isset($_SESSION['IS_ADMIN']) || (isset($_SESSION['DIR_OF']) && in_array(getDivision($_REQUEST['Department']), $_SESSION['DIR_OF'])) || (isset($_SESSION['HEAD_OF']) && in_array($_REQUEST['Department'], $_SESSION['HEAD_OF']))) {
       // Retrieve and sanitize POST data
@@ -30,7 +31,7 @@ if (isset($_REQUEST['Remove']) && isset($_REQUEST['Department']) && isset($_REQU
 function doConComAddSearch($department)
 {
     echo '<h3>Add someone to '.$department.'</h3>';
-    
+
     // Retrieve and sanitize POST data
     $arguments = [
     'firstName' => FILTER_SANITIZE_SPECIAL_CHARS,
@@ -42,36 +43,18 @@ function doConComAddSearch($department)
     } else {
         $searchCriteria = filter_input_array(INPUT_GET, $arguments);
     }
-
-    // Formulate the search query
-    $search = [
-    'method' => 'account/listAccounts',
-    'columns' => [
-    'standardFields' => ['Account ID', 'First Name', 'Last Name', 'Email 1', 'City', 'State'],
-    ],
-    'page' => [
-    'currentPage' => 1,
-    'pageSize' => 200,
-    'sortColumn' => 'Last Name',
-    'sortDirection' => 'ASC',
-    ],
-    ];
-
-    // Some search criteria are variable based on our POST data. Add them to the query if applicable
-    if (isset($searchCriteria['firstName']) && !empty($searchCriteria['firstName'])) {
-        $search['criteria'][] = ['First Name', 'EQUAL', $searchCriteria['firstName']];
-    }
-    if (isset($searchCriteria['lastName']) && !empty($searchCriteria['lastName'])) {
-        $search['criteria'][] = ['Last Name', 'EQUAL', $searchCriteria['lastName']];
-        $search['page']['sortColumn'] = 'First Name';
-    }
-    if (isset($searchCriteria['email']) && !empty($searchCriteria['email'])) {
-        $search['criteria'][] = ['Email', 'EQUAL', $searchCriteria['email']];
-    }
-
     // If there are search criteria present, execute the search query
-    if (!empty($search['criteria'])) {
-        $result = $GLOBALS['Neon']->search($search);
+    if (!empty($searchCriteria['firstName']) ||
+        !empty($searchCriteria['lastName']) ||
+        !empty($searchCriteria['email'])) {
+        $result = lookup_users_by_name_email(
+            $searchCriteria['firstName'],
+            $searchCriteria['lastName'],
+            $searchCriteria['email'],
+            ['City', 'State'],
+            200
+        );
+
         $message = '<h3>No results match your search.</h3>';
     } else {
         $result = null;
@@ -80,7 +63,7 @@ function doConComAddSearch($department)
 
     echo '<form action="index.php?Function=list" method="POST" class="form-inline">';
     echo '<input type="hidden" name="AddDepartment" value="'.$department.'">'."\n";
-    echo '<fieldset><legend>Search the NeonCRM Database</legend>';
+    echo '<fieldset><legend>Search the User Database</legend>';
     echo '<p>';
     echo 'First Name';
     echo '<input type="text" class="form-control" name="firstName" value="'.htmlentities($searchCriteria['firstName']).'"> ';
@@ -94,13 +77,13 @@ function doConComAddSearch($department)
     echo "</form>\n";
     echo '<hr>';
 
-    if (isset($result['page']['totalResults']) && $result['page']['totalResults'] >= 1) {
+    if ($result && !$result['code']) {
         echo '<table class="w3-table w3-striped w3-bordered">';
         echo '<tr><th>Name</th><th>Email</th><th>Location</th></tr>'."\n";
-        foreach ($result['searchResults'] as $r) {
+        foreach ($result['users'] as $r) {
             echo '<tr>';
-            echo '<td><a href="index.php?Function=list&AddDepartment='.$department.'&accountId='.$r['Account ID'].'&Name='.$r['First Name'].' '.$r['Last Name'].'">'.$r['First Name'].' '.$r['Last Name'].'</a></td>';
-            echo '<td>'.$r['Email 1'].'</td>';
+            echo '<td><a href="index.php?Function=list&AddDepartment='.$department.'&accountId='.$r['Id'].'&Name='.$r['First Name'].' '.$r['Last Name'].'">'.$r['First Name'].' '.$r['Last Name'].'</a></td>';
+            echo '<td>'.$r['Email'].'</td>';
             echo '<td>'.$r['City'].' '.$r['State'].'</td>';
             echo "</tr>\n";
         }
