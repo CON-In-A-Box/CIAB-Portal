@@ -136,21 +136,54 @@ EOT;
     document.getElementById('datetime').classList.remove('w3-red');
   }
 
+  function format_time(time) {
+
+    var days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+    if (time.getHours() >= 12) {
+        var pmam = ' PM'
+    } else {
+        var pmam = ' AM'
+    }
+    var hours = time.getHours()%12;
+    if (hours == 0) {
+        hours = 12;
+    }
+    var min = time.getMinutes();
+    if (min < 10) {
+        min = "0" + min;
+    } else {
+        min = min.toString();
+    }
+
+    return (days[time.getDay()] + ' ' + hours.toString() + ':' + min + pmam);
+  }
+
   function checkHours() {
     document.getElementById('datetime').classList.remove('w3-red');
     document.getElementById('message').innerHTML = "";
 
     if (vol_past && vol_past.length) {
-        var last_shift = vol_past[vol_past.length-1];
-        var last_end = new Date(last_shift['EndDateTime_c']);
-        var new_shift = new Date(document.getElementById('datetime').value);
         var hours = Number(document.getElementById('hours').value);
         var mins  = Number(document.getElementById('minutes').value);
-        new_shift.setHours(new_shift.getHours() - hours);
-        new_shift.setMinutes(new_shift.getMinutes() - mins);
-        if (new_shift < last_end) {
-            document.getElementById('datetime').classList.add('w3-red');
-            document.getElementById('message').innerHTML = 'Overlapping with ' + last_shift['DepartmentWorked_c'] + ' ( ' + last_end + ' ) ';
+        var new_end = new Date(document.getElementById('datetime').value);
+        var new_begin = new Date(document.getElementById('datetime').value);
+        new_begin.setHours(new_begin.getHours() - hours);
+        new_begin.setMinutes(new_begin.getMinutes() - mins);
+
+        for (i = 0; i < vol_past.length; i++) {
+            var _shift = vol_past[i];
+            var _end = new Date(_shift['EndDateTime_c']);
+            var _begin = new Date(_shift['EndDateTime_c']);
+            _begin.setHours(_begin.getHours() - Math.floor(_shift['ActualHoursWorked_c']));
+            _begin.setMinutes(_begin.getMinutes() - Math.floor((_shift['ActualHoursWorked_c'] % 1) * 60));
+
+            if ((new_begin < _end && new_begin > _begin) ||
+                (new_end < _end && new_end > _begin) ||
+                (new_end >= _end && new_begin <= _begin)) {
+                  document.getElementById('datetime').classList.add('w3-red');
+                  document.getElementById('message').innerHTML = 'Overlapping with ' + _shift['DepartmentWorked_c'] + ' ( ' + format_time(_begin) + ' - ' + format_time(_end) + ' ) ';
+                  break;
+            }
         }
     }
   }
