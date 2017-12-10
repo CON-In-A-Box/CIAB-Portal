@@ -199,22 +199,16 @@ if (isset($_SESSION['accountInfo']['individualAccount']['primaryContact']['addre
       <select name="country" class="w3-select w3-border">
         <option value="">Select Country</option>
 <?php
-$request = [
-'method' => 'account/listCountries',
-];
+require_once($FUNCTIONDIR.'/users.inc');
+$result = listCountries();
 
-$result = $GLOBALS['Neon']->go($request);
-
-if (isset($result['operationResult']) && $result['operationResult'] == 'SUCCESS') {
-    foreach ($result['countries']['country'] as $line) {
-        echo '<option value="'.$line['id'].'"';
-        if ($line['id'] == $_SESSION['accountInfo']['individualAccount']['primaryContact']['addresses']['address']['0']['country']['id']) {
-            echo " selected";
-        }
-    
-        echo '>'.$line['name']."</option>\n";
+foreach ($result as $country) {
+    echo '<option value="'.$country['id'].'"';
+    if ($country['id'] == $_SESSION['accountInfo']['individualAccount']['primaryContact']['addresses']['address']['0']['country']['id']) {
+        echo " selected";
     }
-    unset($line);
+
+    echo '>'.$country['name']."</option>\n";
 }
 ?>
       </select>

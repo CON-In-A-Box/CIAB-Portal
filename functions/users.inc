@@ -216,3 +216,33 @@ function listStates()
     return $states;
 
 }
+
+
+function listCountries()
+{
+    global $Neon;
+
+    $sort_callback = function ($a, $b) {
+        return strnatcmp($a['name'], $b['name']);
+    };
+
+    $request = [
+    'method' => 'account/listCountries',
+    ];
+
+    $result = $Neon->go($request);
+
+    $countries = array();
+
+    if (isset($result['operationResult']) && $result['operationResult'] == 'SUCCESS') {
+        foreach ($result['countries']['country'] as $line) {
+            array_push($countries, ['id' => $line['id'], 'name' => $line['name']]);
+        }
+    }
+
+    if (!empty($countries)) {
+        usort($countries, $sort_callback);
+    }
+    return $countries;
+
+}
