@@ -62,11 +62,14 @@ else {return true}
 
 function validate_date(field,alerttxt)
 {
-with (field)
-{
-re = /^(\d{4})-(\d{2})-(\d{2})$/;
-if (value==null||!value.match(re))
-  {{alert(alerttxt);return false}
-else {return true}
-}
+  with (field)
+  {
+    re = /^(\d{4})-(\d{2})-(\d{2})$/;
+    if (value===null||!value.match(re)) {
+      alert(alerttxt);
+      return false;
+    } else {
+      return true;
+    }
+  }
 }
