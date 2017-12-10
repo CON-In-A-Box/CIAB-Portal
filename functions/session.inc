@@ -4,7 +4,7 @@
 function buildSessionData($accountId)
 {
   // Refresh Account info from Neon to verify update
-    require_once($FUNCTIONDIR."/users.inc");
+    require_once(dirname(__FILE__)."/users.inc");
     $result = pullIndividualAccount($accountId);
     if (isset($result['operationResult']) && $result['operationResult'] == 'SUCCESS') {
         $_SESSION['accountInfo'] = $result;
