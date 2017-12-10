@@ -188,3 +188,31 @@ function pushIndividualAccount($pulledInfo)
     }
 
 }
+
+
+function listStates()
+{
+    global $Neon;
+
+    $request = [
+    'method' => 'account/listStates',
+    ];
+
+    $sort_callback = function ($a, $b) {
+        return strnatcmp($a['name'], $b['name']);
+    };
+
+    $states = array();
+
+    $result = $Neon->go($request);
+    if (isset($result['operationResult']) && $result['operationResult'] == 'SUCCESS') {
+        foreach ($result['states']['state'] as $line) {
+            array_push($states, ['code' => $line['code'], 'name' => $line['name']]);
+        }
+    }
+    if (!empty($states)) {
+        usort($states, $sort_callback);
+    }
+    return $states;
+
+}
