@@ -170,21 +170,16 @@ echo $_SESSION['city'];
         }
         echo '>Foreign (Non-US/Canada)</option>'."\n";
 
-        $request = [
-        'method' => 'account/listStates',
-        ];
+        require_once($FUNCTIONDIR.'/users.inc');
 
-        $result = $GLOBALS['Neon']->go($request);
-        if (isset($result['operationResult']) && $result['operationResult'] == 'SUCCESS') {
-            foreach ($result['states']['state'] as $line) {
-                echo '<option value="'.$line['code'].'"';
-                if ($line['code'] == $_SESSION['state']) {
-                    echo " selected";
-                }
-    
-                echo '>'.$line['code'].' - '.$line['name']."</option>\n";
+        $result = listStates();
+        foreach ($result as $state) {
+            echo '<option value="'.$state['code'].'"';
+            if ($state['code'] == $_SESSION['state']) {
+                echo " selected";
             }
-            unset($line);
+
+            echo '>'.$state['code'].' - '.$state['name']."</option>\n";
         }
 ?>
       </select>
@@ -204,22 +199,16 @@ if (isset($_SESSION['accountInfo']['individualAccount']['primaryContact']['addre
       <select name="country" class="w3-select w3-border">
         <option value="">Select Country</option>
 <?php
-$request = [
-'method' => 'account/listCountries',
-];
+require_once($FUNCTIONDIR.'/users.inc');
+$result = listCountries();
 
-$result = $GLOBALS['Neon']->go($request);
-
-if (isset($result['operationResult']) && $result['operationResult'] == 'SUCCESS') {
-    foreach ($result['countries']['country'] as $line) {
-        echo '<option value="'.$line['id'].'"';
-        if ($line['id'] == $_SESSION['accountInfo']['individualAccount']['primaryContact']['addresses']['address']['0']['country']['id']) {
-            echo " selected";
-        }
-    
-        echo '>'.$line['name']."</option>\n";
+foreach ($result as $country) {
+    echo '<option value="'.$country['id'].'"';
+    if ($country['id'] == $_SESSION['accountInfo']['individualAccount']['primaryContact']['addresses']['address']['0']['country']['id']) {
+        echo " selected";
     }
-    unset($line);
+
+    echo '>'.$country['name']."</option>\n";
 }
 ?>
       </select>
