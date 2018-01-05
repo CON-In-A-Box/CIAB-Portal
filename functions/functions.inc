@@ -2,7 +2,7 @@
 
 // Main setup function
 $MODULENAME  = "Member Portal";
-$BUILD       = "134";
+$BUILD       = "152";
 $VERSION     = "1.3 - Captain America, Build: ".$BUILD; // Major.Minor.Revision Format - This is a string, version names allowed
 
 // Discover Self Location
