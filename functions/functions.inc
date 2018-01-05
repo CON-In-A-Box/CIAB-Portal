@@ -101,5 +101,8 @@ function search_definedFields($key)
 // Start the session so we are ready to go no matter what we do!
 session_start();
 
+// Include the Master Database
+require_once($FUNCTIONDIR."/database.inc");
+
 // Include NeonCRM for DB calls via API
 require_once($FUNCTIONDIR."/neon.inc");

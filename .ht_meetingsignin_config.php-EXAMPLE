@@ -2,6 +2,8 @@
 
 // CON-In-A-Box Site Config (module)
 
+// ##==## Move all except the DB info to the DB, pull the rest from the DB.  Safer and easier
+
 // Module and Site Specific Variables
 $CONHOST     = "CONvergence"; // Who is hosting this site
 $CONSITENAME = $CONHOST . " " . $MODULENAME; // Set to something that makes sense for your site
