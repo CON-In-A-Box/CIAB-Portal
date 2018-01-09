@@ -11,13 +11,13 @@ $BASEDIR        = dirname($FUNCTIONDIR);
 $WEBSERVER      = $_SERVER['SERVER_NAME'];
 $BASEURL        = "http://".$WEBSERVER;
 $SITECONFIG     = $BASEDIR.'/.ht_meetingsignin_config.php'; // Location of the module config file
-
-// Data
-$DATADIR        = $BASEDIR.'/data';
+$SITECONFIGLEG  = $BASEDIR.'/.ht_meetingsignin_config-legacy.php'; // Location of the module config file - THIS WILL GO AWAY with DB
 
 // Static Variables
 $SITESUPPORTDIR = $BASEDIR."/sitesupport";
 $PAGESDIR       = $BASEDIR."/pages";
+$BACKEND        = $BASEDIR."/backends";
+$DATADIR        = $BASEDIR.'/data'; // Really hoping this one disapears into the DB
 
 // Set a Date stamp for use anywhere
 $DS             = uniqid('', true);
@@ -38,6 +38,8 @@ function goSite($Site = false)
 // Load Site Specific info
 if (is_file($SITECONFIG)) {
     require_once($SITECONFIG);
+    // SUPPORT LEGACY UNTIL IN DB
+    require_once($SITECONFIGLEG);
 } else {
     // Give a default config file
     echo '
@@ -103,6 +105,7 @@ session_start();
 
 // Include the Master Database
 require_once($FUNCTIONDIR."/database.inc");
+$db = new DB;
 
 // Include NeonCRM for DB calls via API
 require_once($FUNCTIONDIR."/neon.inc");

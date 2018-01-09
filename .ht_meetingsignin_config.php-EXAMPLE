@@ -2,33 +2,15 @@
 
 // CON-In-A-Box Site Config (module)
 
-// ##==## Move all except the DB info to the DB, pull the rest from the DB.  Safer and easier
-
-// Module and Site Specific Variables
-$CONHOST     = "CONvergence"; // Who is hosting this site
-$CONSITENAME = $CONHOST . " " . $MODULENAME; // Set to something that makes sense for your site
-
-// Admin User - Must have until users are set up.
-// After that, you can add an astrix to the password which will make it unmatchable (IE: Locked)
-$ADMINEMAIL    = "tskeeley@gmail.com"; // Where do we send errors, likely the developer
-$ADMINUSER     = "Admin"; // Do not leave this blank
-$ADMINPASS     = "s*GjBbyIZsL7Q"; // *CRYPT HASHED* password (eg: obtained via htpasswd)
-$ADMINACCOUNTS = [ 42, 31337 ]; // Array of Neon account IDs that are considered system admins
-$DUMPSECURE    = 'qweriouy2938465oieusrey'; // A very secure id to pull raw concom list - Please set unique for your site
-$ALLOCATIONS   = [ 42, 8008 ]; // Array of Neon account IDs that have access to the hotel allocation system
-
 // DBConfig, passwords, etc
-// Do not share this info
-$DBHOST = "localhost"; // Where the DB Runs
-$DBUSER = "con_concomsi-dev"; // The Database Username
-$DBNAME = "con_concomsi"; // The Database Name
-$DBPASS = "ksD3Ii%8f34#"; // *PLAIN TEXT* database user's password
 
-// NeonCRM DB API - Learn more about the API at http://help.neoncrm.com/api
-$NEONID  = 'xxx'; // Your company's Identifier
-$NEONKEY = 'xxxxxxxx'; // Generated API Key
+// Which Database backend to use - options in backends/
+$DB_BACKEND = "mysqlpdo.inc";
 
-// Timezone to use
-date_default_timezone_set("America/Chicago"); // What timesense should we use?
+// Do not share this info - As we quired by the above backend
+$DBHOST = "mysqlhome.convergenceevents.org"; // Where the DB Runs
+$DBUSER = "ce_portaldev"; // The Database Username
+$DBNAME = "ce_signinportal_dev"; // The Database Name
+$DBPASS = "CxHOhY6eAYHI"; // *PLAIN TEXT* database user's password
 
 ?>

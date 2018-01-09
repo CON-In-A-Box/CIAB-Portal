@@ -14,35 +14,22 @@ function LogoutUser()
 function doUserAndPasswordMatch($user, $password)
 {
     // This only returns that a user is in the NeonCRM DB and that the password was matched
-    if (!empty($GLOBALS['ADMINUSER']) && $user == $GLOBALS['ADMINUSER']) {
-        if (crypt($password, $GLOBALS['ADMINPASS']) == $GLOBALS['ADMINPASS']) {
-            // Admin user, based on local authentication, is always authorized
-            $result = [
-            'name' => "Admin User",
-            'accountID' => -1,
-            ];
-            return $result;
-        }
-    } else {
-        // Check user and password against NeonCRM
-        $request = [
+    // Check user and password against NeonCRM
+    $request = [
         'method' => 'common/authenticateUser',
         'parameters' => [
-        'username' => $user,
-        'password' => $password,
+            'username' => $user,
+            'password' => $password,
         ],
-        ];
-        $result = $GLOBALS['Neon']->go($request);
+    ];
+    $result = $GLOBALS['Neon']->go($request);
 
-        if ($result['operationResult'] == 'SUCCESS') {
-            return $result;
-        } else {
-            return false;
-        }
+    if ($result['operationResult'] == 'SUCCESS') {
+        return $result;
+    } else {
+        return false;
     }
-
 }
-
 
 function LoginUser($user, $password)
 {

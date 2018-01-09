@@ -1,51 +1,53 @@
 <?php
+
+// Currently, this database class is set for the MySQL PDO filter/backend. Future version will expand it to be agnostic
+
+require_once($DB_BACKEND);
+$mypdo = new MyPDO;
+
 class DB
 {
-    protected static $instance = null;
-
-    protected function __construct() {}
-    protected function __clone() {}
-
-    public static function instance()
+    function __construct()
     {
-        if (self::$instance === null)
-        {
-            $opt  = array(
-                PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
-                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ,
-                PDO::ATTR_EMULATE_PREPARES   => TRUE,
-            );
-            $charset = 'utf8';
-            $dsn = 'mysql:host='.$GLOBALS['DBHOST'];
-            $dsn .= ';dbname='.$GLOBALS['DBNAME'];
-            $dsn .= ';charset='.$charset;
-            self::$instance = new PDO($dsn, $GLOBALS['DBUSER'], $GLOBALS['DBPASS'], $opt);
+        global $DATADIR;
+        require_once($DATADIR.'/database-schema.php');
+        
+        $result = self::run("SHOW TABLES");
+        foreach($result as $row) {
+            $arr[] = $row[0];
         }
-        return self::$instance;
-    }
 
-    public static function __callStatic($method, $args)
-    {
-        return call_user_func_array(array(self::instance(), $method), $args);
+        foreach($DB_tables as $table => $fields) {
+            if(!in_array($table, $arr)) {
+                // Missing a table, build it!
+                $build = "CREATE TABLE ".$table." (";
+                foreach($fields as $column => $setting) {
+                   $build .= "'".$column."' ".$setting.",";
+                }
+                $build .= ");"
+                
+                self::run($build);
+                sendError("Initalized ".$table." schema.");
+
+                // If there is seed available for this table, seed it!
+                if(file_exists($DATADIR.'/DBSeed/'.$table.'.sql')) {
+                    $sql_data=file_get_contents($DATADIR.'/DBSeed/'.$table.'.sql');
+                    self::run($sql_data);
+                    sendError("Seeded ".$table." table data.");
+                }
+            }
+        }
     }
 
     public static function run($sql, $args = [])
     {
         if (!$args)
         {
-             return self::instance()->query($sql);
+             return DB::instance()->query($sql);
         }
-        $stmt = self::instance()->prepare($sql);
+        $stmt = DB::instance()->prepare($sql);
         $stmt->execute($args);
         return $stmt;
-    }
-    
-    public function buildDB()
-    {
-        $sql = file_get_contents($DATADIR.'/init.sql');
-        self::run($sql);
-        
-        sendError("Initalized ".$GLOBALS['DB_NAME']." Database.");
     }
 }
 ?>
