@@ -23,7 +23,7 @@ class MyPDO
             $password = $GLOBALS['DBPASS']; // Pulled from Config file
             $charset = 'utf8'; // Default, Future need update for locale?
             $dsn = 'mysql:';
-            $dns .= 'host='.$GLOBALS['DBHOST']; // Pulled from Config file
+            $dsn .= 'host='.$GLOBALS['DBHOST']; // Pulled from Config file
             $dsn .= ';dbname='.$GLOBALS['DBNAME']; // Pulled from Config file
             $dsn .= ';charset='.$charset;
             self::$instance = new PDO($dsn, $username, $password, $options);
