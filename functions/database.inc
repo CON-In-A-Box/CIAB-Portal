@@ -6,26 +6,17 @@ require_once($BACKEND.'/'.$DB_BACKEND); // MyPDO Definition used
 
 class DB
 {
-    public static function run($sql, $args = [])
-    {
-        if (!$args)
-        {
-             return MyPDO::instance()->query($sql);
-        }
-        $stmt = MyPDO::instance()->prepare($sql);
-        $stmt->execute($args);
-        return $stmt;
-    }
-
-    public function setUpDB()
+    public function __construct()
     {
         global $DATADIR;
         require_once($DATADIR.'/database-schema.php');
         
-        $result = self::run("SHOW TABLES");
+        $result = MyPDO::instance()->query("SHOW TABLES");
         $arr = [];
-        foreach($result as $row) {
-            $arr[] = $row[0];
+        foreach($result as $value) {
+            foreach($value as $row) {
+                $arr[] = $row;
+            }
         }
 
         foreach($DB_tables as $table => $fields) {
@@ -37,18 +28,28 @@ class DB
                 }
                 $build = rtrim($build,', '). ");";
 
-                self::run($build);
+                MyPDO::instance()->query($build);
                 sendError("Initalized ".$table." schema.");
 
                 // If there is seed available for this table, seed it!
                 if(file_exists($DATADIR.'/DBSeed/'.$table.'.sql')) {
                     $sql_data=file_get_contents($DATADIR.'/DBSeed/'.$table.'.sql');
-                    self::run($sql_data);
+                    MyPDO::instance()->query($sql_data);
                     sendError("Seeded ".$table." table data.");
                 }
             }
         }
     }
+
+    public static function run($sql, $args = [])
+    {
+        if (!$args)
+        {
+             return MyPDO::instance()->query($sql);
+        }
+        $stmt = MyPDO::instance()->prepare($sql);
+        $stmt->execute($args);
+        return $stmt;
+    }
 }
-DB::setUpDB();
 ?>
