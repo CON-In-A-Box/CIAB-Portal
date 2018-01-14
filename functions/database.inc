@@ -23,6 +23,7 @@ class DB
         require_once($DATADIR.'/database-schema.php');
         
         $result = self::run("SHOW TABLES");
+        $arr = [];
         foreach($result as $row) {
             $arr[] = $row[0];
         }
@@ -30,11 +31,11 @@ class DB
         foreach($DB_tables as $table => $fields) {
             if(!in_array($table, $arr)) {
                 // Missing a table, build it!
-                $build = "CREATE TABLE ".$table." (";
+                $build = 'CREATE TABLE '.$table.' (';
                 foreach($fields as $column => $setting) {
-                   $build .= "'".$column."' ".$setting.",";
+                   $build .= $column.' '.$setting.', ';
                 }
-                $build .= ");";
+                $build = rtrim($build,', '). ");";
 
                 self::run($build);
                 sendError("Initalized ".$table." schema.");

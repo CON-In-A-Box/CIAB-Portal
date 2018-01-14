@@ -64,7 +64,7 @@ $DB_tables = [
     ],
     'RewardGroup' => [
         'GroupID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
-        'Limit' => 'INT UNSIGNED',
+        'RedeemLimit' => 'INT UNSIGNED',
     ],
     'VolunteerHours' => [
         'HourEntryID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
@@ -82,7 +82,7 @@ $DB_tables = [
         'Name' => 'VARCHAR(50) NOT NULL',
         'Value' => 'DECIMAL(5,2) NOT NULL',
         'Promo' => 'BOOLEAN',
-        'Group' => 'INT UNSIGNED',
+        'RewardGroup' => 'INT UNSIGNED',
         'TotalInventory' => 'INT NOT NULL',
     ],
 ]
