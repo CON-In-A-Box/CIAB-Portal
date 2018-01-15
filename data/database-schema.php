@@ -16,7 +16,7 @@ $DB_tables = [
         'Department' => 'INT UNSIGNED NOT NULL',
         'Position' => 'INT UNSIGNED NOT NULL',
         'Note' => 'VARCHAR(100)',
-        'ConventionYear' => 'INT UNSIGNED NOT NULL',
+        'YearID' => 'INT UNSIGNED NOT NULL',
     ],
     'ConComPositions' => [
         'PositionID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
@@ -29,7 +29,7 @@ $DB_tables = [
     'Departments' => [
         'DepartmentID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
         'Name' => 'VARCHAR(50) NOT NULL',
-        'Division' => 'INT UNSIGNED NOT NULL',
+        'DivisionID' => 'INT UNSIGNED NOT NULL',
     ],
     'Divisions' => [
         'DivisionID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
@@ -38,18 +38,18 @@ $DB_tables = [
     'ElegibleVoters' => [
         'VoterRecordID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
         'AccountID' => 'INT UNSIGNED NOT NULL',
-        'ConventionYear' => 'INT UNSIGNED NOT NULL',
+        'YearID' => 'INT UNSIGNED NOT NULL',
     ],
     'EMailAliases' => [
-        'EMailID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
-        'Department' => 'VARCHAR(50) NOT NULL',
+        'EMailAliasID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
+        'DepartmentID' => 'INT UNSIGNED NOT NULL',
         'EMail' => 'VARCHAR(100) NOT NULL',
     ],
     'HourRedemptions' => [
         'ClaimID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
         'AccountID' => 'INT UNSIGNED NOT NULL',
-        'PrizeId' => 'INT UNSIGNED NOT NULL',
-        'ConventionYear' => 'INT UNSIGNED NOT NULL',
+        'PrizeID' => 'INT UNSIGNED NOT NULL',
+        'YearID' => 'INT UNSIGNED NOT NULL',
     ],
     'MeetingAttendance' => [
         'AttendanceRecordID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
@@ -60,10 +60,10 @@ $DB_tables = [
         'MeetingID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
         'Name' => 'VARCHAR(50) NOT NULL',
         'Date' => 'DATE NOT NULL',
-        'ConventionYear' => 'INT UNSIGNED NOT NULL',
+        'YearID' => 'INT UNSIGNED NOT NULL',
     ],
     'RewardGroup' => [
-        'GroupID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
+        'RewardGroupID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
         'RedeemLimit' => 'INT UNSIGNED',
     ],
     'VolunteerHours' => [
@@ -72,17 +72,17 @@ $DB_tables = [
         'ActualHours' => 'FLOAT(5,3) NOT NULL',
         'EndDateTime' => 'DATETIME NOT NULL',
         'TimeModifier' => 'FLOAT(2,1) NOT NULL',
-        'DepartmentWorked' => 'INT UNSIGNED NOT NULL',
-        'EnteredBy' => 'INT UNSIGNED NOT NULL',
-        'AuthorizedBy' => 'INT UNSIGNED NOT NULL',
-        'ConventionYear' => 'INT UNSIGNED NOT NULL',
+        'DepartmentID' => 'INT UNSIGNED NOT NULL',
+        'EnteredByID' => 'INT UNSIGNED NOT NULL',
+        'AuthorizedByID' => 'INT UNSIGNED NOT NULL',
+        'YearID' => 'INT UNSIGNED NOT NULL',
     ],
     'VolunteerRewards' => [
         'PrizeID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
         'Name' => 'VARCHAR(50) NOT NULL',
         'Value' => 'DECIMAL(5,2) NOT NULL',
         'Promo' => 'BOOLEAN',
-        'RewardGroup' => 'INT UNSIGNED',
+        'RewardGroupID' => 'INT UNSIGNED',
         'TotalInventory' => 'INT NOT NULL',
     ],
 ]

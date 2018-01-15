@@ -1,9 +1,9 @@
-INSERT INTO Divisions (Name) VALUES ('Activities');
-INSERT INTO Divisions (Name) VALUES ('Administration');
-INSERT INTO Divisions (Name) VALUES ('External Relations and Communications');
-INSERT INTO Divisions (Name) VALUES ('Facilities');
-INSERT INTO Divisions (Name) VALUES ('Hospitality');
-INSERT INTO Divisions (Name) VALUES ('Productions');
-INSERT INTO Divisions (Name) VALUES ('Systems');
-INSERT INTO Divisions (Name) VALUES ('Committees');
-INSERT INTO Divisions (Name) VALUES ('Corporate Staff');
+INSERT INTO Divisions (DivisionID, Name) VALUES (1, 'Activities');
+INSERT INTO Divisions (DivisionID, Name) VALUES (2, 'Administration');
+INSERT INTO Divisions (DivisionID, Name) VALUES (3, 'External Relations and Communications');
+INSERT INTO Divisions (DivisionID, Name) VALUES (4, 'Facilities');
+INSERT INTO Divisions (DivisionID, Name) VALUES (5, 'Hospitality');
+INSERT INTO Divisions (DivisionID, Name) VALUES (6, 'Productions');
+INSERT INTO Divisions (DivisionID, Name) VALUES (7, 'Systems');
+INSERT INTO Divisions (DivisionID, Name) VALUES (8, 'Committees');
+INSERT INTO Divisions (DivisionID, Name) VALUES (9, 'Corporate Staff');
