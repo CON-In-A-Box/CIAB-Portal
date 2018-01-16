@@ -10,7 +10,7 @@ class DB
     {
         global $DATADIR;
         require_once($DATADIR.'/database-schema.php');
-        
+
         $result = MyPDO::instance()->query("SHOW TABLES");
         $arr = [];
         foreach($result as $value) {
@@ -19,9 +19,11 @@ class DB
             }
         }
 
+        $upgrade = false;
         foreach($DB_tables as $table => $fields) {
             if(!in_array($table, $arr)) {
                 // Missing a table, build it!
+                $upgrade = true;
                 $build = 'CREATE TABLE '.$table.' (';
                 foreach($fields as $column => $setting) {
                    $build .= $column.' '.$setting.', ';
@@ -29,15 +31,16 @@ class DB
                 $build = rtrim($build,', '). ");";
 
                 MyPDO::instance()->query($build);
-                sendError("Initalized ".$table." schema.");
 
                 // If there is seed available for this table, seed it!
                 if(file_exists($DATADIR.'/DBSeed/'.$table.'.sql')) {
                     $sql_data=file_get_contents($DATADIR.'/DBSeed/'.$table.'.sql');
                     MyPDO::instance()->query($sql_data);
-                    sendError("Seeded ".$table." table data.");
                 }
             }
+        }
+        if ($upgrade) {
+            header("Location: http://".$_SERVER['SERVER_NAME']."/index.php?Function=update&next=".$_REQUEST['Function']);
         }
     }
 
@@ -52,4 +55,3 @@ class DB
         return $stmt;
     }
 }
-?>
