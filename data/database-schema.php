@@ -13,8 +13,8 @@ $DB_tables = [
     'ConComList' => [
         'ListRecordID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
         'AccountID' => 'INT UNSIGNED NOT NULL', // Taken from NeonCRM Currently
-        'Department' => 'INT UNSIGNED NOT NULL',
-        'Position' => 'INT UNSIGNED NOT NULL',
+        'DepartmentID' => 'INT UNSIGNED NOT NULL',
+        'PositionID' => 'INT UNSIGNED NOT NULL',
         'Note' => 'VARCHAR(100)',
         'YearID' => 'INT UNSIGNED NOT NULL',
     ],
@@ -29,11 +29,7 @@ $DB_tables = [
     'Departments' => [
         'DepartmentID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
         'Name' => 'VARCHAR(50) NOT NULL',
-        'DivisionID' => 'INT UNSIGNED NOT NULL',
-    ],
-    'Divisions' => [
-        'DivisionID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
-        'Name' => 'VARCHAR(50) NOT NULL',
+        'ParentDepartmentID' => 'INT UNSIGNED NOT NULL',
     ],
     'ElegibleVoters' => [
         'VoterRecordID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
