@@ -1,26 +1,56 @@
 <?php
 
-$ConComPositions = array();
-$Departments = array();
-$Divisions = array();
+/*.
+    require_module 'standard';
+    require_module 'json';
+.*/
 
-// Load the divisonal data
-if (isset($DATADIR)) {
-    $divisional_data = file_get_contents($DATADIR.'/divisions.json');
-    $Departments = json_decode($divisional_data, true);
-    $concom_data = file_get_contents($DATADIR.'/concom.json');
-    $ConComPositions = json_decode($concom_data, true);
-} else {
-    error_log('DATADIR undefined. No Divisional data found.');
+require_once(__DIR__."/database.inc");
+
+if (!isset($ConComPositions)) {
+    $ConComPositions = array();
+    $sql = "SELECT * FROM ConComPositions;";
+    $result = $db->run($sql);
+    $value = $result->fetch();
+    while ($value !== false) {
+        $ConComPositions[$value['PositionID']] = $value['Name'];
+        $value = $result->fetch();
+    }
 }
 
-if (count($Departments)) {
-    asort($Departments);
-    foreach ($Departments as $dept) {
-        if (in_array($dept['Division'], $Divisions) == false) {
-            array_push($Divisions, $dept['Division']);
+
+if (!isset($Departments)) {
+    $Departments = array();
+    $Divisions = array();
+
+    $temp_dept = array();
+
+    $sql = "SELECT * FROM Departments;";
+    $result = $db->run($sql);
+    $value = $result->fetch();
+    while ($value !== false) {
+        $temp_dept[$value['DepartmentID']] = ['name' => $value['Name'], 'parent' => $value['ParentDepartmentID']];
+        $value = $result->fetch();
+    }
+    foreach ($temp_dept as $id => $dept) {
+        $Departments[$dept['name']] = [];
+        $Departments[$dept['name']]['Division'] = $temp_dept[$dept['parent']]['name'];
+        $Departments[$dept['name']]['id'] = $id;
+        $Departments[$dept['name']]['Email'] = [];
+
+        if (in_array($Departments[$dept['name']]['Division'], $Divisions) == false) {
+            array_push($Divisions, $Departments[$dept['name']]['Division']);
+        }
+
+        $sql = "SELECT * FROM EMails WHERE DepartmentID = ".$id.";";
+        $result = $db->run($sql);
+        $value = $result->fetch();
+        while ($value !== false) {
+            array_push($Departments[$dept['name']]['Email'], $value['EMail']);
+            $value = $result->fetch();
         }
     }
+    asort($Departments);
     asort($Divisions);
 }
 
@@ -342,7 +372,7 @@ function ConComListBuild()
 
 function DumpConComList()
 {
-    global $Divisions, $Departments, $ConComPositions;
+    global $Divisions, $Departments;
   
     // Custom Field Data for Session - Parse it to an easy to use array
     $request = [
