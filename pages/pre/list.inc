@@ -51,8 +51,7 @@ function doConComAddSearch($department)
             $searchCriteria['firstName'],
             $searchCriteria['lastName'],
             $searchCriteria['email'],
-            ['City', 'State'],
-            200
+            ['City', 'State']
         );
 
         $message = '<h3>No results match your search.</h3>';

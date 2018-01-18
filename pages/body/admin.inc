@@ -137,8 +137,7 @@ if (!empty($searchCriteria['firstName']) ||
         $searchCriteria['firstName'],
         $searchCriteria['lastName'],
         $searchCriteria['email'],
-        ['City', 'State'],
-        200
+        ['City', 'State']
     );
     $message = 'No results match your search.';
 } else {
