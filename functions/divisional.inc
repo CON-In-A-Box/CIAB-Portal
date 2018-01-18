@@ -6,6 +6,7 @@
 .*/
 
 require_once(__DIR__."/database.inc");
+require_once(__DIR__.'/users.inc');
 
 if (!isset($ConComPositions)) {
     $ConComPositions = array();
@@ -363,64 +364,23 @@ function ConComListBuild()
 function DumpConComList()
 {
     global $Divisions, $Departments;
-  
-    // Custom Field Data for Session - Parse it to an easy to use array
-    $request = [
-    'method' => 'common/listCustomFields',
-    'parameters' => [
-    'searchCriteria.component' => "Account",
-    ],
-    ];
-    $result = $GLOBALS['Neon']->go($request);
-    if (isset($result['operationResult']) && $result['operationResult'] == 'SUCCESS') {
-        foreach ($result['customFields']['customField'] as $val) {
-            if ($val['fieldName'] == 'CVGConCom Current Position') {
-                $conComFieldId = $val['fieldId'];
-            }
-        }
-    } else {
-        die("Failed to pull Custom Fields");
-    }
+    $db_staff = ConComListBuildSearch();
+    $email = array_unique(array_column($db_staff, 'Email'));
 
     foreach ($Departments as $kdep => $dep) {
-        //if($dep['Division'] != 'Corporate Staff' && $dep['Division'] != 'Committees') {
-        echo $dep['Email'][0]."\n";
-        //}
+        array_push($email, $dep['Email'][0]);
     }
 
-    $i = 1;
-    $runPage = 1;
-    while ($i <= $runPage) {
-        $search = [
-        'method' => 'account/listAccounts',
-        'criteria' => [
-        [$conComFieldId, 'NOT_BLANK', ''],
-        ],
-        'columns' => [
-        'standardFields' => ['Account ID', 'Email 1'],
-        'customFields' => [$conComFieldId],
-        ],
-        'page' => [
-        'currentPage' => $i,
-        'pageSize' => 200,
-        'sortColumn' => 'Account ID',
-        'sortDirection' => 'ASC',
-        ],
-        ];
-        $result = $GLOBALS['Neon']->search($search);
-
-        if (isset($result['operationResult']) && $result['operationResult'] == 'SUCCESS') {
-            $runPage = $result['page']['totalPage'];
-            $i++;
-            foreach ($result['searchResults'] as $val) {
-                echo $val['Email 1']."\n";
-            }
-        }
-    }
     foreach ($Divisions as $div) {
-        echo getDepartmentEmails($div)[0]."\n";
+        array_push($email, getDepartmentEmails($div)[0]);
     }
 
+    $email = array_unique($email);
+    asort($email);
+
+    $email = implode(" ", $email);
+
+    print $email;
 }
 
 
