@@ -199,6 +199,15 @@ if (!empty($searchCriteria['ID'])) {
 ?>
 </div><!--close main_content div-->
 
+<!--Play Area for random testing code -->
+<div>
+  <pre><?php
+    // A simple place for admins to do random testing.
+    
+    ?></pre>
+</div>
+<!--End Play Area-->
+
 <!-- Debug code for admins, just in case -->
 <p></p>
 <script>
