@@ -70,89 +70,64 @@ function getDepartmentEmails($dep)
 }
 
 
-function AddConComPosition($accountid, $department, $position, $note)
+function AddConComPosition($accountid, $department, $position, $note, $notify=true)
 {
-    $request = [
-    'method' => 'account/retrieveIndividualAccount',
-    'parameters' => [
-    'accountId' => $accountid,
-      ],
-    ];
-    $result = $GLOBALS['Neon']->go($request);
-    if (isset($result['operationResult']) && $result['operationResult'] == 'SUCCESS') {
-        $conComFieldId = search_definedFields('CVGConCom Current Position');
+    global $Departments, $db;
 
-        $key = array_search($conComFieldId, array_column($result['individualAccount']['customFieldDataList']['customFieldData'], 'fieldId'));
-        if ($key === false) {
-            // Add the option since it doesn't exist.  Since arrays count from 0, the number of current entries
-            // makes a perfect 'next' entry to use.
-            $i = count($result['individualAccount']['customFieldDataList']['customFieldData']);
-            $result['individualAccount']['customFieldDataList']['customFieldData'][$i]['fieldId'] = $conComFieldId;
-            $result['individualAccount']['customFieldDataList']['customFieldData'][$i]['fieldValue'] = $department.",".$position.",".$note;
-        } else {
-            // if the department is already assigned to this user, wipe it and replace it with the new info
-            if (preg_match('/^'.$department.'/', $result['individualAccount']['customFieldDataList']['customFieldData'][$key]['fieldValue']) || preg_match('/\|'.$department.'/', $result['individualAccount']['customFieldDataList']['customFieldData'][$key]['fieldValue'])) {
-                RemoveConComPosition($accountid, $department, 'ALL');
-                return AddConComPosition($accountid, $department, $position, $note);
-            }
-            $result['individualAccount']['customFieldDataList']['customFieldData'][$key]['fieldValue'] .= "|".$department.",".$position.",".$note;
-        }
+    $sql = "SELECT PositionID FROM ConComPositions WHERE Name = '$position';";
+    $result = $db->run($sql);
+    $value = $result->fetch();
+    if ($value === false) {
+        die("Failed to find position: $position");
+    }
+    $positionid = $value['PositionID'];
 
-        $request = [
-        'method' => 'account/editIndividualAccount',
-        'parameters' => [
-        'individualAccount.accountId' => $result['individualAccount']['accountId'],
-        'individualAccount.primaryContact.contactId' => $result['individualAccount']['primaryContact']['contactId'],
-        'individualAccount.primaryContact.firstName' => $result['individualAccount']['primaryContact']['firstName'],
-        'individualAccount.primaryContact.lastName' => $result['individualAccount']['primaryContact']['lastName'],
-         ],
-        ];
-
-        foreach ($result['individualAccount']['customFieldDataList']['customFieldData'] as $key => $val) {
-            $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldId['.$key.']'] = $val['fieldId'];
-            if (isset($val['fieldValue'])) {
-                $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldOptionId['.$key.']'] = '';
-                $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldValue['.$key.']'] = $val['fieldValue'];
-            } elseif (isset($val['fieldOptionId'])) {
-                $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldOptionId['.$key.']'] = $val['fieldOptionId'];
-                $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldValue['.$key.']'] = '';
-            }
-        }
-        unset($val);
-        unset($key);
-
-        $result2 = $GLOBALS['Neon']->go1($request);
-
-
-        if (isset($result2['operationResult']) && $result2['operationResult'] == 'SUCCESS') {
-            // Notify the Division Director, so they know
-            $to = getDepartmentEmails(getDivision($department))[0];
-            $preferredFirstName = search_definedFields('Preferred First Name');
-            $preferredLastName = search_definedFields('Preferred Last Name');
-            $subject = 'ConCom Division addition to '.$department;
-            if (empty($result['individualAccount']['customFieldDataList']['customFieldData'][$preferredFirstName]['fieldValue'])) {
-                $name = $result['individualAccount']['primaryContact']['firstName'];
-            } else {
-                $name = $result['individualAccount']['customFieldDataList']['customFieldData'][$preferredFirstName]['fieldValue'];
-            }
-            if (empty($result['individualAccount']['customFieldDataList']['customFieldData'][$preferredLastName]['fieldValue'])) {
-                $name .= " ".$result['individualAccount']['primaryContact']['lastName'];
-            } else {
-                $name .= " ".$result['individualAccount']['customFieldDataList']['customFieldData'][$preferredLastName]['fieldValue'];
-            }
-            $message = $_SESSION['fullName'].' has added '.$name." to ".$department.' as '.$position.'.';
-            $headers = 'From: noreply@convergence-con.org'."\r\n";
-            $headers .= 'Reply-To: noreply@convergence-con.org';
-      
-            mail($to, $subject, $message, $headers);
-
-            return true;
-        } else {
-            print_r($result2);
-            die("Failed to apply remove to Neon!");
-        }
+    /* Convention year... assume most recent one */
+    $sql = "SELECT * FROM ConventionYear ORDER BY YearID DESC LIMIT 1";
+    $result = $db->run($sql);
+    $value = $result->fetch();
+    if ($value) {
+        $year = $value['YearID'];
+    } else {
+        $year = 0;
     }
 
+    $data = lookup_user_by_id($accountid);
+    if ($data['code']) {
+        die("Failed to find user: $accountid");
+    }
+    $user = $data['users'][0];
+
+    $sql = "SELECT ListRecordID FROM ConComList WHERE DepartmentID = ".$Departments[$department]['id']." AND AccountID = $accountid and YearID = $year;";
+    $result = $db->run($sql);
+    $value = $result->fetch();
+    if ($value !== false) {
+        // if the department is already assigned to this user, wipe it and replace it with the new info
+        $record = $value['ListRecordID'];
+        $sql = "UPDATE ConComList SET  PositionID = $positionid, Note = '$Note' WHERE ListRecordID = $record;";
+    } else {
+        $sql = "INSERT INTO ConComList (AccountID, DepartmentID, PositionID, YearID, Note) VALUES ($accountid, ".$Departments[$department]['id'].", $positionid, $year, '$note');";
+    }
+    $result = $db->run($sql);
+
+    if ($notify && $result) {
+        /* Notify the Division Director, so they know */
+        $to = getDepartmentEmails(getDivision($department))[0];
+        $preferredFirstName = search_definedFields('Preferred First Name');
+        $preferredLastName = search_definedFields('Preferred Last Name');
+        $subject = 'ConCom Division addition to '.$department;
+
+        $name = $user['First Name']." ".$user['Last Name'];;
+
+        $message = $_SESSION['fullName'].' has added '.$name." to ".$department.' as '.$position.'.';
+        $headers = 'From: noreply@convergence-con.org'."\r\n";
+        $headers .= 'Reply-To: noreply@convergence-con.org';
+
+        mail($to, $subject, $message, $headers);
+        return true;
+    } elseif (!$result) {
+        die("Failed Add comcon member to database!");
+    }
 }
 
 
