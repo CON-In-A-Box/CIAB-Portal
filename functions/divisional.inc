@@ -251,94 +251,93 @@ function RemoveConComPosition($accountid, $department, $position)
 }
 
 
-function ConComListBuildSearch($page)
+function ConComListBuildSearch()
 {
-    $conComFieldId = search_definedFields('CVGConCom Current Position');
-    $preferredFirstName = search_definedFields('Preferred First Name');
-    $preferredLastName = search_definedFields('Preferred Last Name');
+    global $db;
 
-    $search = [
-    'method' => 'account/listAccounts',
-    'criteria' => [
-    [$conComFieldId, 'NOT_BLANK', ''],
-    ],
-    'columns' => [
-    'standardFields' => ['Account ID', 'First Name', 'Last Name', 'Email 1'],
-    'customFields' => [$conComFieldId, $preferredFirstName, $preferredLastName],
-    ],
-    'page' => [
-    'currentPage' => $page,
-    'pageSize' => 200,
-    'sortColumn' => 'Account ID',
-    'sortDirection' => 'ASC',
-    ],
-    ];
-    $result = $GLOBALS['Neon']->search($search);
+    $sql = <<<SQL
+        SELECT l.AccountID, COALESCE(l.Note, "") AS Note,
+              (SELECT Name FROM Departments WHERE DepartmentID = l.DepartmentID) AS Department,
+              (SELECT (CASE WHEN DepartmentID = ParentDepartmentID THEN 1 ELSE 0 END) FROM Departments WHERE DepartmentID = l.DepartmentID ) AS Divisional,
+              (SELECT Name FROM ConComPositions WHERE PositionID = l.PositionID)   AS Position,
+              (SELECT Name FROM ConventionYear WHERE YearID = l.YearID) AS Year
+          FROM ConComList AS l;
+SQL;
 
-    if (isset($result['operationResult']) && $result['operationResult'] == 'SUCCESS') {
-        $return['pages'] = $result['page']['totalPage'];
-        foreach ($result['searchResults'] as $val) {
-            $positionsHeld = explode("|", $val['CVGConCom Current Position']);
-            foreach ($positionsHeld as $pos) {
-                $tmp = explode(",", $pos);
-                if (getDivision($tmp[0])) {
-                    $line = [
-                    'Account ID' => $val['Account ID'],
-                    'Division'   => getDivision($tmp[0]),
-                    'Department' => $tmp[0],
-                    'Position'   => $tmp[1],
-                    'Email'      => $val['Email 1'],
-                    ];
-                } else {
-                    sendError("getDivision failed for ".$tmp[0]." in ".__FILE__, $result);
-                }
-
-                if (empty($val['Preferred First Name'])) {
-                    $line['First Name'] = $val['First Name'];
-                } else {
-                    $line['First Name'] = $val['Preferred First Name'];
-                }
-
-                if (empty($val['Preferred Last Name'])) {
-                    $line['Last Name'] = $val['Last Name'];
-                } else {
-                    $line['Last Name'] = $val['Preferred Last Name'];
-                }
-
-                if (isset($tmp[2])) {
-                    $line['Note'] = $tmp[2];
-                } else {
-                    $line['Note'] = "";
-                }
-
-                if ($tmp[0] == $line['Division']) {
-                    if ($tmp[1] == "Director") {
-                        $line['Department'] = "Division Director";
-                    } elseif ($tmp[1] == "Specialist") {
-                        $line['Department'] = "Division Support";
-                    } else {
-                        $line['Department'] = $tmp[0];
-                    }
-                }
-
-                $return['list'][] = $line;
+    $ids = array();
+    $result = $db->run($sql);
+    $value = $result->fetch();
+    $db_staff = array();
+    while ($value !== false) {
+        $Division = getDivision($value['Department']);
+        if ($value['Divisional']) {
+            if ($value['Position'] == "Head") {
+                $value['Department'] = "Division Director";
+                $value['Position'] = "Director";
+            } elseif ($value['Position'] == "Specialist") {
+                $value['Department'] = "Division Support";
             }
-            unset($tmp);
-            unset($line);
-            unset($pos);
-            unset($positionsHeld);
         }
-        unset($val);
-    } else {
-        sendError("Could not retrieve ConComList ".__FILE__, $result);
+
+        if (array_key_exists($value['AccountID'], $db_staff)) {
+            $entry = array('Account ID' => $value['AccountID'],
+                      'Division' => $Division,
+                      'Department' => $value['Department'],
+                      'Position' => $value['Position'],
+                      'Email' => '',
+                      'First Name' => $value['AccountID'],
+                      'Last Name' => '',
+                      'Note' => $value['Note']);
+            array_push($entry, $db_staff[$value['AccountID']]);
+        } else {
+            $db_staff[$value['AccountID']] = [[
+                  'Account ID' => $value['AccountID'],
+                  'Division' => $Division,
+                  'Department' => $value['Department'],
+                  'Position' => $value['Position'],
+                  'Email' => '',
+                  'First Name' => $value['AccountID'],
+                  'Last Name' => '',
+                  'Note' => $value['Note'],
+                  ]];
+        }
+
+        if (!in_array($value['AccountID'], $ids)) {
+            $ids[] = $value['AccountID'];
+        }
+        $value = $result->fetch();
     }
-    return $return;
+
+    $str = "('".implode("', '", $ids)."')";
+    $users = lookup_users_by_ids($str);
+
+    foreach ($users['users'] as $user) {
+        if (array_key_exists($user['Id'], $db_staff)) {
+            foreach ($db_staff[$user['Id']] as $entry_key => $entry) {
+                $db_staff[$user['Id']][$entry_key]['First Name'] = $user['First Name'];
+                $db_staff[$user['Id']][$entry_key]['Last Name'] = $user['Last Name'];
+                $db_staff[$user['Id']][$entry_key]['Email'] = $user['Email'];
+            }
+        }
+    }
+
+    $output = [];
+    // Flatten our multi-dimentional array
+    foreach ($db_staff as $staff) {
+        foreach ($staff as $entry) {
+            $output[] = $entry;
+        }
+    }
+
+    return $output;
 
 }
 
 
 function ConComListBuild()
 {
+    $fullConComList = array();
+
     foreach ($GLOBALS['Departments'] as $kdep => $dep) {
         if ($dep['Division'] != $kdep) {
             $fullConComList[] = [
@@ -354,18 +353,9 @@ function ConComListBuild()
         }
     }
 
-    $i = 1;
-    $runPage = 1;
-    while ($i <= $runPage) {
-        $result = ConComListBuildSearch($i);
-        $tmp = array_merge_recursive($fullConComList, $result['list']);
-        $fullConComList = $tmp;
-        unset($tmp);
-        $runPage = $result['pages'];
-        $i++;
-    }
-
-    return($fullConComList);
+    $db_staff = ConComListBuildSearch();
+    $tmp = array_merge_recursive($fullConComList, $db_staff);
+    return($tmp);
 
 }
 
