@@ -36,9 +36,10 @@ $DB_tables = [
         'AccountID' => 'INT UNSIGNED NOT NULL',
         'YearID' => 'INT UNSIGNED NOT NULL',
     ],
-    'EMailAliases' => [
+    'EMails' => [
         'EMailAliasID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
         'DepartmentID' => 'INT UNSIGNED NOT NULL',
+        'IsAlias' => 'BOOLEAN',
         'EMail' => 'VARCHAR(100) NOT NULL',
     ],
     'HourRedemptions' => [
