@@ -5,6 +5,7 @@
 .*/
 
 require_once(__DIR__."/../functions.inc");
+require_once(__DIR__."/../database.inc");
 
 
 function _ConComListBuildSearch($page)
@@ -103,16 +104,7 @@ function _build_ConComList()
 {
     global $db;
 
-    /* Convention year... assume most recent one */
-    $sql = "SELECT * FROM ConventionYear ORDER BY YearID DESC LIMIT 1";
-    $result = $db->run($sql );
-    $value = $result->fetch();
-    if ($value) {
-        $year = $value['YearID'];
-    } else {
-        print '<h2 style="color:red"> Unable to get most recent convention year.</h2><br>';
-        $year = 0;
-    }
+    $year = current_yearID();
 
     $data = _ConComListBuild();
     print '<div id="update_staff" class="w3-container">';

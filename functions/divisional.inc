@@ -95,14 +95,7 @@ function AddConComPosition($accountid, $department, $position, $note, $notify=tr
     }
 
     /* Convention year... assume most recent one */
-    $sql = "SELECT * FROM ConventionYear ORDER BY YearID DESC LIMIT 1";
-    $result = $db->run($sql);
-    $value = $result->fetch();
-    if ($value) {
-        $year = $value['YearID'];
-    } else {
-        $year = 0;
-    }
+    $year = current_yearID();
 
     $data = lookup_user_by_id($accountid);
     if ($data['code']) {
