@@ -62,13 +62,13 @@ if (strpos($_SESSION['customFields']['currConComPos'][0], 'Volunteers') !== fals
 
       for (var i = 0, len = response['volunteer'].length; i < len; i++) {
         var dept = response['volunteer'][i];
-        if (past.indexOf(dept['DepartmentWorked_c']) == -1) {
+        if (past.indexOf(dept['Department Worked']) == -1) {
           var option = document.createElement("option");
           option.selected = true;
-          option.value= dept['DepartmentWorked_c'];
-          option.text = '* '+dept['DepartmentWorked_c'];
+          option.value= dept['Department Worked'];
+          option.text = '* '+dept['Department Worked'];
           depts.add(option, 0);
-          past.push(dept['DepartmentWorked_c']);
+          past.push(dept['Department Worked']);
         }
       }
     }
@@ -172,16 +172,16 @@ EOT;
 
         for (i = 0; i < vol_past.length; i++) {
             var _shift = vol_past[i];
-            var _end = new Date(_shift['EndDateTime_c']);
-            var _begin = new Date(_shift['EndDateTime_c']);
-            _begin.setHours(_begin.getHours() - Math.floor(_shift['ActualHoursWorked_c']));
-            _begin.setMinutes(_begin.getMinutes() - Math.floor((_shift['ActualHoursWorked_c'] % 1) * 60));
+            var _end = new Date(_shift['End Date Time']);
+            var _begin = new Date(_shift['End Date Time']);
+            _begin.setHours(_begin.getHours() - Math.floor(_shift['Actual Hours']));
+            _begin.setMinutes(_begin.getMinutes() - Math.floor((_shift['Actual Hours'] % 1) * 60));
 
             if ((new_begin < _end && new_begin > _begin) ||
                 (new_end < _end && new_end > _begin) ||
                 (new_end >= _end && new_begin <= _begin)) {
                   document.getElementById('datetime').classList.add('w3-red');
-                  document.getElementById('message').innerHTML = 'Overlapping with ' + _shift['DepartmentWorked_c'] + ' ( ' + format_time(_begin) + ' - ' + format_time(_end) + ' ) ';
+                  document.getElementById('message').innerHTML = 'Overlapping with ' + _shift['Department Worked'] + ' ( ' + format_time(_begin) + ' - ' + format_time(_end) + ' ) ';
                   break;
             }
         }
@@ -197,7 +197,7 @@ EOT;
   <div class='w3-bar-item'>
     <label>Volunteer Badge Number, E-Mail or Full Name</label>
     <div class='w3-bar'>
-      <input class="w3-input w3-border w3-bar-item" name="VolunteerID_c" id="volunteer" onchange="lookupId(this.value);" <?php
+      <input class="w3-input w3-border w3-bar-item" name="VolunteerID" id="volunteer" onchange="lookupId(this.value);" <?php
         if (isset($_REQUEST['ID'])) {
             echo 'value='.$_REQUEST['ID'].' ';
         }
@@ -241,11 +241,11 @@ EOT;
         <option value=0.75>:45</option>
       </select>
     </div>
-    <input type=hidden name="ActualHoursWorked_c" id="actualhours" value=1>
+    <input type=hidden name="ActualHoursWorked" id="actualhours" value=1>
   </div>
   <div class='w3-bar-item'>
     <label>Date/Time that the Shift Ended</label>
-    <input class="w3-input w3-border" type="datetime-local" name="EndDateTime_c" id="datetime" pattern="\d{4}-\d{2}-\d{2}T\d{2}:\d{2}" value="<?php
+    <input class="w3-input w3-border" type="datetime-local" name="EndDateTime" id="datetime" pattern="\d{4}-\d{2}-\d{2}T\d{2}:\d{2}" value="<?php
     echo date('Y-m-d');
     echo 'T'.date('H').':';
     $min = date('i');
@@ -265,7 +265,7 @@ EOT;
 <div class='w3-container'>
   <div class='w3-block'>
     <label>Volunteer Time Modifier - Must be per policy</label><br />
-    <select class="w3-select w3-border" style="width:auto" name="TimeModifier_c" id="modifier" onchange="calculateHours();">
+    <select class="w3-select w3-border" style="width:auto" name="TimeModifier" id="modifier" onchange="calculateHours();">
       <option value=1 selected>Normal - 1 hour = 1 hour</option>
       <option value=0.5>Half Time - 1 hour = 0.5 hours credit</option>
       <option value=1.5>Time Plus Half - 1 hour = 1.5 hours credit</option>
@@ -274,7 +274,7 @@ EOT;
   </div>
   <div class='w3-block'>
     <label>Department worked</label><br />
-    <select class="w3-select w3-border" style="width:auto" name="DepartmentWorked_c" id="department">
+    <select class="w3-select w3-border" style="width:auto" name="DepartmentWorked" id="department">
         <?php
         if (strpos($_SESSION['customFields']['currConComPos'][0], 'Volunteers') !== false || isset($_SESSION['IS_ADMIN'])) {
             require_once($FUNCTIONDIR."/divisional.inc");
@@ -327,8 +327,8 @@ EOT;
     } else {
         echo '<input type=hidden';
     }
-    echo ' name="AuthorizedBy_c" value="'.$_SESSION['preferredName'].'" required>';
-    echo '<input type=hidden name="EnteredBy_c" value="'.$_SESSION['preferredName'].'" required>';
+    echo ' name="AuthorizedBy" value="'.$_SESSION['accountId'].'" required>';
+    echo '<input type=hidden name="EnteredBy" value="'.$_SESSION['accountId'].'" required>';
     ?>
   </div>
 </div>
