@@ -1,7 +1,40 @@
 <?php
 
+/*.
+    require_module 'standard';
+.*/
 
-function _lookup_user($criteria, $max_users, $additional_fields = array())
+function _parse_user($result, $additional_fields)
+{
+    $user = array();
+
+    $user['Id'] = $result['Account ID'];
+    if (!empty($result['Preferred First Name'])) {
+        $user['First Name'] = $result['Preferred First Name'];
+    } else {
+        $user['First Name'] = $result['First Name'];
+    }
+    if (!empty($result['Preferred Last Name'])) {
+        $user['Last Name'] = $result['Preferred Last Name'];
+    } else {
+        $user['Last Name'] = $result['Last Name'];
+    }
+    if (!empty($result['CVGConCom Current Position'])) {
+        $user['ConCom'] = $result['CVGConCom Current Position'];
+    }
+    if (!empty($result['Email 1'])) {
+        $user['Email'] = $result['Email 1'];
+    }
+    if (!empty($additional_fields)) {
+        foreach ($additional_fields as $field) {
+            $user[$field] = $result[$field];
+        }
+    }
+
+    return $user;
+}
+
+function _lookup_user($criteria, $single_result = false, $additional_fields = array(), $page = 1, & $output = null)
 {
     global $Neon;
     $preferredFirstName = search_definedFields('Preferred First Name');
@@ -16,9 +49,9 @@ function _lookup_user($criteria, $max_users, $additional_fields = array())
     ],
     'criteria' => $criteria,
     'page' => [
-    'currentPage' => 1,
-    'pageSize' => $max_users,
-    'sortColumn' => 'Last Name',
+    'currentPage' => $page,
+    'pageSize' => 200,
+    'sortColumn' => 'Account ID',
     'sortDirection' => 'ASC',
     ],
     ];
@@ -26,43 +59,22 @@ function _lookup_user($criteria, $max_users, $additional_fields = array())
         $search['columns']['standardFields'] = array_merge($search['columns']['standardFields'], $additional_fields);
     }
     $results = $Neon->search($search);
-    if (isset($results['operationResult']) &&
-        $results['operationResult'] == 'SUCCESS' &&
-        isset($results['page']['totalResults']) &&
-        $results['page']['totalResults'] > 0) {
-        if ($results['page']['totalResults'] <= $max_users) {
-            $output = ['code' => null, 'users' => array()];
-            for ($i = 0; $i < $results['page']['totalResults']; $i++) {
-                $user = array();
-                $result = $results['searchResults'][$i];
-
-                $user['Id'] = $result['Account ID'];
-                if (!empty($result['Preferred First Name'])) {
-                    $user['First Name'] = $result['Preferred First Name'];
-                } else {
-                    $user['First Name'] = $result['First Name'];
-                }
-                if (!empty($result['Preferred Last Name'])) {
-                    $user['Last Name'] = $result['Preferred Last Name'];
-                } else {
-                    $user['Last Name'] = $result['Last Name'];
-                }
-                if (!empty($result['CVGConCom Current Position'])) {
-                    $user['ConCom'] = $result['CVGConCom Current Position'];
-                }
-                if (!empty($result['Email 1'])) {
-                    $user['Email'] = $result['Email 1'];
-                }
-                if (!empty($additional_fields)) {
-                    foreach ($additional_fields as $field) {
-                        $user[$field] = $result[$field];
-                    }
-                }
+    if (isset($results['operationResult']) && $results['operationResult'] == 'SUCCESS') {
+        if ($single_result && $results['page']['totalResults'] > 1) {
+            return array('code' => '409 Conflict', 'users' => array());
+        } else {
+            if ($output === null) {
+                $output = ['code' => null, 'users' => array()];
+            }
+            foreach ($results['searchResults'] as $val) {
+                $user = _parse_user($val, $additional_fields);
                 array_push($output['users'], $user);
             }
-            return $output;
-        } else {
-            return array('code' => '409 Conflict', 'users' => array());
+            if ($results['page']['totalPage'] > $page) {
+                return _lookup_user($criteria, $single_result, $additional_fields, $page+1, $output);
+            } else {
+                return $output;
+            }
         }
     }
     return array('code' => '404 Not Found', 'users' => array());
@@ -70,33 +82,40 @@ function _lookup_user($criteria, $max_users, $additional_fields = array())
 }
 
 
+function lookup_users_by_ids($id)
+{
+    return _lookup_user([['Account ID', 'IN_RANGE', $id]]);
+
+}
+
 function lookup_user_by_id($id)
 {
-    return _lookup_user([['Account ID', 'EQUAL', $id]], 1);
+    return _lookup_user([['Account ID', 'EQUAL', $id]], true);
 
 }
 
 
-function lookup_users_by_email($email, $max)
+function lookup_users_by_email($email, $single = true)
 {
-    return _lookup_user([['Email', 'EQUAL', $email]], $max);
+    return _lookup_user([['Email', 'EQUAL', $email]], $single);
 
 }
 
 
-function lookup_users_by_name($name, $max)
+function lookup_users_by_name($name, $single = false)
 {
     $names = explode(" ", $name);
     if (count($names) != 2) {
         return ['code' => '400 Bad Request', 'users' => array()];
     }
     return _lookup_user([['First Name', 'EQUAL', $names[0]],
-                         ['Last Name', 'EQUAL', $names[1]]], $max);
+                         ['Last Name', 'EQUAL', $names[1]]],
+                        $single);
 
 }
 
 
-function lookup_users_by_key($key, $max = 1)
+function lookup_users_by_key($key, $single = true)
 {
     if (is_numeric($key) ||
         (strtoupper($key)[0] == 'A' && is_numeric(substr($key, 1)))) {
@@ -106,15 +125,15 @@ function lookup_users_by_key($key, $max = 1)
             return lookup_user_by_id($key);
         }
     } elseif (strpos($key, '@') !== false) {
-        return lookup_users_by_email($key, $max);
+        return lookup_users_by_email($key, $single);
     } else {
-        return lookup_users_by_name($key, $max);
+        return lookup_users_by_name($key, $single);
     }
 
 }
 
 
-function lookup_users_by_name_email($first, $last, $email, $fields, $max_users = 1)
+function lookup_users_by_name_email($first, $last, $email, $fields, $single_user = false)
 {
     $criteria = array();
     if ($first) {
@@ -127,7 +146,7 @@ function lookup_users_by_name_email($first, $last, $email, $fields, $max_users =
         array_push($criteria, ['Email', 'EQUAL', $email]);
     }
 
-    return _lookup_user($criteria, $max_users, $fields);
+    return _lookup_user($criteria, $single_user, $fields);
 
 }
 
