@@ -178,13 +178,15 @@ function ConComListBuildSearch()
 {
     global $db;
 
+    $year = current_yearID();
     $sql = <<<SQL
         SELECT l.AccountID, COALESCE(l.Note, "") AS Note,
               (SELECT Name FROM Departments WHERE DepartmentID = l.DepartmentID) AS Department,
               (SELECT (CASE WHEN DepartmentID = ParentDepartmentID THEN 1 ELSE 0 END) FROM Departments WHERE DepartmentID = l.DepartmentID ) AS Divisional,
               (SELECT Name FROM ConComPositions WHERE PositionID = l.PositionID)   AS Position,
               (SELECT Name FROM ConventionYear WHERE YearID = l.YearID) AS Year
-          FROM ConComList AS l;
+          FROM ConComList AS l
+          WHERE l.YearID = $year;
 SQL;
 
     $ids = array();
