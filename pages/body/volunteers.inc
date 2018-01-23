@@ -3,51 +3,7 @@ require_once $FUNCTIONDIR.'/volunteer.inc';
 require_once $FUNCTIONDIR.'/users.inc';
 
 $totalHours = 0;
-
-function hour_table($uid)
-{
-    global $totalHours;
-
-    echo '<div class="w3-container w3-center w3-green" ';
-    echo 'style="max-height:400px; overflow:scroll;">';
-    echo "<table class='w3-table w3-striped w3-bordered w3-white'>";
-    echo "<tr><th class='w3-center w3-green' colspan=9>Hours</th></tr>\n";
-    if (isset($uid)) {
-        $data = get_volunteer_hours_for_user($uid);
-    } else {
-        $data = get_volunteer_hour_summary();
-    }
-    $totalHours = 0;
-    if (!empty($data)) {
-        echo "<tr><th>";
-        $keys = array_keys($data[0]);
-        $id_index = array_search("Department ID",$keys);
-        if ($id_index !== false) {
-            unset($keys[$id_index]);
-        }
-        echo implode($keys, '</th><th>');
-        echo "</th></tr>\n";
-        foreach ($data as $key => $record) {
-            if (array_key_exists('Time Modifier', $record)) {
-                $totalHours += $record['Actual Hours'] * $record['Time Modifier'];
-            } else {
-                $totalHours += $record['Total Hours'];
-            }
-            echo "<tr><td>";
-            if ($id_index !== false) {
-                unset($record['Department ID']);
-            }
-            echo implode($record, '</td><td>');
-            echo "</td></tr>\n";
-        }
-    }
-    echo "<tr><th class='w3-center w3-green' colspan=9></th></tr>\n";
-    echo "</table>";
-    echo "</div>";
-    echo '<div class="w3-container w3-center w3-xlarge w3-green">';
-    echo "<span>Total Hours : ".$totalHours."</span>";
-    echo '</div>';
-};
+$prizeData = null;
 
 function _increment_offsets(&$groups, $start_entry)
 {
@@ -61,6 +17,7 @@ function _increment_offsets(&$groups, $start_entry)
         $groups[$key] = $entry;
     }
 }
+
 
 function _build_prize_list($data, $uid)
 {
@@ -115,9 +72,70 @@ function _build_prize_list($data, $uid)
 
 }
 
-function prizes_table($uid)
+
+function initialize($uid)
+{
+    global $prizeData;
+
+    if (isset($uid)) {
+        $prizeData = volunteer_prizes_for_user($uid);
+    } else {
+        $prizeData = volunteer_prizes();
+    }
+
+    $prizeData = _build_prize_list($prizeData, $uid);
+
+}
+
+function hour_table($uid)
 {
     global $totalHours;
+
+    echo '<div class="w3-container w3-center w3-green" ';
+    echo 'style="max-height:400px; overflow:scroll;">';
+    echo "<table class='w3-table w3-striped w3-bordered w3-white'>";
+    echo "<tr><th class='w3-center w3-green' colspan=9>Hours</th></tr>\n";
+    if (isset($uid)) {
+        $data = get_volunteer_hours_for_user($uid);
+    } else {
+        $data = get_volunteer_hour_summary();
+    }
+    $totalHours = 0;
+    if (!empty($data)) {
+        echo "<tr><th>";
+        $keys = array_keys($data[0]);
+        $id_index = array_search("Department ID",$keys);
+        if ($id_index !== false) {
+            unset($keys[$id_index]);
+        }
+        echo implode($keys, '</th><th>');
+        echo "</th></tr>\n";
+        foreach ($data as $key => $record) {
+            if (array_key_exists('Time Modifier', $record)) {
+                $totalHours += $record['Actual Hours'] * $record['Time Modifier'];
+            } else {
+                $totalHours += $record['Total Hours'];
+            }
+            echo "<tr><td>";
+            if ($id_index !== false) {
+                unset($record['Department ID']);
+            }
+            echo implode($record, '</td><td>');
+            echo "</td></tr>\n";
+        }
+    }
+    echo "<tr><th class='w3-center w3-green' colspan=9></th></tr>\n";
+    echo "</table>";
+    echo "</div>";
+    echo '<div class="w3-container w3-center w3-xlarge w3-green">';
+    echo "<span>Total Hours : ".$totalHours."</span>";
+    echo '</div>';
+};
+
+
+function prizes_table($uid)
+{
+    global $totalHours, $prizeData;
 
     echo "<div class='w3-container w3-center w3-blue' ";
     echo "style='max-height:200px; overflow:scroll;'>\n";
@@ -138,11 +156,7 @@ function prizes_table($uid)
     echo "<th class='w3-blue' colspan=3></th>\n";
     echo "</tr>";
 
-    if (isset($uid)) {
-        $data = volunteer_prizes_for_user($uid);
-    } else {
-        $data = volunteer_prizes();
-    }
+    $data = $prizeData;
 
     $group_styles  = [
         'w3-amber', 'w3-aqua', 'w3-brown', 'w3-cyan',
@@ -150,8 +164,6 @@ function prizes_table($uid)
         'w3-pink', 'w3-purple', 'w3-red', 'w3-sand', 'w3-teal', 'w3-yellow',
         'w3-deep-purple', 'w3-deep-orange', 'w3-light-blue',
         'w3-blue-grey', 'w3-light-green'];
-
-    $data = _build_prize_list($data, $uid);
 
     $last_group = NULL;
     $group = 0;
@@ -218,6 +230,42 @@ function prizes_table($uid)
         $remain = $totalHours - $spent;
         echo "<span>Hours Spent  ".$spent."  |  ".$remain."  Left</span>";
         echo '</div>';
+    }
+}
+
+function messages($uid)
+{
+    global $prizeData, $totalHours;
+
+    $have_promo = 0;
+    $promo = "<ul>\n";
+    if (isset($uid)) {
+        foreach ($prizeData as $key => $record) {
+            if ($record['Promo'] == 'yes' &&
+                $record['Remaining'] > 0 &&
+                $totalHours >= $record['Value'] &&
+                !isset($record['Aquired'])) {
+                $promo .= "<li> Free prize <b>".$record['Name']."</b> (at ".$record['Value']." hours) is available and has not been aquired!</li>\n";
+                $have_promo++;
+            }
+        }
+    }
+    $promo .= "</ul>\n";
+
+    if ($have_promo) {
+        echo "<div class='w3-container w3-cell-row w3-padding'>\n";
+        echo "<div id='volunteer_messages' class='w3-container w3-padding w3-border-red w3-border w3-margin w3-cell'>\n";
+        echo $promo;
+        echo "</div>\n";
+        echo "<div id='aquire_promo' class='w3-continer w3-padding w3-cell w3-cell-middle'>\n";
+        echo "<button id='promo_check' class='w3-button w3-round-xxlarge w3-red'>";
+        if ($have_promo > 1) {
+            echo "Distribute these items</button>\n";
+        } else {
+            echo "Distribute this item</button>\n";
+        }
+        echo "</div>\n";
+        echo "</div>\n";
     }
 }
 
@@ -295,8 +343,9 @@ if (isset($uid)) {
 
 </div>
 <?php
+    initialize($uid);
     hour_table($uid);
-    echo '<br>';
+    messages($uid);
     prizes_table($uid);
 ?>
 </div>
