@@ -1,5 +1,9 @@
 <?php
 
+/*.
+    require_module 'standard';
+.*/
+
 // Currently, this database class is set for the MySQL PDO filter/backend. Future version will expand it to be agnostic
 
 require_once($BACKEND.'/'.$DB_BACKEND); // MyPDO Definition used
@@ -54,4 +58,60 @@ class DB
         $stmt->execute($args);
         return $stmt;
     }
+}
+
+
+$_currentYear = null;
+
+function current_yearID()
+{
+    global $_currentYear, $db, $_SESSION;
+
+    if ($_currentYear == null) {
+        /* Place 1 - Look for it in the session */
+
+        if (isset($_SESSION['CurrentYear'])) {
+            $sql = "SELECT YearID FROM ConventionYear WHERE Name = '".$_SESSION['CurrentYear']."';";
+            $result = $db->run($sql);
+            $value = $result->fetch();
+            if ($value) {
+                $_currentYear = $value['YearID'];
+                return $_currentYear;
+            }
+        }
+
+        /* Place 2 - try to get it from the database */
+
+        $sql = "SELECT Value FROM Configuration WHERE Field='CurrentYearID';";
+        $result = $db->run($sql);
+        $value = $result->fetch();
+        if ($value) {
+            $_currentYear = $value['CurrentYearID'];
+            return $_currentYear;
+        }
+
+        /* Place 3 - current calander year */
+
+        $year = date("Y");
+        $sql = "SELECT YearID FROM ConventionYear WHERE Name ='$year';";
+        $result = $db->run($sql);
+        $value = $result->fetch();
+        if ($value) {
+            $_currentYear = $value['YearID'];
+            return $_currentYear;
+        }
+
+        /* Fallback - Last year in database*/
+
+        $sql = "SELECT TOP 1 YearID FROM ConventionYear ORDER BY YearID DESC;";
+        $result = $db->run($sql);
+        $value = $result->fetch();
+        if ($value) {
+            $_currentYear = $value['YearID'];
+            return $_currentYear;
+        }
+
+        die ("Could not get Current Convention Year");
+    }
+    return $_currentYear;
 }
