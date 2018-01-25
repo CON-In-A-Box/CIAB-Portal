@@ -70,7 +70,8 @@ function populate_prizes()
     /* Add 5 groups */
     $sql = <<<SQL
         INSERT INTO RewardGroup (RedeemLimit)
-        VALUES ($limit[0]),
+        VALUES (5),
+               ($limit[0]),
                ($limit[1]),
                ($limit[2]),
                ($limit[3]),
@@ -84,16 +85,35 @@ SQL;
     $value = $result->fetch();
     $bottom = (int)($value['RewardGroupID']);
 
-    /* Add a bunch of items */
-
     $adj = ['red', 'cool', 'fantasy', 'large', 'mystic', 'silly', 'filly',
             'green', 'yellow', 'black', 'old', 'new', 'plastic', 'sf',
             'fantasy', 'small', 'white', 'branded', 'plain'];
     $noun = ['ribbon', 'pencil', 'fan', 'bag', 'shirt', 'bag', 'lanyard',
              'poster', 'book', 'hat'];
 
+
+    /* Add grouped promo item */
+    $n1 = $noun[array_rand($noun)];
+    $value = (float)rand(0,5);
+    $value += rand(1,9) / 10;
+    $promo = 1;
+    for ($i = 0 ; $i < 5; $i++) {
+        $inventory = rand(10,500);
+        $name = $adj[array_rand($adj)].' '.$n1;
+        $group = $bottom;
+
+        $sql = <<<SQL
+            INSERT INTO VolunteerRewards
+                (Name, Value, Promo, RewardGroupID, TotalInventory)
+            VALUES ('$name', $value, $promo, $group, $inventory);
+SQL;
+        $db->run($sql);
+    }
+
+    /* Add a bunch of items */
+
     $promo_count = 0;
-    $group_count = 0;
+    $group_count = 1;
 
     $total_items = 50;
 
@@ -109,7 +129,7 @@ SQL;
         } else {
             $promo = 0;
             if ($group_count < $total_items / 4 && rand(0,1)) {
-                $group = $bottom + rand(0,4);
+                $group = $bottom + rand(1,5);
                 $group_count++;
             }
         }
