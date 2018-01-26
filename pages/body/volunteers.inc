@@ -3,51 +3,10 @@ require_once $FUNCTIONDIR.'/volunteer.inc';
 require_once $FUNCTIONDIR.'/users.inc';
 
 $totalHours = 0;
-
-function hour_table($uid)
-{
-    global $totalHours;
-
-    echo '<div class="w3-container w3-center w3-green" ';
-    echo 'style="max-height:400px; overflow:scroll;">';
-    echo "<table class='w3-table w3-striped w3-bordered w3-white'>";
-    echo "<tr><th class='w3-center w3-green' colspan=9>Hours</th></tr>\n";
-    if (isset($uid)) {
-        $data = get_volunteer_hours_for_user($uid);
-    } else {
-        $data = get_volunteer_hour_summary();
-    }
-    $totalHours = 0;
-    if (!empty($data)) {
-        echo "<tr><th>";
-        $keys = array_keys($data[0]);
-        $id_index = array_search("Department ID",$keys);
-        if ($id_index !== false) {
-            unset($keys[$id_index]);
-        }
-        echo implode($keys, '</th><th>');
-        echo "</th></tr>\n";
-        foreach ($data as $key => $record) {
-            if (array_key_exists('Time Modifier', $record)) {
-                $totalHours += $record['Actual Hours'] * $record['Time Modifier'];
-            } else {
-                $totalHours += $record['Total Hours'];
-            }
-            echo "<tr><td>";
-            if ($id_index !== false) {
-                unset($record['Department ID']);
-            }
-            echo implode($record, '</td><td>');
-            echo "</td></tr>\n";
-        }
-    }
-    echo "<tr><th class='w3-center w3-green' colspan=9></th></tr>\n";
-    echo "</table>";
-    echo "</div>";
-    echo '<div class="w3-container w3-center w3-xlarge w3-green">';
-    echo "<span>Total Hours : ".$totalHours."</span>";
-    echo '</div>';
-};
+$prizeData = null;
+$unclaimed_promo = [];
+$hoursRemain = 0;
+$groupTotals = [];
 
 function _increment_offsets(&$groups, $start_entry)
 {
@@ -61,6 +20,7 @@ function _increment_offsets(&$groups, $start_entry)
         $groups[$key] = $entry;
     }
 }
+
 
 function _build_prize_list($data, $uid)
 {
@@ -115,10 +75,85 @@ function _build_prize_list($data, $uid)
 
 }
 
-function prizes_table($uid)
+
+function initialize($uid)
+{
+    global $prizeData;
+
+    if (isset($uid)) {
+        $prizeData = volunteer_prizes_for_user($uid);
+    } else {
+        $prizeData = volunteer_prizes();
+    }
+
+    $prizeData = _build_prize_list($prizeData, $uid);
+
+}
+
+function hour_table($uid)
 {
     global $totalHours;
 
+    echo '<div class="w3-container w3-center w3-green" ';
+    echo 'style="max-height:350px; overflow:scroll;">';
+    echo "<table class='w3-table w3-striped w3-bordered w3-white'>";
+    echo "<tr><th class='w3-center w3-green' colspan=9>Hours</th></tr>\n";
+    if (isset($uid)) {
+        $data = get_volunteer_hours_for_user($uid);
+    } else {
+        $data = get_volunteer_hour_summary();
+    }
+    $totalHours = 0;
+    if (!empty($data)) {
+        echo "<tr><th>";
+        $keys = array_keys($data[0]);
+        $id_index = array_search("Department ID",$keys);
+        if ($id_index !== false) {
+            unset($keys[$id_index]);
+        }
+        echo implode($keys, '</th><th>');
+        echo "</th></tr>\n";
+        foreach ($data as $key => $record) {
+            if (array_key_exists('Time Modifier', $record)) {
+                $totalHours += $record['Actual Hours'] * $record['Time Modifier'];
+            } else {
+                $totalHours += $record['Total Hours'];
+            }
+            echo "<tr><td>";
+            if ($id_index !== false) {
+                unset($record['Department ID']);
+            }
+            echo implode($record, '</td><td>');
+            echo "</td></tr>\n";
+        }
+    } else {
+    echo "<tr><th class='w3-center w3-gray w3-opacity' colspan=9>No Entries...</th></tr>\n";
+    }
+    echo "<tr><th class='w3-center w3-green' colspan=9></th></tr>\n";
+    echo "</table>";
+    echo "</div>";
+    echo '<div class="w3-col w3-center w3-xlarge w3-green">';
+    echo "<span>Total Hours : ".$totalHours."</span>";
+    echo "</div>\n";
+};
+
+function acquireable_item($item)
+{
+    global $totalHours, $hoursRemain;
+    if ($item['Promo'] == 'yes')
+        return ($item['Value'] <= $totalHours);
+    return ($item['Value'] <= $hoursRemain);
+}
+
+
+function _prize_table_start($uid=0, $spent=0, $hoursRemain=0)
+{
+    if ($uid) {
+        echo '<div class="w3-col w3-center w3-xlarge w3-blue">';
+        echo "<span>Hours Spent  <span id='h_spent'>".$spent."</span>  |  ";
+        echo "<span id='h_left'>".$hoursRemain."</span>  Left</span>";
+        echo "</div>\n";
+    }
     echo "<div class='w3-container w3-center w3-blue' ";
     echo "style='max-height:200px; overflow:scroll;'>\n";
     echo "<table class='w3-table w3-striped w3-bordered w3-white'";
@@ -136,13 +171,15 @@ function prizes_table($uid)
     echo "</label></th>\n";
     echo "<th class='w3-center w3-blue' colspan=3>Prizes</th>";
     echo "<th class='w3-blue' colspan=3></th>\n";
-    echo "</tr>";
+    echo "</tr>\n";
 
-    if (isset($uid)) {
-        $data = volunteer_prizes_for_user($uid);
-    } else {
-        $data = volunteer_prizes();
-    }
+}
+
+function prizes_table($uid)
+{
+    global $totalHours, $prizeData, $hoursRemain, $groupTotals;
+
+    $data = $prizeData;
 
     $group_styles  = [
         'w3-amber', 'w3-aqua', 'w3-brown', 'w3-cyan',
@@ -151,13 +188,10 @@ function prizes_table($uid)
         'w3-deep-purple', 'w3-deep-orange', 'w3-light-blue',
         'w3-blue-grey', 'w3-light-green'];
 
-    $data = _build_prize_list($data, $uid);
-
     $last_group = NULL;
     $group = 0;
     $spent = 0;
     if (!empty($data)) {
-        echo "<tr><th>";
         reset($data);
         $first_key = key($data);
         $keys = array_keys($data[$first_key]);
@@ -168,56 +202,137 @@ function prizes_table($uid)
         if (isset($uid) && !array_search('Aquired', $keys)) {
             array_push($keys, 'Aquired');
         }
-        echo implode($keys, '</th><th>');
-        echo "</th></tr>\n";
+        $idx = array_search('group_soldout', $keys);
+        unset($keys[$idx]);
         foreach ($data as $key => $record) {
-            unset($record['PrizeID']);
             if (isset($uid)) {
                 if (isset($record['Aquired'])) {
                     if ($record['Promo'] != 'yes') {
                         $spent += $record['Aquired'] * $record['Value'];
                     }
                 } else {
-                    $record['Aquired'] = ' ';
+                    $data[$key]['Aquired'] = ' ';
                 }
             }
+        }
+        $hoursRemain = $totalHours - $spent;
 
+        _prize_table_start($uid, $spent, $hoursRemain);
+
+        echo "<tr><th>";
+        echo implode($keys, '</th><th>');
+        echo "</th></tr>\n";
+        foreach ($data as $key => $record) {
             if ($record['Remaining'] <= 0) {
                 echo "<tr class='soldoutrow hiddenrow w3-red'>";
             } elseif ($record['Promo'] == 'yes' && $record['Aquired'] > 0) {
                 echo "<tr class='soldoutrow hiddenrow w3-disabled'>";
             } elseif ($record['RewardGroupID']) {
+                $record['GroupLimit'] = $record['Limit'];
                 if ($last_group !== null && $last_group != $record['RewardGroupID']) {
                     $group++;
                 } elseif ($last_group !== NULL) {
                     $record['Limit'] = '|';
                 }
+                if (ctype_digit($record['Aquired'])) {
+                    $groupTotals[intval($record['RewardGroupID'])] += intval($record['Aquired']);
+                } else {
+                    $groupTotals[intval($record['RewardGroupID'])] += 0;
+                }
                 $last_group = $record['RewardGroupID'];
-                $classes = $group_styles[$group];
+                $classes = $group_styles[($group%count($group_styles))];
 
                 if (isset($record['group_soldout'])) {
                     echo "<tr class='$classes soldoutrow hiddenrow w3-disabled'>";
                 } else {
-                    echo "<tr class='$classes'>";
+                    echo "<tr class='$classes";
+                    if (isset($uid) && acquireable_item($record)) {
+                        echo " w3-hover-green' ";
+                        $json = json_encode($record);
+                        $json = addslashes($json);
+                        echo 'onclick=\'add_to_checkout("'.$json;
+                        echo '");\'>';
+                    }
+                    else
+                        echo "'>";
                 }
             } else {
-                echo "<tr>";
+                echo "<tr ";
+                if (isset($uid) && acquireable_item($record)) {
+                    echo "class='w3-hover-green' ";
+                    $json = json_encode($record);
+                    $json = addslashes($json);
+                    echo 'onclick=\'add_to_checkout("'.$json.'");\'';
+                }
+                echo ">";
             }
+            unset($record['PrizeID']);
             unset($record['RewardGroupID']);
             unset($record['group_soldout']);
+            unset($record['GroupLimit']);
             echo "<td>";
             echo implode($record, '</td><td>');
             echo "</td></tr>\n";
         }
+    } else {
+        _prize_table_start();
+        echo "<tr><th class='w3-center w3-gray w3-opacity' colspan=9>No Entries...</th></tr>\n";
     }
     echo "<tr><th class='w3-center w3-blue' colspan=8></th></tr>\n";
     echo "</table>\n";
     echo '</div>';
-    if ($uid) {
-        echo '<div class="w3-container w3-center w3-xlarge w3-blue">';
-        $remain = $totalHours - $spent;
-        echo "<span>Hours Spent  ".$spent."  |  ".$remain."  Left</span>";
-        echo '</div>';
+}
+
+function messages($uid)
+{
+    global $prizeData, $totalHours, $unclaimed_promo;
+
+    $unclaimed_promo = [];
+    $display = false;
+    if (isset($uid)) {
+        $promo = "<ul>\n";
+        foreach ($prizeData as $key => $record) {
+            if ($record['Promo'] == 'yes' &&
+                $record['Remaining'] > 0 &&
+                $totalHours >= $record['Value'] &&
+                !isset($record['Aquired'])) {
+                if ($record['RewardGroupID'] !== null) {
+                    if ($record['group_soldout']) continue;
+                    $promo .= "<li>Free Group prize <b>".$record['Name']."</b> (at ".$record['Value']." hours) is available and has not been acquired! <b>Pick 1 below!</b></li>\n";
+                } else {
+                    $promo .= "<li>Free prize <b>".$record['Name']."</b> (at ".$record['Value']." hours) is available and has not been acquired!</li>\n";
+                    $unclaimed_promo[] = $record;
+                }
+                $display = true;
+            }
+        }
+        $promo .= "</ul>\n";
+
+        if ($display) {
+            echo "<div class='w3-col w3-cell-row w3-padding' ";
+            echo "style='max-height:20px; overflow:scroll;'>\n";
+            echo "<div id='volunteer_messages' class='w3-container w3-padding w3-border-red w3-border w3-margin w3-cell'>\n";
+            echo $promo;
+            echo "</div>\n";
+            if ($unclaimed_promo && sizeof($unclaimed_promo)) {
+                echo "<div id='aquire_promo' class='w3-continer w3-padding w3-cell w3-cell-middle'>\n";
+                echo "<button id='promo_check' class='w3-button w3-round-xxlarge w3-red'";
+                $names = array_column($unclaimed_promo, 'Name');
+                echo "onclick=add_promo_to_checkout();";
+                echo ">";
+                if ($unclaimed_promo > 1) {
+                    echo "Claim items</button>\n";
+                } else {
+                    echo "Claim item</button>\n";
+                }
+                echo "</div>\n";
+            }
+            echo "</div>\n";
+        } else {
+            echo "<hr>\n";
+        }
+    } else {
+        echo "<hr>\n";
     }
 }
 
@@ -233,6 +348,9 @@ if (!empty($_REQUEST)) {
 ?>
 
 <script>
+  var checkout = [];
+  var hours_spent = 0;
+
   function lookupId(id) {
     if (id) {
       var xhttp = new XMLHttpRequest();
@@ -267,12 +385,12 @@ if (!empty($_REQUEST)) {
   }
 </script>
 
-<div id="main_content" class="w3-cell w3-cell-top w3-mobile">
-<div class="w3-container w3-center w3-xlarge w3-green">
+<div id="main_content" class="w3-row-padding">
+<div class="w3-rest w3-center w3-xlarge w3-green">
 <span>Volunteer Management</span>
 </div>
-<div class="w3-container w3-center">
 
+<div class="w3-rest w3-center">
 <form method="post" action="index.php?Function=volunteers">
 <div class='w3-bar'>
   <div class='w3-bar-item'>
@@ -292,11 +410,267 @@ if (isset($uid)) {
   </div>
 </div>
 </form>
+</div>
 
-</div>
+<!------ Main Section ----->
+
+<div class='w3-row-padding'>
+    <div id='info_div' class='w3-rest'>
 <?php
-    hour_table($uid);
-    echo '<br>';
-    prizes_table($uid);
+        initialize($uid);
+        hour_table($uid);
+        messages($uid);
+        prizes_table($uid);
 ?>
+    </div>
+    <div class='w3-hide w3-padding' id='checkout_div'>
+        <div class='w3-center'>
+            <h2>Items claimed now</h2>
+        </div>
+        <table class='w3-table w3-striped w3-border w3-white' id='checkout_table'>
+        </table>
+        <div class="w3-container w3-center w3-large w3-green w3-margin">
+            <span>Hours Left: <span id="hours_left">0</span></span>
+            <br>
+            <span>Hours Spent: <span id="hours_used">0</span></span>
+        </div>
+        <div class='w3-center'>
+            <button id='checkout_button' class='w3-button w3-round-xxlarge w3-green'
+                onclick='process_checkout();'>
+                Distribute Items
+            </button>
+            <button id='clear_button' class='w3-button w3-round-xxlarge w3-red'
+                onclick='clear_checkout();'>
+               Clear
+            </button>
+        <div>
+    </div>
 </div>
+
+<div id="success_dlg" class="w3-modal">
+  <div class="w3-modal-content">
+    <div class="w3-container">
+      <span onclick="document.getElementById('success_dlg').style.display='none';
+        location.reload();"
+      class="w3-button w3-display-topright">&times;</span>
+      <h2 class="w3-center w3-green">Please get the volunteer the following new rewards!</h2>
+      <hr>
+      <table class='w3-center w3-border w3-table w3-striped w3-white w3-xlarge w3-padding' id='reward_list'>
+      </table>
+      <h2 class="w3-center w3-red">Close this window when all prizes have been claimed!</h2>
+    </div>
+  </div>
+</div>
+
+<script>
+  var groupsNow = JSON.parse('<?php print(json_encode($groupTotals));?>');
+
+    function process_checkout() {
+        applyReward();
+    }
+
+    function clear_checkout() {
+        var section = document.getElementById("checkout_div");
+        section.classList.add("w3-hide");
+        section.classList.remove("w3-quarter");
+        var section = document.getElementById("info_div");
+        section.classList.add("w3-rest");
+        section.classList.remove("w3-threequarter");
+        hours_spent = 0;
+        checkout = [];
+
+        var table = document.getElementById("checkout_table");
+        while(table.hasChildNodes())
+        {
+           table.removeChild(table.firstChild);
+        }
+        groupsNow = JSON.parse('<?php print(json_encode($groupTotals));?>');
+    }
+
+    function update_cost(cost) {
+        hours_spent += cost;
+
+        var hours = document.getElementById("hours_left");
+        var remain = <?php echo "$hoursRemain";?> - hours_spent;
+        hours.innerHTML = remain.toFixed(2);
+
+        var hours_u = document.getElementById("hours_used");
+        hours_u.innerHTML = hours_spent.toFixed(2);
+    }
+
+    function update_checkout() {
+        var table = document.getElementById("checkout_table");
+        while(table.hasChildNodes())
+        {
+           table.removeChild(table.firstChild);
+        }
+
+        var output = {};
+        for (var index in checkout) {
+            item = checkout[index];
+            if (item.PrizeID in output) {
+                output[item.PrizeID]['count'] += 1;
+            } else {
+                output[item.PrizeID] = {prize: item, count: 1};
+            }
+        }
+
+        var table = document.getElementById("checkout_table");
+        for (var index in output) {
+            item = output[index];
+            var row = table.insertRow(-1);
+            row.setAttribute('data-prizeid', item.prize.PrizeID);
+            row.classList.add('w3-hover-red');
+            row.setAttribute("onclick", "remove_from_checkout("+item.prize.PrizeID+", "+item.prize.cost+", "+item.prize.RewardGroupID+");");
+            var cell = row.insertCell(0);
+
+            if (item.count > 1) {
+                txt = item.prize.Name + ' (x' + item.count+')';
+                cell.innerHTML = txt;
+            } else {
+                cell.innerHTML = item.prize.Name;
+            }
+
+            var cell = row.insertCell(1);
+            cell.innerHTML = item.prize.cost.toFixed(2);
+        }
+
+        var rows = table.getElementsByTagName("tr").length;
+        if (rows == 0) {
+            clear_checkout();
+        }
+    }
+
+    function remove_from_checkout(PrizeID, cost, group) {
+        var found = checkout.findIndex(function(element) {
+            return element.PrizeID == PrizeID;
+        });
+        if (found != -1) {
+            update_cost(-1 * cost);
+            checkout.splice(found, 1);
+        }
+
+        if (group != null) {
+            groupsNow[group] -= 1;
+        }
+
+        update_checkout();
+    }
+
+    function add_to_checkout(json) {
+        var item = JSON.parse(json);
+        cost = parseFloat(item.Value);
+        if (item.Promo == 'yes') {
+            var found = checkout.find(function(element) {
+                return element.PrizeID == item.PrizeID;
+            });
+            if (found) {
+                alert("Promo item '"+item.Name+"' cannot be added twice");
+                return;
+            }
+            cost = 0;
+        }
+        if (<?php echo $hoursRemain?> < hours_spent + cost) {
+            alert("Volunteer does not have enough hours for the "+item.Name);
+            return;
+        }
+        if (groupsNow[item.RewardGroupID] + 1 > item.GroupLimit) {
+            alert("Too many items from limited group");
+            return;
+        }
+        var count = 0;
+        for (var i = 0; i < checkout.length; i++) {
+            if (checkout[i].PrizeID == item.PrizeID)
+                count++;
+        }
+        if (count + 1 > item.Remaining) {
+            alert("Not enough items in inventory!");
+            return;
+        }
+
+        item.cost = cost;
+        show_checkout();
+        checkout.push(item);
+        update_checkout();
+        update_cost(cost);
+        groupsNow[item.RewardGroupID] += 1;
+    }
+
+    function show_checkout() {
+        var section = document.getElementById("checkout_div");
+        section.classList.remove("w3-hide");
+        section.classList.add("w3-quarter");
+        var section = document.getElementById("info_div");
+        section.classList.remove("w3-rest");
+        section.classList.add("w3-threequarter");
+
+        var hours = document.getElementById("hours_left");
+        var remain = parseFloat(<?php echo "$hoursRemain";?>) - hours_spent;
+        hours.innerHTML = remain.toFixed(2);
+
+        var hours_u = document.getElementById("hours_used");
+        hours_u.innerHTML = hours_spent;
+    }
+
+    function  add_promo_to_checkout(names) {
+<?php
+        foreach($unclaimed_promo as $item) {
+            echo "  var found = checkout.find(function(element) {\n";
+            echo "      return element[0] == ".$item['PrizeID'].";\n";
+            echo " });\n";
+            echo "   if (!found) {\n";
+            echo "     add_to_checkout('".json_encode($item)."');\n";
+            echo "      }\n";
+            echo "\n";
+        }
+?>
+  }
+
+  function applyReward() {
+      var xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            fill_reward();
+            document.getElementById('success_dlg').style.display='block'
+        }
+        else if (this.status == 404) {
+            alert("404!");
+        }
+        else if (this.status == 409) {
+            alert("409!");
+        }
+      }
+      xhttp.open("POST", "index.php?Function=volunteers", true);
+      xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+      xhttp.send("rewardId=<?php echo "$uid";?>&rewards="+JSON.stringify(checkout));
+  }
+
+    function fill_reward() {
+        var table = document.getElementById("reward_list");
+        while(table.hasChildNodes())
+        {
+           table.removeChild(table.firstChild);
+        }
+
+        var list = {};
+        checkout.forEach(function(item, index) {
+            if (item.PrizeID in list) {
+                list[item.PrizeID]['count'] +=1;
+            } else {
+                list[item.PrizeID] = {name: item.Name, count: 1};
+            }
+        });
+
+        for (var key in list) {
+            item = list[key];
+            var row = table.insertRow(-1);
+            var cell = row.insertCell(0);
+            if (item.count > 1) {
+                txt = item.name + ' (x' + item.count+')';
+                cell.innerHTML = txt;
+            } else {
+                cell.innerHTML = item.name;
+            }
+        };
+    }
+</script>

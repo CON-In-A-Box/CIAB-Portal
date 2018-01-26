@@ -225,3 +225,27 @@ SQL;
     return $data;
 
 }
+
+
+function award_prizes($id, $prizes, $year=null)
+{
+    global $db;
+
+    if ($year === null) {
+        $year = current_yearID();
+    }
+
+    $sql = <<<SQL
+        INSERT INTO HourRedemptions
+            (AccountID, PrizeID, YearID)
+            VALUES
+SQL;
+    $stmt = [];
+    foreach($prizes as $prize) {
+        $stmt[] =  " ($id, $prize, $year)";
+    }
+    $sql .= implode(',', $stmt);
+    $sql .= ";";
+    $db->run($sql);
+    return true;
+}

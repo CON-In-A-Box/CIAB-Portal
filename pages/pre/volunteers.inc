@@ -21,4 +21,23 @@ if (!empty($_REQUEST)) {
         }
         exit();
     }
+
+    $arguments = [
+    'rewardId'         => FILTER_SANITIZE_SPECIAL_CHARS,
+    'rewards'          => FILTER_UNSAFE_RAW,
+    ];
+
+    require_once($FUNCTIONDIR."/volunteer.inc");
+
+    $updateData = filter_input_array(INPUT_POST, $arguments);
+    if (isset($updateData['rewardId'])) {
+        $data = json_decode($updateData['rewards'], true);
+        $prizes = [];
+        foreach($data as $prize) {
+            $prizes[] = $prize['PrizeID'];
+        }
+        award_prizes($updateData['rewardId'], $prizes);
+        echo $updateData['rewards'];
+        exit();
+    }
 }
