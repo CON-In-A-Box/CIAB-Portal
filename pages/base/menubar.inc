@@ -58,18 +58,6 @@
         Volunteers
       </a>
     <?php } ?>
-    <?php if (isset($_SESSION['IS_ALLOCATIONS']) || isset($_SESSION['IS_ADMIN'])) { ?>
-      <a class="w3-bar-item w3-button w3-hide-small w3-hide-medium<?php
-        if ($_REQUEST['Function'] == 'allocations') {
-            echo " w3-green";
-        } else {
-            echo " w3-yellow";
-        }
-        ?>" href="index.php?Function=allocations" title="Hotel Allocations">
-        <i class="fa fa-bed"></i>
-        Hotel Allocations
-      </a>
-    <?php } ?>
     <?php if (isset($_SESSION['IS_ADMIN'])) { ?>
       <a class="w3-bar-item w3-button w3-hide-small w3-hide-medium<?php
         if ($_REQUEST['Function'] == 'admin') {
@@ -121,16 +109,6 @@
             ?>" href="index.php?Function=volunteers" title="Volunteers">
           <i class="fa fa-users"></i>
           Volunteers
-        </a>
-        <?php } ?>
-        <?php if (isset($_SESSION['IS_ALLOCATIONS']) || isset($_SESSION['IS_ADMIN'])) { ?>
-        <a class="w3-bar-item w3-button<?php
-        if ($_REQUEST['Function'] == 'allocations') {
-            echo " w3-green";
-        }
-            ?>" href="index.php?Function=allocations" title="Hotel Allocations">
-          <i class="fa fa-bed"></i>
-          Hotel Allocations
         </a>
         <?php } ?>
         <?php if (isset($_SESSION['IS_ADMIN'])) { ?>
