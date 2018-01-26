@@ -8,6 +8,7 @@ require_once(__DIR__."/database.inc");
 require_once(__DIR__."/functions.inc");
 require_once(__DIR__."/users.inc");
 
+
 function get_volunteer_hour_summary($id = null, $year = null)
 {
     global $db;
@@ -45,11 +46,11 @@ SQL;
     $value = $result->fetch();
     while ($value !== false) {
         $data[] = [
-            'Department Worked' => $value['DepartmentName'],
-            'Department ID' => $value['DepartmentID'],
-            'Total Entries' => $value['EntryCount'],
-            'Total Volunteers' => $value['VolunteerCount'],
-            'Total Hours' => $value['TotalHours'],
+        'Department Worked' => $value['DepartmentName'],
+        'Department ID' => $value['DepartmentID'],
+        'Total Entries' => $value['EntryCount'],
+        'Total Volunteers' => $value['VolunteerCount'],
+        'Total Hours' => $value['TotalHours'],
         ];
         $value = $result->fetch();
     }
@@ -81,14 +82,14 @@ SQL;
     $value = $result->fetch();
     while ($value !== false) {
         $data[] = [
-            'Volunteer' => $user['users'][0]['First Name'],
-            'Actual Hours' => $value['ActualHours'],
-            'Time Modifier' => $value['TimeModifier'],
-            'End Date Time' => $value['EndDateTime'],
-            'Department Worked' => $value['DepartmentName'],
-            'Department ID' => $value['DepartmentID'],
-            'Entered By' => $value['EnteredByID'],
-            'Authorized By' => $value['AuthorizedByID'],
+        'Volunteer' => $user['users'][0]['First Name'],
+        'Actual Hours' => $value['ActualHours'],
+        'Time Modifier' => $value['TimeModifier'],
+        'End Date Time' => $value['EndDateTime'],
+        'Department Worked' => $value['DepartmentName'],
+        'Department ID' => $value['DepartmentID'],
+        'Entered By' => $value['EnteredByID'],
+        'Authorized By' => $value['AuthorizedByID'],
         ];
         $value = $result->fetch();
     }
@@ -144,6 +145,7 @@ SQL;
     return null;
 
 }
+
 
 function volunteer_prizes()
 {
@@ -227,7 +229,7 @@ SQL;
 }
 
 
-function award_prizes($id, $prizes, $year=null)
+function award_prizes($id, $prizes, $year = null)
 {
     global $db;
 
@@ -241,11 +243,12 @@ function award_prizes($id, $prizes, $year=null)
             VALUES
 SQL;
     $stmt = [];
-    foreach($prizes as $prize) {
-        $stmt[] =  " ($id, $prize, $year)";
+    foreach ($prizes as $prize) {
+        $stmt[] = " ($id, $prize, $year)";
     }
     $sql .= implode(',', $stmt);
     $sql .= ";";
     $db->run($sql);
     return true;
+
 }

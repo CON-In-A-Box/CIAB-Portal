@@ -10,6 +10,8 @@ require_once($BACKEND.'/'.$DB_BACKEND); // MyPDO Definition used
 
 class DB
 {
+
+
     public function __construct()
     {
         global $DATADIR;
@@ -17,28 +19,28 @@ class DB
 
         $result = MyPDO::instance()->query("SHOW TABLES");
         $arr = [];
-        foreach($result as $value) {
-            foreach($value as $row) {
+        foreach ($result as $value) {
+            foreach ($value as $row) {
                 $arr[] = $row;
             }
         }
 
         $upgrade = false;
-        foreach($DB_tables as $table => $fields) {
-            if(!in_array($table, $arr)) {
+        foreach ($DB_tables as $table => $fields) {
+            if (!in_array($table, $arr)) {
                 // Missing a table, build it!
                 $upgrade = true;
                 $build = 'CREATE TABLE '.$table.' (';
-                foreach($fields as $column => $setting) {
-                   $build .= $column.' '.$setting.', ';
+                foreach ($fields as $column => $setting) {
+                    $build .= $column.' '.$setting.', ';
                 }
-                $build = rtrim($build,', '). ");";
+                $build = rtrim($build, ', ').");";
 
                 MyPDO::instance()->query($build);
 
                 // If there is seed available for this table, seed it!
-                if(file_exists($DATADIR.'/DBSeed/'.$table.'.sql')) {
-                    $sql_data=file_get_contents($DATADIR.'/DBSeed/'.$table.'.sql');
+                if (file_exists($DATADIR.'/DBSeed/'.$table.'.sql')) {
+                    $sql_data = file_get_contents($DATADIR.'/DBSeed/'.$table.'.sql');
                     MyPDO::instance()->query($sql_data);
                 }
             }
@@ -46,22 +48,27 @@ class DB
         if ($upgrade) {
             header("Location: http://".$_SERVER['SERVER_NAME']."/index.php?Function=update&next=".$_REQUEST['Function']);
         }
+
     }
+
 
     public static function run($sql, $args = [])
     {
-        if (!$args)
-        {
-             return MyPDO::instance()->query($sql);
+        if (!$args) {
+            return MyPDO::instance()->query($sql);
         }
         $stmt = MyPDO::instance()->prepare($sql);
         $stmt->execute($args);
         return $stmt;
+
     }
+
+
 }
 
 
 $_currentYear = null;
+
 
 function current_yearID()
 {
@@ -111,7 +118,8 @@ function current_yearID()
             return $_currentYear;
         }
 
-        die ("Could not get Current Convention Year");
+        die("Could not get Current Convention Year");
     }
     return $_currentYear;
+
 }

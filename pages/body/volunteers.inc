@@ -8,6 +8,7 @@ $unclaimed_promo = [];
 $hoursRemain = 0;
 $groupTotals = [];
 
+
 function _increment_offsets(&$groups, $start_entry)
 {
     foreach ($groups as $key => $entry) {
@@ -19,6 +20,7 @@ function _increment_offsets(&$groups, $start_entry)
         }
         $groups[$key] = $entry;
     }
+
 }
 
 
@@ -27,10 +29,10 @@ function _build_prize_list($data, $uid)
     $sorted = array();
     $soldout = array();
     $groups = array();
-    foreach($data as $record) {
+    foreach ($data as $record) {
         if ($record['Remaining'] <= 0) {
             if (isset($uid)) {
-                if (isset($record['Aquired']) && $record['Aquired']>0) {
+                if (isset($record['Aquired']) && $record['Aquired'] > 0) {
                     $record['Limit'] = 0;
                     array_push($soldout, $record);
                 }
@@ -48,13 +50,13 @@ function _build_prize_list($data, $uid)
                     $entry['aquired'] = $entry['aquired'] + $record['Aquired'];
                 } else {
                     $entry = ['current' => sizeof($sorted),
-                              'start' => sizeof($sorted),
-                              'items' => array($record),
-                              'aquired' => $record['Aquired'],
-                              'limit' => $record['Limit']];
+                    'start' => sizeof($sorted),
+                    'items' => array($record),
+                    'aquired' => $record['Aquired'],
+                    'limit' => $record['Limit']];
                     array_push($sorted, $record);
                 }
-                $entry['current'] =  $entry['current'] + 1;
+                $entry['current'] = $entry['current'] + 1;
                 $groups[$record['RewardGroupID']] = $entry;
             } else {
                 array_push($sorted, $record);
@@ -65,7 +67,7 @@ function _build_prize_list($data, $uid)
     if (isset($uid)) {
         foreach ($groups as $group) {
             if ($group['aquired'] >= $group['limit']) {
-                for ($i = $group['start']; $i < $group['start']+sizeof($group['items']); $i++) {
+                for ($i = $group['start']; $i < $group['start'] + sizeof($group['items']); $i++) {
                     $sorted[$i]['group_soldout'] = true;
                 }
             }
@@ -90,6 +92,7 @@ function initialize($uid)
 
 }
 
+
 function hour_table($uid)
 {
     global $totalHours;
@@ -107,7 +110,7 @@ function hour_table($uid)
     if (!empty($data)) {
         echo "<tr><th>";
         $keys = array_keys($data[0]);
-        $id_index = array_search("Department ID",$keys);
+        $id_index = array_search("Department ID", $keys);
         if ($id_index !== false) {
             unset($keys[$id_index]);
         }
@@ -127,7 +130,7 @@ function hour_table($uid)
             echo "</td></tr>\n";
         }
     } else {
-    echo "<tr><th class='w3-center w3-gray w3-opacity' colspan=9>No Entries...</th></tr>\n";
+        echo "<tr><th class='w3-center w3-gray w3-opacity' colspan=9>No Entries...</th></tr>\n";
     }
     echo "<tr><th class='w3-center w3-green' colspan=9></th></tr>\n";
     echo "</table>";
@@ -135,18 +138,22 @@ function hour_table($uid)
     echo '<div class="w3-col w3-center w3-xlarge w3-green">';
     echo "<span>Total Hours : ".$totalHours."</span>";
     echo "</div>\n";
+
 };
+
 
 function acquireable_item($item)
 {
     global $totalHours, $hoursRemain;
-    if ($item['Promo'] == 'yes')
+    if ($item['Promo'] == 'yes') {
         return ($item['Value'] <= $totalHours);
+    }
     return ($item['Value'] <= $hoursRemain);
+
 }
 
 
-function _prize_table_start($uid=0, $spent=0, $hoursRemain=0)
+function _prize_table_start($uid = 0, $spent = 0, $hoursRemain = 0)
 {
     if ($uid) {
         echo '<div class="w3-col w3-center w3-xlarge w3-blue">';
@@ -175,6 +182,7 @@ function _prize_table_start($uid=0, $spent=0, $hoursRemain=0)
 
 }
 
+
 function prizes_table($uid)
 {
     global $totalHours, $prizeData, $hoursRemain, $groupTotals;
@@ -182,13 +190,13 @@ function prizes_table($uid)
     $data = $prizeData;
 
     $group_styles  = [
-        'w3-amber', 'w3-aqua', 'w3-brown', 'w3-cyan',
-        'w3-indigo', 'w3-khaki', 'w3-lime', 'w3-orange',
-        'w3-pink', 'w3-purple', 'w3-red', 'w3-sand', 'w3-teal', 'w3-yellow',
-        'w3-deep-purple', 'w3-deep-orange', 'w3-light-blue',
-        'w3-blue-grey', 'w3-light-green'];
+    'w3-amber', 'w3-aqua', 'w3-brown', 'w3-cyan',
+    'w3-indigo', 'w3-khaki', 'w3-lime', 'w3-orange',
+    'w3-pink', 'w3-purple', 'w3-red', 'w3-sand', 'w3-teal', 'w3-yellow',
+    'w3-deep-purple', 'w3-deep-orange', 'w3-light-blue',
+    'w3-blue-grey', 'w3-light-green'];
 
-    $last_group = NULL;
+    $last_group = null;
     $group = 0;
     $spent = 0;
     if (!empty($data)) {
@@ -231,7 +239,7 @@ function prizes_table($uid)
                 $record['GroupLimit'] = $record['Limit'];
                 if ($last_group !== null && $last_group != $record['RewardGroupID']) {
                     $group++;
-                } elseif ($last_group !== NULL) {
+                } elseif ($last_group !== null) {
                     $record['Limit'] = '|';
                 }
                 if (ctype_digit($record['Aquired'])) {
@@ -240,7 +248,7 @@ function prizes_table($uid)
                     $groupTotals[intval($record['RewardGroupID'])] += 0;
                 }
                 $last_group = $record['RewardGroupID'];
-                $classes = $group_styles[($group%count($group_styles))];
+                $classes = $group_styles[($group % count($group_styles))];
 
                 if (isset($record['group_soldout'])) {
                     echo "<tr class='$classes soldoutrow hiddenrow w3-disabled'>";
@@ -252,9 +260,9 @@ function prizes_table($uid)
                         $json = addslashes($json);
                         echo 'onclick=\'add_to_checkout("'.$json;
                         echo '");\'>';
-                    }
-                    else
+                    } else {
                         echo "'>";
+                    }
                 }
             } else {
                 echo "<tr ";
@@ -281,7 +289,9 @@ function prizes_table($uid)
     echo "<tr><th class='w3-center w3-blue' colspan=8></th></tr>\n";
     echo "</table>\n";
     echo '</div>';
+
 }
+
 
 function messages($uid)
 {
@@ -297,7 +307,9 @@ function messages($uid)
                 $totalHours >= $record['Value'] &&
                 !isset($record['Aquired'])) {
                 if ($record['RewardGroupID'] !== null) {
-                    if ($record['group_soldout']) continue;
+                    if ($record['group_soldout']) {
+                        continue;
+                    }
                     $promo .= "<li>Free Group prize <b>".$record['Name']."</b> (at ".$record['Value']." hours) is available and has not been acquired! <b>Pick 1 below!</b></li>\n";
                 } else {
                     $promo .= "<li>Free prize <b>".$record['Name']."</b> (at ".$record['Value']." hours) is available and has not been acquired!</li>\n";
@@ -334,7 +346,9 @@ function messages($uid)
     } else {
         echo "<hr>\n";
     }
+
 }
+
 
 $uid = null;
 if (!empty($_REQUEST)) {
@@ -417,10 +431,10 @@ if (isset($uid)) {
 <div class='w3-row-padding'>
     <div id='info_div' class='w3-rest'>
 <?php
-        initialize($uid);
-        hour_table($uid);
-        messages($uid);
-        prizes_table($uid);
+initialize($uid);
+hour_table($uid);
+messages($uid);
+prizes_table($uid);
 ?>
     </div>
     <div class='w3-hide w3-padding' id='checkout_div'>
@@ -614,15 +628,15 @@ if (isset($uid)) {
 
     function  add_promo_to_checkout(names) {
 <?php
-        foreach($unclaimed_promo as $item) {
-            echo "  var found = checkout.find(function(element) {\n";
-            echo "      return element[0] == ".$item['PrizeID'].";\n";
-            echo " });\n";
-            echo "   if (!found) {\n";
-            echo "     add_to_checkout('".json_encode($item)."');\n";
-            echo "      }\n";
-            echo "\n";
-        }
+foreach ($unclaimed_promo as $item) {
+    echo "  var found = checkout.find(function(element) {\n";
+    echo "      return element[0] == ".$item['PrizeID'].";\n";
+    echo " });\n";
+    echo "   if (!found) {\n";
+    echo "     add_to_checkout('".json_encode($item)."');\n";
+    echo "      }\n";
+    echo "\n";
+}
 ?>
   }
 

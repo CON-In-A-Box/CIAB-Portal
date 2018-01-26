@@ -16,10 +16,10 @@ function doUserAndPasswordMatch($user, $password)
     // This only returns that a user is in the NeonCRM DB and that the password was matched
     // Check user and password against NeonCRM
     $request = [
-        'method' => 'common/authenticateUser',
-        'parameters' => [
-            'username' => $user,
-            'password' => $password,
+    'method' => 'common/authenticateUser',
+    'parameters' => [
+    'username' => $user,
+    'password' => $password,
         ],
     ];
     $result = $GLOBALS['Neon']->go($request);
@@ -29,7 +29,9 @@ function doUserAndPasswordMatch($user, $password)
     } else {
         return false;
     }
+
 }
+
 
 function LoginUser($user, $password)
 {

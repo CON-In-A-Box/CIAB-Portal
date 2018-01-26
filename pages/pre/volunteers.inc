@@ -33,7 +33,7 @@ if (!empty($_REQUEST)) {
     if (isset($updateData['rewardId'])) {
         $data = json_decode($updateData['rewards'], true);
         $prizes = [];
-        foreach($data as $prize) {
+        foreach ($data as $prize) {
             $prizes[] = $prize['PrizeID'];
         }
         award_prizes($updateData['rewardId'], $prizes);
