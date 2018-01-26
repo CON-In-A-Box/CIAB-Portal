@@ -85,7 +85,7 @@ function getPositionID($position)
 }
 
 
-function AddConComPosition($accountid, $department, $position, $note, $notify=true)
+function AddConComPosition($accountid, $department, $position, $note, $notify = true)
 {
     global $Departments, $db;
 
@@ -122,7 +122,7 @@ function AddConComPosition($accountid, $department, $position, $note, $notify=tr
         $preferredLastName = search_definedFields('Preferred Last Name');
         $subject = 'ConCom Division addition to '.$department;
 
-        $name = $user['First Name']." ".$user['Last Name'];;
+        $name = $user['First Name']." ".$user['Last Name'];
 
         $message = $_SESSION['fullName'].' has added '.$name." to ".$department.' as '.$position.'.';
         $headers = 'From: noreply@convergence-con.org'."\r\n";
@@ -133,6 +133,7 @@ function AddConComPosition($accountid, $department, $position, $note, $notify=tr
     } elseif (!$result) {
         die("Failed Add comcon member to database!");
     }
+
 }
 
 
@@ -159,7 +160,7 @@ function RemoveConComPosition($accountid, $department, $position, $notify = true
 
             $to = getDepartmentEmails(getDivision($department))[0];
             $subject = 'ConCom Division Removal to '.$department;
-            $name = $user['First Name']." ".$user['Last Name'];;
+            $name = $user['First Name']." ".$user['Last Name'];
             $message = $_SESSION['fullName'].' has removed '.$name." from ".$department.'.';
             $headers = 'From: noreply@convergence-con.org'."\r\n";
             $headers .= 'Reply-To: noreply@convergence-con.org';
@@ -216,14 +217,14 @@ SQL;
             array_push($entry, $db_staff[$value['AccountID']]);
         } else {
             $db_staff[$value['AccountID']] = [[
-                  'Account ID' => $value['AccountID'],
-                  'Division' => $Division,
-                  'Department' => $value['Department'],
-                  'Position' => $value['Position'],
-                  'Email' => '',
-                  'First Name' => $value['AccountID'],
-                  'Last Name' => '',
-                  'Note' => $value['Note'],
+            'Account ID' => $value['AccountID'],
+            'Division' => $Division,
+            'Department' => $value['Department'],
+            'Position' => $value['Position'],
+            'Email' => '',
+            'First Name' => $value['AccountID'],
+            'Last Name' => '',
+            'Note' => $value['Note'],
                   ]];
         }
 
@@ -305,6 +306,7 @@ function DumpConComList()
     $email = implode(" ", $email);
 
     print $email;
+
 }
 
 

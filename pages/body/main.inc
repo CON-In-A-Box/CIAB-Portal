@@ -2,6 +2,7 @@
 
 require_once($FUNCTIONDIR.'/volunteer.inc');
 
+
 function display_volunteer_hours()
 {
     // Display Current Volunteer Status
@@ -22,7 +23,9 @@ function display_volunteer_hours()
         echo "</table>\n";
         echo "</div>\n";
     }
+
 }
+
 
 function display_volunteer_prizes()
 {
@@ -34,8 +37,9 @@ function display_volunteer_prizes()
         $output = array();
         $total = 0;
         foreach ($data as $entry) {
-            if (!isset($entry['Aquired']) || $entry['Aquired'] == 0)
+            if (!isset($entry['Aquired']) || $entry['Aquired'] == 0) {
                 continue;
+            }
             echo "<tr><td>".$entry['Name'].'</td>';
             echo "<td>".$entry['Aquired'].'</td>';
             echo "</tr>\n";
@@ -47,9 +51,11 @@ function display_volunteer_prizes()
         echo "</table>\n";
         echo "</div>\n";
     }
+
 }
 
- ?>
+
+    ?>
 <div id="main_content" class="w3-cell w3-cell-top w3-mobile">
 <?php
 echo '<div class="w3-container w3-center">';

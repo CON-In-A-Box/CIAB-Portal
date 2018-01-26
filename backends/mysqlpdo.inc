@@ -4,20 +4,30 @@
 
 class MyPDO
 {
+
     protected static $instance = null;
 
-    protected function __construct() {}
-    protected function __clone() {}
-    
+
+    protected function __construct()
+    {
+
+    }
+
+
+    protected function __clone()
+    {
+
+    }
+
+
     public static function instance()
     {
-        if (self::$instance === null)
-        {
+        if (self::$instance === null) {
             // Setup a DB connecition via the parent PDO (In this case, MySQL Specific)
             $options = [
-                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-                PDO::ATTR_EMULATE_PREPARES => true,
-                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            PDO::ATTR_EMULATE_PREPARES => true,
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             ];
             $username = $GLOBALS['DBUSER']; // Pulled from Config file
             $password = $GLOBALS['DBPASS']; // Pulled from Config file
@@ -29,11 +39,15 @@ class MyPDO
             self::$instance = new PDO($dsn, $username, $password, $options);
         }
         return self::$instance;
+
     }
-    
+
+
     public static function __callStatic($method, $args)
     {
         return call_user_func_array(array(self::instance(), $method), $args);
+
     }
+
+
 }
-?>

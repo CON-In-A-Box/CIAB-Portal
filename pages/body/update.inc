@@ -14,7 +14,7 @@ if (!empty($_REQUEST)) {
     echo "</div>\n";
 }
 
-    require_once($FUNCTIONDIR."/update.inc");
-    db_do_update();
+require_once($FUNCTIONDIR."/update.inc");
+db_do_update();
 ?>
 </div>

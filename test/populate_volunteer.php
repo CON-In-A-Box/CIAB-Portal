@@ -3,6 +3,7 @@
 require_once(__DIR__."/../functions/functions.inc");
 require_once(__DIR__."/../functions/database.inc");
 
+
 function populate_vol()
 {
     global $db;
@@ -18,7 +19,7 @@ function populate_vol()
     $enterer = 1231;
     $authorized = 1231;
 
-    for ($i = 0 ; $i < 5000; $i++) {
+    for ($i = 0; $i < 5000; $i++) {
         $sql = <<<SQL
             SELECT AccountID FROM ConComList
             ORDER BY RAND()
@@ -37,9 +38,9 @@ SQL;
         $value = $result->fetch();
         $departmentID = (int)($value['DepartmentID']);
         $modifier = 0.5;
-        $modifier += rand(0,100)/100;
+        $modifier += rand(0, 100) / 100;
 
-        $hours = rand(1,5);
+        $hours = rand(1, 5);
         $sql = <<<SQL
             INSERT INTO VolunteerHours
                 (AccountID, ActualHours, EndDateTime, TimeModifier,
@@ -53,6 +54,7 @@ SQL;
 
 }
 
+
 function populate_prizes()
 {
     global $db;
@@ -65,7 +67,7 @@ function populate_prizes()
     $db->run($sql);
 
 
-    $limit = [rand(1,4), rand(1,4), rand(1,4), rand(1,4), rand(1,4)];
+    $limit = [rand(1, 4), rand(1, 4), rand(1, 4), rand(1, 4), rand(1, 4)];
 
     /* Add 5 groups */
     $sql = <<<SQL
@@ -86,19 +88,19 @@ SQL;
     $bottom = (int)($value['RewardGroupID']);
 
     $adj = ['red', 'cool', 'fantasy', 'large', 'mystic', 'silly', 'filly',
-            'green', 'yellow', 'black', 'old', 'new', 'plastic', 'sf',
-            'fantasy', 'small', 'white', 'branded', 'plain'];
+    'green', 'yellow', 'black', 'old', 'new', 'plastic', 'sf',
+    'fantasy', 'small', 'white', 'branded', 'plain'];
     $noun = ['ribbon', 'pencil', 'fan', 'bag', 'shirt', 'bag', 'lanyard',
-             'poster', 'book', 'hat'];
+    'poster', 'book', 'hat'];
 
 
     /* Add grouped promo item */
     $n1 = $noun[array_rand($noun)];
-    $value = (float)rand(0,5);
-    $value += rand(1,9) / 10;
+    $value = (float)rand(0, 5);
+    $value += rand(1, 9) / 10;
     $promo = 1;
-    for ($i = 0 ; $i < 5; $i++) {
-        $inventory = rand(10,500);
+    for ($i = 0; $i < 5; $i++) {
+        $inventory = rand(10, 500);
         $name = $adj[array_rand($adj)].' '.$n1;
         $group = $bottom;
 
@@ -117,19 +119,19 @@ SQL;
 
     $total_items = 50;
 
-    for ($i = 0 ; $i < 50; $i++) {
-        $value = (float)rand(0,5);
-        $value += rand(1,9) / 10;
-        $inventory = rand(10,500);
+    for ($i = 0; $i < 50; $i++) {
+        $value = (float)rand(0, 5);
+        $value += rand(1, 9) / 10;
+        $inventory = rand(10, 500);
         $name = $adj[array_rand($adj)].'-'.$adj[array_rand($adj)].' '.$noun[array_rand($noun)];
         $group = 'NULL';
         if ($promo_count < $total_items / 10) {
-            $promo = rand(0,1);
+            $promo = rand(0, 1);
             $promo_count++;
         } else {
             $promo = 0;
-            if ($group_count < $total_items / 4 && rand(0,1)) {
-                $group = $bottom + rand(1,5);
+            if ($group_count < $total_items / 4 && rand(0, 1)) {
+                $group = $bottom + rand(1, 5);
                 $group_count++;
             }
         }
@@ -143,7 +145,6 @@ SQL;
 
         $db->run($sql);
     }
-
 
 }
 
@@ -186,6 +187,7 @@ SQL;
     }
 
 }
+
 
 populate_vol();
 populate_prizes();

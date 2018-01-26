@@ -32,7 +32,9 @@ function _parse_user($result, $additional_fields)
     }
 
     return $user;
+
 }
+
 
 function _lookup_user($criteria, $single_result = false, $additional_fields = array(), $page = 1, & $output = null)
 {
@@ -71,7 +73,7 @@ function _lookup_user($criteria, $single_result = false, $additional_fields = ar
                 array_push($output['users'], $user);
             }
             if ($results['page']['totalPage'] > $page) {
-                return _lookup_user($criteria, $single_result, $additional_fields, $page+1, $output);
+                return _lookup_user($criteria, $single_result, $additional_fields, $page + 1, $output);
             } else {
                 return $output;
             }
@@ -87,6 +89,7 @@ function lookup_users_by_ids($id)
     return _lookup_user([['Account ID', 'IN_RANGE', $id]]);
 
 }
+
 
 function lookup_user_by_id($id)
 {
@@ -108,9 +111,11 @@ function lookup_users_by_name($name, $single = false)
     if (count($names) != 2) {
         return ['code' => '400 Bad Request', 'users' => array()];
     }
-    return _lookup_user([['First Name', 'EQUAL', $names[0]],
+    return _lookup_user(
+        [['First Name', 'EQUAL', $names[0]],
                          ['Last Name', 'EQUAL', $names[1]]],
-                        $single);
+        $single
+    );
 
 }
 
