@@ -9,9 +9,7 @@ if (empty($_REQUEST['Function'])) {
     require_once(dirname(__FILE__).'/functions/session.inc');
     if (validateDeepLink($_REQUEST['DeepLink'])) {
         // Allow only approved DeepLink Functions - Need to make this an array search
-        if ($_REQUEST['Function'] == 'allocations') {
-            $noheader = true; // Proceed to allocation function, no MenuBar
-        } elseif ($_REQUEST['Function'] == 'dumplist') {
+        if ($_REQUEST['Function'] == 'dumplist') {
             // Dump and Exit - Automation link
             require($PAGESDIR.'/body/'.$_REQUEST['Function'].'.inc');
             exit();
