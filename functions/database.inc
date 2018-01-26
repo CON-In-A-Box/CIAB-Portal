@@ -14,7 +14,8 @@ class DB
 
     public function __construct()
     {
-        global $DATADIR;
+        global $BASEDIR;
+        $DATADIR = $BASEDIR.'/data';
         require_once($DATADIR.'/database-schema.php');
 
         $result = MyPDO::instance()->query("SHOW TABLES");

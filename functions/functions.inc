@@ -17,7 +17,6 @@ $SITECONFIGLEG  = $BASEDIR.'/.ht_meetingsignin_config-legacy.php'; // Location o
 $SITESUPPORTDIR = $BASEDIR."/sitesupport";
 $PAGESDIR       = $BASEDIR."/pages";
 $BACKEND        = $BASEDIR."/backends";
-$DATADIR        = $BASEDIR.'/data'; // Really hoping this one disapears into the DB
 
 // Set a Date stamp for use anywhere
 $DS             = uniqid('', true);
