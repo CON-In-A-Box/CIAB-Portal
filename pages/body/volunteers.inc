@@ -8,6 +8,23 @@ $unclaimed_promo = [];
 $hoursRemain = 0;
 $groupTotals = [];
 
+$uid = null;
+$admin_mode = false;
+if (!empty($_REQUEST)) {
+    // Retrieve and sanitize POST data
+    $arguments = [
+    'volunteerId'         => FILTER_SANITIZE_SPECIAL_CHARS,
+    ];
+    $updateData = filter_input_array(INPUT_GET, $arguments);
+    $uid = $updateData['volunteerId'];
+}
+
+if (isset($_SESSION['IS_ADMIN']) || isset($_SESSION['IS_VOLUNTEERS'])) {
+    if (isset($_COOKIE["CIAB_VOLUNTEERADMIN"])) {
+        $admin_mode = $_COOKIE["CIAB_VOLUNTEERADMIN"];
+    }
+}
+
 
 function _increment_offsets(&$groups, $start_entry)
 {
@@ -98,7 +115,7 @@ function hour_table($uid)
     global $totalHours;
 
     echo '<div class="w3-container w3-center w3-green" ';
-    echo 'style="max-height:350px; overflow:scroll;">';
+    echo 'style="max-height:35vh; overflow:scroll;">';
     echo "<table class='w3-table w3-striped w3-bordered w3-white'>";
     echo "<tr><th class='w3-center w3-green' colspan=9>Hours</th></tr>\n";
     if (isset($uid)) {
@@ -162,7 +179,7 @@ function _prize_table_start($uid = 0, $spent = 0, $hoursRemain = 0)
         echo "</div>\n";
     }
     echo "<div class='w3-container w3-center w3-blue' ";
-    echo "style='max-height:200px; overflow:scroll;'>\n";
+    echo "style='max-height:35vh; overflow:scroll;'>\n";
     echo "<table class='w3-table w3-striped w3-bordered w3-white'";
     echo " id='prizes'>\n";
     echo "<tr>";
@@ -322,7 +339,7 @@ function messages($uid)
 
         if ($display) {
             echo "<div class='w3-col w3-cell-row w3-padding' ";
-            echo "style='max-height:20px; overflow:scroll;'>\n";
+            echo "style='max-height:10vh; overflow:scroll;'>\n";
             echo "<div id='volunteer_messages' class='w3-container w3-padding w3-border-red w3-border w3-margin w3-cell'>\n";
             echo $promo;
             echo "</div>\n";
@@ -349,24 +366,43 @@ function messages($uid)
 
 }
 
+echo '<div id="main_content" style="height:94vh;" class="w3-row-padding';
+if ($admin_mode) {
+    echo ' w3-topbar w3-bottombar w3-leftbar w3-rightbar w3-border-red">';
+    echo "\n";
+    echo "<div class='w3-rest w3-center w3-xlarge w3-red'>\n";
+    echo "<span>Volunteer Administration</span>\n";
+} else {
+    echo '">';
+    echo "\n";
+    echo "<div class='w3-rest w3-center w3-xlarge w3-green'>\n";
+    echo "<span>Volunteer Management</span>\n";
+}
+echo "</div>\n"
+?>
 
-$uid = null;
-if (!empty($_REQUEST)) {
-    // Retrieve and sanitize POST data
-    $arguments = [
-    'volunteerId'         => FILTER_SANITIZE_SPECIAL_CHARS,
-    ];
-    $updateData = filter_input_array(INPUT_GET, $arguments);
-    $uid = $updateData['volunteerId'];
+<div class="w3-rest w3-center">
+<?php
+if (isset($_SESSION['IS_ADMIN']) || isset($_SESSION['IS_VOLUNTEERS'])) {
+?>
+  <div>
+    <div class="w3-show-inline-block w3-right w3-red w3-margin">
+      <table class='switch-table'><tr><td>
+        Admin Mode
+        <label class=switch><input type="checkbox" class=toggle id=admin_slider <?php
+        if ($admin_mode) {
+            echo "checked";
+        }
+?> onclick='toggleAdminMode();'>
+          <div class=slider></div></label></td></tr>
+      </table>
+    </div>
+  </div>
+<?php
 }
 ?>
 
-<div id="main_content" class="w3-row-padding">
-<div class="w3-rest w3-center w3-xlarge w3-green">
-<span>Volunteer Management</span>
-</div>
-
-<div class="w3-rest w3-center">
+<div>
 <form method="post" action="index.php?Function=volunteers">
 <div class='w3-bar'>
   <div class='w3-bar-item'>
@@ -384,9 +420,14 @@ if (isset($uid)) {
       <span class='w3-bar-item' id='message'></span>
     </div>
   </div>
+  <div>
+  </div>
 </div>
 </form>
 </div>
+</div>
+
+<div class="w3-rest w3-center">
 
 <!------ Main Section ----->
 
@@ -395,7 +436,11 @@ if (isset($uid)) {
 <?php
 initialize($uid);
 hour_table($uid);
-messages($uid);
+if (!$admin_mode) {
+    messages($uid);
+} else {
+    echo "<hr>\n";
+}
 prizes_table($uid);
 ?>
     </div>
@@ -456,5 +501,7 @@ if (isset($uid)) {
     echo "  var hoursRemain = 0;\n";
     echo "  var unclaimed = [];\n";
 }
+echo "  var adminMode = ".json_encode($admin_mode).";\n";
+echo "  var userEmail = '".$_SESSION['email']."';\n";
 ?>
 </script>

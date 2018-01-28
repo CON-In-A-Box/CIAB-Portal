@@ -282,3 +282,29 @@ function  addPromoToCheckout(names) {
     }
   });
 }
+
+function enterAdmin() {
+  setTimeout(location.reload(), 1000);
+}
+
+function failAdmin(error) {
+  document.getElementById('admin_slider').checked = false;
+  if (error) {
+    window.alert('Login Failed (' + error + ')');
+  }
+}
+
+function toggleAdminMode() {
+  document.cookie = 'CIAB_VOLUNTEERADMIN=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+  var target = '';
+  if (userId) {
+    target = 'index.php?Function=volunteers&volunteerId=' + userId;
+  } else {
+    target = 'index.php?Function=volunteers';
+  }
+  if (!adminMode) {
+    checkAuthentication(userEmail, enterAdmin, failAdmin);
+  } else {
+    setTimeout(function() {window.location = target;}, 1000);
+  }
+}
