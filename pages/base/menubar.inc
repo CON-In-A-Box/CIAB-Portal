@@ -50,6 +50,8 @@
       <a class="w3-bar-item w3-button w3-hide-small w3-hide-medium<?php
         if ($_REQUEST['Function'] == 'volunteers') {
             echo " w3-green";
+        } elseif ($_COOKIE["CIAB_VOLUNTEERADMIN"]) {
+            echo " w3-red";
         } else {
             echo " w3-yellow";
         }
