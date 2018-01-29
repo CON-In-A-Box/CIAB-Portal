@@ -112,7 +112,7 @@ function initialize($uid)
 
 function hour_table($uid)
 {
-    global $totalHours;
+    global $totalHours,$admin_mode;
 
     echo '<div class="w3-container w3-center w3-green" ';
     echo 'style="max-height:35vh; overflow:scroll;">';
@@ -131,6 +131,10 @@ function hour_table($uid)
         if ($id_index !== false) {
             unset($keys[$id_index]);
         }
+        $idx = array_search('EntryID', $keys);
+        if ($idx !== false) {
+            unset($keys[$idx]);
+        }
         echo implode($keys, '</th><th>');
         echo "</th></tr>\n";
         foreach ($data as $key => $record) {
@@ -139,7 +143,17 @@ function hour_table($uid)
             } else {
                 $totalHours += $record['Total Hours'];
             }
-            echo "<tr><td>";
+            if ($uid && $admin_mode) {
+                echo "<tr class='w3-hover-red' ";
+                $json = json_encode($record);
+                $json = base64_encode($json);
+                echo 'onclick=\'show_edit_hours("'.$json;
+                echo '");\'>';
+            } else {
+                echo "<tr>";
+            }
+            echo "<td>";
+            unset($record['EntryID']);
             if ($id_index !== false) {
                 unset($record['Department ID']);
             }
@@ -519,6 +533,59 @@ if (!$admin_mode) {
 prizes_table($uid);
 ?>
     </div>
+
+    <div class='w3-hide w3-padding' id='edit_user_hour_div'>
+        <div class='w3-center w3-red'>
+            <h2>Edit Hours Entry</h2>
+        </div>
+        <div class='w3-border w3-padding'>
+          <form>
+            <label for='edit_name'>Volunteer:</label>
+            <input class="w3-input w3-border w3-disabled" id="edit_name" readonly>
+            <label for='edit_hours'>Actual Hours:</label>
+            <input class="w3-input w3-border" id="edit_hours">
+            <label for='edit_mod'>Time Modifier</label><br />
+            <select class="w3-select w3-border" style="width:auto" name="TimeModifier" id="edit_mod">
+              <option value=0.5>Half Time - 1 hour = 0.5 hours credit</option>
+              <option value=1 selected>Normal - 1 hour = 1 hour</option>
+              <option value=1.5>Time Plus Half - 1 hour = 1.5 hours credit</option>
+              <option value=2>Double - 1 hour = 2 hours credit</option>
+            </select>
+            <label for='edit_end'>End Time:</label>
+            <input class="w3-input w3-border" type="datetime-local" id="edit_end" pattern="\d{4}-\d{2}-\d{2}T\d{2}:\d{2}">
+            <label for='edit_dept'>Department</label><br />
+            <select class="w3-select w3-border" style="width:auto" name="DepartmentWorked" id="edit_dept">
+<?php
+require_once($FUNCTIONDIR."/divisional.inc");
+foreach ($Departments as $dep => $set) {
+    echo '<option value="'.$dep.'"';
+    echo '>'.$dep."</option>\n";
+}
+?>
+            </select>
+            <label for='edit_enter'>Entered By:</label>
+            <input class="w3-input w3-border w3-disabled" id="edit_enter" readonly>
+            <label for='edit_auth'>Authorized By:</label>
+            <input class="w3-input w3-border" id="edit_auth">
+            <input class="w3-input w3-border w3-disabled w3-hide" id="edit_data" readonly>
+          </form>
+        </div>
+        <div class='w3-center'>
+            <button id='set_hours_button' class='w3-button w3-round-xxlarge w3-green'
+                onclick='commit_hours();'>
+                Commit
+            </button>
+            <button id='delete_hours_button' class='w3-button w3-round-xxlarge w3-blue'
+                onclick='delete_hours();'>
+                Delete
+            </button>
+            <button id='exit_hours_button' class='w3-button w3-round-xxlarge w3-red'
+                onclick='hideSidebar();'>
+               Cancel
+            </button>
+        </div>
+    </div>
+
     <div class='w3-hide w3-padding' id='checkout_div'>
         <div class='w3-center'>
             <h2>Items claimed now</h2>
@@ -784,4 +851,88 @@ foreach ($unclaimed_promo as $item) {
             }
         };
     }
+
+    function show_edit_hours(data) {
+        showSidebar("edit_user_hour_div");
+        var item = JSON.parse(atob(data));
+        document.getElementById("edit_name").value = item.Volunteer;
+        document.getElementById("edit_hours").value = item['Actual Hours'];
+        var options = document.getElementById("edit_mod");
+        var value = parseFloat(item['Time Modifier']);
+        options.selectedIndex = 0;
+        for (var i = 0, n = options.length; i < n ; i++) {
+            if (options[i].value == value) {
+                options.selectedIndex = i;
+                break;
+            } else if (options[i].value < value) {
+                options.selectedIndex = i;
+            } else {
+                break;
+            }
+        }
+        document.getElementById("edit_enter").value = item['Entered By'];
+        document.getElementById("edit_auth").value = item['Authorized By'];
+        document.getElementById("edit_dept").value = item['Department Worked'];
+        var date = item['End Date Time'];
+        date = date.replace(/\s+/g, 'T');
+        document.getElementById("edit_end").value = date;
+        document.getElementById("edit_data").value = data;
+    }
+
+    function commit_hours() {
+        if (!confirm("=============================\nPlease! double check entries!\n=============================\n\nProceed with Volunteer Hour Update?"))
+            return;
+
+        data = document.getElementById("edit_data").value;
+        var item = JSON.parse(data);
+
+        item['Actual Hours'] = parseFloat(document.getElementById("edit_hours").value);
+        item['End Date Time'] = document.getElementById("edit_end").value;
+        var e = document.getElementById("edit_mod");
+        item['Time Modifier'] = e.options[e.selectedIndex].value;
+        item['Department Worked'] = document.getElementById("edit_dept").value;
+        item['Authorized By'] = document.getElementById("edit_auth").value;
+
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+          if (this.readyState == 4 && this.status == 200) {
+            location.reload();
+          }
+          else if (this.status == 404) {
+              alert("ERROR 404!");
+          }
+          else if (this.status == 409) {
+              alert("ERROR 409!");
+          }
+        }
+        xhttp.open("POST", "index.php?Function=volunteers", true);
+        xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xhttp.send("update_hour="+JSON.stringify(item));
+    }
+
+    function delete_hours()
+    {
+        if (!confirm("DELETE Volunteer Entry?"))
+            return;
+
+        data = document.getElementById("edit_data").value;
+        var item = JSON.parse(data);
+
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+          if (this.readyState == 4 && this.status == 200) {
+            location.reload();
+          }
+          else if (this.status == 404) {
+              alert("ERROR 404!");
+          }
+          else if (this.status == 409) {
+              alert("ERROR 409!");
+          }
+        }
+        xhttp.open("POST", "index.php?Function=volunteers", true);
+        xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xhttp.send("delete_hour="+item['EntryID']);
+    }
+
 </script>
