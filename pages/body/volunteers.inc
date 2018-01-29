@@ -112,7 +112,7 @@ function initialize($uid)
 
 function hour_table($uid)
 {
-    global $totalHours;
+    global $totalHours,$admin_mode;
 
     echo '<div class="w3-container w3-center w3-green" ';
     echo 'style="max-height:35vh; overflow:scroll;">';
@@ -131,6 +131,10 @@ function hour_table($uid)
         if ($id_index !== false) {
             unset($keys[$id_index]);
         }
+        $idx = array_search('EntryID', $keys);
+        if ($idx !== false) {
+            unset($keys[$idx]);
+        }
         echo implode($keys, '</th><th>');
         echo "</th></tr>\n";
         foreach ($data as $key => $record) {
@@ -139,7 +143,17 @@ function hour_table($uid)
             } else {
                 $totalHours += $record['Total Hours'];
             }
-            echo "<tr><td>";
+            if ($uid && $admin_mode) {
+                echo "<tr class='w3-hover-red' ";
+                $json = json_encode($record);
+                $json = base64_encode($json);
+                echo 'onclick=\'showEditHours("'.$json;
+                echo '");\'>';
+            } else {
+                echo "<tr>";
+            }
+            echo "<td>";
+            unset($record['EntryID']);
             if ($id_index !== false) {
                 unset($record['Department ID']);
             }
@@ -444,6 +458,59 @@ if (!$admin_mode) {
 prizes_table($uid);
 ?>
     </div>
+
+    <div class='w3-hide w3-padding' id='edit_user_hour_div'>
+        <div class='w3-center w3-red'>
+            <h2>Edit Hours Entry</h2>
+        </div>
+        <div class='w3-border w3-padding'>
+          <form>
+            <label for='edit_name'>Volunteer:</label>
+            <input class="w3-input w3-border w3-disabled" id="edit_name" readonly>
+            <label for='edit_hours'>Actual Hours:</label>
+            <input class="w3-input w3-border" id="edit_hours">
+            <label for='edit_mod'>Time Modifier</label><br />
+            <select class="w3-select w3-border" style="width:auto" name="TimeModifier" id="edit_mod">
+              <option value=0.5>Half Time - 1 hour = 0.5 hours credit</option>
+              <option value=1 selected>Normal - 1 hour = 1 hour</option>
+              <option value=1.5>Time Plus Half - 1 hour = 1.5 hours credit</option>
+              <option value=2>Double - 1 hour = 2 hours credit</option>
+            </select>
+            <label for='edit_end'>End Time:</label>
+            <input class="w3-input w3-border" type="datetime-local" id="edit_end" pattern="\d{4}-\d{2}-\d{2}T\d{2}:\d{2}">
+            <label for='edit_dept'>Department</label><br />
+            <select class="w3-select w3-border" style="width:auto" name="DepartmentWorked" id="edit_dept">
+<?php
+require_once($FUNCTIONDIR."/divisional.inc");
+foreach ($Departments as $dep => $set) {
+    echo '<option value="'.$dep.'"';
+    echo '>'.$dep."</option>\n";
+}
+?>
+            </select>
+            <label for='edit_enter'>Entered By:</label>
+            <input class="w3-input w3-border w3-disabled" id="edit_enter" readonly>
+            <label for='edit_auth'>Authorized By:</label>
+            <input class="w3-input w3-border" id="edit_auth">
+            <input class="w3-input w3-border w3-disabled w3-hide" id="edit_data" readonly>
+          </form>
+        </div>
+        <div class='w3-center'>
+            <button id='set_hours_button' class='w3-button w3-round-xxlarge w3-green'
+                onclick='commitHours();'>
+                Commit
+            </button>
+            <button id='delete_hours_button' class='w3-button w3-round-xxlarge w3-blue'
+                onclick='deleteHours();'>
+                Delete
+            </button>
+            <button id='exit_hours_button' class='w3-button w3-round-xxlarge w3-red'
+                onclick='hideSidebar();'>
+               Cancel
+            </button>
+        </div>
+    </div>
+
     <div class='w3-hide w3-padding' id='checkout_div'>
         <div class='w3-center'>
             <h2>Items claimed now</h2>

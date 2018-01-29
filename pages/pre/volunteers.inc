@@ -27,6 +27,8 @@ if (!empty($_REQUEST)) {
     'rewards'          => FILTER_UNSAFE_RAW,
     'validate_login'   => FILTER_SANITIZE_SPECIAL_CHARS,
     'validate_passwd'  => FILTER_SANITIZE_ENCODED,
+    'update_hour'      => FILTER_UNSAFE_RAW,
+    'delete_hour'      => FILTER_SANITIZE_SPECIAL_CHARS,
     ];
 
     require_once($FUNCTIONDIR."/volunteer.inc");
@@ -55,6 +57,24 @@ if (!empty($_REQUEST)) {
                 unset($_COOKIE["CIAB_VOLUNTEERADMIN"]);
                 exit();
             }
+        }
+    }
+
+    if (isset($updateData['update_hour'])) {
+        if (isset($_SESSION['IS_ADMIN']) || isset($_SESSION['IS_VOLUNTEERS'])) {
+            $item = json_decode($updateData['update_hour']);
+            update_volunteer_hours($item->{'EntryID'}, null, $item->{'Actual Hours'}, $item->{'End Date Time'}, $item->{'Time Modifier'}, $item->{'Department Worked'}, null, $item->{'Authorized By'});
+            exit();
+        } else {
+            header("HTTP/1.0 401");
+            exit();
+        }
+    }
+
+    if (isset($updateData['delete_hour'])) {
+        if (isset($_SESSION['IS_ADMIN']) || isset($_SESSION['IS_VOLUNTEERS'])) {
+            delete_volunteer_hours($updateData['delete_hour']);
+            exit();
         }
     }
 }

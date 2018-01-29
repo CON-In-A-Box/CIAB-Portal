@@ -82,6 +82,7 @@ SQL;
     $value = $result->fetch();
     while ($value !== false) {
         $data[] = [
+        'EntryID' => $value['HourEntryID'],
         'Volunteer' => $user['users'][0]['First Name'],
         'Actual Hours' => $value['ActualHours'],
         'Time Modifier' => $value['TimeModifier'],
@@ -143,6 +144,95 @@ SQL;
         return PDO::errorInfo();
     }
     return null;
+
+}
+
+
+function update_volunteer_hours(
+    $record_id,
+    $user = null,
+    $hours = null,
+    $end = null,
+    $modifier = null,
+    $department = null,
+    $enterer = null,
+    $authorized = null,
+    $year = null
+) {
+    global $db;
+
+    if ($user === null && $hours === null && $end === null &&
+        $modifier === null && $department === null && $enterer === null &&
+        $authorized === null && $year === null) {
+        return null;
+    }
+
+    $departmentID = null;
+
+    /* Get the department id from name if it is a name */
+    if ($department !== null) {
+        if (!is_int($department)) {
+            $sql = "SELECT `DepartmentID` FROM Departments WHERE Name = ".MyPDO::quote($department).";";
+            $result = $db->run($sql);
+            $value = $result->fetch();
+            if ($value) {
+                $departmentID = $value['DepartmentID'];
+            } else {
+                $departmentID = 0;
+            }
+        } else {
+            $departmentID = $department;
+        }
+    }
+
+    $sql = "UPDATE `VolunteerHours` SET";
+    $t = [];
+    if ($user !== null) {
+        $t[] = " AccountID = ".$user;
+    }
+    if ($hours !== null) {
+        $t[] = " ActualHours = ".$hours;
+    }
+    if ($end !== null) {
+        $t[] = " EndDateTime = '".$end."'";
+    }
+    if ($modifier !== null) {
+        $t[] = " TimeModifier = ".$modifier;
+    }
+    if ($departmentID !== null) {
+        $t[] = " DepartmentID = ".$departmentID;
+    }
+    if ($enterer !== null) {
+        $t[] = " EnteredByID = ".$enterer;
+    }
+    if ($authorized !== null) {
+        $t[] = " AuthorizedByID = ".$authorized;
+    }
+    if ($year !== null) {
+        $t[] = " YearID = ".$year;
+    }
+    $sql .= implode(',', $t);
+    $sql .= " WHERE HourEntryID = ";
+    $sql .= $record_id;
+
+    $result = $db->run($sql);
+    if ($result === false) {
+        return PDO::errorInfo();
+    }
+    return null;
+
+}
+
+
+function delete_volunteer_hours($record_id)
+{
+    global $db;
+
+    $sql = <<<SQL
+        DELETE FROM `VolunteerHours` WHERE `HourEntryID` = $record_id;
+SQL;
+
+    $db->run($sql);
 
 }
 

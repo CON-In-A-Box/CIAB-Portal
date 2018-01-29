@@ -308,3 +308,89 @@ function toggleAdminMode() {
     setTimeout(function() {window.location = target;}, 1000);
   }
 }
+
+function showEditHours(data) {
+  showSidebar('edit_user_hour_div');
+  var item = JSON.parse(atob(data));
+  document.getElementById('edit_name').value = item.Volunteer;
+  document.getElementById('edit_hours').value = item['Actual Hours'];
+  var options = document.getElementById('edit_mod');
+  var value = parseFloat(item['Time Modifier']);
+  options.selectedIndex = 0;
+  for (var i = 0, n = options.length; i < n ; i++) {
+    if (options[i].value == value) {
+      options.selectedIndex = i;
+      break;
+    } else if (options[i].value < value) {
+      options.selectedIndex = i;
+    } else {
+      break;
+    }
+  }
+  document.getElementById('edit_enter').value = item['Entered By'];
+  document.getElementById('edit_auth').value = item['Authorized By'];
+  document.getElementById('edit_dept').value = item['Department Worked'];
+  var date = item['End Date Time'];
+  date = date.replace(/\s+/g, 'T');
+  document.getElementById('edit_end').value = date;
+  document.getElementById('edit_data').value = data;
+}
+
+function commitHours() {
+  if (!confirm('=============================\nPlease! double check entries!\n=============================\n\nProceed with Volunteer Hour Update?')){
+    return;
+  }
+
+  var data = document.getElementById('edit_data').value;
+  var item = JSON.parse(data);
+
+  item['Actual Hours'] = parseFloat(
+    document.getElementById('edit_hours').value);
+  item['End Date Time'] = document.getElementById('edit_end').value;
+  var e = document.getElementById('edit_mod');
+  item['Time Modifier'] = e.options[e.selectedIndex].value;
+  item['Department Worked'] = document.getElementById('edit_dept').value;
+  item['Authorized By'] = document.getElementById('edit_auth').value;
+
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      location.reload();
+    }
+    else if (this.status == 404) {
+      window.alert('ERROR 404!');
+    }
+    else if (this.status == 409) {
+      window.alert('ERROR 409!');
+    }
+  };
+  xhttp.open('POST', 'index.php?Function=volunteers', true);
+  xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+  xhttp.send('update_hour=' + JSON.stringify(item));
+}
+
+function deleteHours() {
+  if (!window.confirm('DELETE Volunteer Entry?')) {
+    return;
+  }
+
+  var data = document.getElementById('edit_data').value;
+  var item = JSON.parse(data);
+
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      location.reload();
+    }
+    else if (this.status == 404) {
+      window.alert('ERROR 404!');
+    }
+    else if (this.status == 409) {
+      window.alert('ERROR 409!');
+    }
+  };
+  xhttp.open('POST', 'index.php?Function=volunteers', true);
+  xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+  xhttp.send('delete_hour=' + item.EntryID);
+}
+
