@@ -60,6 +60,67 @@ SQL;
 }
 
 
+function get_volunteer_year_summery($year = null)
+{
+    global $db;
+
+    if ($year === null) {
+        $year = current_yearID();
+    }
+
+    $sql = <<<SQL
+        SELECT
+            SUM(ActualHours * TimeModifier) AS TotalHours,
+            COUNT(DISTINCT AccountID) AS VolunteerCount,
+            (
+                SELECT
+                    COUNT(ClaimID) * (
+                        SELECT
+                            value
+                        FROM
+                            VolunteerRewards v
+                        WHERE
+                            v.prizeID = h.prizeID
+                    )
+                FROM
+                    `HourRedemptions` as h
+                WHERE
+                    YearID = $year
+                GROUP BY
+                    YearID
+            ) as TotalHoursSpent
+        FROM
+            VolunteerHours
+        WHERE
+            YearID = $year
+        GROUP BY
+            YearID;
+SQL;
+
+    $result = $db->run($sql);
+    $value = $result->fetch();
+
+    $output = [
+    'TotalHours' => 0,
+    'VolunteerCount' => 0,
+    'TotalHoursSpent' => 0,
+    ];
+
+    if ($value['TotalHours']) {
+        $output['TotalHours'] = $value['TotalHours'];
+    }
+    if ($value['VolunteerCount']) {
+        $output['VolunteerCount'] = $value['VolunteerCount'];
+    }
+    if ($value['TotalHoursSpent']) {
+        $output['TotalHoursSpent'] = $value['TotalHoursSpent'];
+    }
+
+    return $output;
+
+}
+
+
 function get_volunteer_hours_for_user($id, $year = null)
 {
     global $db;

@@ -120,10 +120,11 @@ function hour_table($uid)
     echo "<tr><th class='w3-center w3-green' colspan=9>Hours</th></tr>\n";
     if (isset($uid)) {
         $data = get_volunteer_hours_for_user($uid);
+        $totalHours = 0;
     } else {
         $data = get_volunteer_hour_summary();
+        $summary = get_volunteer_year_summery();
     }
-    $totalHours = 0;
     if (!empty($data)) {
         echo "<tr><th>";
         $keys = array_keys($data[0]);
@@ -138,10 +139,12 @@ function hour_table($uid)
         echo implode($keys, '</th><th>');
         echo "</th></tr>\n";
         foreach ($data as $key => $record) {
-            if (array_key_exists('Time Modifier', $record)) {
-                $totalHours += $record['Actual Hours'] * $record['Time Modifier'];
-            } else {
-                $totalHours += $record['Total Hours'];
+            if (isset($uid)) {
+                if (array_key_exists('Time Modifier', $record)) {
+                    $totalHours += $record['Actual Hours'] * $record['Time Modifier'];
+                } else {
+                    $totalHours += $record['Total Hours'];
+                }
             }
             if ($uid && $admin_mode) {
                 echo "<tr class='w3-hover-red' ";
@@ -167,7 +170,13 @@ function hour_table($uid)
     echo "</table>";
     echo "</div>";
     echo '<div class="w3-col w3-center w3-xlarge w3-green">';
-    echo "<span>Total Hours : ".$totalHours."</span>";
+    if (isset($uid)) {
+        echo "<span>Total Hours : ".$totalHours."</span>";
+    } else {
+        echo "<span class='w3-margin'>Total Hours : ".$summary['TotalHours']."</span>";
+        echo "<span class='w3-margin'>Total Volunteers : ".$summary['VolunteerCount']."</span>";
+        echo "<span class='we-margin'>Total Spent Hours : ".$summary['TotalHoursSpent']."</span>";
+    }
     echo "</div>\n";
 
 };
