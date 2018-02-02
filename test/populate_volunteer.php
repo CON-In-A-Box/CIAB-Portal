@@ -2,6 +2,7 @@
 
 require_once(__DIR__."/../functions/functions.inc");
 require_once(__DIR__."/../functions/database.inc");
+require_once(__DIR__."/../functions/volunteer.inc");
 
 
 function populate_vol()
@@ -66,21 +67,12 @@ function populate_prizes()
     $sql = "DELETE FROM `VolunteerRewards` WHERE 1";
     $db->run($sql);
 
-
-    $limit = [rand(1, 4), rand(1, 4), rand(1, 4), rand(1, 4), rand(1, 4)];
-
     /* Add 5 groups */
-    $sql = <<<SQL
-        INSERT INTO RewardGroup (RedeemLimit)
-        VALUES (5),
-               ($limit[0]),
-               ($limit[1]),
-               ($limit[2]),
-               ($limit[3]),
-               ($limit[4]);
-SQL;
-
-    $result = $db->run($sql);
+    for ($i = 0; $i < 5; $i++) {
+        $limit = rand(1, 4);
+        $group = add_volunteer_prize_group();
+        update_volunteer_prize_group($group, $limit);
+    }
 
     $sql = "SELECT RewardGroupID FROM RewardGroup LIMIT 1;";
     $result = $db->run($sql);
@@ -173,16 +165,12 @@ SQL;
 SQL;
         $result2 = $db->run($sql);
         $value2 = $result2->fetch();
+        $prizes = [];
         while ($value2 != false) {
-            $prize = $value2['PrizeID'];
-            $sql = <<<SQL
-                INSERT INTO HourRedemptions
-                    (AccountID, PrizeID, YearID)
-                VALUES ($id, $prize, 20);
-SQL;
-            $db->run($sql);
+            $prizes[] = $value2['PrizeID'];
             $value2 = $result2->fetch();
         }
+        award_prizes($id, $prizes);
         $value = $result->fetch();
     }
 

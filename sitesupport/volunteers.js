@@ -394,3 +394,129 @@ function deleteHours() {
   xhttp.send('delete_hour=' + item.EntryID);
 }
 
+function showEditPrize(data) {
+  groupsNow = JSON.parse(groupData);
+  var item = JSON.parse(atob(data));
+  showSidebar('edit_prize_div');
+
+  document.getElementById('edit_prize_name').value = item.Name;
+  document.getElementById('edit_prize_value').value = item.Value;
+  document.getElementById('edit_prize_promo').value = item.Promo;
+
+  var grp = document.getElementById('edit_prize_group');
+  if (grp.length == 1) {
+    for (var key in groupsNow) {
+      var option = document.createElement('option');
+      option.text = 'Group #' + key + ' : Limit ' + groupsNow[key];
+      option.value = key;
+      grp.add(option);
+    }
+    var option = document.createElement('option');
+    option.text = 'New Group';
+    option.value = 'new';
+    grp.add(option);
+  }
+  if (item.RewardGroupID) {
+    grp.value = item.RewardGroupID;
+  } else {
+    grp.value = 'none';
+  }
+  prizeGroupChange();
+
+  document.getElementById('edit_prize_count').value = item.Remaining;
+
+  document.getElementById('prize_data').value = data;
+}
+
+function deletePrize() {
+  if (!window.confirm('DELETE Prize Entry?\n\nWARNING!!!  Only do this if NONE of this prize has been distributed. It will lead to corrupt reward records. To DELETE a prize that has been rewarded set inventory to \'0\'')) {
+    return;
+  }
+
+  var data = document.getElementById('prize_data').value;
+  var item = JSON.parse(atob(data));
+
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      location.reload();
+    }
+    else if (this.status == 404) {
+      window.alert('ERROR 404!');
+    }
+    else if (this.status == 409) {
+      window.alert('ERROR 409!');
+    }
+  };
+  xhttp.open('POST', 'index.php?Function=volunteers', true);
+  xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+  xhttp.send('delete_prize=' + item.PrizeID);
+}
+
+function commitPrize() {
+  if (!window.confirm('=============================\nPlease! double check entries!\n=============================\n\nProceed with Volunteer Prize Update?')) {
+    return;
+  }
+
+  var data = document.getElementById('prize_data').value;
+  var item = JSON.parse(data);
+
+  item.Name = document.getElementById('edit_prize_name').value;
+  item.Value = parseFloat(document.getElementById('edit_prize_value').value);
+  var grp = document.getElementById('edit_prize_group').value;
+  if (grp === 'none') {
+    item.RewardGroupID = '';
+  } else {
+    item.RewardGroupID = grp;
+  }
+
+  item.GroupLimit = parseInt(
+    document.getElementById('edit_prize_group_count').value);
+
+  var e = document.getElementById('edit_prize_promo');
+  item.Promo = e.options[e.selectedIndex].value;
+
+  if (item.Remaining != document.getElementById('edit_prize_count').value) {
+    var amount = parseInt(item.Remaining) -
+        parseInt(document.getElementById('edit_prize_count').value);
+    if (amount !== 0) {
+      var newValue = parseInt(item.TotalInventory) - amount;
+      item.TotalInventory = newValue;
+    }
+  }
+
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      location.reload();
+    }
+    else if (this.status == 404) {
+      window.alert('ERROR 404!');
+    }
+    else if (this.status == 409) {
+      window.alert('ERROR 409!');
+    }
+  };
+  xhttp.open('POST', 'index.php?Function=volunteers', true);
+  xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+  xhttp.send('update_prize=' + JSON.stringify(item));
+}
+
+function prizeGroupChange() {
+  var grp = document.getElementById('edit_prize_group').value;
+  var cnt = document.getElementById('edit_prize_group_count');
+  if (grp === 'none') {
+    cnt.disabled = true;
+    cnt.value = '';
+    cnt.classList.add('w3-disabled');
+  } else if (grp === 'new') {
+    cnt.value = 1;
+    cnt.disabled = false;
+    cnt.classList.remove('w3-disabled');
+  } else {
+    cnt.value = groupsNow[grp];
+    cnt.disabled = false;
+    cnt.classList.remove('w3-disabled');
+  }
+}
+
