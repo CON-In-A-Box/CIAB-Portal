@@ -97,7 +97,7 @@ function _build_prize_list($data, $uid)
 
 function initialize($uid)
 {
-    global $prizeData;
+    global $prizeData, $groupTotals, $admin_mode;
 
     if (isset($uid)) {
         $prizeData = volunteer_prizes_for_user($uid);
@@ -106,6 +106,10 @@ function initialize($uid)
     }
 
     $prizeData = _build_prize_list($prizeData, $uid);
+
+    if ($admin_mode) {
+        $groupTotals = volunteer_prize_groups();
+    }
 
 }
 
@@ -195,6 +199,8 @@ function acquireable_item($item)
 
 function _prize_table_start($uid = 0, $spent = 0, $hoursRemain = 0)
 {
+    global $admin_mode;
+
     if ($uid) {
         echo '<div class="w3-col w3-center w3-xlarge w3-blue">';
         echo "<span>Hours Spent  <span id='h_spent'>".$spent."</span>  |  ";
@@ -207,15 +213,17 @@ function _prize_table_start($uid = 0, $spent = 0, $hoursRemain = 0)
     echo " id='prizes'>\n";
     echo "<tr>";
     echo "<th class='w3-blue'>";
-    echo "<input id='soldoutcheck' type='checkbox' class='w3-check' ";
-    echo "onclick='showHideSoldOut()'>";
-    echo "<label for='soldoutcheck'>";
-    if (isset($uid)) {
-        echo "Show volunteer's soldout items";
-    } else {
-        echo "Show soldout items";
+    if (!$admin_mode) {
+        echo "<input id='soldoutcheck' type='checkbox' class='w3-check' ";
+        echo "onclick='showHideSoldOut()'>";
+        echo "<label for='soldoutcheck'>";
+        if (isset($uid)) {
+            echo "Show volunteer's soldout items";
+        } else {
+            echo "Show soldout items";
+        }
+        echo "</label></th>\n";
     }
-    echo "</label></th>\n";
     echo "<th class='w3-center w3-blue' colspan=3>Prizes</th>";
     echo "<th class='w3-blue' colspan=3></th>\n";
     echo "</tr>\n";
@@ -226,6 +234,7 @@ function _prize_table_start($uid = 0, $spent = 0, $hoursRemain = 0)
 function prizes_table($uid)
 {
     global $totalHours, $prizeData, $hoursRemain, $groupTotals;
+    global $admin_mode;
 
     $data = $prizeData;
 
@@ -245,8 +254,10 @@ function prizes_table($uid)
         $keys = array_keys($data[$first_key]);
         $idx = array_search('PrizeID', $keys);
         unset($keys[$idx]);
-        $idx = array_search('RewardGroupID', $keys);
-        unset($keys[$idx]);
+        if (!$admin_mode || isset($uid)) {
+            $idx = array_search('RewardGroupID', $keys);
+            unset($keys[$idx]);
+        }
         if (isset($uid) && !array_search('Aquired', $keys)) {
             array_push($keys, 'Aquired');
         }
@@ -271,51 +282,60 @@ function prizes_table($uid)
         echo implode($keys, '</th><th>');
         echo "</th></tr>\n";
         foreach ($data as $key => $record) {
-            if ($record['Remaining'] <= 0) {
-                echo "<tr class='soldoutrow hiddenrow w3-red'>";
-            } elseif ($record['Promo'] == 'yes' && $record['Aquired'] > 0) {
-                echo "<tr class='soldoutrow hiddenrow w3-disabled'>";
-            } elseif ($record['RewardGroupID']) {
-                $record['GroupLimit'] = $record['Limit'];
-                if ($last_group !== null && $last_group != $record['RewardGroupID']) {
-                    $group++;
-                } elseif ($last_group !== null) {
-                    $record['Limit'] = '|';
-                }
-                if (ctype_digit($record['Aquired'])) {
-                    $groupTotals[intval($record['RewardGroupID'])] += intval($record['Aquired']);
-                } else {
-                    $groupTotals[intval($record['RewardGroupID'])] += 0;
-                }
-                $last_group = $record['RewardGroupID'];
-                $classes = $group_styles[($group % count($group_styles))];
+            if (!isset($uid) && $admin_mode) {
+                echo "<tr ";
+                echo "class='w3-hover-red' ";
+                $json = json_encode($record);
+                $json = base64_encode($json);
+                echo 'onclick=\'show_edit_prize("'.$json.'");\'';
+                echo ">";
+            } else {
+                if ($record['Remaining'] <= 0) {
+                    echo "<tr class='soldoutrow hiddenrow w3-red'>";
+                } elseif ($record['Promo'] == 'yes' && $record['Aquired'] > 0) {
+                    echo "<tr class='soldoutrow hiddenrow w3-disabled'>";
+                } elseif ($record['RewardGroupID']) {
+                    $record['GroupLimit'] = $record['Limit'];
+                    if ($last_group !== null && $last_group != $record['RewardGroupID']) {
+                        $group++;
+                    } elseif ($last_group !== null) {
+                        $record['Limit'] = '|';
+                    }
+                    if (ctype_digit($record['Aquired'])) {
+                        $groupTotals[intval($record['RewardGroupID'])] += intval($record['Aquired']);
+                    } else {
+                        $groupTotals[intval($record['RewardGroupID'])] += 0;
+                    }
+                    $last_group = $record['RewardGroupID'];
+                    $classes = $group_styles[($group % count($group_styles))];
 
-                if (isset($record['group_soldout'])) {
-                    echo "<tr class='$classes soldoutrow hiddenrow w3-disabled'>";
+                    if (isset($record['group_soldout'])) {
+                        echo "<tr class='$classes soldoutrow hiddenrow w3-disabled'>";
+                    } else {
+                        echo "<tr class='$classes";
+                        if (!$admin_mode && isset($uid) && acquireable_item($record)) {
+                            echo " w3-hover-green' ";
+                            $json = json_encode($record);
+                            $json = addslashes($json);
+                            echo 'onclick=\'add_to_checkout("'.$json;
+                            echo '");\'>';
+                        } else {
+                            echo "'>";
+                        }
+                    }
                 } else {
-                    echo "<tr class='$classes";
-                    if (isset($uid) && acquireable_item($record)) {
-                        echo " w3-hover-green' ";
+                    echo "<tr ";
+                    if (!$admin_mode && isset($uid) && acquireable_item($record)) {
+                        echo "class='w3-hover-green' ";
                         $json = json_encode($record);
                         $json = addslashes($json);
-                        echo 'onclick=\'add_to_checkout("'.$json;
-                        echo '");\'>';
-                    } else {
-                        echo "'>";
+                        echo 'onclick=\'add_to_checkout("'.$json.'");\'';
                     }
+                    echo ">";
                 }
-            } else {
-                echo "<tr ";
-                if (isset($uid) && acquireable_item($record)) {
-                    echo "class='w3-hover-green' ";
-                    $json = json_encode($record);
-                    $json = addslashes($json);
-                    echo 'onclick=\'add_to_checkout("'.$json.'");\'';
-                }
-                echo ">";
+                unset($record['RewardGroupID']);
             }
             unset($record['PrizeID']);
-            unset($record['RewardGroupID']);
             unset($record['group_soldout']);
             unset($record['GroupLimit']);
             echo "<td>";
@@ -461,6 +481,8 @@ if (!$admin_mode) {
 ?>
   }
 
+function volunteer_audit() {
+}
 </script>
 
 <?php
@@ -536,12 +558,83 @@ initialize($uid);
 hour_table($uid);
 if (!$admin_mode) {
     messages($uid);
-} else {
-    echo "<hr>\n";
 }
 prizes_table($uid);
 ?>
     </div>
+
+    <div class='w3-hide w3-padding' id='edit_prize_div'>
+        <div class='w3-center w3-red'>
+            <h2>Edit Prize Entry</h2>
+        </div>
+        <div class='w3-border w3-padding'>
+          <form>
+
+            <label for='edit_prize_name' class="w3-tooltip">
+                <span
+                  style="position:absolute;left:-80px;right:-80px;bottom:18px"
+                  class="w3-text w3-tag w3-green w3-round-xlarge">Visible name of the item</span>
+            Name:</label>
+            <input class="w3-input w3-border" id="edit_prize_name">
+            <label for='edit_prize_value' class="w3-tooltip">
+                <span
+                  style="position:absolute;left:-80px;right:-80px;bottom:18px"
+                  class="w3-text w3-tag w3-green w3-round-xlarge">Hour cost of the item</span>
+            Value:</label>
+            <input class="w3-input w3-border" id="edit_prize_value">
+            <label for='edit_prize_value' class="w3-tooltip">
+                <span
+                  style="position:absolute;left:-80px;right:-80px;bottom:18px"
+                  class="w3-text w3-tag w3-green w3-round-xlarge">If 'yes' this item does not cost hours but instead is free at the given hour mark. Also enforces a limit of 1.</span>
+            Promo Item:</label>
+            <select class="w3-select w3-border" id="edit_prize_promo">
+              <option value='yes'>Yes</option>
+              <option value='no'>No</option>
+            </select>
+
+            <label for='edit_prize_count' class="w3-tooltip">
+                <span
+                  style="position:absolute;left:-80px;right:-80px;bottom:18px"
+                  class="w3-text w3-tag w3-green w3-round-xlarge">Changing this will adjust Total items</span>
+            Inventory Remaining:</label>
+            <input class="w3-input w3-border" id="edit_prize_count">
+
+                    <label for='edit_prize_group' class="w3-tooltip">
+                        <span
+                          style="position:absolute;left:-80px;right:-80px;bottom:18px"
+                          class="w3-text w3-tag w3-green w3-round-xlarge">If in a group there can be only a limited total number of the items in the group claimed by the volunteer</span>
+                    Prize Group:</label>
+            <div class="w3-row">
+                <div class='w3-col w3-threequarter w3-padding'>
+                    <select class="w3-select w3-border" id="edit_prize_group"
+                     onchange="prizeGroupChange()">
+                      <option value='none'>&lt;none&gt;</option>
+                    </select>
+                </div>
+                <div class='w3-col w3-quarter w3-padding'>
+                    <input class="w3-input w3-border w3-disabled" id="edit_prize_group_count" disabled placeholder="max">
+                </div>
+            </div>
+
+            <input class="w3-input w3-border w3-disabled w3-hide" id="prize_data" readonly>
+          </form>
+        </div>
+        <div class='w3-center'>
+            <button id='set_prize_button' class='w3-button w3-round-xxlarge w3-green'
+                onclick='commit_prize();'>
+                Commit
+            </button>
+            <button id='delete_prize_button' class='w3-button w3-round-xxlarge w3-blue'
+                onclick='delete_prize();'>
+                Delete
+            </button>
+            <button id='exit_prize_button' class='w3-button w3-round-xxlarge w3-red'
+                onclick='hideSidebar();'>
+               Cancel
+            </button>
+        </div>
+    </div>
+
 
     <div class='w3-hide w3-padding' id='edit_user_hour_div'>
         <div class='w3-center w3-red'>
@@ -942,6 +1035,134 @@ foreach ($unclaimed_promo as $item) {
         xhttp.open("POST", "index.php?Function=volunteers", true);
         xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         xhttp.send("delete_hour="+item['EntryID']);
+    }
+
+    function show_edit_prize(data)
+    {
+        var item = JSON.parse(atob(data));
+        showSidebar("edit_prize_div");
+
+        document.getElementById("edit_prize_name").value = item.Name;
+        document.getElementById("edit_prize_value").value = item.Value;
+        document.getElementById("edit_prize_promo").value = item.Promo;
+
+        var grp = document.getElementById("edit_prize_group");
+        if (grp.length == 1) {
+            for (var key in groupsNow) {
+                var option = document.createElement("option");
+                option.text = "Group #"+key+" : Limit "+groupsNow[key];
+                option.value = key;
+                grp.add(option);
+            }
+            var option = document.createElement("option");
+            option.text = "New Group";
+            option.value = 'new';
+            grp.add(option);
+        }
+        if (item.RewardGroupID) {
+            grp.value = item.RewardGroupID;
+        } else {
+            grp.value = 'none';
+        }
+        prizeGroupChange();
+
+        document.getElementById("edit_prize_count").value = item.Remaining;
+
+
+        document.getElementById("prize_data").value = data;
+    }
+
+    function delete_prize()
+    {
+        if (!confirm("DELETE Prize Entry?\n\nWARNING!!!  Only do this if NONE of this prize has been distributed. It will lead to corrupt reward records. To DELETE a prize that has been rewarded set inventory to '0'"))
+            return;
+
+        data = document.getElementById("prize_data").value;
+        var item = JSON.parse(atob(data));
+
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+          if (this.readyState == 4 && this.status == 200) {
+            location.reload();
+          }
+          else if (this.status == 404) {
+              alert("ERROR 404!");
+          }
+          else if (this.status == 409) {
+              alert("ERROR 409!");
+          }
+        }
+        xhttp.open("POST", "index.php?Function=volunteers", true);
+        xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xhttp.send("delete_prize="+item['PrizeID']);
+    }
+
+    function commit_prize()
+    {
+        if (!confirm("=============================\nPlease! double check entries!\n=============================\n\nProceed with Volunteer Prize Update?"))
+            return;
+
+        data = document.getElementById("prize_data").value;
+        var item = JSON.parse(data);
+
+        item['Name'] = document.getElementById("edit_prize_name").value;
+        item['Value'] = parseFloat(document.getElementById("edit_prize_value").value);
+        var grp = document.getElementById("edit_prize_group").value;
+        if (grp === 'none') {
+            item['RewardGroupID'] = '';
+        } else {
+            item['RewardGroupID'] = grp;
+        }
+
+        item['GroupLimit'] = parseInt(document.getElementById("edit_prize_group_count").value);
+
+        var e = document.getElementById("edit_prize_promo");
+        item['Promo'] = e.options[e.selectedIndex].value;
+
+        if (item['Remaining'] != document.getElementById("edit_prize_count").value)
+        {
+            var amount = parseInt(item['Remaining']) - parseInt(document.getElementById("edit_prize_count").value);
+            if (amount !== 0) {
+                var newValue = parseInt(item['TotalInventory']) - amount;
+                item['TotalInventory'] = newValue;
+            }
+        }
+
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+          if (this.readyState == 4 && this.status == 200) {
+            location.reload();
+          }
+          else if (this.status == 404) {
+              alert("ERROR 404!");
+          }
+          else if (this.status == 409) {
+              alert("ERROR 409!");
+          }
+        }
+        xhttp.open("POST", "index.php?Function=volunteers", true);
+        xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xhttp.send("update_prize="+JSON.stringify(item));
+
+    }
+
+    function prizeGroupChange()
+    {
+        var grp = document.getElementById("edit_prize_group").value;
+        var cnt = document.getElementById("edit_prize_group_count");
+        if (grp === 'none') {
+            cnt.disabled = true;
+            cnt.value = '';
+            cnt.classList.add("w3-disabled");
+        } else if ( grp === 'new') {
+            cnt.value = 1;
+            cnt.disabled = false;
+            cnt.classList.remove("w3-disabled");
+        } else {
+            cnt.value = groupsNow[grp];
+            cnt.disabled = false;
+            cnt.classList.remove("w3-disabled");
+        }
     }
 
 </script>

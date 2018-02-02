@@ -350,6 +350,52 @@ SQL;
 }
 
 
+function volunteer_prize_groups()
+{
+    global $db;
+
+    $groups = array();
+    $sql = " SELECT * FROM `RewardGroup`;";
+    $result = $db->run($sql);
+    $value = $result->fetch();
+    while ($value !== false) {
+        $groups[$value['RewardGroupID']] = $value['RedeemLimit'];
+        $value = $result->fetch();
+    }
+    return $groups;
+
+}
+
+
+function add_volunteer_prize_group($limit = 1)
+{
+    global $db;
+
+    $sql = "INSERT INTO `RewardGroup` (RedeemLimit) VALUES($limit);";
+    $result = $db->run($sql);
+
+    $sql = "SELECT RewardGroupID FROM `RewardGroup` ORDER BY RewardGroupID DESC LIMIT 1;";
+    $result = $db->run($sql);
+    $value = $result->fetch();
+    return $value['RewardGroupID'];
+
+}
+
+
+function update_volunteer_prize_group($group_id, $limit)
+{
+    global $db;
+
+    $sql = <<<SQL
+        UPDATE `RewardGroup`
+        SET RedeemLimit = $limit
+        WHERE RewardGroupID = $group_id;
+SQL;
+    $db->run($sql);
+
+}
+
+
 function volunteer_prizes_for_user($id, $year = null)
 {
     global $db;
@@ -401,5 +447,72 @@ SQL;
     $sql .= ";";
     $db->run($sql);
     return true;
+
+}
+
+
+function update_volunteer_prize(
+    $record_id,
+    $name = null,
+    $value = null,
+    $promo = null,
+    $group = null,
+    $total = null
+) {
+    global $db;
+
+    if ($name === null && $value === null && $promo === null &&
+        $group === null && $total === null) {
+        return null;
+    }
+
+    $sql = "UPDATE `VolunteerRewards` SET";
+    $t = [];
+    if ($name !== null) {
+        $t[] = " Name = ".MyPDO::quote($name);
+    }
+    if ($value !== null) {
+        $t[] = " Value = ".$value;
+    }
+    if ($promo !== null) {
+        if ($promo) {
+            $t[] = " Promo = 1";
+        } else {
+            $t[] = " Promo = 0";
+        }
+    }
+    if ($group !== null) {
+        if ($group == '') {
+            $t[] = " RewardGroupID = NULL";
+        } else {
+            $t[] = " RewardGroupID = ".$group;
+        }
+    }
+    if ($total !== null) {
+        $t[] = " TotalInventory = ".$total;
+    }
+
+    $sql .= implode(',', $t);
+    $sql .= " WHERE PrizeID = ";
+    $sql .= $record_id;
+
+    $result = $db->run($sql);
+    if ($result === false) {
+        return PDO::errorInfo();
+    }
+    return null;
+
+}
+
+
+function delete_volunteer_prize($record_id)
+{
+    global $db;
+
+    $sql = <<<SQL
+        DELETE FROM `VolunteerRewards` WHERE `PrizeID` = $record_id;
+SQL;
+
+    $db->run($sql);
 
 }
