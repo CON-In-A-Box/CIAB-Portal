@@ -396,12 +396,17 @@ function deleteHours() {
 
 function showEditPrize(data) {
   groupsNow = JSON.parse(groupData);
-  var item = JSON.parse(atob(data));
   showSidebar('edit_prize_div');
 
-  document.getElementById('edit_prize_name').value = item.Name;
-  document.getElementById('edit_prize_value').value = item.Value;
-  document.getElementById('edit_prize_promo').value = item.Promo;
+  if (!data) {
+    document.getElementById('edit_prize_title').innerHTML = 'Enter New Prize';
+    document.getElementById('delete_prize_button').style.visibility = 'hidden';
+    var item = {};
+  } else {
+    document.getElementById('edit_prize_title').innerHTML = 'Edit Prize Entry';
+    document.getElementById('delete_prize_button').style.visibility = 'visible';
+    var item = JSON.parse(atob(data));
+  }
 
   var grp = document.getElementById('edit_prize_group');
   if (grp.length == 1) {
@@ -416,16 +421,31 @@ function showEditPrize(data) {
     option.value = 'new';
     grp.add(option);
   }
-  if (item.RewardGroupID) {
-    grp.value = item.RewardGroupID;
+
+  if (data) {
+    var item = JSON.parse(atob(data));
+    document.getElementById('edit_prize_name').value = item.Name;
+    document.getElementById('edit_prize_value').value = item.Value;
+    document.getElementById('edit_prize_promo').value = item.Promo;
+    if (item.RewardGroupID) {
+      grp.value = item.RewardGroupID;
+    } else {
+      grp.value = 'none';
+    }
+    prizeGroupChange();
+
+    document.getElementById('edit_prize_count').value = item.Remaining;
+
+    document.getElementById('prize_data').value = data;
   } else {
+    document.getElementById('edit_prize_name').value = '';
+    document.getElementById('edit_prize_value').value = 0.0;
+    document.getElementById('edit_prize_count').value = 0;
+    document.getElementById('edit_prize_promo').value = 'no';
     grp.value = 'none';
+    prizeGroupChange();
+    document.getElementById('prize_data').value = null;
   }
-  prizeGroupChange();
-
-  document.getElementById('edit_prize_count').value = item.Remaining;
-
-  document.getElementById('prize_data').value = data;
 }
 
 function deletePrize() {
@@ -454,12 +474,21 @@ function deletePrize() {
 }
 
 function commitPrize() {
-  if (!window.confirm('=============================\nPlease! double check entries!\n=============================\n\nProceed with Volunteer Prize Update?')) {
-    return;
-  }
-
   var data = document.getElementById('prize_data').value;
-  var item = JSON.parse(data);
+  var item = null;
+
+  if (data) {
+    if (!window.confirm('=============================\nPlease! double check entries!\n=============================\n\nProceed with Volunteer Prize Update?')) {
+      return;
+    }
+    item = JSON.parse(atob(data));
+  } else {
+    if (!window.confirm('=============================\nPlease! double check entries!\n=============================\n\nProceed with Addition of new Volunteer Prize?')) {
+      return;
+    }
+    item = {Name:'', Value:0, RewardGroupID:null, GroupLimit:0,
+            Promo:'no', TotalInventory:0, Remaining:0};
+  }
 
   item.Name = document.getElementById('edit_prize_name').value;
   item.Value = parseFloat(document.getElementById('edit_prize_value').value);
@@ -499,7 +528,11 @@ function commitPrize() {
   };
   xhttp.open('POST', 'index.php?Function=volunteers', true);
   xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-  xhttp.send('update_prize=' + JSON.stringify(item));
+  if (data) {
+    xhttp.send('update_prize=' + JSON.stringify(item));
+  } else {
+    xhttp.send('new_prize=' + JSON.stringify(item));
+  }
 }
 
 function prizeGroupChange() {

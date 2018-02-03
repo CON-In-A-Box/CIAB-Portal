@@ -516,3 +516,31 @@ SQL;
     $db->run($sql);
 
 }
+
+
+function new_volunteer_prize(
+    $name,
+    $value,
+    $promo,
+    $group,
+    $total
+) {
+    global $db;
+
+    if ($promo) {
+        $promo = 1;
+    } else {
+        $promo = 0;
+    }
+    if ($group == null || $group == '') {
+        $group = 'NULL';
+    }
+    $name = MyPDO::quote($name);
+    $sql = <<<SQL
+            INSERT INTO `VolunteerRewards`
+                (Name, Value, Promo, RewardGroupID, TotalInventory)
+            VALUES ($name, $value, $promo, $group, $total);
+SQL;
+    $db->run($sql);
+
+}

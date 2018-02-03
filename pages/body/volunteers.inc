@@ -119,7 +119,7 @@ function hour_table($uid)
     global $totalHours,$admin_mode;
 
     echo '<div class="w3-container w3-center w3-green" ';
-    echo 'style="max-height:35vh; overflow:scroll;">';
+    echo 'style="max-height:34vh; overflow:scroll;">';
     echo "<table class='w3-table w3-striped w3-bordered w3-white'>";
     echo "<tr><th class='w3-center w3-green' colspan=9>Hours</th></tr>\n";
     if (isset($uid)) {
@@ -208,7 +208,11 @@ function _prize_table_start($uid = 0, $spent = 0, $hoursRemain = 0)
         echo "</div>\n";
     }
     echo "<div class='w3-container w3-center w3-blue' ";
-    echo "style='max-height:35vh; overflow:scroll;'>\n";
+    if ($admin_mode && $uid) {
+        echo "style='max-height:29vh; overflow:scroll;'>\n";
+    } else {
+        echo "style='max-height:33vh; overflow:scroll;'>\n";
+    }
     echo "<table class='w3-table w3-striped w3-bordered w3-white'";
     echo " id='prizes'>\n";
     echo "<tr>";
@@ -409,6 +413,18 @@ function messages($uid)
 
 }
 
+function admin_bar($uid)
+{
+    echo "<div class='w3-col w3-cell-row w3-padding' ";
+    echo "style='max-height:10vh; overflow:scroll;'>\n";
+    echo "<div id='volunteer_admin_bar' class='w3-container w3-padding w3-border-red w3-border w3-margin w3-cell'>\n";
+    echo "<button id='add_prize' class='w3-button w3-round-xxlarge w3-red'";
+    echo "onclick='showEditPrize(null)';>Add New Prize</button>\n";
+    echo "</div>\n";
+    echo "</div>\n";
+
+}
+
 echo '<div id="main_content" style="height:94vh;" class="w3-row-padding';
 if ($admin_mode) {
     echo ' w3-topbar w3-bottombar w3-leftbar w3-rightbar w3-border-red">';
@@ -481,6 +497,8 @@ initialize($uid);
 hour_table($uid);
 if (!$admin_mode) {
     messages($uid);
+} else {
+    admin_bar($uid);
 }
 prizes_table($uid);
 ?>
@@ -488,7 +506,7 @@ prizes_table($uid);
 
     <div class='w3-hide w3-padding' id='edit_prize_div'>
         <div class='w3-center w3-red'>
-            <h2>Edit Prize Entry</h2>
+            <h2 id='edit_prize_title'>Edit Prize Entry</h2>
         </div>
         <div class='w3-border w3-padding'>
           <form>
@@ -498,7 +516,7 @@ prizes_table($uid);
                   style="position:absolute;left:-80px;right:-80px;bottom:18px"
                   class="w3-text w3-tag w3-green w3-round-xlarge">Visible name of the item</span>
             Name:</label>
-            <input class="w3-input w3-border" id="edit_prize_name">
+            <input class="w3-input w3-border" id="edit_prize_name" placeholder="<name>">
             <label for='edit_prize_value' class="w3-tooltip">
                 <span
                   style="position:absolute;left:-80px;right:-80px;bottom:18px"

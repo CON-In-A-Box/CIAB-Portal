@@ -95,13 +95,7 @@ function populate_prizes()
         $inventory = rand(10, 500);
         $name = $adj[array_rand($adj)].' '.$n1;
         $group = $bottom;
-
-        $sql = <<<SQL
-            INSERT INTO VolunteerRewards
-                (Name, Value, Promo, RewardGroupID, TotalInventory)
-            VALUES ('$name', $value, $promo, $group, $inventory);
-SQL;
-        $db->run($sql);
+        new_volunteer_prize($name, $value, $promo, $group, $inventory);
     }
 
     /* Add a bunch of items */
@@ -116,7 +110,7 @@ SQL;
         $value += rand(1, 9) / 10;
         $inventory = rand(10, 500);
         $name = $adj[array_rand($adj)].'-'.$adj[array_rand($adj)].' '.$noun[array_rand($noun)];
-        $group = 'NULL';
+        $group = null;
         if ($promo_count < $total_items / 10) {
             $promo = rand(0, 1);
             $promo_count++;
@@ -127,15 +121,7 @@ SQL;
                 $group_count++;
             }
         }
-
-
-        $sql = <<<SQL
-            INSERT INTO VolunteerRewards
-                (Name, Value, Promo, RewardGroupID, TotalInventory)
-            VALUES ('$name', $value, $promo, $group, $inventory);
-SQL;
-
-        $db->run($sql);
+        new_volunteer_prize($name, $value, $promo, $group, $inventory);
     }
 
 }
