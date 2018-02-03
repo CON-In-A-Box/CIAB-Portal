@@ -114,6 +114,17 @@ function initialize($uid)
 }
 
 
+function _htmlsafeify($array)
+{
+    $output = [];
+    foreach ($array as $key => $value) {
+        $output[$key] = htmlspecialchars($value);
+    }
+    return $output;
+
+}
+
+
 function hour_table($uid)
 {
     global $totalHours,$admin_mode;
@@ -140,7 +151,7 @@ function hour_table($uid)
         if ($idx !== false) {
             unset($keys[$idx]);
         }
-        echo implode($keys, '</th><th>');
+        echo implode(_htmlsafeify($keys), '</th><th>');
         echo "</th></tr>\n";
         foreach ($data as $key => $record) {
             if (isset($uid)) {
@@ -164,7 +175,7 @@ function hour_table($uid)
             if ($id_index !== false) {
                 unset($record['Department ID']);
             }
-            echo implode($record, '</td><td>');
+            echo implode(_htmlsafeify($record), '</td><td>');
             echo "</td></tr>\n";
         }
     } else {
@@ -283,7 +294,7 @@ function prizes_table($uid)
         _prize_table_start($uid, $spent, $hoursRemain);
 
         echo "<tr><th>";
-        echo implode($keys, '</th><th>');
+        echo implode(_htmlsafeify($keys), '</th><th>');
         echo "</th></tr>\n";
         foreach ($data as $key => $record) {
             if (!isset($uid) && $admin_mode) {
@@ -320,7 +331,7 @@ function prizes_table($uid)
                         if (!$admin_mode && isset($uid) && acquireable_item($record)) {
                             echo " w3-hover-green' ";
                             $json = json_encode($record);
-                            $json = addslashes($json);
+                            $json = base64_encode($json);
                             echo 'onclick=\'addToCheckout("'.$json;
                             echo '");\'>';
                         } else {
@@ -332,7 +343,7 @@ function prizes_table($uid)
                     if (!$admin_mode && isset($uid) && acquireable_item($record)) {
                         echo "class='w3-hover-green' ";
                         $json = json_encode($record);
-                        $json = addslashes($json);
+                        $json = base64_encode($json);
                         echo 'onclick=\'addToCheckout("'.$json.'");\'';
                     }
                     echo ">";
@@ -343,7 +354,7 @@ function prizes_table($uid)
             unset($record['group_soldout']);
             unset($record['GroupLimit']);
             echo "<td>";
-            echo implode($record, '</td><td>');
+            echo implode(_htmlsafeify($record), '</td><td>');
             echo "</td></tr>\n";
         }
     } else {
@@ -374,9 +385,9 @@ function messages($uid)
                     if ($record['group_soldout']) {
                         continue;
                     }
-                    $promo .= "<li>Free Group prize <b>".$record['Name']."</b> (at ".$record['Value']." hours) is available and has not been acquired! <b>Pick 1 below!</b></li>\n";
+                    $promo .= "<li>Free Group prize <b>".htmlspecialchars($record['Name'])."</b> (at ".$record['Value']." hours) is available and has not been acquired! <b>Pick 1 below!</b></li>\n";
                 } else {
-                    $promo .= "<li>Free prize <b>".$record['Name']."</b> (at ".$record['Value']." hours) is available and has not been acquired!</li>\n";
+                    $promo .= "<li>Free prize <b>".htmlspecialchars($record['Name'])."</b> (at ".$record['Value']." hours) is available and has not been acquired!</li>\n";
                     $unclaimed_promo[] = $record;
                 }
                 $display = true;
@@ -602,7 +613,7 @@ prizes_table($uid);
 require_once($FUNCTIONDIR."/divisional.inc");
 foreach ($Departments as $dep => $set) {
     echo '<option value="'.$dep.'"';
-    echo '>'.$dep."</option>\n";
+    echo '>'.htmlspecialchars($dep)."</option>\n";
 }
 ?>
             </select>
@@ -678,7 +689,7 @@ if (isset($uid)) {
     foreach ($unclaimed_promo as $item) {
         echo "    {";
         echo "PrizeID: ".$item['PrizeID'].",";
-        echo "Json: '".json_encode($item)."'},\n";
+        echo "Json: '".base64_encode(json_encode($item))."'},\n";
     }
     echo "  ];\n";
 } else {

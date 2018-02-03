@@ -11,6 +11,18 @@ var hoursSpent = 0;
 var groupsNow = [];
 var currentSidebar = null;
 
+function escapeHtml(text) {
+  var map = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    '\'': '&#039;'
+  };
+
+  return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+}
+
 function hideSidebar() {
   if (currentSidebar) {
     currentSidebar.classList.add('w3-hide');
@@ -46,8 +58,8 @@ function lookupId(id) {
         var response = JSON.parse(this.responseText);
         var uid = response.Id;
         document.getElementById('volunteer').classList.remove('w3-red');
-        document.getElementById('message').innerHTML = 'Found ' +
-          response['First Name'] + ' ' + response['Last Name'];
+        document.getElementById('message').innerHTML = escapeHtml('Found ' +
+          response['First Name'] + ' ' + response['Last Name']);
         window.location = 'index.php?Function=volunteers&volunteerId=' + uid;
       } else if (this.readyState == 4) {
         document.getElementById('volunteer').classList.add('w3-red');
@@ -107,9 +119,9 @@ function fillReward() {
     var cell = row.insertCell(0);
     if (item.count > 1) {
       var txt = item.name + ' (x' + item.count + ')';
-      cell.innerHTML = txt;
+      cell.innerHTML = escapeHtml(txt);
     } else {
-      cell.innerHTML = item.name;
+      cell.innerHTML = escapeHtml(item.name);
     }
   }
 }
@@ -189,9 +201,9 @@ function updateCheckout() {
 
     if (item.count > 1) {
       var txt = item.prize.Name + ' (x' + item.count + ')';
-      cell.innerHTML = txt;
+      cell.innerHTML = escapeHtml(txt);
     } else {
-      cell.innerHTML = item.prize.Name;
+      cell.innerHTML = escapeHtml(item.prize.Name);
     }
 
     cell = row.insertCell(1);
@@ -221,7 +233,7 @@ function removeFromCheckout(PrizeID, cost, group) {
 }
 
 function addToCheckout(json) {
-  var item = JSON.parse(json);
+  var item = JSON.parse(atob(json));
   var cost = parseFloat(item.Value);
   if (item.Promo == 'yes') {
     var found = checkout.find(function(element) {
