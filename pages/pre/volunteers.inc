@@ -31,6 +31,7 @@ if (!empty($_REQUEST)) {
     'delete_hour'      => FILTER_SANITIZE_SPECIAL_CHARS,
     'update_prize'     => FILTER_UNSAFE_RAW,
     'delete_prize'     => FILTER_SANITIZE_SPECIAL_CHARS,
+    'new_prize'        => FILTER_UNSAFE_RAW,
     ];
 
     require_once($FUNCTIONDIR."/volunteer.inc");
@@ -105,4 +106,24 @@ if (!empty($_REQUEST)) {
             exit();
         }
     }
+
+    if (isset($updateData['new_prize'])) {
+        if (isset($_SESSION['IS_ADMIN']) || isset($_SESSION['IS_VOLUNTEERS'])) {
+            $item = json_decode($updateData['new_prize']);
+            if ($item->{'RewardGroupID'} == 'new') {
+                $group = add_volunteer_prize_group($item->{'GroupLimit'});
+            } elseif ($item->{'RewardGroupID'} != '') {
+                $group = $item->{'RewardGroupID'};
+                update_volunteer_prize_group($group, $item->{'GroupLimit'});
+            } else {
+                $group = $item->{'RewardGroupID'};
+            }
+            new_volunteer_prize($item->{'Name'}, $item->{'Value'}, ($item->{'Promo'} == 'yes'), $group, $item->{'TotalInventory'});
+            exit();
+        } else {
+            header("HTTP/1.0 401");
+            exit();
+        }
+    }
+
 }

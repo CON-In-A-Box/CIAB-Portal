@@ -119,7 +119,7 @@ function hour_table($uid)
     global $totalHours,$admin_mode;
 
     echo '<div class="w3-container w3-center w3-green" ';
-    echo 'style="max-height:35vh; overflow:scroll;">';
+    echo 'style="max-height:34vh; overflow:scroll;">';
     echo "<table class='w3-table w3-striped w3-bordered w3-white'>";
     echo "<tr><th class='w3-center w3-green' colspan=9>Hours</th></tr>\n";
     if (isset($uid)) {
@@ -208,7 +208,11 @@ function _prize_table_start($uid = 0, $spent = 0, $hoursRemain = 0)
         echo "</div>\n";
     }
     echo "<div class='w3-container w3-center w3-blue' ";
-    echo "style='max-height:35vh; overflow:scroll;'>\n";
+    if ($admin_mode && $uid) {
+        echo "style='max-height:29vh; overflow:scroll;'>\n";
+    } else {
+        echo "style='max-height:33vh; overflow:scroll;'>\n";
+    }
     echo "<table class='w3-table w3-striped w3-bordered w3-white'";
     echo " id='prizes'>\n";
     echo "<tr>";
@@ -410,6 +414,19 @@ function messages($uid)
 }
 
 
+function admin_bar($uid)
+{
+    echo "<div class='w3-col w3-cell-row w3-padding' ";
+    echo "style='max-height:10vh; overflow:scroll;'>\n";
+    echo "<div id='volunteer_admin_bar' class='w3-container w3-padding w3-border-red w3-border w3-margin w3-cell'>\n";
+    echo "<button id='add_prize' class='w3-button w3-round-xxlarge w3-red'";
+    echo "onclick='show_edit_prize(null)';>Add New Prize</button>\n";
+    echo "</div>\n";
+    echo "</div>\n";
+
+}
+
+
 ?>
 
 <script>
@@ -481,8 +498,6 @@ if (!$admin_mode) {
 ?>
   }
 
-function volunteer_audit() {
-}
 </script>
 
 <?php
@@ -558,6 +573,8 @@ initialize($uid);
 hour_table($uid);
 if (!$admin_mode) {
     messages($uid);
+} else {
+    admin_bar($uid);
 }
 prizes_table($uid);
 ?>
@@ -565,7 +582,7 @@ prizes_table($uid);
 
     <div class='w3-hide w3-padding' id='edit_prize_div'>
         <div class='w3-center w3-red'>
-            <h2>Edit Prize Entry</h2>
+            <h2 id='edit_prize_title'>Edit Prize Entry</h2>
         </div>
         <div class='w3-border w3-padding'>
           <form>
@@ -575,7 +592,7 @@ prizes_table($uid);
                   style="position:absolute;left:-80px;right:-80px;bottom:18px"
                   class="w3-text w3-tag w3-green w3-round-xlarge">Visible name of the item</span>
             Name:</label>
-            <input class="w3-input w3-border" id="edit_prize_name">
+            <input class="w3-input w3-border" id="edit_prize_name" placeholder="<name>">
             <label for='edit_prize_value' class="w3-tooltip">
                 <span
                   style="position:absolute;left:-80px;right:-80px;bottom:18px"
@@ -1039,12 +1056,17 @@ foreach ($unclaimed_promo as $item) {
 
     function show_edit_prize(data)
     {
-        var item = JSON.parse(atob(data));
         showSidebar("edit_prize_div");
 
-        document.getElementById("edit_prize_name").value = item.Name;
-        document.getElementById("edit_prize_value").value = item.Value;
-        document.getElementById("edit_prize_promo").value = item.Promo;
+        if (!data) {
+            document.getElementById("edit_prize_title").innerHTML = "Enter New Prize";
+            document.getElementById("delete_prize_button").style.visibility = 'hidden';
+            var item = {};
+        } else {
+            document.getElementById("edit_prize_title").innerHTML = "Edit Prize Entry";
+            document.getElementById("delete_prize_button").style.visibility = 'visible';
+            var item = JSON.parse(atob(data));
+        }
 
         var grp = document.getElementById("edit_prize_group");
         if (grp.length == 1) {
@@ -1059,17 +1081,31 @@ foreach ($unclaimed_promo as $item) {
             option.value = 'new';
             grp.add(option);
         }
-        if (item.RewardGroupID) {
-            grp.value = item.RewardGroupID;
+
+        if (data) {
+            var item = JSON.parse(atob(data));
+            document.getElementById("edit_prize_name").value = item.Name;
+            document.getElementById("edit_prize_value").value = item.Value;
+            document.getElementById("edit_prize_promo").value = item.Promo;
+            if (item.RewardGroupID) {
+                grp.value = item.RewardGroupID;
+            } else {
+                grp.value = 'none';
+            }
+            prizeGroupChange();
+
+            document.getElementById("edit_prize_count").value = item.Remaining;
+
+            document.getElementById("prize_data").value = data;
         } else {
+            document.getElementById("edit_prize_name").value = "";
+            document.getElementById("edit_prize_value").value = 0.0;
+            document.getElementById("edit_prize_count").value = 0;
+            document.getElementById("edit_prize_promo").value = 'no';
             grp.value = 'none';
+            prizeGroupChange();
+            document.getElementById("prize_data").value = null;
         }
-        prizeGroupChange();
-
-        document.getElementById("edit_prize_count").value = item.Remaining;
-
-
-        document.getElementById("prize_data").value = data;
     }
 
     function delete_prize()
@@ -1099,11 +1135,19 @@ foreach ($unclaimed_promo as $item) {
 
     function commit_prize()
     {
-        if (!confirm("=============================\nPlease! double check entries!\n=============================\n\nProceed with Volunteer Prize Update?"))
-            return;
-
         data = document.getElementById("prize_data").value;
-        var item = JSON.parse(data);
+        var item = null;
+
+        if (data) {
+            if (!confirm("=============================\nPlease! double check entries!\n=============================\n\nProceed with Volunteer Prize Update?"))
+                return;
+            item = JSON.parse(atob(data));
+        } else {
+            if (!confirm("=============================\nPlease! double check entries!\n=============================\n\nProceed with Addition of new Volunteer Prize?"))
+                return;
+            item = {Name:'', Value:0, RewardGroupID:null, GroupLimit:0,
+                    Promo:'no', TotalInventory:0, Remaining:0 };
+        }
 
         item['Name'] = document.getElementById("edit_prize_name").value;
         item['Value'] = parseFloat(document.getElementById("edit_prize_value").value);
@@ -1142,7 +1186,11 @@ foreach ($unclaimed_promo as $item) {
         }
         xhttp.open("POST", "index.php?Function=volunteers", true);
         xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        xhttp.send("update_prize="+JSON.stringify(item));
+        if (data) {
+            xhttp.send("update_prize="+JSON.stringify(item));
+        } else {
+            xhttp.send("new_prize="+JSON.stringify(item));
+        }
 
     }
 
