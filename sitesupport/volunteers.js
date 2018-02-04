@@ -9,6 +9,31 @@
 var checkout = [];
 var hoursSpent = 0;
 var groupsNow = [];
+var currentSidebar = null;
+
+function hideSidebar() {
+  if (currentSidebar) {
+    currentSidebar.classList.add('w3-hide');
+    currentSidebar.classList.remove('w3-quarter');
+    var section = document.getElementById('info_div');
+    section.classList.add('w3-rest');
+    section.classList.remove('w3-threequarter');
+    currentSidebar = null;
+  }
+}
+
+function showSidebar(Id) {
+  if (currentSidebar) {
+    hideSidebar();
+  }
+
+  currentSidebar = document.getElementById(Id);
+  currentSidebar.classList.remove('w3-hide');
+  currentSidebar.classList.add('w3-quarter');
+  var section = document.getElementById('info_div');
+  section.classList.remove('w3-rest');
+  section.classList.add('w3-threequarter');
+}
 
 function lookupId(id) {
   if (id) {
@@ -113,12 +138,7 @@ function processCheckout() {
 }
 
 function clearCheckout() {
-  var section = document.getElementById('checkout_div');
-  section.classList.add('w3-hide');
-  section.classList.remove('w3-quarter');
-  section = document.getElementById('info_div');
-  section.classList.add('w3-rest');
-  section.classList.remove('w3-threequarter');
+  hideSidebar();
   hoursSpent = 0;
   checkout = [];
 
@@ -241,13 +261,7 @@ function addToCheckout(json) {
 }
 
 function showCheckout() {
-  var section = document.getElementById('checkout_div');
-  section.classList.remove('w3-hide');
-  section.classList.add('w3-quarter');
-  section = document.getElementById('info_div');
-  section.classList.remove('w3-rest');
-  section.classList.add('w3-threequarter');
-
+  showSidebar('checkout_div');
   groupsNow = JSON.parse(groupData);
 
   var hours = document.getElementById('hours_left');
