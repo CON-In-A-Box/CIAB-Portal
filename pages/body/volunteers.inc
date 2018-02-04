@@ -431,6 +431,8 @@ function admin_bar($uid)
     echo "<div id='volunteer_admin_bar' class='w3-container w3-padding w3-border-red w3-border w3-margin w3-cell'>\n";
     echo "<button id='add_prize' class='w3-button w3-round-xxlarge w3-red'";
     echo "onclick='showEditPrize(null)';>Add New Prize</button>\n";
+    echo "<button id='min_hours' class='w3-button w3-round-xxlarge w3-red'";
+    echo "onclick='minHourReport()';>Minimum Hour Report</button>\n";
     echo "</div>\n";
     echo "</div>\n";
 
@@ -513,6 +515,27 @@ if (!$admin_mode) {
 }
 prizes_table($uid);
 ?>
+    </div>
+
+    <div class='w3-hide w3-padding' id='hour_report_div'>
+        <div class='w3-center'>
+            <h2 class='w3-red'>Report of all Volunteers with minimum hours or more</h2>
+        </div>
+        <div class='w3-center'>
+            <label for='report_hour_min'>
+            Minimum hours:</label>
+            <input class="w3-input w3-border" id="report_hour_min">
+        </div>
+        <div class='w3-center'>
+            <button id='generate_report' class='w3-button w3-round-xxlarge w3-green'
+                onclick='generateHourReport();'>
+               Generate Report &lt;CSV&gt;
+            </button>
+            <button class='w3-button w3-round-xxlarge w3-red'
+                onclick='hideSidebar();'>
+              Close
+            </button>
+        </div>
     </div>
 
     <div class='w3-hide w3-padding' id='edit_prize_div'>

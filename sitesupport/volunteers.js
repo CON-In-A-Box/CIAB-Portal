@@ -565,3 +565,13 @@ function prizeGroupChange() {
   }
 }
 
+function generateHourReport() {
+  var hours = document.getElementById('report_hour_min').value;
+  window.location = 'index.php?Function=volunteers&min_hour=' + hours;
+}
+
+function minHourReport() {
+  showSidebar('hour_report_div');
+  document.getElementById('report_hour_min').value = 30;
+}
+

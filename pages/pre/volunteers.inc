@@ -4,7 +4,10 @@ if (!empty($_REQUEST)) {
     // Retrieve and sanitize POST data
     $arguments = [
     'lookupId'         => FILTER_SANITIZE_SPECIAL_CHARS,
+    'min_hour'         => FILTER_SANITIZE_NUMBER_INT,
     ];
+
+    require_once($FUNCTIONDIR."/volunteer.inc");
 
     $updateData = filter_input_array(INPUT_GET, $arguments);
 
@@ -22,6 +25,34 @@ if (!empty($_REQUEST)) {
         exit();
     }
 
+    if (isset($updateData['min_hour'])) {
+        if (isset($_SESSION['IS_ADMIN']) || isset($_SESSION['IS_VOLUNTEERS'])) {
+            $min = $updateData['min_hour'];
+            $report = volunteer_minimum_hour_report($min);
+
+            header("Content-Type: application/CSV; charset=UTF-8");
+            header("Content-Language: en");
+            header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
+            header("Last-Modified: ".gmdate("D, d M Y H:i:s")." GMT");
+            header("Cache-Control: no-store, no-cache, must-revalidate");
+            header("Cache-Control: post-check=0, pre-check=0", false);
+            header('Content-Disposition: attachment; filename="hour_report.csv"');
+            header("Pragma: no-cache");
+
+
+            print implode(",", array_keys($report[0]));
+            print "\n";
+            foreach($report as $entry) {
+                print implode(",", $entry);
+                print "\n";
+            }
+            exit();
+        } else {
+            header("HTTP/1.0 401");
+            exit();
+        }
+    }
+
     $arguments = [
     'rewardId'         => FILTER_SANITIZE_SPECIAL_CHARS,
     'rewards'          => FILTER_UNSAFE_RAW,
@@ -33,8 +64,6 @@ if (!empty($_REQUEST)) {
     'delete_prize'     => FILTER_SANITIZE_SPECIAL_CHARS,
     'new_prize'        => FILTER_UNSAFE_RAW,
     ];
-
-    require_once($FUNCTIONDIR."/volunteer.inc");
 
     $updateData = filter_input_array(INPUT_POST, $arguments);
     if (isset($updateData['rewardId'])) {
