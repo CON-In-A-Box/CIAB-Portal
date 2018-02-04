@@ -478,18 +478,38 @@ prizes_table($uid);
 
 <script>
   var groupsNow = JSON.parse('<?php print(json_encode($groupTotals));?>');
+  var currentSidebar = null;
+
+    function hideSidebar() {
+        if (currentSidebar) {
+            currentSidebar.classList.add("w3-hide");
+            currentSidebar.classList.remove("w3-quarter");
+            var section = document.getElementById("info_div");
+            section.classList.add("w3-rest");
+            section.classList.remove("w3-threequarter");
+            currentSidebar = null;
+        }
+    }
+
+    function showSidebar(Id) {
+        if (currentSidebar) {
+            hideSidebar();
+        }
+
+        currentSidebar = document.getElementById(Id);
+        currentSidebar.classList.remove("w3-hide");
+        currentSidebar.classList.add("w3-quarter");
+        var section = document.getElementById("info_div");
+        section.classList.remove("w3-rest");
+        section.classList.add("w3-threequarter");
+    }
 
     function process_checkout() {
         applyReward();
     }
 
     function clear_checkout() {
-        var section = document.getElementById("checkout_div");
-        section.classList.add("w3-hide");
-        section.classList.remove("w3-quarter");
-        var section = document.getElementById("info_div");
-        section.classList.add("w3-rest");
-        section.classList.remove("w3-threequarter");
+        hideSidebar();
         hours_spent = 0;
         checkout = [];
 
@@ -611,12 +631,7 @@ prizes_table($uid);
     }
 
     function show_checkout() {
-        var section = document.getElementById("checkout_div");
-        section.classList.remove("w3-hide");
-        section.classList.add("w3-quarter");
-        var section = document.getElementById("info_div");
-        section.classList.remove("w3-rest");
-        section.classList.add("w3-threequarter");
+        showSidebar("checkout_div");
 
         var hours = document.getElementById("hours_left");
         var remain = parseFloat(<?php echo "$hoursRemain";?>) - hours_spent;
