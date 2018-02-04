@@ -544,3 +544,46 @@ SQL;
     $db->run($sql);
 
 }
+
+
+function volunteer_minimum_hour_report($required_hours)
+{
+    global $db;
+
+    $members = [];
+    $hours = [];
+    $sql = <<<SQL
+        SELECT
+            AccountID,
+            SUM(ActualHours * TimeModifier) AS TotalHours
+        FROM
+            `VolunteerHours`
+        Group by
+            AccountID
+        order BY
+            TotalHours DESC;
+SQL;
+    $result = $db->run($sql);
+    $value = $result->fetch();
+    while ($value !== false) {
+        if ($value['TotalHours'] < $required_hours)
+            break;
+        $members[] = $value['AccountID'];
+        $hours[$value['AccountID']] = $value['TotalHours'];
+        $value = $result->fetch();
+    }
+
+    $str = "('".implode("', '", $members)."')";
+    $users = lookup_users_by_ids($str);
+
+    $report = [];
+    foreach ($users['users'] as $user) {
+        $report[] = ['Id' => $user['Id'],
+                    'Name' => $user['First Name'].' '.$user['Last Name'],
+                    'Email' => $user['Email'],
+                    'Hours' => $hours[$user['Id']]];
+    }
+
+    return $report;
+
+}
