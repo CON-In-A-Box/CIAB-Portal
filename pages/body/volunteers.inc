@@ -167,6 +167,10 @@ function hour_table($uid)
                 $json = base64_encode($json);
                 echo 'onclick=\'showEditHours("'.$json;
                 echo '");\'>';
+            } else if (!isset($uid) && $admin_mode) {
+                echo "<tr class='w3-hover-red' ";
+                echo 'onclick=\'departmentReport("'.$record['Department Worked'].'", '.$record['Department ID'].');\'';
+                echo ">";
             } else {
                 echo "<tr>";
             }
@@ -516,6 +520,30 @@ if (!$admin_mode) {
 prizes_table($uid);
 ?>
     </div>
+
+    <div class='w3-hide w3-padding' id='department_report_div'>
+        <div class='w3-center'>
+            <h2 class='w3-red'>Department Report</h2>
+        </div>
+        <hr>
+        <div>
+            <h2 id='dept_name' class='w3-blue'></h2>
+            <input class="w3-input w3-disabled w3-hide" id="dept_data" readonly>
+            <input class="w3-input w3-disabled w3-hide" id="dept_data_name" readonly>
+        </div>
+        <hr>
+        <div class='w3-center'>
+            <button id='generate_dept_report' class='w3-button w3-round-xxlarge w3-green'
+                onclick='generateDeptReport();'>
+               Generate Report &lt;CSV&gt;
+            </button>
+            <button class='w3-button w3-round-xxlarge w3-red'
+                onclick='hideSidebar();'>
+              Close
+            </button>
+        </div>
+    </div>
+
 
     <div class='w3-hide w3-padding' id='hour_report_div'>
         <div class='w3-center'>

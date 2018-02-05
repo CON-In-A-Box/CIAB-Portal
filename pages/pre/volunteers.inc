@@ -1,10 +1,31 @@
 <?php
 
+function output_cvs($report, $filename)
+{
+    header("Content-Type: application/CSV; charset=UTF-8");
+    header("Content-Language: en");
+    header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
+    header("Last-Modified: ".gmdate("D, d M Y H:i:s")." GMT");
+    header("Cache-Control: no-store, no-cache, must-revalidate");
+    header("Cache-Control: post-check=0, pre-check=0", false);
+    header('Content-Disposition: attachment; filename="'.$filename.'"');
+    header("Pragma: no-cache");
+
+    print implode(",", array_keys($report[0]));
+    print "\n";
+    foreach($report as $entry) {
+        print implode(",", $entry);
+        print "\n";
+    }
+}
+
 if (!empty($_REQUEST)) {
     // Retrieve and sanitize POST data
     $arguments = [
     'lookupId'         => FILTER_SANITIZE_SPECIAL_CHARS,
     'min_hour'         => FILTER_SANITIZE_NUMBER_INT,
+    'dept_report'      => FILTER_SANITIZE_NUMBER_INT,
+    'dept_name'        => FILTER_SANITIZE_SPECIAL_CHARS,
     ];
 
     require_once($FUNCTIONDIR."/volunteer.inc");
@@ -29,23 +50,20 @@ if (!empty($_REQUEST)) {
         if (isset($_SESSION['IS_ADMIN']) || isset($_SESSION['IS_VOLUNTEERS'])) {
             $min = $updateData['min_hour'];
             $report = volunteer_minimum_hour_report($min);
+            output_cvs($report, "hour_report.csv");
+            exit();
+        } else {
+            header("HTTP/1.0 401");
+            exit();
+        }
+    }
 
-            header("Content-Type: application/CSV; charset=UTF-8");
-            header("Content-Language: en");
-            header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
-            header("Last-Modified: ".gmdate("D, d M Y H:i:s")." GMT");
-            header("Cache-Control: no-store, no-cache, must-revalidate");
-            header("Cache-Control: post-check=0, pre-check=0", false);
-            header('Content-Disposition: attachment; filename="hour_report.csv"');
-            header("Pragma: no-cache");
-
-
-            print implode(",", array_keys($report[0]));
-            print "\n";
-            foreach($report as $entry) {
-                print implode(",", $entry);
-                print "\n";
-            }
+    if (isset($updateData['dept_report'])) {
+        if (isset($_SESSION['IS_ADMIN']) || isset($_SESSION['IS_VOLUNTEERS'])) {
+            $dept = $updateData['dept_report'];
+            $name = $updateData['dept_name'];
+            $report = volunteers_in_dept(intval($dept));
+            output_cvs($report, "department_report_".$name.".csv");
             exit();
         } else {
             header("HTTP/1.0 401");

@@ -575,3 +575,17 @@ function minHourReport() {
   document.getElementById('report_hour_min').value = 30;
 }
 
+function generateDeptReport() {
+  var name = document.getElementById('dept_data_name').value;
+  var deptid = document.getElementById('dept_data').value;
+  window.location = 'index.php?Function=volunteers&dept_report=' + deptid +
+    '&dept_name=' + name;
+}
+
+function departmentReport(name, dept) {
+  showSidebar('department_report_div');
+  document.getElementById('dept_name').innerHTML = name;
+  document.getElementById('dept_data').value = dept;
+  document.getElementById('dept_data_name').value = name;
+}
+
