@@ -167,6 +167,10 @@ function hour_table($uid)
                 $json = base64_encode($json);
                 echo 'onclick=\'show_edit_hours("'.$json;
                 echo '");\'>';
+            } else if (!isset($uid) && $admin_mode) {
+                echo "<tr class='w3-hover-red' ";
+                echo 'onclick=\'department_report("'.$record['Department Worked'].'", '.$record['Department ID'].');\'';
+                echo ">";
             } else {
                 echo "<tr>";
             }
@@ -604,6 +608,30 @@ if (!$admin_mode) {
 prizes_table($uid);
 ?>
     </div>
+
+    <div class='w3-hide w3-padding' id='department_report_div'>
+        <div class='w3-center'>
+            <h2 class='w3-red'>Department Report</h2>
+        </div>
+        <hr>
+        <div>
+            <h2 id='dept_name' class='w3-green'></h2>
+            <input class="w3-input w3-disabled w3-hide" id="dept_data" readonly>
+            <input class="w3-input w3-disabled w3-hide" id="dept_data_name" readonly>
+        </div>
+        <hr>
+        <div class='w3-center'>
+            <button id='generate_dept_report' class='w3-button w3-round-xxlarge w3-green'
+                onclick='generate_dept_report();'>
+               Generate Department Report &lt;CSV&gt;
+            </button>
+            <button class='w3-button w3-round-xxlarge w3-red'
+                onclick='hideSidebar();'>
+              Close
+            </button>
+        </div>
+    </div>
+
 
     <div class='w3-hide w3-padding' id='hour_report_div'>
         <div class='w3-center'>
@@ -1268,6 +1296,19 @@ foreach ($unclaimed_promo as $item) {
     function min_hour_report() {
         showSidebar("hour_report_div");
         document.getElementById("report_hour_min").value = 30;
+    }
+
+    function generate_dept_report() {
+        var name = document.getElementById("dept_data_name").value;
+        var deptid = document.getElementById("dept_data").value;
+        window.location = "index.php?Function=volunteers&dept_report="+deptid+"&dept_name="+name;
+    }
+
+    function department_report(name, dept) {
+        showSidebar("department_report_div");
+        document.getElementById("dept_name").innerHTML = name;
+        document.getElementById("dept_data").value = dept;
+        document.getElementById("dept_data_name").value = name;
     }
 
 </script>

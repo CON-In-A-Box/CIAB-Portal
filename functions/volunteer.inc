@@ -587,3 +587,60 @@ SQL;
     return $report;
 
 }
+
+
+function volunteers_in_dept($department)
+{
+    global $db;
+
+    /* Get the department id from name if it is a name */
+    if (!is_int($department)) {
+        $sql = "SELECT DepartmentID FROM Departments WHERE Name = '$department';";
+        $result = $db->run($sql);
+        $value = $result->fetch();
+        if ($value) {
+            $departmentID = $value['DepartmentID'];
+        } else {
+            $departmentID = 0;
+        }
+    } else {
+        $departmentID = $department;
+    }
+
+    $sql = <<<SQL
+        SELECT
+            AccountID,
+            SUM(ActualHours * TimeModifier) AS TotalHours
+        FROM
+            `VolunteerHours`
+        WHERE
+            DepartmentID = $departmentID
+        Group by
+            AccountID,
+            DepartmentID
+SQL;
+
+    $result = $db->run($sql);
+    $value = $result->fetch();
+    while ($value !== false) {
+        if ($value['TotalHours'] < $required_hours)
+            break;
+        $members[] = $value['AccountID'];
+        $hours[$value['AccountID']] = $value['TotalHours'];
+        $value = $result->fetch();
+    }
+
+    $str = "('".implode("', '", $members)."')";
+    $users = lookup_users_by_ids($str);
+
+    $report = [];
+    foreach ($users['users'] as $user) {
+        $report[] = ['Id' => $user['Id'],
+                    'Name' => $user['First Name'].' '.$user['Last Name'],
+                    'Email' => $user['Email'],
+                    'Hours' => $hours[$user['Id']]];
+    }
+
+    return $report;
+
+}
