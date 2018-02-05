@@ -60,6 +60,67 @@ SQL;
 }
 
 
+function get_volunteer_year_summery($year = null)
+{
+    global $db;
+
+    if ($year === null) {
+        $year = current_yearID();
+    }
+
+    $sql = <<<SQL
+        SELECT
+            SUM(ActualHours * TimeModifier) AS TotalHours,
+            COUNT(DISTINCT AccountID) AS VolunteerCount,
+            (
+                SELECT
+                    COUNT(ClaimID) * (
+                        SELECT
+                            value
+                        FROM
+                            VolunteerRewards v
+                        WHERE
+                            v.prizeID = h.prizeID
+                    )
+                FROM
+                    `HourRedemptions` as h
+                WHERE
+                    YearID = $year
+                GROUP BY
+                    YearID
+            ) as TotalHoursSpent
+        FROM
+            VolunteerHours
+        WHERE
+            YearID = $year
+        GROUP BY
+            YearID;
+SQL;
+
+    $result = $db->run($sql);
+    $value = $result->fetch();
+
+    $output = [
+    'TotalHours' => 0,
+    'VolunteerCount' => 0,
+    'TotalHoursSpent' => 0,
+    ];
+
+    if ($value['TotalHours']) {
+        $output['TotalHours'] = $value['TotalHours'];
+    }
+    if ($value['VolunteerCount']) {
+        $output['VolunteerCount'] = $value['VolunteerCount'];
+    }
+    if ($value['TotalHoursSpent']) {
+        $output['TotalHoursSpent'] = $value['TotalHoursSpent'];
+    }
+
+    return $output;
+
+}
+
+
 function get_volunteer_hours_for_user($id, $year = null)
 {
     global $db;
@@ -82,6 +143,7 @@ SQL;
     $value = $result->fetch();
     while ($value !== false) {
         $data[] = [
+        'EntryID' => $value['HourEntryID'],
         'Volunteer' => $user['users'][0]['First Name'],
         'Actual Hours' => $value['ActualHours'],
         'Time Modifier' => $value['TimeModifier'],
@@ -147,6 +209,95 @@ SQL;
 }
 
 
+function update_volunteer_hours(
+    $record_id,
+    $user = null,
+    $hours = null,
+    $end = null,
+    $modifier = null,
+    $department = null,
+    $enterer = null,
+    $authorized = null,
+    $year = null
+) {
+    global $db;
+
+    if ($user === null && $hours === null && $end === null &&
+        $modifier === null && $department === null && $enterer === null &&
+        $authorized === null && $year === null) {
+        return null;
+    }
+
+    $departmentID = null;
+
+    /* Get the department id from name if it is a name */
+    if ($department !== null) {
+        if (!is_int($department)) {
+            $sql = "SELECT `DepartmentID` FROM Departments WHERE Name = ".MyPDO::quote($department).";";
+            $result = $db->run($sql);
+            $value = $result->fetch();
+            if ($value) {
+                $departmentID = $value['DepartmentID'];
+            } else {
+                $departmentID = 0;
+            }
+        } else {
+            $departmentID = $department;
+        }
+    }
+
+    $sql = "UPDATE `VolunteerHours` SET";
+    $t = [];
+    if ($user !== null) {
+        $t[] = " AccountID = ".$user;
+    }
+    if ($hours !== null) {
+        $t[] = " ActualHours = ".$hours;
+    }
+    if ($end !== null) {
+        $t[] = " EndDateTime = '".$end."'";
+    }
+    if ($modifier !== null) {
+        $t[] = " TimeModifier = ".$modifier;
+    }
+    if ($departmentID !== null) {
+        $t[] = " DepartmentID = ".$departmentID;
+    }
+    if ($enterer !== null) {
+        $t[] = " EnteredByID = ".$enterer;
+    }
+    if ($authorized !== null) {
+        $t[] = " AuthorizedByID = ".$authorized;
+    }
+    if ($year !== null) {
+        $t[] = " YearID = ".$year;
+    }
+    $sql .= implode(',', $t);
+    $sql .= " WHERE HourEntryID = ";
+    $sql .= $record_id;
+
+    $result = $db->run($sql);
+    if ($result === false) {
+        return PDO::errorInfo();
+    }
+    return null;
+
+}
+
+
+function delete_volunteer_hours($record_id)
+{
+    global $db;
+
+    $sql = <<<SQL
+        DELETE FROM `VolunteerHours` WHERE `HourEntryID` = $record_id;
+SQL;
+
+    $db->run($sql);
+
+}
+
+
 function volunteer_prizes()
 {
     global $db;
@@ -195,6 +346,52 @@ SQL;
     }
 
     return $prizes;
+
+}
+
+
+function volunteer_prize_groups()
+{
+    global $db;
+
+    $groups = array();
+    $sql = " SELECT * FROM `RewardGroup`;";
+    $result = $db->run($sql);
+    $value = $result->fetch();
+    while ($value !== false) {
+        $groups[$value['RewardGroupID']] = $value['RedeemLimit'];
+        $value = $result->fetch();
+    }
+    return $groups;
+
+}
+
+
+function add_volunteer_prize_group($limit = 1)
+{
+    global $db;
+
+    $sql = "INSERT INTO `RewardGroup` (RedeemLimit) VALUES($limit);";
+    $result = $db->run($sql);
+
+    $sql = "SELECT RewardGroupID FROM `RewardGroup` ORDER BY RewardGroupID DESC LIMIT 1;";
+    $result = $db->run($sql);
+    $value = $result->fetch();
+    return $value['RewardGroupID'];
+
+}
+
+
+function update_volunteer_prize_group($group_id, $limit)
+{
+    global $db;
+
+    $sql = <<<SQL
+        UPDATE `RewardGroup`
+        SET RedeemLimit = $limit
+        WHERE RewardGroupID = $group_id;
+SQL;
+    $db->run($sql);
 
 }
 
@@ -250,5 +447,200 @@ SQL;
     $sql .= ";";
     $db->run($sql);
     return true;
+
+}
+
+
+function update_volunteer_prize(
+    $record_id,
+    $name = null,
+    $value = null,
+    $promo = null,
+    $group = null,
+    $total = null
+) {
+    global $db;
+
+    if ($name === null && $value === null && $promo === null &&
+        $group === null && $total === null) {
+        return null;
+    }
+
+    $sql = "UPDATE `VolunteerRewards` SET";
+    $t = [];
+    if ($name !== null) {
+        $t[] = " Name = ".MyPDO::quote($name);
+    }
+    if ($value !== null) {
+        $t[] = " Value = ".$value;
+    }
+    if ($promo !== null) {
+        if ($promo) {
+            $t[] = " Promo = 1";
+        } else {
+            $t[] = " Promo = 0";
+        }
+    }
+    if ($group !== null) {
+        if ($group == '') {
+            $t[] = " RewardGroupID = NULL";
+        } else {
+            $t[] = " RewardGroupID = ".$group;
+        }
+    }
+    if ($total !== null) {
+        $t[] = " TotalInventory = ".$total;
+    }
+
+    $sql .= implode(',', $t);
+    $sql .= " WHERE PrizeID = ";
+    $sql .= $record_id;
+
+    $result = $db->run($sql);
+    if ($result === false) {
+        return PDO::errorInfo();
+    }
+    return null;
+
+}
+
+
+function delete_volunteer_prize($record_id)
+{
+    global $db;
+
+    $sql = <<<SQL
+        DELETE FROM `VolunteerRewards` WHERE `PrizeID` = $record_id;
+SQL;
+
+    $db->run($sql);
+
+}
+
+
+function new_volunteer_prize(
+    $name,
+    $value,
+    $promo,
+    $group,
+    $total
+) {
+    global $db;
+
+    if ($promo) {
+        $promo = 1;
+    } else {
+        $promo = 0;
+    }
+    if ($group == null || $group == '') {
+        $group = 'NULL';
+    }
+    $name = MyPDO::quote($name);
+    $sql = <<<SQL
+            INSERT INTO `VolunteerRewards`
+                (Name, Value, Promo, RewardGroupID, TotalInventory)
+            VALUES ($name, $value, $promo, $group, $total);
+SQL;
+    $db->run($sql);
+
+}
+
+
+function volunteer_minimum_hour_report($required_hours)
+{
+    global $db;
+
+    $members = [];
+    $hours = [];
+    $sql = <<<SQL
+        SELECT
+            AccountID,
+            SUM(ActualHours * TimeModifier) AS TotalHours
+        FROM
+            `VolunteerHours`
+        Group by
+            AccountID
+        order BY
+            TotalHours DESC;
+SQL;
+    $result = $db->run($sql);
+    $value = $result->fetch();
+    while ($value !== false) {
+        if ($value['TotalHours'] < $required_hours)
+            break;
+        $members[] = $value['AccountID'];
+        $hours[$value['AccountID']] = $value['TotalHours'];
+        $value = $result->fetch();
+    }
+
+    $str = "('".implode("', '", $members)."')";
+    $users = lookup_users_by_ids($str);
+
+    $report = [];
+    foreach ($users['users'] as $user) {
+        $report[] = ['Id' => $user['Id'],
+                    'Name' => $user['First Name'].' '.$user['Last Name'],
+                    'Email' => $user['Email'],
+                    'Hours' => $hours[$user['Id']]];
+    }
+
+    return $report;
+
+}
+
+
+function volunteers_in_dept($department)
+{
+    global $db;
+
+    /* Get the department id from name if it is a name */
+    if (!is_int($department)) {
+        $sql = "SELECT DepartmentID FROM Departments WHERE Name = '$department';";
+        $result = $db->run($sql);
+        $value = $result->fetch();
+        if ($value) {
+            $departmentID = $value['DepartmentID'];
+        } else {
+            $departmentID = 0;
+        }
+    } else {
+        $departmentID = $department;
+    }
+
+    $sql = <<<SQL
+        SELECT
+            AccountID,
+            SUM(ActualHours * TimeModifier) AS TotalHours
+        FROM
+            `VolunteerHours`
+        WHERE
+            DepartmentID = $departmentID
+        Group by
+            AccountID,
+            DepartmentID
+SQL;
+
+    $result = $db->run($sql);
+    $value = $result->fetch();
+    while ($value !== false) {
+        if ($value['TotalHours'] < $required_hours)
+            break;
+        $members[] = $value['AccountID'];
+        $hours[$value['AccountID']] = $value['TotalHours'];
+        $value = $result->fetch();
+    }
+
+    $str = "('".implode("', '", $members)."')";
+    $users = lookup_users_by_ids($str);
+
+    $report = [];
+    foreach ($users['users'] as $user) {
+        $report[] = ['Id' => $user['Id'],
+                    'Name' => $user['First Name'].' '.$user['Last Name'],
+                    'Email' => $user['Email'],
+                    'Hours' => $hours[$user['Id']]];
+    }
+
+    return $report;
 
 }

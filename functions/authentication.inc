@@ -3,10 +3,21 @@
 
 function LogoutUser()
 {
-    // Since we check for username, clearing the session logs the user out.  Cookie has no useful info.
+    // Since we check for username, clearing the session logs the user out.
     // Because of that, we do not need to destroy the session, all the data and info is gone anyway.
     $GLOBALS['Neon']->logout();
     $_SESSION = [];
+
+    // Remove cookies!
+    if (isset($_SERVER['HTTP_COOKIE'])) {
+        $cookies = explode(';', $_SERVER['HTTP_COOKIE']);
+        foreach ($cookies as $cookie) {
+            $parts = explode('=', $cookie);
+            $name = trim($parts[0]);
+            setcookie($name, '', time() - 1000);
+            setcookie($name, '', time() - 1000, '/');
+        }
+    }
 
 }
 
