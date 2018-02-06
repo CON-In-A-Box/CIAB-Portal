@@ -258,7 +258,7 @@ function prizes_table($uid)
                         echo " w3-hover-green' ";
                         $json = json_encode($record);
                         $json = addslashes($json);
-                        echo 'onclick=\'add_to_checkout("'.$json;
+                        echo 'onclick=\'addToCheckout("'.$json;
                         echo '");\'>';
                     } else {
                         echo "'>";
@@ -270,7 +270,7 @@ function prizes_table($uid)
                     echo "class='w3-hover-green' ";
                     $json = json_encode($record);
                     $json = addslashes($json);
-                    echo 'onclick=\'add_to_checkout("'.$json.'");\'';
+                    echo 'onclick=\'addToCheckout("'.$json.'");\'';
                 }
                 echo ">";
             }
@@ -330,7 +330,7 @@ function messages($uid)
                 echo "<div id='aquire_promo' class='w3-continer w3-padding w3-cell w3-cell-middle'>\n";
                 echo "<button id='promo_check' class='w3-button w3-round-xxlarge w3-red'";
                 $names = array_column($unclaimed_promo, 'Name');
-                echo "onclick=add_promo_to_checkout();";
+                echo "onclick=addPromoToCheckout();";
                 echo ">";
                 if ($unclaimed_promo > 1) {
                     echo "Claim items</button>\n";
@@ -360,44 +360,6 @@ if (!empty($_REQUEST)) {
     $uid = $updateData['volunteerId'];
 }
 ?>
-
-<script>
-  var checkout = [];
-  var hours_spent = 0;
-
-  function lookupId(id) {
-    if (id) {
-      var xhttp = new XMLHttpRequest();
-      document.getElementById('spinner').innerHTML = "<i class='fa fa-spinner w3-spin'></i>";
-      document.getElementById('message').innerHTML = "";
-      xhttp.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {
-          var response = JSON.parse(this.responseText);
-          var uid = response['Id'];
-          document.getElementById('volunteer').classList.remove('w3-red');
-          document.getElementById('message').innerHTML = "Found " + response['First Name'] + " " + response['Last Name'];
-          window.location = "index.php?Function=volunteers&volunteerId="+uid;
-        } else if (this.readyState == 4) {
-          document.getElementById('volunteer').classList.add('w3-red');
-          document.getElementById('spinner').innerHTML = "";
-          if (this.status == 400) {
-              document.getElementById('message').innerHTML = id + " invalid lookup.";
-          }
-          else if (this.status == 404) {
-              document.getElementById('message').innerHTML = id + " not found.";
-          }
-          else if (this.status == 409) {
-              document.getElementById('message').innerHTML = id + " has too many matches.";
-          }
-        }
-      };
-      xhttp.open("GET", "index.php?Function=volunteers&lookupId=" + id, true);
-      xhttp.send();
-    } else {
-      window.location = "index.php?Function=volunteers";
-    }
-  }
-</script>
 
 <div id="main_content" class="w3-row-padding">
 <div class="w3-rest w3-center w3-xlarge w3-green">
@@ -450,11 +412,11 @@ prizes_table($uid);
         </div>
         <div class='w3-center'>
             <button id='checkout_button' class='w3-button w3-round-xxlarge w3-green'
-                onclick='process_checkout();'>
+                onclick='processCheckout();'>
                 Distribute Items
             </button>
             <button id='clear_button' class='w3-button w3-round-xxlarge w3-red'
-                onclick='clear_checkout();'>
+                onclick='clearCheckout();'>
                Clear
             </button>
         <div>
@@ -477,214 +439,22 @@ prizes_table($uid);
 </div>
 
 <script>
-  var groupsNow = JSON.parse('<?php print(json_encode($groupTotals));?>');
-
-    function process_checkout() {
-        applyReward();
-    }
-
-    function clear_checkout() {
-        var section = document.getElementById("checkout_div");
-        section.classList.add("w3-hide");
-        section.classList.remove("w3-quarter");
-        var section = document.getElementById("info_div");
-        section.classList.add("w3-rest");
-        section.classList.remove("w3-threequarter");
-        hours_spent = 0;
-        checkout = [];
-
-        var table = document.getElementById("checkout_table");
-        while(table.hasChildNodes())
-        {
-           table.removeChild(table.firstChild);
-        }
-        groupsNow = JSON.parse('<?php print(json_encode($groupTotals));?>');
-    }
-
-    function update_cost(cost) {
-        hours_spent += cost;
-
-        var hours = document.getElementById("hours_left");
-        var remain = <?php echo "$hoursRemain";?> - hours_spent;
-        hours.innerHTML = remain.toFixed(2);
-
-        var hours_u = document.getElementById("hours_used");
-        hours_u.innerHTML = hours_spent.toFixed(2);
-    }
-
-    function update_checkout() {
-        var table = document.getElementById("checkout_table");
-        while(table.hasChildNodes())
-        {
-           table.removeChild(table.firstChild);
-        }
-
-        var output = {};
-        for (var index in checkout) {
-            item = checkout[index];
-            if (item.PrizeID in output) {
-                output[item.PrizeID]['count'] += 1;
-            } else {
-                output[item.PrizeID] = {prize: item, count: 1};
-            }
-        }
-
-        var table = document.getElementById("checkout_table");
-        for (var index in output) {
-            item = output[index];
-            var row = table.insertRow(-1);
-            row.setAttribute('data-prizeid', item.prize.PrizeID);
-            row.classList.add('w3-hover-red');
-            row.setAttribute("onclick", "remove_from_checkout("+item.prize.PrizeID+", "+item.prize.cost+", "+item.prize.RewardGroupID+");");
-            var cell = row.insertCell(0);
-
-            if (item.count > 1) {
-                txt = item.prize.Name + ' (x' + item.count+')';
-                cell.innerHTML = txt;
-            } else {
-                cell.innerHTML = item.prize.Name;
-            }
-
-            var cell = row.insertCell(1);
-            cell.innerHTML = item.prize.cost.toFixed(2);
-        }
-
-        var rows = table.getElementsByTagName("tr").length;
-        if (rows == 0) {
-            clear_checkout();
-        }
-    }
-
-    function remove_from_checkout(PrizeID, cost, group) {
-        var found = checkout.findIndex(function(element) {
-            return element.PrizeID == PrizeID;
-        });
-        if (found != -1) {
-            update_cost(-1 * cost);
-            checkout.splice(found, 1);
-        }
-
-        if (group != null) {
-            groupsNow[group] -= 1;
-        }
-
-        update_checkout();
-    }
-
-    function add_to_checkout(json) {
-        var item = JSON.parse(json);
-        cost = parseFloat(item.Value);
-        if (item.Promo == 'yes') {
-            var found = checkout.find(function(element) {
-                return element.PrizeID == item.PrizeID;
-            });
-            if (found) {
-                alert("Promo item '"+item.Name+"' cannot be added twice");
-                return;
-            }
-            cost = 0;
-        }
-        if (<?php echo $hoursRemain?> < hours_spent + cost) {
-            alert("Volunteer does not have enough hours for the "+item.Name);
-            return;
-        }
-        if (groupsNow[item.RewardGroupID] + 1 > item.GroupLimit) {
-            alert("Too many items from limited group");
-            return;
-        }
-        var count = 0;
-        for (var i = 0; i < checkout.length; i++) {
-            if (checkout[i].PrizeID == item.PrizeID)
-                count++;
-        }
-        if (count + 1 > item.Remaining) {
-            alert("Not enough items in inventory!");
-            return;
-        }
-
-        item.cost = cost;
-        show_checkout();
-        checkout.push(item);
-        update_checkout();
-        update_cost(cost);
-        groupsNow[item.RewardGroupID] += 1;
-    }
-
-    function show_checkout() {
-        var section = document.getElementById("checkout_div");
-        section.classList.remove("w3-hide");
-        section.classList.add("w3-quarter");
-        var section = document.getElementById("info_div");
-        section.classList.remove("w3-rest");
-        section.classList.add("w3-threequarter");
-
-        var hours = document.getElementById("hours_left");
-        var remain = parseFloat(<?php echo "$hoursRemain";?>) - hours_spent;
-        hours.innerHTML = remain.toFixed(2);
-
-        var hours_u = document.getElementById("hours_used");
-        hours_u.innerHTML = hours_spent;
-    }
-
-    function  add_promo_to_checkout(names) {
 <?php
-foreach ($unclaimed_promo as $item) {
-    echo "  var found = checkout.find(function(element) {\n";
-    echo "      return element[0] == ".$item['PrizeID'].";\n";
-    echo " });\n";
-    echo "   if (!found) {\n";
-    echo "     add_to_checkout('".json_encode($item)."');\n";
-    echo "      }\n";
-    echo "\n";
+echo "  var groupData = '".json_encode($groupTotals)."';\n";
+if (isset($uid)) {
+    echo "  var userId = $uid;\n";
+    echo "  var hoursRemain = parseFloat($hoursRemain);\n";
+    echo "  var unclaimed = [\n";
+    foreach ($unclaimed_promo as $item) {
+        echo "    {";
+        echo "PrizeID: ".$item['PrizeID'].",";
+        echo "Json: '".json_encode($item)."'},\n";
+    }
+    echo "  ];\n";
+} else {
+    echo "  var userId = null;\n";
+    echo "  var hoursRemain = 0;\n";
+    echo "  var unclaimed = [];\n";
 }
 ?>
-  }
-
-  function applyReward() {
-      var xhttp = new XMLHttpRequest();
-      xhttp.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {
-            fill_reward();
-            document.getElementById('success_dlg').style.display='block'
-        }
-        else if (this.status == 404) {
-            alert("404!");
-        }
-        else if (this.status == 409) {
-            alert("409!");
-        }
-      }
-      xhttp.open("POST", "index.php?Function=volunteers", true);
-      xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-      xhttp.send("rewardId=<?php echo "$uid";?>&rewards="+JSON.stringify(checkout));
-  }
-
-    function fill_reward() {
-        var table = document.getElementById("reward_list");
-        while(table.hasChildNodes())
-        {
-           table.removeChild(table.firstChild);
-        }
-
-        var list = {};
-        checkout.forEach(function(item, index) {
-            if (item.PrizeID in list) {
-                list[item.PrizeID]['count'] +=1;
-            } else {
-                list[item.PrizeID] = {name: item.Name, count: 1};
-            }
-        });
-
-        for (var key in list) {
-            item = list[key];
-            var row = table.insertRow(-1);
-            var cell = row.insertCell(0);
-            if (item.count > 1) {
-                txt = item.name + ' (x' + item.count+')';
-                cell.innerHTML = txt;
-            } else {
-                cell.innerHTML = item.name;
-            }
-        };
-    }
 </script>
