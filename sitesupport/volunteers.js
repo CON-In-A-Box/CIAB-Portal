@@ -307,7 +307,8 @@ function failAdmin(error) {
 }
 
 function toggleAdminMode() {
-  document.cookie = 'CIAB_VOLUNTEERADMIN=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+  document.cookie = 'CIAB_VOLUNTEERADMIN=;expires=Thu, 01 Jan 1970 ' +
+                    '00:00:01 GMT;';
   var target = '';
   if (userId) {
     target = 'index.php?Function=volunteers&volunteerId=' + userId;
@@ -349,7 +350,11 @@ function showEditHours(data) {
 }
 
 function commitHours() {
-  if (!confirm('=============================\nPlease! double check entries!\n=============================\n\nProceed with Volunteer Hour Update?')){
+  if (!window.confirm('=============================\n' +
+                      'Please! double check entries!\n' +
+                      '=============================\n' +
+                      '\n' +
+                      'Proceed with Volunteer Hour Update?')) {
     return;
   }
 
@@ -461,7 +466,11 @@ function showEditPrize(data) {
 }
 
 function deletePrize() {
-  if (!window.confirm('DELETE Prize Entry?\n\nWARNING!!!  Only do this if NONE of this prize has been distributed. It will lead to corrupt reward records. To DELETE a prize that has been rewarded set inventory to \'0\'')) {
+  if (!window.confirm('DELETE Prize Entry?\n\n' +
+                      'WARNING!!!  Only do this if NONE of this prize ' +
+                      'has been distributed. It will lead to corrupt ' +
+                      'reward records. To DELETE a prize that has been ' +
+                      'rewarded set inventory to \'0\'')) {
     return;
   }
 
@@ -490,12 +499,20 @@ function commitPrize() {
   var item = null;
 
   if (data) {
-    if (!window.confirm('=============================\nPlease! double check entries!\n=============================\n\nProceed with Volunteer Prize Update?')) {
+    if (!window.confirm('=============================\n' +
+                        'Please! double check entries!\n' +
+                        '=============================\n' +
+                        '\n' +
+                        'Proceed with Volunteer Prize Update?')) {
       return;
     }
     item = JSON.parse(atob(data));
   } else {
-    if (!window.confirm('=============================\nPlease! double check entries!\n=============================\n\nProceed with Addition of new Volunteer Prize?')) {
+    if (!window.confirm('=============================\n' +
+                        'Please! double check entries!\n' +
+                        '=============================\n' +
+                        '\n' +
+                        'Proceed with Addition of new Volunteer Prize?')) {
       return;
     }
     item = {Name:'', Value:0, RewardGroupID:null, GroupLimit:0,
