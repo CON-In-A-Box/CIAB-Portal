@@ -146,9 +146,9 @@ function acquireable_item($item)
 {
     global $totalHours, $hoursRemain;
     if ($item['Promo'] == 'yes') {
-        return ($item['Value'] <= $totalHours);
+        return (round($item['Value'], 3) <= round($totalHours, 3));
     }
-    return ($item['Value'] <= $hoursRemain);
+    return (round($item['Value'], 3) <= round($hoursRemain, 3));
 
 }
 
@@ -223,7 +223,7 @@ function prizes_table($uid)
                 }
             }
         }
-        $hoursRemain = $totalHours - $spent;
+        $hoursRemain = round($totalHours - $spent, 3);
 
         _prize_table_start($uid, $spent, $hoursRemain);
 
