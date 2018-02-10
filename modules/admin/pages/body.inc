@@ -8,7 +8,7 @@ require_once($FUNCTIONDIR.'/users.inc');
 if( isset($_REQUEST['DoFeed'])) {
 echo "<hr><h3>Starting DeFeed Routine:</h3>\n";
 $lottery = search_definedFields('Lottery Status');
-$status = array_search('Entered', $_SESSION['definedFields']['Lottery Status']);  
+$status = array_search('Entered', $_SESSION['definedFields']['Lottery Status']);
 $bedPref = search_definedFields('Bed Preference');
 $noBed = array_search('No Preference', $_SESSION['definedFields']['Bed Preference']);
 $kingBed = array_search('One King', $_SESSION['definedFields']['Bed Preference']);
@@ -58,7 +58,7 @@ $request['parameters']['individualAccount.customFieldDataList.customFieldData.fi
 }
 unset($val);
 unset($key);
-      
+
 $i = 1000000; // If you have more than 1 Million fields.... dude, give up!
 
 // Enter the Lottery
@@ -202,7 +202,7 @@ if (!empty($searchCriteria['ID'])) {
 <div>
   <pre><?php
     // A simple place for admins to do random testing.
-    
+
     ?></pre>
 </div>
 <!--End Play Area-->

@@ -26,15 +26,21 @@ if (empty($_REQUEST['Function'])) {
     goSite('/index.php?Function=public');
 }
 
+/* Core Pages */
+
 // Pre-header process  <process_preheader>
 if (is_file($PAGESDIR.'/pre/'.$_REQUEST['Function'].'.inc')) {
     require($PAGESDIR.'/pre/'.$_REQUEST['Function'].'.inc');
+} else if (is_file($MODULESDIR.'/'.$_REQUEST['Function'].'/pages/pre.inc')) {
+    require($MODULESDIR.'/'.$_REQUEST['Function'].'/pages/pre.inc');
 }
 
 // Header <process_header>
 require($PAGESDIR.'/base/header_start.inc');
 if (is_file($PAGESDIR.'/head/'.$_REQUEST['Function'].'.inc')) {
     require($PAGESDIR.'/head/'.$_REQUEST['Function'].'.inc');
+} else if (is_file($MODULESDIR.'/'.$_REQUEST['Function'].'/pages/head.inc')) {
+    require($MODULESDIR.'/'.$_REQUEST['Function'].'/pages/head.inc');
 }
 require($PAGESDIR.'/base/header_end.inc');
 
@@ -45,7 +51,11 @@ if (empty($noheader) && empty($_REQUEST['NoHeader'])) {
     require($PAGESDIR.'/base/menubar.inc');
 }
 
-require($PAGESDIR.'/body/'.$_REQUEST['Function'].'.inc');
+if (is_file($PAGESDIR.'/body/'.$_REQUEST['Function'].'.inc')) {
+    require($PAGESDIR.'/body/'.$_REQUEST['Function'].'.inc');
+} else if (is_file($MODULESDIR.'/'.$_REQUEST['Function'].'/pages/body.inc')) {
+    require($MODULESDIR.'/'.$_REQUEST['Function'].'/pages/body.inc');
+}
 
 // footer <process_footer>
 require($PAGESDIR.'/base/footer.inc');
