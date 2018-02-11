@@ -11,18 +11,6 @@ var hoursSpent = 0;
 var groupsNow = [];
 var currentSidebar = null;
 
-function escapeHtml(text) {
-  var map = {
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;',
-    '"': '&quot;',
-    '\'': '&#039;'
-  };
-
-  return text.replace(/[&<>"']/g, function(m) { return map[m]; });
-}
-
 function hideSidebar() {
   if (currentSidebar) {
     currentSidebar.classList.add('w3-hide');
