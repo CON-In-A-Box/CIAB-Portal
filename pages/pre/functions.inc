@@ -1,5 +1,9 @@
 <?php
 
+/*.
+    require_module 'standard';
+.*/
+
 if (!empty($_REQUEST)) {
 
     $arguments = [
@@ -24,6 +28,28 @@ if (!empty($_REQUEST)) {
         }
     }
 
+    $arguments = [
+    'lookupId'   => FILTER_SANITIZE_SPECIAL_CHARS,
+    ];
+
+    $updateData = filter_input_array(INPUT_GET, $arguments);
+
+    if (!empty($updateData['lookupId'])) {
+        require_once($FUNCTIONDIR."/users.inc");
+
+        $data = lookup_users_by_key($updateData['lookupId'], false);
+
+        if (!$data['code']) {
+            if (count($data['users']) == 0) {
+                header("HTTP/1.0 404");
+            }
+            $user = $data['users'];
+            echo json_encode($data['users']);
+        } else {
+            header("HTTP/1.0 ".$data['code']);
+        }
+        exit();
+    }
 }
 
 header("HTTP/1.0 404");

@@ -49,12 +49,14 @@ if (!empty($_REQUEST)) {
         $data = lookup_users_by_key($updateData['volunteerId']);
 
         if (!$data['code']) {
-            $user = $data['users'][0];
-            $vol_past = get_volunteer_hours_for_user($user['Id']);
-            if (!empty($vol_past)) {
-                $user['volunteer'] = $vol_past;
+            $users = $data['users'];
+            foreach ($users as $key => $data) {
+                $vol_past = get_volunteer_hours_for_user($data['Id']);
+                if (!empty($vol_past)) {
+                    $users[$key]['volunteer'] = $vol_past;
+                }
             }
-            echo json_encode($user);
+            echo json_encode($users);
         } else {
             header("HTTP/1.0 ".$data['code']);
         }

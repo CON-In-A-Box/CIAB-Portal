@@ -20,88 +20,6 @@ if (isset($updateComplete)) {
 <script>
   var vol_past = null;
 
-  function lookupId(id) {
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 200) {
-        var response = JSON.parse(this.responseText);
-        var name = response['First Name']+' '+response['Last Name'];
-        var uid = response['Id'];
-        if (response['ConCom']) {
-          document.getElementById('volunteer').value = "";
-          document.getElementById('volunteer').classList.add('w3-red');
-          document.getElementById('submitbtn').disabled = true;
-          document.getElementById('volunteername').innerHTML = "a Volunteer";
-          document.getElementById('lookupname').innerHTML = name + ' is on ConCom (' + uid + ')';
-        } else {
-          document.getElementById('volunteer').classList.remove('w3-red');
-          document.getElementById('volunteer').value = uid;
-          document.getElementById('submitbtn').disabled = false;
-          document.getElementById('volunteername').innerHTML = name + ' (' + uid + ')';
-          document.getElementById('lookupname').innerHTML = name;
-
-          var depts = document.getElementById('department');
-
-         /* Clean out old highlighted departments */
-          for (i=0; i < depts.length; i++) {
-            if (depts[i].text[0] == '*' || depts[i].text[0]=='-') {
-                depts[i+1].selected = true;
-                depts.remove(i);
-                i--;
-            }
-          }
-<?php
-if (strpos($_SESSION['customFields']['currConComPos'][0], 'Volunteers') !== false || isset($_SESSION['IS_ADMIN'])) {
-    echo <<<EOT
-    if ('volunteer' in response) {
-      var past = [];
-      var option = document.createElement("option");
-      option.text = "------------------";
-      option.disabled = true;
-      depts.add(option, 0);
-
-      for (var i = 0, len = response['volunteer'].length; i < len; i++) {
-        var dept = response['volunteer'][i];
-        if (past.indexOf(dept['Department Worked']) == -1) {
-          var option = document.createElement("option");
-          option.selected = true;
-          option.value= dept['Department Worked'];
-          option.text = '* '+dept['Department Worked'];
-          depts.add(option, 0);
-          past.push(dept['Department Worked']);
-        }
-      }
-    }
-EOT;
-}
-?>
-        if ('volunteer' in response) {
-            vol_past = response['volunteer'];
-            checkHours();
-        }
-        }
-      } else if (this.readyState == 4 ) {
-          document.getElementById('volunteer').value = "";
-          document.getElementById('volunteer').classList.add('w3-red');
-          document.getElementById('submitbtn').disabled = true;
-          document.getElementById('volunteername').innerHTML = "a Volunteer";
-          if (this.status == 404) {
-            document.getElementById('lookupname').innerHTML = id + " not found";
-          } else if (this.status == 400) {
-            document.getElementById('lookupname').innerHTML = id + " invalid lookup";
-          } else if (this.status == 409) {
-            document.getElementById('lookupname').innerHTML = id + " not unique";
-          } else {
-            document.getElementById('lookupname').innerHTML = id + " unknown error";
-          }
-      } else {
-        document.getElementById('volunteername').innerHTML = id + " <i class='fa fa-spinner w3-spin'></i>";
-      }
-    };
-    xhttp.open("GET", "index.php?Function=volhours&volunteerId=" + id, true);
-    xhttp.send();
-  }
-
   function calculateHours() {
     var hours = Number(document.getElementById('hours').value);
     var am = Number(document.getElementById('minutes').value);
@@ -117,8 +35,7 @@ EOT;
   }
 
   function reset_form() {
-    document.getElementById('volunteer').value = "";
-    document.getElementById('volunteer').classList.remove('w3-red');
+    userLookup.clearFailure();
     document.getElementById('submitbtn').disabled = true;
     document.getElementById('volunteername').innerHTML = "a Volunteer";
     document.getElementById('lookupname').innerHTML = "";
@@ -191,22 +108,85 @@ EOT;
 
 <div id="message" class='w3-block w3-center w3-red'></div>
 
-<form method="post" action="index.php?Function=volhours">
+<script>
+    function onSuccess(target, resp) {
+        document.getElementById('datetime').classList.remove('w3-red');
+        document.getElementById('message').innerHTML = "";
 
-<div class='w3-bar'>
-  <div class='w3-bar-item'>
-    <label>Volunteer Badge Number, E-Mail or Full Name</label>
-    <div class='w3-bar'>
-      <input class="w3-input w3-border w3-bar-item" name="VolunteerID" id="volunteer" onchange="lookupId(this.value);" <?php
-        if (isset($_REQUEST['ID'])) {
-            echo 'value='.$_REQUEST['ID'].' ';
+        var response = resp[0]
+        var name = response['First Name']+' '+response['Last Name'];
+        var uid = response['Id'];
+        if (response['ConCom']) {
+          userLookup.markFailure();
+          document.getElementById('submitbtn').disabled = true;
+          document.getElementById('volunteername').innerHTML = "a Volunteer";
+          document.getElementById('lookupname').innerHTML = name + ' is on ConCom (' + uid + ')';
+        } else {
+          userLookup.clearFailure();
+          userLookup.set(uid);
+          document.getElementById('submitbtn').disabled = false;
+          document.getElementById('volunteername').innerHTML = name + ' (' + uid + ')';
+          document.getElementById('lookupname').innerHTML = name + ' (' + uid + ')';;
+
+          var depts = document.getElementById('department');
+
+         /* Clean out old highlighted departments */
+          for (i=0; i < depts.length; i++) {
+            if (depts[i].text[0] == '*' || depts[i].text[0]=='-') {
+                depts[i+1].selected = true;
+                depts.remove(i);
+                i--;
+            }
+          }
+<?php
+if (strpos($_SESSION['customFields']['currConComPos'][0], 'Volunteers') !== false || isset($_SESSION['IS_ADMIN'])) {
+    echo <<<EOT
+    if ('volunteer' in response) {
+      var past = [];
+      var option = document.createElement("option");
+      option.text = "------------------";
+      option.disabled = true;
+      depts.add(option, 0);
+
+      for (var i = 0, len = response['volunteer'].length; i < len; i++) {
+        var dept = response['volunteer'][i];
+        if (past.indexOf(dept['Department Worked']) == -1) {
+          var option = document.createElement("option");
+          option.selected = true;
+          option.value= dept['Department Worked'];
+          option.text = '* '+dept['Department Worked'];
+          depts.add(option, 0);
+          past.push(dept['Department Worked']);
         }
-        ?>placeholder="(badge #, email, Name)" required>
-      <button type="button" class="w3-bar-item  w3-border w3-button icon-barcode button-scan" onclick="QuaggaApp.init('volunteer', lookupId)"></button>
-      <span class='w3-bar-item' id='lookupname'></span>
-    </div>
-  </div>
-</div>
+      }
+    }
+EOT;
+}
+?>
+        if ('volunteer' in response) {
+            vol_past = response['volunteer'];
+            checkHours();
+        }
+      }
+    }
+
+    userLookup.options({
+        message: 'Volunteer Badge Number, E-Mail or Full Name',
+        memberName: 'VolunteerID',
+        success: onSuccess,
+        needForm: false,
+        lookupTarget: 'index.php?Function=volhours&volunteerId='
+        });
+</script>
+<form method="post" action="index.php?Function=volhours">
+<?php
+if (isset($uid)) {
+    echo "<div id='userLookup_div' data-user='$uid'> </div>\n";
+} else {
+    echo "<div id='userLookup_div'> </div>\n";
+}
+?>
+  <span class='' id='lookupname'></span>
 
 <div class='w3-bar'>
   <div class='w3-bar-item'>
