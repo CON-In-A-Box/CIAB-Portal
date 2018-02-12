@@ -17,159 +17,9 @@ if (isset($updateComplete)) {
 }
 ?>
 
-<script>
-  var vol_past = null;
-
-  function calculateHours() {
-    var hours = Number(document.getElementById('hours').value);
-    var am = Number(document.getElementById('minutes').value);
-    hours += am;
-    var creditHours = hours * document.getElementById('modifier').value;
-    var tag = " hours";
-    if (hours == 1) {
-      tag = " hour";
-    }
-    document.getElementById('totalhours').innerHTML = creditHours + tag;
-    document.getElementById('actualhours').value = Number(hours);
-    checkHours();
-  }
-
-  function reset_form() {
-    userLookup.clearFailure();
-    document.getElementById('submitbtn').disabled = true;
-    document.getElementById('volunteername').innerHTML = "a Volunteer";
-    document.getElementById('lookupname').innerHTML = "";
-
-     /* Clean out old highlighted departments */
-      var depts = document.getElementById('department');
-      for (i=0; i < depts.length; i++) {
-        if (depts[i].text[0] == '*' || depts[i].text[0]=='-') {
-            depts[i+1].selected = true;
-            depts.remove(i);
-            i--;
-        }
-      }
-    document.getElementById('message').innerHTML = "";
-    document.getElementById('datetime').classList.remove('w3-red');
-  }
-
-  function format_time(time) {
-
-    var days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
-    if (time.getHours() >= 12) {
-        var pmam = ' PM'
-    } else {
-        var pmam = ' AM'
-    }
-    var hours = time.getHours()%12;
-    if (hours == 0) {
-        hours = 12;
-    }
-    var min = time.getMinutes();
-    if (min < 10) {
-        min = "0" + min;
-    } else {
-        min = min.toString();
-    }
-
-    return (days[time.getDay()] + ' ' + hours.toString() + ':' + min + pmam);
-  }
-
-  function checkHours() {
-    document.getElementById('datetime').classList.remove('w3-red');
-    document.getElementById('message').innerHTML = "";
-
-    if (vol_past && vol_past.length) {
-        var hours = Number(document.getElementById('hours').value);
-        var mins  = Number(document.getElementById('minutes').value);
-        var new_end = new Date(document.getElementById('datetime').value);
-        var new_begin = new Date(document.getElementById('datetime').value);
-        new_begin.setHours(new_begin.getHours() - hours);
-        new_begin.setMinutes(new_begin.getMinutes() - mins);
-
-        for (i = 0; i < vol_past.length; i++) {
-            var _shift = vol_past[i];
-            var _end = new Date(_shift['End Date Time']);
-            var _begin = new Date(_shift['End Date Time']);
-            _begin.setHours(_begin.getHours() - Math.floor(_shift['Actual Hours']));
-            _begin.setMinutes(_begin.getMinutes() - Math.floor((_shift['Actual Hours'] % 1) * 60));
-
-            if ((new_begin < _end && new_begin > _begin) ||
-                (new_end < _end && new_end > _begin) ||
-                (new_end >= _end && new_begin <= _begin)) {
-                  document.getElementById('datetime').classList.add('w3-red');
-                  document.getElementById('message').innerHTML = 'Overlapping with ' + _shift['Department Worked'] + ' ( ' + format_time(_begin) + ' - ' + format_time(_end) + ' ) ';
-                  break;
-            }
-        }
-    }
-  }
-</script>
-
 <div id="message" class='w3-block w3-center w3-red'></div>
 
 <script>
-    function onSuccess(target, resp) {
-        document.getElementById('datetime').classList.remove('w3-red');
-        document.getElementById('message').innerHTML = "";
-
-        var response = resp[0]
-        var name = response['First Name']+' '+response['Last Name'];
-        var uid = response['Id'];
-        if (response['ConCom']) {
-          userLookup.markFailure();
-          document.getElementById('submitbtn').disabled = true;
-          document.getElementById('volunteername').innerHTML = "a Volunteer";
-          document.getElementById('lookupname').innerHTML = name + ' is on ConCom (' + uid + ')';
-        } else {
-          userLookup.clearFailure();
-          userLookup.set(uid);
-          document.getElementById('submitbtn').disabled = false;
-          document.getElementById('volunteername').innerHTML = name + ' (' + uid + ')';
-          document.getElementById('lookupname').innerHTML = name + ' (' + uid + ')';;
-
-          var depts = document.getElementById('department');
-
-         /* Clean out old highlighted departments */
-          for (i=0; i < depts.length; i++) {
-            if (depts[i].text[0] == '*' || depts[i].text[0]=='-') {
-                depts[i+1].selected = true;
-                depts.remove(i);
-                i--;
-            }
-          }
-<?php
-if (strpos($_SESSION['customFields']['currConComPos'][0], 'Volunteers') !== false || isset($_SESSION['IS_ADMIN'])) {
-    echo <<<EOT
-    if ('volunteer' in response) {
-      var past = [];
-      var option = document.createElement("option");
-      option.text = "------------------";
-      option.disabled = true;
-      depts.add(option, 0);
-
-      for (var i = 0, len = response['volunteer'].length; i < len; i++) {
-        var dept = response['volunteer'][i];
-        if (past.indexOf(dept['Department Worked']) == -1) {
-          var option = document.createElement("option");
-          option.selected = true;
-          option.value= dept['Department Worked'];
-          option.text = '* '+dept['Department Worked'];
-          depts.add(option, 0);
-          past.push(dept['Department Worked']);
-        }
-      }
-    }
-EOT;
-}
-?>
-        if ('volunteer' in response) {
-            vol_past = response['volunteer'];
-            checkHours();
-        }
-      }
-    }
-
     userLookup.options({
         message: 'Volunteer Badge Number, E-Mail or Full Name',
         memberName: 'VolunteerID',
@@ -317,7 +167,7 @@ if (isset($uid)) {
   <div class="w3-bar-item">
     <div class="w3-bar">
       <button id="submitbtn" class="w3-button w3-ripple w3-green" disabled>Submit Hours</button>
-      <button class="w3-button w3-ripple w3-khaki" type="button" onclick="reset_form()">Clear Form</button>
+      <button class="w3-button w3-ripple w3-khaki" type="button" onclick="resetForm()">Clear Form</button>
     </div>
   </div>
 </div>
