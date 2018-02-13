@@ -14,8 +14,8 @@ function display_volunteer_hours()
         $output = array();
         $total = 0;
         foreach ($data as $entry) {
-            echo "<tr><td>".$entry['Department Worked'].'</td>';
-            echo "<td>".$entry['Total Hours'].' hours</td>';
+            echo '<tr><td>'.htmlspecialchars($entry['Department Worked']).'</td>';
+            echo "<td>".$entry['Total Hours']." hours</td>";
             echo "</tr>\n";
             $total += $entry['Total Hours'];
         }
@@ -40,7 +40,7 @@ function display_volunteer_prizes()
             if (!isset($entry['Aquired']) || $entry['Aquired'] == 0) {
                 continue;
             }
-            echo "<tr><td>".$entry['Name'].'</td>';
+            echo "<tr><td>".htmlspecialchars($entry['Name']).'</td>';
             echo "<td>".$entry['Aquired'].'</td>';
             echo "</tr>\n";
             if ($entry['Promo'] != 'yes') {

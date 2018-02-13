@@ -2,6 +2,38 @@
 
 require_once(__DIR__."/../functions/functions.inc");
 require_once(__DIR__."/../functions/database.inc");
+require_once(__DIR__."/../functions/volunteer.inc");
+
+function random_concom_id()
+{
+    global $db;
+
+    $sql = <<<SQL
+        SELECT AccountID FROM ConComList
+        ORDER BY RAND()
+        LIMIT 1
+SQL;
+    $result = $db->run($sql);
+    $value = $result->fetch();
+    return (int)($value['AccountID']);
+
+}
+
+
+function random_department()
+{
+    global $db;
+
+    $sql = <<<SQL
+        SELECT Name FROM Departments
+        ORDER BY RAND()
+        LIMIT 1
+SQL;
+    $result = $db->run($sql);
+    $value = $result->fetch();
+    return $value['Name'];
+
+}
 
 
 function populate_vol()
@@ -14,42 +46,19 @@ function populate_vol()
     $db->run($sql);
 
 
-    $year = 20;
-    $id = 1231;
-    $enterer = 1231;
-    $authorized = 1231;
+    $id = 0;
+    $enterer = 0;
+    $authorized = 0;
 
     for ($i = 0; $i < 5000; $i++) {
-        $sql = <<<SQL
-            SELECT AccountID FROM ConComList
-            ORDER BY RAND()
-            LIMIT 1
-SQL;
-        $result = $db->run($sql);
-        $value = $result->fetch();
-        $id = (int)($value['AccountID']);
-
-        $sql = <<<SQL
-            SELECT DepartmentID FROM Departments
-            ORDER BY RAND()
-            LIMIT 1
-SQL;
-        $result = $db->run($sql);
-        $value = $result->fetch();
-        $departmentID = (int)($value['DepartmentID']);
-        $modifier = 0.5;
-        $modifier += rand(0, 100) / 100;
-
+        $id = random_concom_id();
+        $enterer = random_concom_id();
+        $authorized = random_concom_id();
+        $department = random_department();
+        $modifier = rand(1, 4) * 0.5;
         $hours = rand(1, 5);
-        $sql = <<<SQL
-            INSERT INTO VolunteerHours
-                (AccountID, ActualHours, EndDateTime, TimeModifier,
-                 DepartmentID, EnteredByID, AuthorizedByID, YearID)
-            VALUES ($id, $hours, NOW(), $modifier, $departmentID, $enterer,
-                    $authorized, $year);
-SQL;
-
-        $db->run($sql);
+        $end = date("Y-m-d H:i:s");
+        record_volunteer_hours($id, $hours, $end, $modifier, $department, $enterer, $authorized);
     }
 
 }
@@ -66,21 +75,12 @@ function populate_prizes()
     $sql = "DELETE FROM `VolunteerRewards` WHERE 1";
     $db->run($sql);
 
-
-    $limit = [rand(1, 4), rand(1, 4), rand(1, 4), rand(1, 4), rand(1, 4)];
-
     /* Add 5 groups */
-    $sql = <<<SQL
-        INSERT INTO RewardGroup (RedeemLimit)
-        VALUES (5),
-               ($limit[0]),
-               ($limit[1]),
-               ($limit[2]),
-               ($limit[3]),
-               ($limit[4]);
-SQL;
-
-    $result = $db->run($sql);
+    for ($i = 0; $i < 5; $i++) {
+        $limit = rand(1, 4);
+        $group = add_volunteer_prize_group();
+        update_volunteer_prize_group($group, $limit);
+    }
 
     $sql = "SELECT RewardGroupID FROM RewardGroup LIMIT 1;";
     $result = $db->run($sql);
@@ -103,13 +103,7 @@ SQL;
         $inventory = rand(10, 500);
         $name = $adj[array_rand($adj)].' '.$n1;
         $group = $bottom;
-
-        $sql = <<<SQL
-            INSERT INTO VolunteerRewards
-                (Name, Value, Promo, RewardGroupID, TotalInventory)
-            VALUES ('$name', $value, $promo, $group, $inventory);
-SQL;
-        $db->run($sql);
+        new_volunteer_prize($name, $value, $promo, $group, $inventory);
     }
 
     /* Add a bunch of items */
@@ -124,7 +118,7 @@ SQL;
         $value += rand(1, 9) / 10;
         $inventory = rand(10, 500);
         $name = $adj[array_rand($adj)].'-'.$adj[array_rand($adj)].' '.$noun[array_rand($noun)];
-        $group = 'NULL';
+        $group = null;
         if ($promo_count < $total_items / 10) {
             $promo = rand(0, 1);
             $promo_count++;
@@ -135,15 +129,7 @@ SQL;
                 $group_count++;
             }
         }
-
-
-        $sql = <<<SQL
-            INSERT INTO VolunteerRewards
-                (Name, Value, Promo, RewardGroupID, TotalInventory)
-            VALUES ('$name', $value, $promo, $group, $inventory);
-SQL;
-
-        $db->run($sql);
+        new_volunteer_prize($name, $value, $promo, $group, $inventory);
     }
 
 }
@@ -173,16 +159,12 @@ SQL;
 SQL;
         $result2 = $db->run($sql);
         $value2 = $result2->fetch();
+        $prizes = [];
         while ($value2 != false) {
-            $prize = $value2['PrizeID'];
-            $sql = <<<SQL
-                INSERT INTO HourRedemptions
-                    (AccountID, PrizeID, YearID)
-                VALUES ($id, $prize, 20);
-SQL;
-            $db->run($sql);
+            $prizes[] = $value2['PrizeID'];
             $value2 = $result2->fetch();
         }
+        award_prizes($id, $prizes);
         $value = $result->fetch();
     }
 

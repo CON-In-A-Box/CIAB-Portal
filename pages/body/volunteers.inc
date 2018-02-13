@@ -8,6 +8,23 @@ $unclaimed_promo = [];
 $hoursRemain = 0;
 $groupTotals = [];
 
+$uid = null;
+$admin_mode = false;
+if (!empty($_REQUEST)) {
+    // Retrieve and sanitize POST data
+    $arguments = [
+    'volunteerId'         => FILTER_SANITIZE_SPECIAL_CHARS,
+    ];
+    $updateData = filter_input_array(INPUT_GET, $arguments);
+    $uid = $updateData['volunteerId'];
+}
+
+if (isset($_SESSION['IS_ADMIN']) || isset($_SESSION['IS_VOLUNTEERS'])) {
+    if (isset($_COOKIE["CIAB_VOLUNTEERADMIN"])) {
+        $admin_mode = $_COOKIE["CIAB_VOLUNTEERADMIN"];
+    }
+}
+
 
 function _increment_offsets(&$groups, $start_entry)
 {
@@ -80,7 +97,7 @@ function _build_prize_list($data, $uid)
 
 function initialize($uid)
 {
-    global $prizeData;
+    global $prizeData, $groupTotals, $admin_mode;
 
     if (isset($uid)) {
         $prizeData = volunteer_prizes_for_user($uid);
@@ -90,23 +107,39 @@ function initialize($uid)
 
     $prizeData = _build_prize_list($prizeData, $uid);
 
+    if ($admin_mode) {
+        $groupTotals = volunteer_prize_groups();
+    }
+
+}
+
+
+function _htmlsafeify($array)
+{
+    $output = [];
+    foreach ($array as $key => $value) {
+        $output[$key] = htmlspecialchars($value);
+    }
+    return $output;
+
 }
 
 
 function hour_table($uid)
 {
-    global $totalHours;
+    global $totalHours,$admin_mode;
 
     echo '<div class="w3-container w3-center w3-green" ';
-    echo 'style="max-height:350px; overflow:scroll;">';
+    echo 'style="max-height:34vh; overflow:scroll;">';
     echo "<table class='w3-table w3-striped w3-bordered w3-white'>";
     echo "<tr><th class='w3-center w3-green' colspan=9>Hours</th></tr>\n";
     if (isset($uid)) {
         $data = get_volunteer_hours_for_user($uid);
+        $totalHours = 0;
     } else {
         $data = get_volunteer_hour_summary();
+        $summary = get_volunteer_year_summery();
     }
-    $totalHours = 0;
     if (!empty($data)) {
         echo "<tr><th>";
         $keys = array_keys($data[0]);
@@ -114,19 +147,39 @@ function hour_table($uid)
         if ($id_index !== false) {
             unset($keys[$id_index]);
         }
-        echo implode($keys, '</th><th>');
+        $idx = array_search('EntryID', $keys);
+        if ($idx !== false) {
+            unset($keys[$idx]);
+        }
+        echo implode(_htmlsafeify($keys), '</th><th>');
         echo "</th></tr>\n";
         foreach ($data as $key => $record) {
-            if (array_key_exists('Time Modifier', $record)) {
-                $totalHours += $record['Actual Hours'] * $record['Time Modifier'];
-            } else {
-                $totalHours += $record['Total Hours'];
+            if (isset($uid)) {
+                if (array_key_exists('Time Modifier', $record)) {
+                    $totalHours += $record['Actual Hours'] * $record['Time Modifier'];
+                } else {
+                    $totalHours += $record['Total Hours'];
+                }
             }
-            echo "<tr><td>";
+            if ($uid && $admin_mode) {
+                echo "<tr class='w3-hover-red' ";
+                $json = json_encode($record);
+                $json = base64_encode($json);
+                echo 'onclick=\'showEditHours("'.$json;
+                echo '");\'>';
+            } else if (!isset($uid) && $admin_mode) {
+                echo "<tr class='w3-hover-red' ";
+                echo 'onclick=\'departmentReport("'.$record['Department Worked'].'", '.$record['Department ID'].');\'';
+                echo ">";
+            } else {
+                echo "<tr>";
+            }
+            echo "<td>";
+            unset($record['EntryID']);
             if ($id_index !== false) {
                 unset($record['Department ID']);
             }
-            echo implode($record, '</td><td>');
+            echo implode(_htmlsafeify($record), '</td><td>');
             echo "</td></tr>\n";
         }
     } else {
@@ -136,7 +189,13 @@ function hour_table($uid)
     echo "</table>";
     echo "</div>";
     echo '<div class="w3-col w3-center w3-xlarge w3-green">';
-    echo "<span>Total Hours : ".$totalHours."</span>";
+    if (isset($uid)) {
+        echo "<span>Total Hours : ".$totalHours."</span>";
+    } else {
+        echo "<span class='w3-margin'>Total Hours : ".$summary['TotalHours']."</span>";
+        echo "<span class='w3-margin'>Total Volunteers : ".$summary['VolunteerCount']."</span>";
+        echo "<span class='we-margin'>Total Spent Hours : ".$summary['TotalHoursSpent']."</span>";
+    }
     echo "</div>\n";
 
 };
@@ -155,6 +214,8 @@ function acquireable_item($item)
 
 function _prize_table_start($uid = 0, $spent = 0, $hoursRemain = 0)
 {
+    global $admin_mode;
+
     if ($uid) {
         echo '<div class="w3-col w3-center w3-xlarge w3-blue">';
         echo "<span>Hours Spent  <span id='h_spent'>".$spent."</span>  |  ";
@@ -162,20 +223,26 @@ function _prize_table_start($uid = 0, $spent = 0, $hoursRemain = 0)
         echo "</div>\n";
     }
     echo "<div class='w3-container w3-center w3-blue' ";
-    echo "style='max-height:200px; overflow:scroll;'>\n";
+    if ($admin_mode && $uid) {
+        echo "style='max-height:29vh; overflow:scroll;'>\n";
+    } else {
+        echo "style='max-height:33vh; overflow:scroll;'>\n";
+    }
     echo "<table class='w3-table w3-striped w3-bordered w3-white'";
     echo " id='prizes'>\n";
     echo "<tr>";
     echo "<th class='w3-blue'>";
-    echo "<input id='soldoutcheck' type='checkbox' class='w3-check' ";
-    echo "onclick='showHideSoldOut()'>";
-    echo "<label for='soldoutcheck'>";
-    if (isset($uid)) {
-        echo "Show volunteer's soldout items";
-    } else {
-        echo "Show soldout items";
+    if (!$admin_mode) {
+        echo "<input id='soldoutcheck' type='checkbox' class='w3-check' ";
+        echo "onclick='showHideSoldOut()'>";
+        echo "<label for='soldoutcheck'>";
+        if (isset($uid)) {
+            echo "Show volunteer's soldout items";
+        } else {
+            echo "Show soldout items";
+        }
+        echo "</label></th>\n";
     }
-    echo "</label></th>\n";
     echo "<th class='w3-center w3-blue' colspan=3>Prizes</th>";
     echo "<th class='w3-blue' colspan=3></th>\n";
     echo "</tr>\n";
@@ -186,6 +253,7 @@ function _prize_table_start($uid = 0, $spent = 0, $hoursRemain = 0)
 function prizes_table($uid)
 {
     global $totalHours, $prizeData, $hoursRemain, $groupTotals;
+    global $admin_mode;
 
     $data = $prizeData;
 
@@ -205,8 +273,10 @@ function prizes_table($uid)
         $keys = array_keys($data[$first_key]);
         $idx = array_search('PrizeID', $keys);
         unset($keys[$idx]);
-        $idx = array_search('RewardGroupID', $keys);
-        unset($keys[$idx]);
+        if (!$admin_mode || isset($uid)) {
+            $idx = array_search('RewardGroupID', $keys);
+            unset($keys[$idx]);
+        }
         if (isset($uid) && !array_search('Aquired', $keys)) {
             array_push($keys, 'Aquired');
         }
@@ -228,58 +298,67 @@ function prizes_table($uid)
         _prize_table_start($uid, $spent, $hoursRemain);
 
         echo "<tr><th>";
-        echo implode($keys, '</th><th>');
+        echo implode(_htmlsafeify($keys), '</th><th>');
         echo "</th></tr>\n";
         foreach ($data as $key => $record) {
-            if ($record['Remaining'] <= 0) {
-                echo "<tr class='soldoutrow hiddenrow w3-red'>";
-            } elseif ($record['Promo'] == 'yes' && $record['Aquired'] > 0) {
-                echo "<tr class='soldoutrow hiddenrow w3-disabled'>";
-            } elseif ($record['RewardGroupID']) {
-                $record['GroupLimit'] = $record['Limit'];
-                if ($last_group !== null && $last_group != $record['RewardGroupID']) {
-                    $group++;
-                } elseif ($last_group !== null) {
-                    $record['Limit'] = '|';
-                }
-                if (ctype_digit($record['Aquired'])) {
-                    $groupTotals[intval($record['RewardGroupID'])] += intval($record['Aquired']);
-                } else {
-                    $groupTotals[intval($record['RewardGroupID'])] += 0;
-                }
-                $last_group = $record['RewardGroupID'];
-                $classes = $group_styles[($group % count($group_styles))];
-
-                if (isset($record['group_soldout'])) {
-                    echo "<tr class='$classes soldoutrow hiddenrow w3-disabled'>";
-                } else {
-                    echo "<tr class='$classes";
-                    if (isset($uid) && acquireable_item($record)) {
-                        echo " w3-hover-green' ";
-                        $json = json_encode($record);
-                        $json = addslashes($json);
-                        echo 'onclick=\'add_to_checkout("'.$json;
-                        echo '");\'>';
-                    } else {
-                        echo "'>";
-                    }
-                }
-            } else {
+            if (!isset($uid) && $admin_mode) {
                 echo "<tr ";
-                if (isset($uid) && acquireable_item($record)) {
-                    echo "class='w3-hover-green' ";
-                    $json = json_encode($record);
-                    $json = addslashes($json);
-                    echo 'onclick=\'add_to_checkout("'.$json.'");\'';
-                }
+                echo "class='w3-hover-red' ";
+                $json = json_encode($record);
+                $json = base64_encode($json);
+                echo 'onclick=\'showEditPrize("'.$json.'");\'';
                 echo ">";
+            } else {
+                if ($record['Remaining'] <= 0) {
+                    echo "<tr class='soldoutrow hiddenrow w3-red'>";
+                } elseif ($record['Promo'] == 'yes' && $record['Aquired'] > 0) {
+                    echo "<tr class='soldoutrow hiddenrow w3-disabled'>";
+                } elseif ($record['RewardGroupID']) {
+                    $record['GroupLimit'] = $record['Limit'];
+                    if ($last_group !== null && $last_group != $record['RewardGroupID']) {
+                        $group++;
+                    } elseif ($last_group !== null) {
+                        $record['Limit'] = '|';
+                    }
+                    if (ctype_digit($record['Aquired'])) {
+                        $groupTotals[intval($record['RewardGroupID'])] += intval($record['Aquired']);
+                    } else {
+                        $groupTotals[intval($record['RewardGroupID'])] += 0;
+                    }
+                    $last_group = $record['RewardGroupID'];
+                    $classes = $group_styles[($group % count($group_styles))];
+
+                    if (isset($record['group_soldout'])) {
+                        echo "<tr class='$classes soldoutrow hiddenrow w3-disabled'>";
+                    } else {
+                        echo "<tr class='$classes";
+                        if (!$admin_mode && isset($uid) && acquireable_item($record)) {
+                            echo " w3-hover-green' ";
+                            $json = json_encode($record);
+                            $json = base64_encode($json);
+                            echo 'onclick=\'addToCheckout("'.$json;
+                            echo '");\'>';
+                        } else {
+                            echo "'>";
+                        }
+                    }
+                } else {
+                    echo "<tr ";
+                    if (!$admin_mode && isset($uid) && acquireable_item($record)) {
+                        echo "class='w3-hover-green' ";
+                        $json = json_encode($record);
+                        $json = base64_encode($json);
+                        echo 'onclick=\'addToCheckout("'.$json.'");\'';
+                    }
+                    echo ">";
+                }
+                unset($record['RewardGroupID']);
             }
             unset($record['PrizeID']);
-            unset($record['RewardGroupID']);
             unset($record['group_soldout']);
             unset($record['GroupLimit']);
             echo "<td>";
-            echo implode($record, '</td><td>');
+            echo implode(_htmlsafeify($record), '</td><td>');
             echo "</td></tr>\n";
         }
     } else {
@@ -310,9 +389,9 @@ function messages($uid)
                     if ($record['group_soldout']) {
                         continue;
                     }
-                    $promo .= "<li>Free Group prize <b>".$record['Name']."</b> (at ".$record['Value']." hours) is available and has not been acquired! <b>Pick 1 below!</b></li>\n";
+                    $promo .= "<li>Free Group prize <b>".htmlspecialchars($record['Name'])."</b> (at ".$record['Value']." hours) is available and has not been acquired! <b>Pick 1 below!</b></li>\n";
                 } else {
-                    $promo .= "<li>Free prize <b>".$record['Name']."</b> (at ".$record['Value']." hours) is available and has not been acquired!</li>\n";
+                    $promo .= "<li>Free prize <b>".htmlspecialchars($record['Name'])."</b> (at ".$record['Value']." hours) is available and has not been acquired!</li>\n";
                     $unclaimed_promo[] = $record;
                 }
                 $display = true;
@@ -322,7 +401,7 @@ function messages($uid)
 
         if ($display) {
             echo "<div class='w3-col w3-cell-row w3-padding' ";
-            echo "style='max-height:20px; overflow:scroll;'>\n";
+            echo "style='max-height:10vh; overflow:scroll;'>\n";
             echo "<div id='volunteer_messages' class='w3-container w3-padding w3-border-red w3-border w3-margin w3-cell'>\n";
             echo $promo;
             echo "</div>\n";
@@ -330,7 +409,7 @@ function messages($uid)
                 echo "<div id='aquire_promo' class='w3-continer w3-padding w3-cell w3-cell-middle'>\n";
                 echo "<button id='promo_check' class='w3-button w3-round-xxlarge w3-red'";
                 $names = array_column($unclaimed_promo, 'Name');
-                echo "onclick=add_promo_to_checkout();";
+                echo "onclick=addPromoToCheckout();";
                 echo ">";
                 if ($unclaimed_promo > 1) {
                     echo "Claim items</button>\n";
@@ -349,62 +428,57 @@ function messages($uid)
 
 }
 
+function admin_bar($uid)
+{
+    echo "<div class='w3-col w3-cell-row w3-padding' ";
+    echo "style='max-height:10vh; overflow:scroll;'>\n";
+    echo "<div id='volunteer_admin_bar' class='w3-container w3-padding w3-border-red w3-border w3-margin w3-cell'>\n";
+    echo "<button id='add_prize' class='w3-button w3-round-xxlarge w3-red'";
+    echo "onclick='showEditPrize(null)';>Add New Prize</button>\n";
+    echo "<button id='min_hours' class='w3-button w3-round-xxlarge w3-red'";
+    echo "onclick='minHourReport()';>Minimum Hour Report</button>\n";
+    echo "</div>\n";
+    echo "</div>\n";
 
-$uid = null;
-if (!empty($_REQUEST)) {
-    // Retrieve and sanitize POST data
-    $arguments = [
-    'volunteerId'         => FILTER_SANITIZE_SPECIAL_CHARS,
-    ];
-    $updateData = filter_input_array(INPUT_GET, $arguments);
-    $uid = $updateData['volunteerId'];
+}
+
+echo '<div id="main_content" style="height:94vh;" class="w3-row-padding';
+if ($admin_mode) {
+    echo ' w3-topbar w3-bottombar w3-leftbar w3-rightbar w3-border-red">';
+    echo "\n";
+    echo "<div class='w3-rest w3-center w3-xlarge w3-red'>\n";
+    echo "<span>Volunteer Administration</span>\n";
+} else {
+    echo '">';
+    echo "\n";
+    echo "<div class='w3-rest w3-center w3-xlarge w3-green'>\n";
+    echo "<span>Volunteer Management</span>\n";
+}
+echo "</div>\n"
+?>
+
+<div class="w3-rest w3-center">
+<?php
+if (isset($_SESSION['IS_ADMIN']) || isset($_SESSION['IS_VOLUNTEERS'])) {
+?>
+  <div>
+    <div class="w3-show-inline-block w3-right w3-red w3-margin">
+      <table class='switch-table'><tr><td>
+        Admin Mode
+        <label class=switch><input type="checkbox" class=toggle id=admin_slider <?php
+        if ($admin_mode) {
+            echo "checked";
+        }
+?> onclick='toggleAdminMode();'>
+          <div class=slider></div></label></td></tr>
+      </table>
+    </div>
+  </div>
+<?php
 }
 ?>
 
-<script>
-  var checkout = [];
-  var hours_spent = 0;
-
-  function lookupId(id) {
-    if (id) {
-      var xhttp = new XMLHttpRequest();
-      document.getElementById('spinner').innerHTML = "<i class='fa fa-spinner w3-spin'></i>";
-      document.getElementById('message').innerHTML = "";
-      xhttp.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {
-          var response = JSON.parse(this.responseText);
-          var uid = response['Id'];
-          document.getElementById('volunteer').classList.remove('w3-red');
-          document.getElementById('message').innerHTML = "Found " + response['First Name'] + " " + response['Last Name'];
-          window.location = "index.php?Function=volunteers&volunteerId="+uid;
-        } else if (this.readyState == 4) {
-          document.getElementById('volunteer').classList.add('w3-red');
-          document.getElementById('spinner').innerHTML = "";
-          if (this.status == 400) {
-              document.getElementById('message').innerHTML = id + " invalid lookup.";
-          }
-          else if (this.status == 404) {
-              document.getElementById('message').innerHTML = id + " not found.";
-          }
-          else if (this.status == 409) {
-              document.getElementById('message').innerHTML = id + " has too many matches.";
-          }
-        }
-      };
-      xhttp.open("GET", "index.php?Function=volunteers&lookupId=" + id, true);
-      xhttp.send();
-    } else {
-      window.location = "index.php?Function=volunteers";
-    }
-  }
-</script>
-
-<div id="main_content" class="w3-row-padding">
-<div class="w3-rest w3-center w3-xlarge w3-green">
-<span>Volunteer Management</span>
-</div>
-
-<div class="w3-rest w3-center">
+<div>
 <form method="post" action="index.php?Function=volunteers">
 <div class='w3-bar'>
   <div class='w3-bar-item'>
@@ -422,9 +496,14 @@ if (isset($uid)) {
       <span class='w3-bar-item' id='message'></span>
     </div>
   </div>
+  <div>
+  </div>
 </div>
 </form>
 </div>
+</div>
+
+<div class="w3-rest w3-center">
 
 <!------ Main Section ----->
 
@@ -433,10 +512,185 @@ if (isset($uid)) {
 <?php
 initialize($uid);
 hour_table($uid);
-messages($uid);
+if (!$admin_mode) {
+    messages($uid);
+} else {
+    admin_bar($uid);
+}
 prizes_table($uid);
 ?>
     </div>
+
+    <div class='w3-hide w3-padding' id='department_report_div'>
+        <div class='w3-center'>
+            <h2 class='w3-red'>Department Report</h2>
+        </div>
+        <hr>
+        <div>
+            <h2 id='dept_name' class='w3-blue'></h2>
+            <input class="w3-input w3-disabled w3-hide" id="dept_data" readonly>
+            <input class="w3-input w3-disabled w3-hide" id="dept_data_name" readonly>
+        </div>
+        <hr>
+        <div class='w3-center'>
+            <button id='generate_dept_report' class='w3-button w3-round-xxlarge w3-green'
+                onclick='generateDeptReport();'>
+               Generate Report &lt;CSV&gt;
+            </button>
+            <button class='w3-button w3-round-xxlarge w3-red'
+                onclick='hideSidebar();'>
+              Close
+            </button>
+        </div>
+    </div>
+
+
+    <div class='w3-hide w3-padding' id='hour_report_div'>
+        <div class='w3-center'>
+            <h2 class='w3-red'>Report of all Volunteers with minimum hours or more</h2>
+        </div>
+        <div class='w3-center'>
+            <label for='report_hour_min'>
+            Minimum hours:</label>
+            <input class="w3-input w3-border" id="report_hour_min">
+        </div>
+        <div class='w3-center'>
+            <button id='generate_report' class='w3-button w3-round-xxlarge w3-green'
+                onclick='generateHourReport();'>
+               Generate Report &lt;CSV&gt;
+            </button>
+            <button class='w3-button w3-round-xxlarge w3-red'
+                onclick='hideSidebar();'>
+              Close
+            </button>
+        </div>
+    </div>
+
+    <div class='w3-hide w3-padding' id='edit_prize_div'>
+        <div class='w3-center w3-red'>
+            <h2 id='edit_prize_title'>Edit Prize Entry</h2>
+        </div>
+        <div class='w3-border w3-padding'>
+          <form>
+
+            <label for='edit_prize_name' class="w3-tooltip">
+                <span
+                  style="position:absolute;left:-80px;right:-80px;bottom:18px"
+                  class="w3-text w3-tag w3-green w3-round-xlarge">Visible name of the item</span>
+            Name:</label>
+            <input class="w3-input w3-border" id="edit_prize_name" placeholder="<name>">
+            <label for='edit_prize_value' class="w3-tooltip">
+                <span
+                  style="position:absolute;left:-80px;right:-80px;bottom:18px"
+                  class="w3-text w3-tag w3-green w3-round-xlarge">Hour cost of the item</span>
+            Value:</label>
+            <input class="w3-input w3-border" id="edit_prize_value">
+            <label for='edit_prize_value' class="w3-tooltip">
+                <span
+                  style="position:absolute;left:-80px;right:-80px;bottom:18px"
+                  class="w3-text w3-tag w3-green w3-round-xlarge">If 'yes' this item does not cost hours but instead is free at the given hour mark. Also enforces a limit of 1.</span>
+            Promo Item:</label>
+            <select class="w3-select w3-border" id="edit_prize_promo">
+              <option value='yes'>Yes</option>
+              <option value='no'>No</option>
+            </select>
+
+            <label for='edit_prize_count' class="w3-tooltip">
+                <span
+                  style="position:absolute;left:-80px;right:-80px;bottom:18px"
+                  class="w3-text w3-tag w3-green w3-round-xlarge">Changing this will adjust Total items</span>
+            Inventory Remaining:</label>
+            <input class="w3-input w3-border" id="edit_prize_count">
+
+                    <label for='edit_prize_group' class="w3-tooltip">
+                        <span
+                          style="position:absolute;left:-80px;right:-80px;bottom:18px"
+                          class="w3-text w3-tag w3-green w3-round-xlarge">If in a group there can be only a limited total number of the items in the group claimed by the volunteer</span>
+                    Prize Group:</label>
+            <div class="w3-row">
+                <div class='w3-col w3-threequarter w3-padding'>
+                    <select class="w3-select w3-border" id="edit_prize_group"
+                     onchange="prizeGroupChange()">
+                      <option value='none'>&lt;none&gt;</option>
+                    </select>
+                </div>
+                <div class='w3-col w3-quarter w3-padding'>
+                    <input class="w3-input w3-border w3-disabled" id="edit_prize_group_count" disabled placeholder="max">
+                </div>
+            </div>
+
+            <input class="w3-input w3-border w3-disabled w3-hide" id="prize_data" readonly>
+          </form>
+        </div>
+        <div class='w3-center'>
+            <button id='set_prize_button' class='w3-button w3-round-xxlarge w3-green'
+                onclick='commitPrize();'>
+                Commit
+            </button>
+            <button id='delete_prize_button' class='w3-button w3-round-xxlarge w3-blue'
+                onclick='deletePrize();'>
+                Delete
+            </button>
+            <button id='exit_prize_button' class='w3-button w3-round-xxlarge w3-red'
+                onclick='hideSidebar();'>
+               Cancel
+            </button>
+        </div>
+    </div>
+
+
+    <div class='w3-hide w3-padding' id='edit_user_hour_div'>
+        <div class='w3-center w3-red'>
+            <h2>Edit Hours Entry</h2>
+        </div>
+        <div class='w3-border w3-padding'>
+          <form>
+            <label for='edit_name'>Volunteer:</label>
+            <input class="w3-input w3-border w3-disabled" id="edit_name" readonly>
+            <label for='edit_hours'>Actual Hours:</label>
+            <input class="w3-input w3-border" id="edit_hours">
+            <label for='edit_mod'>Time Modifier</label><br />
+            <select class="w3-select w3-border" style="width:auto" name="TimeModifier" id="edit_mod">
+              <option value=0.5>Half Time - 1 hour = 0.5 hours credit</option>
+              <option value=1 selected>Normal - 1 hour = 1 hour</option>
+              <option value=1.5>Time Plus Half - 1 hour = 1.5 hours credit</option>
+              <option value=2>Double - 1 hour = 2 hours credit</option>
+            </select>
+            <label for='edit_end'>End Time:</label>
+            <input class="w3-input w3-border" type="datetime-local" id="edit_end" pattern="\d{4}-\d{2}-\d{2}T\d{2}:\d{2}">
+            <label for='edit_dept'>Department</label><br />
+            <select class="w3-select w3-border" style="width:auto" name="DepartmentWorked" id="edit_dept">
+<?php
+require_once($FUNCTIONDIR."/divisional.inc");
+foreach ($Departments as $dep => $set) {
+    echo '<option value="'.$dep.'"';
+    echo '>'.htmlspecialchars($dep)."</option>\n";
+}
+?>
+            </select>
+            <label for='edit_enter'>Entered By:</label>
+            <input class="w3-input w3-border w3-disabled" id="edit_enter" readonly>
+            <label for='edit_auth'>Authorized By:</label>
+            <input class="w3-input w3-border" id="edit_auth">
+            <input class="w3-input w3-border w3-disabled w3-hide" id="edit_data" readonly>
+          </form>
+        </div>
+        <div class='w3-center'>
+            <button id='set_hours_button' class='w3-button w3-round-xxlarge w3-green'
+                onclick='commitHours();'>
+                Commit
+            </button>
+            <button id='delete_hours_button' class='w3-button w3-round-xxlarge w3-blue'
+                onclick='deleteHours();'>
+                Delete
+            </button>
+            <button id='exit_hours_button' class='w3-button w3-round-xxlarge w3-red'
+                onclick='hideSidebar();'>
+               Cancel
+            </button>
+        </div>
+    </div>
+
     <div class='w3-hide w3-padding' id='checkout_div'>
         <div class='w3-center'>
             <h2>Items claimed now</h2>
@@ -450,11 +704,11 @@ prizes_table($uid);
         </div>
         <div class='w3-center'>
             <button id='checkout_button' class='w3-button w3-round-xxlarge w3-green'
-                onclick='process_checkout();'>
+                onclick='processCheckout();'>
                 Distribute Items
             </button>
             <button id='clear_button' class='w3-button w3-round-xxlarge w3-red'
-                onclick='clear_checkout();'>
+                onclick='clearCheckout();'>
                Clear
             </button>
         <div>
@@ -477,214 +731,24 @@ prizes_table($uid);
 </div>
 
 <script>
-  var groupsNow = JSON.parse('<?php print(json_encode($groupTotals));?>');
-
-    function process_checkout() {
-        applyReward();
-    }
-
-    function clear_checkout() {
-        var section = document.getElementById("checkout_div");
-        section.classList.add("w3-hide");
-        section.classList.remove("w3-quarter");
-        var section = document.getElementById("info_div");
-        section.classList.add("w3-rest");
-        section.classList.remove("w3-threequarter");
-        hours_spent = 0;
-        checkout = [];
-
-        var table = document.getElementById("checkout_table");
-        while(table.hasChildNodes())
-        {
-           table.removeChild(table.firstChild);
-        }
-        groupsNow = JSON.parse('<?php print(json_encode($groupTotals));?>');
-    }
-
-    function update_cost(cost) {
-        hours_spent += cost;
-
-        var hours = document.getElementById("hours_left");
-        var remain = <?php echo "$hoursRemain";?> - hours_spent;
-        hours.innerHTML = remain.toFixed(2);
-
-        var hours_u = document.getElementById("hours_used");
-        hours_u.innerHTML = hours_spent.toFixed(2);
-    }
-
-    function update_checkout() {
-        var table = document.getElementById("checkout_table");
-        while(table.hasChildNodes())
-        {
-           table.removeChild(table.firstChild);
-        }
-
-        var output = {};
-        for (var index in checkout) {
-            item = checkout[index];
-            if (item.PrizeID in output) {
-                output[item.PrizeID]['count'] += 1;
-            } else {
-                output[item.PrizeID] = {prize: item, count: 1};
-            }
-        }
-
-        var table = document.getElementById("checkout_table");
-        for (var index in output) {
-            item = output[index];
-            var row = table.insertRow(-1);
-            row.setAttribute('data-prizeid', item.prize.PrizeID);
-            row.classList.add('w3-hover-red');
-            row.setAttribute("onclick", "remove_from_checkout("+item.prize.PrizeID+", "+item.prize.cost+", "+item.prize.RewardGroupID+");");
-            var cell = row.insertCell(0);
-
-            if (item.count > 1) {
-                txt = item.prize.Name + ' (x' + item.count+')';
-                cell.innerHTML = txt;
-            } else {
-                cell.innerHTML = item.prize.Name;
-            }
-
-            var cell = row.insertCell(1);
-            cell.innerHTML = item.prize.cost.toFixed(2);
-        }
-
-        var rows = table.getElementsByTagName("tr").length;
-        if (rows == 0) {
-            clear_checkout();
-        }
-    }
-
-    function remove_from_checkout(PrizeID, cost, group) {
-        var found = checkout.findIndex(function(element) {
-            return element.PrizeID == PrizeID;
-        });
-        if (found != -1) {
-            update_cost(-1 * cost);
-            checkout.splice(found, 1);
-        }
-
-        if (group != null) {
-            groupsNow[group] -= 1;
-        }
-
-        update_checkout();
-    }
-
-    function add_to_checkout(json) {
-        var item = JSON.parse(json);
-        cost = parseFloat(item.Value);
-        if (item.Promo == 'yes') {
-            var found = checkout.find(function(element) {
-                return element.PrizeID == item.PrizeID;
-            });
-            if (found) {
-                alert("Promo item '"+item.Name+"' cannot be added twice");
-                return;
-            }
-            cost = 0;
-        }
-        if (<?php echo $hoursRemain?> < hours_spent + cost) {
-            alert("Volunteer does not have enough hours for the "+item.Name);
-            return;
-        }
-        if (groupsNow[item.RewardGroupID] + 1 > item.GroupLimit) {
-            alert("Too many items from limited group");
-            return;
-        }
-        var count = 0;
-        for (var i = 0; i < checkout.length; i++) {
-            if (checkout[i].PrizeID == item.PrizeID)
-                count++;
-        }
-        if (count + 1 > item.Remaining) {
-            alert("Not enough items in inventory!");
-            return;
-        }
-
-        item.cost = cost;
-        show_checkout();
-        checkout.push(item);
-        update_checkout();
-        update_cost(cost);
-        groupsNow[item.RewardGroupID] += 1;
-    }
-
-    function show_checkout() {
-        var section = document.getElementById("checkout_div");
-        section.classList.remove("w3-hide");
-        section.classList.add("w3-quarter");
-        var section = document.getElementById("info_div");
-        section.classList.remove("w3-rest");
-        section.classList.add("w3-threequarter");
-
-        var hours = document.getElementById("hours_left");
-        var remain = parseFloat(<?php echo "$hoursRemain";?>) - hours_spent;
-        hours.innerHTML = remain.toFixed(2);
-
-        var hours_u = document.getElementById("hours_used");
-        hours_u.innerHTML = hours_spent;
-    }
-
-    function  add_promo_to_checkout(names) {
 <?php
-foreach ($unclaimed_promo as $item) {
-    echo "  var found = checkout.find(function(element) {\n";
-    echo "      return element[0] == ".$item['PrizeID'].";\n";
-    echo " });\n";
-    echo "   if (!found) {\n";
-    echo "     add_to_checkout('".json_encode($item)."');\n";
-    echo "      }\n";
-    echo "\n";
-}
-?>
-  }
-
-  function applyReward() {
-      var xhttp = new XMLHttpRequest();
-      xhttp.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {
-            fill_reward();
-            document.getElementById('success_dlg').style.display='block'
-        }
-        else if (this.status == 404) {
-            alert("404!");
-        }
-        else if (this.status == 409) {
-            alert("409!");
-        }
-      }
-      xhttp.open("POST", "index.php?Function=volunteers", true);
-      xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-      xhttp.send("rewardId=<?php echo "$uid";?>&rewards="+JSON.stringify(checkout));
-  }
-
-    function fill_reward() {
-        var table = document.getElementById("reward_list");
-        while(table.hasChildNodes())
-        {
-           table.removeChild(table.firstChild);
-        }
-
-        var list = {};
-        checkout.forEach(function(item, index) {
-            if (item.PrizeID in list) {
-                list[item.PrizeID]['count'] +=1;
-            } else {
-                list[item.PrizeID] = {name: item.Name, count: 1};
-            }
-        });
-
-        for (var key in list) {
-            item = list[key];
-            var row = table.insertRow(-1);
-            var cell = row.insertCell(0);
-            if (item.count > 1) {
-                txt = item.name + ' (x' + item.count+')';
-                cell.innerHTML = txt;
-            } else {
-                cell.innerHTML = item.name;
-            }
-        };
+echo "  var groupData = '".json_encode($groupTotals)."';\n";
+if (isset($uid)) {
+    echo "  var userId = $uid;\n";
+    echo "  var hoursRemain = parseFloat($hoursRemain);\n";
+    echo "  var unclaimed = [\n";
+    foreach ($unclaimed_promo as $item) {
+        echo "    {";
+        echo "PrizeID: ".$item['PrizeID'].",";
+        echo "Json: '".base64_encode(json_encode($item))."'},\n";
     }
+    echo "  ];\n";
+} else {
+    echo "  var userId = null;\n";
+    echo "  var hoursRemain = 0;\n";
+    echo "  var unclaimed = [];\n";
+}
+echo "  var adminMode = ".json_encode($admin_mode).";\n";
+echo "  var userEmail = '".$_SESSION['email']."';\n";
+?>
 </script>
