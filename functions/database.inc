@@ -10,9 +10,33 @@ require_once($BACKEND.'/'.$DB_BACKEND); // MyPDO Definition used
 
 class DB
 {
+    public static $REQUIED_DB_SCHEMA = 2018011700;
 
+    private static function _getCurrentDBVersion()
+    {
+        /* check if we have a database at all */
+        $found = false;
+        $result = MyPDO::instance()->query("SHOW TABLES LIKE 'Configuration';");
+        foreach ($result as $value)
+            $found = true;
+        if (!$found)
+            return false;
 
-    public function __construct()
+        $sql = <<<SQL
+            SELECT Value AS DBSchemaVersion
+            FROM Configuration
+            WHERE Field = 'DBSchemaVersion';
+SQL;
+        $result = self::run($sql);
+        $value = $result->fetch();
+        if ($value === false) {
+            return false;
+        } else {
+            return $value['DBSchemaVersion'];
+        }
+    }
+
+    private static function _buildMissingTables()
     {
         global $BASEDIR;
         $DATADIR = $BASEDIR.'/data';
@@ -26,11 +50,9 @@ class DB
             }
         }
 
-        $upgrade = false;
         foreach ($DB_tables as $table => $fields) {
             if (!in_array($table, $arr)) {
                 // Missing a table, build it!
-                $upgrade = true;
                 $build = 'CREATE TABLE '.$table.' (';
                 foreach ($fields as $column => $setting) {
                     $build .= $column.' '.$setting.', ';
@@ -46,8 +68,17 @@ class DB
                 }
             }
         }
-        if ($upgrade) {
-            header("Location: http://".$_SERVER['SERVER_NAME']."/index.php?Function=update&next=".$_REQUEST['Function']);
+
+    }
+
+    public function __construct()
+    {
+        if ($_REQUEST['Function'] != 'update') {
+            $upgrade = DB::_getCurrentDBVersion();
+            DB::_buildMissingTables();
+            if ($upgrade != self::$REQUIED_DB_SCHEMA) {
+                header("Location: http://".$_SERVER['SERVER_NAME']."/index.php?Function=update&next=".$_REQUEST['Function']."&from=".$upgrade);
+            }
         }
 
     }
