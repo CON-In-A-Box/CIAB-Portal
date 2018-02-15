@@ -359,7 +359,7 @@ function commitHours() {
   }
 
   var data = document.getElementById('edit_data').value;
-  var item = JSON.parse(data);
+  var item = JSON.parse(atob(data));
 
   item['Actual Hours'] = parseFloat(
     document.getElementById('edit_hours').value);
@@ -392,7 +392,7 @@ function deleteHours() {
   }
 
   var data = document.getElementById('edit_data').value;
-  var item = JSON.parse(data);
+  var item = JSON.parse(atob(data));
 
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
