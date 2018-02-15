@@ -25,10 +25,10 @@ if (isset($updateComplete)) {
         memberName: 'VolunteerID',
         success: onSuccess,
         needForm: false,
-        lookupTarget: 'index.php?Function=volhours&volunteerId='
+        lookupTarget: 'index.php?Function=volunteers/enter&volunteerId='
         });
 </script>
-<form method="post" action="index.php?Function=volhours">
+<form method="post" action="index.php?Function=volunteers/enter">
 <?php
 if (isset($uid)) {
     echo "<div id='userLookup_div' data-user='$uid'> </div>\n";
@@ -130,7 +130,7 @@ if (isset($uid)) {
     </select>
   </div>
 </div>
-    
+
 <div class='w3-bar'>
   <div class="w3-bar-item w3-center">
   <p name=summery>

@@ -91,7 +91,7 @@ function applyReward() {
       window.alert('409!');
     }
   };
-  xhttp.open('POST', 'index.php?Function=volunteers', true);
+  xhttp.open('POST', 'index.php?Function=volunteers/admin', true);
   xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
   xhttp.send('rewardId=' + userId + '&rewards=' + JSON.stringify(checkout));
 }
@@ -262,9 +262,9 @@ function toggleAdminMode() {
                     '00:00:01 GMT;';
   var target = '';
   if (userId) {
-    target = 'index.php?Function=volunteers&volunteerId=' + userId;
+    target = 'index.php?Function=volunteers/admin&volunteerId=' + userId;
   } else {
-    target = 'index.php?Function=volunteers';
+    target = 'index.php?Function=volunteers/admin';
   }
   if (!adminMode) {
     checkAuthentication(userEmail, enterAdmin, failAdmin);
@@ -332,7 +332,7 @@ function commitHours() {
       window.alert('ERROR 409!');
     }
   };
-  xhttp.open('POST', 'index.php?Function=volunteers', true);
+  xhttp.open('POST', 'index.php?Function=volunteers/admin', true);
   xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
   xhttp.send('update_hour=' + JSON.stringify(item));
 }
@@ -357,7 +357,7 @@ function deleteHours() {
       window.alert('ERROR 409!');
     }
   };
-  xhttp.open('POST', 'index.php?Function=volunteers', true);
+  xhttp.open('POST', 'index.php?Function=volunteers/admin', true);
   xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
   xhttp.send('delete_hour=' + item.EntryID);
 }
@@ -440,7 +440,7 @@ function deletePrize() {
       window.alert('ERROR 409!');
     }
   };
-  xhttp.open('POST', 'index.php?Function=volunteers', true);
+  xhttp.open('POST', 'index.php?Function=volunteers/admin', true);
   xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
   xhttp.send('delete_prize=' + item.PrizeID);
 }
@@ -506,7 +506,7 @@ function commitPrize() {
       window.alert('ERROR 409!');
     }
   };
-  xhttp.open('POST', 'index.php?Function=volunteers', true);
+  xhttp.open('POST', 'index.php?Function=volunteers/admin', true);
   xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
   if (data) {
     xhttp.send('update_prize=' + JSON.stringify(item));
@@ -535,7 +535,7 @@ function prizeGroupChange() {
 
 function generateHourReport() {
   var hours = document.getElementById('report_hour_min').value;
-  window.location = 'index.php?Function=volunteers&min_hour=' + hours;
+  window.location = 'index.php?Function=volunteers/admin&min_hour=' + hours;
 }
 
 function minHourReport() {
@@ -546,7 +546,7 @@ function minHourReport() {
 function generateDeptReport() {
   var name = document.getElementById('dept_data_name').value;
   var deptid = document.getElementById('dept_data').value;
-  window.location = 'index.php?Function=volunteers&dept_report=' + deptid +
+  window.location = 'index.php?Function=volunteers/admin&dept_report=' + deptid +
     '&dept_name=' + name;
 }
 
@@ -556,4 +556,3 @@ function departmentReport(name, dept) {
   document.getElementById('dept_data').value = dept;
   document.getElementById('dept_data_name').value = name;
 }
-

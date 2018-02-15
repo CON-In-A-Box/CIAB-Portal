@@ -18,17 +18,6 @@
       <i class="fa fa-home"></i>
       Main
     </a>
-    <?php if (isset($_SESSION['customFields']['currConComPos'])) { ?>
-        <?php if (isset($_SESSION['IS_VOLUNTEERS']) || isset($_SESSION['IS_ADMIN'])) { ?>
-      <a class="w3-bar-item w3-button<?php
-        if ($_REQUEST['Function'] == 'volhours') {
-            echo " w3-green";
-        }
-        ?>" href="index.php?Function=volhours" title="Track Volunteer's hours">
-        <i class="fa fa-clock-o"></i>
-        Enter Hours
-      </a>
-        <?php } ?>
       <a class="w3-bar-item w3-button w3-hide-small w3-hide-medium<?php
         if ($_REQUEST['Function'] == 'list') {
             echo " w3-green";
@@ -37,7 +26,6 @@
         <i class="fa fa-phone"></i>
         ConCom List
       </a>
-    <?php } ?>
     <a class="w3-bar-item w3-button w3-hide-small w3-hide-medium<?php
     if ($_REQUEST['Function'] == 'profile') {
         echo " w3-green";
@@ -46,20 +34,6 @@
       <i class="fa fa-user"></i>
       Profile
     </a>
-    <?php if (isset($_SESSION['IS_VOLUNTEERS']) || isset($_SESSION['IS_ADMIN'])) { ?>
-      <a class="w3-bar-item w3-button w3-hide-small w3-hide-medium<?php
-        if ($_REQUEST['Function'] == 'volunteers') {
-            echo " w3-green";
-        } elseif ($_COOKIE["CIAB_VOLUNTEERADMIN"]) {
-            echo " w3-red";
-        } else {
-            echo " w3-yellow";
-        }
-        ?>" href="index.php?Function=volunteers" title="Volunteers">
-        <i class="fa fa-users"></i>
-        Volunteers
-      </a>
-    <?php } ?>
 <?php
     $modules = scandir($MODULESDIR);
     foreach ($modules as $key => $value) {
@@ -107,16 +81,6 @@
         <i class="fa fa-user"></i>
         Profile
       </a>
-        <?php if (isset($_SESSION['IS_VOLUNTEERS']) || isset($_SESSION['IS_ADMIN'])) { ?>
-        <a class="w3-bar-item w3-button<?php
-        if ($_REQUEST['Function'] == 'volunteers') {
-            echo " w3-green";
-        }
-            ?>" href="index.php?Function=volunteers" title="Volunteers">
-          <i class="fa fa-users"></i>
-          Volunteers
-        </a>
-        <?php } ?>
 <?php
     $modules = scandir($MODULESDIR);
     foreach ($modules as $key => $value) {

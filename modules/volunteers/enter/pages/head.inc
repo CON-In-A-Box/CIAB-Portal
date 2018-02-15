@@ -2,5 +2,5 @@
 <script src="sitesupport/barcode/barcode.js"></script>
 <script src="sitesupport/common.js"></script>
 <script src="sitesupport/lookupuser.js"></script>
-<script src="sitesupport/volhours.js"></script>
+<script src="modules/volunteers/sitesupport/volhours.js"></script>
 <link rel="stylesheet" type="text/css" href="sitesupport/barcode/barcode.css" />
