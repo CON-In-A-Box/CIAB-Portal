@@ -22,7 +22,6 @@ function output_cvs($report, $filename)
 if (!empty($_REQUEST)) {
     // Retrieve and sanitize POST data
     $arguments = [
-    'lookupId'         => FILTER_SANITIZE_SPECIAL_CHARS,
     'min_hour'         => FILTER_SANITIZE_NUMBER_INT,
     'dept_report'      => FILTER_SANITIZE_NUMBER_INT,
     'dept_name'        => FILTER_SANITIZE_SPECIAL_CHARS,
@@ -31,20 +30,6 @@ if (!empty($_REQUEST)) {
     require_once($FUNCTIONDIR."/volunteer.inc");
 
     $updateData = filter_input_array(INPUT_GET, $arguments);
-
-    if (!empty($updateData['lookupId'])) {
-        require_once($FUNCTIONDIR."/users.inc");
-
-        $data = lookup_users_by_key($updateData['lookupId']);
-
-        if (!$data['code']) {
-            $user = $data['users'];
-            echo json_encode($user[0]);
-        } else {
-            header("HTTP/1.0 ".$data['code']);
-        }
-        exit();
-    }
 
     if (isset($updateData['min_hour'])) {
         if (isset($_SESSION['IS_ADMIN']) || isset($_SESSION['IS_VOLUNTEERS'])) {

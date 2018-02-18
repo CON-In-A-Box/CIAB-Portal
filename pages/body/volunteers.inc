@@ -478,29 +478,21 @@ if (isset($_SESSION['IS_ADMIN']) || isset($_SESSION['IS_VOLUNTEERS'])) {
 }
 ?>
 
-<div>
-<form method="post" action="index.php?Function=volunteers">
-<div class='w3-bar'>
-  <div class='w3-bar-item'>
-    <label>Volunteer Badge Number, E-Mail or Full Name</label>
-    <div class='w3-bar'>
-      <input class="w3-input w3-border w3-bar-item" name="VolunteerID" id="volunteer" onchange="lookupId(this.value);"
+<script>
+    userLookup.options({
+        message: 'Volunteer Badge Number, E-Mail or Full Name',
+        urlTag: 'volunteerId'
+        });
+</script>
+
 <?php
 if (isset($uid)) {
-    echo 'value='.$uid.' ';
+    echo "<div class='w3-bar-item' id='userLookup_div' data-user='$uid'> </div>\n";
+} else {
+    echo "<div class='w3-bar-item' id='userLookup_div'> </div>\n";
 }
 ?>
-        placeholder="(badge #, email, Name)" required>
-      <button type="button" class="w3-button w3-bar-item w3-border icon-barcode button-scan" onclick="QuaggaApp.init('volunteer', lookupId)"></button>
-      <span class='w3-bar-item' id='spinner'></span>
-      <span class='w3-bar-item' id='message'></span>
-    </div>
-  </div>
-  <div>
-  </div>
-</div>
-</form>
-</div>
+
 </div>
 
 <div class="w3-rest w3-center">
