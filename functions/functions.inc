@@ -20,6 +20,7 @@ $SITECONFIG     = $BASEDIR.'/.ht_meetingsignin_config.php'; // Location of the m
 $SITESUPPORTDIR = $BASEDIR."/sitesupport";
 $PAGESDIR       = $BASEDIR."/pages";
 $BACKEND        = $BASEDIR."/backends";
+$MODULESDIR     = $BASEDIR."/modules";
 
 // Set a Date stamp for use anywhere
 $DS             = uniqid('', true);
@@ -52,6 +53,14 @@ function _config_from_Database()
     if (array_key_exists('TIMEZONE', $GLOBALS)) {
         date_default_timezone_set($GLOBALS['TIMEZONE']);
     }
+
+    if (array_key_exists('DISABLEDMODULES', $GLOBALS) &&
+        !is_array($GLOBALS['DISABLEDMODULES'])) {
+        $GLOBALS['DISABLEDMODULES'] = explode(',', $GLOBALS['DISABLEDMODULES']);
+    } else {
+        $GLOBALS['DISABLEDMODULES'] = [];
+    }
+
     if (array_key_exists('ADMINACCOUNTS', $GLOBALS) &&
         !is_array($GLOBALS['ADMINACCOUNTS'])) {
         $GLOBALS['ADMINACCOUNTS'] = explode(',', $GLOBALS['ADMINACCOUNTS']);

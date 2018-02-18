@@ -60,18 +60,22 @@
         Volunteers
       </a>
     <?php } ?>
-    <?php if (isset($_SESSION['IS_ADMIN'])) { ?>
-      <a class="w3-bar-item w3-button w3-hide-small w3-hide-medium<?php
-        if ($_REQUEST['Function'] == 'admin') {
-            echo " w3-green";
-        } else {
-            echo " w3-yellow";
+<?php
+    $modules = scandir($MODULESDIR);
+    foreach ($modules as $key => $value) {
+        if (!in_array($value, array(".", ".."))) {
+            if (in_array($value, $DISABLEDMODULES)) {
+                continue;
+            }
+            if (is_dir($MODULESDIR . DIRECTORY_SEPARATOR . $value)) {
+                if (is_file($MODULESDIR . DIRECTORY_SEPARATOR . $value . DIRECTORY_SEPARATOR . 'pages/menubar.inc')) {
+                    require_once($MODULESDIR . DIRECTORY_SEPARATOR . $value.DIRECTORY_SEPARATOR.'pages/menubar.inc');
+                }
+            }
         }
-        ?>" href="index.php?Function=admin" title="Oh the adminitration">
-        <i class="fa fa-key"></i>
-        Administration
-      </a>
-    <?php } ?>
+    }
+?>
+
     <a class="w3-bar-item w3-block w3-center w3-button w3-hide-large"
       href="javascript:void(0)"
       onclick="myMenuBar()">
@@ -113,16 +117,21 @@
           Volunteers
         </a>
         <?php } ?>
-        <?php if (isset($_SESSION['IS_ADMIN'])) { ?>
-        <a class="w3-bar-item w3-button<?php
-        if ($_REQUEST['Function'] == 'admin') {
-            echo " w3-green";
+<?php
+    $modules = scandir($MODULESDIR);
+    foreach ($modules as $key => $value) {
+        if (!in_array($value, array(".", ".."))) {
+            if (in_array($value, $DISABLEDMODULES)) {
+                continue;
+            }
+            if (is_dir($MODULESDIR . DIRECTORY_SEPARATOR . $value)) {
+                if (is_file($MODULESDIR . DIRECTORY_SEPARATOR . $value . DIRECTORY_SEPARATOR . 'pages/mobile_menubar.inc')) {
+                    require_once($MODULESDIR . DIRECTORY_SEPARATOR . $value.DIRECTORY_SEPARATOR.'pages/mobile_menubar.inc');
+                }
+            }
         }
-            ?>" href="index.php?Function=admin" title="Oh the adminitration">
-          <i class="fa fa-key"></i>
-          Administration
-        </a>
-        <?php } ?>
+    }
+?>
     </div><!--close main_nav_list div-->
   </div><!--close main_nav div-->
 </div>
