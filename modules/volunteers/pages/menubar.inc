@@ -1,27 +1,26 @@
-<?php if (isset($_SESSION['customFields']['currConComPos'])) { ?>
-    <?php if (isset($_SESSION['IS_VOLUNTEERS']) || isset($_SESSION['IS_ADMIN'])) { ?>
-  <a class="w3-bar-item w3-button<?php
-    if ($_REQUEST['Function'] == 'volunteers/enter') {
-        echo " w3-green";
+<?php
+if (isset($_SESSION['customFields']['currConComPos'])) {
+    if (isset($_SESSION['IS_VOLUNTEERS']) || isset($_SESSION['IS_ADMIN'])) {
+        $base_menus[] = array('base style' => '',
+         'selected style' => 'w3-green',
+         'function' => 'volunteers/enter',
+         'title' => 'Track Volunteer\'s hours',
+         'i class' => 'fa fa-clock-o',
+         'text' => 'Enter Hours',
+         'responsive' => true);
     }
-    ?>" href="index.php?Function=volunteers/enter" title="Track Volunteer's hours">
-    <i class="fa fa-clock-o"></i>
-    Enter Hours
-  </a>
-<?php }
-} ?>
+}
 
-<?php if (isset($_SESSION['IS_VOLUNTEERS']) || isset($_SESSION['IS_ADMIN'])) { ?>
-  <a class="w3-bar-item w3-button w3-hide-small w3-hide-medium<?php
-    if ($_REQUEST['Function'] == 'volunteers/admin') {
-        echo " w3-green";
-    } elseif ($_COOKIE["CIAB_VOLUNTEERADMIN"]) {
-        echo " w3-red";
-    } else {
-        echo " w3-yellow";
+if (isset($_SESSION['IS_VOLUNTEERS']) || isset($_SESSION['IS_ADMIN'])) {
+    $basecolor = 'w3-yellow';
+    if($_COOKIE["CIAB_VOLUNTEERADMIN"]) {
+        $basecolor = 'w3-red';
     }
-    ?>" href="index.php?Function=volunteers/admin" title="Volunteers">
-    <i class="fa fa-users"></i>
-    Volunteers
-  </a>
-<?php } ?>
+    $admin_menus[] = array('base style' => $basecolor,
+     'selected style' => 'w3-green',
+     'function' => 'volunteers/admin',
+     'title' => 'Volunteer\'s',
+     'i class' => 'fa fa-users',
+     'text' => 'Volunteers',
+     'responsive' => true);
+}

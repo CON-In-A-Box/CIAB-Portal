@@ -10,31 +10,50 @@
 </script>
 <div class="w3-top">
   <div id="main_nav" class="w3-bar w3-dark-grey">
-    <a class="w3-bar-item w3-button<?php
-    if ($_REQUEST['Function'] == 'main') {
-        echo " w3-green";
-    }
-        ?>" href="index.php?Function=main" title="Main Page">
-      <i class="fa fa-home"></i>
-      Main
-    </a>
-      <a class="w3-bar-item w3-button w3-hide-small w3-hide-medium<?php
-        if ($_REQUEST['Function'] == 'list') {
-            echo " w3-green";
-        }
-        ?>" href="index.php?Function=list" title="The Current ConCom List List">
-        <i class="fa fa-phone"></i>
-        ConCom List
-      </a>
-    <a class="w3-bar-item w3-button w3-hide-small w3-hide-medium<?php
-    if ($_REQUEST['Function'] == 'profile') {
-        echo " w3-green";
-    }
-        ?>" href="index.php?Function=profile" title="Update Profile Informaiton In Neon">
-      <i class="fa fa-user"></i>
-      Profile
-    </a>
+
 <?php
+
+if (!isset($base_styles)) {
+    $base_styles = " w3-bar-item w3-button ";
+}
+if (!isset($resp_styles)) {
+    $resp_styles = " w3-hide-small w3-hide-medium ";
+}
+
+if (!isset($base_menus)) {
+    $base_menus = array();
+    $base_menus[] = array('base style' => '',
+         'selected style' => 'w3-green',
+         'function' => 'main',
+         'title' => 'Main Page',
+         'i class' => 'fa fa-home',
+         'text' => 'Main',
+         'responsive' => false);
+
+    if (isset($_SESSION['customFields']['currConComPos'])) {
+        $base_menus[] = array('base style' => '',
+             'selected style' => 'w3-green',
+             'function' => 'list',
+             'title' => 'The Current ConCom List List',
+             'i class' => 'fa fa-phone',
+             'text' => 'ConCom List',
+             'responsive' => true);
+    }
+
+    $base_menus[] = array('base style' => '',
+         'selected style' => 'w3-green',
+         'function' => 'profile',
+         'title' => 'Update Profile Information',
+         'i class' => 'fa fa-user',
+         'text' => 'Profile',
+         'responsive' => true);
+}
+
+if (!isset($admin_menus)) {
+    $admin_menus = [
+    ];
+}
+
     $modules = scandir($MODULESDIR);
     foreach ($modules as $key => $value) {
         if (!in_array($value, array(".", ".."))) {
@@ -48,6 +67,47 @@
             }
         }
     }
+
+    foreach ($base_menus as $menu) {
+        if ($menu['responsive']) {
+            if ($_REQUEST['Function'] == $menu['function']) {
+                echo "<a class=\"".$menu['selected style'].$base_styles.$resp_styles."\"";
+            } else {
+                echo "<a class=\"".$menu['base style'].$base_styles.$resp_styles."\"";
+            }
+        } else {
+            if ($_REQUEST['Function'] == $menu['function']) {
+                echo "<a class=\"".$menu['selected style'].$base_styles."\"";
+            } else {
+                echo "<a class=\"".$menu['base style'].$base_styles."\"";
+            }
+        }
+        echo " href=\"index.php?Function=".$menu['function']."\" title=\"".$menu['title']."\">";
+        echo "<i class=\"".$menu['i class']."\"></i>";
+        echo "        ".$menu['text'];
+        echo "</a>\n";
+    }
+
+    foreach ($admin_menus as $menu) {
+        if ($menu['responsive']) {
+            if ($_REQUEST['Function'] == $menu['function']) {
+                echo "<a class=\"".$menu['selected style'].$base_styles.$resp_styles."\"";
+            } else {
+                echo "<a class=\"".$menu['base style'].$base_styles.$resp_styles."\"";
+            }
+        } else {
+            if ($_REQUEST['Function'] == $menu['function']) {
+                echo "<a class=\"".$menu['selected style'].$base_styles."\"";
+            } else {
+                echo "<a class=\"".$menu['base style'].$base_styles."\"";
+            }
+        }
+        echo " href=\"index.php?Function=".$menu['function']."\" title=\"".$menu['title']."\">";
+        echo "<i class=\"".$menu['i class']."\"></i>";
+        echo "        ".$menu['text'];
+        echo "</a>\n";
+    }
+
 ?>
 
     <a class="w3-bar-item w3-block w3-center w3-button w3-hide-large"
@@ -61,39 +121,42 @@
       Log Out
     </a>
 
+
+
     <!--Responsive menu for tables and moblie-->
     <div id="main_nav_list" class="w3-bar-block w3-hide w3-hide-large">
-        <?php if (isset($_SESSION['customFields']['currConComPos'])) { ?>
-        <a class="w3-bar-item w3-button<?php
-        if ($_REQUEST['Function'] == 'list') {
-            echo " w3-green";
-        }
-            ?>" href="index.php?Function=list" title="The Current ConCom List List">
-          <i class="fa fa-phone"></i>
-          ConCom List
-        </a>
-        <?php } ?>
-      <a class="w3-bar-item w3-button<?php
-        if ($_REQUEST['Function'] == 'profile') {
-            echo " w3-green";
-        }
-        ?>" href="index.php?Function=profile" title="Update Profile Informaiton In Neon">
-        <i class="fa fa-user"></i>
-        Profile
-      </a>
+
 <?php
-    $modules = scandir($MODULESDIR);
-    foreach ($modules as $key => $value) {
-        if (!in_array($value, array(".", ".."))) {
-            if (in_array($value, $DISABLEDMODULES)) {
-                continue;
+    foreach ($base_menus as $menu) {
+        if ($menu['responsive']) {
+            if ($_REQUEST['Function'] == $menu['function']) {
+                echo "<a class=\"".$menu['selected style'].$base_styles."\"";
+            } else {
+                echo "<a class=\"".$menu['base style'].$base_styles."\"";
             }
-            if (is_dir($MODULESDIR . DIRECTORY_SEPARATOR . $value)) {
-                if (is_file($MODULESDIR . DIRECTORY_SEPARATOR . $value . DIRECTORY_SEPARATOR . 'pages/mobile_menubar.inc')) {
-                    require_once($MODULESDIR . DIRECTORY_SEPARATOR . $value.DIRECTORY_SEPARATOR.'pages/mobile_menubar.inc');
-                }
-            }
+        } else {
+            continue;
         }
+        echo " href=\"index.php?Function=".$menu['function']."\" title=\"".$menu['title']."\">";
+        echo "<i class=\"".$menu['i class']."\"></i>";
+        echo "        ".$menu['text'];
+        echo "</a>\n";
+    }
+
+    foreach ($admin_menus as $menu) {
+        if ($menu['responsive']) {
+            if ($_REQUEST['Function'] == $menu['function']) {
+                echo "<a class=\"".$menu['selected style'].$base_styles."\"";
+            } else {
+                echo "<a class=\"".$menu['base style'].$base_styles."\"";
+            }
+        } else {
+            continue;
+        }
+        echo " href=\"index.php?Function=".$menu['function']."\" title=\"".$menu['title']."\">";
+        echo "<i class=\"".$menu['i class']."\"></i>";
+        echo "        ".$menu['text'];
+        echo "</a>\n";
     }
 ?>
     </div><!--close main_nav_list div-->
