@@ -59,6 +59,9 @@ if (!isset($admin_menus)) {
     }
 
     foreach ($base_menus as $menu) {
+        if (in_array($menu['function'], $DISABLEDMODULES)) {
+            continue;
+        }
         if ($menu['responsive']) {
             if ($_REQUEST['Function'] == $menu['function']) {
                 echo "<a class=\"".$menu['selected style'].$base_styles.$resp_styles."\"";
@@ -79,6 +82,9 @@ if (!isset($admin_menus)) {
     }
 
     foreach ($admin_menus as $menu) {
+        if (in_array($menu['function'], $DISABLEDMODULES)) {
+            continue;
+        }
         if ($menu['responsive']) {
             if ($_REQUEST['Function'] == $menu['function']) {
                 echo "<a class=\"".$menu['selected style'].$base_styles.$resp_styles."\"";
@@ -118,6 +124,9 @@ if (!isset($admin_menus)) {
 
 <?php
     foreach ($base_menus as $menu) {
+        if (in_array($menu['function'], $DISABLEDMODULES)) {
+            continue;
+        }
         if ($menu['responsive']) {
             if ($_REQUEST['Function'] == $menu['function']) {
                 echo "<a class=\"".$menu['selected style'].$base_styles."\"";
@@ -134,6 +143,9 @@ if (!isset($admin_menus)) {
     }
 
     foreach ($admin_menus as $menu) {
+        if (in_array($menu['function'], $DISABLEDMODULES)) {
+            continue;
+        }
         if ($menu['responsive']) {
             if ($_REQUEST['Function'] == $menu['function']) {
                 echo "<a class=\"".$menu['selected style'].$base_styles."\"";

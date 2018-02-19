@@ -2,6 +2,11 @@
 // Load in basic functions
 require_once('functions/functions.inc');
 
+// Enforce disabled modules
+$arr = explode('/',trim($_REQUEST['Function']));
+if (in_array($arr[0], $DISABLEDMODULES)) {
+    goSite('/index.php?Function=public');
+}
 // Divert to public page if no session is available
 if (empty($_REQUEST['Function'])) {
     goSite('/index.php?Function=public');
