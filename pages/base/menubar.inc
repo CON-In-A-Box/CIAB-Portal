@@ -30,16 +30,6 @@ if (!isset($base_menus)) {
          'text' => 'Main',
          'responsive' => false);
 
-    if (isset($_SESSION['customFields']['currConComPos'])) {
-        $base_menus[] = array('base style' => '',
-             'selected style' => 'w3-green',
-             'function' => 'list',
-             'title' => 'The Current ConCom List List',
-             'i class' => 'fa fa-phone',
-             'text' => 'ConCom List',
-             'responsive' => true);
-    }
-
     $base_menus[] = array('base style' => '',
          'selected style' => 'w3-green',
          'function' => 'profile',
