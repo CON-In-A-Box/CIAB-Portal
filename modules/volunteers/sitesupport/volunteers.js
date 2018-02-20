@@ -267,7 +267,7 @@ function toggleAdminMode() {
     target = 'index.php?Function=volunteers/admin';
   }
   if (!adminMode) {
-    checkAuthentication(userEmail, enterAdmin, failAdmin);
+    checkAuthentication(userEmail, enterAdmin, failAdmin, 'volunteers/admin');
   } else {
     setTimeout(function() {window.location = target;}, 1000);
   }
