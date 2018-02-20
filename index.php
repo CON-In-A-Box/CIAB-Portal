@@ -7,6 +7,12 @@ $arr = explode('/',trim($_REQUEST['Function']));
 if (in_array($arr[0], $DISABLEDMODULES)) {
     goSite('/index.php?Function=public');
 }
+// Force kiosk mode to the proper module
+if (isset($_SESSION['kioskMode'])) {
+    if ($_REQUEST['Function'] != 'functions' && !strstr($_REQUEST['Function'], $_SESSION['kioskMode'])) {
+        goSite('/index.php?Function='.$_SESSION['kioskMode']);
+    }
+}
 // Divert to public page if no session is available
 if (empty($_REQUEST['Function'])) {
     goSite('/index.php?Function=public');
