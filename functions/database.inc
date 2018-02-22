@@ -73,11 +73,12 @@ SQL;
 
     public function __construct()
     {
-        if ($_REQUEST['Function'] != 'update') {
+        if (empty($_REQUEST['Function']) || $_REQUEST['Function'] != 'update') {
             $upgrade = DB::_getCurrentDBVersion();
             DB::_buildMissingTables();
             if ($upgrade != self::$REQUIED_DB_SCHEMA) {
-                header("Location: http://".$_SERVER['SERVER_NAME']."/index.php?Function=update&next=".$_REQUEST['Function']."&from=".$upgrade);
+	        // If we have to do an update, do it, and then boot the user back to the login page to refresh any session data
+                header("Location: http://".$_SERVER['SERVER_NAME']."/index.php?Function=update&next=public&from=".$upgrade);
             }
         }
 
