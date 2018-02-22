@@ -4,7 +4,7 @@ if (empty($_SESSION['customFields']['currConComPos'])) {
     goSite();
 }
 
-require_once($FUNCTIONDIR."/divisional.inc");
+require_once(__dir__."/../functions/concom.inc");
 require_once($FUNCTIONDIR.'/users.inc');
 if (isset($_REQUEST['Remove']) && isset($_REQUEST['Department']) && isset($_REQUEST['Position'])) {
     if (isset($_SESSION['IS_ADMIN']) || (isset($_SESSION['DIR_OF']) && in_array(getDivision($_REQUEST['Department']), $_SESSION['DIR_OF'])) || (isset($_SESSION['HEAD_OF']) && in_array($_REQUEST['Department'], $_SESSION['HEAD_OF']))) {
@@ -20,7 +20,7 @@ if (isset($_REQUEST['Remove']) && isset($_REQUEST['Department']) && isset($_REQU
             $removeData = filter_input_array(INPUT_GET, $arguments);
         }
         RemoveConComPosition($removeData['Remove'], $removeData['Department'], $removeData['Position']);
-        goSite('index.php?Function=list#'.$removeData['Department']);
+        goSite('index.php?Function=concom#'.$removeData['Department']);
     } else {
       // Made a request without the right cedentials - Reset just in case
         goSite();
@@ -60,7 +60,7 @@ function doConComAddSearch($department)
         $message = '<h3>You must specify at least one of the above search criteria.</h3>';
     }
 
-    echo '<form action="index.php?Function=list" method="POST" class="form-inline">';
+    echo '<form action="index.php?Function=concom" method="POST" class="form-inline">';
     echo '<input type="hidden" name="AddDepartment" value="'.$department.'">'."\n";
     echo '<fieldset><legend>Search the User Database</legend>';
     echo '<p>';
@@ -81,7 +81,7 @@ function doConComAddSearch($department)
         echo '<tr><th>Name</th><th>Email</th><th>Location</th></tr>'."\n";
         foreach ($result['users'] as $r) {
             echo '<tr>';
-            echo '<td><a href="index.php?Function=list&AddDepartment='.$department.'&accountId='.$r['Id'].'&Name='.$r['First Name'].' '.$r['Last Name'].'">'.$r['First Name'].' '.$r['Last Name'].'</a></td>';
+            echo '<td><a href="index.php?Function=concom&AddDepartment='.$department.'&accountId='.$r['Id'].'&Name='.$r['First Name'].' '.$r['Last Name'].'">'.$r['First Name'].' '.$r['Last Name'].'</a></td>';
             echo '<td>'.$r['Email'].'</td>';
             echo '<td>'.$r['City'].' '.$r['State'].'</td>';
             echo "</tr>\n";
@@ -97,7 +97,7 @@ function doConComAddSearch($department)
 function doConComAddAssign($department, $accountid, $name)
 {
     echo '<h3>Add '.$name.' to '.$department.'</h3>';
-    echo '<form action="index.php?Function=list" method="POST" class="form-inline">';
+    echo '<form action="index.php?Function=concom" method="POST" class="form-inline">';
     echo '<input type="hidden" name="AddDepartment" value="'.$department.'">'."\n";
     echo '<input type="hidden" name="accountId" value="'.$accountid.'">'."\n";
     echo '<fieldset><legend>Assign '.$name.' to ConCom</legend>';
@@ -147,7 +147,7 @@ if (isset($_REQUEST['AddDepartment'])) {
                 }
 
                 AddConComPosition($addData['accountId'], $addData['AddDepartment'], $addData['Position'], $addData['note']);
-                goSite('index.php?Function=list#'.$addData['AddDepartment']);
+                goSite('index.php?Function=concom#'.$addData['AddDepartment']);
             }
         }
     } else {

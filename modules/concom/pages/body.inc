@@ -1,6 +1,6 @@
 <div id="main_content" class="w3-cell w3-cell-top w3-mobile">
 <?php
-require_once($FUNCTIONDIR."/divisional.inc");
+require_once(__DIR__."/../functions/concom.inc");
 
 // if this is an update, but we don't have the right permissions, ignore it.
 if (isset($_REQUEST['AddDepartment'])) {
