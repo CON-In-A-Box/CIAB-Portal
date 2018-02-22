@@ -13,7 +13,8 @@ if (isset($_SESSION['customFields']['currConComPos'])) {
 
 if (isset($_SESSION['IS_VOLUNTEERS']) || isset($_SESSION['IS_ADMIN'])) {
     $basecolor = 'w3-yellow';
-    if($_COOKIE["CIAB_VOLUNTEERADMIN"]) {
+    if(array_key_exists('CIAB_VOLUNTEERADMIN', $_COOKIE) &&
+       $_COOKIE["CIAB_VOLUNTEERADMIN"]) {
         $basecolor = 'w3-red';
     }
     $admin_menus[] = array('base style' => $basecolor,
