@@ -2,6 +2,8 @@
 
 namespace concom\panes;
 
+require_once(__DIR__.'/../functions/concom.inc');
+
 function draw_status()
 {
     // Display Current ConCom Status
@@ -31,24 +33,35 @@ function draw_status()
 
 function draw_history()
 {
-    // Display ConCom Service History
-    /* // Hide this info until ready for updates
-    echo "<div class='w3-container'>\n";
-    echo "<table class='w3-table w3-striped w3-bordered'>\n";
-    echo "<tr><th style=\"text-align:center;\" colspan=2>Previous ConCom Years Served</th></tr>";
-    foreach( $_SESSION['definedFields']['conComYears'] as $key => $val ) {
-    echo "<tr><td>" . $val . "</td>";
-    if ( isset( $_SESSION['customFields'][search_definedFields('CVGConCom Years Served')] ) && in_array( $key, $_SESSION['customFields'][search_definedFields('CVGConCom Years Served')] )) {
-    echo "<td style='background-color:green'>On ConCom";
+    $years = years_served($_SESSION['accountId']);
+    $c = count($years);
+
+    echo "<div class='w3-container w3-green'>\n";
+    echo "<table class='w3-table w3-striped w3-bordered w3-white'>\n";
+    echo "<tr><th style=\"text-align:center;\" class=\"w3-green\" colspan=5>Served on ConCom for ".$c;
+    if ($c > 1) {
+        echo " Years!  ";
     } else {
-    echo "<td>Not On ConCom";
+        echo " Year!  ";
     }
-    echo "</td></tr>\n";
+    echo "</th></tr>";
+
+    $i = 0;
+    foreach($years as $val) {
+        if ($i % 5 == 0) {
+            if ($i != 0) {
+                echo "</tr>\n";
+            }
+            echo "<tr>";
+        }
+        echo "<td>" . $val . "</td>";
+        $i++;
     }
-    unset($val);
+    echo "</tr>\n";
+    echo "<tr class=\"w3-green\" ><th colspan=5 class='w3-center'>";
+    echo "Thank you for your help!</th></tr>";
     echo "</table>\n";
     echo "</div>\n";
-    */
 }
 
 function phone_number()
@@ -100,8 +113,8 @@ function meetings()
 }
 
 if (isset($_SESSION['customFields']['currConComPos'])) {
-    $homepage_panes[] = 'concom\panes\draw_status';
-    $homepage_panes[] = 'concom\panes\draw_history';
     $homepage_panes[] = 'concom\panes\phone_number';
+    $homepage_panes[] = 'concom\panes\draw_status';
     $homepage_panes[] = 'concom\panes\meetings';
+    $homepage_panes[] = 'concom\panes\draw_history';
 }
