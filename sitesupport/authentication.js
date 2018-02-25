@@ -23,6 +23,7 @@ function _checkKey(event) {
   if (event.keyCode === 13) {
     _hideAuthentication();
     var pass = document.getElementById('password_input').value;
+    var target = document.getElementById('target').value;
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
@@ -38,14 +39,18 @@ function _checkKey(event) {
           return;
         }
       };
-    xhttp.open('POST', 'index.php?Function=functions', true);
+    if (!target) {
+      xhttp.open('POST', 'index.php?Function=functions', true);
+    } else {
+      xhttp.open('POST', 'index.php?Function='+target, true);
+    }
     xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
     xhttp.send('validate_login=' + user + '&validate_passwd=' +
                encodeURI(pass));
   }
 }
 
-function checkAuthentication(username, success, failure) {
+function checkAuthentication(username, success, failure, target) {
   var dlg = document.getElementById('reauthentication_dlg');
   onSuccess = success;
   onFail = failure;
@@ -94,6 +99,12 @@ function checkAuthentication(username, success, failure) {
     i.id = 'password_input';
     i.style.width = '95%';
     i.onkeyup = _checkKey;
+    form.appendChild(i);
+
+    i = document.createElement('INPUT');
+    i.classList.add('w3-hide');
+    i.id = 'target';
+    i.value = target;
     form.appendChild(i);
 
     var r = document.createElement('HR');

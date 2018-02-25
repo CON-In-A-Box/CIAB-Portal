@@ -17,14 +17,10 @@ if (!empty($_REQUEST)) {
 
     if (isset($updateData['validate_login'])) {
         if (isset($_SESSION['IS_ADMIN']) || isset($_SESSION['IS_VOLUNTEERS'])) {
-            if (doUserAndPasswordMatch($updateData['validate_login'], urldecode($updateData['validate_passwd']))) {
-                setcookie("CIAB_VOLUNTEERADMIN", true);
-                exit;
-            } else {
+            if (!doUserAndPasswordMatch($updateData['validate_login'], urldecode($updateData['validate_passwd']))) {
                 header("HTTP/1.0 401");
-                unset($_COOKIE["CIAB_VOLUNTEERADMIN"]);
-                exit();
             }
+            exit();
         }
     }
 
