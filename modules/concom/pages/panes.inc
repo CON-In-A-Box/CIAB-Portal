@@ -4,6 +4,7 @@ namespace concom\panes;
 
 require_once(__DIR__.'/../functions/concom.inc');
 
+
 function draw_status()
 {
     // Display Current ConCom Status
@@ -29,7 +30,9 @@ function draw_status()
         echo "</table>\n";
         echo "</div>\n";
     }
+
 }
+
 
 function draw_history()
 {
@@ -47,14 +50,14 @@ function draw_history()
     echo "</th></tr>";
 
     $i = 0;
-    foreach($years as $val) {
+    foreach ($years as $val) {
         if ($i % 5 == 0) {
             if ($i != 0) {
                 echo "</tr>\n";
             }
             echo "<tr>";
         }
-        echo "<td>" . $val . "</td>";
+        echo "<td>".$val."</td>";
         $i++;
     }
     echo "</tr>\n";
@@ -62,7 +65,9 @@ function draw_history()
     echo "Thank you for your help!</th></tr>";
     echo "</table>\n";
     echo "</div>\n";
+
 }
+
 
 function phone_number()
 {
@@ -74,7 +79,9 @@ function phone_number()
         echo 'Please <a href="index.php?Function=profile">Update Your Profile</a> to make that selection.';
         echo '</p>';
     }
+
 }
+
 
 function meetings()
 {
@@ -112,6 +119,7 @@ function meetings()
 
 }
 
+ 
 if (isset($_SESSION['customFields']['currConComPos'])) {
     $homepage_panes[] = 'concom\panes\phone_number';
     $homepage_panes[] = 'concom\panes\draw_status';

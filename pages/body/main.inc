@@ -7,9 +7,9 @@ foreach ($modules as $key => $value) {
         if (in_array($value, $DISABLEDMODULES)) {
             continue;
         }
-        if (is_dir($MODULESDIR . DIRECTORY_SEPARATOR . $value)) {
-            if (is_file($MODULESDIR . DIRECTORY_SEPARATOR . $value . DIRECTORY_SEPARATOR . 'pages/panes.inc')) {
-                require_once($MODULESDIR . DIRECTORY_SEPARATOR . $value.DIRECTORY_SEPARATOR.'pages/panes.inc');
+        if (is_dir($MODULESDIR.DIRECTORY_SEPARATOR.$value)) {
+            if (is_file($MODULESDIR.DIRECTORY_SEPARATOR.$value.DIRECTORY_SEPARATOR.'pages/panes.inc')) {
+                require_once($MODULESDIR.DIRECTORY_SEPARATOR.$value.DIRECTORY_SEPARATOR.'pages/panes.inc');
             }
         }
     }
@@ -23,7 +23,9 @@ echo '<div class="w3-container w3-center">';
 echo '<b>Welcome '.$_SESSION['preferredName'].'!</b>';
 echo "</div>\n";
 
-foreach($homepage_panes as $drawfunc) { $drawfunc(); }
+foreach ($homepage_panes as $drawfunc) {
+    $drawfunc();
+}
 
 ?>
 

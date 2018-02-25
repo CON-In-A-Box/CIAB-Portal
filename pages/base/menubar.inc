@@ -51,67 +51,67 @@ if (!isset($_SESSION['kioskMode'])) {
             if (!kioskMode && in_array($value, $DISABLEDMODULES)) {
                 continue;
             }
-            if (is_dir($MODULESDIR . DIRECTORY_SEPARATOR . $value)) {
-                if (is_file($MODULESDIR . DIRECTORY_SEPARATOR . $value . DIRECTORY_SEPARATOR . 'pages/menubar.inc')) {
-                    require_once($MODULESDIR . DIRECTORY_SEPARATOR . $value.DIRECTORY_SEPARATOR.'pages/menubar.inc');
+            if (is_dir($MODULESDIR.DIRECTORY_SEPARATOR.$value)) {
+                if (is_file($MODULESDIR.DIRECTORY_SEPARATOR.$value.DIRECTORY_SEPARATOR.'pages/menubar.inc')) {
+                    require_once($MODULESDIR.DIRECTORY_SEPARATOR.$value.DIRECTORY_SEPARATOR.'pages/menubar.inc');
                 }
             }
         }
     }
 } else {
     $base_menus = array();
-    if (is_dir($MODULESDIR . DIRECTORY_SEPARATOR . $_SESSION['kioskMode'])) {
-        if (is_file($MODULESDIR . DIRECTORY_SEPARATOR . $_SESSION['kioskMode']. DIRECTORY_SEPARATOR . 'pages/menubar.inc')) {
-            require_once($MODULESDIR . DIRECTORY_SEPARATOR . $_SESSION['kioskMode'].DIRECTORY_SEPARATOR.'pages/menubar.inc');
+    if (is_dir($MODULESDIR.DIRECTORY_SEPARATOR.$_SESSION['kioskMode'])) {
+        if (is_file($MODULESDIR.DIRECTORY_SEPARATOR.$_SESSION['kioskMode'].DIRECTORY_SEPARATOR.'pages/menubar.inc')) {
+            require_once($MODULESDIR.DIRECTORY_SEPARATOR.$_SESSION['kioskMode'].DIRECTORY_SEPARATOR.'pages/menubar.inc');
         }
     }
 }
 
-    foreach ($base_menus as $menu) {
-        if (!kioskMode && in_array($menu['function'], $DISABLEDMODULES)) {
-            continue;
-        }
-        if ($menu['responsive']) {
-            if ($_REQUEST['Function'] == $menu['function']) {
-                echo "<a class=\"".$menu['selected style'].$base_styles.$resp_styles."\"";
-            } else {
-                echo "<a class=\"".$menu['base style'].$base_styles.$resp_styles."\"";
-            }
-        } else {
-            if ($_REQUEST['Function'] == $menu['function']) {
-                echo "<a class=\"".$menu['selected style'].$base_styles."\"";
-            } else {
-                echo "<a class=\"".$menu['base style'].$base_styles."\"";
-            }
-        }
-        echo " href=\"index.php?Function=".$menu['function']."\" title=\"".$menu['title']."\">";
-        echo "<i class=\"".$menu['i class']."\"></i>";
-        echo "        ".$menu['text'];
-        echo "</a>\n";
+foreach ($base_menus as $menu) {
+    if (!kioskMode && in_array($menu['function'], $DISABLEDMODULES)) {
+        continue;
     }
+    if ($menu['responsive']) {
+        if ($_REQUEST['Function'] == $menu['function']) {
+            echo "<a class=\"".$menu['selected style'].$base_styles.$resp_styles."\"";
+        } else {
+            echo "<a class=\"".$menu['base style'].$base_styles.$resp_styles."\"";
+        }
+    } else {
+        if ($_REQUEST['Function'] == $menu['function']) {
+            echo "<a class=\"".$menu['selected style'].$base_styles."\"";
+        } else {
+            echo "<a class=\"".$menu['base style'].$base_styles."\"";
+        }
+    }
+    echo " href=\"index.php?Function=".$menu['function']."\" title=\"".$menu['title']."\">";
+    echo "<i class=\"".$menu['i class']."\"></i>";
+    echo "        ".$menu['text'];
+    echo "</a>\n";
+}
 
-    foreach ($admin_menus as $menu) {
-        if (!kioskMode && in_array($menu['function'], $DISABLEDMODULES)) {
-            continue;
-        }
-        if ($menu['responsive']) {
-            if ($_REQUEST['Function'] == $menu['function']) {
-                echo "<a class=\"".$menu['selected style'].$base_styles.$resp_styles."\"";
-            } else {
-                echo "<a class=\"".$menu['base style'].$base_styles.$resp_styles."\"";
-            }
-        } else {
-            if ($_REQUEST['Function'] == $menu['function']) {
-                echo "<a class=\"".$menu['selected style'].$base_styles."\"";
-            } else {
-                echo "<a class=\"".$menu['base style'].$base_styles."\"";
-            }
-        }
-        echo " href=\"index.php?Function=".$menu['function']."\" title=\"".$menu['title']."\">";
-        echo "<i class=\"".$menu['i class']."\"></i>";
-        echo "        ".$menu['text'];
-        echo "</a>\n";
+foreach ($admin_menus as $menu) {
+    if (!kioskMode && in_array($menu['function'], $DISABLEDMODULES)) {
+        continue;
     }
+    if ($menu['responsive']) {
+        if ($_REQUEST['Function'] == $menu['function']) {
+            echo "<a class=\"".$menu['selected style'].$base_styles.$resp_styles."\"";
+        } else {
+            echo "<a class=\"".$menu['base style'].$base_styles.$resp_styles."\"";
+        }
+    } else {
+        if ($_REQUEST['Function'] == $menu['function']) {
+            echo "<a class=\"".$menu['selected style'].$base_styles."\"";
+        } else {
+            echo "<a class=\"".$menu['base style'].$base_styles."\"";
+        }
+    }
+    echo " href=\"index.php?Function=".$menu['function']."\" title=\"".$menu['title']."\">";
+    echo "<i class=\"".$menu['i class']."\"></i>";
+    echo "        ".$menu['text'];
+    echo "</a>\n";
+}
 
 if (!isset($_SESSION['kioskMode'])) {
 ?>
@@ -132,43 +132,43 @@ if (!isset($_SESSION['kioskMode'])) {
     <div id="main_nav_list" class="w3-bar-block w3-hide w3-hide-large">
 
 <?php
-    foreach ($base_menus as $menu) {
-        if (!kioskMode && in_array($menu['function'], $DISABLEDMODULES)) {
-            continue;
-        }
-        if ($menu['responsive']) {
-            if ($_REQUEST['Function'] == $menu['function']) {
-                echo "<a class=\"".$menu['selected style'].$base_styles."\"";
-            } else {
-                echo "<a class=\"".$menu['base style'].$base_styles."\"";
-            }
-        } else {
-            continue;
-        }
-        echo " href=\"index.php?Function=".$menu['function']."\" title=\"".$menu['title']."\">";
-        echo "<i class=\"".$menu['i class']."\"></i>";
-        echo "        ".$menu['text'];
-        echo "</a>\n";
+foreach ($base_menus as $menu) {
+    if (!kioskMode && in_array($menu['function'], $DISABLEDMODULES)) {
+        continue;
     }
+    if ($menu['responsive']) {
+        if ($_REQUEST['Function'] == $menu['function']) {
+            echo "<a class=\"".$menu['selected style'].$base_styles."\"";
+        } else {
+            echo "<a class=\"".$menu['base style'].$base_styles."\"";
+        }
+    } else {
+        continue;
+    }
+    echo " href=\"index.php?Function=".$menu['function']."\" title=\"".$menu['title']."\">";
+    echo "<i class=\"".$menu['i class']."\"></i>";
+    echo "        ".$menu['text'];
+    echo "</a>\n";
+}
 
-    foreach ($admin_menus as $menu) {
-        if (!kioskMode && in_array($menu['function'], $DISABLEDMODULES)) {
-            continue;
-        }
-        if ($menu['responsive']) {
-            if ($_REQUEST['Function'] == $menu['function']) {
-                echo "<a class=\"".$menu['selected style'].$base_styles."\"";
-            } else {
-                echo "<a class=\"".$menu['base style'].$base_styles."\"";
-            }
-        } else {
-            continue;
-        }
-        echo " href=\"index.php?Function=".$menu['function']."\" title=\"".$menu['title']."\">";
-        echo "<i class=\"".$menu['i class']."\"></i>";
-        echo "        ".$menu['text'];
-        echo "</a>\n";
+foreach ($admin_menus as $menu) {
+    if (!kioskMode && in_array($menu['function'], $DISABLEDMODULES)) {
+        continue;
     }
+    if ($menu['responsive']) {
+        if ($_REQUEST['Function'] == $menu['function']) {
+            echo "<a class=\"".$menu['selected style'].$base_styles."\"";
+        } else {
+            echo "<a class=\"".$menu['base style'].$base_styles."\"";
+        }
+    } else {
+        continue;
+    }
+    echo " href=\"index.php?Function=".$menu['function']."\" title=\"".$menu['title']."\">";
+    echo "<i class=\"".$menu['i class']."\"></i>";
+    echo "        ".$menu['text'];
+    echo "</a>\n";
+}
 ?>
     </div><!--close main_nav_list div-->
   </div><!--close main_nav div-->

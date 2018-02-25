@@ -566,8 +566,9 @@ SQL;
     $result = $db->run($sql);
     $value = $result->fetch();
     while ($value !== false) {
-        if ($value['TotalHours'] < $required_hours)
+        if ($value['TotalHours'] < $required_hours) {
             break;
+        }
         $members[] = $value['AccountID'];
         $hours[$value['AccountID']] = $value['TotalHours'];
         $value = $result->fetch();
@@ -579,9 +580,9 @@ SQL;
     $report = [];
     foreach ($users['users'] as $user) {
         $report[] = ['Id' => $user['Id'],
-                    'Name' => $user['First Name'].' '.$user['Last Name'],
-                    'Email' => $user['Email'],
-                    'Hours' => $hours[$user['Id']]];
+        'Name' => $user['First Name'].' '.$user['Last Name'],
+        'Email' => $user['Email'],
+        'Hours' => $hours[$user['Id']]];
     }
 
     return $report;
@@ -623,8 +624,9 @@ SQL;
     $result = $db->run($sql);
     $value = $result->fetch();
     while ($value !== false) {
-        if ($value['TotalHours'] < $required_hours)
+        if ($value['TotalHours'] < $required_hours) {
             break;
+        }
         $members[] = $value['AccountID'];
         $hours[$value['AccountID']] = $value['TotalHours'];
         $value = $result->fetch();
@@ -636,9 +638,9 @@ SQL;
     $report = [];
     foreach ($users['users'] as $user) {
         $report[] = ['Id' => $user['Id'],
-                    'Name' => $user['First Name'].' '.$user['Last Name'],
-                    'Email' => $user['Email'],
-                    'Hours' => $hours[$user['Id']]];
+        'Name' => $user['First Name'].' '.$user['Last Name'],
+        'Email' => $user['Email'],
+        'Hours' => $hours[$user['Id']]];
     }
 
     return $report;

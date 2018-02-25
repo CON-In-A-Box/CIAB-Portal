@@ -4,6 +4,7 @@ namespace volunteers\panes;
 
 require_once($FUNCTIONDIR.'/volunteer.inc');
 
+
 function display_volunteer_hours()
 {
     // Display Current Volunteer Status
@@ -26,6 +27,7 @@ function display_volunteer_hours()
     }
 
 }
+
 
 function display_volunteer_prizes()
 {
@@ -53,6 +55,7 @@ function display_volunteer_prizes()
     }
 
 }
+
 
 $homepage_panes[] = 'volunteers\panes\display_volunteer_hours';
 $homepage_panes[] = 'volunteers\panes\display_volunteer_prizes';

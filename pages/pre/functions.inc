@@ -5,7 +5,6 @@
 .*/
 
 if (!empty($_REQUEST)) {
-
     $arguments = [
     'validate_login'   => FILTER_SANITIZE_SPECIAL_CHARS,
     'validate_passwd'  => FILTER_SANITIZE_ENCODED,

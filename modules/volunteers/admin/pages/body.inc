@@ -167,7 +167,7 @@ function hour_table($uid)
                 $json = base64_encode($json);
                 echo 'onclick=\'showEditHours("'.$json;
                 echo '");\'>';
-            } else if (!isset($uid) && $admin_mode) {
+            } elseif (!isset($uid) && $admin_mode) {
                 echo "<tr class='w3-hover-red' ";
                 echo 'onclick=\'departmentReport("'.$record['Department Worked'].'", '.$record['Department ID'].');\'';
                 echo ">";
@@ -428,6 +428,7 @@ function messages($uid)
 
 }
 
+
 function admin_bar($uid)
 {
     echo "<div class='w3-col w3-cell-row w3-padding' ";
@@ -441,6 +442,7 @@ function admin_bar($uid)
     echo "</div>\n";
 
 }
+
 
 echo '<div id="main_content" style="height:94vh;" class="w3-row-padding';
 if ($admin_mode) {

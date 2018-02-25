@@ -1,5 +1,6 @@
 <?php
 
+
 function output_cvs($report, $filename)
 {
     header("Content-Type: application/CSV; charset=UTF-8");
@@ -13,11 +14,13 @@ function output_cvs($report, $filename)
 
     print implode(",", array_keys($report[0]));
     print "\n";
-    foreach($report as $entry) {
+    foreach ($report as $entry) {
         print implode(",", $entry);
         print "\n";
     }
+
 }
+
 
 if (!empty($_REQUEST)) {
     // Retrieve and sanitize POST data
@@ -169,5 +172,4 @@ if (!empty($_REQUEST)) {
             exit();
         }
     }
-
 }

@@ -267,7 +267,8 @@ function toggleAdminMode() {
     target = 'index.php?Function=volunteers/admin';
   }
   if (!adminMode) {
-    checkAuthentication(userEmail, enterAdmin, failAdmin, {target: 'volunteers/admin'});
+    checkAuthentication(userEmail, enterAdmin, failAdmin,
+                        {target: 'volunteers/admin'});
   } else {
     setTimeout(function() {window.location = target;}, 1000);
   }
@@ -546,8 +547,8 @@ function minHourReport() {
 function generateDeptReport() {
   var name = document.getElementById('dept_data_name').value;
   var deptid = document.getElementById('dept_data').value;
-  window.location = 'index.php?Function=volunteers/admin&dept_report=' + deptid +
-    '&dept_name=' + name;
+  window.location = 'index.php?Function=volunteers/admin&dept_report=' +
+                    deptid + '&dept_name=' + name;
 }
 
 function departmentReport(name, dept) {
@@ -578,7 +579,8 @@ function failKiosk(error) {
 
 function toggleKioskMode() {
   if (kioskMode) {
-    checkAuthentication(userEmail, switchKiosk, failKiosk, {title: 'Exiting Kiosk Mode'});
+    checkAuthentication(userEmail, switchKiosk, failKiosk,
+                        {title: 'Exiting Kiosk Mode'});
   } else {
     switchKiosk();
   }

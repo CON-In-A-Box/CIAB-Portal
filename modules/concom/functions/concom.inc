@@ -493,4 +493,5 @@ SQL;
         $value = $result->fetch();
     }
     return $years;
+
 }

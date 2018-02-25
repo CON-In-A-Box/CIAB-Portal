@@ -3,7 +3,7 @@
 require_once('functions/functions.inc');
 
 // Enforce disabled modules
-$arr = explode('/',trim($_REQUEST['Function']));
+$arr = explode('/', trim($_REQUEST['Function']));
 if (in_array($arr[0], $DISABLEDMODULES)) {
     goSite('/index.php?Function=public');
 }
@@ -42,7 +42,7 @@ if (empty($_REQUEST['Function'])) {
 // Pre-header process  <process_preheader>
 if (is_file($PAGESDIR.'/pre/'.$_REQUEST['Function'].'.inc')) {
     require($PAGESDIR.'/pre/'.$_REQUEST['Function'].'.inc');
-} else if (is_file($MODULESDIR.'/'.$_REQUEST['Function'].'/pages/pre.inc')) {
+} elseif (is_file($MODULESDIR.'/'.$_REQUEST['Function'].'/pages/pre.inc')) {
     require($MODULESDIR.'/'.$_REQUEST['Function'].'/pages/pre.inc');
 }
 
@@ -50,7 +50,7 @@ if (is_file($PAGESDIR.'/pre/'.$_REQUEST['Function'].'.inc')) {
 require($PAGESDIR.'/base/header_start.inc');
 if (is_file($PAGESDIR.'/head/'.$_REQUEST['Function'].'.inc')) {
     require($PAGESDIR.'/head/'.$_REQUEST['Function'].'.inc');
-} else if (is_file($MODULESDIR.'/'.$_REQUEST['Function'].'/pages/head.inc')) {
+} elseif (is_file($MODULESDIR.'/'.$_REQUEST['Function'].'/pages/head.inc')) {
     require($MODULESDIR.'/'.$_REQUEST['Function'].'/pages/head.inc');
 }
 require($PAGESDIR.'/base/header_end.inc');
@@ -64,7 +64,7 @@ if (empty($noheader) && empty($_REQUEST['NoHeader'])) {
 
 if (is_file($PAGESDIR.'/body/'.$_REQUEST['Function'].'.inc')) {
     require($PAGESDIR.'/body/'.$_REQUEST['Function'].'.inc');
-} else if (is_file($MODULESDIR.'/'.$_REQUEST['Function'].'/pages/body.inc')) {
+} elseif (is_file($MODULESDIR.'/'.$_REQUEST['Function'].'/pages/body.inc')) {
     require($MODULESDIR.'/'.$_REQUEST['Function'].'/pages/body.inc');
 }
 
