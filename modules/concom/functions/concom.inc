@@ -461,3 +461,36 @@ function RemoveConComPosition($accountid, $department, $position, $notify = true
     }
 
 }
+
+
+function years_served($accountid)
+{
+    global $db;
+
+    $sql = <<<SQL
+        SELECT
+            (
+                SELECT
+                    `Name`
+                from
+                    ConventionYear AS y
+                where
+                    y.YearID = l.YearID
+            ) AS Year
+        FROM
+            `ConComList` AS l
+        WHERE
+            `AccountID` = $accountid
+        GROUP BY
+            `YearID`
+SQL;
+
+    $result = $db->run($sql);
+    $years = [];
+    $value = $result->fetch();
+    while ($value !== false) {
+        $years[] = intval($value['Year']);
+        $value = $result->fetch();
+    }
+    return $years;
+}
