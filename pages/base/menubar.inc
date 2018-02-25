@@ -20,34 +20,35 @@ if (!isset($resp_styles)) {
     $resp_styles = " w3-hide-small w3-hide-medium ";
 }
 
-if (!isset($base_menus)) {
-    $base_menus = array();
-    $base_menus[] = array('base style' => '',
-         'selected style' => 'w3-green',
-         'function' => 'main',
-         'title' => 'Main Page',
-         'i class' => 'fa fa-home',
-         'text' => 'Main',
-         'responsive' => false);
+if (!isset($_SESSION['kioskMode'])) {
+    if (!isset($base_menus)) {
+        $base_menus = array();
+        $base_menus[] = array('base style' => '',
+             'selected style' => 'w3-green',
+             'function' => 'main',
+             'title' => 'Main Page',
+             'i class' => 'fa fa-home',
+             'text' => 'Main',
+             'responsive' => false);
 
-    $base_menus[] = array('base style' => '',
-         'selected style' => 'w3-green',
-         'function' => 'profile',
-         'title' => 'Update Profile Information',
-         'i class' => 'fa fa-user',
-         'text' => 'Profile',
-         'responsive' => true);
-}
+        $base_menus[] = array('base style' => '',
+             'selected style' => 'w3-green',
+             'function' => 'profile',
+             'title' => 'Update Profile Information',
+             'i class' => 'fa fa-user',
+             'text' => 'Profile',
+             'responsive' => true);
+    }
 
-if (!isset($admin_menus)) {
-    $admin_menus = [
-    ];
-}
+    if (!isset($admin_menus)) {
+        $admin_menus = [
+        ];
+    }
 
     $modules = scandir($MODULESDIR);
     foreach ($modules as $key => $value) {
         if (!in_array($value, array(".", ".."))) {
-            if (in_array($value, $DISABLEDMODULES)) {
+            if (!kioskMode && in_array($value, $DISABLEDMODULES)) {
                 continue;
             }
             if (is_dir($MODULESDIR . DIRECTORY_SEPARATOR . $value)) {
@@ -57,9 +58,17 @@ if (!isset($admin_menus)) {
             }
         }
     }
+} else {
+    $base_menus = array();
+    if (is_dir($MODULESDIR . DIRECTORY_SEPARATOR . $_SESSION['kioskMode'])) {
+        if (is_file($MODULESDIR . DIRECTORY_SEPARATOR . $_SESSION['kioskMode']. DIRECTORY_SEPARATOR . 'pages/menubar.inc')) {
+            require_once($MODULESDIR . DIRECTORY_SEPARATOR . $_SESSION['kioskMode'].DIRECTORY_SEPARATOR.'pages/menubar.inc');
+        }
+    }
+}
 
     foreach ($base_menus as $menu) {
-        if (in_array($menu['function'], $DISABLEDMODULES)) {
+        if (!kioskMode && in_array($menu['function'], $DISABLEDMODULES)) {
             continue;
         }
         if ($menu['responsive']) {
@@ -82,7 +91,7 @@ if (!isset($admin_menus)) {
     }
 
     foreach ($admin_menus as $menu) {
-        if (in_array($menu['function'], $DISABLEDMODULES)) {
+        if (!kioskMode && in_array($menu['function'], $DISABLEDMODULES)) {
             continue;
         }
         if ($menu['responsive']) {
@@ -104,8 +113,8 @@ if (!isset($admin_menus)) {
         echo "</a>\n";
     }
 
+if (!isset($_SESSION['kioskMode'])) {
 ?>
-
     <a class="w3-bar-item w3-block w3-center w3-button w3-hide-large"
       href="javascript:void(0)"
       onclick="myMenuBar()">
@@ -116,7 +125,7 @@ if (!isset($admin_menus)) {
       <i class="fa fa-sign-out"></i>
       Log Out
     </a>
-
+<?php } ?>
 
 
     <!--Responsive menu for tables and moblie-->
@@ -124,7 +133,7 @@ if (!isset($admin_menus)) {
 
 <?php
     foreach ($base_menus as $menu) {
-        if (in_array($menu['function'], $DISABLEDMODULES)) {
+        if (!kioskMode && in_array($menu['function'], $DISABLEDMODULES)) {
             continue;
         }
         if ($menu['responsive']) {
@@ -143,7 +152,7 @@ if (!isset($admin_menus)) {
     }
 
     foreach ($admin_menus as $menu) {
-        if (in_array($menu['function'], $DISABLEDMODULES)) {
+        if (!kioskMode && in_array($menu['function'], $DISABLEDMODULES)) {
             continue;
         }
         if ($menu['responsive']) {

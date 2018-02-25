@@ -2,6 +2,8 @@
  * Base function to check authentication of a user
  */
 
+/* jshint browser: true */
+
 'use strict';
 
 var onSuccess = null;
@@ -42,7 +44,7 @@ function _checkKey(event) {
     if (!target) {
       xhttp.open('POST', 'index.php?Function=functions', true);
     } else {
-      xhttp.open('POST', 'index.php?Function='+target, true);
+      xhttp.open('POST', 'index.php?Function=' + target, true);
     }
     xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
     xhttp.send('validate_login=' + user + '&validate_passwd=' +
@@ -50,7 +52,7 @@ function _checkKey(event) {
   }
 }
 
-function checkAuthentication(username, success, failure, target) {
+function checkAuthentication(username, success, failure, params) {
   var dlg = document.getElementById('reauthentication_dlg');
   onSuccess = success;
   onFail = failure;
@@ -73,15 +75,20 @@ function checkAuthentication(username, success, failure, target) {
     var h = document.createElement('H2');
     h.classList.add('w3-red');
     h.classList.add('w3-center');
-    var t = document.createTextNode('Entering Admin Mode');
+    var t;
+    if (params && ('title' in params)) {
+      t = document.createTextNode(params.title);
+    } else {
+      t = document.createTextNode('Entering Admin Mode');
+    }
     h.appendChild(t);
     content.appendChild(h);
     var r = document.createElement('HR');
     content.appendChild(r);
 
-    var h = document.createElement('H3');
+    h = document.createElement('H3');
     h.classList.add('w3-center');
-    var t = document.createTextNode('Verify password for ' + username);
+    t = document.createTextNode('Verify password for ' + username);
     h.appendChild(t);
     content.appendChild(h);
 
@@ -104,10 +111,13 @@ function checkAuthentication(username, success, failure, target) {
     i = document.createElement('INPUT');
     i.classList.add('w3-hide');
     i.id = 'target';
-    i.value = target;
+    i.value = null;
+    if (params && ('target' in params)) {
+      i.value = params.target;
+    }
     form.appendChild(i);
 
-    var r = document.createElement('HR');
+    r = document.createElement('HR');
     content.appendChild(r);
 
     document.body.appendChild(dlg);
