@@ -482,7 +482,7 @@ if (isset($_SESSION['IS_ADMIN']) || isset($_SESSION['IS_VOLUNTEERS'])) {
       <table class='switch-table'><tr><td>
         Kiosk Mode
         <label class=switch><input type="checkbox" class=toggle id=kiosk_slider <?php
-        if ($_SESSION['kioskMode']) {
+        if (array_key_exists('kioskMode', $_SESSION) && $_SESSION['kioskMode']) {
             echo "checked";
         }
 ?> onclick='toggleKioskMode();'>
@@ -758,6 +758,6 @@ if (isset($uid)) {
 }
 echo "  var adminMode = ".json_encode($admin_mode).";\n";
 echo "  var userEmail = '".$_SESSION['email']."';\n";
-echo "  var kioskMode = ".json_encode($_SESSION['kioskMode']).";\n";
+echo "  var kioskMode = ".json_encode(array_key_exists('kioskMode', $_SESSION) && $_SESSION['kioskMode']).";\n";
 ?>
 </script>

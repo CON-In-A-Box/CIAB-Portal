@@ -20,7 +20,9 @@ if (!isset($resp_styles)) {
     $resp_styles = " w3-hide-small w3-hide-medium ";
 }
 
-if (!isset($_SESSION['kioskMode'])) {
+$kioskMode = (array_key_exists('kioskMode', $_SESSION) && isset($_SESSION['kioskMode']));
+
+if (!$kioskMode) {
     if (!isset($base_menus)) {
         $base_menus = array();
         $base_menus[] = array('base style' => '',
@@ -48,7 +50,7 @@ if (!isset($_SESSION['kioskMode'])) {
     $modules = scandir($MODULESDIR);
     foreach ($modules as $key => $value) {
         if (!in_array($value, array(".", ".."))) {
-            if (!kioskMode && in_array($value, $DISABLEDMODULES)) {
+            if (!$kioskMode && in_array($value, $DISABLEDMODULES)) {
                 continue;
             }
             if (is_dir($MODULESDIR.DIRECTORY_SEPARATOR.$value)) {
@@ -68,7 +70,7 @@ if (!isset($_SESSION['kioskMode'])) {
 }
 
 foreach ($base_menus as $menu) {
-    if (!kioskMode && in_array($menu['function'], $DISABLEDMODULES)) {
+    if (!$kioskMode && in_array($menu['function'], $DISABLEDMODULES)) {
         continue;
     }
     if ($menu['responsive']) {
@@ -91,7 +93,7 @@ foreach ($base_menus as $menu) {
 }
 
 foreach ($admin_menus as $menu) {
-    if (!kioskMode && in_array($menu['function'], $DISABLEDMODULES)) {
+    if (!$kioskMode && in_array($menu['function'], $DISABLEDMODULES)) {
         continue;
     }
     if ($menu['responsive']) {
@@ -113,7 +115,7 @@ foreach ($admin_menus as $menu) {
     echo "</a>\n";
 }
 
-if (!isset($_SESSION['kioskMode'])) {
+if (!$kioskMode) {
 ?>
     <a class="w3-bar-item w3-block w3-center w3-button w3-hide-large"
       href="javascript:void(0)"
@@ -133,7 +135,7 @@ if (!isset($_SESSION['kioskMode'])) {
 
 <?php
 foreach ($base_menus as $menu) {
-    if (!kioskMode && in_array($menu['function'], $DISABLEDMODULES)) {
+    if (!$kioskMode && in_array($menu['function'], $DISABLEDMODULES)) {
         continue;
     }
     if ($menu['responsive']) {
@@ -152,7 +154,7 @@ foreach ($base_menus as $menu) {
 }
 
 foreach ($admin_menus as $menu) {
-    if (!kioskMode && in_array($menu['function'], $DISABLEDMODULES)) {
+    if (!$kioskMode && in_array($menu['function'], $DISABLEDMODULES)) {
         continue;
     }
     if ($menu['responsive']) {
