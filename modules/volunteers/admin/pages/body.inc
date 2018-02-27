@@ -64,13 +64,18 @@ function _build_prize_list($data, $uid)
                     array_splice($sorted, $entry['current'], 0, [$record]);
                     _increment_offsets($groups, $entry);
                     array_push($entry['items'], $record);
-                    $entry['aquired'] = $entry['aquired'] + $record['Aquired'];
+                    if (array_key_exists('Aquired', $record)) {
+                        $entry['aquired'] = $entry['aquired'] + $record['Aquired'];
+                    }
                 } else {
                     $entry = ['current' => sizeof($sorted),
                     'start' => sizeof($sorted),
                     'items' => array($record),
-                    'aquired' => $record['Aquired'],
+                    'aquired' => 0,
                     'limit' => $record['Limit']];
+                    if (array_key_exists('Aquired', $record)) {
+                        $entry['aquired'] = $record['Aquired'];
+                    }
                     array_push($sorted, $record);
                 }
                 $entry['current'] = $entry['current'] + 1;
@@ -311,7 +316,7 @@ function prizes_table($uid)
             } else {
                 if ($record['Remaining'] <= 0) {
                     echo "<tr class='soldoutrow hiddenrow w3-red'>";
-                } elseif ($record['Promo'] == 'yes' && $record['Aquired'] > 0) {
+                } elseif ($record['Promo'] == 'yes' && array_key_exists('Aquired', $record) && $record['Aquired'] > 0) {
                     echo "<tr class='soldoutrow hiddenrow w3-disabled'>";
                 } elseif ($record['RewardGroupID']) {
                     $record['GroupLimit'] = $record['Limit'];
@@ -320,7 +325,7 @@ function prizes_table($uid)
                     } elseif ($last_group !== null) {
                         $record['Limit'] = '|';
                     }
-                    if (ctype_digit($record['Aquired'])) {
+                    if (array_key_exists('Aquired', $record) && ctype_digit($record['Aquired'])) {
                         $groupTotals[intval($record['RewardGroupID'])] += intval($record['Aquired']);
                     } else {
                         $groupTotals[intval($record['RewardGroupID'])] += 0;
