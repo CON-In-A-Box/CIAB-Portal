@@ -320,17 +320,18 @@ SQL;
     $result = $db->run($sql);
     $value = $result->fetch();
     while ($value !== false) {
-        $prizes[$value['PrizeID']] = $value;
-        $prizes[$value['PrizeID']]['Remaining'] = $value['TotalInventory'];
-        if ($prizes[$value['PrizeID']]['Promo']) {
-            $prizes[$value['PrizeID']]['Promo'] = 'yes';
-            $prizes[$value['PrizeID']]['Limit'] = 1;
+        $id = intval($value['PrizeID']);
+        $prizes[$id] = $value;
+        $prizes[$id]['Remaining'] = $value['TotalInventory'];
+        if ($prizes[$id]['Promo']) {
+            $prizes[$id]['Promo'] = 'yes';
+            $prizes[$id]['Limit'] = 1;
         } else {
-            $prizes[$value['PrizeID']]['Promo'] = 'no';
-            if ($value['RewardGroupID'] != null) {
-                $prizes[$value['PrizeID']]['Limit'] = $groups[$value['RewardGroupID']]['RedeemLimit'];
+            $prizes[$id]['Promo'] = 'no';
+            if ($value['RewardGroupID'] != null && array_key_exists($value['RewardGroupID'], $groups)) {
+                $prizes[$id]['Limit'] = $groups[$value['RewardGroupID']]['RedeemLimit'];
             } else {
-                $prizes[$value['PrizeID']]['Limit'] = '∞';
+                $prizes[$id]['Limit'] = '∞';
             }
         }
         $value = $result->fetch();
@@ -624,9 +625,6 @@ SQL;
     $result = $db->run($sql);
     $value = $result->fetch();
     while ($value !== false) {
-        if ($value['TotalHours'] < $required_hours) {
-            break;
-        }
         $members[] = $value['AccountID'];
         $hours[$value['AccountID']] = $value['TotalHours'];
         $value = $result->fetch();

@@ -326,9 +326,13 @@ function prizes_table($uid)
                         $record['Limit'] = '|';
                     }
                     if (array_key_exists('Aquired', $record) && ctype_digit($record['Aquired'])) {
-                        $groupTotals[intval($record['RewardGroupID'])] += intval($record['Aquired']);
+                        $index = intval($record['RewardGroupID']);
+                        $groupTotals = array_pad($groupTotals, $index+1, 0);
+                        $groupTotals[$index] += intval($record['Aquired']);
                     } else {
-                        $groupTotals[intval($record['RewardGroupID'])] += 0;
+                        $index = intval($record['RewardGroupID']);
+                        $groupTotals = array_pad($groupTotals, $index+1, 0);
+                        $groupTotals[$index] += 0;
                     }
                     $last_group = $record['RewardGroupID'];
                     $classes = $group_styles[($group % count($group_styles))];
