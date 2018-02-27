@@ -1,7 +1,10 @@
 <?php
 
+/*.
+    require_module 'standard';
+.*/
 
-function output_cvs($report, $filename)
+function csv_headers($filename)
 {
     header("Content-Type: application/CSV; charset=UTF-8");
     header("Content-Language: en");
@@ -12,6 +15,12 @@ function output_cvs($report, $filename)
     header('Content-Disposition: attachment; filename="'.$filename.'"');
     header("Pragma: no-cache");
 
+}
+
+
+function output_cvs($report, $filename)
+{
+    csv_headers($filename);
     print implode(",", array_keys($report[0]));
     print "\n";
     foreach ($report as $entry) {
@@ -28,6 +37,7 @@ if (!empty($_REQUEST)) {
     'min_hour'         => FILTER_SANITIZE_NUMBER_INT,
     'dept_report'      => FILTER_SANITIZE_NUMBER_INT,
     'dept_name'        => FILTER_SANITIZE_SPECIAL_CHARS,
+    'generateCSV'      => FILTER_SANITIZE_SPECIAL_CHARS,
     ];
 
     require_once($FUNCTIONDIR."/volunteer.inc");
@@ -55,6 +65,14 @@ if (!empty($_REQUEST)) {
             exit();
         } else {
             header("HTTP/1.0 401");
+            exit();
+        }
+    }
+
+    if (isset($updateData['generateCSV'])) {
+        if (isset($_SESSION['IS_ADMIN']) || isset($_SESSION['IS_VOLUNTEERS'])) {
+            csv_headers($updateData['generateCSV'].'.csv');
+            print dump_table_to_csv($updateData['generateCSV']);
             exit();
         }
     }

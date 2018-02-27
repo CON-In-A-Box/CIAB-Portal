@@ -156,3 +156,33 @@ function current_yearID()
     return $_currentYear;
 
 }
+
+
+function dump_table_to_csv($table, $condition = null)
+{
+    global $db;
+
+    $data = [];
+    $sql = "DESCRIBE `$table`;";
+    $result = $db->run($sql);
+    $value = $result->fetch();
+    $data[] = array();
+    while ($value !== false) {
+        $data[0][] = $value['Field'];
+        $value = $result->fetch();
+    }
+    $sql = "SELECT * FROM `$table` $condition;";
+    $result = $db->run($sql);
+    $value = $result->fetch();
+    while ($value !== false) {
+        $data[] = array_values($value);
+        $value = $result->fetch();
+    }
+
+    foreach($data as $line) {
+        $text .= implode(",",  $line)."\n";
+    }
+
+    return $text;
+
+}
