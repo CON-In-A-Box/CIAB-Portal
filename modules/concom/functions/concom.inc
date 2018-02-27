@@ -303,7 +303,7 @@ SQL;
                       'First Name' => $value['AccountID'],
                       'Last Name' => '',
                       'Note' => $value['Note']);
-            array_push($entry, $db_staff[$value['AccountID']]);
+            array_push($db_staff[$value['AccountID']], $entry);
         } else {
             $db_staff[$value['AccountID']] = [[
             'Account ID' => $value['AccountID'],
