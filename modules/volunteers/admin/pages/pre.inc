@@ -22,6 +22,12 @@ function output_cvs($report, $filename)
 }
 
 
+/* This should only be accessable from volunteer staff */
+if (!(isset($_SESSION['IS_ADMIN']) || isset($_SESSION['IS_VOLUNTEERS']))) {
+    goSite();
+}
+
+
 if (!empty($_REQUEST)) {
     // Retrieve and sanitize POST data
     $arguments = [
