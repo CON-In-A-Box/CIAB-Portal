@@ -1,14 +1,12 @@
 <?php
 if (isset($_SESSION['customFields']['currConComPos'])) {
-    if (isset($_SESSION['IS_VOLUNTEERS']) || isset($_SESSION['IS_ADMIN'])) {
-        $base_menus[] = array('base style' => '',
-         'selected style' => 'w3-green',
-         'function' => 'volunteers/enter',
-         'title' => 'Track Volunteer\'s hours',
-         'i class' => 'fa fa-clock-o',
-         'text' => 'Enter Hours',
-         'responsive' => true);
-    }
+    $base_menus[] = array('base style' => '',
+     'selected style' => 'w3-green',
+     'function' => 'volunteers/enter',
+     'title' => 'Track Volunteer\'s hours',
+     'i class' => 'fa fa-clock-o',
+     'text' => 'Enter Hours',
+     'responsive' => true);
 }
 
 if (isset($_SESSION['IS_VOLUNTEERS']) || isset($_SESSION['IS_ADMIN'])) {
