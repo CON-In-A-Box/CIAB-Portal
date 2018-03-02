@@ -447,6 +447,8 @@ function admin_bar($uid)
     echo "onclick='showEditPrize(null)';>Add New Prize</button>\n";
     echo "<button id='min_hours' class='w3-button w3-round-xxlarge w3-red'";
     echo "onclick='minHourReport()';>Minimum Hour Report</button>\n";
+    echo "<button id='gen_csv' class='w3-button w3-round-xxlarge w3-red'";
+    echo "onclick='generateCSV()';>Export Raw CSV</button>\n";
     echo "</div>\n";
     echo "</div>\n";
 
@@ -561,6 +563,31 @@ prizes_table($uid);
         </div>
     </div>
 
+    <div class='w3-hide w3-padding' id='csv_export_div'>
+        <div class='w3-center'>
+            <h2 class='w3-red'>Export Raw CSV Data</h2>
+        </div>
+        <div class='w3-center'>
+            <label for='csv_table'>
+            Table:</label>
+            <select class="w3-margin w3-select w3-border" style="width:auto" id="csv_table">
+              <option value=HourRedemptions>HourRedemptions</option>
+              <option value=VolunteerHours selected>VolunteerHours</option>
+              <option value=VolunteerRewards>VolunteerRewards</option>
+              <option value=RewardGroup>RewardGroup</option>
+            </select>
+        </div>
+        <div class='w3-center'>
+            <button id='generate_csv' class='w3-button w3-round-xxlarge w3-green'
+                onclick='generatCSVReport();'>
+               Generate CSV
+            </button>
+            <button class='w3-button w3-round-xxlarge w3-red'
+                onclick='hideSidebar();'>
+              Close
+            </button>
+        </div>
+    </div>
 
     <div class='w3-hide w3-padding' id='hour_report_div'>
         <div class='w3-center'>

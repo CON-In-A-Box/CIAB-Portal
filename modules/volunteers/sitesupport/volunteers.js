@@ -585,3 +585,12 @@ function toggleKioskMode() {
     switchKiosk();
   }
 }
+
+function generateCSV() {
+  showSidebar('csv_export_div');
+}
+
+function generatCSVReport() {
+  var table = document.getElementById('csv_table').value;
+  window.location = 'index.php?Function=volunteers/admin&generateCSV=' + table;
+}
