@@ -5,13 +5,10 @@
 .*/
 
 require_once(__DIR__.'/functions.inc');
-require_once(__DIR__."/update/from_neon_to_152.inc");
 
-
-function _update_DB_Version()
+function _update_DB_Version($target)
 {
     global $db;
-    $target = DB::$REQUIED_DB_SCHEMA;
     $sql = <<<SQL
         UPDATE Configuration
         SET Value = '$target'
@@ -28,8 +25,14 @@ SQL;
 function db_do_update($from)
 {
     if ($from < 2018011700) {
+        require_once(__DIR__."/update/from_neon_to_152.inc");
         from_neon_to_152();
+        _update_DB_Version(2018011700);
+    } 
+    if ($from < 2018030200) {
+        require_once(__DIR__."/update/from_152_to_153.inc");
+        from_152_to_153();
+        _update_DB_Version(2018030200);
     }
-    _update_DB_Version();
 
 }
