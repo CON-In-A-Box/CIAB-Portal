@@ -10,8 +10,6 @@ require_once($BACKEND.'/'.$DB_BACKEND); // MyPDO Definition used
 
 class DB
 {
-    public static $REQUIED_DB_SCHEMA = 2018011700;
-
     private static function _getCurrentDBVersion()
     {
         /* check if we have a database at all */
@@ -38,9 +36,7 @@ SQL;
 
     private static function _buildMissingTables()
     {
-        global $BASEDIR;
-        $DATADIR = $BASEDIR.'/data';
-        require_once($DATADIR.'/database-schema.php');
+        $DATADIR = $GLOBALS['BASEDIR'].'/data';
 
         $result = MyPDO::instance()->query("SHOW TABLES");
         $arr = [];
@@ -50,7 +46,7 @@ SQL;
             }
         }
 
-        foreach ($DB_tables as $table => $fields) {
+        foreach (SCHEMA::$DB_tables as $table => $fields) {
             if (!in_array($table, $arr)) {
                 // Missing a table, build it!
                 $build = 'CREATE TABLE '.$table.' (';
@@ -74,9 +70,10 @@ SQL;
     public function __construct()
     {
         if (empty($_REQUEST['Function']) || $_REQUEST['Function'] != 'update') {
+            require_once($GLOBALS['BASEDIR'].'/data/database-schema.php');
             $upgrade = DB::_getCurrentDBVersion();
             DB::_buildMissingTables();
-            if ($upgrade != self::$REQUIED_DB_SCHEMA) {
+            if ($upgrade != SCHEMA::$REQUIED_DB_SCHEMA) {
 	        // If we have to do an update, do it, and then boot the user back to the login page to refresh any session data
                 header("Location: http://".$_SERVER['SERVER_NAME']."/index.php?Function=update&next=public&from=".$upgrade);
             }

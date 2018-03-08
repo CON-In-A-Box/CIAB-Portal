@@ -2,21 +2,25 @@
 // Load in basic functions
 require_once('functions/functions.inc');
 
+// Divert to public page if we are not under function control
+if (empty($_REQUEST['Function'])) {
+    goSite('/index.php?Function=public');
+} 
+
 // Enforce disabled modules
 $arr = explode('/', trim($_REQUEST['Function']));
 if (in_array($arr[0], $DISABLEDMODULES)) {
     goSite('/index.php?Function=public');
 }
+
 // Force kiosk mode to the proper module
 if (isset($_SESSION['kioskMode'])) {
     if ($_REQUEST['Function'] != 'functions' && !strstr($_REQUEST['Function'], $_SESSION['kioskMode'])) {
         goSite('/index.php?Function='.$_SESSION['kioskMode']);
     }
 }
-// Divert to public page if no session is available
-if (empty($_REQUEST['Function'])) {
-    goSite('/index.php?Function=public');
-} elseif (!empty($_REQUEST['DeepLink'])) {
+
+if (!empty($_REQUEST['DeepLink'])) {
     require_once(dirname(__FILE__).'/functions/session.inc');
     if (validateDeepLink($_REQUEST['DeepLink'])) {
         // Allow only approved DeepLink Functions - Need to make this an array search
@@ -30,10 +34,12 @@ if (empty($_REQUEST['Function'])) {
     } else {
         goSite('/index.php?Function=public');
     }
-} elseif ($_REQUEST['Function'] == "public") {
+} elseif ($_REQUEST['Function'] == "update" ) {
+    // Check the update process, doesn't matter if we are logged in or not.
+} elseif ($_REQUEST['Function'] == "public" ) {
     $noheader = true; // public pages don't need statusbars or logmenus
 } elseif (empty($_SESSION['username'])) {
-    // if no username is set and we are not calling a public page, redirect for login needs
+    // if no username is set and we are not calling a public page or a deeplink, redirect for login needs
     goSite('/index.php?Function=public');
 }
 
