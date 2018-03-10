@@ -24,7 +24,7 @@ function output_cvs($report, $filename)
     print implode(",", array_keys($report[0]));
     print "\n";
     foreach ($report as $entry) {
-        print implode(",", $entry);
+        print htmlspecialchars_decode(implode(",", $entry), ENT_QUOTES);
         print "\n";
     }
 
