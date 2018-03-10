@@ -36,6 +36,7 @@ if (!empty($_REQUEST['DeepLink'])) {
     }
 } elseif ($_REQUEST['Function'] == "update" ) {
     // Check the update process, doesn't matter if we are logged in or not.
+    $noheader = true; // updates don't need statusbars or logmenus
 } elseif ($_REQUEST['Function'] == "public" ) {
     $noheader = true; // public pages don't need statusbars or logmenus
 } elseif (empty($_SESSION['username'])) {

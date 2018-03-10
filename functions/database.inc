@@ -56,7 +56,6 @@ SQL;
                 $build = rtrim($build, ', ').");";
 
                 MyPDO::instance()->query($build);
-
                 // If there is seed available for this table, seed it!
                 if (file_exists($DATADIR.'/DBSeed/'.$table.'.sql')) {
                     $sql_data = file_get_contents($DATADIR.'/DBSeed/'.$table.'.sql');
@@ -64,18 +63,34 @@ SQL;
                 }
             }
         }
-
+        
+        $build = "SELECT TABLE_NAME, COLUMN_NAME FROM information_schema.KEY_COLUMN_USAGE WHERE TABLE_SCHEMA = '".$GLOBALS['DBNAME']."' AND CONSTRAINT_NAME <> 'PRIMARY';";
+        $result = MyPDO::instance()->query($build);
+        $arr = [];
+        foreach ($result as $value) {
+           $arr[] = $value['TABLE_NAME'].":".$value['COLUMN_NAME'];
+        }
+        foreach (SCHEMA::$DB_foreignKeys as $table => $fields) {
+            foreach ($fields as $column => $referto) {
+                $lookfor = $table.":".$column;
+                if (!in_array($lookfor, $arr)) {
+                    $build = "ALTER TABLE ".$table;
+                    $build .= " ADD FOREIGN KEY (".$column.") REFERENCES ".$referto.";";
+                    MyPDO::instance()->query($build);
+                }
+            }
+        }
     }
 
     public function __construct()
     {
-        if (empty($_REQUEST['Function']) || $_REQUEST['Function'] != 'update') {
-            require_once($GLOBALS['BASEDIR'].'/data/database-schema.php');
+        require_once($GLOBALS['BASEDIR'].'/data/database-schema.php');
+        DB::_buildMissingTables();
+        if (!empty($_SESSION['username']) && !empty($_REQUEST['Function']) && $_REQUEST['Function'] != 'update') {
             $upgrade = DB::_getCurrentDBVersion();
-            DB::_buildMissingTables();
             if ($upgrade != SCHEMA::$REQUIED_DB_SCHEMA) {
-	        // If we have to do an update, do it, and then boot the user back to the login page to refresh any session data
-                header("Location: http://".$_SERVER['SERVER_NAME']."/index.php?Function=update&next=public&from=".$upgrade);
+	        // If we have to do an update, do it
+                header("Location: http://".$_SERVER['SERVER_NAME']."/index.php?Function=update&from=".$upgrade."&to=".SCHEMA::$REQUIED_DB_SCHEMA);
             }
         }
 

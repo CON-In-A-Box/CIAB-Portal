@@ -10,6 +10,12 @@ class SCHEMA
   public static $REQUIED_DB_SCHEMA = 2018030200; // Current DB Version - YYYYMMDDvv format (vv=daily counter form 00)
 
   public static $DB_tables = [
+    'BadgeTypes' => [
+        'BadgeTypeID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
+        'EventID' => 'INT UNSIGNED NOT NULL',
+        'Name' => 'VARCHAR(50) NOT NULL',
+        'Cost' => 'DECIMAL(6,2) NOT NULL',
+    ],
     'Configuration' => [
         'Field' => 'VARCHAR(15) NOT NULL PRIMARY KEY',
         'Value' => 'VARCHAR(100) NOT NULL',
@@ -21,9 +27,6 @@ class SCHEMA
         'PositionID' => 'INT UNSIGNED NOT NULL',
         'Note' => 'VARCHAR(100)',
         'YearID' => 'INT UNSIGNED NOT NULL',
-        'FOREIGN KEY (DepartmentID)' => 'REFERENCES Departments (DepartmentID) ON DELETE RESTRICT ON UPDATE CASCADE',
-        'FOREIGN KEY (PositionID)' => 'REFERENCES ConComPositions (PositionID) ON DELETE RESTRICT ON UPDATE CASCADE',
-        'FOREIGN KEY (YearID)' => 'REFERENCES ConventionYear (YearID) ON DELETE RESTRICT ON UPDATE CASCADE',
     ],
     'ConComPositions' => [
         'PositionID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
@@ -37,41 +40,51 @@ class SCHEMA
         'DepartmentID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
         'Name' => 'VARCHAR(50) NOT NULL',
         'ParentDepartmentID' => 'INT UNSIGNED NOT NULL',
-        'FOREIGN KEY (ParentDepartmentID)' => 'REFERENCES Departments (DepartmentID) ON DELETE RESTRICT ON UPDATE CASCADE',
     ],
     'ElegibleVoters' => [
         'VoterRecordID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
         'AccountID' => 'INT UNSIGNED NOT NULL',
         'YearID' => 'INT UNSIGNED NOT NULL',
-        'FOREIGN KEY (YearID)' => 'REFERENCES ConventionYear (YearID) ON DELETE RESTRICT ON UPDATE CASCADE',
     ],
     'EMails' => [
         'EMailAliasID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
         'DepartmentID' => 'INT UNSIGNED NOT NULL',
         'IsAlias' => 'BOOLEAN',
         'EMail' => 'VARCHAR(100) NOT NULL',
-        'FOREIGN KEY (DepartmentID)' => 'REFERENCES Departments (DepartmentID) ON DELETE RESTRICT ON UPDATE CASCADE',
+    ],
+    'Events' => [
+        'EventID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
+        'EventName' => 'VARCHAR(50) NOT NULL',
+        'YearID' => 'INT UNSIGNED NOT NULL',
     ],
     'HourRedemptions' => [
         'ClaimID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
         'AccountID' => 'INT UNSIGNED NOT NULL',
         'PrizeID' => 'INT UNSIGNED NOT NULL',
         'YearID' => 'INT UNSIGNED NOT NULL',
-        'FOREIGN KEY (PrizeID)' => 'REFERENCES VolunteerRewards (PrizeID) ON DELETE RESTRICT ON UPDATE CASCADE',
-        'FOREIGN KEY (YearID)' => 'REFERENCES ConventionYear (YearID) ON DELETE RESTRICT ON UPDATE CASCADE',
     ],
     'MeetingAttendance' => [
         'AttendanceRecordID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
         'AccountID' => 'INT UNSIGNED NOT NULL',
         'MeetingID' => 'INT UNSIGNED NOT NULL',
-        'FOREIGN KEY (MeetingID)' => 'REFERENCES OfficialMeetings (MeetingID) ON DELETE RESTRICT ON UPDATE CASCADE',
     ],
     'OfficialMeetings' => [
         'MeetingID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
         'Name' => 'VARCHAR(50) NOT NULL',
         'Date' => 'DATE NOT NULL',
         'YearID' => 'INT UNSIGNED NOT NULL',
-        'FOREIGN KEY (YearID)' => 'REFERENCES ConventionYear (YearID) ON DELETE RESTRICT ON UPDATE CASCADE',
+    ],
+    'Registrations' => [
+        'RegistrationID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
+        'AccountID' => 'INT UNSIGNED NOT NULL',
+        'EventID' => 'INT UNSIGNED NOT NULL',
+        'RegisteredByID' => 'INT UNSIGNED NOT NULL',
+        'RegistrationDate' => 'DATETIME NOT NULL',
+        'BadgesPickedUp' => 'INT UNSIGNED',
+        'BadgeName' => 'VARCHAR(100)',
+        'BadgeTypeID' => 'INT UNSIGNED NOT NULL',
+        'BadgeDependentOnID' => 'INT UNSIGNED',
+        'EmergencyContact' => 'VARCHAR(300)',
     ],
     'RewardGroup' => [
         'RewardGroupID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
@@ -87,8 +100,6 @@ class SCHEMA
         'EnteredByID' => 'INT UNSIGNED NOT NULL',
         'AuthorizedByID' => 'INT UNSIGNED NOT NULL',
         'YearID' => 'INT UNSIGNED NOT NULL',
-        'FOREIGN KEY (DepartmentID)' => 'REFERENCES Departments (DepartmentID) ON DELETE RESTRICT ON UPDATE CASCADE',
-        'FOREIGN KEY (YearID)' => 'REFERENCES ConventionYear (YearID) ON DELETE RESTRICT ON UPDATE CASCADE',
     ],
     'VolunteerRewards' => [
         'PrizeID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
@@ -97,7 +108,51 @@ class SCHEMA
         'Promo' => 'BOOLEAN',
         'RewardGroupID' => 'INT UNSIGNED',
         'TotalInventory' => 'INT NOT NULL',
-        'FOREIGN KEY (RewardGroupID)' => 'REFERENCES RewardGroup (RewardGroupID) ON DELETE RESTRICT ON UPDATE CASCADE',
+    ],
+  ];
+  
+  public static $DB_foreignKeys = [
+    'BadgeTypes' => [
+        'EventID' => 'Events (EventID) ON DELETE RESTRICT ON UPDATE CASCADE',
+    ],
+    'ConComList' => [
+        'DepartmentID' => 'Departments (DepartmentID) ON DELETE RESTRICT ON UPDATE CASCADE',
+        'PositionID' => 'ConComPositions (PositionID) ON DELETE RESTRICT ON UPDATE CASCADE',
+        'YearID' => 'ConventionYear (YearID) ON DELETE RESTRICT ON UPDATE CASCADE',
+    ],
+    'Departments' => [
+        'ParentDepartmentID' => 'Departments (DepartmentID) ON DELETE RESTRICT ON UPDATE CASCADE',
+    ],
+    'ElegibleVoters' => [
+        'YearID' => 'ConventionYear (YearID) ON DELETE RESTRICT ON UPDATE CASCADE',
+    ],
+    'EMails' => [
+        'DepartmentID' => 'Departments (DepartmentID) ON DELETE RESTRICT ON UPDATE CASCADE',
+    ],
+    'Events' => [
+        'YearID' => 'ConventionYear (YearID) ON DELETE RESTRICT ON UPDATE CASCADE',
+    ],
+    'HourRedemptions' => [
+        'PrizeID' => 'VolunteerRewards (PrizeID) ON DELETE RESTRICT ON UPDATE CASCADE',
+        'YearID' => 'ConventionYear (YearID) ON DELETE RESTRICT ON UPDATE CASCADE',
+    ],
+    'MeetingAttendance' => [
+        'MeetingID' => 'OfficialMeetings (MeetingID) ON DELETE RESTRICT ON UPDATE CASCADE',
+    ],
+    'OfficialMeetings' => [
+        'YearID' => 'ConventionYear (YearID) ON DELETE RESTRICT ON UPDATE CASCADE',
+    ],
+    'Registrations' => [
+        'BadgeDependentOnID' => 'Registrations (RegistrationID) ON DELETE RESTRICT ON UPDATE CASCADE',
+        'BadgeTypeID' => 'BadgeTypes (BadgeTypeID) ON DELETE RESTRICT ON UPDATE CASCADE',
+        'EventID' => 'Events (EventID) ON DELETE RESTRICT ON UPDATE CASCADE',
+    ],
+    'VolunteerHours' => [
+        'DepartmentID' => 'Departments (DepartmentID) ON DELETE RESTRICT ON UPDATE CASCADE',
+        'YearID' => 'ConventionYear (YearID) ON DELETE RESTRICT ON UPDATE CASCADE',
+    ],
+    'VolunteerRewards' => [
+        'RewardGroupID' => 'RewardGroup (RewardGroupID) ON DELETE RESTRICT ON UPDATE CASCADE',
     ],
   ];
 }
