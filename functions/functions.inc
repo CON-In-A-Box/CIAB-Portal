@@ -6,7 +6,7 @@
 
 // Main setup function
 $MODULENAME  = "Member Portal";
-$BUILD       = "153";
+$BUILD       = "154";
 $VERSION     = "1.3 - Captain America, Build: ".$BUILD; // Major.Minor.Revision Format - This is a string, version names allowed
 
 // Discover Self Location
@@ -77,12 +77,16 @@ function _config_from_Database()
 // Load Site Specific info
 if (is_file($SITECONFIG)) {
     require_once($SITECONFIG);
-    // SUPPORT LEGACY UNTIL IN DB
+    // Start the session so we are ready to go no matter what we do!
+    session_start();
 
     // Include the Master Database
     require_once(__DIR__."/database.inc");
     $db = new DB;
     _config_from_Database();
+
+    // Include NeonCRM for DB calls via API
+    require_once(__DIR__."/neon.inc");
 } else {
     // Give a default config file
     echo '
@@ -141,10 +145,3 @@ function search_definedFields($key)
     return false;
 
 }
-
-
-// Start the session so we are ready to go no matter what we do!
-session_start();
-
-// Include NeonCRM for DB calls via API
-require_once(__DIR__."/neon.inc");

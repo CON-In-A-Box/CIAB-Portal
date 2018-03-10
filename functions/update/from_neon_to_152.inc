@@ -74,7 +74,10 @@ function _ConComListBuildSearch($page)
         }
         unset($val);
     } else {
-        print "Could not retrieve ConComList ".__FILE__." : ".$result;
+        print "Could not retrieve ConComList ".__FILE__." : ";
+        print "<pre>\n";
+            print_r($result);
+        print "</pre>\n";
     }
     return $data;
 
@@ -109,11 +112,8 @@ function _build_ConComList()
     $data = _ConComListBuild();
     print '<div id="update_staff" class="w3-container">';
     foreach ($data as $line) {
-        if ($line['Account ID']) {
-            /* Cover for a typo in the data */
-            if ($line['Position'] == 'Specilist') {
-                $id = 3;
-            } elseif ($line['Position'] == 'Director') {
+        if (!empty($line['Account ID'])) {
+            if ($line['Position'] == 'Director') {
                 $id = 1;
             } else {
                 $sql = "SELECT COALESCE(PositionID, 0) as PositionID FROM ConComPositions WHERE Name = '".$line['Position']."';";
