@@ -1,6 +1,7 @@
 <?php
 
-require_once(__DIR__."/../functions/functions.inc");
+namespace concom\tests;
+
 require_once($FUNCTIONDIR."/divisional.inc");
 require_once($FUNCTIONDIR."/unit.inc");
 
@@ -18,13 +19,4 @@ function validate_divisional()
 
 }
 
-
-function run_test()
-{
-    validate_divisional();
-
-}
-
-
-run_test();
-report();
+$module_tests[] = 'concom\tests\validate_divisional';
