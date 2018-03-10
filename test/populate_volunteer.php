@@ -125,7 +125,7 @@ function populate_prizes()
         } else {
             $promo = 0;
             if ($group_count < $total_items / 4 && rand(0, 1)) {
-                $group = $bottom + rand(1, 5);
+                $group = $bottom + rand(1, 4);
                 $group_count++;
             }
         }
@@ -174,3 +174,4 @@ SQL;
 populate_vol();
 populate_prizes();
 populate_redeem();
+print "Complete\n";
