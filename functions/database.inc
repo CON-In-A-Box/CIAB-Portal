@@ -38,6 +38,7 @@ SQL;
     {
         $DATADIR = $GLOBALS['BASEDIR'].'/data';
 
+        // Capture a list of tables already created
         $result = MyPDO::instance()->query("SHOW TABLES");
         $arr = [];
         foreach ($result as $value) {
@@ -45,9 +46,22 @@ SQL;
                 $arr[] = $row;
             }
         }
-
+        // Verify every table we need exists, if not, create.
         foreach (SCHEMA::$DB_tables as $table => $fields) {
-            if (!in_array($table, $arr)) {
+            if (in_array($table, $arr)) {
+                // Table exists
+                // Capture a list of fields already in the table
+                $build = "SELECT <-------> FROM information_schema.COLUMNS";
+                $build .= " WHERE TABLE_SCHEMA = '".$GLOBALS['DBNAME']."' AND CONSTRAINT_NAME <> 'PRIMARY';";
+                $result = MyPDO::instance()->query($build);
+                $arr = [];
+                foreach ($result as $value) {
+                   $arr[] = $value['TABLE_NAME'].":".$value['COLUMN_NAME'];
+                }
+
+                ==##==##==
+
+            } else {
                 // Missing a table, build it!
                 $build = 'CREATE TABLE '.$table.' (';
                 foreach ($fields as $column => $setting) {
@@ -56,6 +70,7 @@ SQL;
                 $build = rtrim($build, ', ').");";
 
                 MyPDO::instance()->query($build);
+
                 // If there is seed available for this table, seed it!
                 if (file_exists($DATADIR.'/DBSeed/'.$table.'.sql')) {
                     $sql_data = file_get_contents($DATADIR.'/DBSeed/'.$table.'.sql');
@@ -63,13 +78,16 @@ SQL;
                 }
             }
         }
-        
-        $build = "SELECT TABLE_NAME, COLUMN_NAME FROM information_schema.KEY_COLUMN_USAGE WHERE TABLE_SCHEMA = '".$GLOBALS['DBNAME']."' AND CONSTRAINT_NAME <> 'PRIMARY';";
+
+        // Capture a list of all Constraints (Foreign Keys)
+        $build = "SELECT TABLE_NAME, COLUMN_NAME FROM information_schema.KEY_COLUMN_USAGE";
+        $build .= " WHERE TABLE_SCHEMA = '".$GLOBALS['DBNAME']."' AND CONSTRAINT_NAME <> 'PRIMARY';";
         $result = MyPDO::instance()->query($build);
         $arr = [];
         foreach ($result as $value) {
            $arr[] = $value['TABLE_NAME'].":".$value['COLUMN_NAME'];
         }
+        // Verify every foreign key we need exists, if not, create.
         foreach (SCHEMA::$DB_foreignKeys as $table => $fields) {
             foreach ($fields as $column => $referto) {
                 $lookfor = $table.":".$column;
