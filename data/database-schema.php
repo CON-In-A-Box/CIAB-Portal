@@ -34,14 +34,9 @@ class SCHEMA
         'EventID' => 'INT UNSIGNED NOT NULL',
         'Note' => 'VARCHAR(100)',
         'PositionID' => 'INT UNSIGNED NOT NULL',
-        'YearID' => 'INT UNSIGNED NOT NULL', // To be removed
     ],
     'ConComPositions' => [
         'PositionID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
-        'Name' => 'VARCHAR(50) NOT NULL',
-    ],
-    'ConventionYear' => [ // To be removed
-        'YearID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
         'Name' => 'VARCHAR(50) NOT NULL',
     ],
     'DBPullPage' => [ // Bandaid table to help Neon - To be removed post-neon
@@ -57,7 +52,6 @@ class SCHEMA
         'VoterRecordID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
         'AccountID' => 'INT UNSIGNED NOT NULL',
         'AnnualCycleID' => 'INT UNSIGNED NOT NULL',
-        'YearID' => 'INT UNSIGNED NOT NULL', // To be removed
     ],
     'EMails' => [
         'EMailAliasID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
@@ -71,14 +65,12 @@ class SCHEMA
         'DateFrom' => 'DATE NOT NULL',
         'DateTo' => 'DATE NOT NULL',
         'EventName' => 'VARCHAR(50) NOT NULL',
-        'YearID' => 'INT UNSIGNED NOT NULL', // To be removed
     ],
     'HourRedemptions' => [
         'ClaimID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
         'AccountID' => 'INT UNSIGNED NOT NULL',
         'EventID' => 'INT UNSIGNED NOT NULL',
         'PrizeID' => 'INT UNSIGNED NOT NULL',
-        'YearID' => 'INT UNSIGNED NOT NULL', // To be removed
     ],
     'MeetingAttendance' => [
         'AttendanceRecordID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
@@ -90,7 +82,6 @@ class SCHEMA
         'Date' => 'DATE NOT NULL',
         'EventID' => 'INT UNSIGNED NOT NULL',
         'Name' => 'VARCHAR(50) NOT NULL',
-        'YearID' => 'INT UNSIGNED NOT NULL', // To be removed
     ],
     'Registrations' => [
         'RegistrationID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
@@ -118,7 +109,6 @@ class SCHEMA
         'EnteredByID' => 'INT UNSIGNED NOT NULL',
         'EventID' => 'INT UNSIGNED NOT NULL',
         'TimeModifier' => 'FLOAT(2,1) NOT NULL',
-        'YearID' => 'INT UNSIGNED NOT NULL', // To be removed
     ],
     'VolunteerRewards' => [
         'PrizeID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
@@ -138,7 +128,6 @@ class SCHEMA
         'DepartmentID' => 'Departments (DepartmentID) ON DELETE RESTRICT ON UPDATE CASCADE',
         'EventID' => 'Events (EventID) ON DELETE RESTRICT ON UPDATE CASCADE',
         'PositionID' => 'ConComPositions (PositionID) ON DELETE RESTRICT ON UPDATE CASCADE',
-        'YearID' => 'ConventionYear (YearID) ON DELETE RESTRICT ON UPDATE CASCADE', // To be removed
     ],
     'DBPullPage' => [
         'RegistrationID' => 'Registrations (RegistrationID) ON DELETE RESTRICT ON UPDATE CASCADE',
@@ -147,27 +136,23 @@ class SCHEMA
         'ParentDepartmentID' => 'Departments (DepartmentID) ON DELETE RESTRICT ON UPDATE CASCADE',
     ],
     'ElegibleVoters' => [
-        'AnnualCycleID' => 'Events (EventID) ON DELETE RESTRICT ON UPDATE CASCADE',
-        'YearID' => 'ConventionYear (YearID) ON DELETE RESTRICT ON UPDATE CASCADE', // To be removed
+        'AnnualCycleID' => 'AnnualCycles (AnnualCycleID) ON DELETE RESTRICT ON UPDATE CASCADE',
     ],
     'EMails' => [
         'DepartmentID' => 'Departments (DepartmentID) ON DELETE RESTRICT ON UPDATE CASCADE',
     ],
     'Events' => [
-        'AnnualCycleID' => 'Events (EventID) ON DELETE RESTRICT ON UPDATE CASCADE',
-        'YearID' => 'ConventionYear (YearID) ON DELETE RESTRICT ON UPDATE CASCADE', // To be removed
+        'AnnualCycleID' => 'AnnualCycles (AnnualCycleID) ON DELETE RESTRICT ON UPDATE CASCADE',
     ],
     'HourRedemptions' => [
         'EventID' => 'Events (EventID) ON DELETE RESTRICT ON UPDATE CASCADE',
         'PrizeID' => 'VolunteerRewards (PrizeID) ON DELETE RESTRICT ON UPDATE CASCADE',
-        'YearID' => 'ConventionYear (YearID) ON DELETE RESTRICT ON UPDATE CASCADE', // To be removed
     ],
     'MeetingAttendance' => [
         'MeetingID' => 'OfficialMeetings (MeetingID) ON DELETE RESTRICT ON UPDATE CASCADE',
     ],
     'OfficialMeetings' => [
         'EventID' => 'Events (EventID) ON DELETE RESTRICT ON UPDATE CASCADE',
-        'YearID' => 'ConventionYear (YearID) ON DELETE RESTRICT ON UPDATE CASCADE', // To be removed
     ],
     'Registrations' => [
         'BadgeDependentOnID' => 'Registrations (RegistrationID) ON DELETE RESTRICT ON UPDATE CASCADE',
@@ -177,7 +162,6 @@ class SCHEMA
     'VolunteerHours' => [
         'DepartmentID' => 'Departments (DepartmentID) ON DELETE RESTRICT ON UPDATE CASCADE',
         'EventID' => 'Events (EventID) ON DELETE RESTRICT ON UPDATE CASCADE',
-        'YearID' => 'ConventionYear (YearID) ON DELETE RESTRICT ON UPDATE CASCADE', // To be removed
     ],
     'VolunteerRewards' => [
         'RewardGroupID' => 'RewardGroup (RewardGroupID) ON DELETE RESTRICT ON UPDATE CASCADE',

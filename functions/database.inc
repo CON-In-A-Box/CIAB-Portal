@@ -51,16 +51,22 @@ SQL;
             if (in_array($table, $arr)) {
                 // Table exists
                 // Capture a list of fields already in the table
-                $build = "SELECT <-------> FROM information_schema.COLUMNS";
-                $build .= " WHERE TABLE_SCHEMA = '".$GLOBALS['DBNAME']."' AND CONSTRAINT_NAME <> 'PRIMARY';";
+                $build = "SHOW COLUMNS FROM $table";
                 $result = MyPDO::instance()->query($build);
-                $arr = [];
+                $f_arr = [];
                 foreach ($result as $value) {
-                   $arr[] = $value['TABLE_NAME'].":".$value['COLUMN_NAME'];
+                   $f_arr[] = $value['Field'];
                 }
 
-                ==##==##==
-
+                // Check the list of fields to make sure we are set
+                foreach ($fields as $column => $settings) {
+                    if (! in_array($column, $f_arr)) {
+                        // Missing field, alter-add it
+                        $build = "ALTER TABLE ".$table;
+                        $build .= " ADD ".$column." ".$settings;
+                        MyPDO::instance()->query($build);
+                    }
+                }
             } else {
                 // Missing a table, build it!
                 $build = 'CREATE TABLE '.$table.' (';
@@ -68,7 +74,6 @@ SQL;
                     $build .= $column.' '.$setting.', ';
                 }
                 $build = rtrim($build, ', ').");";
-
                 MyPDO::instance()->query($build);
 
                 // If there is seed available for this table, seed it!
