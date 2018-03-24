@@ -32,47 +32,6 @@ function _loadEventCustomFields()
 }
 
 
-function _lookup_events($page = 1, $output = null, $all = true)
-{
-    global $Neon;
-
-    $search = [
-    'method' => 'event/listEvents',
-    'columns' => [
-    'standardFields' => ['Event Name', 'Event ID', 'Event End Date'],
-       ],
-    'page' => [
-    'currentPage' => $page,
-    'pageSize' => 200,
-      ],
-    ];
-    $results = $Neon->search($search);
-
-    if (isset($results['operationResult']) && $results['operationResult'] == 'SUCCESS') {
-        if ($output === null) {
-            $output = ['code' => null, 'events' => array()];
-        }
-        foreach ($results['searchResults'] as $val) {
-            array_push($output['events'], $val);
-        }
-        if ($all && $results['page']['totalPage'] > $page) {
-            return _lookup_events($page + 1, $output);
-        } else {
-            return $output;
-        }
-    }
-    return array('code' => '404 Not Found', 'users' => array());
-
-}
-
-
-function lookup_events($page = 1, $all = true)
-{
-    return _lookup_events($page, null, $all);
-
-}
-
-
 function _lookup_events_attendees($event, $page = 1, $output = null, $all = true)
 {
     global $Neon;
@@ -119,106 +78,6 @@ function _lookup_events_attendees($event, $page = 1, $output = null, $all = true
 function lookup_events_attendees($event, $page = 1, $all = true)
 {
     return _lookup_events_attendees($event, $page, null, $all);
-
-}
-
-
-function _get_yearID($eventdate)
-{
-    global $db;
-
-    $year = $eventdate->format("Y");
-    $sql = "SELECT YearID FROM ConventionYear WHERE Name ='$year';";
-    $result = $db->run($sql);
-    $value = $result->fetch();
-    if ($value) {
-        $_currentYear = $value['YearID'];
-        return $_currentYear;
-    }
-    return null;
-
-}
-
-
-function _Neon_import_badges($event)
-{
-    global $Neon, $db;
-
-    $search = [
-    'method' => 'event/listEventTickets',
-    'parameters' => [
-    'eventId' => $event,
-    'page.currentPage' => 1,
-    'page.pageSize' => 200,
-      ],
-    ];
-    $results = $Neon->go($search);
-
-    $tickets = [];
-
-    if (isset($results['operationResult']) && $results['operationResult'] == 'SUCCESS') {
-        foreach ($results['eventTickets']['eventTicket'] as $ticket) {
-            $id = $ticket['ticketId'];
-            $name = $ticket['ticketName'];
-            $cost = $ticket['fee'];
-            $sql = "SELECT BadgeTypeID FROM `BadgeTypes` WHERE BadgeTypeID = $id;";
-            $result = $db->run($sql);
-            $values = $result->fetch();
-            if ($values === false) {
-                $sql = "INSERT INTO `BadgeTypes` (BadgeTypeID, EventID, Name, Cost) VALUES ($id, $event, '$name', $cost);";
-                $db->run($sql);
-            }
-        }
-    }
-
-}
-
-
-function _Neon_import_events()
-{
-    global $db;
-
-    $events = lookup_events();
-    if ($events) {
-        // Drop Events we do not care about.
-        foreach ($events['events'] as $key => $evt) {
-            if (strpos($evt['Event Name'], 'CONvergence') === false) {
-                unset($events['events'][$key]);
-                continue;
-            }
-            if (strpos($evt['Event Name'], 'Dealers') !== false) {
-                unset($events['events'][$key]);
-                continue;
-            }
-            if (strpos($evt['Event Name'], 'Example') !== false) {
-                unset($events['events'][$key]);
-                continue;
-            }
-
-            $name = $evt['Event Name'];
-            $eventdate = new DateTime($evt['Event End Date']);
-            $year = _get_yearID($eventdate);
-            $evt['YearID'] = $year;
-            $id = $evt['Event ID'];
-            $sql = "SELECT EventID FROM `Events` WHERE EventID = $id;";
-            $result = $db->run($sql);
-            $values = $result->fetch();
-            if ($values === false) {
-                $sql = "INSERT INTO `Events` (EventID, EventName, YearID) VALUES ($id, '$name', $year);";
-                $db->run($sql);
-                $sql = "SELECT EventID FROM `Events` ORDER BY EventID DESC LIMIT 1;";
-                $result = $db->run($sql);
-                $value = $result->fetch();
-                $eventID = $value['RewardGroupID'];
-            } else {
-                $eventID = $values['EventID'];
-            }
-            _Neon_import_badges($eventID);
-            $events['events'][$key]['MySQLEventID'] = $eventID;
-        }
-    }
-
-    return $events['events'];
 
 }
 
@@ -321,10 +180,74 @@ function _Neon_import_people($event)
 }
 
 
+function lookup_events($page = 1, $output = null, $all = true)
+{
+    global $Neon;
+
+    $search = [
+    'method' => 'event/listEvents',
+    'columns' => [
+    'standardFields' => ['Event Name', 'Event ID', 'Event End Date', 'Event Start Date'],
+       ],
+    'page' => [
+    'currentPage' => $page,
+    'pageSize' => 200,
+      ],
+    ];
+    $results = $Neon->search($search);
+
+    if (isset($results['operationResult']) && $results['operationResult'] == 'SUCCESS') {
+        if ($output === null) {
+            $output = ['code' => null, 'events' => array()];
+        }
+        foreach ($results['searchResults'] as $val) {
+            array_push($output['events'], $val);
+        }
+        if ($all && $results['page']['totalPage'] > $page) {
+            return lookup_events($page + 1, $output);
+        } else {
+            return $output;
+        }
+    }
+    return array('code' => '404 Not Found', 'users' => array());
+
+}
+
+
+function _Neon_events()
+{
+    global $db;
+
+    $events = lookup_events();
+    if ($events) {
+        // Drop Events we do not care about.
+        foreach ($events['events'] as $key => $evt) {
+            if (strpos($evt['Event Name'], 'CONvergence') === false) {
+                unset($events['events'][$key]);
+                continue;
+            }
+            if (strpos($evt['Event Name'], 'Dealers') !== false) {
+                unset($events['events'][$key]);
+                continue;
+            }
+            if (strpos($evt['Event Name'], 'Example') !== false) {
+                unset($events['events'][$key]);
+                continue;
+            }
+
+            $events['events'][$key]['MySQLEventID'] = $evt['Event ID'];
+        }
+    }
+
+    return $events['events'];
+
+}
+
+
 function do_Neon_import()
 {
     _loadEventCustomFields();
-    $events = _Neon_import_events();
+    $events = _Neon_events();
     $event = array_slice($events, -1)[0];
     _Neon_import_people($event);
 

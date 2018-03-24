@@ -9,12 +9,12 @@ require_once(__DIR__."/functions.inc");
 require_once(__DIR__."/users.inc");
 
 
-function get_volunteer_hour_summary($id = null, $year = null)
+function get_volunteer_hour_summary($id = null, $event = null)
 {
     global $db;
 
-    if ($year === null) {
-        $year = current_yearID();
+    if ($event === null) {
+        $event = current_eventID();
     }
 
     if ($id !== null) {
@@ -25,7 +25,7 @@ function get_volunteer_hour_summary($id = null, $year = null)
                      (SELECT Name FROM Departments
                         WHERE DepartmentID = v.DepartmentID) AS DepartmentName
               FROM VolunteerHours v
-              WHERE v.YearID = $year AND v.AccountID = $id
+              WHERE v.EventID = $event AND v.AccountID = $id
               GROUP BY DepartmentID ORDER BY DepartmentID;
 SQL;
     } else {
@@ -36,7 +36,7 @@ SQL;
                      (SELECT Name FROM Departments
                         WHERE DepartmentID = v.DepartmentID) AS DepartmentName
               FROM VolunteerHours v
-              WHERE v.YearID = $year
+              WHERE v.EventID = $event
               GROUP BY DepartmentID ORDER BY DepartmentID;
 SQL;
     }
@@ -60,12 +60,12 @@ SQL;
 }
 
 
-function get_volunteer_year_summery($year = null)
+function get_volunteer_year_summery($event = null)
 {
     global $db;
 
-    if ($year === null) {
-        $year = current_yearID();
+    if ($event === null) {
+        $event = current_eventID();
     }
 
     $sql = <<<SQL
@@ -85,16 +85,16 @@ function get_volunteer_year_summery($year = null)
                 FROM
                     `HourRedemptions` as h
                 WHERE
-                    YearID = $year
+                    EventID = $event
                 GROUP BY
-                    YearID
+                    EventID
             ) as TotalHoursSpent
         FROM
             VolunteerHours
         WHERE
-            YearID = $year
+            EventID = $event
         GROUP BY
-            YearID;
+            EventID;
 SQL;
 
     $result = $db->run($sql);
@@ -121,12 +121,12 @@ SQL;
 }
 
 
-function get_volunteer_hours_for_user($id, $year = null)
+function get_volunteer_hours_for_user($id, $event = null)
 {
     global $db;
 
-    if ($year === null) {
-        $year = current_yearID();
+    if ($event === null) {
+        $event = current_eventID();
     }
     $user = lookup_user_by_id($id);
     $sql = <<<SQL
@@ -135,7 +135,7 @@ function get_volunteer_hours_for_user($id, $year = null)
                 WHERE DepartmentID = v.DepartmentID) as DepartmentName
         FROM VolunteerHours v, Departments d
         WHERE v.AccountId = $id AND v.DepartmentID = d.DepartmentID AND
-              v.YearID = $year;
+              v.EventID = $event;
 SQL;
 
     $data = array();
@@ -169,13 +169,13 @@ function record_volunteer_hours(
     $department,
     $enterer,
     $authorized,
-    $year = null
+    $event = null
 ) {
     global $db;
 
-    if ($year === null) {
-        /* Convention year... assume most recent one */
-        $year = current_yearID();
+    if ($event === null) {
+        /* Convention ... assume most recent one */
+        $event = current_eventID();
     }
 
     /* Get the department id from name if it is a name */
@@ -195,9 +195,9 @@ function record_volunteer_hours(
     $sql = <<<SQL
         INSERT INTO VolunteerHours
             (AccountID, ActualHours, EndDateTime, TimeModifier,
-             DepartmentID, EnteredByID, AuthorizedByID, YearID)
+             DepartmentID, EnteredByID, AuthorizedByID, EventID)
         VALUES ($id, $hours, '$end', $modifier, $departmentID, $enterer,
-                $authorized, $year);
+                $authorized, $event);
 SQL;
 
     $result = $db->run($sql);
@@ -218,13 +218,13 @@ function update_volunteer_hours(
     $department = null,
     $enterer = null,
     $authorized = null,
-    $year = null
+    $event = null
 ) {
     global $db;
 
     if ($user === null && $hours === null && $end === null &&
         $modifier === null && $department === null && $enterer === null &&
-        $authorized === null && $year === null) {
+        $authorized === null && $event === null) {
         return null;
     }
 
@@ -269,8 +269,8 @@ function update_volunteer_hours(
     if ($authorized !== null) {
         $t[] = " AuthorizedByID = ".$authorized;
     }
-    if ($year !== null) {
-        $t[] = " YearID = ".$year;
+    if ($event !== null) {
+        $t[] = " EventID = ".$event;
     }
     $sql .= implode(',', $t);
     $sql .= " WHERE HourEntryID = ";
@@ -397,20 +397,20 @@ SQL;
 }
 
 
-function volunteer_prizes_for_user($id, $year = null)
+function volunteer_prizes_for_user($id, $event = null)
 {
     global $db;
 
     $data = volunteer_prizes();
 
-    if ($year === null) {
-        $year = current_yearID();
+    if ($event === null) {
+        $event = current_eventID();
     }
 
     $sql = <<<SQL
             SELECT h.PrizeID, SUM(Value) as Value, COUNT(Value) AS Claimed
             FROM HourRedemptions AS h, VolunteerRewards AS r
-            WHERE h.YearID = $year  AND h.AccountID = $id AND
+            WHERE h.EventID = $event AND h.AccountID = $id AND
                   r.PrizeID = h.PrizeID
             GROUP BY h.PrizeID;
 SQL;
@@ -427,22 +427,22 @@ SQL;
 }
 
 
-function award_prizes($id, $prizes, $year = null)
+function award_prizes($id, $prizes, $event = null)
 {
     global $db;
 
-    if ($year === null) {
-        $year = current_yearID();
+    if ($event === null) {
+        $event = current_eventID();
     }
 
     $sql = <<<SQL
         INSERT INTO HourRedemptions
-            (AccountID, PrizeID, YearID)
+            (AccountID, PrizeID, EventID)
             VALUES
 SQL;
     $stmt = [];
     foreach ($prizes as $prize) {
-        $stmt[] = " ($id, $prize, $year)";
+        $stmt[] = " ($id, $prize, $event)";
     }
     $sql .= implode(',', $stmt);
     $sql .= ";";

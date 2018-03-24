@@ -76,7 +76,7 @@ function _ConComListBuildSearch($page)
     } else {
         print "Could not retrieve ConComList ".__FILE__." : ";
         print "<pre>\n";
-            print_r($result);
+        print_r($result);
         print "</pre>\n";
     }
     return $data;
@@ -107,7 +107,7 @@ function _build_ConComList()
 {
     global $db;
 
-    $year = current_yearID();
+    $event = current_eventID();
 
     $data = _ConComListBuild();
     print '<div id="update_staff" class="w3-container">';
@@ -147,9 +147,9 @@ function _build_ConComList()
             }
 
             if ($line['Note']) {
-                $sql = "INSERT INTO ConComList (AccountID, DepartmentID, PositionID, YearID, Note) VALUES (".$line['Account ID'].", ".$did.", ".$id.", $year, '".$line['Note']."');";
+                $sql = "INSERT INTO ConComList (AccountID, DepartmentID, PositionID, EventID, Note) VALUES (".$line['Account ID'].", ".$did.", ".$id.", $event, '".$line['Note']."');";
             } else {
-                $sql = "INSERT INTO ConComList (AccountID, DepartmentID, PositionID, YearID) VALUES (".$line['Account ID'].", ".$did.", ".$id.", $year);";
+                $sql = "INSERT INTO ConComList (AccountID, DepartmentID, PositionID, EventID) VALUES (".$line['Account ID'].", ".$did.", ".$id.", $event);";
             }
             $db->run($sql);
             print '<span style="color:green">Imported '.$line['First Name'].' '.$line['Last Name'].'('.$line['Account ID'].') as '.$line['Department'].' '.$line['Position'].' from Neon.</span><br>';
@@ -160,8 +160,146 @@ function _build_ConComList()
 }
 
 
+function lookup_events($page = 1, $output = null, $all = true)
+{
+    global $Neon;
+
+    $search = [
+    'method' => 'event/listEvents',
+    'columns' => [
+    'standardFields' => ['Event Name', 'Event ID', 'Event End Date', 'Event Start Date'],
+       ],
+    'page' => [
+    'currentPage' => $page,
+    'pageSize' => 200,
+      ],
+    ];
+    $results = $Neon->search($search);
+
+    if (isset($results['operationResult']) && $results['operationResult'] == 'SUCCESS') {
+        if ($output === null) {
+            $output = ['code' => null, 'events' => array()];
+        }
+        foreach ($results['searchResults'] as $val) {
+            array_push($output['events'], $val);
+        }
+        if ($all && $results['page']['totalPage'] > $page) {
+            return lookup_events($page + 1, $output);
+        } else {
+            return $output;
+        }
+    }
+    return array('code' => '404 Not Found', 'users' => array());
+
+}
+
+
+function _Neon_import_badges($event)
+{
+    global $Neon, $db;
+
+    $search = [
+    'method' => 'event/listEventTickets',
+    'parameters' => [
+    'eventId' => $event,
+    'page.currentPage' => 1,
+    'page.pageSize' => 200,
+      ],
+    ];
+    $results = $Neon->go($search);
+
+    $tickets = [];
+
+    if (isset($results['operationResult']) && $results['operationResult'] == 'SUCCESS') {
+        foreach ($results['eventTickets']['eventTicket'] as $ticket) {
+            $id = $ticket['ticketId'];
+            $name = $ticket['ticketName'];
+            $cost = $ticket['fee'];
+            $sql = "SELECT BadgeTypeID FROM `BadgeTypes` WHERE BadgeTypeID = $id;";
+            $result = $db->run($sql);
+            $values = $result->fetch();
+            if ($values === false) {
+                $sql = "INSERT INTO `BadgeTypes` (BadgeTypeID, EventID, Name, Cost, AvailableFrom, AvailableTo) VALUES ($id, $event, '$name', $cost, '0000-00-00', '0000-00-00');";
+                $db->run($sql);
+            }
+        }
+    }
+
+}
+
+
+function _get_cycleID($eventdate)
+{
+    global $db;
+
+    $year = $eventdate->format("Y-m-d");
+    $sql = "SELECT AnnualCycleID FROM AnnualCycles WHERE DateTo > '$year';";
+    $result = $db->run($sql);
+    $value = $result->fetch();
+    if ($value) {
+        $_currentYear = $value['AnnualCycleID'];
+        return $_currentYear;
+    }
+    return null;
+
+}
+
+
+function _Neon_import_events()
+{
+    global $db;
+
+    $events = lookup_events(1, null, true);
+    if ($events) {
+        // Drop Events we do not care about.
+        foreach ($events['events'] as $key => $evt) {
+            if (strpos($evt['Event Name'], 'CONvergence') === false) {
+                unset($events['events'][$key]);
+                continue;
+            }
+            if (strpos($evt['Event Name'], 'Dealers') !== false) {
+                unset($events['events'][$key]);
+                continue;
+            }
+            if (strpos($evt['Event Name'], 'Example') !== false) {
+                unset($events['events'][$key]);
+                continue;
+            }
+
+            $name = $evt['Event Name'];
+            $eventenddate = new DateTime($evt['Event End Date']);
+            $eventstartdate = new DateTime($evt['Event Start Date']);
+            $cycle = _get_cycleID($eventenddate);
+            $from = $eventstartdate->format("Y-m-d");
+            $to = $eventenddate->format("Y-m-d");
+            $evt['AnnualCycleID'] = $cycle;
+            $id = $evt['Event ID'];
+            $sql = "SELECT EventID FROM `Events` WHERE EventID = $id;";
+            $result = $db->run($sql);
+            $values = $result->fetch();
+            if ($values === false) {
+                $sql = "INSERT INTO `Events` (EventID, EventName, AnnualCycleID, DateFrom, DateTo) VALUES ($id, '$name', $cycle, '$from', '$to');";
+                $db->run($sql);
+                $sql = "SELECT EventID FROM `Events` ORDER BY EventID DESC LIMIT 1;";
+                $result = $db->run($sql);
+                $value = $result->fetch();
+                $eventID = $value['EventID'];
+            } else {
+                $eventID = $values['EventID'];
+            }
+            _Neon_import_badges($eventID);
+            $events['events'][$key]['MySQLEventID'] = $eventID;
+        }
+    }
+
+    return $events['events'];
+
+}
+
+
 function from_neon_to_152()
 {
+    _Neon_import_events();
     _build_ConComList();
 
 }

@@ -135,60 +135,104 @@ SQL;
 }
 
 
-$_currentYear = null;
+$_currentCycle = null;
+$_currentEvent = null;
 
 
-function current_yearID()
+function current_cycleID()
 {
-    global $_currentYear, $db, $_SESSION;
+    global $_currentCycle, $db, $_SESSION;
 
-    if ($_currentYear == null) {
+    if ($_currentCycle == null) {
         /* Place 1 - Look for it in the session */
 
-        if (isset($_SESSION['CurrentYear'])) {
-            $sql = "SELECT YearID FROM ConventionYear WHERE Name = '".$_SESSION['CurrentYear']."';";
-            $result = $db->run($sql);
-            $value = $result->fetch();
-            if ($value) {
-                $_currentYear = $value['YearID'];
-                return $_currentYear;
-            }
+        if (isset($_SESSION['CurrentCycle'])) {
+            return $_SESSION['CurrentCycle'];
         }
 
         /* Place 2 - try to get it from the database */
 
-        $sql = "SELECT Value FROM Configuration WHERE Field='CurrentYearID';";
+        $sql = "SELECT Value FROM Configuration WHERE Field='CurrentCycleID';";
         $result = $db->run($sql);
         $value = $result->fetch();
         if ($value) {
-            $_currentYear = $value['CurrentYearID'];
-            return $_currentYear;
+            $_currentCycle = $value['CurrentCycleID'];
+            return $_currentCycle;
         }
 
         /* Place 3 - current calander year */
 
-        $year = date("Y");
-        $sql = "SELECT YearID FROM ConventionYear WHERE Name ='$year';";
+        $year = date("Y-m-d");
+        $sql = "SELECT AnnualCycleID FROM AnnualCycles WHERE DateTo > '$year';";
         $result = $db->run($sql);
         $value = $result->fetch();
         if ($value) {
-            $_currentYear = $value['YearID'];
-            return $_currentYear;
+            $_currentCycle = $value['AnnualCycleID'];
+            return $_currentCycle;
         }
 
         /* Fallback - Last year in database*/
 
-        $sql = "SELECT TOP 1 YearID FROM ConventionYear ORDER BY YearID DESC;";
+        $sql = "SELECT AnnualCycleID FROM AnnualCycles ORDER BY AnnualCycleID DESC LIMIT 1;";
         $result = $db->run($sql);
         $value = $result->fetch();
         if ($value) {
-            $_currentYear = $value['YearID'];
-            return $_currentYear;
+            $_currentCycle = $value['AnnualCycleID'];
+            return $_currentCycle;
         }
 
-        die("Could not get Current Convention Year");
+        die("Could not get Current Convention Cycle");
     }
-    return $_currentYear;
+    return $_currentCycle;
+
+}
+
+
+function current_eventID()
+{
+    global $_currentEvent, $db, $_SESSION;
+
+    if ($_currentEvent == null) {
+        /* Place 1 - Look for it in the session */
+
+        if (isset($_SESSION['CurrentEvent'])) {
+            return $_SESSION['CurrentEvent'];
+        }
+
+        /* Place 2 - try to get it from the database */
+
+        $sql = "SELECT Value FROM Configuration WHERE Field='CurrentEventID';";
+        $result = $db->run($sql);
+        $value = $result->fetch();
+        if ($value) {
+            $_currentEvent = $value['CurrentEventID'];
+            return $_currentEvent;
+        }
+
+        /* Place 3 - current calander year */
+
+        $year = date("Y-m-d");
+        $sql = "SELECT EventID FROM Events WHERE DateTo > '$year';";
+        $result = $db->run($sql);
+        $value = $result->fetch();
+        if ($value) {
+            $_currentEvent = $value['EventID'];
+            return $_currentEvent;
+        }
+
+        /* Fallback - Last year in database*/
+
+        $sql = "SELECT EventID FROM Events ORDER BY EventID DESC LIMIT 1;";
+        $result = $db->run($sql);
+        $value = $result->fetch();
+        if ($value) {
+            $_currentEvent = $value['AnnualCycleID'];
+            return $_currentEvent;
+        }
+
+        die("Could not get Current Convention Event");
+    }
+    return $_currentEvent;
 
 }
 
