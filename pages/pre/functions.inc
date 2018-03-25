@@ -25,6 +25,7 @@ if (!empty($_REQUEST)) {
 
     $arguments = [
     'lookupId'   => FILTER_SANITIZE_SPECIAL_CHARS,
+    'useBadgeName'  => FILTER_SANITIZE_NUMBER_INT,
     ];
 
     $updateData = filter_input_array(INPUT_GET, $arguments);
@@ -32,7 +33,8 @@ if (!empty($_REQUEST)) {
     if (!empty($updateData['lookupId'])) {
         require_once($FUNCTIONDIR."/users.inc");
 
-        $data = lookup_users_by_key($updateData['lookupId'], false);
+        $badge = ($updateData['useBadgeName'] == 1);
+        $data = lookup_users_by_key($updateData['lookupId'], false, $badge);
 
         if (!$data['code']) {
             if (count($data['users']) == 0) {
