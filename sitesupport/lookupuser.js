@@ -17,39 +17,62 @@ var userLookup = (function(options) {
           lookupTarget: 'index.php?Function=functions&lookupId='
         }, options);
 
-    function _gotoTarget(origin, uid) {
-      var newTarget = '';
-      var i = origin.indexOf(settings.urlTag + '=');
-      if (uid) {
-        if (i != -1) {
-          var regexp = new RegExp('(' + settings.urlTag + '=).*?($)');
-          newTarget = origin.replace(regexp, '$1' + uid);
-        } else {
-          newTarget = origin + '&' + settings.urlTag + '=' + uid;
-        }
-      } else {
-        if (i != -1) {
-          i--;
-          newTarget = origin.substring(0, i);
-        }
-      }
-      window.location = newTarget;
-    }
-
     function _lookupSuccess(target, response) {
-      var uid = response[0].Id;
-      document.getElementById('userLookup_message').innerHTML =
-        escapeHtml('Found ' +
-        response[0]['First Name'] + ' ' +
-        response[0]['Last Name']);
+      var uid;
+      if (response.length == 1) {
+        uid = response[0].Id;
+        document.getElementById('userLookup_message').innerHTML =
+          escapeHtml('Found ' +
+          response[0]['First Name'] + ' ' +
+          response[0]['Last Name']);
+      } else if (response.length > 1) {
+        var e = document.getElementById('userLookup_dropdown');
+        while (e.hasChildNodes()) {
+          e.removeChild(e.firstChild);
+        }
+        response.forEach(function(item) {
+          var div = document.createElement('DIV');
+          div.classList.add('w3-bar-item');
+          div.classList.add('w3-button');
+          if (target) {
+            div.setAttribute('onclick',
+              'userLookup.gotoTarget("' + target.href + '", ' + item.Id + ')');
+          }
+          div.innerHTML = '<span>' + item.Id + ' : ' +
+            item['First Name'] + ' ' + item['Last Name'] +
+            ' (' + item.Email + ')</span>';
+          e.appendChild(div);
+        });
+        e.classList.remove('w3-hide');
+        return;
+      }
       if (target) {
-        _gotoTarget(target.href, uid);
+        userLookup.gotoTarget(target.href, uid);
       }
     }
 
     return {
         options: function(opts) {
           settings = Object.assign(settings, opts);
+        },
+
+        gotoTarget: function(origin, uid) {
+          var newTarget = '';
+          var i = origin.indexOf(settings.urlTag + '=');
+          if (uid) {
+            if (i != -1) {
+              var regexp = new RegExp('(' + settings.urlTag + '=).*?($)');
+              newTarget = origin.replace(regexp, '$1' + uid);
+            } else {
+              newTarget = origin + '&' + settings.urlTag + '=' + uid;
+            }
+          } else {
+            if (i != -1) {
+              i--;
+              newTarget = origin.substring(0, i);
+            }
+          }
+          window.location = newTarget;
         },
 
         markFailure: function() {
@@ -104,9 +127,21 @@ var userLookup = (function(options) {
             xhttp.send();
           } else {
             if (target) {
-              _gotoTarget(target.href, null);
+              userLookup.gotoTarget(target.href, null);
             }
           }
+        },
+
+        keydown: function(keyCode, obj, target) {
+          var e = document.getElementById('userLookup_dropdown');
+          if (!e.classList.contains('w3-hide')) {
+            e.classList.add('w3-hide');
+          }
+          if (keyCode == 13) {
+            userLookup.lookupId(obj, target);
+            return false;
+          }
+          return true;
         },
 
         set: function(value) {
@@ -152,6 +187,8 @@ var userLookup = (function(options) {
           input.name = settings.memberName;
           input.setAttribute('onchange',
             'userLookup.lookupId(this, location)');
+          input.setAttribute('onkeydown',
+            'return userLookup.keydown(event.keyCode, this, location)');
           input.placeholder = '(badge #, email, Name)';
           input.required = true;
           if (dom.getAttribute('data-user')) {
@@ -175,6 +212,12 @@ var userLookup = (function(options) {
           div3.appendChild(span);
           span.classList.add('w3-bar-item');
           span.id = 'userLookup_message';
+          var drop = document.createElement('DIV');
+          div3.appendChild(drop);
+          drop.classList.add('w3-hide');
+          drop.classList.add('w3-black');
+          drop.classList.add('w3-bar-block');
+          drop.id = 'userLookup_dropdown';
         }
 
       };
