@@ -38,6 +38,7 @@ SQL;
     {
         $DATADIR = $GLOBALS['BASEDIR'].'/data';
 
+        // Capture a list of tables already created
         $result = MyPDO::instance()->query("SHOW TABLES");
         $arr = [];
         foreach ($result as $value) {
@@ -45,17 +46,36 @@ SQL;
                 $arr[] = $row;
             }
         }
-
+        // Verify every table we need exists, if not, create.
         foreach (SCHEMA::$DB_tables as $table => $fields) {
-            if (!in_array($table, $arr)) {
+            if (in_array($table, $arr)) {
+                // Table exists
+                // Capture a list of fields already in the table
+                $build = "SHOW COLUMNS FROM $table";
+                $result = MyPDO::instance()->query($build);
+                $f_arr = [];
+                foreach ($result as $value) {
+                   $f_arr[] = $value['Field'];
+                }
+
+                // Check the list of fields to make sure we are set
+                foreach ($fields as $column => $settings) {
+                    if (! in_array($column, $f_arr)) {
+                        // Missing field, alter-add it
+                        $build = "ALTER TABLE ".$table;
+                        $build .= " ADD ".$column." ".$settings;
+                        MyPDO::instance()->query($build);
+                    }
+                }
+            } else {
                 // Missing a table, build it!
                 $build = 'CREATE TABLE '.$table.' (';
                 foreach ($fields as $column => $setting) {
                     $build .= $column.' '.$setting.', ';
                 }
                 $build = rtrim($build, ', ').");";
-
                 MyPDO::instance()->query($build);
+
                 // If there is seed available for this table, seed it!
                 if (file_exists($DATADIR.'/DBSeed/'.$table.'.sql')) {
                     $sql_data = file_get_contents($DATADIR.'/DBSeed/'.$table.'.sql');
@@ -63,13 +83,16 @@ SQL;
                 }
             }
         }
-        
-        $build = "SELECT TABLE_NAME, COLUMN_NAME FROM information_schema.KEY_COLUMN_USAGE WHERE TABLE_SCHEMA = '".$GLOBALS['DBNAME']."' AND CONSTRAINT_NAME <> 'PRIMARY';";
+
+        // Capture a list of all Constraints (Foreign Keys)
+        $build = "SELECT TABLE_NAME, COLUMN_NAME FROM information_schema.KEY_COLUMN_USAGE";
+        $build .= " WHERE TABLE_SCHEMA = '".$GLOBALS['DBNAME']."' AND CONSTRAINT_NAME <> 'PRIMARY';";
         $result = MyPDO::instance()->query($build);
         $arr = [];
         foreach ($result as $value) {
            $arr[] = $value['TABLE_NAME'].":".$value['COLUMN_NAME'];
         }
+        // Verify every foreign key we need exists, if not, create.
         foreach (SCHEMA::$DB_foreignKeys as $table => $fields) {
             foreach ($fields as $column => $referto) {
                 $lookfor = $table.":".$column;
@@ -112,60 +135,104 @@ SQL;
 }
 
 
-$_currentYear = null;
+$_currentCycle = null;
+$_currentEvent = null;
 
 
-function current_yearID()
+function current_cycleID()
 {
-    global $_currentYear, $db, $_SESSION;
+    global $_currentCycle, $db, $_SESSION;
 
-    if ($_currentYear == null) {
+    if ($_currentCycle == null) {
         /* Place 1 - Look for it in the session */
 
-        if (isset($_SESSION['CurrentYear'])) {
-            $sql = "SELECT YearID FROM ConventionYear WHERE Name = '".$_SESSION['CurrentYear']."';";
-            $result = $db->run($sql);
-            $value = $result->fetch();
-            if ($value) {
-                $_currentYear = $value['YearID'];
-                return $_currentYear;
-            }
+        if (isset($_SESSION['CurrentCycle'])) {
+            return $_SESSION['CurrentCycle'];
         }
 
         /* Place 2 - try to get it from the database */
 
-        $sql = "SELECT Value FROM Configuration WHERE Field='CurrentYearID';";
+        $sql = "SELECT Value FROM Configuration WHERE Field='CurrentCycleID';";
         $result = $db->run($sql);
         $value = $result->fetch();
         if ($value) {
-            $_currentYear = $value['CurrentYearID'];
-            return $_currentYear;
+            $_currentCycle = $value['CurrentCycleID'];
+            return $_currentCycle;
         }
 
         /* Place 3 - current calander year */
 
-        $year = date("Y");
-        $sql = "SELECT YearID FROM ConventionYear WHERE Name ='$year';";
+        $year = date("Y-m-d");
+        $sql = "SELECT AnnualCycleID FROM AnnualCycles WHERE DateTo > '$year';";
         $result = $db->run($sql);
         $value = $result->fetch();
         if ($value) {
-            $_currentYear = $value['YearID'];
-            return $_currentYear;
+            $_currentCycle = $value['AnnualCycleID'];
+            return $_currentCycle;
         }
 
         /* Fallback - Last year in database*/
 
-        $sql = "SELECT TOP 1 YearID FROM ConventionYear ORDER BY YearID DESC;";
+        $sql = "SELECT AnnualCycleID FROM AnnualCycles ORDER BY AnnualCycleID DESC LIMIT 1;";
         $result = $db->run($sql);
         $value = $result->fetch();
         if ($value) {
-            $_currentYear = $value['YearID'];
-            return $_currentYear;
+            $_currentCycle = $value['AnnualCycleID'];
+            return $_currentCycle;
         }
 
-        die("Could not get Current Convention Year");
+        die("Could not get Current Convention Cycle");
     }
-    return $_currentYear;
+    return $_currentCycle;
+
+}
+
+
+function current_eventID()
+{
+    global $_currentEvent, $db, $_SESSION;
+
+    if ($_currentEvent == null) {
+        /* Place 1 - Look for it in the session */
+
+        if (isset($_SESSION['CurrentEvent'])) {
+            return $_SESSION['CurrentEvent'];
+        }
+
+        /* Place 2 - try to get it from the database */
+
+        $sql = "SELECT Value FROM Configuration WHERE Field='CurrentEventID';";
+        $result = $db->run($sql);
+        $value = $result->fetch();
+        if ($value) {
+            $_currentEvent = $value['CurrentEventID'];
+            return $_currentEvent;
+        }
+
+        /* Place 3 - current calander year */
+
+        $year = date("Y-m-d");
+        $sql = "SELECT EventID FROM Events WHERE DateTo > '$year';";
+        $result = $db->run($sql);
+        $value = $result->fetch();
+        if ($value) {
+            $_currentEvent = $value['EventID'];
+            return $_currentEvent;
+        }
+
+        /* Fallback - Last year in database*/
+
+        $sql = "SELECT EventID FROM Events ORDER BY EventID DESC LIMIT 1;";
+        $result = $db->run($sql);
+        $value = $result->fetch();
+        if ($value) {
+            $_currentEvent = $value['AnnualCycleID'];
+            return $_currentEvent;
+        }
+
+        die("Could not get Current Convention Event");
+    }
+    return $_currentEvent;
 
 }
 

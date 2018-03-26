@@ -268,15 +268,15 @@ function ConComListBuildSearch()
 {
     global $db;
 
-    $year = current_yearID();
+    $event = current_eventID();
     $sql = <<<SQL
         SELECT l.AccountID, COALESCE(l.Note, "") AS Note,
               (SELECT Name FROM Departments WHERE DepartmentID = l.DepartmentID) AS Department,
               (SELECT (CASE WHEN DepartmentID = ParentDepartmentID THEN 1 ELSE 0 END) FROM Departments WHERE DepartmentID = l.DepartmentID ) AS Divisional,
               (SELECT Name FROM ConComPositions WHERE PositionID = l.PositionID)   AS Position,
-              (SELECT Name FROM ConventionYear WHERE YearID = l.YearID) AS Year
+              (SELECT EventName FROM Events WHERE EventID = l.EventID) AS Event
           FROM ConComList AS l
-          WHERE l.YearID = $year;
+          WHERE l.EventID = $event;
 SQL;
 
     $ids = array();
@@ -382,8 +382,8 @@ function AddConComPosition($accountid, $department, $position, $note, $notify = 
         die("Failed to find position: $position");
     }
 
-    /* Convention year... assume most recent one */
-    $year = current_yearID();
+    /* Convention event... assume most recent one */
+    $event = current_eventID();
 
     $data = lookup_user_by_id($accountid);
     if ($data['code']) {
@@ -391,7 +391,7 @@ function AddConComPosition($accountid, $department, $position, $note, $notify = 
     }
     $user = $data['users'][0];
 
-    $sql = "SELECT ListRecordID FROM ConComList WHERE DepartmentID = ".$Departments[$department]['id']." AND AccountID = $accountid and YearID = $year;";
+    $sql = "SELECT ListRecordID FROM ConComList WHERE DepartmentID = ".$Departments[$department]['id']." AND AccountID = $accountid and EventID = $event;";
     $result = $db->run($sql);
     $value = $result->fetch();
     if ($value !== false) {
@@ -399,7 +399,7 @@ function AddConComPosition($accountid, $department, $position, $note, $notify = 
         $record = $value['ListRecordID'];
         $sql = "UPDATE ConComList SET  PositionID = $positionid, Note = '$Note' WHERE ListRecordID = $record;";
     } else {
-        $sql = "INSERT INTO ConComList (AccountID, DepartmentID, PositionID, YearID, Note) VALUES ($accountid, ".$Departments[$department]['id'].", $positionid, $year, '$note');";
+        $sql = "INSERT INTO ConComList (AccountID, DepartmentID, PositionID, EventID, Note) VALUES ($accountid, ".$Departments[$department]['id'].", $positionid, $event, '$note');";
     }
     $result = $db->run($sql);
 
@@ -463,7 +463,7 @@ function RemoveConComPosition($accountid, $department, $position, $notify = true
 }
 
 
-function years_served($accountid)
+function events_served($accountid)
 {
     global $db;
 
@@ -471,25 +471,25 @@ function years_served($accountid)
         SELECT
             (
                 SELECT
-                    `Name`
+                    `EventName`
                 from
-                    ConventionYear AS y
+                    Events AS e
                 where
-                    y.YearID = l.YearID
-            ) AS Year
+                    e.EventID = l.EventID
+            ) AS Event
         FROM
             `ConComList` AS l
         WHERE
             `AccountID` = $accountid
         GROUP BY
-            `YearID`
+            `EventID`
 SQL;
 
     $result = $db->run($sql);
     $years = [];
     $value = $result->fetch();
     while ($value !== false) {
-        $years[] = intval($value['Year']);
+        $years[] = $value['Event'];
         $value = $result->fetch();
     }
     return $years;

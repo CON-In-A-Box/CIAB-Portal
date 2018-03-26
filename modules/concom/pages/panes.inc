@@ -36,21 +36,21 @@ function draw_status()
 
 function draw_history()
 {
-    $years = years_served($_SESSION['accountId']);
-    $c = count($years);
+    $events = events_served($_SESSION['accountId']);
+    $c = count($events);
 
     echo "<div class='w3-container w3-green'>\n";
     echo "<table class='w3-table w3-striped w3-bordered w3-white'>\n";
     echo "<tr><th style=\"text-align:center;\" class=\"w3-green\" colspan=5>Served on ConCom for ".$c;
     if ($c > 1) {
-        echo " Years!  ";
+        echo " Events!  ";
     } else {
-        echo " Year!  ";
+        echo " Event!  ";
     }
     echo "</th></tr>";
 
     $i = 0;
-    foreach ($years as $val) {
+    foreach ($events as $val) {
         if ($i % 5 == 0) {
             if ($i != 0) {
                 echo "</tr>\n";
