@@ -120,7 +120,36 @@ function lookup_users_by_name($name, $single = false)
 }
 
 
-function lookup_users_by_key($key, $single = true)
+function lookup_users_by_badgename($badge, $single_user = false)
+{
+    global $db;
+
+    $sql = <<<SQL
+        SELECT
+            AccountID
+        FROM
+            `Registrations`
+        WHERE
+            BadgeName = '$badge';
+SQL;
+    $result = $db->run($sql);
+    $value = $result->fetch();
+    $users = [];
+    while ($value !== false) {
+        if ($single_user && count($users) > 1)
+        {
+            return array('code' => '409 Conflict', 'users' => array());
+        }
+        $users[] = lookup_user_by_id($value['AccountID'])['users'][0];
+        $value = $result->fetch();
+    }
+
+    return array('code' => null, 'users' => $users);
+
+}
+
+
+function lookup_users_by_key($key, $single = true, $badgename = true)
 {
     if (is_numeric($key) ||
         (strtoupper($key)[0] == 'A' && is_numeric(substr($key, 1)))) {
@@ -132,7 +161,11 @@ function lookup_users_by_key($key, $single = true)
     } elseif (strpos($key, '@') !== false) {
         return lookup_users_by_email($key, $single);
     } else {
-        return lookup_users_by_name($key, $single);
+        $output = lookup_users_by_name($key, $single);
+        if ($badgename && count($output['users']) == 0) {
+            $output = lookup_users_by_badgename($key, $single);
+        }
+        return $output;
     }
 
 }

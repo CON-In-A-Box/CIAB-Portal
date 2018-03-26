@@ -14,7 +14,8 @@ var userLookup = (function(options) {
           message: 'Member Badge Number, E-Mail or Full Name',
           success: _lookupSuccess,
           needForm: true,
-          lookupTarget: 'index.php?Function=functions&lookupId='
+          lookupTarget: 'index.php?Function=functions&lookupId=',
+          badgeName: true,
         }, options);
 
     function _gotoTarget(origin, uid) {
@@ -99,8 +100,11 @@ var userLookup = (function(options) {
                 }
               }
             };
-            xhttp.open('GET', settings.lookupTarget + id,
-                       true);
+            var url = settings.lookupTarget + id;
+            if (settings.badgeName) {
+              url += '&useBadgeName=1';
+            }
+            xhttp.open('GET', url, true);
             xhttp.send();
           } else {
             if (target) {
