@@ -17,10 +17,11 @@ function display_volunteer_hours()
         $total = 0;
         foreach ($data as $entry) {
             echo '<tr><td>'.htmlspecialchars($entry['Department Worked']).'</td>';
-            echo "<td>".$entry['Total Hours']." hours</td>";
+            echo "<td>".($entry['Total Hours'] + 0)." hours</td>";
             echo "</tr>\n";
             $total += $entry['Total Hours'];
         }
+        $total += 0;
         echo "<tr><th class='w3-center w3-green' colspan=2>Total of ".$total." hours earned</th></tr>\n";
         echo "</table>\n";
         echo "</div>\n";
