@@ -120,6 +120,23 @@ function lookup_users_by_name($name, $single = false)
 }
 
 
+function lookup_users_by_pref_name($name, $single = false)
+{
+    $preferredFirstName = search_definedFields('Preferred First Name');
+    $preferredLastName = search_definedFields('Preferred Last Name');
+    $names = explode(" ", $name);
+    if (count($names) != 2) {
+        return ['code' => '400 Bad Request', 'users' => array()];
+    }
+    return _lookup_user(
+        [[$preferredFirstName, 'EQUAL', $names[0]],
+         [$preferredLastName, 'EQUAL', $names[1]]],
+        $single
+    );
+
+}
+
+
 function lookup_users_by_badgename($badge, $single_user = false)
 {
     global $db;
@@ -162,6 +179,9 @@ function lookup_users_by_key($key, $single = true, $badgename = true)
         return lookup_users_by_email($key, $single);
     } else {
         $output = lookup_users_by_name($key, $single);
+        if (count($output['users']) == 0) {
+            $output = lookup_users_by_pref_name($key, $single);
+        }
         if ($badgename && count($output['users']) == 0) {
             $output = lookup_users_by_badgename($key, $single);
         }
