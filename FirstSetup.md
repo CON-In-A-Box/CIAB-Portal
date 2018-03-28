@@ -24,3 +24,11 @@
 	Now you revisit most any page on the website and you will get a message about importing the data from Neon. Note: This will take a while!!  You should now be fully functional. It is best to visit the `concom` list to make sure that looks like the list you would expect.
 
 1. Finally, If you want to fill the database with dummy volunteer data then you can use the php script by loading `http://<host>/test/populate_volunteer.php`
+
+# Setup-up automatic Neon imports
+The goal is to import NEON data, that we cannot random access read, in a regular interval. There is not an automatic way to set this up. It will require you modifying the crontab for the user where all of this is installed.
+
+To your crontab add this line
+`*/5 * * * * php <full path to package>/tools/sync_neon_event_to_db.php 1>/dev/null`
+
+That will then sync the Neon data every 5 minutes. Note that sync_neon_event_to_db.php will not run if it is already running. So you will not have to worry about overwhelming the system resources. But it does mean that worst case is that there is a 5 minute delay between the updates, if an update takes several minutes that will determine what your out-of-date factor will be. 
