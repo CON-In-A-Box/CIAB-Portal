@@ -141,6 +141,7 @@ function _import_page_of_people($event, $people)
 {
     global $db;
 
+    $total = 0;
     $eventID = $event['MySQLEventID'];
     foreach ($people['attendees'] as $person) {
         $key = $person['attendeeId'];
@@ -156,7 +157,9 @@ SQL;
         } else {
             _updateMember($person, $event, true);
         }
+        $total ++;
     }
+    return $total;
 
 }
 
@@ -165,17 +168,26 @@ function _Neon_import_people($event)
 {
     /* When really ready switch to true */
     $page = 1;
-    print $event['Event ID']."\n";
+    $total = 0;
+    $round = 0;
+    print "Event: ".$event['Event ID']."\n";
     do {
         $people = lookup_events_attendees($event['Event ID'], $page, false);
-        print $page." ".count($people['attendees'])."\n";
-        if (count($people['attendees'])) {
-            _import_page_of_people($event, $people);
+        $count = count($people['attendees']);
+        if ($count) {
+            $round = _import_page_of_people($event, $people);
+            $total += $round;
         } else {
             break;
         }
+        print $page.": ".count($people['attendees'])." ".$total."\n";
+        if ($round != $count) {
+            print "Person count missmatch. Neon has ".$count." people and we ";
+            print "imported ".$total." people.";
+        }
         $page++;
     } while (true);
+    print "done\n";
 
 }
 
