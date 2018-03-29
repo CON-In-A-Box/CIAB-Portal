@@ -78,6 +78,16 @@ if (isset($_SESSION['accountInfo']['individualAccount']['primaryContact']['addre
     </div>
   </div>
 
+  <div class="w3-orange">
+    <div>
+      Badge Number
+    </div>
+    <div class="w3-container">
+        <input type="text" name="preferredLastName"  disabled value="
+<?php echo $_SESSION['accountId'];?>" class="w3-input w3-border" >
+    </div>
+  </div>
+
   <p></p>
   <div class="w3-indigo">
     <div>
