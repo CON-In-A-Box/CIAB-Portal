@@ -62,7 +62,7 @@ class SCHEMA
     'TempEventPage' => [
         'EventID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
         'PageFound' => 'INT UNSIGNED NOT NULL',
-    ]
+    ],
     'Events' => [
         'EventID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
         'AnnualCycleID' => 'INT UNSIGNED NOT NULL',
