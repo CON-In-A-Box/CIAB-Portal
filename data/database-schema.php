@@ -60,7 +60,7 @@ class SCHEMA
         'EMail' => 'VARCHAR(100) NOT NULL',
     ],
     'TempEventPage' => [
-        'EventID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
+        'AttendeeID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
         'PageFound' => 'INT UNSIGNED NOT NULL',
     ],
     'Events' => [
