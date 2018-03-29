@@ -137,7 +137,7 @@ SQL;
 }
 
 
-function _import_page_of_people($event, $people)
+function _import_page_of_people($event, $people, $page)
 {
     global $db;
 
@@ -158,6 +158,14 @@ SQL;
             _updateMember($person, $event, true);
         }
         $total ++;
+
+        $accountID = $person['attendeeAccountId'];
+        $sql = <<<SQL
+            INSERT IGNORE INTO `TempEventPage`
+            SET  AccountID = $accountID,
+                 PageFound = $page;
+SQL;
+        $db->run($sql);
     }
     return $total;
 
@@ -175,7 +183,7 @@ function _Neon_import_people($event)
         $people = lookup_events_attendees($event['Event ID'], $page, false);
         $count = count($people['attendees']);
         if ($count) {
-            $round = _import_page_of_people($event, $people);
+            $round = _import_page_of_people($event, $people, $page);
             $total += $round;
         } else {
             break;
