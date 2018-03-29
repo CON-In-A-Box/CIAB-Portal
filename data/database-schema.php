@@ -7,7 +7,7 @@
 
 class SCHEMA
 {
-  public static $REQUIED_DB_SCHEMA = 2018030200; // Current DB Version - YYYYMMDDvv format (vv=daily counter form 00)
+  public static $REQUIED_DB_SCHEMA = 2018032900; // Current DB Version - YYYYMMDDvv format (vv=daily counter form 00)
 
   public static $DB_tables = [
     'AnnualCycles' => [ // Bylaw defined "year", used for tracking
@@ -59,6 +59,10 @@ class SCHEMA
         'IsAlias' => 'BOOLEAN',
         'EMail' => 'VARCHAR(100) NOT NULL',
     ],
+    'TempEventPage' => [
+        'EventID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
+        'PageFound' => 'INT UNSIGNED NOT NULL',
+    ]
     'Events' => [
         'EventID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
         'AnnualCycleID' => 'INT UNSIGNED NOT NULL',
