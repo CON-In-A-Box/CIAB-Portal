@@ -531,7 +531,8 @@ if (isset($_SESSION['IS_ADMIN']) || isset($_SESSION['IS_VOLUNTEERS'])) {
 <script>
     userLookup.options({
         message: 'Volunteer Badge Number, E-Mail or Full Name',
-        urlTag: 'volunteerId'
+        urlTag: 'volunteerId',
+        fail: lookupFail,
         });
 </script>
 
