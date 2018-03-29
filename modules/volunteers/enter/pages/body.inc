@@ -24,6 +24,7 @@ if (isset($updateComplete)) {
         message: 'Volunteer Badge Number, E-Mail or Full Name',
         memberName: 'VolunteerID',
         success: onSuccess,
+        fail: onFail,
         needForm: false,
         lookupTarget: 'index.php?Function=volunteers/enter&volunteerId='
         });

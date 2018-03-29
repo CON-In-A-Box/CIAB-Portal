@@ -16,7 +16,8 @@ if (!empty($_REQUEST)) {
     'DepartmentWorked'  => FILTER_SANITIZE_SPECIAL_CHARS,
     'EnteredBy'         => FILTER_SANITIZE_SPECIAL_CHARS,
     'AuthorizedBy'      => FILTER_SANITIZE_SPECIAL_CHARS,
-    'volunteerId'         => FILTER_SANITIZE_SPECIAL_CHARS,
+    'volunteerId'       => FILTER_SANITIZE_SPECIAL_CHARS,
+    'useBadgeName'      => FILTER_SANITIZE_NUMBER_INT,
     ];
     if (!empty($_POST)) {
         $updateData = filter_input_array(INPUT_POST, $arguments);
@@ -46,9 +47,13 @@ if (!empty($_REQUEST)) {
     } elseif (!empty($updateData['volunteerId'])) {
         include_once $FUNCTIONDIR."/users.inc";
 
-        $data = lookup_users_by_key($updateData['volunteerId']);
+        $badge = ($updateData['useBadgeName'] == 1);
+        $data = lookup_users_by_key($updateData['volunteerId'], false, $badge);
 
         if (!$data['code']) {
+            if (count($data['users']) == 0) {
+                header("HTTP/1.0 404");
+            }
             $users = $data['users'];
             foreach ($users as $key => $data) {
                 $vol_past = get_volunteer_hours_for_user($data['Id']);
