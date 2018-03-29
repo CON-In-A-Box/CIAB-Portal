@@ -123,7 +123,7 @@ class SCHEMA
         'Value' => 'DECIMAL(5,2) NOT NULL',
     ],
   ];
-  
+
   public static $DB_foreignKeys = [
     'BadgeTypes' => [
         'EventID' => 'Events (EventID) ON DELETE RESTRICT ON UPDATE CASCADE',
@@ -170,6 +170,11 @@ class SCHEMA
     'VolunteerRewards' => [
         'RewardGroupID' => 'RewardGroup (RewardGroupID) ON DELETE RESTRICT ON UPDATE CASCADE',
     ],
+  ];
+
+
+  public static $DB_primaryKeys = [
+    'TempEventPage' => ['AccountID', 'PageFound'],
   ];
 }
 ?>
