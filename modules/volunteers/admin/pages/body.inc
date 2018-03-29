@@ -129,6 +129,11 @@ function _htmlsafeify($array)
 
 }
 
+function _printHours($hours)
+{
+    $min = floor(($hours - floor($hours)) * 60);
+    echo number_format(floor($hours), 0)." Hours ".$min." Minutes ";
+}
 
 function hour_table($uid)
 {
@@ -184,6 +189,12 @@ function hour_table($uid)
             if ($id_index !== false) {
                 unset($record['Department ID']);
             }
+            if (!isset($uid)) {
+                $record['Total Hours'] += 0;
+            } else {
+                $record['Actual Hours'] += 0;
+                $record['Time Modifier'] += 0;
+            }
             echo implode(_htmlsafeify($record), '</td><td>');
             echo "</td></tr>\n";
         }
@@ -195,11 +206,17 @@ function hour_table($uid)
     echo "</div>";
     echo '<div class="w3-col w3-center w3-xlarge w3-green">';
     if (isset($uid)) {
-        echo "<span>Total Hours : ".$totalHours."</span>";
+        echo "<span>Total : ";
+        _printHours($totalHours);
+        echo "</span>";
     } else {
-        echo "<span class='w3-margin'>Total Hours : ".$summary['TotalHours']."</span>";
+        echo "<span class='w3-margin'>Total Hours : ";
+        _printHours($summary['TotalHours']);
+        echo "</span>";
         echo "<span class='w3-margin'>Total Volunteers : ".$summary['VolunteerCount']."</span>";
-        echo "<span class='we-margin'>Total Spent Hours : ".$summary['TotalHoursSpent']."</span>";
+        echo "<span class='we-margin'>Total Spent Hours : ";
+        _printHours($summary['TotalHoursSpent']);
+        echo "</span>";
     }
     echo "</div>\n";
 
@@ -223,8 +240,12 @@ function _prize_table_start($uid = 0, $spent = 0, $hoursRemain = 0)
 
     if ($uid) {
         echo '<div class="w3-col w3-center w3-xlarge w3-blue">';
-        echo "<span>Hours Spent  <span id='h_spent'>".$spent."</span>  |  ";
-        echo "<span id='h_left'>".$hoursRemain."</span>  Left</span>";
+        echo "<span>Spent <span id='h_spent'>";
+        _printHours($spent);
+        echo "</span>  |  ";
+        echo "<span id='h_left'>";
+        _printHours($hoursRemain);
+        echo "</span>  Left</span>";
         echo "</div>\n";
     }
     echo "<div class='w3-container w3-center w3-blue' ";
@@ -367,6 +388,7 @@ function prizes_table($uid)
             unset($record['group_soldout']);
             unset($record['GroupLimit']);
             echo "<td>";
+            $record['Value'] += 0;
             echo implode(_htmlsafeify($record), '</td><td>');
             echo "</td></tr>\n";
         }
@@ -390,6 +412,7 @@ function messages($uid)
     if (isset($uid)) {
         $promo = "<ul>\n";
         foreach ($prizeData as $key => $record) {
+            $record['Value'] += 0;
             if ($record['Promo'] == 'yes' &&
                 $record['Remaining'] > 0 &&
                 $totalHours >= $record['Value'] &&

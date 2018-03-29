@@ -33,4 +33,7 @@ if (isset($_SESSION['phone']) && !empty($_SESSION['phone'])) {
     echo "<p><b>Telephone Number:</b><br />";
     echo $_SESSION['phone'].'</p>';
 }
+
+echo "<p><b>Badge Number:</b><br />";
+echo $_SESSION['accountId'].'</p>';
 echo '</div><!--left_nav-->';

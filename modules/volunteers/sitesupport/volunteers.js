@@ -118,10 +118,10 @@ function updateCost(cost) {
 
   var hours = document.getElementById('hours_left');
   var remain = hoursRemain - hoursSpent;
-  hours.innerHTML = remain.toFixed(2);
+  hours.innerHTML = Math.round(remain * 100) / 100;
 
   var hoursU = document.getElementById('hours_used');
-  hoursU.innerHTML = hoursSpent.toFixed(2);
+  hoursU.innerHTML = Math.round(hoursSpent * 100) / 100;
 }
 
 function updateCheckout() {
@@ -158,7 +158,7 @@ function updateCheckout() {
     }
 
     cell = row.insertCell(1);
-    cell.innerHTML = item.prize.cost.toFixed(2);
+    cell.innerHTML = Math.round(item.prize.cost * 100) / 100;
   }
 
   var rows = table.getElementsByTagName('tr').length;
@@ -229,7 +229,7 @@ function showCheckout() {
 
   var hours = document.getElementById('hours_left');
   var remain = hoursRemain - hoursSpent;
-  hours.innerHTML = remain.toFixed(2);
+  hours.innerHTML = Math.round(remain * 100) / 100;
 
   var hoursU = document.getElementById('hours_used');
   hoursU.innerHTML = hoursSpent;
