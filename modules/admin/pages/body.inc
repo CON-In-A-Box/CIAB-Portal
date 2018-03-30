@@ -229,7 +229,7 @@ function myDebug() {
   </div>
 </div>
 
-<!-- Activity log - limited to last 1000 lines, in reverse order -->
+<!-- Activity log - limited to last lines, in reverse order -->
 <p></p>
 <script>
 function myActivityLog() {
