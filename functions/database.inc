@@ -36,6 +36,8 @@ SQL;
 
     private static function _buildMissingTables()
     {
+        // This function cannot call the run function as we don't know if the activitylog table is created
+        // Besides, this is maintenance, not user log tracking
         $DATADIR = $GLOBALS['BASEDIR'].'/data';
 
         // Capture a list of tables already created
@@ -131,8 +133,41 @@ SQL;
     }
 
 
+    private static function _dbLogEntry($sql)
+    {
+        if (substr(ltrim($sql), 0, 6) !== "SELECT") {
+            // Prepare a log entry for this query
+            $logMessage = MyPDO::instance()->prepare('INSERT INTO ActivityLog (AccountID, Function, Query) VALUES (:account, :function, :query);');
+        
+            if (empty($_SESSION['accountId'])) {
+                $account = 0;
+            }
+            else {
+                $account = $_SESSION['accountId'];
+            }
+        
+            if (empty($_SESSION['Function'])) {
+                $function = "public";
+            }
+            else {
+                $function = $_SESSION['Function'];
+            }
+
+            // Use PDO to make the SQL Safe as it IS a SQL statement we are trying to capture
+            $logMessage->bindParam(':account', $account, PDO::PARAM_INT);
+            $logMessage->bindParam(':function', $function, PDO::PARAM_STR);
+            $logMessage->bindParam(':query', $sql, PDO::PARAM_STR);
+
+            // Write the log entry
+            $logMessage->execute();
+        }
+
+    }
+
+
     public static function run($sql, $args = [])
     {
+        DB::_dbLogEntry($sql); // Capture all queries in the ActivityLog
         if (!$args) {
             return MyPDO::instance()->query($sql);
         }

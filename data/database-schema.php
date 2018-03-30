@@ -7,9 +7,16 @@
 
 class SCHEMA
 {
-  public static $REQUIED_DB_SCHEMA = 2018032900; // Current DB Version - YYYYMMDDvv format (vv=daily counter form 00)
+  public static $REQUIED_DB_SCHEMA = 2018033000; // Current DB Version - YYYYMMDDvv format (vv=daily counter form 00)
 
   public static $DB_tables = [
+    'ActivityLog' => [
+        'LogEntryID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
+        'AccountID' => 'INT UNSIGNED NOT NULL', // Use 0 for System AccountID
+        'Function' => 'VARCHAR(100) NOT NULL',
+        'Query' => 'TEXT NOT NULL',
+        'Date' => 'TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP',
+    ],
     'AnnualCycles' => [ // Bylaw defined "year", used for tracking
         'AnnualCycleID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
         'DateFrom' => 'DATE NOT NULL',
