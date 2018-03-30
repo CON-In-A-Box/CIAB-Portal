@@ -102,6 +102,11 @@ function onSuccess(target, resp) {
   document.getElementById('datetime').classList.remove('w3-red');
   document.getElementById('message').innerHTML = '';
 
+  if (resp.length > 1) {
+    onFail(target, resp, '', 409);
+    return;
+  }
+
   var response = resp[0];
   var name = response['First Name'] + ' ' + response['Last Name'];
   var uid = response.Id;
@@ -152,5 +157,25 @@ function onSuccess(target, resp) {
       volPast = response.volunteer;
       checkHours();
     }
+  }
+}
+
+
+function onFail(target, resp, name, code) {
+  userLookup.markFailure();
+  document.getElementById('submitbtn').disabled = true;
+  document.getElementById('volunteername').innerHTML = 'a Volunteer';
+
+  if (code == 404) {
+    document.getElementById('lookupname').innerHTML =
+      name + ' not found.';
+  }
+  else if (code == 409) {
+    document.getElementById('lookupname').innerHTML =
+      'There are too many matches.';
+  }
+  else {
+    document.getElementById('lookupname').innerHTML =
+      name + ' invalid name lookup.(' + code + ')';
   }
 }

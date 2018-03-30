@@ -13,6 +13,7 @@ var userLookup = (function(options) {
           memberName: 'userLookup_member',
           message: 'Member Badge Number, E-Mail or Full Name',
           success: _lookupSuccess,
+          fail: _lookupFailed,
           needForm: true,
           lookupTarget: 'index.php?Function=functions&lookupId=',
           badgeName: true,
@@ -49,6 +50,22 @@ var userLookup = (function(options) {
       }
       if (target) {
         userLookup.gotoTarget(target.href, uid);
+      }
+    }
+
+    function _lookupFailed(target, response, user, code) {
+      userLookup.markFailure();
+      if (code == 400) {
+        document.getElementById('userLookup_message').innerHTML =
+          id + ' invalid lookup.';
+      }
+      else if (code == 404) {
+        document.getElementById('userLookup_message').innerHTML =
+          id + ' not found.';
+      }
+      else if (code == 409) {
+        document.getElementById('userLookup_message').innerHTML =
+          id + ' has too many matches.';
       }
     }
 
@@ -108,19 +125,7 @@ var userLookup = (function(options) {
                 var response = JSON.parse(this.responseText);
                 settings.success(target, response);
               } else if (this.readyState == 4) {
-                userLookup.markFailure();
-                if (this.status == 400) {
-                  document.getElementById('userLookup_message').innerHTML =
-                    id + ' invalid lookup.';
-                }
-                else if (this.status == 404) {
-                  document.getElementById('userLookup_message').innerHTML =
-                    id + ' not found.';
-                }
-                else if (this.status == 409) {
-                  document.getElementById('userLookup_message').innerHTML =
-                    id + ' has too many matches.';
-                }
+                settings.fail(target, response, id, this.status);
               }
             };
             var url = settings.lookupTarget + id;

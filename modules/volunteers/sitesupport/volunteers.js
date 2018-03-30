@@ -11,6 +11,23 @@ var hoursSpent = 0;
 var groupsNow = [];
 var currentSidebar = null;
 
+function lookupFail(target, resp, name, code) {
+  userLookup.markFailure();
+
+  if (code == 404) {
+    document.getElementById('userLookup_message').innerHTML =
+      name + ' not found.';
+  }
+  else if (code == 409) {
+    document.getElementById('userLookup_message').innerHTML =
+      'There are too many matches.';
+  }
+  else {
+    document.getElementById('userLookup_message').innerHTML =
+      name + ' invalid name lookup.(' + code + ')';
+  }
+}
+
 function hideSidebar() {
   if (currentSidebar) {
     currentSidebar.classList.add('w3-hide');
