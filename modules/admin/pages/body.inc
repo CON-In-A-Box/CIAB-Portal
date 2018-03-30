@@ -3,6 +3,7 @@
 <?php
 echo "<h2>Welcome ".$_SESSION['preferredName']."!</h2>\n";
 
+require_once(__dir__."/../functions/admin.inc");
 require_once($FUNCTIONDIR.'/users.inc');
 /*
 if( isset($_REQUEST['DoFeed'])) {
@@ -212,16 +213,39 @@ if (!empty($searchCriteria['ID'])) {
 <script>
 function myDebug() {
     var x = document.getElementById("DebugInfo");
+    var y = document.getElementById("ActivityLog");
     if (x.className.indexOf("w3-show") == -1) {
         x.className += " w3-show";
+        y.className = y.className.replace(" w3-show", "");
     } else {
         x.className = x.className.replace(" w3-show", "");
     }
 }
 </script>
-<div class="w3-dropdown-click">
-  <button class="w3-button w3-tiny" onclick="myDebug()">Debug Array Information</button>
+<div class="w3-dropdown-click w3-block">
+  <button class="w3-button w3-tiny w3-block w3-left-align" onclick="myDebug()">Debug Array Information</button>
   <div id="DebugInfo" class="w3-dropdown-content w3-small">
     <pre><?php print_r($_SESSION); ?></pre>
+  </div>
+</div>
+
+<!-- Activity log - limited to last 1000 lines, in reverse order -->
+<p></p>
+<script>
+function myActivityLog() {
+    var x = document.getElementById("ActivityLog");
+    var y = document.getElementById("DebugInfo");
+    if (x.className.indexOf("w3-show") == -1) {
+        x.className += " w3-show";
+        y.className = y.className.replace(" w3-show", "");
+    } else {
+        x.className = x.className.replace(" w3-show", "");
+    }
+}
+</script>
+<div class="w3-dropdown-click w3-block">
+  <button class="w3-button w3-tiny w3-block w3-left-align" onclick="myActivityLog()">DB Activity Log</button>
+  <div id="ActivityLog" class="w3-dropdown-content">
+        <?php dbPrintLog(1000); ?>
   </div>
 </div>

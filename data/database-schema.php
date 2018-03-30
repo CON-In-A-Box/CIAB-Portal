@@ -15,6 +15,7 @@ class SCHEMA
         'AccountID' => 'INT UNSIGNED NOT NULL', // Use 0 for System AccountID
         'Function' => 'VARCHAR(100) NOT NULL',
         'Query' => 'TEXT NOT NULL',
+        'Date' => 'TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP',
     ],
     'AnnualCycles' => [ // Bylaw defined "year", used for tracking
         'AnnualCycleID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
