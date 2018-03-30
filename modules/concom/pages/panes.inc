@@ -124,5 +124,7 @@ if (isset($_SESSION['customFields']['currConComPos'])) {
     $homepage_panes[] = 'concom\panes\phone_number';
     $homepage_panes[] = 'concom\panes\draw_status';
     $homepage_panes[] = 'concom\panes\meetings';
+/* Disabled for 2018 release
     $homepage_panes[] = 'concom\panes\draw_history';
+*/
 }
