@@ -94,6 +94,7 @@ if (!empty($_REQUEST)) {
     'delete_prize'     => FILTER_SANITIZE_SPECIAL_CHARS,
     'new_prize'        => FILTER_UNSAFE_RAW,
     'toggleKiosk'      => FILTER_SANITIZE_SPECIAL_CHARS,
+    'refundId'         => FILTER_SANITIZE_SPECIAL_CHARS,
     ];
 
     $updateData = filter_input_array(INPUT_POST, $arguments);
@@ -196,4 +197,15 @@ if (!empty($_REQUEST)) {
             exit();
         }
     }
+
+    if (isset($updateData['refundId'])) {
+        $data = json_decode($updateData['rewards'], true);
+        $prizes = [];
+        foreach ($data as $prize) {
+            $prizes[] = $prize;
+        }
+        refund_prizes($updateData['refundId'], $prizes);
+        exit();
+    }
+
 }

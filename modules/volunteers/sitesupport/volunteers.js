@@ -10,6 +10,7 @@ var checkout = [];
 var hoursSpent = 0;
 var groupsNow = [];
 var currentSidebar = null;
+var returnCart = [];
 
 function hideSidebar() {
   if (currentSidebar) {
@@ -593,4 +594,119 @@ function generateCSV() {
 function generatCSVReport() {
   var table = document.getElementById('csv_table').value;
   window.location = 'index.php?Function=volunteers/admin&generateCSV=' + table;
+}
+
+function markDelete(index, tableRow) {
+  var table = document.getElementById('return_table');
+  var row = table.rows[tableRow];
+
+  if (returnCart[index].Returned) {
+    row.classList.remove('w3-yellow');
+    row.style.fontWeight = 'normal';
+    returnCart[index].Returned = false;
+  } else {
+    row.classList.add('w3-yellow');
+    row.style.fontWeight = 'bold';
+    returnCart[index].Returned = true;
+  }
+
+  var total = 0;
+  for (index in returnCart) {
+    var item = returnCart[index];
+    if (item.Returned) {
+      total += parseFloat(item.item.Value);
+    }
+  }
+
+  var hours = document.getElementById('credit_hours');
+  hours.innerHTML = Math.round(total * 100) / 100;
+
+}
+
+function showReturn(json) {
+  /* clear existing */
+  var table = document.getElementById('return_table');
+  while (table.hasChildNodes()) {
+    table.removeChild(table.firstChild);
+  }
+  returnCart = [];
+
+  var prizes = JSON.parse(atob(json));
+  showSidebar('return_div');
+  for (var index in prizes) {
+    var item = prizes[index];
+    for (var i = 0; i < item.Aquired; i++) {
+      var row = table.insertRow(-1);
+      row.setAttribute('data-prizeid', item.PrizeID);
+      row.classList.add('w3-hover-red');
+      row.setAttribute('onclick', 'markDelete(' + returnCart.length +
+        ', ' + row.rowIndex + ');');
+      var cell = row.insertCell(0);
+      cell.innerHTML = escapeHtml(item.Name);
+      cell = row.insertCell(1);
+      cell.innerHTML = Math.round(item.Value * 100) / 100;
+      var cartItem = [];
+      cartItem.item = item;
+      cartItem.Returned = false;
+      cartItem.row = row;
+      returnCart.push(cartItem);
+    }
+  }
+}
+
+function finishReturn() {
+  var table = document.getElementById('return_list');
+
+  while (table.hasChildNodes()) {
+    table.removeChild(table.firstChild);
+  }
+
+  var list = {};
+  returnCart.forEach(function(item, index) {
+      if (item.Returned) {
+          if (item.item.PrizeID in list) {
+            list[item.item.PrizeID].count += 1;
+          } else {
+            list[item.item.PrizeID] = {name: item.item.Name, count: 1};
+          }
+        }
+    });
+
+  for (var key in list) {
+    var item = list[key];
+    var row = table.insertRow(-1);
+    var cell = row.insertCell(0);
+    if (item.count > 1) {
+      var txt = item.name + ' (x' + item.count + ')';
+      cell.innerHTML = escapeHtml(txt);
+    } else {
+      cell.innerHTML = escapeHtml(item.name);
+    }
+  }
+}
+
+function processReturn() {
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      finishReturn();
+      document.getElementById('return_success_dlg').style.display = 'block';
+    }
+    else if (this.status == 404) {
+      window.alert('404!');
+    }
+    else if (this.status == 409) {
+      window.alert('409!');
+    }
+  };
+  xhttp.open('POST', 'index.php?Function=volunteers/admin', true);
+  xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+  var data = [];
+  for (var index in returnCart) {
+    var item = returnCart[index];
+    if (item.Returned) {
+      data.push(item.item.PrizeID);
+    }
+  }
+  xhttp.send('refundId=' + userId + '&rewards=' + JSON.stringify(data));
 }

@@ -270,7 +270,31 @@ function _prize_table_start($uid = 0, $spent = 0, $hoursRemain = 0)
         echo "</label></th>\n";
     }
     echo "<th class='w3-center w3-blue' colspan=3>Prizes</th>";
-    echo "<th class='w3-blue' colspan=3></th>\n";
+    echo "<th class='w3-blue' colspan=2></th>\n";
+    echo "<th class='w3-blue'>";
+    if (!$admin_mode && isset($uid)) {
+        $data = volunteer_prizes_for_user($uid);
+        $record = [];
+        foreach ($data as $key => $entry) {
+            if (!isset($entry['Aquired']) || $entry['Aquired'] == 0) {
+                continue;
+            }
+            $value = 0;
+            if ($entry['Promo'] != 'yes') {
+                $value = $entry['Value'];
+            }
+            $record[] = [ 'PrizeID' => $entry['PrizeID'],
+                          'Name' => $entry['Name'],
+                          'Aquired' => $entry['Aquired'],
+                          'Value' => $value,
+                        ];
+        }
+        $json = json_encode($record);
+        $json = base64_encode($json);
+        echo "<input id='return_items' type='button' class='w3-button w3-orange' ";
+        echo "onclick='showReturn(\"".$json."\")' value='Return Items'>";
+    }
+    echo "</th>\n";
     echo "</tr>\n";
 
 }
@@ -755,6 +779,42 @@ foreach ($Departments as $dep => $set) {
                 onclick='hideSidebar();'>
                Cancel
             </button>
+        </div>
+    </div>
+
+    <div class='w3-hide w3-padding' id='return_div'>
+        <div class='w3-center'>
+            <h2>Items being returned now:</h2>
+        </div>
+        <table class='w3-table w3-striped w3-border w3-white' id='return_table'>
+        </table>
+        <div class="w3-container w3-center w3-large w3-green w3-margin">
+            <span>Hours To Be Credited: <span id="credit_hours">0</span></span>
+        </div>
+        <div class='w3-center'>
+            <button id='return_button' class='w3-button w3-round-xxlarge w3-green'
+                onclick='processReturn();'>
+                Return Items
+            </button>
+            <button id='return_clear_button' class='w3-button w3-round-xxlarge w3-red'
+                onclick='hideSidebar();'>
+               Cancel
+            </button>
+        </div>
+
+        <div id="return_success_dlg" class="w3-modal">
+          <div class="w3-modal-content">
+            <div class="w3-container">
+              <span onclick="document.getElementById('return_success_dlg').style.display='none';
+                location.reload();"
+              class="w3-button w3-display-topright">&times;</span>
+              <h2 class="w3-center w3-green">Please collect and return the following rewards</h2>
+              <hr>
+              <table class='w3-center w3-border w3-table w3-striped w3-white w3-xlarge w3-padding' id='return_list'>
+              </table>
+              <h2 class="w3-center w3-red">Close this window when all returns have been processed!</h2>
+            </div>
+          </div>
         </div>
     </div>
 

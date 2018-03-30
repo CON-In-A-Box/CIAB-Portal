@@ -644,3 +644,30 @@ SQL;
     return $report;
 
 }
+
+
+function refund_prizes($id, $prizes, $event = null)
+{
+    global $db;
+
+    if ($event === null) {
+        $event = current_eventID();
+    }
+
+    $stmt = [];
+    foreach ($prizes as $prize) {
+        $sql = <<<SQL
+            DELETE FROM
+                `HourRedemptions`
+            WHERE
+                `AccountID` = $id
+                AND EventId = $event
+                AND prizeid = $prize
+            LIMIT
+                1
+SQL;
+        $db->run($sql);
+    }
+    return true;
+
+}
