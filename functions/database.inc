@@ -84,6 +84,17 @@ SQL;
             }
         }
 
+        //Verify primary keys
+        foreach (SCHEMA::$DB_primaryKeys as $table => $keys) {
+            $query = "SHOW KEYS FROM `$table` WHERE Key_name = 'PRIMARY';";
+            $result = MyPDO::instance()->query($query);
+            $value = $result->fetch();
+            if ($value === false) {
+                $build = "ALTER TABLE `".$table."` ADD PRIMARY KEY (".implode($keys, ', ').");";
+                $result = MyPDO::instance()->query($build);
+            }
+        }
+
         // Capture a list of all Constraints (Foreign Keys)
         $build = "SELECT TABLE_NAME, COLUMN_NAME FROM information_schema.KEY_COLUMN_USAGE";
         $build .= " WHERE TABLE_SCHEMA = '".$GLOBALS['DBNAME']."' AND CONSTRAINT_NAME <> 'PRIMARY';";
