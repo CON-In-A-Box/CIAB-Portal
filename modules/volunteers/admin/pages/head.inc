@@ -4,6 +4,7 @@
 <script src="modules/volunteers/sitesupport/volunteers.js"></script>
 <script src="sitesupport/authentication.js"></script>
 <script src="sitesupport/lookupuser.js"></script>
+<script src="sitesupport/confirmbox.js"></script>
 <link rel="stylesheet" type="text/css" href="sitesupport/barcode/barcode.css" />
 <style>
 .hiddenrow {

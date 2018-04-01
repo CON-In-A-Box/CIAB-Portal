@@ -96,6 +96,7 @@ function fillReward() {
 }
 
 function applyReward() {
+  confirmbox.close();
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
@@ -115,7 +116,8 @@ function applyReward() {
 }
 
 function processCheckout() {
-  applyReward();
+  confirmbox.start('Confirm Distribute Rewards',
+    'Are the selected rewards correct?', applyReward);
 }
 
 function clearCheckout() {
@@ -702,7 +704,8 @@ function finishReturn() {
   }
 }
 
-function processReturn() {
+function doReturn() {
+  confirmbox.close()
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
@@ -726,4 +729,9 @@ function processReturn() {
     }
   }
   xhttp.send('refundId=' + userId + '&rewards=' + JSON.stringify(data));
+}
+
+function processReturn() {
+  confirmbox.start('Confirm Reward Return',
+    'Are the returned rewards correct?', doReturn);
 }
