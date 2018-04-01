@@ -11,7 +11,10 @@ if (!empty($_REQUEST)) {
     $arguments = [
     'VolunteerID'       => FILTER_SANITIZE_NUMBER_INT,
     'ActualHoursWorked' => FILTER_VALIDATE_FLOAT,
-    'EndDateTime'       => FILTER_SANITIZE_SPECIAL_CHARS,
+    'EndDate'           => FILTER_SANITIZE_SPECIAL_CHARS,
+    'EndHours'          => FILTER_SANITIZE_SPECIAL_CHARS,
+    'EndMinutes'        => FILTER_SANITIZE_SPECIAL_CHARS,
+    'EndAMPM'           => FILTER_SANITIZE_SPECIAL_CHARS,
     'TimeModifier'      => FILTER_VALIDATE_FLOAT,
     'DepartmentWorked'  => FILTER_SANITIZE_SPECIAL_CHARS,
     'EnteredBy'         => FILTER_SANITIZE_SPECIAL_CHARS,
@@ -27,16 +30,23 @@ if (!empty($_REQUEST)) {
 
     if (!empty($updateData['VolunteerID'])
         && !empty($updateData['ActualHoursWorked'])
-        && !empty($updateData['EndDateTime'])
+        && !empty($updateData['EndDate'])
         && !empty($updateData['TimeModifier'])
         && !empty($updateData['DepartmentWorked'])
         && !empty($updateData['EnteredBy'])
         && !empty($updateData['AuthorizedBy'])
     ) {
+        $time = intval($updateData['EndHours']);
+        if ($updateData['EndAMPM'] == 'PM') {
+            $time += 12;
+        }
+        $date = $updateData['EndDate'].'T'.$time.':';
+        $date .= $updateData['EndMinutes'].":00 ";
+
         $handoff = record_volunteer_hours(
             $updateData['VolunteerID'],
             $updateData['ActualHoursWorked'],
-            $updateData['EndDateTime'],
+            $date,
             $updateData['TimeModifier'],
             $updateData['DepartmentWorked'],
             $updateData['EnteredBy'],
