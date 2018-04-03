@@ -4,6 +4,16 @@
     require_module 'standard';
 .*/
 
+if (!in_array('concom', $DISABLEDMODULES)) {
+    if (is_dir($MODULESDIR.DIRECTORY_SEPARATOR.'concom')) {
+        $check = $MODULESDIR.DIRECTORY_SEPARATOR.'concom';
+          $check .= DIRECTORY_SEPARATOR.'functions/concom.inc';
+          if (is_file($check)) {
+              require_once($check);
+          }
+    }
+}
+
 function _parse_user($result, $additional_fields)
 {
     $user = array();
@@ -19,8 +29,8 @@ function _parse_user($result, $additional_fields)
     } else {
         $user['Last Name'] = $result['Last Name'];
     }
-    if (!empty($result['CVGConCom Current Position'])) {
-        $user['ConCom'] = $result['CVGConCom Current Position'];
+    if (class_exists('CONCOM') && method_exists('CONCOM', 'getConComPosition')) {
+        $user['ConCom'] = CONCOM::getConComPosition($user['Id']);
     }
     if (!empty($result['Email 1'])) {
         $user['Email'] = $result['Email 1'];
@@ -41,13 +51,12 @@ function _lookup_user($criteria, $single_result = false, $additional_fields = ar
     global $Neon;
     $preferredFirstName = search_definedFields('Preferred First Name');
     $preferredLastName = search_definedFields('Preferred Last Name');
-    $currentConCom = search_definedFields('CVGConCom Current Position');
 
     $search = [
     'method' => 'account/listAccounts',
     'columns' => [
     'standardFields' => ['Account ID', 'First Name', 'Last Name', 'Email 1'],
-    'customFields' => [$preferredFirstName, $preferredLastName, $currentConCom],
+    'customFields' => [$preferredFirstName, $preferredLastName],
     ],
     'criteria' => $criteria,
     'page' => [
