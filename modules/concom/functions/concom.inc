@@ -6,11 +6,11 @@ require_once($FUNCTIONDIR.'/users.inc');
 
 class VOLUNTEERS {
 
-    public static function _inVolunteers($lookup)
+    public static function inVolunteers($lookup)
     {
         $sql = "SELECT count($ListRecordID) From ConComList";
         $sql .= " WHERE AccountID = $lookup";
-        $sql .=" AND DepartmentID = 156;";
+        $sql .=" AND DepartmentID = (SELECT DepartmentID FROM Departments WHERE Name = 'Volunteers');";
         $result = DB::run($sql);
         $value = $result->fetch();
         if ($value !== 0) {
