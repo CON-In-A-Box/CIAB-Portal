@@ -137,8 +137,26 @@ function lookup_users_by_pref_name($name, $single = false)
     if (count($names) != 2) {
         return ['code' => '400 Bad Request', 'users' => array()];
     }
-    return _lookup_user(
+
+    /* We have to do a few searchs due to Neon stupidity */
+    $output = _lookup_user(
         [[$preferredFirstName, 'EQUAL', $names[0]],
+         [$preferredLastName, 'EQUAL', $names[1]]],
+        $single
+    );
+    if (count($output['users']) != 0) {
+        return $output;
+    }
+    $output = _lookup_user(
+        [[$preferredFirstName, 'EQUAL', $names[0]],
+         ['Last Name', 'EQUAL', $names[1]]],
+        $single
+    );
+    if (count($output['users']) != 0) {
+        return $output;
+    }
+    return  _lookup_user(
+        [['First Name', 'EQUAL', $names[0]],
          [$preferredLastName, 'EQUAL', $names[1]]],
         $single
     );
