@@ -22,6 +22,20 @@ function calculateHours() {
   checkHours();
 }
 
+function markEndTime(invalid) {
+  if (invalid) {
+    document.getElementById('end_date').classList.add('w3-red');
+    document.getElementById('end_hours').classList.add('w3-red');
+    document.getElementById('end_minutes').classList.add('w3-red');
+    document.getElementById('end_ampm').classList.add('w3-red');
+  } else {
+    document.getElementById('end_date').classList.remove('w3-red');
+    document.getElementById('end_hours').classList.remove('w3-red');
+    document.getElementById('end_minutes').classList.remove('w3-red');
+    document.getElementById('end_ampm').classList.remove('w3-red');
+  }
+}
+
 function resetForm() {
   userLookup.clear();
   document.getElementById('submitbtn').disabled = true;
@@ -38,7 +52,7 @@ function resetForm() {
     }
   }
   document.getElementById('message').innerHTML = '';
-  document.getElementById('datetime').classList.remove('w3-red');
+  markEndTime(false);
 }
 
 function formatTime(time) {
@@ -65,15 +79,26 @@ function formatTime(time) {
   return (days[time.getDay()] + ' ' + hours.toString() + ':' + min + pmam);
 }
 
+function buildEndDate() {
+  var endHours = Number(document.getElementById('end_hours').value);
+  var endMins = Number(document.getElementById('end_minutes').value);
+  var endAmpm = document.getElementById('end_ampm').value;
+
+  var end = document.getElementById('end_date').value;
+  var str = end + ' ' + endHours + ':' + endMins + ':00 ' + endAmpm;
+  return new Date(str);
+}
+
 function checkHours() {
-  document.getElementById('datetime').classList.remove('w3-red');
+  markEndTime(false);
   document.getElementById('message').innerHTML = '';
 
   if (volPast && volPast.length) {
     var hours = Number(document.getElementById('hours').value);
     var mins  = Number(document.getElementById('minutes').value);
-    var newEnd = new Date(document.getElementById('datetime').value);
-    var newBegin = new Date(document.getElementById('datetime').value);
+
+    var newEnd = buildEndDate();
+    var newBegin = buildEndDate();
     newBegin.setHours(newBegin.getHours() - hours);
     newBegin.setMinutes(newBegin.getMinutes() - mins);
 
@@ -88,7 +113,7 @@ function checkHours() {
       if ((newBegin < _end && newBegin > _begin) ||
           (newEnd < _end && newEnd > _begin) ||
           (newEnd >= _end && newBegin <= _begin)) {
-        document.getElementById('datetime').classList.add('w3-red');
+        markEndTime(true);
         document.getElementById('message').innerHTML = 'Overlapping with ' +
             _shift['Department Worked'] + ' ( ' + formatTime(_begin) +
             ' - ' + formatTime(_end) + ' ) ';
@@ -99,7 +124,7 @@ function checkHours() {
 }
 
 function onSuccess(target, resp) {
-  document.getElementById('datetime').classList.remove('w3-red');
+  markEndTime(false);
   document.getElementById('message').innerHTML = '';
 
   if (resp.length > 1) {

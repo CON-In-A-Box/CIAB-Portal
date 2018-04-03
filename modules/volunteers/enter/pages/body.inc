@@ -76,20 +76,34 @@ if (isset($uid)) {
   </div>
   <div class='w3-bar-item'>
     <label>Date/Time that the Shift Ended</label>
-    <input class="w3-input w3-border" type="datetime-local" name="EndDateTime" id="datetime" pattern="\d{4}-\d{2}-\d{2}T\d{2}:\d{2}" value="<?php
-    echo date('Y-m-d');
-    echo 'T'.date('H').':';
-    $min = date('i');
-    if ($min < 15) {
-        echo "00";
-    } elseif ($min < 30) {
-        echo "15";
-    } elseif ($min < 45) {
-        echo "30";
-    } else {
-        echo "45";
-    }
+    <input class="w3-input w3-border" type="date" name="EndDate" id="end_date" pattern="\d{4}-\d{2}-\d{2}T\d{2}:\d{2}" value="<?php
+echo date('Y-m-d');
     ?>" required onchange="checkHours();">
+
+<?php
+$m  = date('i');
+$o = 15-($m%15);
+$m += $o;
+$h = date('H');
+if ($m >= 60) {
+    $m -= 60;
+    $h ++;
+}
+$pm = ($h > 12);
+$h %= 12;
+?>
+
+    <input class="w3-input w3-bar-item w3-border" type=number id="end_hours" value=<?php echo $h ?> style="width: 75px;" required onchange="checkHours();" name="EndHours" min=1 max=12>
+    <select class="w3-select w3-bar-item w3-border" type=number name="EndMinutes" id="end_minutes" title="" style="height: 40px;" required onchange="checkHours();" name="EndMinutes">
+      <option value=0  <?php if ($m==0) echo 'selected';?>>:00</option>
+      <option value=15 <?php if ($m==15) echo 'selected';?>>:15</option>
+      <option value=30 <?php if ($m==30) echo 'selected';?>>:30</option>
+      <option value=45 <?php if ($m==45) echo 'selected';?>>:45</option>
+    </select>
+    <select class="w3-select w3-bar-item w3-border" type=text name="EndAMPM" id="end_ampm" title="" style="height: 40px;" required onchange="checkHours();" name="EndAMPM">
+      <option value="AM" <?php if (!$pm) echo 'selected';?>>AM</option>
+      <option value="PM" <?php if ($pm) echo 'selected';?>>PM</option>
+    </select>
   </div>
 </div>
 
