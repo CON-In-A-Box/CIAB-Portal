@@ -4,6 +4,24 @@ require_once($FUNCTIONDIR.'/divisional.inc');
 require_once($FUNCTIONDIR."/database.inc");
 require_once($FUNCTIONDIR.'/users.inc');
 
+class VOLUNTEERS {
+
+    public static function inVolunteers($lookup)
+    {
+        $sql = "SELECT count($ListRecordID) From ConComList";
+        $sql .= " WHERE AccountID = $lookup";
+        $sql .=" AND DepartmentID = (SELECT DepartmentID FROM Departments WHERE Name = 'Volunteers');";
+        $result = DB::run($sql);
+        $value = $result->fetch();
+        if ($value !== 0) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+}
 
 function getDivision($dep)
 {
@@ -17,7 +35,6 @@ function getDepartmentEmails($dep)
     return($GLOBALS['Departments'][$dep]['Email']);
 
 }
-
 
 function getPositionID($position)
 {
