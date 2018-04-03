@@ -8,7 +8,7 @@ class VOLUNTEERS {
 
     public static function inVolunteers($lookup)
     {
-        $sql = "SELECT count($ListRecordID) From ConComList";
+        $sql = "SELECT count(ListRecordID) From ConComList";
         $sql .= " WHERE AccountID = $lookup";
         $sql .=" AND DepartmentID = (SELECT DepartmentID FROM Departments WHERE Name = 'Volunteers');";
         $result = DB::run($sql);

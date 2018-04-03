@@ -218,7 +218,7 @@ function loadAccount($accountId)
     $_SESSION['customFields']['hotelRoomCheckOut'] = &$_SESSION['customFields'][search_definedFields('Check Out')];
 
     // If the logged in user is in the volunteers, note it
-    if (function_exists('VOLUNTEERS::inVolunteers')) {
+    if (class_exists('VOLUNTEERS') && method_exists('VOLUNTEERS', 'inVolunteers')) {
         $_SESSION['IS_VOLUNTEERS'] = VOLUNTEERS::inVolunteers($accountId);
     }
 
