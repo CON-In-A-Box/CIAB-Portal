@@ -1,6 +1,12 @@
 <div id="main_content" class="w3-cell w3-cell-top w3-mobile">
 
 <?php
+/*.
+    require_module 'standard';
+.*/
+
+$hour_round_interval = 15;
+
 if (isset($updateComplete)) {
     if ($updateComplete === true) {
         echo '<div class="w3-block w3-center w3-green">';
@@ -66,10 +72,16 @@ if (isset($uid)) {
         <option value=19>19</option>
       </select>
       <select class="w3-select w3-bar-item w3-border" type=text name="ActualMinutes" id="minutes" onchange="calculateHours();" title="Actual Minutes Worked, to the nearest 15 minutes">
-        <option value=0 selected>:00</option>
-        <option value=0.25>:15</option>
-        <option value=0.5>:30</option>
-        <option value=0.75>:45</option>
+
+<?php
+for ($i = 0; $i < 60; $i += $hour_round_interval) {
+    echo "<option value = $i ";
+    if ($i == 0) {
+        echo 'selected';
+    }
+    echo ">:".sprintf('%02d', $i)."</option>\n";
+}
+?>
       </select>
     </div>
     <input type=hidden name="ActualHoursWorked" id="actualhours" value=1>
@@ -81,10 +93,13 @@ echo date('Y-m-d');
     ?>" required onchange="checkHours();">
 
 <?php
-$m  = date('i');
-$o = 15-($m%15);
+$m  = intval(date('i'));
+$o = $m % $hour_round_interval;
+if ($o != 0) {
+    $o = $hour_round_interval - $o;
+}
 $m += $o;
-$h = date('H');
+$h = intval(date('H'));
 if ($m >= 60) {
     $m -= 60;
     $h ++;
@@ -95,10 +110,15 @@ $h %= 12;
 
     <input class="w3-input w3-bar-item w3-border" type=number id="end_hours" value=<?php echo $h ?> style="width: 75px;" required onchange="checkHours();" name="EndHours" min=1 max=12>
     <select class="w3-select w3-bar-item w3-border" type=number name="EndMinutes" id="end_minutes" title="" style="height: 40px;" required onchange="checkHours();" name="EndMinutes">
-      <option value=0  <?php if ($m==0) echo 'selected';?>>:00</option>
-      <option value=15 <?php if ($m==15) echo 'selected';?>>:15</option>
-      <option value=30 <?php if ($m==30) echo 'selected';?>>:30</option>
-      <option value=45 <?php if ($m==45) echo 'selected';?>>:45</option>
+<?php
+for ($i = 0; $i < 60; $i += $hour_round_interval) {
+    echo "<option value = $i ";
+    if ($m == $i) {
+        echo 'selected';
+    }
+    echo ">:".sprintf('%02d', $i)."</option>\n";
+}
+?>
     </select>
     <select class="w3-select w3-bar-item w3-border" type=text name="EndAMPM" id="end_ampm" title="" style="height: 40px;" required onchange="checkHours();" name="EndAMPM">
       <option value="AM" <?php if (!$pm) echo 'selected';?>>AM</option>
