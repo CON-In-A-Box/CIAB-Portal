@@ -23,3 +23,13 @@ if (isset($_SESSION['IS_VOLUNTEERS']) || isset($_SESSION['IS_ADMIN'])) {
      'text' => 'Volunteers',
      'responsive' => true);
 }
+
+if (isset($_SESSION['kioskMode'])) {
+    $admin_menus[] = array('base style' => 'w3-right w3-blue',
+     'selected style' => 'w3-green w3-right',
+     'function' => 'volunteers/kiosk',
+     'title' => 'Change Kiosk User from '.$_SESSION['kioskUser'],
+     'i class' => 'fa fa-exchange',
+     'text' => 'Change Kiosk User from '.$_SESSION['kioskUser'],
+     'responsive' => true);
+}

@@ -14,6 +14,7 @@ var userLookup = (function(options) {
           message: 'Member Badge Number, E-Mail or Full Name',
           success: _lookupSuccess,
           fail: _lookupFailed,
+          handler: null,
           needForm: true,
           lookupTarget: 'index.php?Function=functions&lookupId=',
           badgeName: true,
@@ -57,15 +58,15 @@ var userLookup = (function(options) {
       userLookup.markFailure();
       if (code == 400) {
         document.getElementById('userLookup_message').innerHTML =
-          id + ' invalid lookup.';
+          user + ' invalid lookup.';
       }
       else if (code == 404) {
         document.getElementById('userLookup_message').innerHTML =
-          id + ' not found.';
+          user + ' not found.';
       }
       else if (code == 409) {
         document.getElementById('userLookup_message').innerHTML =
-          id + ' has too many matches.';
+          user + ' has too many matches.';
       }
     }
 
@@ -75,6 +76,10 @@ var userLookup = (function(options) {
         },
 
         gotoTarget: function(origin, uid) {
+          if (settings.handler !== null) {
+            settings.handler(origin, uid);
+            return;
+          }
           var newTarget = '';
           var i = origin.indexOf(settings.urlTag + '=');
           if (uid) {

@@ -107,7 +107,7 @@ if (isset($uid)) {
     <label>Department worked</label><br />
     <select class="w3-select w3-border" style="width:auto" name="DepartmentWorked" id="department">
         <?php
-        if (strpos($_SESSION['customFields']['currConComPos'][0], 'Volunteers') !== false || isset($_SESSION['IS_ADMIN'])) {
+        if (strpos($_SESSION['customFields']['currConComPos'][0], 'Volunteers') !== false || isset($_SESSION['IS_ADMIN']) || isset($_SESSION['kioskUser'])) {
             require_once($FUNCTIONDIR."/divisional.inc");
             foreach ($Departments as $dep => $set) {
                 echo '<option value="'.$dep.'"';
@@ -152,14 +152,20 @@ if (isset($uid)) {
 <div class='w3-bar'>
   <div class="w3-bar-item">
     <?php
-    if (isset($_SESSION['IS_VOLUNTEERS']) || isset($_SESSION['IS_ADMIN'])) {
+    if ((isset($_SESSION['IS_VOLUNTEERS']) || isset($_SESSION['IS_ADMIN'])) &&
+        !isset($_SESSION['kioskUser'])) {
         echo '<label class="w3-left">Hours Authorized By</label>';
         echo '<input class="w3-input w3-border" type=text';
     } else {
         echo '<input type=hidden';
     }
-    echo ' name="AuthorizedBy" value="'.$_SESSION['accountId'].'" required>';
-    echo '<input type=hidden name="EnteredBy" value="'.$_SESSION['accountId'].'" required>';
+    if (isset($_SESSION['kioskUser'])) {
+        echo ' name="AuthorizedBy" value="'.$_SESSION['kioskUser'].'" required>'; 
+        echo '<input type=hidden name="EnteredBy" value="'.$_SESSION['kioskUser'].'" required>';
+    } else {
+        echo ' name="AuthorizedBy" value="'.$_SESSION['accountId'].'" required>'; 
+        echo '<input type=hidden name="EnteredBy" value="'.$_SESSION['accountId'].'" required>';
+    }
     ?>
   </div>
 </div>

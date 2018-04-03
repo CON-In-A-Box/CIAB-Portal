@@ -583,7 +583,7 @@ function switchKiosk() {
       setTimeout(function() {location.reload() ;}, 1000);
     }
   };
-  xhttp.open('POST', 'index.php?Function=volunteers/admin', true);
+  xhttp.open('POST', 'index.php?Function=volunteers/kiosk', true);
   xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
   xhttp.send('&toggleKiosk=true');
 }
@@ -600,7 +600,7 @@ function toggleKioskMode() {
     checkAuthentication(userEmail, switchKiosk, failKiosk,
                         {title: 'Exiting Kiosk Mode'});
   } else {
-    switchKiosk();
+    setTimeout(function() {window.location = 'index.php?Function=volunteers/kiosk';}, 1000);
   }
 }
 

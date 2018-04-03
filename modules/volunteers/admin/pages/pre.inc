@@ -93,7 +93,6 @@ if (!empty($_REQUEST)) {
     'update_prize'     => FILTER_UNSAFE_RAW,
     'delete_prize'     => FILTER_SANITIZE_SPECIAL_CHARS,
     'new_prize'        => FILTER_UNSAFE_RAW,
-    'toggleKiosk'      => FILTER_SANITIZE_SPECIAL_CHARS,
     'refundId'         => FILTER_SANITIZE_SPECIAL_CHARS,
     ];
 
@@ -183,17 +182,6 @@ if (!empty($_REQUEST)) {
             exit();
         } else {
             header("HTTP/1.0 401");
-            exit();
-        }
-    }
-
-    if (isset($updateData['toggleKiosk'])) {
-        if (isset($_SESSION['IS_ADMIN']) || isset($_SESSION['IS_VOLUNTEERS'])) {
-            if (isset($_SESSION['kioskMode'])) {
-                unset($_SESSION['kioskMode']);
-            } else {
-                $_SESSION['kioskMode'] = 'volunteers';
-            }
             exit();
         }
     }
