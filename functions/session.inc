@@ -1,5 +1,18 @@
 <?php
 
+/*.
+    require_module 'standard';
+.*/
+
+if (!in_array('concom', $DISABLEDMODULES)) {
+    if (is_dir($MODULESDIR.DIRECTORY_SEPARATOR.'concom')) {
+        $check = $MODULESDIR.DIRECTORY_SEPARATOR.'concom';
+          $check .= DIRECTORY_SEPARATOR.'functions/concom.inc';
+          if (is_file($check)) {
+              require_once($check);
+          }
+    }
+}
 
 function buildSessionData($accountId)
 {
@@ -57,7 +70,9 @@ function buildSessionData($accountId)
     }
 
     // Current ConCom Positions and ConCom Years Served
-    $_SESSION['customFields']['currConComPos'] = &$_SESSION['customFields'][search_definedFields('CVGConCom Current Position')];
+    if (class_exists('CONCOM') && method_exists('CONCOM', 'getConComPosition')) {
+        $_SESSION['customFields']['currConComPos']  = CONCOM::getConComPosition($accountId);
+    }
 
     // Current Hotel Lottery Status
     $_SESSION['customFields']['hotelLotteryStatus'] = &$_SESSION['customFields'][search_definedFields('Lottery Status')];
@@ -100,12 +115,7 @@ function loadAccount($accountId)
                     $_SESSION['definedFields'][$fval['id']] = $fval['name'];
                 }
                 unset($fval);
-                if ($val['fieldName'] == "CVGConCom Years Served") {
-                    foreach ($val['fieldOptions']['fieldOption'] as $fval) {
-                        $_SESSION['definedFields']['conComYears'][$fval['id']] = $fval['name'];
-                    }
-                    unset($fval);
-                } elseif ($val['fieldName'] == "Official Meeting Attendance") {
+                if ($val['fieldName'] == "Official Meeting Attendance") {
                     foreach ($val['fieldOptions']['fieldOption'] as $fval) {
                         $_SESSION['definedFields']['Meetings'][$fval['id']] = $fval['name'];
                     }
@@ -134,7 +144,6 @@ function loadAccount($accountId)
     }
 
     // Sort everything so displays come out correct always
-    arsort($_SESSION['definedFields']['conComYears']);
     arsort($_SESSION['definedFields']['Meetings']);
 
     // Be ready if there is a preferred name need in the next section
@@ -197,7 +206,9 @@ function loadAccount($accountId)
     }
 
     // Current ConCom Positions and ConCom Years Served
-    $_SESSION['customFields']['currConComPos'] = &$_SESSION['customFields'][search_definedFields('CVGConCom Current Position')];
+    if (class_exists('CONCOM') && method_exists('CONCOM', 'getConComPosition')) {
+        $_SESSION['customFields']['currConComPos']  = CONCOM::getConComPosition($accountId);
+    }
 
     // Current Hotel Lottery Status
     $_SESSION['customFields']['hotelLotteryStatus'] = &$_SESSION['customFields'][search_definedFields('Lottery Status')];
