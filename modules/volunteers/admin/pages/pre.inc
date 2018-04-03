@@ -32,7 +32,7 @@ function output_cvs($report, $filename)
 
 
 /* This should only be accessable from volunteer staff */
-if (!(isset($_SESSION['IS_ADMIN']) || isset($_SESSION['IS_VOLUNTEERS']))) {
+if (!(isset($_SESSION['IS_ADMIN']) || $_SESSION['IS_VOLUNTEERS'])) {
     goSite();
 }
 
@@ -51,7 +51,7 @@ if (!empty($_REQUEST)) {
     $updateData = filter_input_array(INPUT_GET, $arguments);
 
     if (isset($updateData['min_hour'])) {
-        if (isset($_SESSION['IS_ADMIN']) || isset($_SESSION['IS_VOLUNTEERS'])) {
+        if (isset($_SESSION['IS_ADMIN']) || $_SESSION['IS_VOLUNTEERS']) {
             $min = $updateData['min_hour'];
             $report = volunteer_minimum_hour_report($min);
             output_cvs($report, "hour_report.csv");
@@ -63,7 +63,7 @@ if (!empty($_REQUEST)) {
     }
 
     if (isset($updateData['dept_report'])) {
-        if (isset($_SESSION['IS_ADMIN']) || isset($_SESSION['IS_VOLUNTEERS'])) {
+        if (isset($_SESSION['IS_ADMIN']) || $_SESSION['IS_VOLUNTEERS']) {
             $dept = $updateData['dept_report'];
             $name = $updateData['dept_name'];
             $report = volunteers_in_dept(intval($dept));
@@ -76,7 +76,7 @@ if (!empty($_REQUEST)) {
     }
 
     if (isset($updateData['generateCSV'])) {
-        if (isset($_SESSION['IS_ADMIN']) || isset($_SESSION['IS_VOLUNTEERS'])) {
+        if (isset($_SESSION['IS_ADMIN']) || $_SESSION['IS_VOLUNTEERS']) {
             csv_headers($updateData['generateCSV'].'.csv');
             print dump_table_to_csv($updateData['generateCSV']);
             exit();
@@ -111,7 +111,7 @@ if (!empty($_REQUEST)) {
     require_once($FUNCTIONDIR."/authentication.inc");
 
     if (isset($updateData['validate_login'])) {
-        if (isset($_SESSION['IS_ADMIN']) || isset($_SESSION['IS_VOLUNTEERS'])) {
+        if (isset($_SESSION['IS_ADMIN']) || $_SESSION['IS_VOLUNTEERS']) {
             if (doUserAndPasswordMatch($updateData['validate_login'], urldecode($updateData['validate_passwd']))) {
                 setcookie("CIAB_VOLUNTEERADMIN", true);
                 exit;
@@ -124,7 +124,7 @@ if (!empty($_REQUEST)) {
     }
 
     if (isset($updateData['update_hour'])) {
-        if (isset($_SESSION['IS_ADMIN']) || isset($_SESSION['IS_VOLUNTEERS'])) {
+        if (isset($_SESSION['IS_ADMIN']) || $_SESSION['IS_VOLUNTEERS']) {
             $item = json_decode($updateData['update_hour']);
             update_volunteer_hours($item->{'EntryID'}, null, $item->{'Actual Hours'}, $item->{'End Date Time'}, $item->{'Time Modifier'}, $item->{'Department Worked'}, null, $item->{'Authorized By'});
             exit();
@@ -135,14 +135,14 @@ if (!empty($_REQUEST)) {
     }
 
     if (isset($updateData['delete_hour'])) {
-        if (isset($_SESSION['IS_ADMIN']) || isset($_SESSION['IS_VOLUNTEERS'])) {
+        if (isset($_SESSION['IS_ADMIN']) || $_SESSION['IS_VOLUNTEERS']) {
             delete_volunteer_hours($updateData['delete_hour']);
             exit();
         }
     }
 
     if (isset($updateData['update_prize'])) {
-        if (isset($_SESSION['IS_ADMIN']) || isset($_SESSION['IS_VOLUNTEERS'])) {
+        if (isset($_SESSION['IS_ADMIN']) || $_SESSION['IS_VOLUNTEERS']) {
             $item = json_decode($updateData['update_prize']);
             if ($item->{'RewardGroupID'} == 'new') {
                 $group = add_volunteer_prize_group($item->{'GroupLimit'});
@@ -161,14 +161,14 @@ if (!empty($_REQUEST)) {
     }
 
     if (isset($updateData['delete_prize'])) {
-        if (isset($_SESSION['IS_ADMIN']) || isset($_SESSION['IS_VOLUNTEERS'])) {
+        if (isset($_SESSION['IS_ADMIN']) || $_SESSION['IS_VOLUNTEERS']) {
             delete_volunteer_prize($updateData['delete_prize']);
             exit();
         }
     }
 
     if (isset($updateData['new_prize'])) {
-        if (isset($_SESSION['IS_ADMIN']) || isset($_SESSION['IS_VOLUNTEERS'])) {
+        if (isset($_SESSION['IS_ADMIN']) || $_SESSION['IS_VOLUNTEERS']) {
             $item = json_decode($updateData['new_prize']);
             if ($item->{'RewardGroupID'} == 'new') {
                 $group = add_volunteer_prize_group($item->{'GroupLimit'});

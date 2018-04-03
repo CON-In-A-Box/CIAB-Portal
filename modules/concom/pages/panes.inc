@@ -13,15 +13,11 @@ function draw_status()
         echo "<table class='w3-table w3-striped w3-bordered w3-white'>\n";
         echo "<tr><th class='w3-center w3-black'>Current ConCom Status</th></tr>\n";
         foreach ($_SESSION['customFields']['currConComPos'] as $val) {
-            $positionsHeld = explode("|", $val);
-            foreach ($positionsHeld as $pos) {
-                $tmp = explode(",", $pos);
-                echo "<tr><td>".$tmp[1]." of ".$tmp[0];
-                if (!empty($tmp[2])) {
-                    echo " - Note: ".$tmp[2];
-                }
-                echo "</td></tr>\n";
+            echo "<tr><td>".$val['position']." of ".$val['department'];
+            if (!empty($val['note'])) {
+                echo " - Note: ".$val['note'];
             }
+            echo "</td></tr>\n";
             unset($pos);
             unset($tmp);
         }

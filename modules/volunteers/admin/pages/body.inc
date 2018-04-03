@@ -19,7 +19,7 @@ if (!empty($_REQUEST)) {
     $uid = $updateData['volunteerId'];
 }
 
-if (isset($_SESSION['IS_ADMIN']) || isset($_SESSION['IS_VOLUNTEERS'])) {
+if (isset($_SESSION['IS_ADMIN']) || $_SESSION['IS_VOLUNTEERS']) {
     if (isset($_COOKIE["CIAB_VOLUNTEERADMIN"])) {
         $admin_mode = $_COOKIE["CIAB_VOLUNTEERADMIN"];
     }
@@ -519,7 +519,7 @@ echo "</div>\n"
 
 <div class="w3-rest w3-center">
 <?php
-if (isset($_SESSION['IS_ADMIN']) || isset($_SESSION['IS_VOLUNTEERS'])) {
+if (isset($_SESSION['IS_ADMIN']) || $_SESSION['IS_VOLUNTEERS']) {
 ?>
   <div>
     <div class="w3-show-inline-block w3-right w3-red w3-margin">

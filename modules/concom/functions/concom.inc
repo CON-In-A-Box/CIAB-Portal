@@ -8,12 +8,12 @@ class VOLUNTEERS {
 
     public static function inVolunteers($lookup)
     {
-        $sql = "SELECT count(ListRecordID) From ConComList";
+        $sql = "SELECT count(ListRecordID) as count From ConComList";
         $sql .= " WHERE AccountID = $lookup";
         $sql .=" AND DepartmentID = (SELECT DepartmentID FROM Departments WHERE Name = 'Volunteers');";
         $result = DB::run($sql);
         $value = $result->fetch();
-        if ($value !== 0) {
+        if ($value !== false && $value['count']) {
             return true;
         }
         else {
@@ -64,7 +64,7 @@ SQL;
                 $retvalue = array();
             }
             $retvalue[] = ['position' => $value['Position'],
-                         'departemnt' => $value['Department'],
+                         'department' => $value['Department'],
                          'departmentId' => $value['DepartmentID'],
                          'note' =>  $value['Note']];
             $value = $result->fetch();

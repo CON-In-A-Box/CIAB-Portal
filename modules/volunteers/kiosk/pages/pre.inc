@@ -12,7 +12,7 @@ if (!empty($_REQUEST)) {
 
     $updateData = filter_input_array(INPUT_POST, $arguments);
     if (isset($updateData['toggleKiosk'])) {
-        if (isset($_SESSION['IS_ADMIN']) || isset($_SESSION['IS_VOLUNTEERS'])) {
+        if (isset($_SESSION['IS_ADMIN']) || $_SESSION['IS_VOLUNTEERS']) {
             if ($updateData['toggleKiosk'] === "true") {
                 if (isset($_SESSION['kioskMode'])) {
                     unset($_SESSION['kioskMode']);
