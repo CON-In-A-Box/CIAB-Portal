@@ -9,7 +9,7 @@ if (isset($_SESSION['customFields']['currConComPos'])) {
      'responsive' => true);
 }
 
-if (!empty($_SESSION['IS_VOLUNTEERS']) || !empty($_SESSION['IS_ADMIN'])) {
+if ($_SESSION['IS_VOLUNTEERS'] || !empty($_SESSION['IS_ADMIN'])) {
     $basecolor = 'w3-yellow';
     if (array_key_exists('CIAB_VOLUNTEERADMIN', $_COOKIE) &&
        $_COOKIE["CIAB_VOLUNTEERADMIN"]) {

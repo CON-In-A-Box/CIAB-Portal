@@ -141,7 +141,15 @@ for ($i = 0; $i < 60; $i += $hour_round_interval) {
     <label>Department worked</label><br />
     <select class="w3-select w3-border" style="width:auto" name="DepartmentWorked" id="department">
         <?php
-        if (strpos($_SESSION['customFields']['currConComPos'][0], 'Volunteers') !== false || isset($_SESSION['IS_ADMIN']) || isset($_SESSION['kioskUser'])) {
+        $isVolunteers = false;
+        foreach($_SESSION['customFields']['currConComPos'] as $position)
+        {
+            if ($position['department'] === 'Volunteers') {
+                $isVolunteers = true;
+                break;
+            }
+        }
+        if ($isVolunteers || isset($_SESSION['IS_ADMIN']) || isset($_SESSION['kioskUser'])) {
             require_once($FUNCTIONDIR."/divisional.inc");
             foreach ($Departments as $dep => $set) {
                 echo '<option value="'.$dep.'"';
@@ -151,14 +159,12 @@ for ($i = 0; $i < 60; $i += $hour_round_interval) {
                 echo '>'.$dep."</option>\n";
             }
         } else {
-            $depset = explode('|', $_SESSION['customFields']['currConComPos'][0]);
-            foreach ($depset as $set) {
-                $dep = explode(',', $set);
-                echo '<option value="'.$dep[0].'"';
-                if (isset($_REQUEST['department']) && $_REQUEST['department'] == $dep) {
+            foreach ($_SESSION['customFields']['currConComPos'] as $dep) {
+                echo '<option value="'.$dep['department'].'"';
+                if (isset($_REQUEST['department']) && $_REQUEST['department'] == $dep['department']) {
                     echo " selected";
                 }
-                echo '>'.$dep[0]."</option>\n";
+                echo '>'.$dep['department']."</option>\n";
             }
         }
         ?>
@@ -186,7 +192,7 @@ for ($i = 0; $i < 60; $i += $hour_round_interval) {
 <div class='w3-bar'>
   <div class="w3-bar-item">
     <?php
-    if ((isset($_SESSION['IS_VOLUNTEERS']) || isset($_SESSION['IS_ADMIN'])) &&
+    if (($_SESSION['IS_VOLUNTEERS'] || isset($_SESSION['IS_ADMIN'])) &&
         !isset($_SESSION['kioskUser'])) {
         echo '<label class="w3-left">Hours Authorized By</label>';
         echo '<input class="w3-input w3-border" type=text';
