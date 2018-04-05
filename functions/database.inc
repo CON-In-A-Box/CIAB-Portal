@@ -122,10 +122,10 @@ SQL;
     {
         require_once($GLOBALS['BASEDIR'].'/data/database-schema.php');
         DB::_buildMissingTables();
-        if (!empty($_SESSION['username']) && !empty($_REQUEST['Function']) && $_REQUEST['Function'] != 'update') {
+        if (!empty($_REQUEST['Function']) && $_REQUEST['Function'] != 'update') {
             $upgrade = DB::_getCurrentDBVersion();
             if ($upgrade != SCHEMA::$REQUIED_DB_SCHEMA) {
-	        // If we have to do an update, do it
+            // If we have to do an update, do it
                 header("Location: http://".$_SERVER['SERVER_NAME']."/index.php?Function=update&from=".$upgrade."&to=".SCHEMA::$REQUIED_DB_SCHEMA);
             }
         }

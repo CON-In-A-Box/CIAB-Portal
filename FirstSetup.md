@@ -13,15 +13,7 @@
     1. Ensure your Neon account id in in the comma seperated list of `ADMINACCOUNTS`
     1. Ensure your `NEONKEY` and `NEONID` are correct for the Neon you are accessing
 
-1. Use a web client to access the web server. You should get redirected to `http://<host>/index.php?Function=public`. Log in with your Neon ID.
-
-	***There is a bug at present***. The site will *THINK* it has updated from Neon but it has not. (Aric Stewart is working on a fix)
-
-1.  You can blank out the `DBSchemaVersion` configuration value to force a Neon update:
-
-	> UPDATE con_concomsi.Configuration SET Value = '' WHERE Configuration.Field = 'DBSchemaVersion';
-
-	Now you revisit most any page on the website and you will get a message about importing the data from Neon. Note: This will take a while!!  You should now be fully functional. It is best to visit the `concom` list to make sure that looks like the list you would expect.
+1. Use a web client to access the web server. You should get redirected to `http://<host>/index.php?Function=public`. The setup will proceed automatically.
 
 1. Finally, If you want to fill the database with dummy volunteer data then you can use the php script by loading `http://<host>/test/populate_volunteer.php`
 
