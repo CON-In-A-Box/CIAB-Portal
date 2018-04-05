@@ -5,6 +5,7 @@
 .*/
 
 require_once(__DIR__.'/functions.inc');
+require_once(__DIR__.'/session.inc');
 
 function _update_DB_Version($target)
 {
@@ -24,6 +25,7 @@ SQL;
 
 function db_do_update($from, $to)
 {
+    loadDefinedFields();
     if ($from < 2018011700) {
         require_once(__DIR__."/update/from_neon_to_152.inc");
         from_neon_to_152();
