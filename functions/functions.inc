@@ -87,6 +87,21 @@ if (is_file($SITECONFIG)) {
 
     // Include NeonCRM for DB calls via API
     require_once(__DIR__."/neon.inc");
+
+    // Load the base of all active modules
+    $modules = scandir($MODULESDIR);
+    foreach ($modules as $key => $value) {
+        if (!in_array($value, array(".", ".."))) {
+            if (in_array($value, $DISABLEDMODULES)) {
+                continue;
+            }
+            if (is_dir($MODULESDIR.DIRECTORY_SEPARATOR.$value)) {
+                if (is_file($MODULESDIR.DIRECTORY_SEPARATOR.$value.DIRECTORY_SEPARATOR.'init.inc')) {
+                    require_once($MODULESDIR.DIRECTORY_SEPARATOR.$value.DIRECTORY_SEPARATOR.'init.inc');
+                }
+            }
+        }
+    }
 } else {
     // Give a default config file
     echo '
