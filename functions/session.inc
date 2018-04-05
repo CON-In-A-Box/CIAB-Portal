@@ -93,8 +93,7 @@ function validateDeepLink($deepLinkId)
 
 }
 
-
-function loadAccount($accountId)
+function loadDefinedFields()
 {
     global $_SESSION, $Neon, $ADMINACCOUNTS;
 
@@ -145,6 +144,13 @@ function loadAccount($accountId)
 
     // Sort everything so displays come out correct always
     arsort($_SESSION['definedFields']['Meetings']);
+
+}
+
+function loadAccount($accountId)
+{
+    global $_SESSION, $Neon, $ADMINACCOUNTS;
+    loadDefinedFields();
 
     // Be ready if there is a preferred name need in the next section
     $preferredFirstName = search_definedFields('Preferred First Name');
