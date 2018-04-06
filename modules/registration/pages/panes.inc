@@ -28,7 +28,7 @@ function badges()
         foreach ($badges as $badge) {
             $name = $badge['BadgeName'];
             if ($name == null) {
-                $name = "&lt;unselected&gt;";
+                $name = "<unselected>";
             }
             if (array_key_exists($badge['EventName'], $lines)) {
                 $lines[$badge['EventName']][] = [
