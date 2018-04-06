@@ -5,7 +5,7 @@ require_once('functions/functions.inc');
 // Divert to public page if we are not under function control
 if (empty($_REQUEST['Function'])) {
     goSite('/index.php?Function=public');
-} 
+}
 
 // Enforce disabled modules
 $arr = explode('/', trim($_REQUEST['Function']));
@@ -34,10 +34,10 @@ if (!empty($_REQUEST['DeepLink'])) {
     } else {
         goSite('/index.php?Function=public');
     }
-} elseif ($_REQUEST['Function'] == "update" ) {
+} elseif ($_REQUEST['Function'] == "update") {
     // Check the update process, doesn't matter if we are logged in or not.
     $noheader = true; // updates don't need statusbars or logmenus
-} elseif ($_REQUEST['Function'] == "public" ) {
+} elseif ($_REQUEST['Function'] == "public") {
     $noheader = true; // public pages don't need statusbars or logmenus
 } elseif (empty($_SESSION['username'])) {
     // if no username is set and we are not calling a public page or a deeplink, redirect for login needs

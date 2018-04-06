@@ -195,5 +195,4 @@ if (!empty($_REQUEST)) {
         refund_prizes($updateData['refundId'], $prizes);
         exit();
     }
-
 }

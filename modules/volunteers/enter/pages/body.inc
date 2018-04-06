@@ -89,7 +89,7 @@ for ($i = 0; $i < 60; $i += $hour_round_interval) {
   <div class='w3-bar-item'>
     <label>Date/Time that the Shift Ended</label>
     <input class="w3-input w3-border" type="date" name="EndDate" id="end_date" pattern="\d{4}-\d{2}-\d{2}T\d{2}:\d{2}" value="<?php
-echo date('Y-m-d');
+    echo date('Y-m-d');
     ?>" required onchange="checkHours();">
 
 <?php
@@ -121,8 +121,14 @@ for ($i = 0; $i < 60; $i += $hour_round_interval) {
 ?>
     </select>
     <select class="w3-select w3-bar-item w3-border" type=text name="EndAMPM" id="end_ampm" title="" style="height: 40px;" required onchange="checkHours();" name="EndAMPM">
-      <option value="AM" <?php if (!$pm) echo 'selected';?>>AM</option>
-      <option value="PM" <?php if ($pm) echo 'selected';?>>PM</option>
+      <option value="AM" <?php
+        if (!$pm) {
+            echo 'selected';
+        }?>>AM</option>
+      <option value="PM" <?php
+        if ($pm) {
+            echo 'selected';
+        }?>>PM</option>
     </select>
   </div>
 </div>
@@ -142,8 +148,7 @@ for ($i = 0; $i < 60; $i += $hour_round_interval) {
     <select class="w3-select w3-border" style="width:auto" name="DepartmentWorked" id="department">
         <?php
         $isVolunteers = false;
-        foreach($_SESSION['customFields']['currConComPos'] as $position)
-        {
+        foreach ($_SESSION['customFields']['currConComPos'] as $position) {
             if ($position['department'] === 'Volunteers') {
                 $isVolunteers = true;
                 break;
@@ -200,10 +205,10 @@ for ($i = 0; $i < 60; $i += $hour_round_interval) {
         echo '<input type=hidden';
     }
     if (isset($_SESSION['kioskUser'])) {
-        echo ' name="AuthorizedBy" value="'.$_SESSION['kioskUser'].'" required>'; 
+        echo ' name="AuthorizedBy" value="'.$_SESSION['kioskUser'].'" required>';
         echo '<input type=hidden name="EnteredBy" value="'.$_SESSION['kioskUser'].'" required>';
     } else {
-        echo ' name="AuthorizedBy" value="'.$_SESSION['accountId'].'" required>'; 
+        echo ' name="AuthorizedBy" value="'.$_SESSION['accountId'].'" required>';
         echo '<input type=hidden name="EnteredBy" value="'.$_SESSION['accountId'].'" required>';
     }
     ?>

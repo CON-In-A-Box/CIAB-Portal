@@ -28,5 +28,4 @@ if (!empty($_REQUEST)) {
         }
         exit();
     }
-
 }

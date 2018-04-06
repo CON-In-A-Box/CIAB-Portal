@@ -88,6 +88,7 @@ function getDepartmentEmails($dep)
 
 }
 
+
 function getPositionID($position)
 {
     global $db;

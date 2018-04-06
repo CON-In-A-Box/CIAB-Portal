@@ -44,11 +44,11 @@ if (!isset($_SESSION['kioskMode'])) {
 ?>
         xhttp.send('toggleKiosk=true&kioskUser='+uid);
 <?php
-      } else {
+} else {
 ?>
         xhttp.send('toggleKiosk=false&kioskUser='+uid);
 <?php
-      }
+}
 ?>
     }
 
