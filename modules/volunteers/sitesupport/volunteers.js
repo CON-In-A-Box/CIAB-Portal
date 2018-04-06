@@ -602,7 +602,9 @@ function toggleKioskMode() {
     checkAuthentication(userEmail, switchKiosk, failKiosk,
                         {title: 'Exiting Kiosk Mode'});
   } else {
-    setTimeout(function() {window.location = 'index.php?Function=volunteers/kiosk';}, 1000);
+    setTimeout(function() {
+        window.location = 'index.php?Function=volunteers/kiosk';
+      }, 1000);
   }
 }
 
@@ -683,12 +685,12 @@ function finishReturn() {
   var list = {};
   returnCart.forEach(function(item, index) {
       if (item.Returned) {
-          if (item.item.PrizeID in list) {
-            list[item.item.PrizeID].count += 1;
-          } else {
-            list[item.item.PrizeID] = {name: item.item.Name, count: 1};
-          }
+        if (item.item.PrizeID in list) {
+          list[item.item.PrizeID].count += 1;
+        } else {
+          list[item.item.PrizeID] = {name: item.item.Name, count: 1};
         }
+      }
     });
 
   for (var key in list) {
