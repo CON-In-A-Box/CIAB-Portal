@@ -3,6 +3,8 @@
  */
 
 /* jshint browser: true */
+/* jshint -W097 */
+/* globals userLookup */
 
 'use strict';
 

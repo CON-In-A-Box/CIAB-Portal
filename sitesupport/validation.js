@@ -1,7 +1,9 @@
 function validate_required(field,alerttxt) {
-  with (field) {
-    if (value == null || value == '') {alert(alerttxt);return false}
-    else {return true}
+  if (field.value === null || field.value === '') {
+    alert(alerttxt);
+    return false;
+  } else {
+    return true;
   }
 }
 // example of required
@@ -15,11 +17,10 @@ function validate_required(field,alerttxt) {
 // }
 
 function validate_select(field,alerttxt) {
-  with (field) {
-    if (selectedIndex == null || selectedIndex == '0') {
-      alert(alerttxt);return false;
-    }
-    else {return true}
+  if (field.selectedIndex === null || field.selectedIndex == '0') {
+    alert(alerttxt);return false;
+  } else {
+    return true;
   }
 }
 // example of required
@@ -34,11 +35,13 @@ function validate_select(field,alerttxt) {
 // }
 
 function validate_email(field,alerttxt) {
-  with (field) {
-    apos = value.indexOf('@')
-    dotpos = value.lastIndexOf('.')
-    if (apos < 1 || dotpos - apos < 2) {alert(alerttxt);return false}
-    else {return true}
+  apos = field.value.indexOf('@');
+  dotpos = field.value.lastIndexOf('.');
+  if (apos < 1 || dotpos - apos < 2) {
+    alert(alerttxt);
+    return false;
+  } else {
+    return true;
   }
 }
 
@@ -53,13 +56,11 @@ function validate_email(field,alerttxt) {
 // }
 
 function validate_date(field,alerttxt) {
-  with (field) {
-    re = /^(\d{4})-(\d{2})-(\d{2})$/;
-    if (value === null || !value.match(re)) {
-      alert(alerttxt);
-      return false;
-    } else {
-      return true;
-    }
+  re = /^(\d{4})-(\d{2})-(\d{2})$/;
+  if (field.value === null || !field.value.match(re)) {
+    alert(alerttxt);
+    return false;
+  } else {
+    return true;
   }
 }

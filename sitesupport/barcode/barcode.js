@@ -68,11 +68,11 @@ var QuaggaApp = {
         }
         if (window.MediaSettingsRange &&
             capability instanceof window.MediaSettingsRange) {
-          var node = document.querySelector(
+          var node2 = document.querySelector(
             'select[name="settings_' + setting + '"]');
-          if (node) {
-            this.updateOptionsForMediaRange(node, capability);
-            node.parentNode.style.display = 'block';
+          if (node2) {
+            this.updateOptionsForMediaRange(node2, capability);
+            node2.parentNode.style.display = 'block';
           }
           return;
         }
@@ -216,9 +216,9 @@ var QuaggaApp = {
             });
           document.body.appendChild(this._overlay);
         } else {
-          var closeButton = document.querySelector('.overlay__close');
-          closeButton.addEventListener('click', function closeClick() {
-              closeButton.removeEventListener('click', closeClick);
+          var closeButton2 = document.querySelector('.overlay__close');
+          closeButton2.addEventListener('click', function closeClick() {
+              closeButton2.removeEventListener('click', closeClick);
               cancelCb();
             });
         }
