@@ -185,7 +185,6 @@ function onSuccess(target, resp) {
   }
 }
 
-
 function onFail(target, resp, name, code) {
   userLookup.markFailure();
   document.getElementById('submitbtn').disabled = true;
