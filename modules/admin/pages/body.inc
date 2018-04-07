@@ -163,6 +163,12 @@ if (!empty($searchCriteria['firstName']) ||
   </fieldset>
 </form>
 <hr>
+    <form action="index.php?Function=admin" method="POST" class="form-inline">
+    SUDO:
+    <input type="text" class="form-control" name="SUDO" value="" />
+    <input type="submit" value="Execute" class="btn btn-default" />
+    </form>
+<hr>
 <?php if ($result && !$result['code']) : ?>
   <table class="table table-striped">
     <tr>
