@@ -3,6 +3,10 @@
  */
 
 /* jshint browser: true */
+/* jshint -W097 */
+/* globals confirmbox, userId, escapeHtml, userEmail, checkAuthentication,
+           kioskMode, groupData, checkAuthentication, adminMode, unclaimed,
+           hoursRemain, userLookup */
 
 'use strict';
 
@@ -151,8 +155,9 @@ function updateCheckout() {
   }
 
   var output = {};
+  var item;
   for (var index in checkout) {
-    var item = checkout[index];
+    item = checkout[index];
     if (item.PrizeID in output) {
       output[item.PrizeID].count += 1;
     } else {
@@ -162,8 +167,8 @@ function updateCheckout() {
 
   table = document.getElementById('checkout_table');
   for (index in output) {
-    var item = output[index];
     var row = table.insertRow(-1);
+    item = output[index];
     row.setAttribute('data-prizeid', item.prize.PrizeID);
     row.classList.add('w3-hover-red');
     row.setAttribute('onclick', 'removeFromCheckout(' + item.prize.PrizeID +
@@ -387,32 +392,34 @@ function showEditPrize(data) {
   groupsNow = JSON.parse(groupData);
   showSidebar('edit_prize_div');
 
+  var item;
   if (!data) {
     document.getElementById('edit_prize_title').innerHTML = 'Enter New Prize';
     document.getElementById('delete_prize_button').style.visibility = 'hidden';
-    var item = {};
+    item = {};
   } else {
     document.getElementById('edit_prize_title').innerHTML = 'Edit Prize Entry';
     document.getElementById('delete_prize_button').style.visibility = 'visible';
-    var item = JSON.parse(atob(data));
+    item = JSON.parse(atob(data));
   }
 
   var grp = document.getElementById('edit_prize_group');
   if (grp.length == 1) {
+    var option;
     for (var key in groupsNow) {
-      var option = document.createElement('option');
+      option = document.createElement('option');
       option.text = 'Group #' + key + ' : Limit ' + groupsNow[key];
       option.value = key;
       grp.add(option);
     }
-    var option = document.createElement('option');
+    option = document.createElement('option');
     option.text = 'New Group';
     option.value = 'new';
     grp.add(option);
   }
 
   if (data) {
-    var item = JSON.parse(atob(data));
+    item = JSON.parse(atob(data));
     document.getElementById('edit_prize_name').value = item.Name;
     document.getElementById('edit_prize_value').value = item.Value;
     document.getElementById('edit_prize_promo').value = item.Promo;
@@ -602,7 +609,9 @@ function toggleKioskMode() {
     checkAuthentication(userEmail, switchKiosk, failKiosk,
                         {title: 'Exiting Kiosk Mode'});
   } else {
-    setTimeout(function() {window.location = 'index.php?Function=volunteers/kiosk';}, 1000);
+    setTimeout(function() {
+        window.location = 'index.php?Function=volunteers/kiosk';
+      }, 1000);
   }
 }
 
@@ -683,12 +692,12 @@ function finishReturn() {
   var list = {};
   returnCart.forEach(function(item, index) {
       if (item.Returned) {
-          if (item.item.PrizeID in list) {
-            list[item.item.PrizeID].count += 1;
-          } else {
-            list[item.item.PrizeID] = {name: item.item.Name, count: 1};
-          }
+        if (item.item.PrizeID in list) {
+          list[item.item.PrizeID].count += 1;
+        } else {
+          list[item.item.PrizeID] = {name: item.item.Name, count: 1};
         }
+      }
     });
 
   for (var key in list) {
@@ -705,7 +714,7 @@ function finishReturn() {
 }
 
 function doReturn() {
-  confirmbox.close()
+  confirmbox.close();
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {

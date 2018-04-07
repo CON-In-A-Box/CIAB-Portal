@@ -1,0 +1,14 @@
+#!/bin/bash
+
+cwd=${PWD}
+
+if [[ $cwd = *"tools"* ]]; then
+  cd ..;
+fi
+
+if [ -z "$1" ]
+    then
+        find . -type f \( -iname "*.js" ! -iname "*.min.js" ! -path "*/sitesupport/speller/*" \)  -exec jshint --verbose {} \;
+    else
+        jshint --verbose $1;
+fi;

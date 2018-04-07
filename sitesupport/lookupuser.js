@@ -125,9 +125,9 @@ var userLookup = (function(options) {
               '<i class=\'fa fa-spinner w3-spin\'></i>';
             document.getElementById('userLookup_message').innerHTML = '';
             xhttp.onreadystatechange = function() {
+              var response = JSON.parse(this.responseText);
               if (this.readyState == 4 && this.status == 200) {
                 userLookup.clearFailure();
-                var response = JSON.parse(this.responseText);
                 settings.success(target, response);
               } else if (this.readyState == 4) {
                 settings.fail(target, response, id, this.status);

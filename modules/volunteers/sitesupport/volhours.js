@@ -3,6 +3,8 @@
  */
 
 /* jshint browser: true */
+/* jshint -W097 */
+/* globals userLookup */
 
 'use strict';
 
@@ -184,7 +186,6 @@ function onSuccess(target, resp) {
     }
   }
 }
-
 
 function onFail(target, resp, name, code) {
   userLookup.markFailure();
