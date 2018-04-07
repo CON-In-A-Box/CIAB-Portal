@@ -47,20 +47,26 @@ function display_volunteer_prizes()
 {
     $data = volunteer_prizes_for_user($_SESSION['accountId']);
     if ($data && !empty($data)) {
-        echo "<div class='w3-container w3-blue'>\n";
-        echo "<table class='w3-table w3-striped w3-bordered w3-white'>\n";
-        echo "<tr><th class='w3-center w3-blue' colspan=2>Rewards claimed so far this year</th></tr>\n";
-        $output = array();
+        $aquired = [];
         foreach ($data as $entry) {
-            if (!isset($entry['Aquired']) || $entry['Aquired'] == 0) {
-                continue;
+            if (isset($entry['Aquired']) && $entry['Aquired'] > 0) {
+                $aquired[] = $entry;
             }
-            echo "<tr><td>".htmlspecialchars($entry['Name']).'</td>';
-            echo "<td>".$entry['Aquired'].'</td>';
-            echo "</tr>\n";
         }
-        echo "</table>\n";
-        echo "</div>\n";
+
+        if (!empty($aquired)) {
+            echo "<div class='w3-container w3-blue'>\n";
+            echo "<table class='w3-table w3-striped w3-bordered w3-white'>\n";
+            echo "<tr><th class='w3-center w3-blue' colspan=2>Rewards claimed so far this year</th></tr>\n";
+            $output = array();
+            foreach ($aquired as $entry) {
+                echo "<tr><td>".htmlspecialchars($entry['Name']).'</td>';
+                echo "<td>".$entry['Aquired'].'</td>';
+                echo "</tr>\n";
+            }
+            echo "</table>\n";
+            echo "</div>\n";
+        }
     }
 
 }
