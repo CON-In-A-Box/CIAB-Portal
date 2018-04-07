@@ -1,4 +1,4 @@
-function validate_required(field,alerttxt) {
+function validateRequired(field,alerttxt) {
   if (field.value === null || field.value === '') {
     alert(alerttxt);
     return false;
@@ -11,12 +11,12 @@ function validate_required(field,alerttxt) {
 // {
 // with (thisform)
 // {
-// if (validate_required(email,"Name must be filled out!")==false)
+// if (validateRequired(email,"Name must be filled out!")==false)
 //   {name.focus();return false}
 // }
 // }
 
-function validate_select(field,alerttxt) {
+function validateSelect(field,alerttxt) {
   if (field.selectedIndex === null || field.selectedIndex == '0') {
     alert(alerttxt);return false;
   } else {
@@ -29,12 +29,12 @@ function validate_select(field,alerttxt) {
 // {
 // with (thisform)
 // {
-// if (validate_select(Item,"Must make a selection!")==false)
+// if (validateSelect(Item,"Must make a selection!")==false)
 //   {Item.focus();return false}
 // }
 // }
 
-function validate_email(field,alerttxt) {
+function validateEmail(field,alerttxt) {
   apos = field.value.indexOf('@');
   dotpos = field.value.lastIndexOf('.');
   if (apos < 1 || dotpos - apos < 2) {
@@ -50,12 +50,12 @@ function validate_email(field,alerttxt) {
 // {
 // with (thisform)
 // {
-// if (validate_email(email,"Not a valid e-mail address!")==false)
+// if (validateEmail(email,"Not a valid e-mail address!")==false)
 //   {email.focus();return false}
 // }
 // }
 
-function validate_date(field,alerttxt) {
+function validateDate(field,alerttxt) {
   re = /^(\d{4})-(\d{2})-(\d{2})$/;
   if (field.value === null || !field.value.match(re)) {
     alert(alerttxt);

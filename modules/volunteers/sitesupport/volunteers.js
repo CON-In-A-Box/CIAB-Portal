@@ -60,7 +60,8 @@ function showSidebar(Id) {
 function showHideSoldOut() {
   var unhide = (document.getElementById('soldoutcheck').checked);
   var table = document.getElementById('prizes');
-  for (var i = 0, row; row = table.rows[i]; i++) {
+  for (var i = 0; i < table.rows.length; i++) {
+    var row = table.rows[i];
     if (unhide && row.className.includes(' hiddenrow')) {
       row.className = row.className.replace(' hiddenrow', '');
     } else if (!unhide && row.className.includes('soldoutrow')) {

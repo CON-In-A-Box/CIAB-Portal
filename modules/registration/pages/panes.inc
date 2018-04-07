@@ -63,21 +63,21 @@ function badges()
 
         <table class='w3-table w3-striped w3-bordered w3-white'>
 <?php
-        foreach ($lines as $con => $names) {
-            echo "<table class='w3-table w3-striped w3-bordered w3-white'>\n";
-            echo "<tr><th class='w3-center w3-green' colspan=5'>".$con;
-            echo " (".count($names)." badges)</th></tr>\n";
-            $keys = array_keys($names[0]);
-            echo "<tr><th>";
-            echo implode(_htmlsafeify($keys), '</th><th>');
-            echo "</th></tr>\n";
-            foreach ($names as $badge) {
-                echo "<tr><td>";
-                echo implode(_htmlsafeify($badge), '</td><td> ');
-                echo "</td></tr>\n";
-            }
-            echo "</table>\n";
-        }
+foreach ($lines as $con => $names) {
+    echo "<table class='w3-table w3-striped w3-bordered w3-white'>\n";
+    echo "<tr><th class='w3-center w3-green' colspan=5'>".$con;
+    echo " (".count($names)." badges)</th></tr>\n";
+    $keys = array_keys($names[0]);
+    echo "<tr><th>";
+    echo implode(_htmlsafeify($keys), '</th><th>');
+    echo "</th></tr>\n";
+    foreach ($names as $badge) {
+        echo "<tr><td>";
+        echo implode(_htmlsafeify($badge), '</td><td> ');
+        echo "</td></tr>\n";
+    }
+    echo "</table>\n";
+}
 ?>
         <tr class='w3-blue'><th colspan=5 class='w3-center'></th></tr>
         </table>
