@@ -49,10 +49,20 @@ function badges()
             }
         }
         ksort($lines);
+?>
+        <script src="modules/registration/sitesupport/registration.js"></script>
+        <div class='w3-container w3-blue'>
 
-        echo "<div class='w3-container w3-blue'>\n";
-        echo "<table class='w3-table w3-striped w3-bordered w3-white'>\n";
-        echo "<tr><th class='w3-center w3-blue' colspan=5'>Badges Purchased</th></tr>\n";
+        <div class='w3-center w3-blue'>
+            <b style="margin-left: 100px;">Badges Purchased</b>
+            <div class='w3-right'>
+                <input id='refresh' type='button' class='w3-button w3-orange'
+                       onclick='refreshBadgeData(<?php echo $_SESSION['accountId'];?>)' value='refresh'>
+            </div>
+        </div>
+
+        <table class='w3-table w3-striped w3-bordered w3-white'>
+<?php
         foreach ($lines as $con => $names) {
             echo "<table class='w3-table w3-striped w3-bordered w3-white'>\n";
             echo "<tr><th class='w3-center w3-green' colspan=5'>".$con;
@@ -68,9 +78,11 @@ function badges()
             }
             echo "</table>\n";
         }
-        echo "<tr class='w3-blue'><th colspan=5 class='w3-center'></th></tr>";
-        echo "</table>\n";
-        echo "</div>\n";
+?>
+        <tr class='w3-blue'><th colspan=5 class='w3-center'></th></tr>
+        </table>
+        </div>
+<?php
     }
 
 }
