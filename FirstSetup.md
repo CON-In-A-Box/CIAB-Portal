@@ -4,16 +4,11 @@
     1. Note: the apache server needs the headers and php7 modules
     1. Note: php needs the libcurl integration (php7-curl)
 
-1. On your MySQL server make a user `con_concomsi-dev`, and a database `con_concomsi`. Give the user full access to the database. If you want to do other username and database names you can but it requires more modifications to `.ht_meetingsignin_config.php`.
+1. On your MySQL server make a user, such as `con_concomsi-dev`, and a database, such as `con_concomsi`. Give the user full access to the database. 
 
-1. Copy `.ht_meetingsignin_config.php-EXAMPLE` to `.ht_meetingsignin_config.php` and edit the contents. Make sure the DBHOST is correct and DBPASS is the password for the DBUSER on the database.
-    1. This config file should be set with permissions so that other users can't read your database credential while still letting the webserver read the file
+1. Use a web client to access the web server. You will get redirected to `http://<host>/configure_system.php`. There you will need to fill out all the information about your configuration. Make sure the database information matches the database you setup in the above step.
 
-1. Edit `data/DBSeed/Configuration.sql`
-    1. Ensure your Neon account id in in the comma seperated list of `ADMINACCOUNTS`
-    1. Ensure your `NEONKEY` and `NEONID` are correct for the Neon you are accessing
-
-1. Use a web client to access the web server. You should get redirected to `http://<host>/index.php?Function=public`. The setup will proceed automatically.
+1. Once all that is filled in. You should get redirected to `http://<host>/index.php?Function=public`. The updates will proceed automatically.
 
 1. Finally, If you want to fill the database with dummy volunteer data then you can use the php script by loading `http://<host>/test/populate_volunteer.php`
 
