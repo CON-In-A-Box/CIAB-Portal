@@ -15,7 +15,7 @@ if (!empty($_REQUEST)) {
     $updateData = filter_input_array(INPUT_GET, $arguments);
 
     require_once($FUNCTIONDIR."/update.inc");
-    db_do_update($updateData['from'],$updateData['to']);
+    db_do_update($updateData['from'], $updateData['to']);
 
     echo "<div>\n";
     echo "<button type='button' class='w3-button w3-green w3-left' onclick=window.location.href='http://".$_SERVER['SERVER_NAME']."'>Proceed</button>\n";

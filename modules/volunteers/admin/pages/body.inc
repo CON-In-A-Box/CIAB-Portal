@@ -129,11 +129,14 @@ function _htmlsafeify($array)
 
 }
 
+
 function _printHours($hours)
 {
     $min = floor(($hours - floor($hours)) * 60);
     echo number_format(floor($hours), 0)." Hours ".$min." Minutes ";
+
 }
+
 
 function hour_table($uid)
 {
@@ -284,9 +287,9 @@ function _prize_table_start($uid = 0, $spent = 0, $hoursRemain = 0)
                 $value = $entry['Value'];
             }
             $record[] = [ 'PrizeID' => $entry['PrizeID'],
-                          'Name' => $entry['Name'],
-                          'Aquired' => $entry['Aquired'],
-                          'Value' => $value,
+            'Name' => $entry['Name'],
+            'Aquired' => $entry['Aquired'],
+            'Value' => $value,
                         ];
         }
         $json = json_encode($record);
@@ -372,11 +375,11 @@ function prizes_table($uid)
                     }
                     if (array_key_exists('Aquired', $record) && ctype_digit($record['Aquired'])) {
                         $index = intval($record['RewardGroupID']);
-                        $groupTotals = array_pad($groupTotals, $index+1, 0);
+                        $groupTotals = array_pad($groupTotals, $index + 1, 0);
                         $groupTotals[$index] += intval($record['Aquired']);
                     } else {
                         $index = intval($record['RewardGroupID']);
-                        $groupTotals = array_pad($groupTotals, $index+1, 0);
+                        $groupTotals = array_pad($groupTotals, $index + 1, 0);
                         $groupTotals[$index] += 0;
                     }
                     $last_group = $record['RewardGroupID'];

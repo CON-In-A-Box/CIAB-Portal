@@ -7,12 +7,13 @@
 if (!in_array('concom', $DISABLEDMODULES)) {
     if (is_dir($MODULESDIR.DIRECTORY_SEPARATOR.'concom')) {
         $check = $MODULESDIR.DIRECTORY_SEPARATOR.'concom';
-          $check .= DIRECTORY_SEPARATOR.'functions/concom.inc';
-          if (is_file($check)) {
-              require_once($check);
-          }
+        $check .= DIRECTORY_SEPARATOR.'functions/concom.inc';
+        if (is_file($check)) {
+            require_once($check);
+        }
     }
 }
+
 
 function _parse_user($result, $additional_fields)
 {
@@ -155,7 +156,7 @@ function lookup_users_by_pref_name($name, $single = false)
     if (count($output['users']) != 0) {
         return $output;
     }
-    return  _lookup_user(
+    return _lookup_user(
         [['First Name', 'EQUAL', $names[0]],
          [$preferredLastName, 'EQUAL', $names[1]]],
         $single
@@ -180,8 +181,7 @@ SQL;
     $value = $result->fetch();
     $users = [];
     while ($value !== false) {
-        if ($single_user && count($users) > 1)
-        {
+        if ($single_user && count($users) > 1) {
             return array('code' => '409 Conflict', 'users' => array());
         }
         $users[] = lookup_user_by_id($value['AccountID'])['users'][0];

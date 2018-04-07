@@ -32,19 +32,19 @@ function badges()
             }
             if (array_key_exists($badge['EventName'], $lines)) {
                 $lines[$badge['EventName']][] = [
-                                            'Id' => $badge['AccountID'],
-                                            'Badge Name' =>$name,
-                                            'Emergency Contact' => $badge['EmergencyContact'],
-                                            'Purchased' => $badge['RegistrationDate'],
-                                            'Puchaser' => $badge['RegisteredByID']
+                'Id' => $badge['AccountID'],
+                'Badge Name' => $name,
+                'Emergency Contact' => $badge['EmergencyContact'],
+                'Purchased' => $badge['RegistrationDate'],
+                'Puchaser' => $badge['RegisteredByID']
                                                 ];
             } else {
                 $lines[$badge['EventName']] = [[
-                                            'Id' => $badge['AccountID'],
-                                            'Badge Name' => $name,
-                                            'Emergency Contact' => $badge['EmergencyContact'],
-                                            'Purchased' => $badge['RegistrationDate'],
-                                            'Puchaser' => $badge['RegisteredByID']
+                'Id' => $badge['AccountID'],
+                'Badge Name' => $name,
+                'Emergency Contact' => $badge['EmergencyContact'],
+                'Purchased' => $badge['RegistrationDate'],
+                'Puchaser' => $badge['RegisteredByID']
                                                ]];
             }
         }

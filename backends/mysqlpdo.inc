@@ -50,4 +50,5 @@ class MyPDO
     }
 
 
+    /* end class */
 }

@@ -1,0 +1,14 @@
+#!/bin/bash
+
+cwd=${PWD}
+
+if [[ $cwd = *"tools"* ]]; then
+  cd ..;
+fi
+
+if [ -z "$1" ]
+    then
+        phpcs --standard=./data/phpcs_ruleset.xml --report=summary --colors --ignore=sitesupport,neon,data *;
+    else
+        phpcs --standard=./data/phpcs_ruleset.xml --colors $1;
+fi;

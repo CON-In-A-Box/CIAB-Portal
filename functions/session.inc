@@ -7,12 +7,13 @@
 if (!in_array('concom', $DISABLEDMODULES)) {
     if (is_dir($MODULESDIR.DIRECTORY_SEPARATOR.'concom')) {
         $check = $MODULESDIR.DIRECTORY_SEPARATOR.'concom';
-          $check .= DIRECTORY_SEPARATOR.'functions/concom.inc';
-          if (is_file($check)) {
-              require_once($check);
-          }
+        $check .= DIRECTORY_SEPARATOR.'functions/concom.inc';
+        if (is_file($check)) {
+            require_once($check);
+        }
     }
 }
+
 
 function buildSessionData($accountId)
 {
@@ -93,6 +94,7 @@ function validateDeepLink($deepLinkId)
 
 }
 
+
 function loadDefinedFields()
 {
     global $_SESSION, $Neon, $ADMINACCOUNTS;
@@ -146,6 +148,7 @@ function loadDefinedFields()
     arsort($_SESSION['definedFields']['Meetings']);
 
 }
+
 
 function loadAccount($accountId)
 {
