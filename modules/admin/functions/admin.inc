@@ -7,7 +7,7 @@ function dbPrintLog($lines)
 {
     $sql = "SELECT * FROM ";
     $sql .= "( SELECT * FROM ActivityLog ORDER BY LogEntryID DESC LIMIT ".$lines.")";
-    $sql .= " sub ORDER BY LogEntryID ASC;";
+    $sql .= " sub ORDER BY LogEntryID DESC;";
     $results = DB::run($sql);
     echo '<div class="w3-row">';
     echo '<div class="w3-col s2 m2 l2">';
