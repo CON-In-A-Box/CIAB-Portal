@@ -10,6 +10,9 @@ require_once($FUNCTIONDIR.'/database.inc');
 if (!empty($_REQUEST)) {
     $arguments = [
     'SUDO'         => FILTER_SANITIZE_NUMBER_INT,
+    'setField'     => FILTER_SANITIZE_SPECIAL_CHARS,
+    'newField'     => FILTER_SANITIZE_SPECIAL_CHARS,
+    'value'        => FILTER_UNSAFE_RAW,
     ];
 
     $updateData = filter_input_array(INPUT_POST, $arguments);
@@ -21,8 +24,18 @@ if (!empty($_REQUEST)) {
         goSite();
     }
 
+    if (isset($updateData['setField'])) {
+        set_conf_value($updateData['setField'], $updateData['value']);
+        exit();
+    }
+
+    if (isset($updateData['newField'])) {
+        add_conf_value($updateData['newField'], $updateData['value']);
+        exit();
+    }
+
     $arguments = [
-    'downloadLog'  => FILTER_SANITIZE_NUMBER_CHART,
+    'downloadLog'  => FILTER_SANITIZE_SPECIAL_CHARS,
     ];
 
     $updateData = filter_input_array(INPUT_GET, $arguments);
@@ -40,5 +53,4 @@ if (!empty($_REQUEST)) {
         print dump_table_to_csv('ActivityLog');
         exit();
     }
-
 }

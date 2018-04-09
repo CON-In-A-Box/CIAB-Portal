@@ -42,3 +42,13 @@ function dbPrintLog($lines)
     }
 
 }
+
+
+function get_config()
+{
+    $output = [];
+    $sql = "SELECT * FROM `Configuration`;";
+    $results = DB::run($sql);
+    return $results;
+
+}
