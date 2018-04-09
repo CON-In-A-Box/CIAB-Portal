@@ -1,4 +1,9 @@
 <?php
+
+/*.
+    require_module 'standard';
+.*/
+
 require_once $FUNCTIONDIR.'/volunteer.inc';
 require_once $FUNCTIONDIR.'/users.inc';
 
@@ -22,6 +27,14 @@ if (!empty($_REQUEST)) {
 if (isset($_SESSION['IS_ADMIN']) || $_SESSION['IS_VOLUNTEERS']) {
     if (isset($_COOKIE["CIAB_VOLUNTEERADMIN"])) {
         $admin_mode = $_COOKIE["CIAB_VOLUNTEERADMIN"];
+    }
+}
+
+if ($admin_mode && isset($_SESSION['kioskMode'])) {
+    if (array_key_exists('VOL_ADMINKIOSK', $GLOBALS)) {
+        $admin_mode = ($GLOBALS['VOL_ADMINKIOSK'] == '1');
+    } else {
+        $admin_mode = false;
     }
 }
 
@@ -523,6 +536,9 @@ echo "</div>\n"
 <div class="w3-rest w3-center">
 <?php
 if (isset($_SESSION['IS_ADMIN']) || $_SESSION['IS_VOLUNTEERS']) {
+    if (!isset($_SESSION['kioskMode']) || (
+            array_key_exists('VOL_ADMINKIOSK', $GLOBALS) &&
+            $GLOBALS['VOL_ADMINKIOSK'])) {
 ?>
   <div>
     <div class="w3-show-inline-block w3-right w3-red w3-margin">
@@ -537,6 +553,9 @@ if (isset($_SESSION['IS_ADMIN']) || $_SESSION['IS_VOLUNTEERS']) {
       </table>
     </div>
   </div>
+<?php
+    }
+?>
 
   <div>
     <div class="w3-show-inline-block w3-left w3-blue w3-margin">
