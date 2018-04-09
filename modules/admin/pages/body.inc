@@ -248,10 +248,18 @@ function myActivityLog() {
         x.className = x.className.replace(" w3-show", "");
     }
 }
+
+function downloadLog() {
+  window.location = 'index.php?Function=admin&downloadLog=db';
+}
+
 </script>
 <div class="w3-dropdown-click w3-block">
   <button class="w3-button w3-tiny w3-block w3-left-align" onclick="myActivityLog()">DB Activity Log</button>
   <div id="ActivityLog" class="w3-dropdown-content">
-        <?php dbPrintLog(1000); ?>
+    <div>
+      <button class="w3-button w3-tiny w3-left-align w3-yellow" onclick="downloadLog()">Download Full Activity Log (CSV)</button>
+    </div>
+    <?php dbPrintLog(1000); ?>
   </div>
 </div>

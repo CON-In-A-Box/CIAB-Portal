@@ -304,9 +304,13 @@ function dump_table_to_csv($table, $condition = null)
         $value = $result->fetch();
     }
 
+    $fh = fopen('php://output', 'w');
+    ob_start();
+
     foreach($data as $line) {
-        $text .= implode(",",  $line)."\n";
+        fputcsv($fh, $line);
     }
+    $text = ob_get_clean();
 
     return $text;
 
