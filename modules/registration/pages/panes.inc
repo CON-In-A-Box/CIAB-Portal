@@ -50,6 +50,7 @@ function badges()
         }
         ksort($lines);
 ?>
+        <script src="sitesupport/common.js"></script>
         <script src="modules/registration/sitesupport/registration.js"></script>
         <div class='w3-container w3-blue'>
 
