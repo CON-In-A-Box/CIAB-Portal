@@ -160,3 +160,27 @@ function search_definedFields($key)
     return false;
 
 }
+
+
+function add_conf_value($field, $value)
+{
+    $sql = <<<SQL
+        INSERT INTO `Configuration`(`Field`, `Value`)
+        VALUES
+            ('$field', '$value');
+SQL;
+    DB::run($sql);
+
+}
+
+
+function set_conf_value($field, $value)
+{
+    $sql = <<<SQL
+        UPDATE `Configuration`
+        SET `Value`='$value'
+        WHERE `Field`='$field';
+SQL;
+    DB::run($sql);
+
+}

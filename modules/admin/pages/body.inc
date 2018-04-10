@@ -1,7 +1,7 @@
 <?php require($PAGESDIR.'/base/leftnav.inc'); ?>
 <div id="main_content"  class="w3-cell w3-cell-top w3-mobile">
 <?php
-echo "<h2>Welcome ".$_SESSION['preferredName']."!</h2>\n";
+echo "<h2 class='w3-center'>Welcome ".$_SESSION['preferredName']."!</h2>\n";
 
 require_once(__dir__."/../functions/admin.inc");
 require_once($FUNCTIONDIR.'/users.inc');
@@ -147,6 +147,8 @@ if (!empty($searchCriteria['firstName']) ||
 }
 
 ?>
+
+<div id="left_bar" class="w3-content w3-left w3-margin">
 <form action="index.php?Function=admin" method="POST" class="form-inline">
   <fieldset>
     <legend>Basic NeonCRM Account Search</legend>
@@ -203,6 +205,28 @@ if (!empty($searchCriteria['ID'])) {
     echo '</pre>';
 }
 ?>
+</div> <!-- left_bar --!>
+<div id="right_bar" class="w3-right w3-content w3-margin">
+<h2 class="w3-red w3-center">Site Configuration</h2>
+<table class="w3-table w3-striped w3-border">
+<tr><th class="w3-center">Field</th> <th class="w3-center">Value</th><th></th></tr>
+<?php
+$table = get_config();
+foreach ($table as $line) {
+    echo "<tr><td>".$line['Field']."</td>\n";
+    echo "<td><input type='text' id=config_".$line['Field']." value=\"".$line['Value']."\" class='w3-input w3-border'></td>\n";
+    echo "<td><button class='w3-button w3-round-xxlarge w3-green' onclick='setField(\"".$line['Field']."\")';>Set</button></td></tr>\n";
+}
+?>
+    <tr><td>
+      <input type='text' id=new_Field  value="" class='w3-input w3-border'>
+    </td><td>
+      <input type='text' id=new_Value  value="" class='w3-input w3-border'>
+    </td><td>
+      <button class='w3-button w3-round-xxlarge w3-red' onclick='addField()';>Add</button>
+    </td></tr>
+</table>
+</div>
 </div><!--close main_content div-->
 
 <!--Play Area for random testing code -->
@@ -227,6 +251,35 @@ function myDebug() {
         x.className = x.className.replace(" w3-show", "");
     }
 }
+
+function setField(field) {
+  var value = document.getElementById("config_"+field).value;
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      location.reload();
+    }
+  };
+  xhttp.open('POST', 'index.php?Function=admin', true);
+  xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+  xhttp.send('&setField='+field+'&value='+value);
+}
+
+function addField() {
+  var field = document.getElementById("new_Field").value;
+  var value = document.getElementById("new_Value").value;
+
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      location.reload();
+    }
+  };
+  xhttp.open('POST', 'index.php?Function=admin', true);
+  xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+  xhttp.send('&newField='+field+'&value='+value);
+}
+
 </script>
 <div class="w3-dropdown-click w3-block">
   <button class="w3-button w3-tiny w3-block w3-left-align" onclick="myDebug()">Debug Array Information</button>
