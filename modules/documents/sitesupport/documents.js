@@ -77,7 +77,7 @@ function loadFiles() {
       var resp = JSON.parse(this.response);
       resp.forEach(function(element) {
         var row = table.insertRow(-1);
-        row.classList.add('w3-hover-green');
+        row.classList.add('event-hover-primary');
         row.setAttribute('onclick', 'downloadFile("' + element[2] + '", "' +
             element[0] + '", "' + element[3] + '");');
         var cell = row.insertCell(0);
