@@ -8,7 +8,7 @@ fi
 
 if [ -z "$1" ]
     then
-        phpcs --standard=./data/phpcs_ruleset.xml --report=summary --colors --ignore=sitesupport,neon,data *;
+        phpcs --standard=./data/phpcs_ruleset.xml --report=summary --colors --ignore=sitesupport,neon,data,library *;
     else
         phpcs --standard=./data/phpcs_ruleset.xml --colors $1;
 fi;
