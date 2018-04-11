@@ -52,9 +52,9 @@ function badges()
 ?>
         <script src="sitesupport/common.js"></script>
         <script src="modules/registration/sitesupport/registration.js"></script>
-        <div class='w3-container w3-blue'>
+        <div class='w3-container event-color-secondary'>
 
-        <div class='w3-center w3-blue'>
+        <div class='w3-center event-color-secondary'>
             <b style="margin-left: 100px;">Badges Purchased</b>
             <div class='w3-right'>
                 <input id='refresh' type='button' class='w3-button w3-orange'
@@ -66,7 +66,7 @@ function badges()
 <?php
 foreach ($lines as $con => $names) {
     echo "<table class='w3-table w3-striped w3-bordered w3-white'>\n";
-    echo "<tr><th class='w3-center w3-green' colspan=5'>".$con;
+    echo "<tr><th class='w3-center event-color-primary' colspan=5'>".$con;
     echo " (".count($names)." badges)</th></tr>\n";
     $keys = array_keys($names[0]);
     echo "<tr><th>";
@@ -80,7 +80,7 @@ foreach ($lines as $con => $names) {
     echo "</table>\n";
 }
 ?>
-        <tr class='w3-blue'><th colspan=5 class='w3-center'></th></tr>
+        <tr class='event-color-secondary'><th colspan=5 class='w3-center'></th></tr>
         </table>
         </div>
 <?php

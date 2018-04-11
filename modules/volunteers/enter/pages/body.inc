@@ -9,7 +9,7 @@ $hour_round_interval = 15;
 
 if (isset($updateComplete)) {
     if ($updateComplete === true) {
-        echo '<div class="w3-block w3-center w3-green">';
+        echo '<div class="w3-block w3-center event-color-primary">';
         echo "Hours Recorded";
         echo "</div>\n";
     } else {
@@ -218,7 +218,7 @@ for ($i = 0; $i < 60; $i += $hour_round_interval) {
 <div class='w3-bar'>
   <div class="w3-bar-item">
     <div class="w3-bar">
-      <button id="submitbtn" class="w3-button w3-ripple w3-green" disabled>Submit Hours</button>
+      <button id="submitbtn" class="w3-button w3-ripple event-color-primary" disabled>Submit Hours</button>
       <button class="w3-button w3-ripple w3-khaki" type="button" onclick="resetForm()">Clear Form</button>
     </div>
   </div>

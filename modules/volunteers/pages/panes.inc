@@ -25,11 +25,11 @@ function display_volunteer_hours()
                 $spent += $entry['Value'] * $entry['Aquired'];
             }
         }
-        echo "<div class='w3-container w3-green'>\n";
+        echo "<div class='w3-container event-color-primary'>\n";
         echo "<table class='w3-table w3-striped w3-bordered w3-white'>\n";
-        echo "<tr><th class='w3-center w3-green' colspan=2>Current Volunteer Status</th></tr>\n";
-        echo "<tr><th class='w3-center w3-green' colspan=2>Total of ".$total." hours earned</th></tr>\n";
-        echo "<tr><th class='w3-center w3-blue' colspan=2>Total of  ".$spent." hours spent</th></tr>\n";
+        echo "<tr><th class='w3-center event-color-primary' colspan=2>Current Volunteer Status</th></tr>\n";
+        echo "<tr><th class='w3-center event-color-primary' colspan=2>Total of ".$total." hours earned</th></tr>\n";
+        echo "<tr><th class='w3-center event-color-secondary' colspan=2>Total of  ".$spent." hours spent</th></tr>\n";
         $output = array();
         foreach ($data as $entry) {
             echo '<tr><td>'.htmlspecialchars($entry['Department Worked']).'</td>';
@@ -55,9 +55,9 @@ function display_volunteer_prizes()
         }
 
         if (!empty($aquired)) {
-            echo "<div class='w3-container w3-blue'>\n";
+            echo "<div class='w3-container event-color-secondary'>\n";
             echo "<table class='w3-table w3-striped w3-bordered w3-white'>\n";
-            echo "<tr><th class='w3-center w3-blue' colspan=2>Rewards claimed so far this year</th></tr>\n";
+            echo "<tr><th class='w3-center event-color-secondary' colspan=2>Rewards claimed so far this year</th></tr>\n";
             $output = array();
             foreach ($aquired as $entry) {
                 echo "<tr><td>".htmlspecialchars($entry['Name']).'</td>';

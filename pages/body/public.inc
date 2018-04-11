@@ -1,4 +1,4 @@
-<header class="w3-cell-row w3-green w3-mobile">
+<header class="w3-cell-row event-color-primary w3-mobile">
   <?php require($PAGESDIR.'/base/logo.inc'); ?>
   <div class="w3-container w3-cell w3-mobile">
     <h2><?php echo $CONSITENAME; ?></h2>
@@ -26,7 +26,7 @@
       <input name="password" type="password" class="w3-input w3-border">
       
       <p>
-        <input type="submit" value="Log In" class="w3-button w3-round-xlarge w3-green">
+        <input type="submit" value="Log In" class="w3-button w3-round-xlarge event-color-primary">
       </p>
       <p>
         <a href='https://www.z2systems.com/np/clients/ce/requestPassword.jsp' onclick="window.open(this.href, 'ciab', 'left=100, top=100, width=900, height=600, toolbar=0, resizable=0, menubar=0, status=0, titlebar=0'); return false;">Forgot Password?</a>

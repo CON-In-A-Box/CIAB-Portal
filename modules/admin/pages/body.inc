@@ -215,7 +215,7 @@ $table = get_config();
 foreach ($table as $line) {
     echo "<tr><td>".$line['Field']."</td>\n";
     echo "<td><input type='text' id=config_".$line['Field']." value=\"".$line['Value']."\" class='w3-input w3-border'></td>\n";
-    echo "<td><button class='w3-button w3-round-xxlarge w3-green' onclick='setField(\"".$line['Field']."\")';>Set</button></td></tr>\n";
+    echo "<td><button class='w3-button w3-round-xxlarge event-color-primary' onclick='setField(\"".$line['Field']."\")';>Set</button></td></tr>\n";
 }
 ?>
     <tr><td>
