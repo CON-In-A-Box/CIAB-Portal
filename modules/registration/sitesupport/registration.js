@@ -4,6 +4,7 @@
 
 /* jshint browser: true */
 /* jshint -W097 */
+/* global showSpinner */
 
 'use strict';
 
