@@ -63,8 +63,14 @@ if (!empty($_REQUEST)) {
         $mime = $updateData['mime'];
         $client_info = create_client();
         $service = get_drive_service($client_info[0]);
-        $response = $service->files->get($fileId, array(
-            'alt' => 'media'));
+        if (strpos($mime, 'google') === false) {
+            $response = $service->files->get($fileId, array(
+                'alt' => 'media'));
+        } else {
+            $response = $service->files->export($fileId, 'application/pdf', array(
+                'alt' => 'media'));
+            $filename = $filename.'.pdf';
+        }
         $content = $response->getBody()->getContents();
 
         header("Content-Type: ".$mime."; charset=UTF-8");
