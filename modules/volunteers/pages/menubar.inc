@@ -1,7 +1,7 @@
 <?php
 if (isset($_SESSION['customFields']['currConComPos'])) {
     $base_menus[] = array('base style' => '',
-     'selected style' => 'w3-green',
+     'selected style' => 'event-color-primary',
      'function' => 'volunteers/enter',
      'title' => 'Track Volunteer\'s hours',
      'i class' => 'fa fa-clock-o',
@@ -16,7 +16,7 @@ if ($_SESSION['IS_VOLUNTEERS'] || !empty($_SESSION['IS_ADMIN'])) {
         $basecolor = 'w3-red';
     }
     $admin_menus[] = array('base style' => $basecolor,
-     'selected style' => 'w3-green',
+     'selected style' => 'event-color-primary',
      'function' => 'volunteers/admin',
      'title' => 'Volunteer\'s',
      'i class' => 'fa fa-users',
@@ -25,8 +25,8 @@ if ($_SESSION['IS_VOLUNTEERS'] || !empty($_SESSION['IS_ADMIN'])) {
 }
 
 if (isset($_SESSION['kioskMode'])) {
-    $admin_menus[] = array('base style' => 'w3-right w3-blue',
-     'selected style' => 'w3-green w3-right',
+    $admin_menus[] = array('base style' => 'w3-right event-secondary-color',
+     'selected style' => 'event-color-primary w3-right',
      'function' => 'volunteers/kiosk',
      'title' => 'Change Kiosk User from '.$_SESSION['kioskUser'],
      'i class' => 'fa fa-exchange',

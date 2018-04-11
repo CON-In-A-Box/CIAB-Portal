@@ -26,7 +26,7 @@ if (!$kioskMode) {
     if (!isset($base_menus)) {
         $base_menus = array();
         $base_menus[] = array('base style' => '',
-             'selected style' => 'w3-green',
+             'selected style' => 'event-color-primary',
              'function' => 'main',
              'title' => 'Main Page',
              'i class' => 'fa fa-home',
@@ -34,7 +34,7 @@ if (!$kioskMode) {
              'responsive' => false);
 
         $base_menus[] = array('base style' => '',
-             'selected style' => 'w3-green',
+             'selected style' => 'event-color-primary',
              'function' => 'profile',
              'title' => 'Update Profile Information',
              'i class' => 'fa fa-user',

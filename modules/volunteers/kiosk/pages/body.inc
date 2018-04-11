@@ -4,7 +4,7 @@ if (!isset($_SESSION['kioskMode'])) {
 <div id="kiosk_dlg" class="w3-modal">
   <div class="w3-modal-content">
     <div class="w3-container">
-      <h2 class="w3-center w3-green">Entering Volunteer Kiosk Mode</h2>
+      <h2 class="w3-center event-color-primary">Entering Volunteer Kiosk Mode</h2>
       <hr>
       <h3 class="w3-center">User operating the Kiosk:</h3>
       <div id="userLookup_div" class="w3-center"/>
@@ -17,7 +17,7 @@ if (!isset($_SESSION['kioskMode'])) {
 <div id="kiosk_dlg" class="w3-modal">
   <div class="w3-modal-content">
     <div class="w3-container">
-      <h2 class="w3-center w3-green">Switch Kiosk User Mode</h2>
+      <h2 class="w3-center event-color-primary">Switch Kiosk User Mode</h2>
       <hr>
       <h3 class="w3-center">User operating the Kiosk:</h3>
       <div id="userLookup_div" class="w3-center"/>

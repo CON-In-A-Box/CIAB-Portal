@@ -1,0 +1,9 @@
+.event-color-primary, .event-hover-primary:hover {
+  color: #fff !important;
+  background-color: #4CAF50 !important;
+}
+
+.event-color-secondary, .event-hover-secondary:hover {
+  color: #fff !important;
+  background-color: #2196F3 !important;
+}

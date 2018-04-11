@@ -120,7 +120,7 @@ function ConComListDisplay()
     // Start the crazy print routine!
     echo "<div class='w3-responsive'>";
     echo "<table class='w3-table-all w3-hoverable'>\n";
-    echo '<tr id="table_head" class="w3-purple">';
+    echo '<tr id="table_head" class="event-color-secondary">';
     echo '<th class="w3-center">Department</th>';
     echo '<th class="w3-center">Division</th>';
     echo '<th class="w3-center">First Name</th>';
@@ -131,14 +131,14 @@ function ConComListDisplay()
     echo "</tr>\n";
     foreach ($Divisions as $div) {
         $currentDivDirector = false;
-        echo '<tr id="division" class="w3-purple"><th id="'.$div.'" class="w3-center" colspan=2>'.$div;
+        echo '<tr id="division" class="event-color-secondary"><th id="'.$div.'" class="w3-center" colspan=2>'.$div;
         if ($div != 'Committees' && $div != 'Corporate Staff') {
             echo ' Division';
         }
         echo '</th><th class="w3-center" colspan=3>';
-        echo '<div class="w3-dropdown-hover w3-purple">';
+        echo '<div class="w3-dropdown-hover event-color-secondary">';
         echo '  Go To Section';
-        echo '  <div class="w3-dropdown-content w3-purple">';
+        echo '  <div class="w3-dropdown-content event-color-secondary">';
         echo '    <a href="#main_nav" class="w3-border">Top of Page</a>';
         foreach ($Divisions as $menuDiv) {
             // ##==## Likely need to add some translation here to blot out '&'
@@ -225,7 +225,7 @@ function ConComListDisplay()
         foreach ($printList[$div] as $kdep => $dep) {
             $currentDepHead = false;
             if ($div != 'Corporate Staff' && $kdep != 'Division Director' && $kdep != 'Division Support') {
-                echo '<tr id="department" class="w3-green">';
+                echo '<tr id="department" class="event-color-primary">';
                 if ($div == 'Committees') {
                     echo '<th id="'.$kdep.'" colspan=5>'.$kdep.'</th>';
                 } else {

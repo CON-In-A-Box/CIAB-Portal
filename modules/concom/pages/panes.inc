@@ -35,9 +35,9 @@ function draw_history()
     $events = events_served($_SESSION['accountId']);
     $c = count($events);
 
-    echo "<div class='w3-container w3-green'>\n";
+    echo "<div class='w3-container event-color-primary'>\n";
     echo "<table class='w3-table w3-striped w3-bordered w3-white'>\n";
-    echo "<tr><th style=\"text-align:center;\" class=\"w3-green\" colspan=5>Served on ConCom for ".$c;
+    echo "<tr><th style=\"text-align:center;\" class=\"event-color-primary\" colspan=5>Served on ConCom for ".$c;
     if ($c > 1) {
         echo " Events!  ";
     } else {
@@ -57,7 +57,7 @@ function draw_history()
         $i++;
     }
     echo "</tr>\n";
-    echo "<tr class=\"w3-green\" ><th colspan=5 class='w3-center'>";
+    echo "<tr class=\"event-color-primary\" ><th colspan=5 class='w3-center'>";
     echo "Thank you for your help!</th></tr>";
     echo "</table>\n";
     echo "</div>\n";
@@ -82,9 +82,9 @@ function phone_number()
 function meetings()
 {
     // Display Meeting Sign In Info
-    echo "<div class='w3-container w3-green'>\n";
+    echo "<div class='w3-container event-color-primary'>\n";
     echo "<table class='w3-table w3-striped w3-bordered w3-white'>\n";
-    echo "<tr><th class='w3-center w3-green' colspan=3>Official Meeting Attendance</th></tr>\n";
+    echo "<tr><th class='w3-center event-color-primary' colspan=3>Official Meeting Attendance</th></tr>\n";
     $nowDate = date("Ymd");
     $attendKey = search_definedFields('Official Meeting Attendance');
     foreach ($_SESSION['definedFields']['Meetings'] as $key => $val) {
