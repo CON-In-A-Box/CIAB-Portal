@@ -15,3 +15,11 @@
   height: 72px;
   overflow: auto;
 }
+
+.event-bar-icon {
+  background-image: url("/images/Connie-small.png");
+  background-size: cover;
+  width: 48px;
+  height: 38px !important;
+  overflow: auto;
+}
