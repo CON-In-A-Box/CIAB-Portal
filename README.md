@@ -42,6 +42,10 @@ The registration module is focused on what members are registered for what event
 
 At present the most extensively fleshed out module. The goal is to have a pair of tools to help staff at a convention track and properly reward members who volunteer at the event. This includes a way for all staff at the event to enter hours for attendees of the event as well as a master terminal for the people in charge of the volunteer department to be able to track all those hours and give proper rewards to the attendees who have volunteered hours. 
 
+* **Google Documents (modules/documents)**
+
+This module will allow you to hook up a google drive folder and have the contents of that drive displayed to all the ConCom members. This is very helpful in sharing minutes or reports with the rest of the staff. 
+
 # First Steps
 
 For a fairly technical overview of process of getting an instance of the project setup look at [FirstSetup.md](FirstSetup.md). 
