@@ -15,3 +15,7 @@
   height: 72px;
   overflow: auto;
 }
+
+.event-default-user-icon {
+    content: url("/images/tinyblack.gif");
+}
