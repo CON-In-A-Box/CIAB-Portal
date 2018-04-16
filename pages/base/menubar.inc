@@ -10,6 +10,7 @@
 </script>
 <div class="w3-top">
   <div id="main_nav" class="w3-bar w3-dark-grey">
+  <img class="w3-left event-bar-icon">
 
 <?php
 

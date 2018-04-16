@@ -19,3 +19,11 @@
 .event-default-user-icon {
     content: url("/images/tinyblack.gif");
 }
+
+.event-bar-icon {
+  background-image: url("/images/Connie-small.png");
+  background-size: cover;
+  width: 48px;
+  height: 38px !important;
+  overflow: auto;
+}
