@@ -1,5 +1,13 @@
 <?php
-// Various Authentication needed routines - Relies on NeonCRM
+// Various Authentication needed routines
+
+/*.
+    require_module 'standard';
+.*/
+
+require_once(__DIR__.'/users.inc');
+require_once(__DIR__.'/session.inc');
+
 
 function LogoutUser()
 {
@@ -22,24 +30,39 @@ function LogoutUser()
 }
 
 
+function check_authentication($account, $password)
+{
+    $sql = <<<SQL
+        SELECT * FROM `Authentication` WHERE AccountID = $account;
+SQL;
+    $result = DB::run($sql);
+    $value = $result->fetch();
+    if ($value !== false) {
+        return password_verify($password, $value['Authentication']);
+    };
+    return false;
+
+}
+
+
 function doUserAndPasswordMatch($user, $password)
 {
-    // This only returns that a user is in the NeonCRM DB and that the password was matched
-    // Check user and password against NeonCRM
-    $request = [
-    'method' => 'common/authenticateUser',
-    'parameters' => [
-    'username' => $user,
-    'password' => $password,
-        ],
-    ];
-    $result = $GLOBALS['Neon']->go($request);
-
-    if ($result['operationResult'] == 'SUCCESS') {
-        return $result;
-    } else {
-        return false;
+    loadDefinedFields();
+    $value = lookup_user_by_login($user);
+    if ($value) {
+        if (check_authentication($value['AccountID'], $password)) {
+            $id = $value['AccountID'];
+            $now = date('Y-m-d H:i');
+            $sql = <<<SQL
+                UPDATE `Authentication`
+                SET LastLogin = '$now'
+                WHERE AccountId = $id;
+SQL;
+            DB::run($sql);
+            return $value;
+        }
     }
+    return null;
 
 }
 
@@ -47,17 +70,13 @@ function doUserAndPasswordMatch($user, $password)
 function LoginUser($user, $password)
 {
     $result = doUserAndPasswordMatch($user, $password);
-    if ($result) {
+    if ($result !== null) {
         // Log in the User - Session started in Functions
         $_SESSION['username']  = $user; // Save the Username for easy forms
-        $_SESSION['fullName']  = $result['name']; // Save the FullName for ease
-        $_SESSION['accountId'] = $result['accountId']; //Save the ID for updates
-        // MakeLog("Login Allowed");
-        //error_log("Notice: Login allowed for " . $user . " (" . $result['accountId'] . ") as " . $result['name'] . " at " . date('r'), 0);
+        $_SESSION['fullName']  = $result['FirstName']; // Save the FullName for ease
+        $_SESSION['accountId'] = $result['AccountID']; //Save the ID for updates
         return(true);
     } else {
-        // MakeLog("Failed Login Attempt by " . $user);
-        //error_log("WARN: Failed Login Attempt By " . $user . " at " . date('r'), 0);
         return(false);
     }
 
