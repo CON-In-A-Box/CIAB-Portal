@@ -30,6 +30,33 @@ function LogoutUser()
 }
 
 
+function clear_onetime($account)
+{
+    $sql = <<<SQL
+        UPDATE `Authentication`
+        SET OneTime = NULL,
+            OneTimeExpires = NULL
+        WHERE AccountID = $account;
+SQL;
+    DB::run($sql);
+
+}
+
+
+function accept_onetime($account, $auth)
+{
+    $sql = <<<SQL
+        UPDATE `Authentication`
+        SET Authentication = '$auth',
+            OneTime = NULL,
+            OneTimeExpires = NULL
+        WHERE AccountID = $account;
+SQL;
+    DB::run($sql);
+
+}
+
+
 function check_authentication($account, $password)
 {
     $sql = <<<SQL
@@ -38,7 +65,24 @@ SQL;
     $result = DB::run($sql);
     $value = $result->fetch();
     if ($value !== false) {
-        return password_verify($password, $value['Authentication']);
+        if (password_verify($password, $value['Authentication'])) {
+            if ($value['OneTime']) {
+                clear_onetime($account);
+            }
+            return true;
+        }
+        if ($value['OneTime']) {
+            $expire = strtotime($value['OneTimeExpires']);
+            $now = strtotime("now");
+            if ($now > $expire) {
+                clear_onetime($account);
+                return false;
+            }
+            if (password_verify($password, $value['OneTime'])) {
+                accept_onetime($account, $value['OneTime']);
+                return true;
+            }
+        }
     };
     return false;
 
@@ -92,5 +136,92 @@ function set_password($user, $password)
             Authentication = '$auth';
 SQL;
     DB::run($sql);
+
+}
+
+
+function rppg()
+{
+    $pw = '';
+    $c  = 'bcdfghjklmnprstvwz'; // consonants except hard to speak ones
+    $v  = 'aeiou';              // vowels
+    $a  = $c.$v;                // all
+
+  //use two syllables...
+    for ($i = 0; $i < 3; $i++) {
+        $sy = $c[rand(0, strlen($c) - 1)];
+        $sy .= $v[rand(0, strlen($v) - 1)];
+        $sy .= $a[rand(0, strlen($a) - 1)];
+        if (rand(0, 1) == 0) {
+            $sy = ucfirst($sy);
+        }
+        $pw .= $sy;
+    }
+  //... and add a nice number
+    $pw .= rand(10, 99);
+
+    return $pw;
+
+}
+
+
+function reset_password($id)
+{
+    global $CONSITENAME;
+
+    loadDefinedFields();
+    $value = lookup_user_by_login($id);
+    if ($value) {
+        $user = $value['AccountID'];
+        $email = $value['EMail'];
+        $password = rppg();
+        $expired = date('Y-m-d H:i', strtotime("+10 minutes"));
+        $newauth = password_hash($password, PASSWORD_DEFAULT);
+        $auth = 'NULL';
+        $last = 'NULL';
+
+        $sql = "SELECT * FROM  `Authentication` WHERE AccountID = $user;";
+        $result = DB::run($sql);
+        $value = $result->fetch();
+        if ($value !== false) {
+            $auth = "'".$value['Authentication']."'";
+            $last = "'".$value['LastLogin']."'";
+        }
+
+        $sql = <<<SQL
+            REPLACE INTO `Authentication`
+            SET AccountID = $user,
+                OneTime = '$newauth',
+                OneTimeExpires= '$expired',
+                Authentication = $auth,
+                LastLogin = $last;
+SQL;
+        DB::run($sql);
+        $servername = 'https://'.$_SERVER['SERVER_NAME'];
+        $subject = 'Password Reset Request';
+        $expire = date('h:i A D F jS Y', strtotime("+10 minutes"));
+        $message = <<<MSG
+A password reset has been requested for '$id' on the '$CONSITENAME' web site.
+
+If this is correct then please use this password '$password' to log in and
+change yor password to one you like.
+
+$servername
+
+If you did not request this please log into your account as soon as possible
+to verify everything is still correct.
+
+This new password will expire at $expire;
+
+Thank you
+MSG;
+        $headers = 'From: noreply@convergence-con.org'."\r\n";
+        $headers .= 'Reply-To: noreply@convergence-con.org';
+
+        mail($email, $subject, $message, $headers);
+        error_log($message);
+        return true;
+    }
+    return false;
 
 }

@@ -29,7 +29,7 @@
         <input type="submit" value="Log In" class="w3-button w3-round-xlarge event-color-primary">
       </p>
       <p>
-        <a href='https://www.z2systems.com/np/clients/ce/requestPassword.jsp' onclick="window.open(this.href, 'ciab', 'left=100, top=100, width=900, height=600, toolbar=0, resizable=0, menubar=0, status=0, titlebar=0'); return false;">Forgot Password?</a>
+        <a href='index.php?Function=recovery'>Forgot Password?</a>
       </p>
     </form>
   </div>
