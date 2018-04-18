@@ -236,6 +236,29 @@ if (isset($_SESSION['accountInfo']['individualAccount']['primaryContact']['addre
   <p></p>
   <button class="w3-button w3-block w3-brown">Update Profile</button>
 </form>
+
+<hr>
+<h3>Your current security information</h3>
+<div id="password_form" class="w3-container w3-padding">
+  <div class="w3-red w3-row">
+    <div>
+     Change Password
+    </div>
+    <div class="w3-container">
+      <div class="w3-third">
+        <input type="password" id="ciab_currentPassword" value="" class="w3-input w3-border" placeholder="Current Password (Required)">
+      </div>
+      <div class="w3-third">
+        <input type="password" id="ciab_newPassword" value="" class="w3-input w3-border" placeholder="New Password(Required)">
+      </div>
+      <div class="w3-third">
+        <input type="password" id="ciab_againPassword" value="" class="w3-input w3-border" placeholder="New Password Again(Required)">
+      </div>
+    </div>
+  </div>
+  <button class="w3-button w3-block w3-red" onclick="changePassword();">Update Password</button>
+</div>
+
 <script>
 function ExpandOut(val, id) {
     var x = document.getElementById(id);

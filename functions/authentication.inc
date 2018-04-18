@@ -81,3 +81,16 @@ function LoginUser($user, $password)
     }
 
 }
+
+
+function set_password($user, $password)
+{
+    $auth = password_hash($password, PASSWORD_DEFAULT);
+    $sql = <<<SQL
+        REPLACE INTO `Authentication`
+        SET AccountID = $user,
+            Authentication = '$auth';
+SQL;
+    DB::run($sql);
+
+}

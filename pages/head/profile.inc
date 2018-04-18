@@ -1,4 +1,5 @@
 <script src="sitesupport/validation.js"></script>
+<script src="sitesupport/password.js"></script>
 <script type="text/javascript">
 function validate_form(thisform)
 {
