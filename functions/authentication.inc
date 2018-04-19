@@ -43,14 +43,49 @@ SQL;
 }
 
 
+function increment_failed($account)
+{
+    $sql = <<<SQL
+        UPDATE `Authentication`
+        SET FailedAttempts = FailedAttempts + 1
+        WHERE AccountID = $account;
+SQL;
+    $result = DB::run($sql);
+
+}
+
+
+function reset_failed($account)
+{
+    $sql = <<<SQL
+        UPDATE `Authentication`
+        SET FailedAttempts = 0
+        WHERE AccountID = $account;
+SQL;
+    $result = DB::run($sql);
+
+}
+
+
 function check_authentication($account, $password)
 {
+    global $MAXLOGINFAIL;
+
+    $max_fail = 5;
+
+    if (isset($MAXLOGINFAIL) && !empty($MAXLOGINFAIL)) {
+        $max_fail = intval($MAXLOGINFAIL);
+    }
+
     $sql = <<<SQL
         SELECT * FROM `Authentication` WHERE AccountID = $account;
 SQL;
     $result = DB::run($sql);
     $value = $result->fetch();
     if ($value !== false) {
+        if ($value['FailedAttempts'] >= $max_fail) {
+            return -1;
+        }
         if (password_verify($password, $value['Authentication'])) {
             if ($value['OneTime']) {
                 clear_onetime($account);
@@ -60,6 +95,7 @@ SQL;
             if ($now > $expire) {
                 return null;
             }
+            reset_failed($account);
             return true;
         }
         if ($value['OneTime']) {
@@ -71,9 +107,11 @@ SQL;
             }
             if (password_verify($password, $value['OneTime'])) {
                 accept_onetime($account, $value['OneTime']);
+                reset_failed($account);
                 return true;
             }
         }
+        increment_failed($account);
         return false;
     } else {
         return null;
@@ -100,6 +138,8 @@ SQL;
             return $value;
         } elseif ($check === null) {
             return null;
+        } elseif ($check === -1) {
+            return -1;
         }
     }
     return false;
@@ -110,7 +150,7 @@ SQL;
 function LoginUser($user, $password)
 {
     $result = doUserAndPasswordMatch($user, $password);
-    if ($result !== null && $result !== false) {
+    if ($result !== null && $result !== false && $result !== -1) {
         // Log in the User - Session started in Functions
         $_SESSION['username']  = $user; // Save the Username for easy forms
         $_SESSION['fullName']  = $result['FirstName']; // Save the FullName for ease
@@ -118,6 +158,8 @@ function LoginUser($user, $password)
         return(true);
     } elseif ($result === false) {
         return(false);
+    } elseif ($result === -1) {
+        return -1;
     }
     return null;
 

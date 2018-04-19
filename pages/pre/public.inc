@@ -13,7 +13,9 @@ if (!empty($_REQUEST['user'])) {
         goSite(); // goto default
     } elseif ($result === false) {
         $RETRY = 1; // Bad password or not authorized to use system
-    } else {
+    } elseif ($result == null) {
         $EXPIRED = 1;
+    } elseif ($result == -1) {
+        $LOCKED = 1;
     }
 }

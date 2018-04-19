@@ -8,3 +8,4 @@ INSERT INTO Configuration (Field, Value) VALUES ('TIMEZONE', 'America/Chicago');
 INSERT INTO Configuration (Field, Value) VALUES ('DBSchemaVersion', '0');
 INSERT INTO Configuration (Field, Value) VALUES ('CONCOMHOURS', '60');
 INSERT INTO Configuration (Field, Value) VALUES ('PASSWORDEXPIRE', '+1 year');
+INSERT INTO Configuration (Field, Value) VALUES ('MAXLOGINFAIL', '5');

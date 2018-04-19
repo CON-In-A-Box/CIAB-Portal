@@ -17,7 +17,15 @@ if (!empty($EXPIRED)) {
     if (!empty($RETRY)) {
         echo '<hr>';
         echo 'Login Incorrect, Please Try Again.';
-        echo "<hr>\n";
+        echo "</hr>\n";
+    } elseif (!empty($LOCKED)) {
+        echo '<div class="w3-center w3-border w3-margin w3-padding w3-red">';
+        echo '<h2 class="w3-red w3-bold w3-header">Account Locked</h2>';
+        echo '<span class="w3-red w3-bold w3-header">';
+        echo 'Too many unsuccessful login attempts.</span><br>';
+        echo '<span class="w3-red w3-bold w3-header">';
+        echo 'Reset the password gain entry.';
+        echo "</span></div>\n";
     }
     ?>
 

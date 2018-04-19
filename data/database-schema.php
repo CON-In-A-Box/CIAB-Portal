@@ -134,6 +134,7 @@ class SCHEMA
         'Authentication' => 'VARCHAR(110)',
         'LastLogin' => 'DATETIME',
         'Expires' => 'DATETIME',
+        'FailedAttempts' => 'INT UNSIGNED NOT NULL DEFAULT 0',
         'OneTime' => 'VARCHAR(110)',
         'OneTimeExpires' => 'DATETIME',
     ],
