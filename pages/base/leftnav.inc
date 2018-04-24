@@ -1,6 +1,6 @@
 <?php
 echo '<div id="left_nav" class="w3-cell w3-border w3-hide-small">';
-echo '<img src="https://www.z2systems.com/neon/resource/ce/images/account/'.$_SESSION['accountId'].'/0_medium.jpg" onerror='."'this.classList.add(".'"event-default-user-icon")'."'>";
+echo '<img src="/resources/images/members/'.$_SESSION['accountId'].'.jpg" onerror='."'this.classList.add(".'"event-default-user-icon")'."'>";
 
 echo "<p style=\"font-weight:bold;\">".$_SESSION['preferredName']."</p>\n";
 
