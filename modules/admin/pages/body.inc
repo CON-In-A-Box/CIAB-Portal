@@ -143,7 +143,7 @@ if (!empty($searchCriteria['firstName']) ||
         $searchCriteria['firstName'],
         $searchCriteria['lastName'],
         $searchCriteria['email'],
-        ['City', 'State']
+        ['AddressCity', 'AddressState']
     );
     $message = 'No results match your search.';
 } else {
@@ -206,7 +206,7 @@ if (!empty($searchCriteria['firstName']) ||
           </a>
         </td>
         <td><?php echo $r['Email']; ?></td>
-        <td><?php echo $r['City']; ?> <?php echo $r['State']; ?></td>
+        <td><?php echo $r['AddressCity']; ?> <?php echo $r['AddressState']; ?></td>
       </tr>
     <?php endforeach; ?>
   </table>

@@ -10,22 +10,22 @@ function _parse_user($result, $additional_fields)
 {
     $user = array();
 
-    $user['Id'] = $result['Account ID'];
-    if (!empty($result['Preferred First Name'])) {
-        $user['First Name'] = $result['Preferred First Name'];
+    $user['Id'] = $result['AccountID'];
+    if (!empty($result['PreferredFirstName'])) {
+        $user['First Name'] = $result['PreferredFirstName'];
     } else {
-        $user['First Name'] = $result['First Name'];
+        $user['First Name'] = $result['FirstName'];
     }
-    if (!empty($result['Preferred Last Name'])) {
-        $user['Last Name'] = $result['Preferred Last Name'];
+    if (!empty($result['PreferredLastName'])) {
+        $user['Last Name'] = $result['PreferredLastName'];
     } else {
-        $user['Last Name'] = $result['Last Name'];
+        $user['Last Name'] = $result['LastName'];
     }
     if (class_exists('\\concom\\POSITION') && method_exists('\\concom\\POSITION', 'getConComPosition')) {
         $user['ConCom'] = concom\POSITION::getConComPosition($user['Id']);
     }
-    if (!empty($result['Email 1'])) {
-        $user['Email'] = $result['Email 1'];
+    if (!empty($result['Email'])) {
+        $user['Email'] = $result['Email'];
     }
     if (!empty($additional_fields)) {
         foreach ($additional_fields as $field) {
@@ -38,70 +38,47 @@ function _parse_user($result, $additional_fields)
 }
 
 
-function _lookup_user($criteria, $single_result = false, $additional_fields = array(), $page = 1, & $output = null)
+function _lookup_user($criteria, $single_result = false, $additional_fields = array())
 {
-    global $Neon;
-    $preferredFirstName = search_definedFields('Preferred First Name');
-    $preferredLastName = search_definedFields('Preferred Last Name');
+    $sql = "SELECT * FROM `Members` WHERE $criteria;";
 
-    $search = [
-    'method' => 'account/listAccounts',
-    'columns' => [
-    'standardFields' => ['Account ID', 'First Name', 'Last Name', 'Email 1'],
-    'customFields' => [$preferredFirstName, $preferredLastName],
-    ],
-    'criteria' => $criteria,
-    'page' => [
-    'currentPage' => $page,
-    'pageSize' => 200,
-    'sortColumn' => 'Account ID',
-    'sortDirection' => 'ASC',
-    ],
-    ];
-    if (!empty($additional_fields)) {
-        $search['columns']['standardFields'] = array_merge($search['columns']['standardFields'], $additional_fields);
+    $result = DB::run($sql);
+    if ($single_result && $result->rowCount() > 1) {
+        return array('code' => '409 Conflict', 'users' => array());
     }
-    $results = $Neon->search($search);
-    if (isset($results['operationResult']) && $results['operationResult'] == 'SUCCESS') {
-        if ($single_result && $results['page']['totalResults'] > 1) {
-            return array('code' => '409 Conflict', 'users' => array());
-        } else {
-            if ($output === null) {
-                $output = ['code' => null, 'users' => array()];
-            }
-            foreach ($results['searchResults'] as $val) {
-                $user = _parse_user($val, $additional_fields);
-                array_push($output['users'], $user);
-            }
-            if ($results['page']['totalPage'] > $page) {
-                return _lookup_user($criteria, $single_result, $additional_fields, $page + 1, $output);
-            } else {
-                return $output;
-            }
-        }
+    $value = $result->fetch();
+    if ($value === false) {
+        return array('code' => '404 Not Found', 'users' => array());
     }
-    return array('code' => '404 Not Found', 'users' => array());
+    $output = ['code' => null, 'users' => array()];
+    while ($value !== false) {
+        $user = _parse_user($value, $additional_fields);
+        array_push($output['users'], $user);
+        $value = $result->fetch();
+    }
+    return $output;
 
 }
 
 
-function lookup_users_by_ids($id)
+function lookup_users_by_ids($ids)
 {
-    return _lookup_user([['Account ID', 'IN_RANGE', $id]]);
+    $str = implode(", ", $ids);
+    return _lookup_user("AccountId IN ($str)");
 
 }
 
 
 function lookup_user_by_id($id)
 {
-    return _lookup_user([['Account ID', 'EQUAL', $id]], true);
+    return _lookup_user("AccountID = $id", true);
 
 }
 
 
 function lookup_users_by_email($email, $single = true)
 {
-    return _lookup_user([['Email', 'EQUAL', $email]], $single);
+    return _lookup_user("Email = '$email'", $single);
 
 }
 
@@ -113,8 +90,7 @@ function lookup_users_by_name($name, $single = false)
         return ['code' => '400 Bad Request', 'users' => array()];
     }
     return _lookup_user(
-        [['First Name', 'EQUAL', $names[0]],
-                         ['Last Name', 'EQUAL', $names[1]]],
+        "FirstName = '$names[0]' AND LastName = '$names[1]'",
         $single
     );
 
@@ -123,35 +99,16 @@ function lookup_users_by_name($name, $single = false)
 
 function lookup_users_by_pref_name($name, $single = false)
 {
-    $preferredFirstName = search_definedFields('Preferred First Name');
-    $preferredLastName = search_definedFields('Preferred Last Name');
     $names = explode(" ", $name);
     if (count($names) != 2) {
         return ['code' => '400 Bad Request', 'users' => array()];
     }
-
-    /* We have to do a few searchs due to Neon stupidity */
-    $output = _lookup_user(
-        [[$preferredFirstName, 'EQUAL', $names[0]],
-         [$preferredLastName, 'EQUAL', $names[1]]],
-        $single
-    );
-    if (count($output['users']) != 0) {
-        return $output;
-    }
-    $output = _lookup_user(
-        [[$preferredFirstName, 'EQUAL', $names[0]],
-         ['Last Name', 'EQUAL', $names[1]]],
-        $single
-    );
-    if (count($output['users']) != 0) {
-        return $output;
-    }
-    return _lookup_user(
-        [['First Name', 'EQUAL', $names[0]],
-         [$preferredLastName, 'EQUAL', $names[1]]],
-        $single
-    );
+    $query = <<<Q
+    (PreferredFirstName = '$names[0]' AND PreferredLastName = '$names[1]') OR
+    (PreferredFirstName = '$names[0]' AND LastName = '$names[1]') OR
+    (FirstName = '$names[0]' AND PreferredLastName = '$names[1]')
+Q;
+    return _lookup_user($query, $single);
 
 }
 
@@ -213,16 +170,18 @@ function lookup_users_by_name_email($first, $last, $email, $fields, $single_user
 {
     $criteria = array();
     if ($first) {
-        array_push($criteria, ['First Name', 'EQUAL', $first]);
+        array_push($criteria, "FirstName = '$first'");
     }
     if ($last) {
-        array_push($criteria, ['Last Name', 'EQUAL', $last]);
+        array_push($criteria, "LastName = '$last'");
     }
     if ($email) {
-        array_push($criteria, ['Email', 'EQUAL', $email]);
+        array_push($criteria, "Email = '$email'");
     }
 
-    return _lookup_user($criteria, $single_user, $fields);
+    $stmt = implode(" AND ", $criteria);
+
+    return _lookup_user($stmt, $single_user, $fields);
 
 }
 
@@ -231,7 +190,7 @@ function lookup_user_by_login($user)
 {
     $output = lookup_users_by_email($user, false);
     if (count($output['users']) == 0) {
-        $output = _lookup_user([['Account Login Name', 'EQUAL', $user]], false);
+        $output = _lookup_user("Login = '$user'", false);
     }
     if (count($output['users']) == 0) {
         return array();
