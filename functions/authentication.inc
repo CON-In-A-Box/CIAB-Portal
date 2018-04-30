@@ -191,7 +191,6 @@ SQL;
 
 function doUserAndPasswordMatch($user, $password)
 {
-    loadDefinedFields();
     $value = lookup_user_by_login($user);
     if (count($value)>0) {
         $check = check_authentication($value[0]['AccountID'], $password, $user);
@@ -280,7 +279,6 @@ function reset_password($id, $password=null)
         $duration = '+60 minutes';
     }
 
-    loadDefinedFields();
     $value = lookup_user_by_login($id);
     if (count($value)) {
         $user = $value[0]['AccountID'];
