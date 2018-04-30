@@ -113,7 +113,6 @@ function neon_importAccountListToDB($results)
 
 function neon_getContactId($accountId)
 {
-    global $Neon;
     // Refresh Account info from Neon to verify update
     $request = [
     'method' => 'account/retrieveIndividualAccount',
@@ -122,7 +121,7 @@ function neon_getContactId($accountId)
       ],
     ];
 
-    $result = $Neon->go($request);
+    $result = $GLOBALS['Neon']->go($request);
     if (isset($result['operationResult']) && $result['operationResult'] == 'SUCCESS') {
         return $result['individualAccount']['primaryContact']['contactId'];
     }
@@ -131,12 +130,7 @@ function neon_getContactId($accountId)
 }
 
 
-/*************************************/
-/* END Neon migration path functions */
-/*************************************/
-
-
-function _parse_user($result, $additional_fields)
+function _neon_parse_user($result, $additional_fields)
 {
     $user = array();
 
@@ -171,12 +165,13 @@ function _parse_user($result, $additional_fields)
 }
 
 
-function _lookup_user($criteria, $single_result = false, $additional_fields = array(), $page = 1, & $output = null)
+function _neon_lookup_user($criteria, $single_result = false, $additional_fields = array(), $page = 1, & $output = null)
 {
-    global $Neon;
     $preferredFirstName = search_definedFields('Preferred First Name');
     $preferredLastName = search_definedFields('Preferred Last Name');
     $cvgConComPhoneDisplay = search_definedFields('CVGConCom Publish Phone');
+
+    $additional_fields = str_replace(['AddressCity', 'AddressState'], ['City', 'State'], $additional_fields);
 
     $search = [
     'method' => 'account/listAccounts',
@@ -199,7 +194,7 @@ function _lookup_user($criteria, $single_result = false, $additional_fields = ar
             }
         }
     }
-    $results = $Neon->search($search);
+    $results = $GLOBALS['Neon']->search($search);
 
     neon_importAccountListToDB($results);
 
@@ -211,11 +206,11 @@ function _lookup_user($criteria, $single_result = false, $additional_fields = ar
                 $output = ['code' => null, 'users' => array()];
             }
             foreach ($results['searchResults'] as $val) {
-                $user = _parse_user($val, $additional_fields);
+                $user = _neon_parse_user($val, $additional_fields);
                 array_push($output['users'], $user);
             }
             if ($results['page']['totalPage'] > $page) {
-                return _lookup_user($criteria, $single_result, $additional_fields, $page + 1, $output);
+                return _neon_lookup_user($criteria, $single_result, $additional_fields, $page + 1, $output);
             } else {
                 return $output;
             }
@@ -226,10 +221,74 @@ function _lookup_user($criteria, $single_result = false, $additional_fields = ar
 }
 
 
-function lookup_users_by_ids($id)
+/*************************************/
+/* END Neon migration path functions */
+/*************************************/
+
+
+function _parse_user($result, $additional_fields)
 {
-    $id = trim($id);
-    return _lookup_user([['Account ID', 'IN_RANGE', $id]]);
+    $user = array();
+
+    $user['Id'] = $result['AccountID'];
+    if (!empty($result['PreferredFirstName'])) {
+        $user['First Name'] = $result['PreferredFirstName'];
+    } else {
+        $user['First Name'] = $result['FirstName'];
+    }
+    if (!empty($result['PreferredLastName'])) {
+        $user['Last Name'] = $result['PreferredLastName'];
+    } else {
+        $user['Last Name'] = $result['LastName'];
+    }
+    if (class_exists('\\concom\\POSITION') && method_exists('\\concom\\POSITION', 'getConComPosition')) {
+        $user['ConCom'] = concom\POSITION::getConComPosition($user['Id']);
+    }
+    if (!empty($result['Email'])) {
+        $user['Email'] = $result['Email'];
+    }
+    if (!empty($additional_fields)) {
+        foreach ($additional_fields as $field) {
+            $user[$field] = $result[$field];
+        }
+    }
+
+    return $user;
+
+}
+
+
+function _lookup_user($criteria, $single_result = false, $additional_fields = array())
+{
+    $sql = "SELECT * FROM `Members` WHERE $criteria;";
+
+    $result = DB::run($sql);
+    if ($single_result && $result->rowCount() > 1) {
+        return array('code' => '409 Conflict', 'users' => array());
+    }
+    $value = $result->fetch();
+    if ($value === false) {
+        return array('code' => '404 Not Found', 'users' => array());
+    }
+    $output = ['code' => null, 'users' => array()];
+    while ($value !== false) {
+        $user = _parse_user($value, $additional_fields);
+        array_push($output['users'], $user);
+        $value = $result->fetch();
+    }
+    return $output;
+
+}
+
+
+function lookup_users_by_ids($ids)
+{
+    if (array_key_exists('Neon', $GLOBALS)) {
+        $str = "('".implode("', '", $ids)."')";
+        return _neon_lookup_user([['Account ID', 'IN_RANGE', $str]]);
+    }
+    $str = implode(", ", $ids);
+    return _lookup_user("AccountId IN ($str)");
 
 }
 
@@ -237,7 +296,10 @@ function lookup_users_by_ids($id)
 function lookup_user_by_id($id)
 {
     $id = trim($id);
-    return _lookup_user([['Account ID', 'EQUAL', $id]], true);
+    if (array_key_exists('Neon', $GLOBALS)) {
+        return _neon_lookup_user([['Account ID', 'EQUAL', $id]], true);
+    }
+    return _lookup_user("AccountID = $id", true);
 
 }
 
@@ -245,12 +307,19 @@ function lookup_user_by_id($id)
 function lookup_users_by_email($email, $single = true, $substring = false)
 {
     $email = trim($email);
-    if ($substring) {
-        $operator = 'CONTAIN';
-    } else {
-        $operator = 'EQUAL';
+    if (array_key_exists('Neon', $GLOBALS)) {
+        if ($substring) {
+            $operator = 'CONTAIN';
+        } else {
+            $operator = 'EQUAL';
+        }
+        return _neon_lookup_user([['Email', $operator, $email]], $single);
     }
-    return _lookup_user([['Email', $operator, $email]], $single);
+    if ($substring) {
+        return _lookup_user("Email LIKE '%$email%'", $single);
+    } else {
+        return _lookup_user("Email = '$email'", $single);
+    }
 
 }
 
@@ -312,30 +381,44 @@ function merge_results($result1, $result2)
 function lookup_users_by_name($name, $single = false, $substring = false)
 {
     $name = trim(preg_replace('/\s+/', ' ', $name));
-    if ($substring) {
-        $names = explode(" ", $name);
-        if (count($names) < 2) {
-            $result = _lookup_user([['First Name', 'CONTAIN', $name]], $single);
-            $result2 = _lookup_user([['Last Name', 'CONTAIN', $name]], $single);
-            return merge_results($result, $result2);
+    if (array_key_exists('Neon', $GLOBALS)) {
+        if ($substring) {
+            $names = explode(" ", $name);
+            if (count($names) < 2) {
+                $result = _neon_lookup_user([['First Name', 'CONTAIN', $name]], $single);
+                $result2 = _neon_lookup_user([['Last Name', 'CONTAIN', $name]], $single);
+                return merge_results($result, $result2);
+            } else {
+                return _neon_lookup_user(
+                    [['First Name', 'EQUAL', $names[0]],
+                                     ['Last Name', 'CONTAIN', $names[1]]],
+                    $single
+                );
+            }
         } else {
-            return _lookup_user(
+            $names = explode(" ", $name);
+            if (count($names) != 2) {
+                return ['code' => '400 Bad Request', 'users' => array()];
+            }
+            return _neon_lookup_user(
                 [['First Name', 'EQUAL', $names[0]],
-                                 ['Last Name', 'CONTAIN', $names[1]]],
+                                 ['Last Name', 'EQUAL', $names[1]]],
                 $single
             );
         }
-    } else {
-        $names = explode(" ", $name);
-        if (count($names) != 2) {
-            return ['code' => '400 Bad Request', 'users' => array()];
-        }
-        return _lookup_user(
-            [['First Name', 'EQUAL', $names[0]],
-                             ['Last Name', 'EQUAL', $names[1]]],
-            $single
-        );
     }
+    $names = explode(" ", $name);
+    $i2 = 1;
+    if (count($names) < 2) {
+        $i2 = 0;
+    }
+    if ($substring) {
+        $query = "FirstName LIKE '%".$names[0]."%' OR LastName LIKE '%".$names[$i2]."%'";
+    } else {
+        $query = "FirstName = '$names[0]' AND LastName = '$names[1]'";
+    }
+
+    return _lookup_user($query, $single);
 
 }
 
@@ -343,73 +426,106 @@ function lookup_users_by_name($name, $single = false, $substring = false)
 function lookup_users_by_pref_name($name, $single = false, $substring = false)
 {
     $name = trim(preg_replace('/\s+/', ' ', $name));
-    $preferredFirstName = search_definedFields('Preferred First Name');
-    $preferredLastName = search_definedFields('Preferred Last Name');
-    if ($substring) {
-        $names = explode(" ", $name);
-        if (count($names) < 2) {
-            $result = _lookup_user([[$preferredFirstName, 'CONTAIN', $name]], $single);
-            $result2 = _lookup_user([[$preferredLastName, 'CONTAIN', $name]], $single);
-            return merge_results($result, $result2);
+    if (array_key_exists('Neon', $GLOBALS)) {
+        $preferredFirstName = search_definedFields('Preferred First Name');
+        $preferredLastName = search_definedFields('Preferred Last Name');
+        if ($substring) {
+            $names = explode(" ", $name);
+            if (count($names) < 2) {
+                $result = _neon_lookup_user([[$preferredFirstName, 'CONTAIN', $name]], $single);
+                $result2 = _neon_lookup_user([[$preferredLastName, 'CONTAIN', $name]], $single);
+                return merge_results($result, $result2);
+            } else {
+                $result = _neon_lookup_user(
+                    [[$preferredFirstName, 'EQUAL', $names[0]],
+                     [$preferredLastName, 'CONTAIN', $names[1]]
+                    ],
+                    $single
+                );
+                $result2 = _neon_lookup_user(
+                    [['First Name', 'EQUAL', $names[0]],
+                     [$preferredLastName, 'CONTAIN', $names[1]]
+                    ],
+                    $single
+                );
+                $result = merge_results($result, $result2);
+                $result2 = _neon_lookup_user(
+                    [['First Name', 'EQUAL', $names[0]],
+                     ['Last Name', 'CONTAIN', $names[1]]
+                    ],
+                    $single
+                );
+                $result = merge_results($result, $result2);
+                $result2 = _neon_lookup_user(
+                    [[$preferredFirstName, 'EQUAL', $names[0]],
+                     ['Last Name', 'CONTAIN', $names[1]]
+                    ],
+                    $single
+                );
+                $result = merge_results($result, $result2);
+                return $result;
+            }
         } else {
-            $result = _lookup_user(
+            $names = explode(" ", $name);
+            if (count($names) != 2) {
+                return ['code' => '400 Bad Request', 'users' => array()];
+            }
+
+            /* We have to do a few searchs due to Neon stupidity */
+            $output = _neon_lookup_user(
                 [[$preferredFirstName, 'EQUAL', $names[0]],
-                 [$preferredLastName, 'CONTAIN', $names[1]]
-                ],
+                 [$preferredLastName, 'EQUAL', $names[1]]],
                 $single
             );
-            $result2 = _lookup_user(
-                [['First Name', 'EQUAL', $names[0]],
-                 [$preferredLastName, 'CONTAIN', $names[1]]
-                ],
-                $single
-            );
-            $result = merge_results($result, $result2);
-            $result2 = _lookup_user(
-                [['First Name', 'EQUAL', $names[0]],
-                 ['Last Name', 'CONTAIN', $names[1]]
-                ],
-                $single
-            );
-            $result = merge_results($result, $result2);
-            $result2 = _lookup_user(
+            if (count($output['users']) != 0) {
+                return $output;
+            }
+            $output = _neon_lookup_user(
                 [[$preferredFirstName, 'EQUAL', $names[0]],
-                 ['Last Name', 'CONTAIN', $names[1]]
-                ],
+                 ['Last Name', 'EQUAL', $names[1]]],
                 $single
             );
-            $result = merge_results($result, $result2);
-            return $result;
+            if (count($output['users']) != 0) {
+                return $output;
+            }
+            return _neon_lookup_user(
+                [['First Name', 'EQUAL', $names[0]],
+                 [$preferredLastName, 'EQUAL', $names[1]]],
+                $single
+            );
+        }
+    }
+    $names = explode(" ", $name);
+    $i2 = 1;
+    if (count($names) < 2) {
+        $i2 = 0;
+    }
+    if ($substring) {
+        if (count($names) < 2) {
+            $query = <<<Q
+    (PreferredFirstName LIKE '%$name%' OR
+     PreferredLastName LIKE '%$name%' OR
+     LastName LIKE '%$name%' OR
+    FirstName LIKE '%$name%')
+Q;
+        } else {
+            $query = <<<Q
+    (PreferredFirstName = '$names[0]' AND PreferredLastName LIKE '%$names[1]%') OR
+    (PreferredFirstName = '$names[0]' AND LastName LIKE '%$names[1]%') OR
+    (FirstName = '$names[0]' AND PreferredLastName LIKE '%$names[1]%')
+    (PreferredFirstName LIKE '%$names[0]%' AND PreferredLastName = '$names[1]') OR
+    (PreferredFirstName LIKE '%$names[0]%' AND LastName = '$names[1]') OR
+    (FirstName LIKE '%$names[0]%' AND PreferredLastName = '$names[1]')
+Q;
         }
     } else {
-        $names = explode(" ", $name);
-        if (count($names) != 2) {
-            return ['code' => '400 Bad Request', 'users' => array()];
-        }
-
-        /* We have to do a few searchs due to Neon stupidity */
-        $output = _lookup_user(
-            [[$preferredFirstName, 'EQUAL', $names[0]],
-             [$preferredLastName, 'EQUAL', $names[1]]],
-            $single
-        );
-        if (count($output['users']) != 0) {
-            return $output;
-        }
-        $output = _lookup_user(
-            [[$preferredFirstName, 'EQUAL', $names[0]],
-             ['Last Name', 'EQUAL', $names[1]]],
-            $single
-        );
-        if (count($output['users']) != 0) {
-            return $output;
-        }
-        return _lookup_user(
-            [['First Name', 'EQUAL', $names[0]],
-             [$preferredLastName, 'EQUAL', $names[1]]],
-            $single
-        );
+        $query = <<<Q
+    (PreferredFirstName = '$names[0]' AND PreferredLastName = '$names[1]') OR
+    (PreferredFirstName = '$names[0]' AND LastName = '$names[1]') OR
+    (FirstName = '$names[0]' AND PreferredLastName = '$names[1]')
+Q;
     }
+    return _lookup_user($query, $single);
 
 }
 
@@ -507,29 +623,56 @@ function lookup_users_by_key($key, $single = true, $badgename = true, $substring
 function lookup_users_by_name_email($first, $last, $email, $fields, $single_user = false, $substring = false)
 {
     $criteria = array();
+    if (array_key_exists('Neon', $GLOBALS)) {
+        if ($first) {
+            if ($substring) {
+                array_push($criteria, ['First Name', 'CONTAIN', $first]);
+            } else {
+                array_push($criteria, ['First Name', 'EQUAL', $first]);
+            }
+        }
+        if ($last) {
+            if ($substring) {
+                array_push($criteria, ['Last Name', 'CONTAIN', $last]);
+            } else {
+                array_push($criteria, ['Last Name', 'EQUAL', $last]);
+            }
+        }
+        if ($email) {
+            if ($substring) {
+                array_push($criteria, ['Email', 'CONTAIN', $email]);
+            } else {
+                array_push($criteria, ['Email', 'EQUAL', $email]);
+            }
+        }
+
+        return _neon_lookup_user($criteria, $single_user, $fields);
+    }
     if ($first) {
         if ($substring) {
-            array_push($criteria, ['First Name', 'CONTAIN', $first]);
+            array_push($criteria, "FirstName LIKE '%$first%'");
         } else {
-            array_push($criteria, ['First Name', 'EQUAL', $first]);
+            array_push($criteria, "FirstName = '$first'");
         }
     }
     if ($last) {
         if ($substring) {
-            array_push($criteria, ['Last Name', 'CONTAIN', $last]);
+            array_push($criteria, "LastName LIKE '%$last%'");
         } else {
-            array_push($criteria, ['Last Name', 'EQUAL', $last]);
+            array_push($criteria, "LastName = '$last'");
         }
     }
     if ($email) {
         if ($substring) {
-            array_push($criteria, ['Email', 'CONTAIN', $email]);
+            array_push($criteria, "Email LIKE '%$email%'");
         } else {
-            array_push($criteria, ['Email', 'EQUAL', $email]);
+            array_push($criteria, "Email = '$email'");
         }
     }
 
-    return _lookup_user($criteria, $single_user, $fields);
+    $stmt = implode(" AND ", $criteria);
+
+    return _lookup_user($stmt, $single_user, $fields);
 
 }
 
@@ -538,10 +681,18 @@ function lookup_user_by_login($user, $substring = false)
 {
     $output = lookup_users_by_email($user, false);
     if (count($output['users']) == 0) {
-        if ($substring) {
-            $output = _lookup_user([['Account Login Name', 'CONTAIN', $user]], false);
+        if (array_key_exists('Neon', $GLOBALS)) {
+            if ($substring) {
+                $output = _neon_lookup_user([['Account Login Name', 'CONTAIN', $user]], false);
+            } else {
+                $output = _neon_lookup_user([['Account Login Name', 'EQUAL', $user]], false);
+            }
         } else {
-            $output = _lookup_user([['Account Login Name', 'EQUAL', $user]], false);
+            if ($substring) {
+                $output = _lookup_user("Login LIKE '%$user%'", false);
+            } else {
+                $output = _lookup_user("Login = '$user'", false);
+            }
         }
     }
     if (count($output['users']) == 0) {
@@ -657,7 +808,7 @@ function listCountries()
 
 function neon_updateAccount($updateData)
 {
-    global $Neon, $_SESSION;
+    global $_SESSION;
 
     $updateData['contactId'] = neon_getContactId($updateData['accountId']);
 
@@ -717,7 +868,7 @@ function neon_updateAccount($updateData)
         $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldValue['.$key.']'] = $updateData['conComDisplayPhone'];
     }
 
-    return $Neon->go1($request);
+    return $GLOBALS['Neon']->go1($request);
 
 }
 

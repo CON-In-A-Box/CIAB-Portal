@@ -41,7 +41,7 @@ const FIELD = 'Field';
             $searchCriteria[FIRST_NAME],
             $searchCriteria[LAST_NAME],
             $searchCriteria[EMAIL],
-            ['City', 'State']
+            ['AddressCity', 'AddressState']
         );
         $message = 'No results match your search.';
     } else {
@@ -109,7 +109,7 @@ const FIELD = 'Field';
                             </a>
                         </td>
                         <td><?php echo $r['Email']; ?></td>
-                        <td><?php echo $r['City']; ?><?php echo $r['State']; ?></td>
+                        <td><?php echo $r['AddressCity']; ?><?php echo $r['AddressState']; ?></td>
                     </tr>
                 <?php endforeach; ?>
             </table>
