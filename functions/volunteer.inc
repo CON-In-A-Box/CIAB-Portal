@@ -594,8 +594,7 @@ SQL;
         }
     }
 
-    $str = "('".implode("', '", $members)."')";
-    $users = lookup_users_by_ids($str);
+    $users = lookup_users_by_ids($members);
 
     $report = [];
     foreach ($users['users'] as $user) {
@@ -661,8 +660,7 @@ SQL;
         $value = $result->fetch();
     }
 
-    $str = "('".implode("', '", $members)."')";
-    $users = lookup_users_by_ids($str);
+    $users = lookup_users_by_ids($members);
 
     $report = [];
     foreach ($users['users'] as $user) {

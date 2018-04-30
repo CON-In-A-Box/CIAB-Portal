@@ -130,8 +130,7 @@ SQL;
         }
 
         if (!empty($ids)) {
-            $str = "('".implode("', '", $ids)."')";
-            $users = lookup_users_by_ids($str);
+            $users = lookup_users_by_ids($ids);
 
             foreach ($users['users'] as $user) {
                 if (array_key_exists($user['Id'], $db_staff)) {
