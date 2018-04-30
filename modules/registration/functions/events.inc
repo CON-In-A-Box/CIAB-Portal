@@ -117,9 +117,9 @@ SQL;
 function get_verification_info($accountID)
 {
     $info = pullIndividualAccount($accountID);
-    $result['AddressLine1'] = $info['individualAccount']['primaryContact']['addresses']['address']['0']['addressLine1'];
-    $result['Phone'] = $info['individualAccount']['primaryContact']['phone1'];
-    $result['Name'] = $info['individualAccount']['primaryContact']['firstName'].'&nbsp;'.$info['individualAccount']['primaryContact']['lastName'];
+    $result['AddressLine1'] = $info['AddressLine1'];
+    $result['Phone'] = $info['Phone'];
+    $result['Name'] = $info['FirstName'].'&nbsp;'.$info['LastName'];
     return $result;
 
 }
