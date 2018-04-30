@@ -111,6 +111,26 @@ function neon_importAccountListToDB($results)
 }
 
 
+function neon_getContactId($accountId)
+{
+    global $Neon;
+    // Refresh Account info from Neon to verify update
+    $request = [
+    'method' => 'account/retrieveIndividualAccount',
+    'parameters' => [
+    'accountId' => $accountId,
+      ],
+    ];
+
+    $result = $Neon->go($request);
+    if (isset($result['operationResult']) && $result['operationResult'] == 'SUCCESS') {
+        return $result['individualAccount']['primaryContact']['contactId'];
+    }
+    return null;
+
+}
+
+
 /*************************************/
 /* END Neon migration path functions */
 /*************************************/
@@ -535,21 +555,13 @@ function lookup_user_by_login($user, $substring = false)
 
 function pullIndividualAccount($accountId)
 {
-    global $Neon;
-    // Refresh Account info from Neon to verify update
-    $request = [
-    'method' => 'account/retrieveIndividualAccount',
-    'parameters' => [
-    'accountId' => $accountId,
-      ],
-    ];
-
-    $result = $Neon->go($request);
-    if (isset($result['operationResult']) && $result['operationResult'] == 'SUCCESS') {
-        return $result;
-    } else {
-        sendError("Could not retrieve IndividualAccount for account ".$accountId." in ".__FILE__, $result);
+    $sql = "SELECT * FROM `Members` WHERE AccountId = $accountId;";
+    $result = \DB::run($sql);
+    $value = $result->fetch();
+    if ($value === false) {
         return null;
+    } else {
+        return $value;
     }
 
 }
@@ -643,6 +655,8 @@ function listCountries()
 function updateAccount($updateData)
 {
     global $Neon, $_SESSION;
+
+    $updateData['contactId'] = neon_getContactId($updateData['accountId']);
 
     // Formulate the update
     $request = [
