@@ -652,7 +652,7 @@ function listCountries()
 }
 
 
-function updateAccount($updateData)
+function neon_updateAccount($updateData)
 {
     global $Neon, $_SESSION;
 
@@ -693,62 +693,95 @@ function updateAccount($updateData)
     $preferredLastName = search_definedFields('Preferred Last Name');
     $cvgConComPhoneDisplay = search_definedFields('CVGConCom Publish Phone');
 
-    $i = count($_SESSION['accountInfo']['individualAccount']['customFieldDataList']['customFieldData']);
-    // Verify fieldId is in place - potential for manual add to lottery or override
-    $key = array_search($preferredFirstName, array_column($_SESSION['accountInfo']['individualAccount']['customFieldDataList']['customFieldData'], 'fieldId'));
-    if ($key === false && !empty($updateData['preferredFirstName'])) {
-        $_SESSION['accountInfo']['individualAccount']['customFieldDataList']['customFieldData'][$i]['fieldId'] = $preferredFirstName;
-        $_SESSION['accountInfo']['individualAccount']['customFieldDataList']['customFieldData'][$i]['fieldValue'] = $updateData['preferredFirstName'];
-        $i++;
-    }
-    unset($key);
-    $key = array_search($preferredLastName, array_column($_SESSION['accountInfo']['individualAccount']['customFieldDataList']['customFieldData'], 'fieldId'));
-    if ($key === false && !empty($updateData['preferredLastName'])) {
-        $_SESSION['accountInfo']['individualAccount']['customFieldDataList']['customFieldData'][$i]['fieldId'] = $preferredLastName;
-        $_SESSION['accountInfo']['individualAccount']['customFieldDataList']['customFieldData'][$i]['fieldValue'] = $updateData['preferredLastName'];
-        $i++;
-    }
-    $key = array_search($cvgConComPhoneDisplay, array_column($_SESSION['accountInfo']['individualAccount']['customFieldDataList']['customFieldData'], 'fieldId'));
-    if ($key === false && !empty($updateData['conComDisplayPhone'])) {
-        $_SESSION['accountInfo']['individualAccount']['customFieldDataList']['customFieldData'][$i]['fieldId'] = $cvgConComPhoneDisplay;
-        $_SESSION['accountInfo']['individualAccount']['customFieldDataList']['customFieldData'][$i]['fieldValue'] = $updateData['conComDisplayPhone'];
-        $i++;
-    }
-    unset($key);
-    unset($i);
-
     // add custom field data, watch for updated fields, if empty, drop them to clear them from Neon
-    foreach ($_SESSION['accountInfo']['individualAccount']['customFieldDataList']['customFieldData'] as $key => $val) {
-        if ($val['fieldId'] == $preferredFirstName) {
-            if (!empty($updateData['preferredFirstName'])) {
-                $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldId['.$key.']'] = $val['fieldId'];
-                $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldOptionId['.$key.']'] = '';
-                $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldValue['.$key.']'] = $updateData['preferredFirstName'];
-            }
-        } elseif ($val['fieldId'] == $preferredLastName) {
-            if (!empty($updateData['preferredLastName'])) {
-                $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldId['.$key.']'] = $val['fieldId'];
-                $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldOptionId['.$key.']'] = '';
-                $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldValue['.$key.']'] = $updateData['preferredLastName'];
-            }
-        } elseif ($val['fieldId'] == $cvgConComPhoneDisplay) {
-            if (!empty($updateData['conComDisplayPhone'])) {
-                $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldId['.$key.']'] = $val['fieldId'];
-                $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldOptionId['.$key.']'] = '';
-                $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldValue['.$key.']'] = $updateData['conComDisplayPhone'];
-            }
-        } else {
-            $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldId['.$key.']'] = $val['fieldId'];
-            if (isset($val['fieldValue'])) {
-                $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldOptionId['.$key.']'] = '';
-                $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldValue['.$key.']'] = $val['fieldValue'];
-            } elseif (isset($val['fieldOptionId'])) {
-                $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldOptionId['.$key.']'] = $val['fieldOptionId'];
-                $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldValue['.$key.']'] = '';
-            }
-        }
+
+    $key = 0;
+    if (!empty($updateData['preferredFirstName'])) {
+        $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldId['.$key.']'] = $preferredFirstName;
+        $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldOptionId['.$key.']'] = '';
+        $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldValue['.$key.']'] = $updateData['preferredFirstName'];
+        $key++;
+    }
+    if (!empty($updateData['preferredLastName'])) {
+        $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldId['.$key.']'] = $preferredLastName;
+        $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldOptionId['.$key.']'] = '';
+        $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldValue['.$key.']'] = $updateData['preferredLastName'];
+        $key++;
+    }
+    if (!empty($updateData['conComDisplayPhone'])) {
+        $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldId['.$key.']'] = $cvgConComPhoneDisplay;
+        $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldOptionId['.$key.']'] = '';
+        $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldValue['.$key.']'] = $updateData['conComDisplayPhone'];
     }
 
     return $Neon->go1($request);
+
+}
+
+
+function _process_field(&$data, $updateData, $field, $target, $binary = false)
+{
+    if (isset($updateData[$field])) {
+        if ($binary || !empty($updateData[$field])) {
+            if ($binary) {
+                array_push($data, "`$target` = ".$updateData[$field]);
+            } else {
+                $result = _quote($updateData[$field]);
+                array_push($data, "`$target` = $result");
+            }
+        } else {
+            array_push($data, "`$target` = null");
+        }
+    }
+
+}
+
+
+function updateAccount($updateData)
+{
+    $countries = listCountries();
+    foreach ($countries as $country) {
+        if ($country['id'] === $updateData['country']) {
+            $updateData['countryName'] = $country['name'];
+            break;
+        }
+    }
+
+    $sql = "UPDATE `Members` SET ";
+    $data = array();
+    array_push($data, "`FirstName` = '".$updateData['firstName']."'");
+    array_push($data, "`LastName` = '".$updateData['lastName']."'");
+    _process_field($data, $updateData, 'middleName', 'MiddleName');
+    _process_field($data, $updateData, 'suffix', 'Suffix');
+    _process_field($data, $updateData, 'email1', 'Email');
+    _process_field($data, $updateData, 'email2', 'Email2');
+    _process_field($data, $updateData, 'email3', 'Email3');
+    _process_field($data, $updateData, 'phone1', 'Phone');
+    _process_field($data, $updateData, 'phone2', 'Phone2');
+    _process_field($data, $updateData, 'addressLine1', 'AddressLine1');
+    _process_field($data, $updateData, 'addressLine2', 'AddressLine2');
+    _process_field($data, $updateData, 'city', 'AddressCity');
+    _process_field($data, $updateData, 'state', 'AddressState');
+    _process_field($data, $updateData, 'zipCode', 'AddressZipCode');
+    _process_field($data, $updateData, 'zipPlus4', 'AddressZipCodeSuffix');
+    _process_field($data, $updateData, 'countryName', 'AddressCountry');
+    _process_field($data, $updateData, 'province', 'AddressProvince');
+    _process_field($data, $updateData, 'preferredFirstName', 'PreferredFirstName');
+    _process_field($data, $updateData, 'preferredLastName', 'PreferredLastName');
+    _process_field($data, $updateData, 'Deceased', 'Deceased', true);
+    _process_field($data, $updateData, 'DoNotContact', 'DoNotContact', true);
+    _process_field($data, $updateData, 'EmailOptOut', 'EmailOptOut', true);
+    _process_field($data, $updateData, 'Birthdate', 'Birthdate');
+    _process_field($data, $updateData, 'Gender', 'Gender');
+    _process_field($data, $updateData, 'conComDisplayPhone', 'DisplayPhone', true);
+
+    $sql .= implode(", ", $data);
+    $sql .= " WHERE `AccountID` = ".$updateData['accountId'].";";
+
+    \DB::run($sql);
+
+    if (array_key_exists('Neon', $GLOBALS)) {
+        neon_updateAccount($updateData);
+    }
 
 }

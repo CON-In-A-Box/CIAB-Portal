@@ -70,8 +70,7 @@ function draw_history()
 function phone_number()
 {
     // If this person is on ConCom, but hasn't elected about their phone number, nudge them
-    $cvgConComPhoneDisplay = search_definedFields('CVGConCom Publish Phone');
-    if (isset($_SESSION['customFields']['currConComPos']) && empty($_SESSION['customFields'][$cvgConComPhoneDisplay])) {
+    if (isset($_SESSION['customFields']['currConComPos']) && !isset($_SESSION['accountInfo']['DisplayPhone'])) {
         echo '<p class="UI-container UI-center">';
         echo "We've noticed you haven't decided about your phone number.<br />";
         echo 'Please <a href="index.php?Function=profile">Update Your Profile</a> to make that selection.';

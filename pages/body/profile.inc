@@ -1,17 +1,12 @@
 <?php
 
-// Going to need the actual fields for this
-$preferredFirstName = search_definedFields('Preferred First Name');
-$preferredLastName = search_definedFields('Preferred Last Name');
-$cvgConComPhoneDisplay = search_definedFields('CVGConCom Publish Phone');
-
 // Dirty Hack - if country isn't set, default to the first country in the list
-if (empty($_SESSION['accountInfo']['individualAccount']['primaryContact']['addresses']['address']['0']['country']['id'])) {
-    $_SESSION['accountInfo']['individualAccount']['primaryContact']['addresses']['address']['0']['country']['id'] = 1;
+if (empty($_SESSION['accountInfo']['AddressCountry'])) {
+    $_SESSION['accountInfo']['AddressCountry'] = 'United States of America';
 }
 
 // Dirty Hack - if state isn't set and provice is empty, default to Minnesota, because I can
-if (empty($_SESSION['state']) && empty($_SESSION['accountInfo']['individualAccount']['primaryContact']['addresses']['address']['0']['province'])) {
+if (empty($_SESSION['state']) && empty($_SESSION['accountInfo']['province'])) {
     $_SESSION['state'] = 'MN';
 }
 ?>
@@ -20,12 +15,6 @@ if (empty($_SESSION['state']) && empty($_SESSION['accountInfo']['individualAccou
 <form action="index.php?Function=profile" method="post" onsubmit="return validate_form(this)" name="Profile" id="profile_update" class="UI-container">
 
   <input type="hidden" name="accountId" value="<?php echo $_SESSION['accountId']; ?>">
-  <input type="hidden" name="contactId" value="<?php echo $_SESSION['contactId']; ?>">
-<?php
-if (isset($_SESSION['accountInfo']['individualAccount']['primaryContact']['addresses']['address']['0']['addressId'])) {
-    echo '<input type="hidden" name="addressId" value="'.$_SESSION['accountInfo']['individualAccount']['primaryContact']['addresses']['address']['0']['addressId'].'">';
-}
-?>
   <div class="UI-profile-name-div">
     <div>
       Legal Name
@@ -38,7 +27,7 @@ if (isset($_SESSION['accountInfo']['individualAccount']['primaryContact']['addre
         </div>
 
         <div class="UI-third">
-          <input type="text" name="middleName" value="<?php echo $_SESSION['accountInfo']['individualAccount']['primaryContact']['middleName']; ?>" class="UI-input" placeholder="Middle">
+          <input type="text" name="middleName" value="<?php echo $_SESSION['accountInfo']['MiddleName']; ?>" class="UI-input" placeholder="Middle">
         </div>
       </div>
 
@@ -46,9 +35,8 @@ if (isset($_SESSION['accountInfo']['individualAccount']['primaryContact']['addre
         <div class="UI-threequarter">
           <input type="text" name="lastName" value="<?php echo $_SESSION['lastName']; ?>" class="UI-input" placeholder="Last (Required)">
         </div>
-
         <div class="UI-quarter">
-          <input type="text" name="suffix" value="<?php echo $_SESSION['accountInfo']['individualAccount']['primaryContact']['suffix']; ?>" class="UI-input" placeholder="Suffix">
+          <input type="text" name="suffix" value="<?php echo $_SESSION['accountInfo']['Suffix']; ?>" class="UI-input" placeholder="Suffix">
         </div>
       </div>
     </div>
@@ -62,16 +50,16 @@ if (isset($_SESSION['accountInfo']['individualAccount']['primaryContact']['addre
     <div class="UI-container">
       <div class="UI-half">
         <input type="text" name="preferredFirstName" value="<?php
-        if (isset($_SESSION['customFields'][$preferredFirstName][0])) {
-            echo $_SESSION['customFields'][$preferredFirstName][0];
+        if (isset($_SESSION['accountInfo']['PreferredFirstName'])) {
+            echo $_SESSION['accountInfo']['PreferredFirstName'];
         }
 ?>" class="UI-input" placeholder="First - If Different">
       </div>
 
       <div class="UI-half">
         <input type="text" name="preferredLastName" value="<?php
-        if (isset($_SESSION['customFields'][$preferredLastName][0])) {
-            echo $_SESSION['customFields'][$preferredLastName][0];
+        if (isset($_SESSION['accountInfo']['PreferredLastName'])) {
+            echo $_SESSION['accountInfo']['PreferredLastName'];
         }
 ?>" class="UI-input" placeholder="Last - If Different">
       </div>
@@ -83,7 +71,7 @@ if (isset($_SESSION['accountInfo']['individualAccount']['primaryContact']['addre
       Badge Number
     </div>
     <div class="UI-container">
-        <input type="text" name="preferredLastName"  disabled value="
+        <input type="text" name="badgeNumber"  disabled value="
 <?php echo $_SESSION['accountId'];?>" class="UI-input" >
     </div>
   </div>
@@ -101,11 +89,11 @@ echo $_SESSION['email'];
     ?>" class="UI-input" placeholder="Primary Email and Login (Required)">
       <input type="text" name="email2" value="
 <?php
-echo $_SESSION['accountInfo']['individualAccount']['primaryContact']['email2'];
+echo $_SESSION['accountInfo']['Email2'];
     ?>" class="UI-input" placeholder="Secondary Email">
       <input type="text" name="email3" value="
 <?php
-echo $_SESSION['accountInfo']['individualAccount']['primaryContact']['email3'];
+echo $_SESSION['accountInfo']['Email3'];
     ?>" class="UI-input" placeholder="Other Email">
     </div>
   </div>
@@ -118,14 +106,14 @@ echo $_SESSION['accountInfo']['individualAccount']['primaryContact']['email3'];
     </div>
     <div class="UI-container">
       <input type="text" name="phone1" value="<?php
-        if (isset($_SESSION['accountInfo']['individualAccount']['primaryContact']['phone1'])) {
-            echo $_SESSION['accountInfo']['individualAccount']['primaryContact']['phone1'];
+        if (isset($_SESSION['accountInfo']['Phone'])) {
+            echo $_SESSION['accountInfo']['Phone'];
         }
     ?>" class="UI-input UI-half" placeholder="Primary (Required)">
       <input type="text" name="phone2" value="
 <?php
-if (isset($_SESSION['accountInfo']['individualAccount']['primaryContact']['phone2'])) {
-    echo $_SESSION['accountInfo']['individualAccount']['primaryContact']['phone2'];
+if (isset($_SESSION['accountInfo']['Phone2'])) {
+    echo $_SESSION['accountInfo']['Phone2'];
 }
     ?>" class="UI-input UI-half" placeholder="Other">
         <?php
@@ -133,16 +121,16 @@ if (isset($_SESSION['accountInfo']['individualAccount']['primaryContact']['phone
             echo '<div class="UI-profile-concom-div">';
             echo '<span class="UI-profile-concom-label">Display Phone number on the ConCom list?</span>';
             echo '<select name="conComDisplayPhone" class="UI-profile-concom-select" required>';
-            if (empty($_SESSION['customFields'][$cvgConComPhoneDisplay][0])) {
+            if (empty($_SESSION['accountInfo']['DisplayPhone'])) {
                 echo '<option value="" disabled selected>Choose</option>';
             }
-            echo '<option value="TRUE"';
-            if (isset($_SESSION['customFields'][$cvgConComPhoneDisplay][0]) && $_SESSION['customFields'][$cvgConComPhoneDisplay][0] == "TRUE") {
+            echo '<option value="1"';
+            if ($_SESSION['accountInfo']['DisplayPhone'] == "1") {
                 echo ' selected';
             }
             echo '>Yes</option>';
-            echo '<option value="FALSE"';
-            if (isset($_SESSION['customFields'][$cvgConComPhoneDisplay][0]) && $_SESSION['customFields'][$cvgConComPhoneDisplay][0] == "FALSE") {
+            echo '<option value="0"';
+            if ($_SESSION['accountInfo']['DisplayPhone'] == "0") {
                 echo ' selected';
             }
             echo '>No</option>';
@@ -200,8 +188,8 @@ echo $_SESSION['zip'];
     ?>" class="UI-profile-zip-field" placeholder="Zip Code (Required)">
         <input type="text" name="zipPlus4" value="
 <?php
-if (isset($_SESSION['accountInfo']['individualAccount']['primaryContact']['addresses']['address']['0']['zipCodeSuffix'])) {
-    echo $_SESSION['accountInfo']['individualAccount']['primaryContact']['addresses']['address']['0']['zipCodeSuffix'];
+if (isset($_SESSION['accountInfo']['AddressZipCodeSuffix'])) {
+    echo $_SESSION['accountInfo']['AddressZipCodeSuffix'];
 }
     ?>" class="UI-profile-zip-4-field" placeholder="Zip+4">
       </div>
@@ -214,7 +202,7 @@ $result = listCountries();
 
 foreach ($result as $country) {
     echo '<option value="'.$country['id'].'"';
-    if ($country['id'] == $_SESSION['accountInfo']['individualAccount']['primaryContact']['addresses']['address']['0']['country']['id']) {
+    if ($country['name'] == $_SESSION['accountInfo']['AddressCountry']) {
         echo " selected";
     }
 
@@ -225,8 +213,8 @@ foreach ($result as $country) {
       <div id="otherCountries" class="UI-hide">
         <input type="text" name="province" value="
 <?php
-if (isset($_SESSION['accountInfo']['individualAccount']['primaryContact']['addresses']['address']['0']['province'])) {
-    echo $_SESSION['accountInfo']['individualAccount']['primaryContact']['addresses']['address']['0']['province'];
+if (isset($_SESSION['accountInfo']['AddressProvince'])) {
+    echo $_SESSION['accountInfo']['AddressProvince'];
 }
     ?>" class="UI-profile-province-field" placeholder="Province (Foreign Only)">
       </div>
