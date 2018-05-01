@@ -5,6 +5,7 @@
 
 require_once($FUNCTIONDIR.'/users.inc');
 require_once($FUNCTIONDIR.'/authentication.inc');
+require_once($FUNCTIONDIR."/session.inc");
 
 if (!empty($_POST)) {
     // Retrieve and sanitize POST data
@@ -23,7 +24,7 @@ if (!empty($_POST)) {
     'email3'             => FILTER_SANITIZE_EMAIL,
     'phone1'             => FILTER_SANITIZE_SPECIAL_CHARS,
     'phone2'             => FILTER_SANITIZE_SPECIAL_CHARS,
-    'conComDisplayPhone' => FILTER_SANITIZE_SPECIAL_CHARS,
+    'conComDisplayPhone' => FILTER_SANITIZE_NUMBER_INT,
     'addressLine1'       => FILTER_SANITIZE_SPECIAL_CHARS,
     'addressLine2'       => FILTER_SANITIZE_SPECIAL_CHARS,
     'city'               => FILTER_SANITIZE_SPECIAL_CHARS,
@@ -57,13 +58,6 @@ if (!empty($_POST)) {
         }
     }
 
-    $result = updateAccount($updateData);
-
-    if (isset($result['operationResult']) && $result['operationResult'] == 'SUCCESS') {
-        require_once($FUNCTIONDIR."/session.inc");
-        // Refresh Account info from Neon
-        buildSessionData($_SESSION['accountId']);
-    } else {
-        sendError("Profile Update Failed", $result);
-    }
+    updateAccount($updateData);
+    buildSessionData($_SESSION['accountId']);
 }
