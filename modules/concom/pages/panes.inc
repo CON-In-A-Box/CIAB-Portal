@@ -87,13 +87,17 @@ function meetings()
     echo "<tr><th class='w3-center event-color-primary' colspan=3>Official Meeting Attendance</th></tr>\n";
     $nowDate = date("Ymd");
     $attendKey = search_definedFields('Official Meeting Attendance');
-    foreach ($_SESSION['definedFields']['Meetings'] as $key => $val) {
-        $ldate = explode("-", $val);
-        $checkDate = $ldate[0].$ldate[1].rtrim($ldate[2]);
-        if ($nowDate >= $checkDate) {
-            echo "<tr><td>".$ldate[1]."/".rtrim($ldate[2])."/".$ldate[0]."</td>";
-            echo "<td>".ltrim($ldate[3])."</td>";
-            if (isset($_SESSION['customFields'][$attendKey]) && in_array($key, $_SESSION['customFields'][$attendKey])) {
+
+    $sql = "SELECT * from `OfficialMeetings`";
+    $result = \DB::run($sql);
+    $value = $result->fetch();
+    while ($value !== false) {
+        $checkDate = $value['Date'];
+
+        if ($nowDate >= $value['Date']) {
+            echo "<tr><td>".$value['Date']."</td>";
+            echo "<td>".$value['Name']."</td>";
+            if (isset($_SESSION['customFields'][$attendKey]) && in_array($value['MeetingID'], $_SESSION['customFields'][$attendKey])) {
                 echo "<td class='w3-lime'>Checked In";
             } else {
                 if ($nowDate == $checkDate) {
@@ -104,8 +108,7 @@ function meetings()
             }
             echo "</td></tr>\n";
         }
-        unset($ldate);
-        unset($checkDate);
+        $value = $result->fetch();
     }
     unset($key);
     unset($val);
