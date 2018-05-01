@@ -1,17 +1,12 @@
 <?php
 
-// Going to need the actual fields for this
-$preferredFirstName = search_definedFields('Preferred First Name');
-$preferredLastName = search_definedFields('Preferred Last Name');
-$cvgConComPhoneDisplay = search_definedFields('CVGConCom Publish Phone');
-
 // Dirty Hack - if country isn't set, default to the first country in the list
-if (empty($_SESSION['accountInfo']['individualAccount']['primaryContact']['addresses']['address']['0']['country']['id'])) {
-    $_SESSION['accountInfo']['individualAccount']['primaryContact']['addresses']['address']['0']['country']['id'] = 1;
+if (empty($_SESSION['accountInfo']['AddressCountry'])) {
+    $_SESSION['accountInfo']['AddressCountry'] = 'United States';
 }
 
 // Dirty Hack - if state isn't set and provice is empty, default to Minnesota, because I can
-if (empty($_SESSION['state']) && empty($_SESSION['accountInfo']['individualAccount']['primaryContact']['addresses']['address']['0']['province'])) {
+if (empty($_SESSION['state']) && empty($_SESSION['accountInfo']['province'])) {
     $_SESSION['state'] = 'MN';
 }
 ?>
@@ -20,12 +15,6 @@ if (empty($_SESSION['state']) && empty($_SESSION['accountInfo']['individualAccou
 <form action="index.php?Function=profile" method="post" onsubmit="return validate_form(this)" name="Profile" id="profile_update" class="w3-container">
 
   <input type="hidden" name="accountId" value="<?php echo $_SESSION['accountId']; ?>">
-  <input type="hidden" name="contactId" value="<?php echo $_SESSION['contactId']; ?>">
-<?php
-if (isset($_SESSION['accountInfo']['individualAccount']['primaryContact']['addresses']['address']['0']['addressId'])) {
-    echo '<input type="hidden" name="addressId" value="'.$_SESSION['accountInfo']['individualAccount']['primaryContact']['addresses']['address']['0']['addressId'].'">';
-}
-?>
   <div class="w3-lime w3-row">
     <div>
       Legal Name
@@ -38,7 +27,7 @@ if (isset($_SESSION['accountInfo']['individualAccount']['primaryContact']['addre
         </div>
 
         <div class="w3-third">
-          <input type="text" name="middleName" value="<?php echo $_SESSION['accountInfo']['individualAccount']['primaryContact']['middleName']; ?>" class="w3-input w3-border" placeholder="Middle">
+          <input type="text" name="middleName" value="<?php echo $_SESSION['accountInfo']['MiddleName']; ?>" class="w3-input w3-border" placeholder="Middle">
         </div>
       </div>
 
@@ -48,7 +37,7 @@ if (isset($_SESSION['accountInfo']['individualAccount']['primaryContact']['addre
         </div>
       
         <div class="w3-quarter">
-          <input type="text" name="suffix" value="<?php echo $_SESSION['accountInfo']['individualAccount']['primaryContact']['suffix']; ?>" class="w3-input w3-border" placeholder="Suffix">
+          <input type="text" name="suffix" value="<?php echo $_SESSION['accountInfo']['Suffix']; ?>" class="w3-input w3-border" placeholder="Suffix">
         </div>
       </div>
     </div>
@@ -62,16 +51,16 @@ if (isset($_SESSION['accountInfo']['individualAccount']['primaryContact']['addre
     <div class="w3-container">
       <div class="w3-half">
         <input type="text" name="preferredFirstName" value="<?php
-        if (isset($_SESSION['customFields'][$preferredFirstName][0])) {
-            echo $_SESSION['customFields'][$preferredFirstName][0];
+        if (isset($_SESSION['accountInfo']['PreferredFirstName'])) {
+            echo $_SESSION['accountInfo']['PreferredFirstName'];
         }
 ?>" class="w3-input w3-border" placeholder="First - If Different">
       </div>
         
       <div class="w3-half">
         <input type="text" name="preferredLastName" value="<?php
-        if (isset($_SESSION['customFields'][$preferredLastName][0])) {
-            echo $_SESSION['customFields'][$preferredLastName][0];
+        if (isset($_SESSION['accountInfo']['PreferredLastName'])) {
+            echo $_SESSION['accountInfo']['PreferredLastName'];
         }
 ?>" class="w3-input w3-border" placeholder="Last - If Different">
       </div>
@@ -83,7 +72,7 @@ if (isset($_SESSION['accountInfo']['individualAccount']['primaryContact']['addre
       Badge Number
     </div>
     <div class="w3-container">
-        <input type="text" name="preferredLastName"  disabled value="
+        <input type="text" name="badgeNumber"  disabled value="
 <?php echo $_SESSION['accountId'];?>" class="w3-input w3-border" >
     </div>
   </div>
@@ -101,11 +90,11 @@ echo $_SESSION['email'];
     ?>" class="w3-input w3-border" placeholder="Primary Email and Login (Required)">
       <input type="text" name="email2" value="
 <?php
-echo $_SESSION['accountInfo']['individualAccount']['primaryContact']['email2'];
+echo $_SESSION['accountInfo']['Email2'];
     ?>" class="w3-input w3-border" placeholder="Secondary Email">
       <input type="text" name="email3" value="
 <?php
-echo $_SESSION['accountInfo']['individualAccount']['primaryContact']['email3'];
+echo $_SESSION['accountInfo']['Email3'];
     ?>" class="w3-input w3-border" placeholder="Other Email">
     </div>
   </div>
@@ -118,14 +107,14 @@ echo $_SESSION['accountInfo']['individualAccount']['primaryContact']['email3'];
     </div>
     <div class="w3-container">
       <input type="text" name="phone1" value="<?php
-        if (isset($_SESSION['accountInfo']['individualAccount']['primaryContact']['phone1'])) {
-            echo $_SESSION['accountInfo']['individualAccount']['primaryContact']['phone1'];
+        if (isset($_SESSION['accountInfo']['Phone'])) {
+            echo $_SESSION['accountInfo']['Phone'];
         }
     ?>" class="w3-input w3-border w3-half" placeholder="Primary (Required)">
       <input type="text" name="phone2" value="
 <?php
-if (isset($_SESSION['accountInfo']['individualAccount']['primaryContact']['phone2'])) {
-    echo $_SESSION['accountInfo']['individualAccount']['primaryContact']['phone2'];
+if (isset($_SESSION['accountInfo']['Phone2'])) {
+    echo $_SESSION['accountInfo']['Phone2'];
 }
     ?>" class="w3-input w3-border w3-half" placeholder="Other">
         <?php
@@ -133,16 +122,16 @@ if (isset($_SESSION['accountInfo']['individualAccount']['primaryContact']['phone
             echo '<div class="w3-row">';
             echo '<span class="w3-right-align w3-col m7 l6">Display Phone number on the ConCom list?</span>';
             echo '<select name="conComDisplayPhone" class="w3-col m5 l6" required>';
-            if (empty($_SESSION['customFields'][$cvgConComPhoneDisplay][0])) {
+            if (empty($_SESSION['accountInfo']['DisplayPhone'])) {
                 echo '<option value="" disabled selected>Choose</option>';
             }
-            echo '<option value="TRUE"';
-            if (isset($_SESSION['customFields'][$cvgConComPhoneDisplay][0]) && $_SESSION['customFields'][$cvgConComPhoneDisplay][0] == "TRUE") {
+            echo '<option value="1"';
+            if ($_SESSION['accountInfo']['DisplayPhone'] == "1") {
                 echo ' selected';
             }
             echo '>Yes</option>';
-            echo '<option value="FALSE"';
-            if (isset($_SESSION['customFields'][$cvgConComPhoneDisplay][0]) && $_SESSION['customFields'][$cvgConComPhoneDisplay][0] == "FALSE") {
+            echo '<option value="0"';
+            if ($_SESSION['accountInfo']['DisplayPhone'] == "0") {
                 echo ' selected';
             }
             echo '>No</option>';
@@ -200,8 +189,8 @@ echo $_SESSION['zip'];
     ?>" class="w3-input w3-border w3-right-align w3-col l8 m7 s7" placeholder="Zip Code (Required)">
         <input type="text" name="zipPlus4" value="
 <?php
-if (isset($_SESSION['accountInfo']['individualAccount']['primaryContact']['addresses']['address']['0']['zipCodeSuffix'])) {
-    echo $_SESSION['accountInfo']['individualAccount']['primaryContact']['addresses']['address']['0']['zipCodeSuffix'];
+if (isset($_SESSION['accountInfo']['AddressZipCodeSuffix'])) {
+    echo $_SESSION['accountInfo']['AddressZipCodeSuffix'];
 }
     ?>" class="w3-input w3-border w3-col l4 m5 s5" placeholder="Zip+4">
       </div>
@@ -213,8 +202,8 @@ require_once($FUNCTIONDIR.'/users.inc');
 $result = listCountries();
 
 foreach ($result as $country) {
-    echo '<option value="'.$country['id'].'"';
-    if ($country['id'] == $_SESSION['accountInfo']['individualAccount']['primaryContact']['addresses']['address']['0']['country']['id']) {
+    echo '<option ';
+    if ($country['name'] == $_SESSION['accountInfo']['AddressCountry']) {
         echo " selected";
     }
 
@@ -225,8 +214,8 @@ foreach ($result as $country) {
       <div id="otherCountries" class="w3-hide">
         <input type="text" name="province" value="
 <?php
-if (isset($_SESSION['accountInfo']['individualAccount']['primaryContact']['addresses']['address']['0']['province'])) {
-    echo $_SESSION['accountInfo']['individualAccount']['primaryContact']['addresses']['address']['0']['province'];
+if (isset($_SESSION['accountInfo']['AddressProvince'])) {
+    echo $_SESSION['accountInfo']['AddressProvince'];
 }
     ?>" class="w3-input w3-border w3-gray" placeholder="Province (Foreign Only)">
       </div>
