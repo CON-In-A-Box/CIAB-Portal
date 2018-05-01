@@ -17,21 +17,10 @@ const AUTH_LOCKED    = 0x3;
 const AUTH_DUPLICATE = 0x10;
 
 
-if (array_key_exists('NEONID', $GLOBALS) &&
-    array_key_exists('NEONKEY', $GLOBALS) &&
-    !empty($GLOBALS['NEONID']) &&
-    !empty($GLOBALS['NEONKEY'])) {
-    require_once(__DIR__.'/neon.inc');
-}
-
-
 function LogoutUser()
 {
     // Since we check for username, clearing the session logs the user out.
     // Because of that, we do not need to destroy the session, all the data and info is gone anyway.
-    if (array_key_exists('Neon', $GLOBALS)) {
-        $GLOBALS['Neon']->logout();
-    }
     $_SESSION = [];
 
     // Remove cookies!
@@ -92,28 +81,6 @@ SQL;
 }
 
 
-function checkNeonForUserAndPasswordMatch($user, $password)
-{
-    if (array_key_exists('Neon', $GLOBALS)) {
-        $request = [
-        'method' => 'common/authenticateUser',
-        'parameters' => [
-        'username' => $user,
-        'password' => $password,
-            ],
-        ];
-        $result = $GLOBALS['Neon']->go($request);
-        if ($result['operationResult'] == 'SUCCESS') {
-            $result['FirstName'] = $result['name'];
-            $result['AccountID'] = $result['accountId'];
-            return $result;
-        }
-    }
-    return false;
-
-}
-
-
 function check_authentication($account, $password, $user)
 {
     global $MAXLOGINFAIL;
@@ -153,13 +120,6 @@ SQL;
         increment_failed($account);
         return AUTH_BAD;
     } else {
-        if (array_key_exists('Neon', $GLOBALS)) {
-            $value = checkNeonForUserAndPasswordMatch($user, $password);
-            if ($value !== false) {
-                set_password($account, $password);
-                return AUTH_SUCCESS;
-            }
-        }
         return AUTH_EXPIRED;
     }
 
@@ -207,7 +167,6 @@ SQL;
 
 function doUserAndPasswordMatch($user, $password)
 {
-    loadDefinedFields();
     $results = array();
     $value = lookup_user_by_login($user);
     if (count($value) > 0) {

@@ -8,9 +8,6 @@ const DB_HOST = 'DBHOST';
 const DB_USER = 'DBUSER';
 const DB_NAME = 'DBNAME';
 const DB_PASS = 'DBPASS';
-const NEW_NEONID = 'NEW_NEONID';
-const NEW_NEONKEY = 'NEW_NEONKEY';
-const NEW_NEONBETA = 'NEW_NEONBETA';
 const NEW_ADMINACCOUNTS = 'NEW_ADMINACCOUNTS';
 const NEW_ADMINEMAIL = 'NEW_ADMINEMAIL';
 const NEW_NOREPLY_EMAIL = 'NEW_NOREPLY_EMAIL';
@@ -93,9 +90,6 @@ if (!empty($_POST)) {
     DB_PASS   => FILTER_SANITIZE_SPECIAL_CHARS,
     DB_PASS   => FILTER_SANITIZE_SPECIAL_CHARS,
 
-    NEW_NEONID        => FILTER_SANITIZE_SPECIAL_CHARS,
-    NEW_NEONKEY       => FILTER_SANITIZE_SPECIAL_CHARS,
-    NEW_NEONBETA      => FILTER_SANITIZE_SPECIAL_CHARS,
     NEW_ADMINACCOUNTS => FILTER_SANITIZE_SPECIAL_CHARS,
     NEW_ADMINEMAIL    => FILTER_SANITIZE_SPECIAL_CHARS,
     NEW_NOREPLY_EMAIL => FILTER_SANITIZE_SPECIAL_CHARS,
@@ -119,9 +113,6 @@ if (!empty($_POST)) {
     $DBNAME = $updateData[DB_NAME];
     $DBPASS = $updateData[DB_PASS];
 
-    $NEW_NEONID = $updateData[NEW_NEONID];
-    $NEW_NEONKEY = $updateData[NEW_NEONKEY];
-    $NEW_NEONBETA = $updateData[NEW_NEONBETA];
     $NEW_ADMINACCOUNTS = $updateData[NEW_ADMINACCOUNTS];
     $NEW_CONHOST = $updateData[NEW_CONHOST];
     $NEW_ADMINEMAIL = $updateData[NEW_ADMINEMAIL];
@@ -145,7 +136,7 @@ if (!empty($_POST)) {
         strlen($NEW_ADMINEMAIL) > 0 &&
         strlen($NEW_NOREPLY_EMAIL) > 0 &&
         strlen($NEW_TIMEZONE) > 0 &&
-        (strlen($NEW_NEONKEY) || strlen($NEW_ADMINPASSWORD))) {
+        strlen($NEW_ADMINPASSWORD)) {
         if (!isset($_ENV['DOCKER'])) {
             if (file_exists(ENV_FILE)) {
                 chmod(ENV_FILE, 0600);
@@ -185,20 +176,18 @@ DONE
                 require_once(__DIR__."/functions/users.inc");
                 require_once(__DIR__."/functions/authentication.inc");
 
-                if (empty($NEW_NEONID) && empty($NEW_NEONKEY)) {
-                    $aid = \createUser($NEW_ADMINEMAIL, 1000);
-                    if ($aid !== null) {
-                        \createPassword($NEW_ADMINEMAIL, $NEW_ADMINPASSWORD);
-                        if (!empty($NEW_ADMINACCOUNTS)) {
-                            $NEW_ADMINACCOUNTS = implode(',', [$NEW_ADMINACCOUNTS, $aid]);
-                        } else {
-                            $NEW_ADMINACCOUNTS = $aid;
-                        }
+                $aid = \createUser($NEW_ADMINEMAIL, 1000);
+                if ($aid !== null) {
+                    \createPassword($NEW_ADMINEMAIL, $NEW_ADMINPASSWORD);
+                    if (!empty($NEW_ADMINACCOUNTS)) {
+                        $NEW_ADMINACCOUNTS = implode(',', [$NEW_ADMINACCOUNTS, $aid]);
                     } else {
-                        $output = lookup_users_by_email($NEW_ADMINEMAIL);
-                        if (count($output['users']) != 0) {
-                            $aid = $output['users'][0]['Id'];
-                        }
+                        $NEW_ADMINACCOUNTS = $aid;
+                    }
+                } else {
+                    $output = lookup_users_by_email($NEW_ADMINEMAIL);
+                    if (count($output['users']) != 0) {
+                        $aid = $output['users'][0]['Id'];
                     }
                 }
             }
@@ -219,27 +208,6 @@ DONE
                 $sql = SQL_INSERT;
                 $sql .= " VALUES ('ADMINACCOUNTS', '".$NEW_ADMINACCOUNTS."') ";
                 $sql .= SQL_ON_DUP.$NEW_ADMINACCOUNTS."';";
-                DB::run($sql);
-            }
-
-            if (!empty($NEW_NEONID)) {
-                $sql = SQL_INSERT;
-                $sql .= " VALUES ('NEONID', '".$NEW_NEONID."') ";
-                $sql .= SQL_ON_DUP.$NEW_NEONID."';";
-                DB::run($sql);
-            }
-
-            if (!empty($NEW_NEONKEY)) {
-                $sql = SQL_INSERT;
-                $sql .= " VALUES ('NEONKEY', '".$NEW_NEONKEY."') ";
-                $sql .= SQL_ON_DUP.$NEW_NEONKEY."';";
-                DB::run($sql);
-            }
-
-            if (!empty($NEW_NEONBETA)) {
-                $sql = SQL_INSERT;
-                $sql .= " VALUES ('NEONTRIAL', '".$NEW_NEONBETA."') ";
-                $sql .= SQL_ON_DUP.$NEW_NEONBETA."';";
                 DB::run($sql);
             }
 
@@ -397,62 +365,6 @@ require(__DIR__.'/pages/base/body_begin.inc');
         </div>
     </div>
 
-    <div id="neon_content" class="UI-margin">
-        <button type="button" class="UI-event-dropdown-bar" onclick="expandSection('neon')">
-            <span>Neon CRM Data (Optional)</span> <em id="neon_arrow" class="fas fa-caret-down"></em>
-        </button>
-
-        <div id="neon" class="UI-container UI-padding UI-adminborder UI-hide">
-            <div class="UI-orange UI-configure-info-panel">
-                Use of NEON is optional. Define BOTH keys if NEON is in use.
-            </div>
-
-            <div>
-                <label>Neon Key:</label> <br>
-                <input type="text" name="NEW_NEONKEY" class="UI-input <?php
-                if ($updateData != null && strlen($updateData[NEW_NEONKEY])) {
-                    echo VALUE_EQ.$updateData[NEW_NEONKEY];
-                } elseif ($tried) {
-                    echo UI_PROBLEM;
-                }
-                ?>" placeholder="<example: bbbbbccccdddfae12341aabbccddeeff>">
-                </br>
-
-                <label>Neon ID:</label> <br>
-                <input type="text" name="NEW_NEONID" class="UI-input <?php
-                if ($updateData != null && strlen($updateData[NEW_NEONID])) {
-                    echo VALUE_EQ.$updateData[NEW_NEONID];
-                } elseif ($tried) {
-                    echo UI_PROBLEM;
-                }
-                ?>" placeholder="<example: home>">
-                </br>
-
-                <label>Is Neon Trial Account:</label> <br>
-                <input type="checkbox" name="NEW_NEONBETA" class="UI-checkbox <?php
-                if ($updateData != null && $updateData[NEW_NEONBETA]) {
-                    echo '" checked';
-                } elseif ($tried) {
-                    echo UI_PROBLEM;
-                }
-                ?>">
-                </br>
-
-                <div class="w3-orange w3-panel w3-padding-16">
-                If you are importing from NEON put a comma seperated list of user IDs of the primary admins here. If we do not find an '@' in the entry we will just add the contents here as the admin Ids being imported.
-                </div>
-                <label>Admin User IDs (comma seperated):</label> <br>
-                <input type="text" name="NEW_ADMINACCOUNTS" class="UI-input <?php
-                if ($updateData != null && strlen($updateData[NEW_ADMINACCOUNTS])) {
-                    echo VALUE_EQ.$updateData[NEW_ADMINACCOUNTS];
-                } elseif ($tried) {
-                    echo UI_PROBLEM;
-                }
-                ?>" placeholder="<example: 1234,5678,901234>">
-            </div>
-        </div>
-    </div>
-
     <div class="UI-event-sectionbar UI-margin">Event Configuration (Required)</div>
     <div class="UI-margin UI-configure-panel UI-border">
         <div class="UI-pad-bottom">
@@ -519,14 +431,14 @@ require(__DIR__.'/pages/base/body_begin.inc');
         </div>
     </div>
 
-    <div class="UI-event-sectionbar UI-margin">Admin Configuration (Required, If not using Neon)</div>
+    <div class="UI-event-sectionbar UI-margin">Admin Configuration (Required)</div>
     <div class="UI-configure-panel UI-border UI-margin">
         <div class="UI-pad-bottom">
             <label>Admin Email: <span class="UI-configure-note">Account will be created</span></label> <br>
             <input type="text" name="NEW_ADMINEMAIL" class="UI-input <?php
             if ($updateData != null && strlen($updateData[NEW_ADMINEMAIL])) {
                 echo VALUE_EQ.$updateData[NEW_ADMINEMAIL];
-            } elseif ($tried && empty($NEW_NEONKEY)) {
+            } elseif ($tried) {
                 echo UI_PROBLEM;
             }
             ?>" placeholder="<example: admin@host.con>">
@@ -536,7 +448,7 @@ require(__DIR__.'/pages/base/body_begin.inc');
             <input type="text" name="NEW_ADMINPASSWORD" class="UI-input <?php
             if ($updateData != null && strlen($updateData[NEW_ADMINCRED])) {
                 echo VALUE_EQ.$updateData[NEW_ADMINCRED];
-            } elseif ($tried && empty($NEW_NEONKEY)) {
+            } elseif ($tried) {
                 echo UI_PROBLEM;
             }
             ?>" placeholder="<example: aabbccddee>">

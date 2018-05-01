@@ -66,23 +66,6 @@ require_once __DIR__.'/../functions/functions.inc'
              </div>
             </div>
         </div>
-<?php
-if (array_key_exists('Neon', $GLOBALS)) {
-?>
-        <div id="neon_content" class="EVENT-content">
-            <button onclick="expandSection('neon')" class="EVENT-section-bar">
-                <span id="neon_button">Neon<span> <em id="neon_arrow" class="fas fa-caret-up"></em>
-            </button>
-            <div id="neon" class="UI-container UI-margin UI-hide UI-show">
-                <div class="UI-container UI-margin UI-center">
-                    <button id='reload' class='UI-redbutton'
-                        onclick='reloadFromNeon()'>Reload From Neon</button>
-                </div>
-            </div>
-        </div>
-<?php
-}
-?>
     </div>
 
     <div class='UI-sidebar-hidden UI-fixed' id='edit_meeting'>

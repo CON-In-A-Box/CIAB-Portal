@@ -40,10 +40,6 @@ class SCHEMA
             'Field' => 'VARCHAR(15) NOT NULL PRIMARY KEY',
             'Value' => 'TEXT NOT NULL',
         ],
-        'DBPullPage' => [ // Bandaid table to help Neon - To be removed post-neon
-            'RegistrationID' => 'INT UNSIGNED NOT NULL PRIMARY KEY',  // 1:1 mapping of the Registrations Primary Key
-            'Page' => 'INT UNSIGNED NOT NULL',
-        ],
         'DeepLinks' => [
             'LinkID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
             'AccountID' => 'INT UNSIGNED NOT NULL',

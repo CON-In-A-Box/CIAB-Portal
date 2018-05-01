@@ -385,13 +385,6 @@ function populate_registrations($event)
 
 _config_from_Database();
 print "<pre>";
-if (array_key_exists('NEONID', $GLOBALS) &&
-    array_key_exists('NEONKEY', $GLOBALS) &&
-    !empty($GLOBALS['NEONID']) &&
-    !empty($GLOBALS['NEONKEY'])) {
-    die("We will not run this test script if you have Neon connected.");
-}
-
 add_event();
 $event = \current_eventID();
 populate_badges($event);

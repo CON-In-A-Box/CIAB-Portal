@@ -9,14 +9,10 @@
 /* exported doImport, importConcom, deleteEvent, newEvent, saveEvent,
             editEvent, saveBadge, editBadge, newBadge, deleteBadge,
             expandEvent, saveCycle, newCycle, deleteMeeting,
-            saveMeeting, editMeeting, newMeeting, reloadFromNeon */
+            saveMeeting, editMeeting, newMeeting */
 
 function basicEventRequest(parameter, finish) {
   basicBackendRequest('POST', 'event', parameter, finish);
-}
-
-function reloadFromNeon() {
-  window.location = 'index.php?Function=event&reloadFromNeon=1';
 }
 
 function newMeeting() {

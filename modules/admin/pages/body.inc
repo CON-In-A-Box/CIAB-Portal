@@ -54,11 +54,7 @@ const FIELD = 'Field';
     <div id="left_bar" class="ADMIN-center-bar">
         <form action="index.php?Function=admin" method="POST" class="form-inline">
             <fieldset>
-<?php if (array_key_exists('Neon', $GLOBALS)) { ?>
-                <legend>Basic NeonCRM Account Search</legend>
-<?php } else {?>
                 <legend>Basic Account Search</legend>
-<?php } ?>
                 <p>
                     <label class='UI-label'>First Name</label>
                     <input type="text" class="form-control" name="firstName"
@@ -91,47 +87,9 @@ const FIELD = 'Field';
             <input type="button" value="Set Password" class="UI-graybutton" onclick="setPassword();"/>
         </div>
         <hr>
-<?php if (array_key_exists('Neon', $GLOBALS)) { ?>
-        <input type="submit" value="Manually Update Event Memberships (LONG)" class="UI-yellowbutton"
-               onclick="updateMemberships();"/>
-        <hr>
-<?php } ?>
         <input type="submit" value="Reload without Admin Priv" class="UI-graybutton"
                onclick="removeAdmin();"/>
         <hr>
-<?php if (array_key_exists('Neon', $GLOBALS)) {
-?>
-<h2 class="UI-blue UI-center">Neon Web Hooks</h2>
-<?php
-if (isset($GLOBALS['NEON_HOOK_NAME'])) {
-?>
-    <form action="index.php?Function=admin" method="POST" class="form-inline">
-    Remove Neon Web Hooks:<br>
-    <input type="text" class="form-control" name="hook_url" value="
-<?php echo $GLOBALS['NEON_HOOK_URL'];?>"
-        autocomplete="off" readonly/>
-    <input type="text" class="form-control" name="hook_name" value=
-    "<?php echo $GLOBALS['NEON_HOOK_NAME'];?>" autocomplete="off" readonly/>
-    <input type="hidden" name="hook_action" value="remove">
-    <input type="submit" value="Remove Hooks" class="UI-graybutton" />
-    </form>
-<?php
-} else {
-?>
-    <form action="index.php?Function=admin" method="POST" class="form-inline">
-    Install Neon Web Hooks:<br>
-    <input type="text" class="form-control" name="hook_url" value="<?php
-    echo "http://".htmlspecialchars($_SERVER['HTTP_HOST']);?>"
-        autocomplete="off"/>
-    <input type="hidden" class="form-control" name="hook_name" value="" />
-    <input type="hidden" name="hook_action" value="install">
-    <input type="submit" value="Install Hooks" class="UI-graybutton" />
-    </form>
-<?php
-}
-echo '<hr>';
-}
-?>
 <input type="submit" value="Rebuild SCSS Style Sheets" class="UI-graybutton"
        onclick="rebuildSCSS();"/>
 <hr>

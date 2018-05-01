@@ -44,10 +44,6 @@ function badges($account)
 <div class='UI-container event-color-secondary'>
     <div class='UI-secondary-sectionbar'>
         <strong style="margin-left: 100px;">Badges Purchased</strong>
-        <div class='UI-right'>
-            <input id='refresh' type='button' class='UI-orangebutton'
-                   onclick='refreshBadgeData(<?php echo $account;?>)' value='refresh'>
-        </div>
     </div>
 
     <table class='UI-stripedtable'>

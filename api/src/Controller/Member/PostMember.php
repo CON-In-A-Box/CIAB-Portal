@@ -39,15 +39,7 @@ class PostMember extends BaseMember
             throw new InvalidParameterException("Required 'firstName' and/or 'lastName' parameter not present");
         }
 
-        if (array_key_exists('Neon', $GLOBALS)) {
-            $accountID = \neon_createUser(
-                $body['email1'],
-                $body['firstName'],
-                $body['lastName']
-            );
-        } else {
-            $accountID = \createUser($body['email1'], 1000);
-        }
+        $accountID = \createUser($body['email1'], 1000);
         if (!$accountID) {
             throw new ConflictException("Account Creation Failed");
         }

@@ -65,22 +65,6 @@ if (!empty($_REQUEST)) {
         goSite();
     }
 
-    if (isset($updateData['updateMemberships'])) {
-        require($BASEDIR.'/tools/sync_neon_event_to_db.php');
-    }
-
-    if (isset($updateData['hook_action'])) {
-        if ($updateData['hook_action'] == "install") {
-            neon_registerWebhook(
-                $updateData['hook_url'],
-                $updateData['hook_name']
-            );
-        } else {
-            neon_removeWebhook();
-        }
-        goSite('/index.php?Function=admin');
-    }
-
     if (isset($updateData['rebuildSCSS'])) {
         delete_files(@sys_get_temp_dir().'/scss_cache');
         goSite();
