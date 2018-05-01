@@ -10,116 +10,9 @@ require_once($FUNCTIONDIR.'/users.inc');
 <div id="main_content"  class="w3-cell w3-cell-top w3-mobile">
 <?php
 echo "<h2 class='w3-center'>Welcome ".$_SESSION['preferredName']."!</h2>\n";
-/*
-if( isset($_REQUEST['DoFeed'])) {
-echo "<hr><h3>Starting DeFeed Routine:</h3>\n";
-$lottery = search_definedFields('Lottery Status');
-$status = array_search('Entered', $_SESSION['definedFields']['Lottery Status']);
-$bedPref = search_definedFields('Bed Preference');
-$noBed = array_search('No Preference', $_SESSION['definedFields']['Bed Preference']);
-$kingBed = array_search('One King', $_SESSION['definedFields']['Bed Preference']);
-$queenBed = array_search('Two Queens', $_SESSION['definedFields']['Bed Preference']);
-$hotelPri = search_definedFields('Hotel Qualifier');
-$volPri = array_search('Volunteer Qualifier', $_SESSION['definedFields']['Hotel Qualifier']);
-$adaPri = array_search('ADA Wheelchair', $_SESSION['definedFields']['Hotel Qualifier']);
-$adoPri = array_search('ADA Other', $_SESSION['definedFields']['Hotel Qualifier']);
 
-foreach(file($FUNCTIONDIR . "/directadd.feed", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
-//  $myTest = [ "3218,Thomas,Keeley,King Bed,Volunteer|ADO" ]; // TESTING
-//  foreach($myTest as $line) { // TESTING
-flush();
-$feed = explode(",", $line);
-$qual = explode("|", $feed[4]);
-
-echo "Updating " . $feed[0] . " - " . $feed[1] . " " . $feed[2] . ":";
-
-$request = [
-'method' => 'account/retrieveIndividualAccount',
-'parameters' => [
-'accountId' => $feed[0],
-],
-];
-$result = $GLOBALS['Neon']->go($request);
-
-if ( isset( $result['operationResult'] ) && $result['operationResult'] == 'SUCCESS' ) {
-$request = [
-'method' => 'account/editIndividualAccount',
-'parameters' => [
-'individualAccount.accountId' => $result['individualAccount']['accountId'],
-'individualAccount.primaryContact.contactId' => $result['individualAccount']['primaryContact']['contactId'],
-'individualAccount.primaryContact.firstName' => $result['individualAccount']['primaryContact']['firstName'],
-'individualAccount.primaryContact.lastName' => $result['individualAccount']['primaryContact']['lastName'],
-],
-];
-
-foreach ($result['individualAccount']['customFieldDataList']['customFieldData'] as $key => $val) {
-$request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldId[' . $key . ']'] = $val['fieldId'];
-if ( isset( $val['fieldValue'] )) {
-$request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldOptionId[' . $key . ']'] = '';
-$request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldValue[' . $key . ']'] = $val['fieldValue'];
-} elseif ( isset( $val['fieldOptionId'] )) {
-$request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldOptionId[' . $key . ']'] = $val['fieldOptionId'];
-$request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldValue[' . $key . ']'] = '';
-}
-}
-unset($val);
-unset($key);
-
-$i = 1000000; // If you have more than 1 Million fields.... dude, give up!
-
-// Enter the Lottery
-$request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldId[' . $i . ']']       = $lottery;
-$request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldOptionId[' . $i . ']'] = $status;
-$request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldValue[' . $i . ']']    = '';
-$i++;
-
-// Set Bed Type
-$request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldId[' . $i . ']']         = $bedPref;
-if($feed[3] == 'King Bed') {
-$request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldOptionId[' . $i . ']'] = $kingBed;
-} elseif($feed[3] == 'Two Double Beds') {
-$request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldOptionId[' . $i . ']'] = $queenBed;
-} elseif($feed[3] == 'No Preference') {
-$request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldOptionId[' . $i . ']'] = $noBed;
-}
-$request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldValue[' . $i . ']']      = '';
-$i++;
-
-// Set Hotel Piority
-if($feed[4] != 'NONE') {
-foreach($qual as $val) {
-$request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldId[' . $i . ']'] = $hotelPri;
-if($val == "Volunteer") {
-$request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldOptionId[' . $i . ']'] = $volPri;
-} elseif($val == "ADA") {
-$request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldOptionId[' . $i . ']'] = $adaPri;
-} elseif($val == "ADO") {
-$request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldOptionId[' . $i . ']'] = $adoPri;
-}
-$request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldValue[' . $i . ']']      = '';
-$i++;
-}
-}
-
-$result2 = $GLOBALS['Neon']->go1($request);
-
-if ( isset( $result2['operationResult'] ) && $result2['operationResult'] == 'SUCCESS' ) {
-//      if(TRUE) {  // TESTING
-echo "Complete.<br />\n";
-} else {
-echo "FAILED to update, Manually check.<br />\n";
-}
-} else {
-echo "FAILED to retreive account information.<br />\n";
-}
-}
-unset($request);
-unset($result);
-unset($result2);
-unset($feed);
-echo "<h3>End of DoFeed Routine</h3>\n<hr>\n";
-}
-*/
+require_once(__dir__."/../functions/admin.inc");
+require_once($FUNCTIONDIR.'/users.inc');
 
 /* Retrieve and sanitize POST data */
 $arguments = [
@@ -156,7 +49,7 @@ if (!empty($searchCriteria['firstName']) ||
 <div id="left_bar" class="w3-content w3-left w3-margin">
 <form action="index.php?Function=admin" method="POST" class="form-inline">
   <fieldset>
-    <legend>Basic NeonCRM Account Search</legend>
+    <legend>Basic Account Search</legend>
     <p>
       <label>First Name</label>
       <input type="text" class="form-control" name="firstName" value="<?php echo htmlentities($searchCriteria['firstName']); ?>"/>

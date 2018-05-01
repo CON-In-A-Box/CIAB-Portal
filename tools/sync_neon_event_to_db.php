@@ -5,6 +5,7 @@
 .*/
 
 require_once(__DIR__."/../functions/functions.inc");
+require_once(__DIR__."/../functions/neon.inc");
 require_once(__DIR__."/neon_event_lib.inc");
 
 

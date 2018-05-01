@@ -85,9 +85,6 @@ if (is_file($SITECONFIG)) {
     $db = new DB;
     _config_from_Database();
 
-    // Include NeonCRM for DB calls via API
-    require_once(__DIR__."/neon.inc");
-
     // Load the base of all active modules
     $modules = scandir($MODULESDIR);
     foreach ($modules as $key => $value) {
