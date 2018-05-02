@@ -1,5 +1,9 @@
 <?php
 
+/*.
+    require_module 'standard';
+.*/
+
 namespace concom\panes;
 
 require_once(__DIR__.'/../functions/concom.inc');
@@ -85,23 +89,23 @@ function meetings()
     echo "<div class='w3-container event-color-primary'>\n";
     echo "<table class='w3-table w3-striped w3-bordered w3-white'>\n";
     echo "<tr><th class='w3-center event-color-primary' colspan=3>Official Meeting Attendance</th></tr>\n";
-    $nowDate = date("Ymd");
-    $attendKey = search_definedFields('Official Meeting Attendance');
+    $nowDate = date("Y-m-d");
 
     $sql = "SELECT * from `OfficialMeetings`";
     $result = \DB::run($sql);
     $value = $result->fetch();
     while ($value !== false) {
         $checkDate = $value['Date'];
+        $attend = check_meeting_attendance($value['MeetingID']);
 
         if ($nowDate >= $value['Date']) {
             echo "<tr><td>".$value['Date']."</td>";
             echo "<td>".$value['Name']."</td>";
-            if (isset($_SESSION['customFields'][$attendKey]) && in_array($value['MeetingID'], $_SESSION['customFields'][$attendKey])) {
+            if ($attend) {
                 echo "<td class='w3-lime'>Checked In";
             } else {
                 if ($nowDate == $checkDate) {
-                    echo "<td class='w3-yellow'><a href='index.php?Function=signin&AttendField=".$attendKey."&DateFeed=".$key."'>Sign In Now!</a>";
+                    echo "<td class='w3-yellow'><a href='index.php?Function=concom/signin&meeting=".$value['MeetingID']."'>Sign In Now!</a>";
                 } else {
                     echo "<td>Not Checked In";
                 }
@@ -110,9 +114,6 @@ function meetings()
         }
         $value = $result->fetch();
     }
-    unset($key);
-    unset($val);
-    unset($nowDate);
     echo "</table>\n";
     echo "</div>\n";
 
