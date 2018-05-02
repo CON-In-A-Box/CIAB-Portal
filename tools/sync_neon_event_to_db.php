@@ -21,7 +21,7 @@ function _Neon_import_people($fields, $event)
             false);
         $count = count($people['attendees']);
         if ($count) {
-            $round = _import_page_of_people($event, $people, $page);
+            $round = _import_page_of_reg($event, $people, $page);
             $total += $round;
         } else {
             break;
@@ -38,7 +38,7 @@ function _Neon_import_people($fields, $event)
 }
 
 
-function lookup_events($page = 1, $output = null, $all = true)
+function sync_lookup_events($page = 1, $output = null, $all = true)
 {
     global $Neon;
 
@@ -62,7 +62,7 @@ function lookup_events($page = 1, $output = null, $all = true)
             array_push($output['events'], $val);
         }
         if ($all && $results['page']['totalPage'] > $page) {
-            return lookup_events($page + 1, $output);
+            return sync_lookup_events($page + 1, $output);
         } else {
             return $output;
         }
@@ -76,7 +76,7 @@ function _Neon_events()
 {
     global $db;
 
-    $events = lookup_events();
+    $events = sync_lookup_events();
     if ($events) {
         // Drop Events we do not care about.
         foreach ($events['events'] as $key => $evt) {
@@ -102,7 +102,7 @@ function _Neon_events()
 }
 
 
-function do_Neon_import()
+function do_event_Neon_import()
 {
     $fields = _loadEventCustomFields();
     $events = _Neon_events();
@@ -122,4 +122,4 @@ if (!empty($pids)) {
 }
 
 
-do_Neon_import();
+do_event_Neon_import();

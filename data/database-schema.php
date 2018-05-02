@@ -46,10 +46,6 @@ class SCHEMA
         'PositionID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
         'Name' => 'VARCHAR(50) NOT NULL',
     ],
-    'DBPullPage' => [ // Bandaid table to help Neon - To be removed post-neon
-        'RegistrationID' => 'INT UNSIGNED NOT NULL PRIMARY KEY',  // 1:1 mapping of the Registrations Primary Key
-        'Page' => 'INT UNSIGNED NOT NULL',
-    ],
     'Departments' => [
         'DepartmentID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
         'Name' => 'VARCHAR(50) NOT NULL',
@@ -65,10 +61,6 @@ class SCHEMA
         'DepartmentID' => 'INT UNSIGNED NOT NULL',
         'IsAlias' => 'BOOLEAN',
         'EMail' => 'VARCHAR(100) NOT NULL',
-    ],
-    'TempEventPage' => [
-        'AccountID' => 'INT UNSIGNED NOT NULL',
-        'PageFound' => 'INT UNSIGNED NOT NULL',
     ],
     'Events' => [
         'EventID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
@@ -179,9 +171,6 @@ class SCHEMA
         'EventID' => 'Events (EventID) ON DELETE RESTRICT ON UPDATE CASCADE',
         'PositionID' => 'ConComPositions (PositionID) ON DELETE RESTRICT ON UPDATE CASCADE',
     ],
-    'DBPullPage' => [
-        'RegistrationID' => 'Registrations (RegistrationID) ON DELETE RESTRICT ON UPDATE CASCADE',
-    ],
     'Departments' => [
         'ParentDepartmentID' => 'Departments (DepartmentID) ON DELETE RESTRICT ON UPDATE CASCADE',
     ],
@@ -220,7 +209,6 @@ class SCHEMA
 
 
   public static $DB_primaryKeys = [
-    'TempEventPage' => ['AccountID', 'PageFound'],
   ];
 }
 ?>

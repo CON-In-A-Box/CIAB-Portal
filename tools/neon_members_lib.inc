@@ -3,7 +3,7 @@
 require_once(__DIR__."/../functions/functions.inc");
 require_once(__DIR__."/../functions/database.inc");
 
-function _loadEventCustomFields()
+function _loadAccountCustomFields()
 {
     global $Neon;
 

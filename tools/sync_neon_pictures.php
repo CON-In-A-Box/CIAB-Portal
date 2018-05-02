@@ -7,7 +7,7 @@
 require_once(__DIR__."/../functions/functions.inc");
 require_once(__DIR__."/../functions/neon.inc");
 
-function do_Neon_import()
+function do_picture_Neon_import()
 {
     $IMAGEDIR = __DIR__."/../resources/images/members/";
 
@@ -38,4 +38,4 @@ if (!empty($pids)) {
 }
 
 
-do_Neon_import();
+do_picture_Neon_import();

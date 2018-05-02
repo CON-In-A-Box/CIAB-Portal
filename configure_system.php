@@ -21,13 +21,10 @@ if (!empty($_POST)) {
     'DBPASS'   => FILTER_SANITIZE_RAW,
     'DBPASS'   => FILTER_SANITIZE_RAW,
 
-    'new_NEONID'        => FILTER_SANITIZE_RAW,
-    'new_NEONKEY'       => FILTER_SANITIZE_RAW,
-    'new_NEONBETA'      => FILTER_SANITIZE_RAW,
-    'new_ADMINACCOUNTS' => FILTER_SANITIZE_RAW,
-    'new_ADMINEMAIL'    => FILTER_SANITIZE_RAW,
-    'new_CONHOST'       => FILTER_SANITIZE_RAW,
-    'new_TIMEZONE'      => FILTER_SANITIZE_RAW,
+    'new_ADMINACCOUNTS' => FILTER_SANITIZE_SPECIAL_CHARS,
+    'new_ADMINEMAIL'    => FILTER_SANITIZE_SPECIAL_CHARS,
+    'new_CONHOST'       => FILTER_SANITIZE_SPECIAL_CHARS,
+    'new_TIMEZONE'      => FILTER_SANITIZE_SPECIAL_CHARS,
     ];
 
     $updateData = filter_input_array(INPUT_POST, $arguments);
@@ -37,9 +34,6 @@ if (!empty($_POST)) {
     $DBNAME = $updateData['DBNAME'];
     $DBPASS = $updateData['DBPASS'];
 
-    $new_NEONID = $updateData['new_NEONID'];
-    $new_NEONKEY = $updateData['new_NEONKEY'];
-    $new_NEONBETA = $updateData['new_NEONBETA'];
     $new_ADMINACCOUNTS = $updateData['new_ADMINACCOUNTS'];
     $new_CONHOST = $updateData['new_CONHOST'];
     $new_ADMINEMAIL = $updateData['new_ADMINEMAIL'];
@@ -50,8 +44,6 @@ if (!empty($_POST)) {
         strlen($DBUSER) > 0 &&
         strlen($DBNAME) > 0 &&
         strlen($DBPASS) > 0 &&
-        strlen($new_NEONID) > 0 &&
-        strlen($new_NEONKEY) > 0 &&
         strlen($new_ADMINACCOUNTS) > 0 &&
         strlen($new_CONHOST) > 0 &&
         strlen($new_ADMINEMAIL) > 0 &&
@@ -106,21 +98,6 @@ DONE
             DB::run($sql);
 
             $sql = "UPDATE `Configuration` SET ";
-            $sql .= " Value = '".$new_NEONID."' ";
-            $sql .= "WHERE Field = 'NEONID';";
-            DB::run($sql);
-
-            $sql = "UPDATE `Configuration` SET ";
-            $sql .= " Value = '".$new_NEONKEY."' ";
-            $sql .= "WHERE Field = 'NEONKEY';";
-            DB::run($sql);
-
-            $sql = "INSERT INTO `Configuration`(`Field`, `Value`)";
-            $sql .= " VALUES ('NEONTRIAL', '".$new_NEONBETA."') ";
-            $sql .= "ON DUPLICATE KEY UPDATE `Value` = '".$new_NEONBETA."';";
-            DB::run($sql);
-
-            $sql = "UPDATE `Configuration` SET ";
             $sql .= " Value = '".$new_TIMEZONE."' ";
             $sql .= "WHERE Field = 'TIMEZONE';";
             DB::run($sql);
@@ -158,6 +135,12 @@ if (strlen($failed_message)) {
 <div class="w3-panel w3-padding-16">
 <i>Note: The Database and database user have to be created by hand before you begin the process. </i>
 </div>
+
+
+<div class="w3-orange w3-panel w3-padding-16">
+<i>Note: If you are importing from Neon. After this configuration option you will need to have your system administrator run the migrate_from_neon.php tool. Which will take quite a while. </i>
+</div>
+
 
 <div class="w3-panel w3-blue w3-center">
 <p> In order to configure your site we need to know the following information. </p>
@@ -218,44 +201,6 @@ if (strlen($failed_message)) {
     }
 ?>>
     </br>
-    <hr>
-
-    <label>Neon Key:</label> <br>
-    <input type="text" name="new_NEONKEY" class="w3-input w3-border <?php
-    if ($updateData != null && strlen($updateData['new_NEONKEY'])) {
-        echo '" value="'.$updateData['new_NEONKEY'].'"';
-    } elseif ($tried) {
-        echo 'w3-red"';
-    } else {
-        echo '"';
-    }
-?> placeholder="<example: bbbbbccccdddfae12341aabbccddeeff>">
-    </br>
-
-    <label>Neon ID:</label> <br>
-    <input type="text" name="new_NEONID" class="w3-input w3-border <?php
-    if ($updateData != null && strlen($updateData['new_NEONID'])) {
-        echo '" value="'.$updateData['new_NEONID'].'"';
-    } elseif ($tried) {
-        echo 'w3-red"';
-    } else {
-        echo '"';
-    }
-?> placeholder="<example: home>">
-    </br>
-
-    <label>Is Neon Trial Account:</label> <br>
-    <input type="checkbox" name="new_NEONBETA" class="w3-checkbox <?php
-    if ($updateData != null && $updateData['new_NEONBETA']) {
-        echo '" checked"';
-    } elseif ($tried) {
-        echo 'w3-red"';
-    } else {
-        echo '"';
-    }
-?>>
-    </br>
-
     <hr>
 
     <label>Event Host:</label> <br>

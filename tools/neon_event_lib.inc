@@ -39,7 +39,7 @@ function _lookup_events_attendees($fields, $event, $page = 1, $output = null, $a
     'parameters' => [
     'eventId' => $event,
     'page.currentPage' => $page,
-    'page.pageSize' => 20,
+    'page.pageSize' => 200,
       ],
     ];
     $results = $Neon->go($search);
@@ -73,7 +73,7 @@ function _lookup_events_attendees($fields, $event, $page = 1, $output = null, $a
 }
 
 
-function _updateMember($person, $event, $add)
+function _updateRegistrations($person, $event, $add)
 {
     $key = $person['attendeeId'];
     $accountID = $person['attendeeAccountId'];
@@ -126,7 +126,7 @@ SQL;
 }
 
 
-function _import_page_of_people($event, $people, $page)
+function _import_page_of_reg($event, $people, $page)
 {
     $total = 0;
     $eventID = $event['MySQLEventID'];
@@ -140,19 +140,11 @@ SQL;
         $result = DB::run($sql);
         $value = $result->fetch();
         if ($value !== false) {
-            _updateMember($person, $event, false);
+            _updateRegistrations($person, $event, false);
         } else {
-            _updateMember($person, $event, true);
+            _updateRegistrations($person, $event, true);
         }
         $total ++;
-
-        $accountID = $person['attendeeAccountId'];
-        $sql = <<<SQL
-            INSERT IGNORE INTO `TempEventPage`
-            SET  AccountID = $accountID,
-                 PageFound = $page;
-SQL;
-        DB::run($sql);
     }
     return $total;
 

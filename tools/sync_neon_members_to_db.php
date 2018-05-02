@@ -36,9 +36,9 @@ function _Neon_import_members($fields)
 }
 
 
-function do_Neon_import()
+function do_member_Neon_import()
 {
-    $fields = _loadEventCustomFields();
+    $fields = _loadAccountCustomFields();
     _Neon_import_members($fields);
 
 }
@@ -54,4 +54,4 @@ if (!empty($pids)) {
 }
 
 
-do_Neon_import();
+do_member_Neon_import();
