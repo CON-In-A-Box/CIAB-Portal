@@ -499,8 +499,6 @@ function AddConComPosition($accountid, $department, $position, $note, $notify = 
     if ($notify && $result) {
         /* Notify the Division Director, so they know */
         $to = getDepartmentEmails(getDivision($department))[0];
-        $preferredFirstName = search_definedFields('Preferred First Name');
-        $preferredLastName = search_definedFields('Preferred Last Name');
         $subject = 'ConCom Division addition to '.$department;
 
         $name = $user['First Name']." ".$user['Last Name'];
