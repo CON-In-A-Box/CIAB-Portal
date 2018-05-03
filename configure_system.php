@@ -21,7 +21,6 @@ if (!empty($_POST)) {
     'DBPASS'   => FILTER_SANITIZE_RAW,
     'DBPASS'   => FILTER_SANITIZE_RAW,
 
-    'new_ADMINACCOUNTS' => FILTER_SANITIZE_SPECIAL_CHARS,
     'new_ADMINEMAIL'    => FILTER_SANITIZE_SPECIAL_CHARS,
     'new_CONHOST'       => FILTER_SANITIZE_SPECIAL_CHARS,
     'new_TIMEZONE'      => FILTER_SANITIZE_SPECIAL_CHARS,
@@ -34,17 +33,14 @@ if (!empty($_POST)) {
     $DBNAME = $updateData['DBNAME'];
     $DBPASS = $updateData['DBPASS'];
 
-    $new_ADMINACCOUNTS = $updateData['new_ADMINACCOUNTS'];
     $new_CONHOST = $updateData['new_CONHOST'];
     $new_ADMINEMAIL = $updateData['new_ADMINEMAIL'];
     $new_TIMEZONE = $updateData['new_TIMEZONE'];
-
 
     if (strlen($DBHOST) > 0 &&
         strlen($DBUSER) > 0 &&
         strlen($DBNAME) > 0 &&
         strlen($DBPASS) > 0 &&
-        strlen($new_ADMINACCOUNTS) > 0 &&
         strlen($new_CONHOST) > 0 &&
         strlen($new_ADMINEMAIL) > 0 &&
         strlen($new_TIMEZONE) > 0) {
@@ -82,19 +78,37 @@ DONE
         }
 
         if ($good) {
+            if (strpos($new_ADMINEMAIL, '@') != false) {
+                require_once(__DIR__."/functions/users.inc");
+                require_once(__DIR__."/functions/authentication.inc");
+
+                $aid = createUser($new_ADMINEMAIL, 1000);
+                if ($aid !== null) {
+                    reset_password($new_ADMINEMAIL);
+                } else {
+                    $output = lookup_users_by_email($new_ADMINEMAIL);
+                    if (count($output['users']) != 0) {
+                        $aid = $output['users'][0]['Id'];
+                    }
+                }
+                $sql = "UPDATE `Configuration` SET ";
+                $sql .= " Value =  '".$new_ADMINEMAIL."' ";
+                $sql .= "WHERE Field = 'ADMINEMAIL';";
+                DB::run($sql);
+            } else {
+                $aid = $new_ADMINEMAIL;
+            }
+
+            if ($aid !== null) {
+                $sql = "UPDATE `Configuration` SET ";
+                $sql .= " Value = '".$aid."' ";
+                $sql .= "WHERE Field = 'ADMINACCOUNTS';";
+                DB::run($sql);
+            }
+
             $sql = "UPDATE `Configuration` SET ";
             $sql .= " Value = '".$new_CONHOST."' ";
             $sql .= "WHERE Field = 'CONHOST';";
-            DB::run($sql);
-
-            $sql = "UPDATE `Configuration` SET ";
-            $sql .= " Value =  '".$new_ADMINEMAIL."' ";
-            $sql .= "WHERE Field = 'ADMINEMAIL';";
-            DB::run($sql);
-
-            $sql = "UPDATE `Configuration` SET ";
-            $sql .= " Value = '".$new_ADMINACCOUNTS."' ";
-            $sql .= "WHERE Field = 'ADMINACCOUNTS';";
             DB::run($sql);
 
             $sql = "UPDATE `Configuration` SET ";
@@ -215,19 +229,10 @@ if (strlen($failed_message)) {
 ?> placeholder="<example: AwesomeaCon>">
     </br>
 
-    <label>Admin User IDs (comma seperated):</label> <br>
-    <input type="text" name="new_ADMINACCOUNTS" class="w3-input w3-border <?php
-    if ($updateData != null && strlen($updateData['new_ADMINACCOUNTS'])) {
-        echo '" value="'.$updateData['new_ADMINACCOUNTS'].'"';
-    } elseif ($tried) {
-        echo 'w3-red"';
-    } else {
-        echo '"';
-    }
-?> placeholder="<example: 1234,5678,901234>">
-    </br>
-
-    <label>Admin Email:</label> <br>
+    <div class="w3-orange w3-panel w3-padding-16">
+    If you are importing from NEON put a comma seperated list of user IDs of the primary admins here. If we do not find an '@' in the entry we will just add the contents here as the admin Ids being imported.
+    </div>
+    <label>Admin Email: (Note: Account will be created and password sent to this address)</label> <br>
     <input type="text" name="new_ADMINEMAIL" class="w3-input w3-border <?php
     if ($updateData != null && strlen($updateData['new_ADMINEMAIL'])) {
         echo '" value="'.$updateData['new_ADMINEMAIL'].'"';

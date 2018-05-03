@@ -24,7 +24,8 @@ function createAccount() {
     }
     else if (this.status == 401) {
       if (email.value) {
-        window.alert('Account with the email \'' + email.value + '\' already exists!');
+        window.alert('Account with the email \'' + email.value +
+                     '\' already exists!');
       }
       email.value = '';
     }
