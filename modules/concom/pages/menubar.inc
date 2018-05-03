@@ -1,5 +1,6 @@
 <?php
-if (isset($_SESSION['customFields']['currConComPos'])) {
+if (isset($_SESSION['customFields']['currConComPos']) ||
+    isset($_SESSION['IS_ADMIN'])) {
     $base_menus[] = array('base style' => '',
          'selected style' => 'event-color-primary',
          'function' => 'concom',
