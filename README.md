@@ -10,7 +10,7 @@ Additionally the push to make the project generic enough for multiple convention
 
 # Overview
 
-CIAB is presently designed to run on a apache web server accessing a [mySQL](https://www.mysql.com/) and [Neon](https://www.neoncrm.com/) back ends.  The present road map is to move away from Neon and rely completely on mySQL for all data storage. However at this time Neon is used for member/attendee information.
+CIAB is presently designed to run on a apache web server accessing a [mySQL](https://www.mysql.com/).
 
 The vision is to have a core set of functionality and then optional modules that can be enabled/disabled or replaced based on the needs of the given event.
 
@@ -56,13 +56,17 @@ At present in `sitesupport/event.css` are the values we expect to be changing fr
 
 For a fairly technical overview of process of getting an instance of the project setup look at [FirstSetup.md](FirstSetup.md). 
 
+
+# What about Neon?
+
+Previous versions of CIAB connected to a [Neon](https://www.neoncrm.com/) back end.
+We moved away from Neon to rely completely on mySQL for all data storage after the 2018 convention. Before this time Neon was used for member/attendee information.
+
 # Next Steps
 
 * The present primary goal is to have the first pieces of CIAB finished and put into production for the CONvergence 2018 event in July of 2018. This would primarily be the volunteers module and the core system.
 
-* After that the goal is to fully move off of Neon and host the whole backend on the mySQL database. This would involve migrating from Neon, replacing all the functionality as well as finding a way to safely and securely do credit card processing for event registration.
-
-* Additionally we want to continue to expand the cross-event structure to try to encourage other events to use this tool. We believe ti can be very power and helpful for many events and would like our work to be welcome in as many places as it fits.  This likely involves making it easier to skin the site and pull out many of the CONvergence assumptions and making them configurable based on the event. 
+* Additionally we want to continue to expand the cross-event structure to try to encourage other events to use this tool. We believe it can be very power and helpful for many events and would like our work to be welcome in as many places as it fits.  This likely involves making it easier to skin the site and pull out many of the CONvergence assumptions and making them configurable based on the event.
 
 # How you can help!
 
