@@ -41,23 +41,24 @@ $tried = false;
 /* Pre headers */
 if (!empty($_POST)) {
     $arguments = [
-    'DBHOST'   => FILTER_SANITIZE_RAW,
-    'DBUSER'   => FILTER_SANITIZE_RAW,
-    'DBNAME'   => FILTER_SANITIZE_RAW,
-    'DBPASS'   => FILTER_SANITIZE_RAW,
-    'DBPASS'   => FILTER_SANITIZE_RAW,
+    'DBHOST'   => FILTER_SANITIZE_SPECIAL_CHARS,
+    'DBUSER'   => FILTER_SANITIZE_SPECIAL_CHARS,
+    'DBNAME'   => FILTER_SANITIZE_SPECIAL_CHARS,
+    'DBPASS'   => FILTER_SANITIZE_SPECIAL_CHARS,
+    'DBPASS'   => FILTER_SANITIZE_SPECIAL_CHARS,
 
-    'new_NEONID'        => FILTER_SANITIZE_RAW,
-    'new_NEONKEY'       => FILTER_SANITIZE_RAW,
-    'new_NEONBETA'      => FILTER_SANITIZE_RAW,
-    'new_ADMINACCOUNTS' => FILTER_SANITIZE_RAW,
-    'new_ADMINEMAIL'    => FILTER_SANITIZE_RAW,
+    'new_NEONID'        => FILTER_SANITIZE_SPECIAL_CHARS,
+    'new_NEONKEY'       => FILTER_SANITIZE_SPECIAL_CHARS,
+    'new_NEONBETA'      => FILTER_SANITIZE_SPECIAL_CHARS,
+    'new_ADMINACCOUNTS' => FILTER_SANITIZE_SPECIAL_CHARS,
+    'new_ADMINEMAIL'    => FILTER_SANITIZE_SPECIAL_CHARS,
     'new_NOREPLY_EMAIL' => FILTER_SANITIZE_SPECIAL_CHARS,
     'new_FEEDBACK_EMAIL' => FILTER_SANITIZE_SPECIAL_CHARS,
     'new_SECURITY_EMAIL' => FILTER_SANITIZE_SPECIAL_CHARS,
     'new_HELP_EMAIL'    => FILTER_SANITIZE_SPECIAL_CHARS,
-    'new_CONHOST'       => FILTER_SANITIZE_RAW,
-    'new_TIMEZONE'      => FILTER_SANITIZE_RAW,
+    'new_ADMINPASSWORD' => FILTER_SANITIZE_SPECIAL_CHARS,
+    'new_CONHOST'       => FILTER_SANITIZE_SPECIAL_CHARS,
+    'new_TIMEZONE'      => FILTER_SANITIZE_SPECIAL_CHARS,
     ];
 
     $updateData = filter_input_array(INPUT_POST, $arguments);
@@ -77,16 +78,13 @@ if (!empty($_POST)) {
     $new_SECURITY_EMAIL = $updateData['new_SECURITY_EMAIL'];
     $new_HELP_EMAIL = $updateData['new_HELP_EMAIL'];
     $new_NOREPLY_EMAIL = $updateData['new_NOREPLY_EMAIL'];
+    $new_ADMINPASSWORD  = $updateData['new_ADMINPASSWORD'];
     $new_TIMEZONE = $updateData['new_TIMEZONE'];
-
 
     if (strlen($DBHOST) > 0 &&
         strlen($DBUSER) > 0 &&
         strlen($DBNAME) > 0 &&
         strlen($DBPASS) > 0 &&
-        strlen($new_NEONID) > 0 &&
-        strlen($new_NEONKEY) > 0 &&
-        strlen($new_ADMINACCOUNTS) > 0 &&
         strlen($new_CONHOST) > 0 &&
         strlen($new_ADMINEMAIL) > 0 &&
         strlen($new_NOREPLY_EMAIL) > 0 &&
@@ -126,39 +124,75 @@ DONE
         }
 
         if ($good) {
-            $sql = "UPDATE `Configuration` SET ";
-            $sql .= " Value = '".$new_CONHOST."' ";
-            $sql .= "WHERE Field = 'CONHOST';";
-            DB::run($sql);
+            if (strpos($new_ADMINEMAIL, '@') != false) {
+                require_once(__DIR__."/functions/users.inc");
+                require_once(__DIR__."/functions/authentication.inc");
 
-            $sql = "UPDATE `Configuration` SET ";
-            $sql .= " Value =  '".$new_ADMINEMAIL."' ";
-            $sql .= "WHERE Field = 'ADMINEMAIL';";
-            DB::run($sql);
-
-            $sql = "UPDATE `Configuration` SET ";
-            $sql .= " Value = '".$new_ADMINACCOUNTS."' ";
-            $sql .= "WHERE Field = 'ADMINACCOUNTS';";
-            DB::run($sql);
-
-            $sql = "UPDATE `Configuration` SET ";
-            $sql .= " Value = '".$new_NEONID."' ";
-            $sql .= "WHERE Field = 'NEONID';";
-            DB::run($sql);
-
-            $sql = "UPDATE `Configuration` SET ";
-            $sql .= " Value = '".$new_NEONKEY."' ";
-            $sql .= "WHERE Field = 'NEONKEY';";
-            DB::run($sql);
+                if (empty($new_NEONID) && empty($new_NEONKEY)) {
+                    $aid = createUser($new_ADMINEMAIL, 1000);
+                    if ($aid !== null) {
+                        if (!empty($new_ADMINPASSWORD)) {
+                            reset_password($new_ADMINEMAIL, $new_ADMINPASSWORD);
+                        } else {
+                            reset_password($new_ADMINEMAIL);
+                        }
+                        if (!empty($new_ADMINACCOUNTS)) {
+                            $new_ADMINACCOUNTS = implode(',', [$new_ADMINACCOUNTS, $aid]);
+                        } else {
+                            $new_ADMINACCOUNTS = $aid;
+                        }
+                    } else {
+                        $output = lookup_users_by_email($new_ADMINEMAIL);
+                        if (count($output['users']) != 0) {
+                            $aid = $output['users'][0]['Id'];
+                        }
+                    }
+                }
+            }
 
             $sql = "INSERT INTO `Configuration`(`Field`, `Value`)";
-            $sql .= " VALUES ('NEONTRIAL', '".$new_NEONBETA."') ";
-            $sql .= "ON DUPLICATE KEY UPDATE `Value` = '".$new_NEONBETA."';";
+            $sql .= " VALUES ('CONHOST', '".$new_CONHOST."') ";
+            $sql .= "ON DUPLICATE KEY UPDATE `Value` = '".$new_CONHOST."';";
             DB::run($sql);
 
-            $sql = "UPDATE `Configuration` SET ";
-            $sql .= " Value = '".$new_TIMEZONE."' ";
-            $sql .= "WHERE Field = 'TIMEZONE';";
+            if (!empty($new_ADMINEMAIL)) {
+                $sql = "INSERT INTO `Configuration`(`Field`, `Value`)";
+                $sql .= " VALUES ('ADMINEMAIL', '".$new_ADMINEMAIL."') ";
+                $sql .= "ON DUPLICATE KEY UPDATE `Value` = '".$new_ADMINEMAIL."';";
+                DB::run($sql);
+            }
+
+            if (!empty($new_ADMINACCOUNTS)) {
+                $sql = "INSERT INTO `Configuration`(`Field`, `Value`)";
+                $sql .= " VALUES ('ADMINACCOUNTS', '".$new_ADMINACCOUNTS."') ";
+                $sql .= "ON DUPLICATE KEY UPDATE `Value` = '".$new_ADMINACCOUNTS."';";
+                DB::run($sql);
+            }
+
+            if (!empty($new_NEONID)) {
+                $sql = "INSERT INTO `Configuration`(`Field`, `Value`)";
+                $sql .= " VALUES ('NEONID', '".$new_NEONID."') ";
+                $sql .= "ON DUPLICATE KEY UPDATE `Value` = '".$new_NEONID."';";
+                DB::run($sql);
+            }
+
+            if (!empty($new_NEONKEY)) {
+                $sql = "INSERT INTO `Configuration`(`Field`, `Value`)";
+                $sql .= " VALUES ('NEONKEY', '".$new_NEONKEY."') ";
+                $sql .= "ON DUPLICATE KEY UPDATE `Value` = '".$new_NEONKEY."';";
+                DB::run($sql);
+            }
+
+            if (!empty($new_NEONBETA)) {
+                $sql = "INSERT INTO `Configuration`(`Field`, `Value`)";
+                $sql .= " VALUES ('NEONTRIAL', '".$new_NEONBETA."') ";
+                $sql .= "ON DUPLICATE KEY UPDATE `Value` = '".$new_NEONBETA."';";
+                DB::run($sql);
+            }
+
+            $sql = "INSERT INTO `Configuration`(`Field`, `Value`)";
+            $sql .= " VALUES ('TIMEZONE', '".$new_TIMEZONE."') ";
+            $sql .= "ON DUPLICATE KEY UPDATE `Value` = '".$new_TIMEZONE."';";
             DB::run($sql);
 
             if (!empty($new_FEEDBACK_EMAIL)) {
@@ -281,6 +315,11 @@ if (strlen($failed_message)) {
     </br>
     <hr>
 
+    <div class="UI-padding UI-border">
+    <div class="UI-orange UI-configure-info-panel">
+    Use of NEON is optional. Define BOTH keys if NEON is in use.
+    </div>
+
     <label>Neon Key:</label> <br>
     <input type="text" name="new_NEONKEY" class="UI-input <?php
     if ($updateData != null && strlen($updateData['new_NEONKEY'])) {
@@ -317,6 +356,22 @@ if (strlen($failed_message)) {
 ?>>
     </br>
 
+    <div class="w3-orange w3-panel w3-padding-16">
+    If you are importing from NEON put a comma seperated list of user IDs of the primary admins here. If we do not find an '@' in the entry we will just add the contents here as the admin Ids being imported.
+    </div>
+    <label>Admin User IDs (comma seperated):</label> <br>
+    <input type="text" name="new_ADMINACCOUNTS" class="UI-input <?php
+    if ($updateData != null && strlen($updateData['new_ADMINACCOUNTS'])) {
+        echo '" value="'.$updateData['new_ADMINACCOUNTS'].'"';
+    } elseif ($tried) {
+        echo 'UI-red"';
+    } else {
+        echo '"';
+    }
+    ?> placeholder="<example: 1234,5678,901234>">
+    </br>
+    </div>
+
     <hr>
 
     <label>Event Host:</label> <br>
@@ -331,22 +386,11 @@ if (strlen($failed_message)) {
 ?> placeholder="<example: AwesomeaCon>">
     </br>
 
-    <label>Admin User IDs (comma seperated):</label> <br>
-    <input type="text" name="new_ADMINACCOUNTS" class="UI-input <?php
-    if ($updateData != null && strlen($updateData['new_ADMINACCOUNTS'])) {
-        echo '" value="'.$updateData['new_ADMINACCOUNTS'].'"';
-    } elseif ($tried) {
-        echo 'UI-red"';
-    } else {
-        echo '"';
-    }
-?> placeholder="<example: 1234,5678,901234>">
-    </br>
-
     <div class="UI-configure-panel UI-border">
 
-    <label>Admin Email:</label> <br>
-    <input type="text" name="new_ADMINEMAIL" class="UI-input <?php
+    <div class="UI-configure-panel UI-border">
+    <label>Admin Email: <span class="UI-configure-note">If Neon is NOT used an Account will be created</span></label> <br>
+    <input type="text" name="new_ADMINEMAIL" class="UI-input<?php
     if ($updateData != null && strlen($updateData['new_ADMINEMAIL'])) {
         echo '" value="'.$updateData['new_ADMINEMAIL'].'"';
     } elseif ($tried) {
@@ -354,8 +398,21 @@ if (strlen($failed_message)) {
     } else {
         echo '"';
     }
-?> placeholder="<example: admin@host.con>">
+    ?> placeholder="<example: admin@host.con>">
     </br>
+
+    <label>Admin Password: <span class="UI-configure-note">Only used Neon is not being used and a new admin account is being created. If left empty a random password will be generated.</span></label> <br>
+    <input type="text" name="new_ADMINPASSWORD" class="UI-input<?php
+    if ($updateData != null && strlen($updateData['new_ADMINPASSWORD'])) {
+        echo '" value="'.$updateData['new_ADMINPASSWORD'].'"';
+    } elseif ($tried) {
+        echo 'UI-red"';
+    } else {
+        echo '"';
+    }
+    ?> placeholder="<example: aabbccddee>">
+    </br>
+    </div>
 
     <label>No-Reply Email:</label> <br>
     <input type="text" name="new_NOREPLY_EMAIL" class="UI-input <?php
