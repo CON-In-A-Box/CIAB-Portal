@@ -218,6 +218,36 @@ function _neon_lookup_user($criteria, $single_result = false, $additional_fields
 }
 
 
+function neon_createUser($email, $firstName, $lastName)
+{
+    loadDefinedFields();
+
+    $output = lookup_users_by_email($email, false);
+    if (count($output['users']) !== 0) {
+        return null;
+    }
+
+    // Formulate the update
+    $request = [
+    'method' => 'account/createIndividualAccount',
+    'parameters' => [
+    'originDetail' => $GLOBALS['NEONID'],
+    'individualAccount.primaryContact.firstName' => $firstName,
+    'individualAccount.primaryContact.lastName' => $lastName,
+    'individualAccount.primaryContact.email1' => $email,
+    ],
+    ];
+
+    $result = $GLOBALS['Neon']->go1($request);
+
+    if (isset($result['operationResult']) && $result['operationResult'] == 'SUCCESS') {
+        return $result['accountId'];
+    }
+    return null;
+
+}
+
+
 /*************************************/
 /* END Neon migration path functions */
 /*************************************/
@@ -933,6 +963,46 @@ function updateAccount($updateData)
 
     if (array_key_exists('Neon', $GLOBALS)) {
         neon_updateAccount($updateData);
+    }
+
+}
+
+
+function createUser($newemail, $min_accountid = null)
+{
+    $sel_sql = "SELECT AccountID FROM `Members` WHERE `Email` = '$newemail';";
+    $result = DB::run($sel_sql);
+    $value = $result->fetch();
+    if ($value !== false) {
+        return null;
+    }
+
+    $aid = null;
+    if ($min_accountid !== null && intval($min_accountid) > 0) {
+        $aid = intval($min_accountid);
+        $sql = "SELECT MAX(AccountID) AS max FROM `Members`;";
+        $result = DB::run($sql);
+        $value = $result->fetch();
+        if ($value !== false) {
+            if (intval($value['max']) >= $aid) {
+                $aid = null;
+            }
+        }
+    }
+
+    if ($aid !== null) {
+        $sql = "INSERT INTO `Members` (`AccountID`, `Email`) VALUES ($aid, '$newemail');";
+    } else {
+        $sql = "INSERT INTO `Members` (`Email`) VALUES ('$newemail');";
+    }
+    DB::run($sql);
+
+    $result = DB::run($sel_sql);
+    $value = $result->fetch();
+    if ($value === false) {
+        return null;
+    } else {
+        return $value['AccountID'];
     }
 
 }
