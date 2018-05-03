@@ -23,9 +23,6 @@ All of these operational configuration options may exist in environment, `.env` 
 * **G_ROOTFOLDER**        `Google drive client root folder`
 * **HELP_EMAIL**          `Help email address`
 * **MAXLOGINFAIL**        `Maximum logins failures before account is locked`
-* **NEONID**              `Id for Neon CRM`
-* **NEONKEY**             `Key for Neon CRM`
-* **NEONTRIAL**           `Is this a Neon trial account`
 * **NOREPLY_EMAIL**       `Email address for the no-reply email address`
 * **PASSWORDEXPIRE**      `Duration between password expiration`
 * **PASSWORDRESET**       `How long temporary passwords are valid`
@@ -39,5 +36,3 @@ There are a few options that appear in the configuration tables that should not 
 * **DBSchemaMD5**     `Value for tracking the Database state`
 * **DBSchemaVersion** `Value for tracking the Database upgrades`
 * **G_CLIENT_CRED**   `Google drive client credential`
-* **NEON_HOOK_NAME**  `Auto-generated name for the Neon Hooks when generated`
-* **NEON_HOOK_URL**   `Base url for the presently installed Neon hooks`
