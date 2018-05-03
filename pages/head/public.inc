@@ -1,7 +1,7 @@
 <meta http-equiv="Cache-control" content="No-Cache">
 <script src="sitesupport/validation.js"></script>
 <script type="text/javascript">
-function validate_form(thisform)
+function validateForm(thisform)
 {
   with (thisform)
   {

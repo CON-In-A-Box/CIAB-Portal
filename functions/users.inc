@@ -356,3 +356,43 @@ function updateAccount($updateData)
     DB::run($sql);
 
 }
+
+
+function createUser($newemail, $min_accountid = null)
+{
+    $sel_sql = "SELECT AccountID FROM `Members` WHERE `Email` = '$newemail';";
+    $result = DB::run($sel_sql);
+    $value = $result->fetch();
+    if ($value !== false) {
+        return null;
+    }
+
+    $aid = null;
+    if ($min_accountid !== null && intval($min_accountid) > 0) {
+        $aid = intval($min_accountid);
+        $sql = "SELECT MAX(AccountID) AS max FROM `Members`;";
+        $result = DB::run($sql);
+        $value = $result->fetch();
+        if ($value !== false) {
+            if (intval($value['max']) >= $aid) {
+                $aid = null;
+            }
+        }
+    }
+
+    if ($aid !== null) {
+        $sql = "INSERT INTO `Members` (`AccountID`, `Email`) VALUES ($aid, '$newemail');";
+    } else {
+        $sql = "INSERT INTO `Members` (`Email`) VALUES ('$newemail');";
+    }
+    DB::run($sql);
+
+    $result = DB::run($sel_sql);
+    $value = $result->fetch();
+    if ($value === false) {
+        return null;
+    } else {
+        return $value['AccountID'];
+    }
+
+}

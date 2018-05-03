@@ -7,7 +7,7 @@ function validateRequired(field,alerttxt) {
   }
 }
 // example of required
-// function validate_form(thisform)
+// function validateForm(thisform)
 // {
 // with (thisform)
 // {
@@ -25,7 +25,7 @@ function validateSelect(field,alerttxt) {
 }
 // example of required
 // Note:  Will only validate that index isn't 0 (the first option)
-// function validate_form(thisform)
+// function validateForm(thisform)
 // {
 // with (thisform)
 // {
@@ -46,7 +46,7 @@ function validateEmail(field,alerttxt) {
 }
 
 // example of email
-// function validate_form(thisform)
+// function validateForm(thisform)
 // {
 // with (thisform)
 // {
@@ -63,4 +63,45 @@ function validateDate(field,alerttxt) {
   } else {
     return true;
   }
+}
+
+function validateForm(thisform) {
+  with (thisform) {
+    if (validateRequired(firstName,
+                        'Please enter a legal first name') === false) {
+      firstName.focus();
+      return false;
+    }
+    if (validateRequired(lastName,'Please enter a legal last name') === false) {
+      lastName.focus();
+      return false;
+    }
+    if (validateEmail(email1,
+                      'Must have at least one valid Email address') === false) {
+      email1.focus();
+      return false;
+    }
+    if (validateRequired(phone1,
+                         'Must have at least one phone number') === false) {
+      phone1.focus();
+      return false;
+    }
+    if (validateRequired(addressLine1,'Address cannot be blank') === false) {
+      addressLine1.focus();
+      return false;
+    }
+    if (validateRequired(city,'City cannot be blank') === false) {
+      city.focus();
+      return false;
+    }
+    if (validateRequired(zipCode,'Zip Code cannot be blank') === false) {
+      zipCode.focus();
+      return false;
+    }
+    if (validateSelect(country,'Please select a country') === false) {
+      country.focus();
+      return false;
+    }
+  }
+  return true;
 }

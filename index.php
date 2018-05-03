@@ -52,6 +52,8 @@ if (!empty($_REQUEST['DeepLink'])) {
     $noheader = true; // public pages don't need statusbars or logmenus
 } elseif ($_REQUEST['Function'] == "recovery") {
     $noheader = true; // public pages don't need statusbars or logmenus
+} elseif ($_REQUEST['Function'] == "create") {
+    $noheader = true; // public pages don't need statusbars or logmenus
 } elseif (empty($_SESSION['username'])) {
     // if no username is set and we are not calling a public page or a deeplink, redirect for login needs
     goSite('/index.php?Function=public');
