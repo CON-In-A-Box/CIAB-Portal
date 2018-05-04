@@ -4,27 +4,33 @@ require_once($FUNCTIONDIR.'/divisional.inc');
 require_once($FUNCTIONDIR."/database.inc");
 require_once($FUNCTIONDIR.'/users.inc');
 
-class VOLUNTEERS {
+class VOLUNTEERS
+{
+
 
     public static function inVolunteers($lookup)
     {
         $sql = "SELECT count(ListRecordID) as count From ConComList";
         $sql .= " WHERE AccountID = $lookup";
-        $sql .=" AND DepartmentID = (SELECT DepartmentID FROM Departments WHERE Name = 'Volunteers');";
+        $sql .= " AND DepartmentID = (SELECT DepartmentID FROM Departments WHERE Name = 'Volunteers');";
         $result = DB::run($sql);
         $value = $result->fetch();
         if ($value !== false && $value['count']) {
             return true;
-        }
-        else {
+        } else {
             return false;
         }
+
     }
 
+
+    /* end VOLUNTEERS */
 }
 
 
-class CONCOM {
+class CONCOM
+{
+
 
     public static function getConComPosition($account, $event = null)
     {
@@ -64,14 +70,17 @@ SQL;
                 $retvalue = array();
             }
             $retvalue[] = ['position' => $value['Position'],
-                         'department' => $value['Department'],
-                         'departmentId' => $value['DepartmentID'],
-                         'note' =>  $value['Note']];
+            'department' => $value['Department'],
+            'departmentId' => $value['DepartmentID'],
+            'note' => $value['Note']];
             $value = $result->fetch();
         }
         return $retvalue;
+
     }
 
+
+    /* end CONCOM */
 }
 
 class REGISTRATION
