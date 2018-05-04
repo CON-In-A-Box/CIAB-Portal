@@ -10,5 +10,10 @@ if [ -z "$1" ]
     then
         find . -type f \( -iname "*.js" ! -iname "*.min.js" ! -path "*/sitesupport/speller/*" \)  -exec jscs --verbose --reporter inline {} \;
     else
-        jscs --verbose --reporter inline $1;
+        if [ "$1" == "--fix" ]
+        then
+            jscs --verbose --reporter inline --fix $2;
+        else
+            jscs --verbose --reporter inline $1;
+        fi
 fi;
