@@ -10,5 +10,10 @@ if [ -z "$1" ]
     then
         phpcs --standard=./data/phpcs_ruleset.xml --report=summary --colors --ignore=sitesupport,neon,data,library *;
     else
-        phpcs --standard=./data/phpcs_ruleset.xml --colors $1;
+        if [ "$1" == "--fix" ]
+        then
+            phpcbf --standard=./data/phpcs_ruleset.xml $2;
+        else
+            phpcs --standard=./data/phpcs_ruleset.xml --colors $1;
+        fi
 fi;
