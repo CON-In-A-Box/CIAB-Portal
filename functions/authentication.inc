@@ -43,20 +43,6 @@ SQL;
 }
 
 
-function accept_onetime($account, $auth)
-{
-    $sql = <<<SQL
-        UPDATE `Authentication`
-        SET Authentication = '$auth',
-            OneTime = NULL,
-            OneTimeExpires = NULL
-        WHERE AccountID = $account;
-SQL;
-    DB::run($sql);
-
-}
-
-
 function check_authentication($account, $password)
 {
     $sql = <<<SQL
@@ -68,6 +54,11 @@ SQL;
         if (password_verify($password, $value['Authentication'])) {
             if ($value['OneTime']) {
                 clear_onetime($account);
+            }
+            $now = strtotime("now");
+            $expire = strtotime($value['Expires']);
+            if ($now > $expire) {
+                return null;
             }
             return true;
         }
@@ -83,8 +74,10 @@ SQL;
                 return true;
             }
         }
-    };
-    return false;
+        return false;
+    } else {
+        return null;
+    }
 
 }
 
@@ -94,7 +87,8 @@ function doUserAndPasswordMatch($user, $password)
     loadDefinedFields();
     $value = lookup_user_by_login($user);
     if ($value) {
-        if (check_authentication($value['AccountID'], $password)) {
+        $check = check_authentication($value['AccountID'], $password);
+        if ($check === true) {
             $id = $value['AccountID'];
             $now = date('Y-m-d H:i');
             $sql = <<<SQL
@@ -104,9 +98,11 @@ function doUserAndPasswordMatch($user, $password)
 SQL;
             DB::run($sql);
             return $value;
+        } elseif ($check === null) {
+            return null;
         }
     }
-    return null;
+    return false;
 
 }
 
@@ -114,28 +110,61 @@ SQL;
 function LoginUser($user, $password)
 {
     $result = doUserAndPasswordMatch($user, $password);
-    if ($result !== null) {
+    if ($result !== null && $result !== false) {
         // Log in the User - Session started in Functions
         $_SESSION['username']  = $user; // Save the Username for easy forms
         $_SESSION['fullName']  = $result['FirstName']; // Save the FullName for ease
         $_SESSION['accountId'] = $result['AccountID']; //Save the ID for updates
         return(true);
-    } else {
+    } elseif ($result === false) {
         return(false);
     }
+    return null;
 
 }
 
 
-function set_password($user, $password)
+function set_password($user, $password, $require_hash = true)
 {
-    $auth = password_hash($password, PASSWORD_DEFAULT);
+    global $PASSWORDEXPIRE;
+
+    if (isset($PASSWORDEXPIRE) && !empty($PASSWORDEXPIRE)) {
+        $duration = $PASSWORDEXPIRE;
+    } else {
+        $duration = '+1 year';
+    }
+    $expires = date('Y-m-d H:i', strtotime($duration));
+    if ($require_hash) {
+        $auth = password_hash($password, PASSWORD_DEFAULT);
+    } else {
+        $auth = $password;
+    }
+
+    $last = 'NULL';
+    $sql = "SELECT * FROM  `Authentication` WHERE AccountID = $user;";
+    $result = DB::run($sql);
+    $value = $result->fetch();
+    if ($value !== false && $value['LastLogin'] !== null) {
+        $last = "'".$value['LastLogin']."'";
+    }
+
     $sql = <<<SQL
         REPLACE INTO `Authentication`
         SET AccountID = $user,
-            Authentication = '$auth';
+            Authentication = '$auth',
+            LastLogin = $last,
+            Expires = '$expires',
+            OneTime = NULL,
+            OneTimeExpires = NULL;
 SQL;
     DB::run($sql);
+
+}
+
+
+function accept_onetime($account, $auth)
+{
+    set_password($account, $auth, false);
 
 }
 
@@ -175,10 +204,11 @@ function reset_password($id)
         $user = $value['AccountID'];
         $email = $value['EMail'];
         $password = rppg();
-        $expired = date('Y-m-d H:i', strtotime("+10 minutes"));
+        $oneexpired = date('Y-m-d H:i', strtotime("+10 minutes"));
         $newauth = password_hash($password, PASSWORD_DEFAULT);
         $auth = 'NULL';
         $last = 'NULL';
+        $realexpires = 'NULL';
 
         $sql = "SELECT * FROM  `Authentication` WHERE AccountID = $user;";
         $result = DB::run($sql);
@@ -186,15 +216,17 @@ function reset_password($id)
         if ($value !== false) {
             $auth = "'".$value['Authentication']."'";
             $last = "'".$value['LastLogin']."'";
+            $realexpires = "'".$value['Expires']."'";
         }
 
         $sql = <<<SQL
             REPLACE INTO `Authentication`
             SET AccountID = $user,
                 OneTime = '$newauth',
-                OneTimeExpires= '$expired',
+                OneTimeExpires= '$oneexpired',
                 Authentication = $auth,
                 LastLogin = $last;
+                Expires = '$realexpires',
 SQL;
         DB::run($sql);
         $servername = 'https://'.$_SERVER['SERVER_NAME'];

@@ -133,6 +133,7 @@ class SCHEMA
         'AccountID' => 'INT UNSIGNED NOT NULL PRIMARY KEY',
         'Authentication' => 'VARCHAR(110)',
         'LastLogin' => 'DATETIME',
+        'Expires' => 'DATETIME',
         'OneTime' => 'VARCHAR(110)',
         'OneTimeExpires' => 'DATETIME',
     ],

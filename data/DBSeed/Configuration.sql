@@ -7,4 +7,4 @@ INSERT INTO Configuration (Field, Value) VALUES ('NEONKEY', '3a9236b6c4f3cae82aa
 INSERT INTO Configuration (Field, Value) VALUES ('TIMEZONE', 'America/Chicago');
 INSERT INTO Configuration (Field, Value) VALUES ('DBSchemaVersion', '0');
 INSERT INTO Configuration (Field, Value) VALUES ('CONCOMHOURS', '60');
-
+INSERT INTO Configuration (Field, Value) VALUES ('PASSWORDEXPIRE', '+1 year');

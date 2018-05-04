@@ -3,6 +3,11 @@
   <div class="w3-container w3-cell w3-mobile">
     <h2><?php echo $CONSITENAME; ?></h2>
   </div><!--close header text div-->
+<?php
+if (!empty($EXPIRED)) {
+    echo '<meta http-equiv="refresh" content="0; url=/index.php?Function=recovery&expired=1" />';
+}
+?>
 </header><!--close header div-->
 <div class="w3-container w3-mobile">
   <div class="w3-container w3-cell w3-third w3-border">
