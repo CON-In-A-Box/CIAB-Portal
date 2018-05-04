@@ -4,16 +4,6 @@
     require_module 'standard';
 .*/
 
-if (!in_array('concom', $DISABLEDMODULES)) {
-    if (is_dir($MODULESDIR.DIRECTORY_SEPARATOR.'concom')) {
-        $check = $MODULESDIR.DIRECTORY_SEPARATOR.'concom';
-        $check .= DIRECTORY_SEPARATOR.'functions/concom.inc';
-        if (is_file($check)) {
-            require_once($check);
-        }
-    }
-}
-
 
 function _parse_user($result, $additional_fields)
 {
@@ -30,8 +20,8 @@ function _parse_user($result, $additional_fields)
     } else {
         $user['Last Name'] = $result['Last Name'];
     }
-    if (class_exists('CONCOM') && method_exists('CONCOM', 'getConComPosition')) {
-        $user['ConCom'] = CONCOM::getConComPosition($user['Id']);
+    if (class_exists('\\concom\\POSITION') && method_exists('\\concom\\POSITION', 'getConComPosition')) {
+        $user['ConCom'] = concom\POSITION::getConComPosition($user['Id']);
     }
     if (!empty($result['Email 1'])) {
         $user['Email'] = $result['Email 1'];
