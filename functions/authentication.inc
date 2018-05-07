@@ -8,6 +8,10 @@
 require_once(__DIR__.'/users.inc');
 require_once(__DIR__.'/session.inc');
 
+if (isset($GLOBALS['NEONID']) && isset($GLOBALS['NEONKEY'])) {
+    require_once($FUNCTIONDIR.'/neon.inc');
+}
+
 
 function LogoutUser()
 {
@@ -67,7 +71,29 @@ SQL;
 }
 
 
-function check_authentication($account, $password)
+function checkNeonForUserAndPasswordMatch($user, $password)
+{
+    if (isset($GLOBALS['Neon'])) {
+        $request = [
+        'method' => 'common/authenticateUser',
+        'parameters' => [
+        'username' => $user,
+        'password' => $password,
+            ],
+        ];
+        $result = $GLOBALS['Neon']->go($request);
+        if ($result['operationResult'] == 'SUCCESS') {
+            $result['FirstName'] = $result['name'];
+            $result['AccountID'] = $result['accountId'];
+            return $result;
+        }
+    }
+    return false;
+
+}
+
+
+function check_authentication($account, $password, $user)
 {
     global $MAXLOGINFAIL;
 
@@ -114,54 +140,13 @@ SQL;
         increment_failed($account);
         return false;
     } else {
+        $value = checkNeonForUserAndPasswordMatch($user, $password);
+        if ($value !== false) {
+            set_password($account, $password);
+            return true;
+        }
         return null;
     }
-
-}
-
-
-function doUserAndPasswordMatch($user, $password)
-{
-    loadDefinedFields();
-    $value = lookup_user_by_login($user);
-    if ($value) {
-        $check = check_authentication($value['AccountID'], $password);
-        if ($check === true) {
-            $id = $value['AccountID'];
-            $now = date('Y-m-d H:i');
-            $sql = <<<SQL
-                UPDATE `Authentication`
-                SET LastLogin = '$now'
-                WHERE AccountId = $id;
-SQL;
-            DB::run($sql);
-            return $value;
-        } elseif ($check === null) {
-            return null;
-        } elseif ($check === -1) {
-            return -1;
-        }
-    }
-    return false;
-
-}
-
-
-function LoginUser($user, $password)
-{
-    $result = doUserAndPasswordMatch($user, $password);
-    if ($result !== null && $result !== false && $result !== -1) {
-        // Log in the User - Session started in Functions
-        $_SESSION['username']  = $user; // Save the Username for easy forms
-        $_SESSION['fullName']  = $result['FirstName']; // Save the FullName for ease
-        $_SESSION['accountId'] = $result['AccountID']; //Save the ID for updates
-        return(true);
-    } elseif ($result === false) {
-        return(false);
-    } elseif ($result === -1) {
-        return -1;
-    }
-    return null;
 
 }
 
@@ -200,6 +185,52 @@ function set_password($user, $password, $require_hash = true)
             OneTimeExpires = NULL;
 SQL;
     DB::run($sql);
+
+}
+
+
+function doUserAndPasswordMatch($user, $password)
+{
+    loadDefinedFields();
+    $value = lookup_user_by_login($user);
+    if ($value) {
+        $check = check_authentication($value['AccountID'], $password, $user);
+        if ($check === true) {
+            $id = $value['AccountID'];
+            $now = date('Y-m-d H:i');
+            $sql = <<<SQL
+                UPDATE `Authentication`
+                SET LastLogin = '$now'
+                WHERE AccountId = $id;
+SQL;
+            DB::run($sql);
+            return $value;
+        } elseif ($check === null) {
+            return null;
+        } elseif ($check === -1) {
+            return -1;
+        }
+    }
+    return false;
+
+}
+
+
+function LoginUser($user, $password)
+{
+    $result = doUserAndPasswordMatch($user, $password);
+    if ($result !== null && $result !== false && $result !== -1) {
+        // Log in the User - Session started in Functions
+        $_SESSION['username']  = $user; // Save the Username for easy forms
+        $_SESSION['fullName']  = $result['FirstName']; // Save the FullName for ease
+        $_SESSION['accountId'] = $result['AccountID']; //Save the ID for updates
+        return(true);
+    } elseif ($result === false) {
+        return(false);
+    } elseif ($result === -1) {
+        return -1;
+    }
+    return null;
 
 }
 
