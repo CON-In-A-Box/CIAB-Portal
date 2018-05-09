@@ -4,8 +4,8 @@
     require_module 'standard';
 .*/
 
-if (class_exists('REGISTRATION') && method_exists('REGISTRATION', 'inRegistration')) {
-    $in_registration = REGISTRATION::inRegistration($_SESSION['accountId']);
+if (class_exists('\\concom\\REGISTRATION') && method_exists('\\concom\\REGISTRATION', 'inRegistration')) {
+    $in_registration = concom\REGISTRATION::inRegistration($_SESSION['accountId']);
 } else {
     $in_registration = false;
 }

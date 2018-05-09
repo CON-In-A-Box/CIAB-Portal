@@ -4,16 +4,6 @@
     require_module 'standard';
 .*/
 
-if (!in_array('concom', $DISABLEDMODULES)) {
-    if (is_dir($MODULESDIR.DIRECTORY_SEPARATOR.'concom')) {
-        $check = $MODULESDIR.DIRECTORY_SEPARATOR.'concom';
-        $check .= DIRECTORY_SEPARATOR.'functions/concom.inc';
-        if (is_file($check)) {
-            require_once($check);
-        }
-    }
-}
-
 
 function buildSessionData($accountId)
 {
@@ -71,8 +61,8 @@ function buildSessionData($accountId)
     }
 
     // Current ConCom Positions and ConCom Years Served
-    if (class_exists('CONCOM') && method_exists('CONCOM', 'getConComPosition')) {
-        $_SESSION['customFields']['currConComPos']  = CONCOM::getConComPosition($accountId);
+    if (class_exists('\\concom\\POSITION') && method_exists('\\concom\\POSITION', 'getConComPosition')) {
+        $_SESSION['customFields']['currConComPos']  = concom\POSITION::getConComPosition($accountId);
     }
 
     // Current Hotel Lottery Status
@@ -215,8 +205,8 @@ function loadAccount($accountId)
     }
 
     // Current ConCom Positions and ConCom Years Served
-    if (class_exists('CONCOM') && method_exists('CONCOM', 'getConComPosition')) {
-        $_SESSION['customFields']['currConComPos']  = CONCOM::getConComPosition($accountId);
+    if (class_exists('\\concom\\POSITION') && method_exists('\\concom\\POSITION', 'getConComPosition')) {
+        $_SESSION['customFields']['currConComPos']  = concom\POSITION::getConComPosition($accountId);
     }
 
     // Current Hotel Lottery Status
@@ -227,8 +217,8 @@ function loadAccount($accountId)
     $_SESSION['customFields']['hotelRoomCheckOut'] = &$_SESSION['customFields'][search_definedFields('Check Out')];
 
     // If the logged in user is in the volunteers, note it
-    if (class_exists('VOLUNTEERS') && method_exists('VOLUNTEERS', 'inVolunteers')) {
-        $_SESSION['IS_VOLUNTEERS'] = VOLUNTEERS::inVolunteers($accountId);
+    if (class_exists('\\concom\\VOLUNTEERS') && method_exists('\\concom\\VOLUNTEERS', 'inVolunteers')) {
+        $_SESSION['IS_VOLUNTEERS'] = concom\VOLUNTEERS::inVolunteers($accountId);
     }
 
     // If the logged in user is a System Admin (defined in the config file), note it
