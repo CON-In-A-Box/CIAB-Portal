@@ -41,6 +41,11 @@ function db_do_update($from, $to)
             to_180501();
             _update_DB_Version(2018091700);
         }
+        if ($from < 2018092400) {
+            require_once(__DIR__."/update/to_180924.inc");
+            to_180924();
+            _update_DB_Version(2018092400);
+        }
     }
     _update_DB_Version($to);
 

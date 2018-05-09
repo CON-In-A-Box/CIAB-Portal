@@ -1,3 +1,4 @@
+INSERT INTO Departments (DepartmentID, Name, ParentDepartmentID) VALUES (0, 'Historical Placeholder', 0);
 INSERT INTO Departments (DepartmentID, Name, ParentDepartmentID) VALUES (1, 'Activities', 1);
 INSERT INTO Departments (DepartmentID, Name, ParentDepartmentID) VALUES (2, 'Administration', 2);
 INSERT INTO Departments (DepartmentID, Name, ParentDepartmentID) VALUES (3, 'External Relations and Communications', 3);

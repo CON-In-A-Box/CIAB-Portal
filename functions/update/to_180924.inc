@@ -1,0 +1,184 @@
+<?php
+
+/*.
+    require_module 'standard';
+.*/
+
+require_once(__DIR__."/../functions.inc");
+require_once(__DIR__."/../database.inc");
+
+
+function _ConComListBuildSearch($page)
+{
+    global $Neon;
+
+    $conComFieldId = search_definedFields('CVGConCom Current Position');
+
+    $search = [
+    'method' => 'account/listAccounts',
+    'criteria' => [
+    [$conComFieldId, 'NOT_BLANK', ''],
+    ],
+    'columns' => [
+    'standardFields' => ['Account ID'],
+    'customFields' => [$conComFieldId],
+    ],
+    'page' => [
+    'currentPage' => $page,
+    'pageSize' => 200,
+    'sortColumn' => 'Account ID',
+    'sortDirection' => 'ASC',
+    ],
+    ];
+    $result = $Neon->search($search);
+
+    if (isset($result['operationResult']) && $result['operationResult'] == 'SUCCESS') {
+        $data['pages'] = $result['page']['totalPage'];
+        foreach ($result['searchResults'] as $val) {
+            $positionsHeld = explode("|", $val['CVGConCom Current Position']);
+            foreach ($positionsHeld as $pos) {
+                $tmp = explode(",", $pos);
+                $line = [
+                'Account ID' => $val['Account ID'],
+                'Department' => $tmp[0],
+                'Position'   => $tmp[1],
+                ];
+
+                if (isset($tmp[2])) {
+                    $line['Note'] = $tmp[2];
+                } else {
+                    $line['Note'] = "";
+                }
+
+                $data['list'][] = $line;
+            }
+        }
+    }
+    return $data;
+
+}
+
+
+function _getEvent($year)
+{
+    $date = "$year-1-1";
+    $sql = "SELECT EventID FROM Events WHERE DateTo > '$date' LIMIT 1;";
+    $result = DB::run($sql);
+    $value = $result->fetch();
+    if ($value) {
+        return $value['EventID'];
+    }
+    return null;
+
+}
+
+
+function _HistoricalListBuildSearch($page, $did)
+{
+    global $Neon;
+
+    $conComFieldId = search_definedFields('CVGConCom Years Served');
+    $criteria = '(';
+    $year = intval(date("Y"));
+    while ($year > 1900) {
+        $criteria .= "'".$year."', ";
+        $year--;
+    }
+    $criteria .= "'1900')";
+    $search = [
+    'method' => 'account/listAccounts',
+    'criteria' => [
+    [$conComFieldId, 'IN_RANGE', $criteria],
+    ],
+    'columns' => [
+    'standardFields' => ['Account ID'],
+    'customFields' => [$conComFieldId],
+    ],
+    'page' => [
+    'currentPage' => $page,
+    'pageSize' => 200,
+    'sortColumn' => 'Account ID',
+    'sortDirection' => 'ASC',
+    ],
+    ];
+    $data = [];
+    $result = $Neon->search($search);
+
+    if (isset($result['operationResult']) && $result['operationResult'] == 'SUCCESS') {
+        $data['pages'] = $result['page']['totalPage'];
+        $data['list'] = [];
+        foreach ($result['searchResults'] as $val) {
+            if (isset($val['CVGConCom Years Served'])) {
+                $years = array_unique(explode("|", $val['CVGConCom Years Served']));
+                foreach ($years as $year) {
+                    $event = _getEvent($year);
+                    $data['list'][] = "(".$val['Account ID'].", $did, 3, $event)";
+                }
+            }
+        }
+    }
+    return $data;
+
+}
+
+
+function _insertHistorical($data)
+{
+    $sql = "REPLACE INTO ConComList (AccountID, DepartmentID, PositionID, EventID) VALUES";
+    $sql .= implode(", ", $data);
+    $sql .= ';';
+
+    DB::run($sql);
+
+}
+
+
+function _build_HistoricalConComList($did)
+{
+    echo '<h2>Historical Current ConCom.</h2>';
+    $i = 1;
+    $runPage = 1;
+    while ($i <= $runPage) {
+        $result = _HistoricalListBuildSearch($i, $did);
+        if (count($result['list'])) {
+            _insertHistorical($result['list']);
+            echo '<p> Processed '.count($result['list']).'</p>';
+        }
+        $runPage = $result['pages'];
+        $i++;
+    }
+    echo "<h2>done<h2>";
+
+}
+
+
+function to_180924()
+{
+    $did = null;
+    $sql = "SELECT `DepartmentID` FROM `Departments` WHERE Name = 'Historical Placeholder'";
+    $result = DB::run($sql);
+    $value = $result->fetch();
+    if ($value) {
+        $did = $value['DepartmentID'];
+    }
+
+    if ($did == null) {
+        $sql = <<<SQL
+        INSERT INTO `Departments` (
+            DepartmentID, Name, ParentDepartmentID
+        ) VALUES (0, 'Historical Placeholder', 1);
+        UPDATE
+            `Departments`
+        SET
+            `DepartmentID` = 0,
+            `ParentDepartmentID` = 0 WHERE Name = 'Historical Placeholder';
+SQL;
+        DB::run($sql);
+        $did = 0;
+    }
+
+    print "<h2> db update </h2>";
+
+    _build_HistoricalConComList($did);
+
+}
