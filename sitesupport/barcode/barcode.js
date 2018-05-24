@@ -155,23 +155,8 @@ var QuaggaApp = {
             return parseInt(value);
           },
         decoder: {
-            readers: function(value) {
-                if (value === 'ean_extended') {
-                  return [{
-                      format: 'ean_reader',
-                      config: {
-                          supplements: [
-                              'ean_5_reader', 'ean_2_reader'
-                          ]
-                        }
-                    }];
-                }
-                return [{
-                    format: value + '_reader',
-                    config: {}
-                  }];
-              }
-          }
+          readers: ['code_128_reader']
+        },
       },
     state: {
         inputStream: {
@@ -191,7 +176,7 @@ var QuaggaApp = {
         frequency: 10,
         decoder: {
             readers : [{
-                format: 'ean_reader',
+                format: 'code_128_reader',
                 config: {}
               }]
           },
@@ -261,27 +246,9 @@ Quagga.onProcessed(function(result) {
   });
 
 Quagga.onDetected(function(result) {
-    /* Much of this is EAN based. if we use another format change the
-       the processing here */
-    var l = result.codeResult.code.length - 2;
-    var checkdigit = 0;
-    var mult = 3;
-    for (i = l; i >= 0; i--) {
-      checkdigit += result.codeResult.code[i] * mult;
-      if (mult == 3) {
-        mult = 1;
-      } else {
-        mult = 3;
-      }
-    }
-
-    checkdigit = 10 - (checkdigit % 10);
-
-    if (checkdigit == result.codeResult.code[l + 1]) {
-      var code = parseInt(result.codeResult.code.slice(0, -1));
-      var codeField = document.getElementById(QuaggaApp.fieldid);
-      codeField.value = code;
-      QuaggaApp.callback(code);
-      QuaggaApp.stop();
-    }
+    var code = parseInt(result.codeResult.code);
+    var codeField = document.getElementById(QuaggaApp.fieldid);
+    codeField.value = code;
+    QuaggaApp.callback(code);
+    QuaggaApp.stop();
   });
