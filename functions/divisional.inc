@@ -8,18 +8,6 @@
 require_once(__DIR__."/database.inc");
 require_once(__DIR__.'/users.inc');
 
-if (!isset($ConComPositions)) {
-    $ConComPositions = array();
-    $sql = "SELECT * FROM ConComPositions;";
-    $result = $db->run($sql);
-    $value = $result->fetch();
-    while ($value !== false) {
-        $ConComPositions[$value['PositionID']] = $value['Name'];
-        $value = $result->fetch();
-    }
-}
-
-
 if (!isset($Departments)) {
     $Departments = array();
     $Divisions = array();
