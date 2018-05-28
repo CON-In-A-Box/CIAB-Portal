@@ -4,10 +4,10 @@ require_once(__DIR__."/../functions/concom.inc");
 
 // if this is an update, but we don't have the right permissions, ignore it.
 if (isset($_REQUEST['AddDepartment'])) {
-    if (isset($_REQUEST['accountId'])) {
+    if (isset($_REQUEST['memberId'])) {
         if (!isset($_REQUEST['Position'])) {
             // We have someone, lets get their position
-            doConComAddAssign($_REQUEST['AddDepartment'], $_REQUEST['accountId'], $_REQUEST['Name']);
+            doConComAddAssign($_REQUEST['AddDepartment'], $_REQUEST['memberId']);
         }
     } else {
         // begin search
