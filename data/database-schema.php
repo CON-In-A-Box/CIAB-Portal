@@ -32,7 +32,7 @@ class SCHEMA
     ],
     'Configuration' => [
         'Field' => 'VARCHAR(15) NOT NULL PRIMARY KEY',
-        'Value' => 'VARCHAR(100) NOT NULL',
+        'Value' => 'TEXT NOT NULL',
     ],
     'ConComList' => [
         'ListRecordID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
