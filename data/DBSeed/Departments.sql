@@ -66,3 +66,4 @@ INSERT INTO Departments (DepartmentID, Name, ParentDepartmentID) VALUES (155, 'V
 INSERT INTO Departments (DepartmentID, Name, ParentDepartmentID) VALUES (156, 'Volunteers', 2);
 INSERT INTO Departments (DepartmentID, Name, ParentDepartmentID) VALUES (157, 'Webteam', 3);
 INSERT INTO Departments (DepartmentID, Name, ParentDepartmentID) VALUES (158, 'Youth Programming Advisory', 8);
+INSERT INTO Departments (DepartmentID, Name, ParentDepartmentID) VALUES (159, 'Transition Team', 8);
