@@ -74,3 +74,4 @@ INSERT INTO EMails (DepartmentID, Email) VALUES (154, 'video@convergence-con.org
 INSERT INTO EMails (DepartmentID, Email) VALUES (118, 'finance@convergence-con.org');
 INSERT INTO EMails (DepartmentID, Email) VALUES (7, 'systems@convergenceevents.org');
 INSERT INTO EMails (DepartmentID, Email) VALUES (127, 'it@convergence-con.org');
+INSERT INTO EMails (DepartmentID, Email) VALUES (159, 'transitionteam@convergence-con.org');
