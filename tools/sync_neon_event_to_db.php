@@ -114,8 +114,10 @@ function do_Neon_import()
 $cmd = "pgrep -f ".basename(__FILE__);
 exec($cmd, $pids);
 if (!empty($pids)) {
-    print "Sync already in progress";
-    exit();
+    if (count($pids) > 1 || $pids[0] != getmypid()) {
+        print "Sync already in progress";
+        exit();
+    }
 }
 
 
