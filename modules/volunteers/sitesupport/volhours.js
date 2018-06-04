@@ -42,7 +42,7 @@ function resetForm() {
   userLookup.clear();
   document.getElementById('submitbtn').disabled = true;
   document.getElementById('volunteername').innerHTML = 'a Volunteer';
-  document.getElementById('lookupname').innerHTML = '';
+  document.getElementById('lookupname').innerHTML = '<span></span>';
 
   /* Clean out old highlighted departments */
   var depts = document.getElementById('department');
@@ -141,15 +141,17 @@ function onSuccess(target, resp) {
     userLookup.markFailure();
     document.getElementById('submitbtn').disabled = true;
     document.getElementById('volunteername').innerHTML = 'a Volunteer';
-    document.getElementById('lookupname').innerHTML = name +
-        ' is on ConCom (' + uid + ')';
+    document.getElementById('lookupname').innerHTML =
+        '<span class="w3-red w3-large">' + name +
+        ' is on ConCom (' + uid + ')</span>';
   } else {
     userLookup.clearFailure();
     userLookup.set(uid);
     document.getElementById('submitbtn').disabled = false;
     document.getElementById('volunteername').innerHTML = name + ' (' +
         uid + ')';
-    document.getElementById('lookupname').innerHTML = name + ' (' + uid + ')';
+    document.getElementById('lookupname').innerHTML =
+        '<span class="w3-large">' + name + ' (' + uid + ')<span>';
 
     var depts = document.getElementById('department');
 
@@ -194,14 +196,15 @@ function onFail(target, resp, name, code) {
 
   if (code == 404) {
     document.getElementById('lookupname').innerHTML =
-      name + ' not found.';
+        '<span class="w3-red w3-large">' + name + ' not found.</span>';
   }
   else if (code == 409) {
     document.getElementById('lookupname').innerHTML =
-      'There are too many matches.';
+      '<span class="w3-red w3-large">There are too many matches.</span>';
   }
   else {
-    document.getElementById('lookupname').innerHTML =
-      name + ' invalid name lookup.(' + code + ')';
+    document.getElementById('lookupname').innerHTML = name +
+        '<span class="w3-red w3-large">invalid name lookup.(' + code +
+        ')</span>';
   }
 }
