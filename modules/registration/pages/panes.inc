@@ -36,7 +36,7 @@ function badges()
                 'Badge Name' => $name,
                 'Emergency Contact' => $badge['EmergencyContact'],
                 'Purchased' => $badge['RegistrationDate'],
-                'Puchaser' => $badge['RegisteredByID']
+                'Purchaser' => $badge['RegisteredByID']
                                                 ];
             } else {
                 $lines[$badge['EventName']] = [[
@@ -44,7 +44,7 @@ function badges()
                 'Badge Name' => $name,
                 'Emergency Contact' => $badge['EmergencyContact'],
                 'Purchased' => $badge['RegistrationDate'],
-                'Puchaser' => $badge['RegisteredByID']
+                'Purchaser' => $badge['RegisteredByID']
                                                ]];
             }
         }

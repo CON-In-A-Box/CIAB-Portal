@@ -57,7 +57,7 @@ if (!empty($badges)) {
             'Badge Name' => $name,
             'Emergency Contact' => $badge['EmergencyContact'],
             'Purchased' => $badge['RegistrationDate'],
-            'Puchaser' => $badge['RegisteredByID']
+            'Purchaser' => $badge['RegisteredByID']
                                             ];
         } else {
             $lines[$badge['EventName']] = [[
@@ -65,7 +65,7 @@ if (!empty($badges)) {
             'Badge Name' => $name,
             'Emergency Contact' => $badge['EmergencyContact'],
             'Purchased' => $badge['RegistrationDate'],
-            'Puchaser' => $badge['RegisteredByID']
+            'Purchaser' => $badge['RegisteredByID']
                                            ]];
         }
     }
