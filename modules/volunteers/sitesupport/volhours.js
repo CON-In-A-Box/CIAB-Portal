@@ -125,16 +125,14 @@ function checkHours() {
   }
 }
 
-function onSuccess(target, resp) {
+function handleResult(origin, response) {
+  var e = document.getElementById('userLookup_dropdown');
+  if (!e.classList.contains('w3-hide')) {
+    e.classList.add('w3-hide');
+  }
   markEndTime(false);
   document.getElementById('message').innerHTML = '';
 
-  if (resp.length > 1) {
-    onFail(target, resp, '', 409);
-    return;
-  }
-
-  var response = resp[0];
   var name = response['First Name'] + ' ' + response['Last Name'];
   var uid = response.Id;
   if (response.ConCom) {
