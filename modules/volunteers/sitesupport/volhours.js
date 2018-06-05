@@ -13,14 +13,34 @@ var volPast = null;
 function calculateHours() {
   var hours = Number(document.getElementById('hours').value);
   var am = Number(document.getElementById('minutes').value);
-  hours += am;
-  var creditHours = hours * document.getElementById('modifier').value;
+  var creditHours = 0;
+  var creditMinutes = hours * document.getElementById('modifier').value * 60 +
+                      am * document.getElementById('modifier').value;
+
+  var r = Math.floor(creditMinutes / 60);
+  if (r > 0) {
+    creditHours += r;
+    creditMinutes = creditMinutes % 60;
+  }
+
   var tag = ' hours';
-  if (hours == 1) {
+  var mtag = ' minutes';
+  if (creditHours == 1) {
     tag = ' hour';
   }
-  document.getElementById('totalhours').innerHTML = creditHours + tag;
-  document.getElementById('actualhours').value = Number(hours);
+  if (creditMinutes== 1) {
+    mtag = ' minute';
+  }
+  document.getElementById('totalhours').innerHTML = '';
+  if (creditHours > 0) {
+      document.getElementById('totalhours').innerHTML = creditHours + tag;
+  }
+  if (creditMinutes > 0) {
+      document.getElementById('totalhours').innerHTML += ' ' + creditMinutes +
+                                                         mtag ;
+  }
+  document.getElementById('actualhours').value = Number(hours) +
+                                                 Number(am / 60);
   checkHours();
 }
 
