@@ -39,7 +39,8 @@ var userLookup = (function(options) {
           div.classList.add('w3-button');
           if (target) {
             div.setAttribute('onclick',
-              'userLookup.gotoTarget("' + target.href + '", ' + item.Id + ')');
+              'userLookup.gotoTarget("' + target.href + '", ' +
+              JSON.stringify(item) + ');');
           }
           div.innerHTML = '<span>' + item.Id + ' : ' +
             item['First Name'] + ' ' + item['Last Name'] +
@@ -50,7 +51,7 @@ var userLookup = (function(options) {
         return;
       }
       if (target) {
-        userLookup.gotoTarget(target.href, uid);
+        userLookup.gotoTarget(target.href, response[0]);
       }
     }
 
@@ -75,13 +76,17 @@ var userLookup = (function(options) {
           settings = Object.assign(settings, opts);
         },
 
-        gotoTarget: function(origin, uid) {
+        gotoTarget: function(origin, item) {
           if (settings.handler !== null) {
-            settings.handler(origin, uid);
+            settings.handler(origin, item);
             return;
           }
           var newTarget = '';
           var i = origin.indexOf(settings.urlTag + '=');
+          var uid = null;
+          if (item) {
+            uid = item.Id;
+          }
           if (uid) {
             if (i != -1) {
               var regexp = new RegExp('(' + settings.urlTag + '=).*?($)');
@@ -115,6 +120,13 @@ var userLookup = (function(options) {
             'w3-red');
           document.getElementById('userLookup_spinner').innerHTML = '';
           document.getElementById('userLookup_member').value = '';
+        },
+
+        changed: function(obj, target) {
+          var e = document.getElementById('userLookup_dropdown');
+          if (!(e.offsetWidth > 0 && e.offsetHeight > 0)) {
+            userLookup.lookupId(obj, target);
+          }
         },
 
         lookupId: function(obj, target) {
@@ -200,7 +212,7 @@ var userLookup = (function(options) {
           input.id = 'userLookup_member';
           input.name = settings.memberName;
           input.setAttribute('onchange',
-            'userLookup.lookupId(this, location)');
+            'userLookup.changed(this, location)');
           input.setAttribute('onkeydown',
             'return userLookup.keydown(event.keyCode, this, location)');
           input.placeholder = '(badge #, email, Name)';

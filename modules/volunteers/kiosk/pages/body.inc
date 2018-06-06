@@ -59,7 +59,8 @@ if (!isset($_SESSION['kioskMode'])) {
       }
     }
 
-    function handleResult(origin, uid) {
+    function handleResult(origin, item) {
+        var uid = item.Id;
         switchKiosk(uid);
     }
 

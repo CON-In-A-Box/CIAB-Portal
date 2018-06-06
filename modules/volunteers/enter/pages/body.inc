@@ -29,7 +29,7 @@ if (isset($updateComplete)) {
     userLookup.options({
         message: 'Volunteer Badge Number, E-Mail or Full Name',
         memberName: 'VolunteerID',
-        success: onSuccess,
+        handler: handleResult,
         fail: onFail,
         needForm: false,
         lookupTarget: 'index.php?Function=volunteers/enter&volunteerId='
