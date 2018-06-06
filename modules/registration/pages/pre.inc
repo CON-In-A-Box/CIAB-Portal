@@ -3,6 +3,17 @@
 require_once($FUNCTIONDIR."/database.inc");
 require_once($BASEDIR."/tools/neon_event_lib.inc");
 
+/* This should only be accessable from registration staff */
+if (class_exists('\\concom\\REGISTRATION') && method_exists('\\concom\\REGISTRATION', 'inRegistration')) {
+    $in_registration = concom\REGISTRATION::inRegistration($_SESSION['accountId']);
+} else {
+    $in_registration = false;
+}
+
+if (!isset($_SESSION['IS_ADMIN']) && !$in_registration) {
+    goSite();
+}
+
 if (!empty($_POST)) {
     $arguments = [
     'refreshData'  => FILTER_SANITIZE_SPECIAL_CHARS,
