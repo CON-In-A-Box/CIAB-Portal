@@ -314,7 +314,7 @@ function volunteer_prizes()
     $prizes = array();
     $sql = <<<SQL
         SELECT * FROM VolunteerRewards
-        ORDER BY Promo Desc, Value Asc, Name Desc;
+        ORDER BY Promo Desc, RewardGroupID Desc, Value Asc, Name Asc;
 SQL;
 
     $result = $db->run($sql);
