@@ -60,6 +60,12 @@ while (!feof($file)) {
         }
         $enterer = $output['users'][0]['Id'];
 
+        $overlap = find_overlap_hours($csv[4], $csv[1], $user);
+        if ($overlap != null) {
+            $response[] = strval($lineno).': overlap: '.strval($data).' : Hours Overlap with existing hours.';
+            continue;
+        }
+
         try {
             $result = record_volunteer_hours(
                 $user,

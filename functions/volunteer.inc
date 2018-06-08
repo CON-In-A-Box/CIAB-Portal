@@ -671,3 +671,33 @@ SQL;
     return true;
 
 }
+
+
+function find_overlap_hours($endtime, $hours, $uid)
+{
+    global $db;
+    $checkend = strtotime($endtime);
+    $checkstart = $checkend - (intval($hours) * 3600);
+
+    $sql = <<<SQL
+    SELECT
+        *,
+        UNIX_TIMESTAMP(`EndDateTime`) - (`ActualHours` * 3600) AS StartTime,
+        UNIX_TIMESTAMP(`EndDateTime`) AS EndTime
+    FROM
+        `VolunteerHours`
+    WHERE
+        `AccountID` = $uid
+    HAVING
+        ($checkstart >= `StartTime` AND $checkstart < `EndTime`) OR
+        ($checkend <= `EndTime` AND $checkend > `StartTime`) OR
+        ($checkstart <= `StartTime` AND $checkend >= `EndTime`)
+SQL;
+    $result = $db->run($sql);
+    $value = $result->fetch();
+    if ($value !== false)
+        return $value;
+    else
+        return null;
+
+}
