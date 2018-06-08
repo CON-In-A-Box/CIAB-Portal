@@ -6,4 +6,5 @@ INSERT INTO Configuration (Field, Value) VALUES ('NEONID', 'home');
 INSERT INTO Configuration (Field, Value) VALUES ('NEONKEY', '3a9236b6c4f3cae82aa46509971ac4b2');
 INSERT INTO Configuration (Field, Value) VALUES ('TIMEZONE', 'America/Chicago');
 INSERT INTO Configuration (Field, Value) VALUES ('DBSchemaVersion', '0');
+INSERT INTO Configuration (Field, Value) VALUES ('CONCOMHOURS', '60');
 

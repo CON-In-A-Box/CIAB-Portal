@@ -153,15 +153,25 @@ function _printHours($hours)
 
 function hour_table($uid)
 {
-    global $totalHours,$admin_mode;
+    global $totalHours,$admin_mode,$ConComHours;
 
     echo '<div class="w3-container w3-center event-color-primary" ';
     echo 'style="max-height:34vh; overflow:scroll;">';
     echo "<table class='w3-table w3-striped w3-bordered w3-white'>";
     echo "<tr><th class='w3-center event-color-primary' colspan=9>Hours</th></tr>\n";
+    $concom = null;
     if (isset($uid)) {
         $data = get_volunteer_hours_for_user($uid);
-        $totalHours = 0;
+
+        if (class_exists('\\concom\\POSITION') && method_exists('\\concom\\POSITION', 'getConComPosition')) {
+            $concom = concom\POSITION::getConComPosition($uid);
+        }
+
+        if ($concom) {
+            $totalHours = $ConComHours;
+        } else {
+            $totalHours = 0;
+        }
     } else {
         $data = get_volunteer_hour_summary();
         $summary = get_volunteer_year_summery();
@@ -181,10 +191,12 @@ function hour_table($uid)
         echo "</th></tr>\n";
         foreach ($data as $key => $record) {
             if (isset($uid)) {
-                if (array_key_exists('Time Modifier', $record)) {
-                    $totalHours += $record['Actual Hours'] * $record['Time Modifier'];
-                } else {
-                    $totalHours += $record['Total Hours'];
+                if (!$concom) {
+                    if (array_key_exists('Time Modifier', $record)) {
+                        $totalHours += $record['Actual Hours'] * $record['Time Modifier'];
+                    } else {
+                        $totalHours += $record['Total Hours'];
+                    }
                 }
             }
             if ($uid && $admin_mode) {
