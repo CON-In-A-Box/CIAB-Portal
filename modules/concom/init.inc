@@ -13,4 +13,10 @@ if (!isset($ConComPositions)) {
         $ConComPositions[$value['PositionID']] = $value['Name'];
         $value = $result->fetch();
     }
+
+    if (!array_key_exists('CONCOMHOURS', $GLOBALS) || !$GLOBALS['CONCOMHOURS']) {
+        $ConComHours = 60;
+    } else {
+        $ConComHours = $GLOBALS['CONCOMHOURS'];
+    }
 }

@@ -7,14 +7,23 @@ require_once($FUNCTIONDIR.'/volunteer.inc');
 
 function display_volunteer_hours()
 {
+    global $ConComHours;
     // Display Current Volunteer Status
+    $concom = null;
+    if (class_exists('\\concom\\POSITION') && method_exists('\\concom\\POSITION', 'getConComPosition')) {
+        $concom = \concom\POSITION::getConComPosition($_SESSION['accountId']);
+    }
     $data = get_volunteer_hour_summary($_SESSION['accountId']);
     $spentdata = volunteer_prizes_for_user($_SESSION['accountId']);
-    if ($data && !empty($data)) {
+    if ($concom || ($data && !empty($data))) {
         $total = 0;
         $spent = 0;
-        foreach ($data as $entry) {
-            $total += $entry['Total Hours'];
+        if ($concom) {
+            $total = $ConComHours;
+        } else {
+            foreach ($data as $entry) {
+                $total += $entry['Total Hours'];
+            }
         }
 
         foreach ($spentdata as $entry) {
