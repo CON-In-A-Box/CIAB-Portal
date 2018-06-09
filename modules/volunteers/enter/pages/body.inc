@@ -224,5 +224,57 @@ for ($i = 0; $i < 60; $i += $hour_round_interval) {
   </div>
 </div>
 
+<div class='w3-bar'>
+  <div class="w3-bar-item w3-center" style="width:inherit;">
+    <p class="w3-small">
+        <a href='javascript:void(0)' onclick='batch()'>batch file upload</a>
+    </p>
+  </div>
+</div>
+
 </form>
+
+<div id='csv_import' class='w3-modal'>
+  <div class="w3-modal-content">
+    <div class=w3-container">
+      <div class="w3-row">
+        <h2 class="w3-center event-color-primary">Volunteer CSV File To Upload</h2>
+      </div>
+      <div class="w3-row">
+        <p class="w3-margin w3-center">CSV file format:
+        <code class="w3-block w3-gray w3-center">&lt;Account,ActualHours,AuthorizedBy,Department,EndDateTime,EnteredBy,Event,TimeModifier&gt;</code></p>
+        <p class="w3-margin w3-center"><b>Account fields</b> (Account, AuthorizedBy, EnteredBy)  can be badge number, name, or email. However it has to uniquly identify the user so badge number is always the safest.</p>
+      </div>
+      <div class="w3-row">
+          <div class="w3-left w3-margin w3-half">
+              <input style="width: 100%;" type="file" id="batch_file" onchange="fileChange()">
+          </div>
+          <div class="w3-right">
+              <button class="w3-button w3-round w3-red w3-margin" onclick="batchCancel()">Cancel</button>
+          </div>
+          <div class="w3-right">
+              <button class="w3-button w3-round w3-green w3-margin w3-disabled" id="batch_import" onclick="batchImport()">Import</button>
+          </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id='csv_import_report' class='w3-modal'>
+  <div class="w3-modal-content">
+    <div class=w3-container">
+        <div>
+            <h2 class="w3-center event-color-primary">Volunteer CSV Import Result</h2>
+        </div>
+        <div>
+            <table class='w3-table w3-striped w3-bordered w3-white' id="import_report">
+            </table>
+        </div>
+        <div class="w3-center">
+              <button class="w3-button w3-round w3-green w3-margin" id="batch_done" onclick="batchDone()">Done</button>
+        </div>
+    </div>
+  </div>
+</div>
+
 </div><!--close main_content div-->
