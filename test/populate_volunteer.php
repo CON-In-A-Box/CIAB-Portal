@@ -69,7 +69,7 @@ function populate_prizes()
 {
     global $db;
 
-    print "Populate Prizes\n";
+    print "Populate Gifts\n";
 
     $sql = "DELETE FROM `RewardGroup` WHERE 1";
     $db->run($sql);

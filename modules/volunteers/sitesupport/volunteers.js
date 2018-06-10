@@ -121,8 +121,8 @@ function applyReward() {
 }
 
 function processCheckout() {
-  confirmbox.start('Confirm Distribute Rewards',
-    'Are the selected rewards correct?', applyReward);
+  confirmbox.start('Confirm Distribute Gifts',
+    'Are the selected gifts correct?', applyReward);
 }
 
 function clearCheckout() {
@@ -395,11 +395,11 @@ function showEditPrize(data) {
 
   var item;
   if (!data) {
-    document.getElementById('edit_prize_title').innerHTML = 'Enter New Prize';
+    document.getElementById('edit_prize_title').innerHTML = 'Enter New Gift';
     document.getElementById('delete_prize_button').style.visibility = 'hidden';
     item = {};
   } else {
-    document.getElementById('edit_prize_title').innerHTML = 'Edit Prize Entry';
+    document.getElementById('edit_prize_title').innerHTML = 'Edit Gift Entry';
     document.getElementById('delete_prize_button').style.visibility = 'visible';
     item = JSON.parse(atob(data));
   }
@@ -446,10 +446,10 @@ function showEditPrize(data) {
 }
 
 function deletePrize() {
-  if (!window.confirm('DELETE Prize Entry?\n\n' +
-                      'WARNING!!!  Only do this if NONE of this prize ' +
+  if (!window.confirm('DELETE Gift Entry?\n\n' +
+                      'WARNING!!!  Only do this if NONE of this gift ' +
                       'has been distributed. It will lead to corrupt ' +
-                      'reward records. To DELETE a prize that has been ' +
+                      'reward records. To DELETE a gift that has been ' +
                       'rewarded set inventory to \'0\'')) {
     return;
   }
@@ -483,7 +483,7 @@ function commitPrize() {
                         'Please! double check entries!\n' +
                         '=============================\n' +
                         '\n' +
-                        'Proceed with Volunteer Prize Update?')) {
+                        'Proceed with Volunteer Gift Update?')) {
       return;
     }
     item = JSON.parse(atob(data));
@@ -492,7 +492,7 @@ function commitPrize() {
                         'Please! double check entries!\n' +
                         '=============================\n' +
                         '\n' +
-                        'Proceed with Addition of new Volunteer Prize?')) {
+                        'Proceed with Addition of new Volunteer Gift?')) {
       return;
     }
     item = {Name:'', Value:0, RewardGroupID:null, GroupLimit:0,
@@ -742,6 +742,6 @@ function doReturn() {
 }
 
 function processReturn() {
-  confirmbox.start('Confirm Reward Return',
-    'Are the returned rewards correct?', doReturn);
+  confirmbox.start('Confirm Gift Return',
+    'Are the returned gifts correct?', doReturn);
 }

@@ -297,7 +297,7 @@ function _prize_table_start($uid = 0, $spent = 0, $hoursRemain = 0)
         }
         echo "</label></th>\n";
     }
-    echo "<th class='w3-center event-color-secondary' colspan=3>Prizes</th>";
+    echo "<th class='w3-center event-color-secondary' colspan=3>Gifts</th>";
     echo "<th class='event-color-secondary' colspan=2></th>\n";
     echo "<th class='event-color-secondary'>";
     if (!$admin_mode && isset($uid)) {
@@ -473,9 +473,9 @@ function messages($uid)
                     if ($record['group_soldout']) {
                         continue;
                     }
-                    $promo .= "<li>Free Group prize <b>".htmlspecialchars($record['Name'])."</b> (at ".$record['Value']." hours) is available and has not been acquired! <b>Pick 1 below!</b></li>\n";
+                    $promo .= "<li>Free Group Gift <b>".htmlspecialchars($record['Name'])."</b> (at ".$record['Value']." hours) is available and has not been acquired! <b>Pick 1 below!</b></li>\n";
                 } else {
-                    $promo .= "<li>Free prize <b>".htmlspecialchars($record['Name'])."</b> (at ".$record['Value']." hours) is available and has not been acquired!</li>\n";
+                    $promo .= "<li>Free Gift <b>".htmlspecialchars($record['Name'])."</b> (at ".$record['Value']." hours) is available and has not been acquired!</li>\n";
                     $unclaimed_promo[] = $record;
                 }
                 $display = true;
@@ -519,7 +519,7 @@ function admin_bar($uid)
     echo "style='max-height:10vh; overflow:scroll;'>\n";
     echo "<div id='volunteer_admin_bar' class='w3-container w3-padding w3-border-red w3-border w3-margin w3-cell'>\n";
     echo "<button id='add_prize' class='w3-button w3-round-xxlarge w3-red'";
-    echo "onclick='showEditPrize(null)';>Add New Prize</button>\n";
+    echo "onclick='showEditPrize(null)';>Add New Gift</button>\n";
     echo "<button id='min_hours' class='w3-button w3-round-xxlarge w3-red'";
     echo "onclick='minHourReport()';>Minimum Hour Report</button>\n";
     echo "<button id='gen_csv' class='w3-button w3-round-xxlarge w3-red'";
@@ -694,7 +694,7 @@ prizes_table($uid);
 
     <div class='w3-hide w3-padding' id='edit_prize_div'>
         <div class='w3-center w3-red'>
-            <h2 id='edit_prize_title'>Edit Prize Entry</h2>
+            <h2 id='edit_prize_title'>Edit Gift Entry</h2>
         </div>
         <div class='w3-border w3-padding'>
           <form>
@@ -732,7 +732,7 @@ prizes_table($uid);
                         <span
                           style="position:absolute;left:-80px;right:-80px;bottom:18px"
                           class="w3-text w3-tag event-color-primary w3-round-xlarge">If in a group there can be only a limited total number of the items in the group claimed by the volunteer</span>
-                    Prize Group:</label>
+                    Gift Group:</label>
             <div class="w3-row">
                 <div class='w3-col w3-threequarter w3-padding'>
                     <select class="w3-select w3-border" id="edit_prize_group"
@@ -843,7 +843,7 @@ foreach ($Departments as $dep => $set) {
               <span onclick="document.getElementById('return_success_dlg').style.display='none';
                 location.reload();"
               class="w3-button w3-display-topright">&times;</span>
-              <h2 class="w3-center event-color-primary">Please collect and return the following rewards</h2>
+              <h2 class="w3-center event-color-primary">Please collect and return the following gifts</h2>
               <hr>
               <table class='w3-center w3-border w3-table w3-striped w3-white w3-xlarge w3-padding' id='return_list'>
               </table>
@@ -883,11 +883,11 @@ foreach ($Departments as $dep => $set) {
       <span onclick="document.getElementById('success_dlg').style.display='none';
         location.reload();"
       class="w3-button w3-display-topright">&times;</span>
-      <h2 class="w3-center event-color-primary">Please get the volunteer the following new rewards!</h2>
+      <h2 class="w3-center event-color-primary">Please get the volunteer the following new gifts!</h2>
       <hr>
       <table class='w3-center w3-border w3-table w3-striped w3-white w3-xlarge w3-padding' id='reward_list'>
       </table>
-      <h2 class="w3-center w3-red">Close this window when all prizes have been claimed!</h2>
+      <h2 class="w3-center w3-red">Close this window when all gifts have been claimed!</h2>
     </div>
   </div>
 </div>

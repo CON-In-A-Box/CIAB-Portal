@@ -73,7 +73,7 @@ function display_volunteer_prizes()
         if (!empty($aquired)) {
             echo "<div class='w3-container event-color-secondary'>\n";
             echo "<table class='w3-table w3-striped w3-bordered w3-white'>\n";
-            echo "<tr><th class='w3-center event-color-secondary' colspan=2>Rewards claimed so far this year</th></tr>\n";
+            echo "<tr><th class='w3-center event-color-secondary' colspan=2>Gifts claimed so far this year</th></tr>\n";
             $output = array();
             foreach ($aquired as $entry) {
                 echo "<tr><td>".htmlspecialchars($entry['Name']).'</td>';
