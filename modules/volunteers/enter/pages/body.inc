@@ -244,6 +244,13 @@ for ($i = 0; $i < 60; $i += $hour_round_interval) {
         <p class="w3-margin w3-center">CSV file format:
         <code class="w3-block w3-gray w3-center">&lt;Account,ActualHours,AuthorizedBy,Department,EndDateTime,EnteredBy,Event,TimeModifier&gt;</code></p>
         <p class="w3-margin w3-center"><b>Account fields</b> (Account, AuthorizedBy, EnteredBy)  can be badge number, name, or email. However it has to uniquly identify the user so badge number is always the safest.</p>
+        <p class="w3-margin w3-center"><b>Event</b> is optional. If left empty then the current upcoming event is used.</p>
+        <h2 class="w3-block w3-center">Example</h2>
+        <table class="w3-table w3-center w3-striped w3-border w3-white">
+           <tr><td>Attendee Joe,1.000,Connie VonRobot,IT,“2018-06-04 08:15:00”,Connie VonRobot,,1.0</tr></td>
+           <tr><td>joe@attendee.com,1.000,60055,Gaming,“2018-06-05 08:15:00”,Connie VonRobot,,1.0</tr></td>
+           <tr><td>60054,1.000,60055,Hotel,“2018-06-06 08:15:00”,60055,,1.0</tr></td>
+        </table>
       </div>
       <div class="w3-row">
           <div class="w3-left w3-margin w3-half">
