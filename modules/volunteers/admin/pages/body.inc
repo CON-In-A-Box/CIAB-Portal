@@ -38,6 +38,14 @@ if ($admin_mode && isset($_SESSION['kioskMode'])) {
     }
 }
 
+if (!(isset($_SESSION['IS_ADMIN']) || $_SESSION['IS_VOLUNTEERS'])) {
+    $locked = array();
+    foreach ($_SESSION['customFields']['currConComPos'] as $entry) {
+        $locked[] = $entry['departmentId'];
+    }
+    $admin_mode = false;
+}
+
 
 function _increment_offsets(&$groups, $start_entry)
 {
@@ -153,7 +161,7 @@ function _printHours($hours)
 
 function hour_table($uid)
 {
-    global $totalHours,$admin_mode,$ConComHours;
+    global $totalHours,$admin_mode,$ConComHours,$locked;
 
     echo '<div class="w3-container w3-center event-color-primary" ';
     echo 'style="max-height:34vh; overflow:scroll;">';
@@ -163,7 +171,7 @@ function hour_table($uid)
     if (isset($uid)) {
         $data = get_volunteer_hours_for_user($uid);
 
-        if (class_exists('\\concom\\POSITION') && method_exists('\\concom\\POSITION', 'getConComPosition')) {
+        if (!isset($locked) && class_exists('\\concom\\POSITION') && method_exists('\\concom\\POSITION', 'getConComPosition')) {
             $concom = concom\POSITION::getConComPosition($uid);
         }
 
@@ -190,6 +198,9 @@ function hour_table($uid)
         echo implode(_htmlsafeify($keys), '</th><th>');
         echo "</th></tr>\n";
         foreach ($data as $key => $record) {
+            if (isset($locked) && !in_array($record['Department ID'], $locked)) {
+                continue;
+            }
             if (isset($uid)) {
                 if (!$concom) {
                     if (array_key_exists('Time Modifier', $record)) {
@@ -237,7 +248,7 @@ function hour_table($uid)
         echo "<span>Total : ";
         _printHours($totalHours);
         echo "</span>";
-    } else {
+    } elseif (!isset($locked)) {
         echo "<span class='w3-margin'>Total Hours : ";
         _printHours($summary['TotalHours']);
         echo "</span>";
@@ -611,14 +622,18 @@ if (isset($uid)) {
 <div class='w3-row-padding'>
     <div id='info_div' class='w3-rest'>
 <?php
-initialize($uid);
-hour_table($uid);
-if (!$admin_mode) {
-    messages($uid);
-} else {
-    admin_bar($uid);
+if (!isset($locked)) {
+    initialize($uid);
 }
-prizes_table($uid);
+hour_table($uid);
+if (!isset($locked)) {
+    if (!$admin_mode) {
+        messages($uid);
+    } else {
+        admin_bar($uid);
+    }
+    prizes_table($uid);
+}
 ?>
     </div>
 
