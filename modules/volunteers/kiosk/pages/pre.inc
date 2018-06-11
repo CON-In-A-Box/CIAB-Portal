@@ -4,6 +4,10 @@
     require_module 'standard';
 .*/
 
+if (!(isset($_SESSION['IS_ADMIN']) || $_SESSION['IS_VOLUNTEERS'])) {
+    goSite();
+}
+
 if (!empty($_REQUEST)) {
     $arguments = [
     'toggleKiosk'      => FILTER_SANITIZE_SPECIAL_CHARS,
