@@ -62,7 +62,7 @@ function display_volunteer_prizes()
 {
     $data = volunteer_prizes_for_user($_SESSION['accountId']);
     if ($data && !empty($data)) {
-        usort($data, "_cmp_name");
+        usort($data, "\\volunteers\\panes\\_cmp_name");
         $aquired = [];
         foreach ($data as $entry) {
             if (isset($entry['Aquired']) && $entry['Aquired'] > 0) {
