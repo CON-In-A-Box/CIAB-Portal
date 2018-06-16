@@ -1,5 +1,30 @@
 ErrorDocument 403 /sitesupport/index.php
 
+# NONE
+<FilesMatch ".(pl|php|cgi|js|spl)$">
+  Header unset Cache-Control
+  Header unset Expires
+  Header unset Last-Modified
+  FileETag None
+  Header unset Pragma
+</FilesMatch>
+
+# Cache Control - From www.askapache.com
+# 3 Month
+<FilesMatch ".(flv|gif|jpg|jpeg|png|ico|swf)$">
+  Header set Cache-Control "max-age=7257600"
+</FilesMatch>
+ 
+# 1 Week
+<FilesMatch ".(css|pdf|txt)$">
+  Header set Cache-Control "max-age=604800"
+</FilesMatch>
+ 
+# 2 Hours
+<FilesMatch ".(html|htm|xml)$">
+  Header set Cache-Control "max-age=7200, must-revalidate"
+</FilesMatch>
+
 <IfModule mod_ssl.c>
   <IfModule mod_rewrite.c>
     RewriteEngine On
@@ -28,28 +53,3 @@ Options -Indexes
     php_value session.cookie_lifetime 3600
     php_value session.gc_maxlifetime 3600
 </IfModule>
-
-# Cache Control - From www.askapache.com
-# 3 Month
-<FilesMatch ".(flv|gif|jpg|jpeg|png|ico|swf)$">
-  Header set Cache-Control "max-age=7257600"
-</FilesMatch>
- 
-# 1 Week
-<FilesMatch ".(js|css|pdf|txt)$">
-  Header set Cache-Control "max-age=604800"
-</FilesMatch>
- 
-# 2 Hours
-<FilesMatch ".(html|htm|xml)$">
-  Header set Cache-Control "max-age=7200, must-revalidate"
-</FilesMatch>
- 
-# NONE
-<FilesMatch ".(pl|php|cgi|spl)$">
-  Header unset Cache-Control
-  Header unset Expires
-  Header unset Last-Modified
-  FileETag None
-  Header unset Pragma
-</FilesMatch>
