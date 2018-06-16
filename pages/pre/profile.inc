@@ -1,4 +1,11 @@
 <?php
+/*.
+      require_module 'standard';
+.*/
+
+require_once($FUNCTIONDIR.'/users.inc');
+require_once($FUNCTIONDIR.'/authentication.inc');
+
 if (!empty($_POST)) {
     // Retrieve and sanitize POST data
     $arguments = [
@@ -25,14 +32,30 @@ if (!empty($_POST)) {
     'zipPlus4'           => FILTER_SANITIZE_NUMBER_INT,
     'country'            => FILTER_SANITIZE_NUMBER_INT,
     'province'           => FILTER_SANITIZE_SPECIAL_CHARS,
+    'auth'               => FILTER_SANITIZE_SPECIAL_CHARS,
+    'password'           => FILTER_SANITIZE_SPECIAL_CHARS,
     ];
+
     if (!empty($_POST)) {
         $updateData = filter_input_array(INPUT_POST, $arguments);
     } else {
         $updateData = filter_input_array(INPUT_GET, $arguments);
     }
 
-    require_once($FUNCTIONDIR.'/users.inc');
+    if (isset($updateData['password'])) {
+        if (check_authentication(
+            $_SESSION['accountId'],
+            $updateData['auth'],
+            false
+        )) {
+            set_password($_SESSION['accountId'], $updateData['password']);
+            exit();
+        } else {
+            header('HTTP/1.0 403 Forbidden');
+            echo "HTTP/1.0 403 Forbidden";
+            exit();
+        }
+    }
 
     $result = updateAccount($updateData);
 

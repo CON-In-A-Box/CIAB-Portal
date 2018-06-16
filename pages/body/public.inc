@@ -3,6 +3,11 @@
   <div class="w3-container w3-cell w3-mobile">
     <h2><?php echo $CONSITENAME; ?></h2>
   </div><!--close header text div-->
+<?php
+if (!empty($EXPIRED)) {
+    echo '<meta http-equiv="refresh" content="0; url=/index.php?Function=recovery&expired=1" />';
+}
+?>
 </header><!--close header div-->
 <div class="w3-container w3-mobile">
   <div class="w3-container w3-cell w3-third w3-border">
@@ -12,7 +17,15 @@
     if (!empty($RETRY)) {
         echo '<hr>';
         echo 'Login Incorrect, Please Try Again.';
-        echo "<hr>\n";
+        echo "</hr>\n";
+    } elseif (!empty($LOCKED)) {
+        echo '<div class="w3-center w3-border w3-margin w3-padding w3-red">';
+        echo '<h2 class="w3-red w3-bold w3-header">Account Locked</h2>';
+        echo '<span class="w3-red w3-bold w3-header">';
+        echo 'Too many unsuccessful login attempts.</span><br>';
+        echo '<span class="w3-red w3-bold w3-header">';
+        echo 'Reset the password gain entry.';
+        echo "</span></div>\n";
     }
     ?>
 
@@ -29,7 +42,7 @@
         <input type="submit" value="Log In" class="w3-button w3-round-xlarge event-color-primary">
       </p>
       <p>
-        <a href='https://www.z2systems.com/np/clients/ce/requestPassword.jsp' onclick="window.open(this.href, 'ciab', 'left=100, top=100, width=900, height=600, toolbar=0, resizable=0, menubar=0, status=0, titlebar=0'); return false;">Forgot Password?</a>
+        <a href='index.php?Function=recovery'>Forgot Password?</a>
       </p>
     </form>
   </div>

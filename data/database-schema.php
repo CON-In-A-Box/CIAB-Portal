@@ -129,6 +129,15 @@ class SCHEMA
         'TotalInventory' => 'INT NOT NULL',
         'Value' => 'DECIMAL(5,2) NOT NULL',
     ],
+    'Authentication' => [
+        'AccountID' => 'INT UNSIGNED NOT NULL PRIMARY KEY',
+        'Authentication' => 'VARCHAR(110)',
+        'LastLogin' => 'DATETIME',
+        'Expires' => 'DATETIME',
+        'FailedAttempts' => 'INT UNSIGNED NOT NULL DEFAULT 0',
+        'OneTime' => 'VARCHAR(110)',
+        'OneTimeExpires' => 'DATETIME',
+    ],
   ];
 
   public static $DB_foreignKeys = [

@@ -226,6 +226,22 @@ function lookup_users_by_name_email($first, $last, $email, $fields, $single_user
 }
 
 
+function lookup_user_by_login($user)
+{
+    $output = lookup_users_by_email($user, true);
+    if (count($output['users']) == 0) {
+        $output = _lookup_user([['Account Login Name', 'EQUAL', $user]], true);
+    }
+    if (count($output['users']) == 0) {
+        return false;
+    } else {
+        $output['users'][0]['AccountID'] = $output['users'][0]['Id'];
+        return $output['users'][0];
+    }
+
+}
+
+
 function pullIndividualAccount($accountId)
 {
     global $Neon;
