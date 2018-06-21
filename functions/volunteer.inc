@@ -30,14 +30,44 @@ function get_volunteer_hour_summary($id = null, $event = null)
 SQL;
     } else {
         $sql = <<<SQL
-              SELECT DepartmentID, COUNT(HourEntryID) AS EntryCount,
-                     SUM(ActualHours * TimeModifier) AS TotalHours,
-                     COUNT(DISTINCT AccountID) AS VolunteerCount,
-                     (SELECT Name FROM Departments
-                        WHERE DepartmentID = v.DepartmentID) AS DepartmentName
-              FROM VolunteerHours v
-              WHERE v.EventID = $event
-              GROUP BY DepartmentID ORDER BY DepartmentID;
+            SELECT
+                d.DepartmentID,
+                (
+                    SELECT
+                        COUNT(HourEntryID)
+                    FROM
+                        VolunteerHours
+                    WHERE
+                        DepartmentID = d.DepartmentID
+                ) AS EntryCount,
+                (
+                    SELECT
+                        SUM(ActualHours * TimeModifier)
+                    FROM
+                        VolunteerHours
+                    WHERE
+                        DepartmentID = d.DepartmentID
+                ) AS TotalHours,
+                (
+                    SELECT
+                        COUNT(DISTINCT AccountID)
+                    FROM
+                        VolunteerHours
+                    WHERE
+                        DepartmentID = d.DepartmentID
+                ) AS VolunteerCount,
+                (
+                    SELECT
+                        Name
+                    FROM
+                        Departments
+                    WHERE
+                        DepartmentID = d.DepartmentID
+                ) AS DepartmentName
+            FROM
+                Departments d
+            ORDER BY
+                DepartmentName
 SQL;
     }
 
