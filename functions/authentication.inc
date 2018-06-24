@@ -275,7 +275,7 @@ function reset_password($id)
     $value = lookup_user_by_login($id);
     if ($value) {
         $user = $value['AccountID'];
-        $email = $value['Email 1'];
+        $email = $value['Email'];
         $password = rppg();
         $oneexpired = date('Y-m-d H:i', strtotime("+10 minutes"));
         $newauth = password_hash($password, PASSWORD_DEFAULT);
