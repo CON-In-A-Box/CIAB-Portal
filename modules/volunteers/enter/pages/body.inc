@@ -249,8 +249,8 @@ for ($i = 0; $i < 60; $i += $hour_round_interval) {
         <h2 class="w3-block w3-center">Example</h2>
         <table class="w3-table w3-center w3-striped w3-border w3-white">
            <tr><td>Attendee Joe,1.000,Connie VonRobot,IT,"2018-06-04 08:15:00",Connie VonRobot,,1.0</tr></td>
-           <tr><td>joe@attendee.com,1.000,60055,Gaming,"2018-06-05 08:15:00”,Connie VonRobot,,1.0</tr></td>
-           <tr><td>60054,1.000,60055,Hotel,"2018-06-06 08:15:00”,60055,,1.0</tr></td>
+           <tr><td>joe@attendee.com,1.000,60055,Gaming,"2018-06-05 08:15:00",Connie VonRobot,,1.0</tr></td>
+           <tr><td>60054,1.000,60055,Hotel,"2018-06-06 08:15:00",60055,,1.0</tr></td>
         </table>
       </div>
       <div class="w3-row">
