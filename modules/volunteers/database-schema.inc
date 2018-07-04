@@ -43,6 +43,9 @@ $vol_DB_foreignKeys = [
 'VolunteerHours' => [
 'DepartmentID' => 'Departments (DepartmentID) ON DELETE RESTRICT ON UPDATE CASCADE',
 'EventID' => 'Events (EventID) ON DELETE RESTRICT ON UPDATE CASCADE',
+'AccountID' => 'Members (AccountID) ON DELETE RESTRICT ON UPDATE CASCADE',
+'AuthorizedByID' => 'Members (AccountID) ON DELETE RESTRICT ON UPDATE CASCADE',
+'EnteredByID' => 'Members (AccountID) ON DELETE RESTRICT ON UPDATE CASCADE',
     ],
 'VolunteerRewards' => [
 'RewardGroupID' => 'RewardGroup (RewardGroupID) ON DELETE RESTRICT ON UPDATE CASCADE',
@@ -50,6 +53,7 @@ $vol_DB_foreignKeys = [
 'HourRedemptions' => [
 'EventID' => 'Events (EventID) ON DELETE RESTRICT ON UPDATE CASCADE',
 'PrizeID' => 'VolunteerRewards (PrizeID) ON DELETE RESTRICT ON UPDATE CASCADE',
+'AccountID' => 'Members (AccountID) ON DELETE RESTRICT ON UPDATE CASCADE',
 ]
 
 ];

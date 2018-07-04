@@ -34,6 +34,7 @@ $concom_DB_foreignKeys = [
 'DepartmentID' => 'Departments (DepartmentID) ON DELETE RESTRICT ON UPDATE CASCADE',
 'EventID' => 'Events (EventID) ON DELETE RESTRICT ON UPDATE CASCADE',
 'PositionID' => 'ConComPositions (PositionID) ON DELETE RESTRICT ON UPDATE CASCADE',
+'AccountID' => 'Members (AccountID) ON DELETE RESTRICT ON UPDATE CASCADE',
         ],
 
 ];

@@ -60,6 +60,7 @@ class SCHEMA
             'VoterRecordID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
             'AccountID' => 'INT UNSIGNED NOT NULL',
             'AnnualCycleID' => 'INT UNSIGNED NOT NULL',
+            'AccountID' => 'Members (AccountID) ON DELETE RESTRICT ON UPDATE CASCADE',
         ],
         'EMails' => [
             'EMailAliasID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
@@ -123,6 +124,7 @@ class SCHEMA
         ],
         'ElegibleVoters' => [
             'AnnualCycleID' => 'AnnualCycles (AnnualCycleID) ON DELETE RESTRICT ON UPDATE CASCADE',
+            'AccountID' => 'Members (AccountID) ON DELETE RESTRICT ON UPDATE CASCADE',
         ],
         'EMails' => [
             'DepartmentID' => 'Departments (DepartmentID) ON DELETE RESTRICT ON UPDATE CASCADE',
@@ -139,6 +141,9 @@ class SCHEMA
         ],
         'Members' => [
             'dependentOnID' => 'Members (AccountID) ON DELETE RESTRICT ON UPDATE CASCADE',
+        ],
+        'Authentication' => [
+            'AccountID' => 'Members (AccountID) ON DELETE RESTRICT ON UPDATE CASCADE',
         ],
 
     ];

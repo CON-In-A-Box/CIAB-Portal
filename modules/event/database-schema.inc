@@ -72,6 +72,7 @@ $event_DB_foreignKeys = [
         ],
 'MeetingAttendance' => [
 'MeetingID' => 'OfficialMeetings (MeetingID) ON DELETE RESTRICT ON UPDATE CASCADE',
+'AccountID' => 'Members (AccountID) ON DELETE RESTRICT ON UPDATE CASCADE',
         ],
 'OfficialMeetings' => [
 'EventID' => 'Events (EventID) ON DELETE RESTRICT ON UPDATE CASCADE',
