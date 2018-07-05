@@ -269,7 +269,7 @@ function rppg()
 
 function reset_password($id)
 {
-    global $CONSITENAME;
+    global $CONSITENAME, $ADMINEMAIL;
 
     loadDefinedFields();
     $value = lookup_user_by_login($id);
@@ -305,6 +305,8 @@ SQL;
         $servername = 'https://'.$_SERVER['SERVER_NAME'];
         $subject = 'Password Reset Request';
         $expire = date('h:i A D F jS Y', strtotime("+60 minutes"));
+        $adminMessage = "A password reset has been requested for '$id' on the '$CONSITENAME' web site.\n";
+        $adminMessage .= "The new password is '$password' \n";
         $message = <<<MSG
 A password reset has been requested for '$id' on the '$CONSITENAME' web site.
 
@@ -324,7 +326,8 @@ MSG;
         $headers .= 'Reply-To: noreply@convergence-con.org';
 
         mail($email, $subject, $message, $headers);
-        error_log($message);
+        mail($ADMINEMAIL, $subject, $adminMessage, $headers);
+        error_log($adminMessage);
         return true;
     }
     return false;
