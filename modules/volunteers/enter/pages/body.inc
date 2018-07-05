@@ -108,7 +108,7 @@ $pm = ($h > 12);
 $h %= 12;
 ?>
 
-    <input class="w3-input w3-bar-item w3-border" type=number id="end_hours" value=<?php echo $h ?> style="width: 75px;" required onchange="checkHours();" name="EndHours" min=1 max=12>
+    <input class="w3-input w3-bar-item w3-border" type=number id="end_hours" value=<?php echo $h ?> style="width: 75px;" required onchange="checkHours();" name="EndHours" min=0>
     <select class="w3-select w3-bar-item w3-border" type=number name="EndMinutes" id="end_minutes" title="" style="height: 40px;" required onchange="checkHours();" name="EndMinutes">
 <?php
 for ($i = 0; $i < 60; $i += $hour_round_interval) {
