@@ -277,7 +277,7 @@ function reset_password($id)
         $user = $value['AccountID'];
         $email = $value['Email'];
         $password = rppg();
-        $oneexpired = date('Y-m-d H:i', strtotime("+10 minutes"));
+        $oneexpired = date('Y-m-d H:i', strtotime("+60 minutes"));
         $newauth = password_hash($password, PASSWORD_DEFAULT);
         $auth = 'NULL';
         $last = 'NULL';
@@ -304,7 +304,7 @@ SQL;
         DB::run($sql);
         $servername = 'https://'.$_SERVER['SERVER_NAME'];
         $subject = 'Password Reset Request';
-        $expire = date('h:i A D F jS Y', strtotime("+10 minutes"));
+        $expire = date('h:i A D F jS Y', strtotime("+60 minutes"));
         $message = <<<MSG
 A password reset has been requested for '$id' on the '$CONSITENAME' web site.
 
