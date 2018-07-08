@@ -258,7 +258,7 @@ function current_eventID()
         /* Place 3 - current calander year */
 
         $year = date("Y-m-d");
-        $sql = "SELECT EventID FROM Events WHERE DateTo > '$year';";
+        $sql = "SELECT EventID FROM Events WHERE DateTo >= '$year';";
         $result = $db->run($sql);
         $value = $result->fetch();
         if ($value) {
