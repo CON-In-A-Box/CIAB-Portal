@@ -272,7 +272,7 @@ function current_eventID()
         $result = $db->run($sql);
         $value = $result->fetch();
         if ($value) {
-            $_currentEvent = $value['AnnualCycleID'];
+            $_currentEvent = $value['EventID'];
             return $_currentEvent;
         }
 
