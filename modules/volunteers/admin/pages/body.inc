@@ -533,8 +533,10 @@ function admin_bar($uid)
     echo "onclick='showEditPrize(null)';>Add New Gift</button>\n";
     echo "<button id='min_hours' class='w3-button w3-round-xxlarge w3-red'";
     echo "onclick='minHourReport()';>Minimum Hour Report</button>\n";
+    echo "<button id='gen_der_csv' class='w3-button w3-round-xxlarge w3-red'";
+    echo "onclick='generateDerivedCSV()';>Export Derived CSV</button>\n";
     echo "<button id='gen_csv' class='w3-button w3-round-xxlarge w3-red'";
-    echo "onclick='generateCSV()';>Export Raw CSV</button>\n";
+    echo "onclick='generateCSV()';>Export Raw CSV Table</button>\n";
     echo "</div>\n";
     echo "</div>\n";
 
@@ -677,6 +679,29 @@ if (!isset($locked)) {
         <div class='w3-center'>
             <button id='generate_csv' class='w3-button w3-round-xxlarge event-color-primary'
                 onclick='generatCSVReport();'>
+               Generate CSV
+            </button>
+            <button class='w3-button w3-round-xxlarge w3-red'
+                onclick='hideSidebar();'>
+              Close
+            </button>
+        </div>
+    </div>
+
+    <div class='w3-hide w3-padding' id='csv_export_derived_div'>
+        <div class='w3-center'>
+            <h2 class='w3-red'>Export Derived CSV Data</h2>
+        </div>
+        <div class='w3-center'>
+            <label for='der_csv_table'>
+            Table:</label>
+            <select class="w3-margin w3-select w3-border" style="width:auto" id="der_csv_table">
+              <option value="SELECT r.*, (SELECT COUNT(h.PrizeID) FROM HourRedemptions AS h WHERE h.PrizeID = r.PrizeID GROUP BY h.PrizeID) as Claimed FROM VolunteerRewards as r;">Volunteer Rewards</option>
+            </select>
+        </div>
+        <div class='w3-center'>
+            <button id='generate_csv' class='w3-button w3-round-xxlarge event-color-primary'
+                onclick='generateDerivedCSVReport();'>
                Generate CSV
             </button>
             <button class='w3-button w3-round-xxlarge w3-red'
