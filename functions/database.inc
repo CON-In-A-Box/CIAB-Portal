@@ -283,21 +283,16 @@ function current_eventID()
 }
 
 
-function dump_table_to_csv($table, $condition = null)
+function dump_sql_to_csv($sql)
 {
     global $db;
 
     $data = [];
-    $sql = "DESCRIBE `$table`;";
-    $result = $db->run($sql);
-    $value = $result->fetch();
     $data[] = array();
-    while ($value !== false) {
-        $data[0][] = $value['Field'];
-        $value = $result->fetch();
-    }
-    $sql = "SELECT * FROM `$table` $condition;";
     $result = $db->run($sql);
+    for ($i = 0; $i < $result->columnCount(); $i++) {
+        $data[0][] = $result->getColumnMeta($i)['name'];
+    }
     $value = $result->fetch();
     while ($value !== false) {
         $data[] = array_values($value);
@@ -313,5 +308,13 @@ function dump_table_to_csv($table, $condition = null)
     $text = ob_get_clean();
 
     return $text;
+
+}
+
+
+function dump_table_to_csv($table, $condition = null)
+{
+    $sql = "SELECT * FROM `$table` $condition;";
+    return dump_sql_to_csv($sql);
 
 }
