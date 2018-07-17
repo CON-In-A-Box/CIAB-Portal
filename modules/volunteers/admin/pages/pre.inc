@@ -46,6 +46,8 @@ if (!empty($_REQUEST)) {
     'dept_report'      => FILTER_SANITIZE_NUMBER_INT,
     'dept_name'        => FILTER_SANITIZE_SPECIAL_CHARS,
     'generateCSV'      => FILTER_SANITIZE_SPECIAL_CHARS,
+    'CSVfromSQL'       => FILTER_SANITIZE_SPECIAL_CHARS,
+    'name'             => FILTER_SANITIZE_SPECIAL_CHARS,
     ];
 
     require_once($FUNCTIONDIR."/volunteer.inc");
@@ -81,6 +83,15 @@ if (!empty($_REQUEST)) {
         if (isset($_SESSION['IS_ADMIN']) || $_SESSION['IS_VOLUNTEERS']) {
             csv_headers($updateData['generateCSV'].'.csv');
             print dump_table_to_csv($updateData['generateCSV']);
+            exit();
+        }
+    }
+
+    if (isset($updateData['CSVfromSQL'])) {
+        if (isset($_SESSION['IS_ADMIN']) || $_SESSION['IS_VOLUNTEERS']) {
+            csv_headers($updateData['name'].'.csv');
+            $sql = $updateData['CSVfromSQL'];
+            print dump_sql_to_csv($updateData['CSVfromSQL']);
             exit();
         }
     }

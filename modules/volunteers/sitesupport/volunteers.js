@@ -625,6 +625,18 @@ function generatCSVReport() {
   window.location = 'index.php?Function=volunteers/admin&generateCSV=' + table;
 }
 
+function generateDerivedCSV() {
+  showSidebar('csv_export_derived_div');
+}
+
+function generateDerivedCSVReport() {
+  var table = document.getElementById('der_csv_table');
+  var text = table.options[table.selectedIndex].text;
+  var sql = document.getElementById('der_csv_table').value;
+  var args = '&CSVfromSQL=' + sql + '&name=' + text;
+  window.location = 'index.php?Function=volunteers/admin' + args;
+}
+
 function markDelete(index, tableRow) {
   var table = document.getElementById('return_table');
   var row = table.rows[tableRow];
