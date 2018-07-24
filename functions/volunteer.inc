@@ -579,7 +579,7 @@ SQL;
 
 function volunteer_minimum_hour_report($required_hours)
 {
-    global $db;
+    global $ConComHours;
 
     $members = [];
     $hours = [];
@@ -594,7 +594,7 @@ function volunteer_minimum_hour_report($required_hours)
         order BY
             TotalHours DESC;
 SQL;
-    $result = $db->run($sql);
+    $result = \DB::run($sql);
     $value = $result->fetch();
     while ($value !== false) {
         if ($value['TotalHours'] < $required_hours) {
@@ -603,6 +603,17 @@ SQL;
         $members[] = $value['AccountID'];
         $hours[$value['AccountID']] = $value['TotalHours'];
         $value = $result->fetch();
+    }
+
+    if (class_exists('\\concom\\ConcomList') &&
+        method_exists('\\concom\\ConcomList', 'listBuild') &&
+        isset($ConComHours) && $ConComHours >= $required_hours) {
+        $concom = \concom\ConcomList::listBuild();
+
+        foreach ($concom as $entry) {
+            $members[] = $entry['Account ID'];
+            $hours[$entry['Account ID']] = $ConComHours;
+        }
     }
 
     $str = "('".implode("', '", $members)."')";
