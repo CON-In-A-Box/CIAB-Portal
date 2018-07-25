@@ -698,6 +698,7 @@ if (!isset($locked)) {
             <select class="w3-margin w3-select w3-border" style="width:auto" id="der_csv_table">
               <option value="SELECT r.*, (SELECT COUNT(h.PrizeID) FROM HourRedemptions AS h WHERE h.PrizeID = r.PrizeID GROUP BY h.PrizeID) as Claimed FROM VolunteerRewards as r;">Volunteer Rewards</option>
               <option value="SELECT v.*, (SELECT Name FROM `Departments` as d WHERE v.DepartmentID = d.DepartmentID) as DepartmentName FROM `VolunteerHours` as v;">Volunteer Hours</option>
+              <option value="SELECT *, (SELECT Name FROM VolunteerRewards WHERE VolunteerRewards.prizeid = HourRedemptions.PrizeID) AS PrizeName FROM `HourRedemptions` ORDER BY AccountID">Prize Redemption</option>
             </select>
         </div>
         <div class='w3-center'>
