@@ -326,6 +326,8 @@ function dump_sql_to_csv($sql, $lookup_account = false)
 
     if ($lookup_account ) {
         lookup_names($data, 'AccountID');
+        lookup_names($data, 'AuthorizedByID');
+        lookup_names($data, 'EnteredByID');
     }
 
     $fh = fopen('php://output', 'w');
