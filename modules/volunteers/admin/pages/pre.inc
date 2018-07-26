@@ -91,7 +91,7 @@ if (!empty($_REQUEST)) {
         if (isset($_SESSION['IS_ADMIN']) || $_SESSION['IS_VOLUNTEERS']) {
             csv_headers($updateData['name'].'.csv');
             $sql = $updateData['CSVfromSQL'];
-            print dump_sql_to_csv($updateData['CSVfromSQL']);
+            print dump_sql_to_csv($updateData['CSVfromSQL'], true);
             exit();
         }
     }

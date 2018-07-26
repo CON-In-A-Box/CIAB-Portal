@@ -283,7 +283,32 @@ function current_eventID()
 }
 
 
-function dump_sql_to_csv($sql)
+function lookup_names(&$data, $column_name)
+{
+    /* HACK Lookup AccountIDs */
+    if (in_array($column_name, $data[0]))
+    {
+        $data[0][] = $column_name.'Name';
+        $colmn = array_search($column_name, $data[0]);
+        $ids = array_column($data, $colmn);
+        array_shift($ids);
+        $str = "('".implode("', '", array_unique($ids))."')";
+        $users = lookup_users_by_ids($str);
+        $usr = [];
+        foreach ($users['users'] as $user) {
+            $usr[$user['Id']] = $user['First Name'].' '.$user['Last Name'];
+        }
+        $idx = 1;
+        foreach ($data as $id => $row) {
+            $data[$idx][] = $usr[$data[$idx][$colmn]];
+            $idx += 1;
+        }
+    }
+
+}
+
+
+function dump_sql_to_csv($sql, $lookup_account = false)
 {
     global $db;
 
@@ -297,6 +322,12 @@ function dump_sql_to_csv($sql)
     while ($value !== false) {
         $data[] = array_values($value);
         $value = $result->fetch();
+    }
+
+    if ($lookup_account ) {
+        lookup_names($data, 'AccountID');
+        lookup_names($data, 'AuthorizedByID');
+        lookup_names($data, 'EnteredByID');
     }
 
     $fh = fopen('php://output', 'w');
