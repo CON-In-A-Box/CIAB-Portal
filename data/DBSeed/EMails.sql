@@ -29,7 +29,7 @@ INSERT INTO EMails (DepartmentID, Email) VALUES (8, 'info@convergenceevents.org'
 INSERT INTO EMails (DepartmentID, Email) VALUES (132, 'memberadvocates@convergence-con.org');
 INSERT INTO EMails (DepartmentID, Email) VALUES (137, 'partnersearch@convergence-con.org');
 INSERT INTO EMails (DepartmentID, Email) VALUES (158, 'youthprogramming@convergence-con.org');
-INSERT INTO EMails (DepartmentID, Email) VALUES (107, 'cfo@convergenceevents.org');
+INSERT INTO EMails (DepartmentID, Email) VALUES (10, 'cfo@convergenceevents.org');
 INSERT INTO EMails (DepartmentID, Email) VALUES (9, 'directors@convergenceevents.org');
 INSERT INTO EMails (DepartmentID, Email) VALUES (139, 'president@convergenceevents.org');
 INSERT INTO EMails (DepartmentID, Email) VALUES (145, 'secretary@convergenceevents.org');
@@ -51,7 +51,7 @@ INSERT INTO EMails (DepartmentID, Email) VALUES (4, 'facilities@convergenceevent
 INSERT INTO EMails (DepartmentID, Email) VALUES (125, 'hotel@convergence-con.org');
 INSERT INTO EMails (DepartmentID, Email) VALUES (128, 'logistics@convergence-con.org');
 INSERT INTO EMails (DepartmentID, Email) VALUES (134, 'nerfherders@convergence-con.org');
-INSERT INTO EMails (DepartmentID, Email) VALUES (143, 'resume@convergence-con.org');
+INSERT INTO EMails (DepartmentID, Email) VALUES (143, 'eventorders@convergence-con.org');
 INSERT INTO EMails (DepartmentID, Email) VALUES (151, 'transportation@convergence-con.org');
 INSERT INTO EMails (DepartmentID, Email) VALUES (101, 'allocations@convergence-con.org');
 INSERT INTO EMails (DepartmentID, Email) VALUES (109, 'cof2e2@convergence-con.org');

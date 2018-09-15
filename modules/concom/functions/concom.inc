@@ -66,17 +66,17 @@ function ConComListDisplay()
     foreach ($Divisions as $div) {
         $currentDivDirector = false;
         echo '<tr id="division" class="event-color-secondary"><th id="'.$div.'" class="w3-center" colspan=2>'.$div;
-        if ($div != 'Committees' && $div != 'Corporate Staff') {
+        if ($div != 'Committees' && $div != 'Corporate Staff' && $div != 'CFO') {
             echo ' Division';
         }
         echo '</th><th class="w3-center" colspan=3>';
         echo '<div class="w3-dropdown-hover event-color-secondary">';
         echo '  Go To Section';
         echo '  <div class="w3-dropdown-content event-color-secondary">';
-        echo '    <a href="#main_nav" class="w3-border">Top of Page</a>';
+        echo '    <a href="#main_nav" class="w3-border">Top of Page</a><br />';
         foreach ($Divisions as $menuDiv) {
             // ##==## Likely need to add some translation here to blot out '&'
-            echo '    <a href="#'.$menuDiv.'" class="w3-border">'.$menuDiv.'</a>';
+            echo '    <a href="#'.$menuDiv.'" class="w3-border">'.$menuDiv.'</a><br />';
         }
         echo '  </div>';
         echo '</div>';
