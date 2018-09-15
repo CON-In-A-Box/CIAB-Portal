@@ -43,7 +43,7 @@ if (!isset($Departments)) {
     asort($Divisions);
 
     // Push non-divisions to the end of the list (force order)
-    $endDivs = ['Committees', 'Corporate Staff', 'CFO'];
+    $endDivs = ['Committees', 'Corporate Staff', 'CFO Staff'];
     $Divisions = array_diff($Divisions, $endDivs);
     $Divisions = array_merge($Divisions, $endDivs);
 }
