@@ -32,10 +32,10 @@ function db_do_update($from, $to)
         from_neon_to_152();
         _update_DB_Version(2018011700);
     }
-    if ($from < 2018050100) {
+    if ($from < 2018091700) {
         require_once(__DIR__."/update/to_180501.inc");
         to_180501();
-        _update_DB_Version(2018050100);
+        _update_DB_Version(2018091700);
     }
     _update_DB_Version($to);
 

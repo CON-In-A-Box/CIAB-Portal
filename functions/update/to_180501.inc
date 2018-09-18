@@ -7,6 +7,8 @@
 require_once(__DIR__."/../functions.inc");
 require_once(__DIR__."/../database.inc");
 
+$meetings = [];
+
 
 function _loadCustomFields()
 {
@@ -38,6 +40,8 @@ function _loadCustomFields()
 
 function _import_meetings()
 {
+    global $meetings;
+
     $fields = _loadCustomFields();
     $event = current_eventID();
 
@@ -57,6 +61,10 @@ function _import_meetings()
 SQL;
                 DB::run($sql);
                 print "<span>Imported Meeting <b>$name</b><br></span>";
+                $meetings[] = [
+                'MeetingID' => $id,
+                'Name' => $name,
+                'Date' => $date];
             }
         }
     }
@@ -64,8 +72,99 @@ SQL;
 }
 
 
+function _find_meeting($meeting)
+{
+    global $meetings;
+    foreach ($meetings as $meet) {
+        if ($meeting[0] == $meet['Date'] &&
+            $meeting[1] == $meet['Name']) {
+            return $meet['MeetingID'];
+        }
+    }
+    return null;
+
+}
+
+
+function _import_attendance()
+{
+    global $Neon, $meetings;
+
+    $mt = search_definedFields('Official Meeting Attendance');
+    $conComFieldId = search_definedFields('CVGConCom Current Position');
+    $page = 1;
+    $runPages = 1;
+
+    do {
+        $search = [
+        'method' => 'account/listAccounts',
+        'criteria' => [
+        [$conComFieldId, 'NOT_BLANK', ''],
+        ],
+        'columns' => [
+        'standardFields' => ['Account ID', 'First Name'],
+        'customFields' => [$mt],
+        ],
+        'page' => [
+        'currentPage' => $page,
+        'pageSize' => 200,
+        'sortColumn' => 'Account ID',
+        'sortDirection' => 'ASC',
+        ],
+        ];
+        $result = $Neon->search($search);
+
+        if (isset($result['operationResult']) && $result['operationResult'] == 'SUCCESS') {
+            $runPage = $result['pages'];
+            foreach ($result['searchResults'] as $val) {
+                $aid = $val['Account ID'];
+                if (!empty($val['Official Meeting Attendance'])) {
+                    $base_meeting_data = explode('|', $val['Official Meeting Attendance']);
+                    foreach ($base_meeting_data as $meeting) {
+                        $meeting_data = explode(' - ', $meeting);
+                        $mid = _find_meeting($meeting_data);
+                        if ($mid === null) {
+                            continue;
+                        }
+                        $msql = <<<SQL
+                    INSERT INTO `MeetingAttendance` (AccountID, MeetingID)
+                    SELECT
+                        *
+                    FROM
+                        (
+                            SELECT
+                                $aid,
+                                $mid
+                        ) AS tmp
+                    WHERE
+                        NOT EXISTS (
+                            SELECT
+                                AttendanceRecordID
+                            FROM
+                                `MeetingAttendance`
+                            WHERE
+                                AccountID = $aid
+                                AND MeetingID = $mid
+                        )
+                    LIMIT
+                        1;
+SQL;
+                        DB::run($msql);
+                        print "<span>Imported Attendance <b>$aid</b> $meeting<br></span>";
+                    }
+                }
+            }
+        }
+        $page++;
+    } while ($page <= $runPages);
+    return;
+
+}
+
+
 function to_180501()
 {
     _import_meetings();
+    _import_attendance();
 
 }
