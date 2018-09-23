@@ -349,3 +349,26 @@ function dump_table_to_csv($table, $condition = null)
     return dump_sql_to_csv($sql);
 
 }
+
+
+function load_table($sql, $association = null)
+{
+    $result = DB::run($sql);
+    $value = $result->fetch();
+    $data = array();
+    while ($value !== false) {
+        if ($association !== null) {
+            $entry = [];
+            foreach ($association as $key => $dbkey)
+            {
+                $entry[$key] = $value[$dbkey];
+            }
+            $data[] = $entry;
+        } else {
+            $data[] = $value;
+        }
+        $value = $result->fetch();
+    }
+    return $data;
+
+}
