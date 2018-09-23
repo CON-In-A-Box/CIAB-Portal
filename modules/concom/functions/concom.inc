@@ -66,7 +66,7 @@ function ConComListDisplay()
     foreach ($Divisions as $div) {
         $currentDivDirector = false;
         echo '<tr id="division" class="event-color-secondary"><th id="'.$div.'" class="w3-center" colspan=2>'.$div;
-        if ($div != 'Committees' && $div != 'Corporate Staff' && $div != 'CFO') {
+        if ($div != 'Committees' && $div != 'Corporate Staff' && $div != 'CFO Staff') {
             echo ' Division';
         }
         echo '</th><th class="w3-center" colspan=3>';
@@ -89,7 +89,12 @@ function ConComListDisplay()
                 foreach ($pos as $kfName => $fName) {
                     foreach ($fName as $klName => $lName) {
                         $tmp = explode('|', $lName);
-                        echo '<tr><td>Division Director</td><td>'.$div.'</td><td>'.$kfName.'</td><td>'.$klName.'</td><td>Director</td><td>'.getDepartmentEmails($div)[0].'</td>';
+                        if ($div != "CFO Staff") {
+                            echo '<tr><td>Division Director</td><td>'.$div.'</td>';
+                        } else {
+                            echo '<tr><td colspan=2>CFO</td>';
+                        }
+                        echo '<td>'.$kfName.'</td><td>'.$klName.'</td><td>Director</td><td>'.getDepartmentEmails($div)[0].'</td>';
                         if (isset($_SESSION['IS_ADMIN'])) {
                             echo '<td>';
                         } else {
@@ -231,7 +236,7 @@ function ConComListDisplay()
                     }
                 }
             }
-            if (($div != 'Corporate Staff' && $kdep != 'Division Director' && $kdep != 'Division Support') && (isset($_SESSION['IS_ADMIN']) || $currentDivDirector || ($currentDepHead && $pos != "Head"))) {
+            if (($div != 'Corporate Staff' && $kdep != 'Division Director' && $kdep != 'Division Support') || (isset($_SESSION['IS_ADMIN']) || $currentDivDirector || ($currentDepHead && $pos != "Head"))) {
                 echo '<tr><td class="w3-center" colspan=8><a href="index.php?Function=concom&AddDepartment='.urlencode($kdep).'">Add someone to '.$kdep.'</a></td></tr>'."\n";
             }
         }

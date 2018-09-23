@@ -7,7 +7,7 @@ INSERT INTO Departments (DepartmentID, Name, ParentDepartmentID) VALUES (6, 'Pro
 INSERT INTO Departments (DepartmentID, Name, ParentDepartmentID) VALUES (7, 'Systems', 7);
 INSERT INTO Departments (DepartmentID, Name, ParentDepartmentID) VALUES (8, 'Committees', 8);
 INSERT INTO Departments (DepartmentID, Name, ParentDepartmentID) VALUES (9, 'Corporate Staff', 9);
-INSERT INTO Departments (DepartmentID, Name, ParentDepartmentID) VALUES (10, 'CFO', 10);
+INSERT INTO Departments (DepartmentID, Name, ParentDepartmentID) VALUES (10, 'CFO Staff', 10);
 INSERT INTO Departments (DepartmentID, Name, ParentDepartmentID) VALUES (100, 'Accessibility and Inclusion', 3);
 INSERT INTO Departments (DepartmentID, Name, ParentDepartmentID) VALUES (101, 'Allocations', 4);
 INSERT INTO Departments (DepartmentID, Name, ParentDepartmentID) VALUES (102, 'Archives', 2);
@@ -25,7 +25,7 @@ INSERT INTO Departments (DepartmentID, Name, ParentDepartmentID) VALUES (114, 'D
 INSERT INTO Departments (DepartmentID, Name, ParentDepartmentID) VALUES (115, 'Decor', 4);
 INSERT INTO Departments (DepartmentID, Name, ParentDepartmentID) VALUES (116, 'Dock', 4);
 INSERT INTO Departments (DepartmentID, Name, ParentDepartmentID) VALUES (117, 'Exhibits', 1);
-INSERT INTO Departments (DepartmentID, Name, ParentDepartmentID) VALUES (118, 'Finance', 7);
+INSERT INTO Departments (DepartmentID, Name, ParentDepartmentID) VALUES (118, 'Finance', 10);
 INSERT INTO Departments (DepartmentID, Name, ParentDepartmentID) VALUES (119, 'First Advisors', 5);
 INSERT INTO Departments (DepartmentID, Name, ParentDepartmentID) VALUES (120, 'Future Visioning', 8);
 INSERT INTO Departments (DepartmentID, Name, ParentDepartmentID) VALUES (121, 'Gaming', 1);
