@@ -412,3 +412,14 @@ SQL;
     return $years;
 
 }
+
+
+function check_meeting_attendance($meeting)
+{
+    $aid = $_SESSION['accountId'];
+    $sql = "SELECT * FROM `MeetingAttendance` WHERE AccountID = $aid AND MeetingID = $meeting;";
+    $result = \DB::run($sql);
+    $value = $result->fetch();
+    return ($value !== false);
+
+}
