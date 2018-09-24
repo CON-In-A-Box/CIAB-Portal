@@ -31,9 +31,9 @@ SQL;
     ];
     $data = load_table($sql, $values);
     $keys = array_keys($values);
-    print "<tr><th>".implode('</th><th>', $keys)."</th></tr>";
+    print "<tr><th>".implode('</th><th>', $keys)."</th></tr>\n";
     foreach ($data as $entry) {
-        print "<tr><td>".implode('</td><td>', $entry)."</tr></td>";
+        print "<tr><td>".implode('</td><td>', $entry)."</td></tr>\n";
     }
 
 }
@@ -46,7 +46,8 @@ function list_meetings()
         m.`MeetingID`,
         m.`Date`,
         m.`Name`,
-        e.`EventName`
+        e.`EventName`,
+        e.`EventID`
     FROM
         `OfficialMeetings` as m
         INNER JOIN `Events` as e ON m.`EventID` = e.`EventID`
@@ -61,12 +62,17 @@ SQL;
     'Date' => 'Date',
     'Name' => 'Name',
     'Event' => 'EventName',
+    'EventID' => 'EventID',
     ];
     $data = load_table($sql, $values);
     $keys = array_keys($values);
-    print "<tr><th>".implode('</th><th>', $keys)."</th></tr>";
+    print "<tr><th>".implode('</th><th>', $keys)."</th><th></th></tr>\n";
     foreach ($data as $entry) {
-        print "<tr><td>".implode('</td><td>', $entry)."</tr></td>";
+        $json = json_encode($entry);
+        $json = base64_encode($json);
+        print "<tr><td>".implode('</td><td>', $entry);
+        print "<td> <button class='w3-button w3-round-xxlarge event-color-primary' onclick='editMeeting(\"$json\")'>Modify Meeting</button> </td>";
+        print "</tr>\n";
     }
 
 }
@@ -115,5 +121,60 @@ SQL;
 function import_events()
 {
     _Neon_import_events();
+
+}
+
+
+function select_events()
+{
+    $sql = <<<SQL
+        SELECT
+            `EventID`,
+            `EventName`
+        FROM
+            `Events`
+        ORDER BY
+            `DateFrom` DESC
+SQL;
+
+    $values = [
+    'Id' => 'EventID',
+    'Name' => 'EventName',
+    ];
+    $data = load_table($sql, $values);
+    return $data;
+
+}
+
+
+function save_meeting($meeting)
+{
+    $date = $meeting->Date;
+    $name = $meeting->Name;
+    $event = $meeting->EventID;
+    if ($meeting->Id == -1) {
+        $sql = <<<SQL
+    INSERT INTO `OfficialMeetings` (
+        `MeetingID`, `Date`, `EventID`, `Name`
+    )
+    VALUES
+        (
+            NULL, '$date', $event, '$name'
+        )
+SQL;
+    } else {
+        $id = $meeting->Id;
+        $sql = <<<SQL
+    UPDATE
+        `OfficialMeetings`
+    SET
+        `Date` = '$date',
+        `EventID` = $event,
+        `Name` = '$name'
+    WHERE
+        `MeetingID` = $id
+SQL;
+    }
+    DB::run($sql);
 
 }

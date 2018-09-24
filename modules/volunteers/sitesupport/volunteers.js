@@ -13,7 +13,7 @@
 var checkout = [];
 var hoursSpent = 0;
 var groupsNow = [];
-var currentSidebar = null;
+var sidebarMainDiv = 'info_div';
 var returnCart = [];
 
 function lookupFail(target, resp, name, code) {
@@ -31,30 +31,6 @@ function lookupFail(target, resp, name, code) {
     document.getElementById('userLookup_message').innerHTML =
       name + ' invalid name lookup.(' + code + ')';
   }
-}
-
-function hideSidebar() {
-  if (currentSidebar) {
-    currentSidebar.classList.add('w3-hide');
-    currentSidebar.classList.remove('w3-quarter');
-    var section = document.getElementById('info_div');
-    section.classList.add('w3-rest');
-    section.classList.remove('w3-threequarter');
-    currentSidebar = null;
-  }
-}
-
-function showSidebar(Id) {
-  if (currentSidebar) {
-    hideSidebar();
-  }
-
-  currentSidebar = document.getElementById(Id);
-  currentSidebar.classList.remove('w3-hide');
-  currentSidebar.classList.add('w3-quarter');
-  var section = document.getElementById('info_div');
-  section.classList.remove('w3-rest');
-  section.classList.add('w3-threequarter');
 }
 
 function showHideSoldOut() {
