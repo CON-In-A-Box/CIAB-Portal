@@ -39,6 +39,22 @@ SQL;
 }
 
 
+function _check_attendance($id)
+{
+    $sql = <<<SQL
+    SELECT
+        COUNT(`AccountID`) AS members
+    FROM
+        `MeetingAttendance`
+    WHERE
+        `MeetingID` = $id;
+SQL;
+    $data = load_table($sql);
+    return $data[0]['members'];
+
+}
+
+
 function list_meetings()
 {
     $sql = <<<SQL
@@ -66,12 +82,18 @@ SQL;
     ];
     $data = load_table($sql, $values);
     $keys = array_keys($values);
-    print "<tr><th>".implode('</th><th>', $keys)."</th><th></th></tr>\n";
+    print "<tr><th>".implode('</th><th>', $keys)."</th><th></th><th></th></tr>\n";
     foreach ($data as $entry) {
         $json = json_encode($entry);
         $json = base64_encode($json);
         print "<tr><td>".implode('</td><td>', $entry);
         print "<td> <button class='w3-button w3-round-xxlarge event-color-primary' onclick='editMeeting(\"$json\")'>Modify Meeting</button> </td>";
+        $attendance = _check_attendance($entry['Id']);
+        if ($attendance > 0) {
+            print "<td class='w3-center'> <span class='w3-button w3-round-xxlarge w3-red w3-disabled'>".$attendance." Attended </span> </td>";
+        } else {
+            print "<td class='w3-center'> <button class='w3-button w3-round-xxlarge w3-red' onclick='deleteMeeting(\"".$entry['Name'].'",'.$entry['Id'].")'>Delete Meeting</button> </td>";
+        }
         print "</tr>\n";
     }
 
@@ -175,6 +197,14 @@ SQL;
         `MeetingID` = $id
 SQL;
     }
+    DB::run($sql);
+
+}
+
+
+function delete_meeting($id)
+{
+    $sql = "DELETE FROM `OfficialMeetings` WHERE `MeetingID` = $id;";
     DB::run($sql);
 
 }
