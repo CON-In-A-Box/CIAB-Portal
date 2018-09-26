@@ -38,6 +38,20 @@ function getPositionID($position)
 }
 
 
+function printTableHeader($section)
+{
+    echo "<tr id=\"table_head_$section\" class=\"event-color-secondary w3-small\">";
+    echo '<th class="">Department</th>';
+    echo '<th class="">Division</th>';
+    echo '<th class="">First Name</th>';
+    echo '<th class="">Last Name</th>';
+    echo '<th class="">Position</th>';
+    echo '<th class="">Email</th>';
+    echo '<th class="" colspan=2>Note</th>';
+    echo "</tr>\n";
+}
+
+
 function ConComListDisplay()
 {
     global $Divisions, $ConComPositions;
@@ -52,17 +66,7 @@ function ConComListDisplay()
     ksort_recursive($printList);
 
     // Start the crazy print routine!
-    echo "<div class='w3-responsive'>";
     echo "<table class='w3-table-all w3-hoverable'>\n";
-    echo '<tr id="table_head" class="event-color-secondary">';
-    echo '<th class="w3-center">Department</th>';
-    echo '<th class="w3-center">Division</th>';
-    echo '<th class="w3-center">First Name</th>';
-    echo '<th class="w3-center">Last Name</th>';
-    echo '<th class="w3-center">Position</th>';
-    echo '<th class="w3-center">Email</th>';
-    echo '<th class="w3-center" colspan=2>Note</th>';
-    echo "</tr>\n";
     foreach ($Divisions as $div) {
         $currentDivDirector = false;
         echo '<tr id="division" class="event-color-secondary"><th id="'.$div.'" class="w3-center" colspan=2>'.$div;
@@ -83,6 +87,7 @@ function ConComListDisplay()
         echo '</th><th colspan=3>';
         echo implode('<br />', getDepartmentEmails($div));
         echo "</th></tr>\n";
+        printTableHeader($div);
         // Division Directors
         if (isset($printList[$div]['Division Director'])) {
             foreach ($printList[$div]['Division Director'] as $pos) {
@@ -174,6 +179,7 @@ function ConComListDisplay()
                 echo implode('<br />', getDepartmentEmails($kdep));
                 echo "</th></tr>\n";
             }
+            printTableHeader($kdep);
             if ($kdep != 'Division Director' && $kdep != 'Division Support') {
                 foreach ($ConComPositions as $pos) {
                     if (isset($dep[$pos])) {
@@ -242,7 +248,6 @@ function ConComListDisplay()
         }
     }
     echo "</table>\n";
-    echo "</div>";
 
 }
 
