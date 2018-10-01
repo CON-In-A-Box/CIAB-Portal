@@ -30,6 +30,7 @@ if (!empty($_REQUEST)) {
 
     $arguments = [
     'modify' => FILTER_SANITIZE_STRING,
+    'delete' => FILTER_SANITIZE_NUMBER,
     ];
 
     $updateData = filter_input_array(INPUT_POST, $arguments);
@@ -37,6 +38,11 @@ if (!empty($_REQUEST)) {
     if (isset($updateData['modify'])) {
         $data = json_decode(base64_decode($updateData['modify']));
         save_meeting($data);
+        exit();
+    }
+
+    if (isset($updateData['delete'])) {
+        delete_meeting($updateData['delete']);
         exit();
     }
 }
