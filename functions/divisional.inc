@@ -18,13 +18,19 @@ if (!isset($Departments)) {
     $result = $db->run($sql);
     $value = $result->fetch();
     while ($value !== false) {
-        $temp_dept[$value['DepartmentID']] = ['name' => $value['Name'], 'parent' => $value['ParentDepartmentID']];
+        $temp_dept[$value['DepartmentID']] = ['name' => $value['Name'], 'parent' => $value['ParentDepartmentID'], 'childCount' => 0];
         $value = $result->fetch();
+    }
+    foreach ($temp_dept as $id => $dept) {
+        if ($dept['parent'] != $id) {
+            $temp_dept[$dept['parent']]['childCount'] = $temp_dept[$dept['parent']]['childCount'] + 1;
+        }
     }
     foreach ($temp_dept as $id => $dept) {
         $Departments[$dept['name']] = [];
         $Departments[$dept['name']]['Division'] = $temp_dept[$dept['parent']]['name'];
         $Departments[$dept['name']]['id'] = $id;
+        $Departments[$dept['name']]['childCount'] = $dept['childCount'];
         $Departments[$dept['name']]['Email'] = [];
 
         if (in_array($Departments[$dept['name']]['Division'], $Divisions) == false) {

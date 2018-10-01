@@ -38,6 +38,21 @@ function getPositionID($position)
 }
 
 
+function printTableHeader($section)
+{
+    echo "<tr id=\"table_head_$section\" class=\"event-color-secondary w3-small\">";
+    echo '<th class="">Department</th>';
+    echo '<th class="">Division</th>';
+    echo '<th class="">First Name</th>';
+    echo '<th class="">Last Name</th>';
+    echo '<th class="">Position</th>';
+    echo '<th class="">Email</th>';
+    echo '<th class="" colspan=2>Note</th>';
+    echo "</tr>\n";
+
+}
+
+
 function ConComListDisplay()
 {
     global $Divisions, $ConComPositions;
@@ -52,17 +67,7 @@ function ConComListDisplay()
     ksort_recursive($printList);
 
     // Start the crazy print routine!
-    echo "<div class='w3-responsive'>";
     echo "<table class='w3-table-all w3-hoverable'>\n";
-    echo '<tr id="table_head" class="event-color-secondary">';
-    echo '<th class="w3-center">Department</th>';
-    echo '<th class="w3-center">Division</th>';
-    echo '<th class="w3-center">First Name</th>';
-    echo '<th class="w3-center">Last Name</th>';
-    echo '<th class="w3-center">Position</th>';
-    echo '<th class="w3-center">Email</th>';
-    echo '<th class="w3-center" colspan=2>Note</th>';
-    echo "</tr>\n";
     foreach ($Divisions as $div) {
         $currentDivDirector = false;
         echo '<tr id="division" class="event-color-secondary"><th id="'.$div.'" class="w3-center" colspan=2>'.$div;
@@ -83,6 +88,7 @@ function ConComListDisplay()
         echo '</th><th colspan=3>';
         echo implode('<br />', getDepartmentEmails($div));
         echo "</th></tr>\n";
+        printTableHeader($div);
         // Division Directors
         if (isset($printList[$div]['Division Director'])) {
             foreach ($printList[$div]['Division Director'] as $pos) {
@@ -174,6 +180,7 @@ function ConComListDisplay()
                 echo implode('<br />', getDepartmentEmails($kdep));
                 echo "</th></tr>\n";
             }
+            printTableHeader($kdep);
             if ($kdep != 'Division Director' && $kdep != 'Division Support') {
                 foreach ($ConComPositions as $pos) {
                     if (isset($dep[$pos])) {
@@ -242,7 +249,6 @@ function ConComListDisplay()
         }
     }
     echo "</table>\n";
-    echo "</div>";
 
 }
 
@@ -426,5 +432,145 @@ function check_meeting_attendance($meeting)
     $result = \DB::run($sql);
     $value = $result->fetch();
     return ($value !== false);
+
+}
+
+
+function _departments($division)
+{
+    global $Departments, $deptCount;
+
+    $did = $Departments[$division]['id'];
+    foreach ($Departments as $name => $dep) {
+        if ($Departments[$name]['Division'] == $division &&
+            $Departments[$name]['Division'] != $name) {
+            $id = $Departments[$name]['id'];
+            $DivId = $Departments[$Departments[$name]['Division']]['id'];
+            echo "<div ";
+            echo "class='w3-quarter event-color-secondary w3-xlarge w3-padding w3-margin w3-round-xxlarge' ";
+            echo "id=".$id." ";
+            echo "draggable='true' ";
+            echo "ondblclick='dblClick(0, \"$name\", \"$id\", $DivId, 0, ".$deptCount[$id].");' ";
+            echo "ondrop='dragDropParent(event, 1);'  ";
+            echo "ondragstart='drag(event);'";
+            echo ">$name</div>\n";
+        }
+    }
+    echo "<div class='w3-quarter w3-xlarge w3-padding w3-margin w3-round-xxlarge'>\n";
+    echo "<button onclick='newEntry($did)' ";
+    echo "class='w3-yellow w3-xlarge w3-button w3-round-xxlarge' ";
+    echo "ondrop='dragDropParent(event, 2);'>";
+    echo "<i class='fa fa-plus-square' ";
+    echo "ondrop='dragDropParent(event, 3);'></i></button>\n";
+    echo "</div>\n";
+
+}
+
+
+function build_structure_sections()
+{
+    global $Divisions, $Departments, $deptCount;
+
+    echo "<div id='division_new' class='w3-container w3-margin'>";
+    echo "<button onclick='newEntry(-1)' class='w3-yellow w3-xlarge w3-button w3-round-xxlarge'><span>Add New Division</span> <i class='fa fa-plus-square'></i></button>";
+    echo "</div>\n";
+
+    foreach ($Divisions as $div) {
+        $id = $Departments[$div]['id'];
+        if ($id <= 0) {
+            continue;
+        }
+        $div_content_id = "division_content_$id";
+        echo "<div id='division_$id' class='w3-container w3-margin'>\n";
+        echo "<span class='event-color-primary w3-xxxlarge w3-padding w3-margin w3-round-xlarge' ondblclick='dblClick(1, \"$div\", $id, $id, ".$Departments[$div]['childCount'].", ".$deptCount[$id].");'>$div</span>";
+        echo "<div id='$div_content_id' class='w3-container w3-buffer w3-section' ondragover='dragOverDivision(\"$div_content_id\");' ondragleave='dragLeaveDivision(\"$div_content_id\");' ondragend='dragLeaveDivision(\"$div_content_id\");' ondrop='dragDropDivision(event);' data-dbId=\"$id\">\n";
+        _departments($div);
+        echo "</div>";
+        echo "</div>";
+    }
+
+}
+
+
+function save_position($data)
+{
+    $parent = 0;
+    if ($data->ParentDept >= 0) {
+        $parent = $data->ParentDept;
+    }
+    if ($data->Id != -1) {
+        $sql = "UPDATE `Departments` SET ";
+        $sql .= " `Name` = '".$data->Name."' ";
+        $sql .= ", `ParentDepartmentID` = ".$parent;
+        $sql .= " WHERE `DepartmentID` = ".$data->Id;
+        DB::run($sql);
+    } else {
+        $sql = "INSERT INTO `Departments` (`DepartmentID`, `Name`, `ParentDepartmentID`) VALUES (NULL, '".$data->Name."', ".$parent.");";
+        DB::run($sql);
+        if ($data->ParentDept < 0) {
+            $sql = "SELECT `DepartmentID` FROM `Departments` ORDER BY `DepartmentID` DESC LIMIT 1";
+            $result = DB::run($sql);
+            $value = $result->fetch();
+            $sql = "UPDATE `Departments` SET `ParentDepartmentID` = `DepartmentID` WHERE `DepartmentID` = ".$value['DepartmentID'];
+            DB::run($sql);
+        }
+    }
+
+}
+
+
+function reparent($data)
+{
+    $sql = "UPDATE `Departments` SET ";
+    $sql .= "`ParentDepartmentID` = ".$data->newParent;
+    $sql .= " WHERE `DepartmentID` = ".$data->Id;
+    DB::run($sql);
+
+}
+
+
+function departmentDetails($event = null)
+{
+    $sql = <<<SQL
+        SELECT
+            `DepartmentID`,
+            (
+                SELECT
+                    COUNT(`AccountID`)
+                FROM
+                    `ConComList` AS b
+                WHERE
+                    a.`DepartmentID` = b.`DepartmentID`
+SQL;
+    if ($event !== null) {
+        $sql .= <<<SQL
+                    AND b.`EventID` = $event
+SQL;
+    }
+    $sql .= <<<SQL
+            ) as count
+        FROM
+            `Departments` AS a
+        WHERE
+            `DepartmentID` > 0
+        ORDER BY
+            `DepartmentID` ASC
+SQL;
+    $table = load_table($sql);
+    $data = [];
+    foreach ($table as $entry) {
+        $data[$entry['DepartmentID']] = $entry['count'];
+    }
+    return $data;
+
+}
+
+
+function delete_position($id)
+{
+    $sql = "UPDATE `Departments` SET `ParentDepartmentID` = 0 WHERE `DepartmentID` = $id";
+    DB::run($sql);
+    $sql = "DELETE FROM `Departments` WHERE `DepartmentID` = $id";
+    DB::run($sql);
 
 }
