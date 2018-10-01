@@ -14,7 +14,7 @@ if (!isset($Departments)) {
 
     $temp_dept = array();
 
-    $sql = "SELECT * FROM Departments;";
+    $sql = "SELECT * FROM Departments WHERE DepartmentID > 0;";
     $result = $db->run($sql);
     $value = $result->fetch();
     while ($value !== false) {

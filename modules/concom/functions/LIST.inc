@@ -25,7 +25,7 @@ class ConcomList
               (SELECT Name FROM ConComPositions WHERE PositionID = l.PositionID)   AS Position,
               (SELECT EventName FROM Events WHERE EventID = l.EventID) AS Event
           FROM ConComList AS l
-          WHERE l.EventID = $event;
+          WHERE l.EventID = $event AND l.DepartmentID > 0;
 SQL;
 
         $ids = array();

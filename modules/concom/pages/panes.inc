@@ -12,24 +12,22 @@ require_once(__DIR__.'/../functions/concom.inc');
 function draw_status()
 {
     // Display Current ConCom Status
-    if (isset($_SESSION['customFields']['currConComPos'])) {
-        echo "<div class='w3-container w3-black'>\n";
-        echo "<table class='w3-table w3-striped w3-bordered w3-white'>\n";
-        echo "<tr><th class='w3-center w3-black'>Current ConCom Status</th></tr>\n";
-        foreach ($_SESSION['customFields']['currConComPos'] as $val) {
-            echo "<tr><td>".$val['position']." of ".$val['department'];
-            if (!empty($val['note'])) {
-                echo " - Note: ".$val['note'];
-            }
-            echo "</td></tr>\n";
-            unset($pos);
-            unset($tmp);
+    echo "<div class='w3-container w3-black'>\n";
+    echo "<table class='w3-table w3-striped w3-bordered w3-white'>\n";
+    echo "<tr><th class='w3-center w3-black'>Current ConCom Status</th></tr>\n";
+    foreach ($_SESSION['customFields']['currConComPos'] as $val) {
+        echo "<tr><td>".$val['position']." of ".$val['department'];
+        if (!empty($val['note'])) {
+            echo " - Note: ".$val['note'];
         }
-        unset($val);
-        unset($positionsHeld);
-        echo "</table>\n";
-        echo "</div>\n";
+        echo "</td></tr>\n";
+        unset($pos);
+        unset($tmp);
     }
+    unset($val);
+    unset($positionsHeld);
+    echo "</table>\n";
+    echo "</div>\n";
 
 }
 
@@ -124,7 +122,7 @@ if (isset($_SESSION['customFields']['currConComPos'])) {
     $homepage_panes[] = 'concom\panes\phone_number';
     $homepage_panes[] = 'concom\panes\draw_status';
     $homepage_panes[] = 'concom\panes\meetings';
-/* Disabled for 2018 release
+}
+if (count(events_served($_SESSION['accountId']))) {
     $homepage_panes[] = 'concom\panes\draw_history';
-*/
 }

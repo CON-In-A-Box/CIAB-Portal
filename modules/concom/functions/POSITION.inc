@@ -34,6 +34,7 @@ class POSITION
                 ConComList as c
             WHERE
                 AccountID = $account
+                AND DepartmentID > 0
                 AND EventID = $event;
 SQL;
         $result = \DB::run($sql);
