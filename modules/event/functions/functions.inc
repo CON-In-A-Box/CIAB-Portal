@@ -29,11 +29,41 @@ SQL;
     'CycleFrom' => 'CycleDateFrom',
     'CycleTo' => 'CycleDateTo',
     ];
-    $data = load_table($sql, $values);
-    $keys = array_keys($values);
-    print "<tr><th>".implode('</th><th>', $keys)."</th></tr>\n";
-    foreach ($data as $entry) {
-        print "<tr><td>".implode('</td><td>', $entry)."</td></tr>\n";
+    $event_data = load_table($sql, $values);
+    $event_keys = array_keys($values);
+
+    $sql = "SELECT Name, Cost, EventID FROM `BadgeTypes`;";
+    $values = [
+    'Badge Name' => 'Name',
+    'Cost' => 'Cost',
+    'Event' => 'EventID',
+    ];
+    $badge_data = load_table($sql, $values);
+    $badge_keys = array_keys($values);
+
+    print "<tr><th>".implode('</th><th>', $event_keys)."</th></tr>\n";
+    foreach ($event_data as $entry) {
+        $entry['Name'] .= " <i id='badges_".$entry['Id']."_arrow' class='fa fa-caret-down'>";
+        print "<tr class='event-hover-primary' ";
+        print "onclick='expandEvent(\"badges_".$entry['Id']."\")'>";
+        print "<td>".implode('</td><td>', $entry)."</td>";
+        print "</tr>\n";
+
+        print "<tr><td colspan=3></td><td id='badges_".$entry['Id']."' colspan=3 class='w3-hide'><table class='w3-table-all w3-center'>";
+
+        print "<tr>";
+        unset($badge_keys[2]);
+        print "<th>".implode('</th><th>', $badge_keys)."</th>";
+        print "</tr>\n";
+        foreach ($badge_data as $badge) {
+            if ($badge['Event'] == $entry['Id']) {
+                unset($badge['Event']);
+                print "<tr> ";
+                print "<td>".implode('</td><td>', $badge)."</td>";
+                print "</tr>\n";
+            }
+        }
+        print "</table></td></tr>";
     }
 
 }
