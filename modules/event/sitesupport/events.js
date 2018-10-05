@@ -151,3 +151,8 @@ function saveCycle() {
   );
 
 }
+
+function expandEvent(name) {
+  expandSection(name);
+
+}
