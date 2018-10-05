@@ -208,3 +208,45 @@ function delete_meeting($id)
     DB::run($sql);
 
 }
+
+
+function list_cycles()
+{
+    global $last_cycle;
+
+    $sql = <<<SQL
+        SELECT
+            *
+        FROM
+            `AnnualCycles`
+        ORDER BY
+            `DateFrom` DESC
+SQL;
+
+    $values = [
+    'Id' => 'AnnualCycleID',
+    'From' => 'DateFrom',
+    'To' => 'DateTo',
+    ];
+    $data = load_table($sql, $values);
+    $keys = array_keys($values);
+    print "<tr><th>".implode('</th><th>', $keys)."</th></tr>\n";
+    $last_cycle = null;
+    foreach ($data as $entry) {
+        if ($last_cycle === null) {
+            $last_cycle = $entry;
+        }
+        print "<tr><td>".implode('</td><td>', $entry)."</td></tr>\n";
+    }
+
+}
+
+
+function new_cycle($cycle)
+{
+    $from = $cycle->From;
+    $to = $cycle->To;
+    $sql = "INSERT INTO `AnnualCycles` (`AnnualCycleID`, `DateFrom`, `DateTo`) VALUES (NULL, '$from', '$to')";
+    DB::run($sql);
+
+}

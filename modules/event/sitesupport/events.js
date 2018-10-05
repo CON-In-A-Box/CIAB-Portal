@@ -109,3 +109,45 @@ function deleteMeeting(name, id) {
   );
 
 }
+
+function newCycle() {
+  showSidebar('edit_cycle');
+
+}
+
+function processNewCycle() {
+  confirmbox.close();
+
+  var data = {
+      'From': document.getElementById('cycle_from').value,
+      'To': document.getElementById('cycle_to').value,
+    };
+  var param = btoa(JSON.stringify(data));
+
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        hideSidebar();
+        location.reload();
+      } else if (this.status == 404) {
+        window.alert('404!');
+      } else if (this.status == 409) {
+        window.alert('409!');
+      }
+    };
+  xhttp.open('POST', 'index.php?Function=event', true);
+  xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+  xhttp.send('cycle=' + param);
+
+}
+
+function saveCycle() {
+  var from = document.getElementById('cycle_from').value;
+  var to = document.getElementById('cycle_to').value;
+  confirmbox.start(
+      'Confirm New Annual Cycle',
+      'Add Cycle [' + from + ' -> ' + to + '] ?',
+      processNewCycle
+  );
+
+}
