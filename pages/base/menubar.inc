@@ -93,10 +93,19 @@ foreach ($base_menus as $menu) {
     echo "</a>\n";
 }
 
+$have_admin = false;
 foreach ($admin_menus as $menu) {
     if (!$kioskMode && in_array($menu['function'], $DISABLEDMODULES)) {
         continue;
     }
+
+    if (!$have_admin) {
+        echo "<div class='w3-dropdown-hover'>";
+        echo "<button class='w3-button w3-yellow ".$resp_styles."'><i class='fa fa-key'></i> Administer</button>";
+        echo "<div class='w3-dropdown-content w3-bar-block w3-card-4'>";
+        $have_admin = true;
+    }
+
     if ($menu['responsive']) {
         if ($_REQUEST['Function'] == $menu['function']) {
             echo "<a class=\"".$menu['selected style'].$base_styles.$resp_styles."\"";
@@ -114,6 +123,11 @@ foreach ($admin_menus as $menu) {
     echo "<i class=\"".$menu['i class']."\"></i>";
     echo "        ".$menu['text'];
     echo "</a>\n";
+}
+
+if ($have_admin) {
+    echo "</div>";
+    echo "</div>";
 }
 
 if (!$kioskMode) {
@@ -154,10 +168,19 @@ foreach ($base_menus as $menu) {
     echo "</a>\n";
 }
 
+$have_admin = false;
 foreach ($admin_menus as $menu) {
     if (!$kioskMode && in_array($menu['function'], $DISABLEDMODULES)) {
         continue;
     }
+
+    if (!$have_admin) {
+        echo "<div class='w3-dropdown-hover'>";
+        echo "<button class='w3-button w3-yellow'><i class='fa fa-key'></i> Administer</button>";
+        echo "<div class='w3-dropdown-content w3-bar-block w3-card-4'>";
+        $have_admin = true;
+    }
+
     if ($menu['responsive']) {
         if ($_REQUEST['Function'] == $menu['function']) {
             echo "<a class=\"".$menu['selected style'].$base_styles."\"";
@@ -171,6 +194,11 @@ foreach ($admin_menus as $menu) {
     echo "<i class=\"".$menu['i class']."\"></i>";
     echo "        ".$menu['text'];
     echo "</a>\n";
+}
+
+if ($have_admin) {
+    echo "</div>";
+    echo "</div>";
 }
 ?>
     </div><!--close main_nav_list div-->
