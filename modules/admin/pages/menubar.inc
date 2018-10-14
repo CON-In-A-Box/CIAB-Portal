@@ -4,7 +4,7 @@ if (isset($_SESSION['IS_ADMIN'])) {
      'selected style' => 'event-color-primary',
      'function' => 'admin',
      'title' => 'Oh the administration',
-     'i class' => 'fa fa-key',
-     'text' => 'Administration',
+     'i class' => 'fa fa-database',
+     'text' => 'Database',
      'responsive' => true);
 }
