@@ -243,7 +243,7 @@ function ConComListDisplay()
                     }
                 }
             }
-            if (($div != 'Corporate Staff' && $kdep != 'Division Director' && $kdep != 'Division Support') || (isset($_SESSION['IS_ADMIN']) || $currentDivDirector || ($currentDepHead && $pos != "Head"))) {
+            if (($div != 'Corporate Staff' && $kdep != 'Division Director' && $kdep != 'Division Support') && (isset($_SESSION['IS_ADMIN']) || $currentDivDirector || ($currentDepHead && $pos != "Head"))) {
                 echo '<tr><td class="w3-center" colspan=8><a href="index.php?Function=concom&AddDepartment='.urlencode($kdep).'">Add someone to '.$kdep.'</a></td></tr>'."\n";
             }
         }
