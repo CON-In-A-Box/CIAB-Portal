@@ -14,7 +14,7 @@ if (!isset($Departments)) {
 
     $temp_dept = array();
 
-    $sql = "SELECT * FROM Departments WHERE DepartmentID > 0;";
+    $sql = "SELECT * FROM Departments WHERE DepartmentID NOT IN (SELECT `DepartmentID` FROM `Departments` WHERE Name = 'Historical Placeholder')";
     $result = $db->run($sql);
     $value = $result->fetch();
     while ($value !== false) {

@@ -1,4 +1,3 @@
-INSERT INTO Departments (DepartmentID, Name, ParentDepartmentID) VALUES (0, 'Historical Placeholder', 0);
 INSERT INTO Departments (DepartmentID, Name, ParentDepartmentID) VALUES (1, 'Activities', 1);
 INSERT INTO Departments (DepartmentID, Name, ParentDepartmentID) VALUES (2, 'Administration', 2);
 INSERT INTO Departments (DepartmentID, Name, ParentDepartmentID) VALUES (3, 'External Relations and Communications', 3);
@@ -9,6 +8,7 @@ INSERT INTO Departments (DepartmentID, Name, ParentDepartmentID) VALUES (7, 'Sys
 INSERT INTO Departments (DepartmentID, Name, ParentDepartmentID) VALUES (8, 'Committees', 8);
 INSERT INTO Departments (DepartmentID, Name, ParentDepartmentID) VALUES (9, 'Corporate Staff', 9);
 INSERT INTO Departments (DepartmentID, Name, ParentDepartmentID) VALUES (10, 'CFO Staff', 10);
+INSERT INTO Departments (DepartmentID, Name, ParentDepartmentID) VALUES (11, 'Historical Placeholder', 11);
 INSERT INTO Departments (DepartmentID, Name, ParentDepartmentID) VALUES (100, 'Accessibility and Inclusion', 3);
 INSERT INTO Departments (DepartmentID, Name, ParentDepartmentID) VALUES (101, 'Allocations', 4);
 INSERT INTO Departments (DepartmentID, Name, ParentDepartmentID) VALUES (102, 'Archives', 2);
