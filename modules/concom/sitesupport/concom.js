@@ -16,14 +16,14 @@ function setParent(id, newParent) {
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
       if (this.readyState == 4 && this.status == 200) {
-        window.location = 'index.php?Function=concom&admin=1';
+        window.location = 'index.php?Function=concom/admin';
       } else if (this.status == 404) {
         window.alert('404!');
       } else if (this.status == 409) {
         window.alert('409!');
       }
     };
-  xhttp.open('POST', 'index.php?Function=concom', true);
+  xhttp.open('POST', 'index.php?Function=concom/admin', true);
   xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
   xhttp.send('reparent=' + btoa(param));
 
@@ -166,14 +166,14 @@ function processPosition() {
   xhttp.onreadystatechange = function() {
       if (this.readyState == 4 && this.status == 200) {
         hideSidebar();
-        window.location = 'index.php?Function=concom&admin=1';
+        window.location = 'index.php?Function=concom/admin';
       } else if (this.status == 404) {
         window.alert('404!');
       } else if (this.status == 409) {
         window.alert('409!');
       }
     };
-  xhttp.open('POST', 'index.php?Function=concom', true);
+  xhttp.open('POST', 'index.php?Function=concom/admin', true);
   xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
   xhttp.send('modify=' + btoa(param));
 
@@ -219,14 +219,14 @@ function processDeletion() {
   xhttp.onreadystatechange = function() {
       if (this.readyState == 4 && this.status == 200) {
         hideSidebar();
-        window.location = 'index.php?Function=concom&admin=1';
+        window.location = 'index.php?Function=concom/admin';
       } else if (this.status == 404) {
         window.alert('404!');
       } else if (this.status == 409) {
         window.alert('409!');
       }
     };
-  xhttp.open('POST', 'index.php?Function=concom', true);
+  xhttp.open('POST', 'index.php?Function=concom/admin', true);
   xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
   xhttp.send('delete=' + id);
 

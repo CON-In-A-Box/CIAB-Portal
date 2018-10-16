@@ -109,31 +109,3 @@ if (isset($_REQUEST['AddDepartment'])) {
         goSite();
     }
 }
-
-
-if (!empty($_REQUEST) && isset($_SESSION['IS_ADMIN'])) {
-    $arguments = [
-    'modify' => FILTER_SANITIZE_STRING,
-    'reparent' => FILTER_SANITIZE_STRING,
-    'delete' => FILTER_SANITIZE_STRING,
-    ];
-
-    $updateData = filter_input_array(INPUT_POST, $arguments);
-
-    if (isset($updateData['modify'])) {
-        $data = json_decode(base64_decode($updateData['modify']));
-        save_position($data);
-        exit();
-    }
-
-    if (isset($updateData['reparent'])) {
-        $data = json_decode(base64_decode($updateData['reparent']));
-        reparent($data);
-        exit();
-    }
-
-    if (isset($updateData['delete'])) {
-        delete_position($updateData['delete']);
-        exit();
-    }
-}
