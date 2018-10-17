@@ -34,8 +34,15 @@ class POSITION
                 ConComList as c
             WHERE
                 AccountID = $account
-                AND DepartmentID > 0
-                AND EventID = $event;
+                AND EventID = $event
+                AND DepartmentID NOT IN (
+                    SELECT
+                        `DepartmentID`
+                    FROM
+                        `Departments`
+                    WHERE
+                        Name = 'Historical Placeholder'
+                )
 SQL;
         $result = \DB::run($sql);
         $value = $result->fetch();

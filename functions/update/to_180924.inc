@@ -166,15 +166,20 @@ function to_180924()
         $sql = <<<SQL
         INSERT INTO `Departments` (
             DepartmentID, Name, ParentDepartmentID
-        ) VALUES (0, 'Historical Placeholder', 1);
+        ) VALUES (NULL, 'Historical Placeholder', 1);
         UPDATE
-            `Departments`
+            `Departments` d1, `Departments` d2
         SET
-            `DepartmentID` = 0,
-            `ParentDepartmentID` = 0 WHERE Name = 'Historical Placeholder';
+            d1.`ParentDepartmentID` = d2.`DepartmentID`
+        WHERE d1.Name = 'Historical Placeholder' AND
+              d2.Name = 'Historical Placeholder';
+        SELECT DepartmentID
+        FROM `Departments`
+        WHERE Name = 'Historical Placeholder';
 SQL;
-        DB::run($sql);
-        $did = 0;
+        $result = DB::run($sql);
+        $value = $result->fetch();
+        $did = $value['DepartmentID'];
     }
 
     print "<h2> db update </h2>";

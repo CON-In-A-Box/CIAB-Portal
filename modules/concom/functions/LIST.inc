@@ -19,13 +19,55 @@ class ConcomList
 
         $event = \current_eventID();
         $sql = <<<SQL
-        SELECT l.AccountID, COALESCE(l.Note, "") AS Note,
-              (SELECT Name FROM Departments WHERE DepartmentID = l.DepartmentID) AS Department,
-              (SELECT (CASE WHEN DepartmentID = ParentDepartmentID THEN 1 ELSE 0 END) FROM Departments WHERE DepartmentID = l.DepartmentID ) AS Divisional,
-              (SELECT Name FROM ConComPositions WHERE PositionID = l.PositionID)   AS Position,
-              (SELECT EventName FROM Events WHERE EventID = l.EventID) AS Event
-          FROM ConComList AS l
-          WHERE l.EventID = $event AND l.DepartmentID > 0;
+    SELECT
+        l.AccountID,
+        COALESCE(l.Note, "") AS Note,
+        (
+            SELECT
+                Name
+            FROM
+                Departments
+            WHERE
+                DepartmentID = l.DepartmentID
+        ) AS Department,
+        (
+            SELECT
+                (
+                    CASE WHEN DepartmentID = ParentDepartmentID THEN 1 ELSE 0 END
+                )
+            FROM
+                Departments
+            WHERE
+                DepartmentID = l.DepartmentID
+        ) AS Divisional,
+        (
+            SELECT
+                Name
+            FROM
+                ConComPositions
+            WHERE
+                PositionID = l.PositionID
+        ) AS Position,
+        (
+            SELECT
+                EventName
+            FROM
+                Events
+            WHERE
+                EventID = l.EventID
+        ) AS Event
+    FROM
+        ConComList AS l
+    WHERE
+        l.EventID = $event
+        AND l.DepartmentID NOT IN (
+            SELECT
+                `DepartmentID`
+            FROM
+                `Departments`
+            WHERE
+                Name = 'Historical Placeholder'
+        )
 SQL;
 
         $ids = array();
