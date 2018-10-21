@@ -4,6 +4,70 @@ require_once($FUNCTIONDIR."/database.inc");
 require_once($FUNCTIONDIR."/update/from_neon_to_152.inc");
 
 
+function _event_details($id)
+{
+    $sql = <<<SQL
+    SELECT
+        (
+            SELECT
+                COUNT(b.`BadgeTypeID`)
+            FROM
+                `BadgeTypes` as b
+            WHERE
+                b.`EventID` = e.`EventID`
+        ) as badges_types,
+        (
+            SELECT
+                COUNT(
+                    DISTINCT(c.`AccountID`)
+                )
+            FROM
+                `ConComList` as c
+            WHERE
+                c.`EventID` = e.`EventID`
+        ) as concom,
+        (
+            SELECT
+                COUNT(h.`ClaimID`)
+            FROM
+                `HourRedemptions` as h
+            WHERE
+                h.`EventID` = e.`EventID`
+        ) as prizes_claimed,
+        (
+            SELECT
+                COUNT(m.`MeetingID`)
+            FROM
+                `OfficialMeetings` as m
+            WHERE
+                m.`EventID` = e.`EventID`
+        ) as meetings,
+        (
+            SELECT
+                COUNT(r.`RegistrationID`)
+            FROM
+                `Registrations` as r
+            WHERE
+                r.`EventID` = e.`EventID`
+        ) as registrations,
+        (
+            SELECT
+                SUM(v.`ActualHours` * v.`TimeModifier`)
+            FROM
+                `VolunteerHours` as v
+            WHERE
+                v.`EventID` = e.`EventID`
+        ) as volunteer_hours
+    FROM
+        Events AS e
+    WHERE
+        EventID = $id;
+SQL;
+    $data = load_table($sql);
+    return $data[0];
+}
+
+
 function list_events()
 {
     $sql = <<<SQL
@@ -49,7 +113,7 @@ SQL;
         print "<td>".implode('</td><td>', $entry)."</td>";
         print "</tr>\n";
 
-        print "<tr><td colspan=3></td><td id='badges_".$entry['Id']."' colspan=3 class='w3-hide'><table class='w3-table-all w3-center'>";
+        print "<tr><td colspan=5><div name='badges_".$entry['Id']."' class=' w3-hide'><table class='w3-table-all w3-center'>";
 
         print "<tr>";
         unset($badge_keys[2]);
@@ -63,7 +127,18 @@ SQL;
                 print "</tr>\n";
             }
         }
-        print "</table></td></tr>";
+        print "</table></div></td>";
+        print "<td> <div name='badges_".$entry['Id']."' class=' w3-hide'>";
+
+        $details = _event_details($entry['Id']);
+        print "<table class='w3-table-all'>";
+        foreach($details as $key => $detail) {
+            print "<tr><td>".$key."</td><td>";
+            print $detail."</td></tr>";
+        }
+        print "</table>";
+        print "</div></td>";
+        print "</tr>";
     }
 
 }
