@@ -6,7 +6,6 @@
 .*/
 
 require_once($FUNCTIONDIR."/database.inc");
-require_once($FUNCTIONDIR."/update/from_neon_to_152.inc");
 
 
 function _event_details($id)
@@ -290,38 +289,6 @@ function _get_event_from_Date($eventdate)
         return $event;
     }
     return null;
-
-}
-
-
-function import_meetings()
-{
-    foreach ($_SESSION['definedFields']['customField'] as $field) {
-        if ($field['fieldName'] == 'Official Meeting Attendance') {
-            foreach ($field['fieldOptions']['fieldOption'] as $meet) {
-                $data = explode(' - ', $meet['name']);
-                $id = $meet['id'];
-                $date = $data[0];
-                $name = $data[1];
-                $event = _get_event_from_Date($date);
-                $sql = <<<SQL
-                    INSERT IGNORE INTO `OfficialMeetings`
-                    SET  MeetingID = $id,
-                         Date = '$date',
-                         EventID = $event,
-                         Name = '$name';
-SQL;
-                DB::run($sql);
-            }
-        }
-    }
-
-}
-
-
-function import_events()
-{
-    _Neon_import_events();
 
 }
 

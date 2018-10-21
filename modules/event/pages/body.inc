@@ -55,18 +55,6 @@ require_once __DIR__.'/../functions/functions.inc'
              </div>
             </div>
         </div>
-
-        <div id="neon_content" class="w3-section w3-container">
-            <button onclick="expandSection('neon')" class="w3-rest w3-center event-color-primary w3-xlarge w3-button w3-block w3-left-align">
-                <span id="neon_button">Neon<span> <i id="neon_arrow" class="fa fa-caret-up"></i>
-            </button>
-            <div id="neon" class="w3-container w3-margin w3-hide w3-show">
-                <div class="w3-container w3-margin w3-center">
-                    <button id='reload' class='w3-button w3-round-xxlarge w3-red'
-                        onclick='reloadFromNeon()'>Reload From Neon</button>
-                </div>
-            </div>
-        </div>
     </div>
 
     <div class='w3-hide w3-padding' id='edit_meeting' style="display: inline-block; position: fixed;">
