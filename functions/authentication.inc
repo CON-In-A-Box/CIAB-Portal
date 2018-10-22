@@ -269,7 +269,13 @@ function rppg()
 
 function reset_password($id)
 {
-    global $CONSITENAME, $ADMINEMAIL;
+    global $CONSITENAME, $ADMINEMAIL, $PASSWORDRESET;
+
+    if (isset($PASSWORDRESET) && !empty($PASSWORDRESET)) {
+        $duration = $PASSWORDRESET;
+    } else {
+        $duration = '+60 minutes';
+    }
 
     loadDefinedFields();
     $value = lookup_user_by_login($id);
@@ -277,7 +283,7 @@ function reset_password($id)
         $user = $value['AccountID'];
         $email = $value['Email'];
         $password = rppg();
-        $oneexpired = date('Y-m-d H:i', strtotime("+60 minutes"));
+        $oneexpired = date('Y-m-d H:i', strtotime($duration));
         $newauth = password_hash($password, PASSWORD_DEFAULT);
         $auth = 'NULL';
         $last = 'NULL';
@@ -304,7 +310,7 @@ SQL;
         DB::run($sql);
         $servername = 'https://'.$_SERVER['SERVER_NAME'];
         $subject = 'Password Reset Request';
-        $expire = date('h:i A D F jS Y', strtotime("+60 minutes"));
+        $expire = date('h:i A D F jS Y', strtotime($duration));
         $adminMessage = "A password reset has been requested for '$id' on the '$CONSITENAME' web site.\n";
         $adminMessage .= "The new password is '$password' \n";
         $message = <<<MSG
