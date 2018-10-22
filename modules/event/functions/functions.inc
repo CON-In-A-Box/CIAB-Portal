@@ -96,11 +96,27 @@ SQL;
     $event_data = load_table($sql, $values);
     $event_keys = array_keys($values);
 
-    $sql = "SELECT Name, Cost, EventID FROM `BadgeTypes`;";
+    $sql = <<<SQL
+        SELECT
+            Name,
+            Cost,
+            EventID,
+            (
+                SELECT
+                    COUNT(`RegistrationID`)
+                FROM
+                    `Registrations` as r
+                WHERE
+                    r.`BadgeTypeID` = b.`BadgeTypeID`
+            ) as Sold
+        FROM
+            `BadgeTypes` as b
+SQL;
     $values = [
     'Badge Name' => 'Name',
     'Cost' => 'Cost',
     'Event' => 'EventID',
+    'Sold' => 'Sold',
     ];
     $badge_data = load_table($sql, $values);
     $badge_keys = array_keys($values);
