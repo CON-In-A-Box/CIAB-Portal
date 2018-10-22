@@ -254,6 +254,7 @@ function myDebug() {
 
 function setField(field) {
   var value = document.getElementById("config_"+field).value;
+  value = btoa(value);
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
@@ -268,6 +269,7 @@ function setField(field) {
 function addField() {
   var field = document.getElementById("new_Field").value;
   var value = document.getElementById("new_Value").value;
+  value = btoa(value);
 
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
