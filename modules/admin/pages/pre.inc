@@ -25,12 +25,14 @@ if (!empty($_REQUEST)) {
     }
 
     if (isset($updateData['setField'])) {
-        set_conf_value($updateData['setField'], $updateData['value']);
+        $value = base64_decode($updateData['value']);
+        set_conf_value($updateData['setField'], $value);
         exit();
     }
 
     if (isset($updateData['newField'])) {
-        add_conf_value($updateData['newField'], $updateData['value']);
+        $value = base64_decode($updateData['value']);
+        add_conf_value($updateData['newField'], $value);
         exit();
     }
 
