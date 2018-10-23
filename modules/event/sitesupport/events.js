@@ -188,3 +188,69 @@ function deleteBadge(id, name) {
   );
 
 }
+
+function newBadge(id,name) {
+  document.getElementById('badge_id').value = -1;
+  document.getElementById('badge_event').value = id;
+  document.getElementById('badge_name').value = 'New Badge';
+  document.getElementById('badge_event_name').value = name;
+  document.getElementById('badge_cost').value = 0;
+  document.getElementById('badge_from').value = '0000-00-00';
+  document.getElementById('badge_to').value = '0000-00-00';
+  showSidebar('edit_badge');
+
+}
+
+function editBadge(data) {
+  var badge = JSON.parse(atob(data));
+  document.getElementById('badge_id').value = badge.Id;
+  document.getElementById('badge_name').value = badge['Badge Name'];
+  document.getElementById('badge_event').value = badge.Event;
+  document.getElementById('badge_event_name').value = badge.EventName;
+  document.getElementById('badge_cost').value = badge.Cost;
+  document.getElementById('badge_from').value = badge.From;
+  document.getElementById('badge_to').value = badge.To;
+  showSidebar('edit_badge');
+
+}
+
+function processNewBadge() {
+  confirmbox.close();
+
+  var data = {
+      'Id': document.getElementById('badge_id').value,
+      'Name': document.getElementById('badge_name').value,
+      'Event': document.getElementById('badge_event').value,
+      'Cost': document.getElementById('badge_cost').value,
+      'From': document.getElementById('badge_from').value,
+      'To': document.getElementById('badge_to').value,
+    };
+  var param = btoa(JSON.stringify(data));
+
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        hideSidebar();
+        location.reload();
+      } else if (this.status == 404) {
+        window.alert('404!');
+      } else if (this.status == 409) {
+        window.alert('409!');
+      }
+    };
+  xhttp.open('POST', 'index.php?Function=event', true);
+  xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+  xhttp.send('badge=' + param);
+
+}
+
+function saveBadge() {
+  var name = document.getElementById('badge_name').value;
+  var evnt = document.getElementById('badge_event_name').value;
+  confirmbox.start(
+      'Confirm Event Badge',
+      'Save Badge ' + name + ' for event  ' + evnt + ' ?',
+      processNewBadge
+  );
+
+}

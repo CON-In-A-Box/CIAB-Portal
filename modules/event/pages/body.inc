@@ -123,4 +123,35 @@ foreach ($events as $event) {
         </div>
     </div>
 
+    <div class='w3-hide w3-padding' id='edit_badge' style="display: inline-block; position: fixed;">
+        <div class='w3-center'>
+            <h2 class='w3-red'>Badge Details</h2>
+        </div>
+        <div>
+            <input class="w3-input w3-disabled w3-hide" id="badge_id" value='-1' readonly>
+            <input class="w3-input w3-disabled w3-hide" id="badge_event" value='-1' readonly>
+            <label for='badge_name'>Badge Name:</label>
+            <input class="w3-input w3-border" id="badge_name" value='New Badge'>
+            <label for='badge_event_name'>Event:</label>
+            <input class="w3-input w3-border" id="badge_event_name" value='' readonly>
+            <label for='badge_cost'>Badge Cost:</label>
+            <input class="w3-input w3-border" id="badge_cost" type=int value=0>
+            <label for='badge_from'>Avaliable From:</label>
+            <input class="w3-input w3-border" type="date" id="badge_from">
+            <label for='badge_to'>Avalible To:</label>
+            <input class="w3-input w3-border" type="date" id="badge_to">
+        </div>
+        <hr>
+        <div class='w3-center'>
+            <button class='w3-button w3-round-xxlarge event-color-primary'
+                onclick='saveBadge();'>
+              Save
+            </button>
+            <button class='w3-button w3-round-xxlarge w3-red'
+                onclick='hideSidebar();'>
+              Close
+            </button>
+        </div>
+    </div>
+
 </div>

@@ -33,6 +33,7 @@ if (!empty($_REQUEST)) {
     'delete' => FILTER_SANITIZE_NUMBER,
     'cycle' => FILTER_SANITIZE_STRING,
     'deleteBadge' => FILTER_SANITIZE_NUMBER,
+    'badge' => FILTER_SANITIZE_STRING,
     ];
 
     $updateData = filter_input_array(INPUT_POST, $arguments);
@@ -56,6 +57,12 @@ if (!empty($_REQUEST)) {
 
     if (isset($updateData['deleteBadge'])) {
         delete_badge($updateData['deleteBadge']);
+        exit();
+    }
+
+    if (isset($updateData['badge'])) {
+        $data = json_decode(base64_decode($updateData['badge']));
+        save_badge($data);
         exit();
     }
 }

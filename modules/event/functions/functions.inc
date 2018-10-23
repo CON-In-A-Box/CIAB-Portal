@@ -1,5 +1,10 @@
 <?php
 
+/*.
+    require_module 'standard';
+    require_module 'json';
+.*/
+
 require_once($FUNCTIONDIR."/database.inc");
 require_once($FUNCTIONDIR."/update/from_neon_to_152.inc");
 
@@ -65,6 +70,7 @@ function _event_details($id)
 SQL;
     $data = load_table($sql);
     return $data[0];
+
 }
 
 
@@ -109,7 +115,9 @@ SQL;
                     `Registrations` as r
                 WHERE
                     r.`BadgeTypeID` = b.`BadgeTypeID`
-            ) as Sold
+            ) as Sold,
+            AvailableFrom,
+            AvailableTo
         FROM
             `BadgeTypes` as b
 SQL;
@@ -119,12 +127,15 @@ SQL;
     'Cost' => 'Cost',
     'Event' => 'EventID',
     'Sold' => 'Sold',
+    'From' => 'AvailableFrom',
+    'To' => 'AvailableTo',
     ];
     $badge_data = load_table($sql, $values);
     $badge_keys = array_keys($values);
 
     print "<tr><th>".implode('</th><th>', $event_keys)."</th></tr>\n";
     foreach ($event_data as $entry) {
+        $plain_name = $entry['Name'];
         $entry['Name'] .= " <i id='badges_".$entry['Id']."_arrow' class='fa fa-caret-down'>";
         print "<tr class='event-hover-primary' ";
         print "onclick='expandEvent(\"badges_".$entry['Id']."\")'>";
@@ -134,30 +145,48 @@ SQL;
         print "<tr><td colspan=5><div name='badges_".$entry['Id']."' class=' w3-hide'><table class='w3-table-all w3-center'>";
 
         print "<tr>";
-        unset($badge_keys[2]);
+        unset($badge_keys[0]);
+        unset($badge_keys[3]);
+        unset($badge_keys[5]);
+        unset($badge_keys[6]);
         print "<th>".implode('</th><th>', $badge_keys)."</th><th></th>";
         print "</tr>\n";
         foreach ($badge_data as $badge) {
             if ($badge['Event'] == $entry['Id']) {
+                $badge['EventName'] = $plain_name;
+                $json = json_encode($badge);
+                $json = base64_encode($json);
+                $id  = $badge['Id'];
+                unset($badge['Id']);
                 unset($badge['Event']);
+                unset($badge['From']);
+                unset($badge['To']);
+                unset($badge['EventName']);
                 print "<tr> ";
                 print "<td>".implode('</td><td>', $badge)."</td>";
+                print "<td class='w3-center'>";
+                print "<button class='w3-button w3-small w3-round-xxlarge w3-green'  onclick='editBadge(\"$json\");'>Edit</button>  ";
                 if (intval($badge['Sold']) == 0) {
-                    $id  = $badge['Id'];
                     $name = $badge['Badge Name'];
-                    print "<td class='w3-center'><button class='w3-button w3-round-large w3-red' onclick='deleteBadge($id,\"$name\");'>Delete</button> </td>";
+                    print "<button class='w3-button w3-small w3-round-xxlarge w3-red' onclick='deleteBadge($id,\"$name\");'>Delete</button>";
                 } else {
-                    print "<td class='w3-center'><button class='w3-button w3-round-large w3-red' disabled>Delete</button> </td>";
+                    print "<button class='w3-button w3-small w3-round-xxlarge w3-red' disabled>Delete</button>";
                 }
+                print "</td>";
                 print "</tr>\n";
             }
         }
-        print "</table></div></td>";
+        print "<tr> <td colspan=10 class='w3-center'>";
+        $event = $entry['Id'];
+        print "<button id='new' class='w3-button w3-round-xxlarge event-color-primary' onclick='newBadge($event, \"$plain_name\")'>Add New Badge</button>";
+        print "</td></tr>";
+        print "</table>";
+        print "</div></td>";
         print "<td> <div name='badges_".$entry['Id']."' class=' w3-hide'>";
 
         $details = _event_details($entry['Id']);
         print "<table class='w3-table-all'>";
-        foreach($details as $key => $detail) {
+        foreach ($details as $key => $detail) {
             print "<tr><td>".$key."</td><td>";
             print $detail."</td></tr>";
         }
@@ -385,6 +414,52 @@ function new_cycle($cycle)
 function delete_badge($id)
 {
     $sql = "DELETE FROM `BadgeTypes` WHERE `BadgeTypeID` = $id;";
+    DB::run($sql);
+
+}
+
+
+function save_badge($badge)
+{
+    $id = $badge->Id;
+    $name = $badge->Name;
+    $event = $badge->Event;
+    $cost = $badge->Cost;
+    if ($badge->From == '') {
+        $from = '0000-00-00';
+    } else {
+        $from = $badge->From;
+    }
+    if ($badge->To == '') {
+        $to = '0000-00-00';
+    } else {
+        $to = $badge->To;
+    }
+    if ($id == -1) {
+        $sql = <<<SQL
+    INSERT INTO `BadgeTypes` (
+        `BadgeTypeID`, `AvailableFrom`, `AvailableTo`, `Cost`, `EventID`,
+        `Name`
+    )
+    VALUES
+        (
+            NULL, '$from', '$to', $cost, $event, '$name'
+        )
+SQL;
+    } else {
+        $sql = <<<SQL
+    UPDATE
+        `BadgeTypes`
+    SET
+        `AvailableFrom` = '$from',
+        `AvailableTo` = '$to',
+        `Cost` = $cost,
+        `EventID` = $event,
+        `Name` = '$name'
+    WHERE
+        `BadgeTypeID` = $id
+SQL;
+    }
     DB::run($sql);
 
 }
