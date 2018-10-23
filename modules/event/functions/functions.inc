@@ -98,6 +98,7 @@ SQL;
 
     $sql = <<<SQL
         SELECT
+            BadgeTypeID,
             Name,
             Cost,
             EventID,
@@ -113,6 +114,7 @@ SQL;
             `BadgeTypes` as b
 SQL;
     $values = [
+    'Id' => 'BadgeTypeID',
     'Badge Name' => 'Name',
     'Cost' => 'Cost',
     'Event' => 'EventID',
@@ -133,13 +135,20 @@ SQL;
 
         print "<tr>";
         unset($badge_keys[2]);
-        print "<th>".implode('</th><th>', $badge_keys)."</th>";
+        print "<th>".implode('</th><th>', $badge_keys)."</th><th></th>";
         print "</tr>\n";
         foreach ($badge_data as $badge) {
             if ($badge['Event'] == $entry['Id']) {
                 unset($badge['Event']);
                 print "<tr> ";
                 print "<td>".implode('</td><td>', $badge)."</td>";
+                if (intval($badge['Sold']) == 0) {
+                    $id  = $badge['Id'];
+                    $name = $badge['Badge Name'];
+                    print "<td class='w3-center'><button class='w3-button w3-round-large w3-red' onclick='deleteBadge($id,\"$name\");'>Delete</button> </td>";
+                } else {
+                    print "<td class='w3-center'><button class='w3-button w3-round-large w3-red' disabled>Delete</button> </td>";
+                }
                 print "</tr>\n";
             }
         }
@@ -368,6 +377,14 @@ function new_cycle($cycle)
     $from = $cycle->From;
     $to = $cycle->To;
     $sql = "INSERT INTO `AnnualCycles` (`AnnualCycleID`, `DateFrom`, `DateTo`) VALUES (NULL, '$from', '$to')";
+    DB::run($sql);
+
+}
+
+
+function delete_badge($id)
+{
+    $sql = "DELETE FROM `BadgeTypes` WHERE `BadgeTypeID` = $id;";
     DB::run($sql);
 
 }

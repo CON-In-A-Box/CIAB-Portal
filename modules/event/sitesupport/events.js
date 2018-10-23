@@ -156,3 +156,35 @@ function expandEvent(name) {
   expandSection(name);
 
 }
+
+var _deletedBadge = 0;
+
+function processBadgeDeletion() {
+  confirmbox.close();
+
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        hideSidebar();
+        location.reload();
+      } else if (this.status == 404) {
+        window.alert('404!');
+      } else if (this.status == 409) {
+        window.alert('409!');
+      }
+    };
+  xhttp.open('POST', 'index.php?Function=event', true);
+  xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+  xhttp.send('deleteBadge=' + _deletedBadge);
+
+}
+
+function deleteBadge(id, name) {
+  _deletedBadge = id;
+  confirmbox.start(
+      'Confirms Badge Deletion',
+      'Delete badge \'' + name + '\' ?',
+      processBadgeDeletion
+  );
+
+}
