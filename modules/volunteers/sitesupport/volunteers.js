@@ -34,7 +34,7 @@ function lookupFail(target, resp, name, code) {
 }
 
 function showHideSoldOut() {
-  var unhide = (document.getElementById('soldoutcheck').checked);
+  var unhide = !(document.getElementById('soldoutcheck').checked);
   var table = document.getElementById('prizes');
   for (var i = 0; i < table.rows.length; i++) {
     var row = table.rows[i];

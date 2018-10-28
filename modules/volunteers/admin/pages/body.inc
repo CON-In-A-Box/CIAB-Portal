@@ -302,9 +302,9 @@ function _prize_table_start($uid = 0, $spent = 0, $hoursRemain = 0)
         echo "onclick='showHideSoldOut()'>";
         echo "<label for='soldoutcheck'>";
         if (isset($uid)) {
-            echo "Show volunteer's soldout items";
+            echo "Hide volunteer's soldout items";
         } else {
-            echo "Show soldout items";
+            echo "Hide soldout items";
         }
         echo "</label></th>\n";
     }
@@ -399,9 +399,9 @@ function prizes_table($uid)
                 echo ">";
             } else {
                 if ($record['Remaining'] <= 0) {
-                    echo "<tr class='soldoutrow hiddenrow w3-red'>";
+                    echo "<tr class='soldoutrow w3-red'>";
                 } elseif ($record['Promo'] == 'yes' && array_key_exists('Aquired', $record) && $record['Aquired'] > 0) {
-                    echo "<tr class='soldoutrow hiddenrow w3-disabled'>";
+                    echo "<tr class='soldoutrow w3-disabled'>";
                 } elseif ($record['RewardGroupID']) {
                     $record['GroupLimit'] = $record['Limit'];
                     if ($last_group !== null && $last_group != $record['RewardGroupID']) {
@@ -422,7 +422,7 @@ function prizes_table($uid)
                     $classes = $group_styles[($group % count($group_styles))];
 
                     if (isset($record['group_soldout'])) {
-                        echo "<tr class='$classes soldoutrow hiddenrow w3-disabled'>";
+                        echo "<tr class='$classes soldoutrow w3-disabled'>";
                     } else {
                         echo "<tr class='$classes";
                         if (!$admin_mode && isset($uid) && acquireable_item($record)) {
