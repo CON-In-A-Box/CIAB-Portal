@@ -135,7 +135,7 @@ SQL;
 
     print "<tr><th>".implode('</th><th>', $event_keys)."</th></tr>\n";
     foreach ($event_data as $entry) {
-        $plain_name = $entry['Name'];
+        $plain_name = htmlspecialchars($entry['Name'], ENT_QUOTES);
         $entry['Name'] .= " <i id='badges_".$entry['Id']."_arrow' class='fa fa-caret-down'>";
         print "<tr class='event-hover-primary' ";
         print "onclick='expandEvent(\"badges_".$entry['Id']."\")'>";
@@ -176,7 +176,7 @@ SQL;
                 print "</tr>\n";
             }
         }
-        print "<tr> <td colspan=10 class='w3-center'>";
+        print "<tr> <td colspan=4 class='w3-center'>";
         $event = $entry['Id'];
         print "<button id='new' class='w3-button w3-round-xxlarge event-color-primary' onclick='newBadge($event, \"$plain_name\")'>Add New Badge</button>";
         print "</td></tr>";
@@ -185,12 +185,28 @@ SQL;
         print "<td> <div name='badges_".$entry['Id']."' class=' w3-hide'>";
 
         $details = _event_details($entry['Id']);
+        $can_delete = true;
         print "<table class='w3-table-all'>";
         foreach ($details as $key => $detail) {
             print "<tr><td>".$key."</td><td>";
             print $detail."</td></tr>";
+            if ($can_delete && intval($detail) > 0) {
+                $can_delete = false;
+            }
         }
         print "</table>";
+        print "<div class='w3-center'>";
+        $json = json_encode($entry);
+        $json = base64_encode($json);
+        print "<button class='w3-button w3-round-xxlarge event-color-primary w3-margin' onclick='editEvent(\"$plain_name\",\"$json\")'>Modify Event</button>";
+        print "</div>";
+        print "<div class='w3-center'>";
+        if ($can_delete) {
+            print "<button class='w3-button w3-round-xxlarge w3-red' onclick='deleteEvent(".$entry['Id'].",\"$plain_name\")'>Delete Event</button>";
+        } else {
+            print "<button class='w3-button w3-round-xxlarge w3-red w3-disabled' >Delete Event</button>";
+        }
+        print "</div>";
         print "</div></td>";
         print "</tr>";
     }
@@ -331,7 +347,7 @@ SQL;
 function save_meeting($meeting)
 {
     $date = $meeting->Date;
-    $name = $meeting->Name;
+    $name = MyPDO::quote($meeting->Name);
     $event = $meeting->EventID;
     if ($meeting->Id == -1) {
         $sql = <<<SQL
@@ -340,7 +356,7 @@ function save_meeting($meeting)
     )
     VALUES
         (
-            NULL, '$date', $event, '$name'
+            NULL, '$date', $event, $name
         )
 SQL;
     } else {
@@ -351,7 +367,7 @@ SQL;
     SET
         `Date` = '$date',
         `EventID` = $event,
-        `Name` = '$name'
+        `Name` = $name
     WHERE
         `MeetingID` = $id
 SQL;
@@ -422,7 +438,7 @@ function delete_badge($id)
 function save_badge($badge)
 {
     $id = $badge->Id;
-    $name = $badge->Name;
+    $name = MyPDO::quote($badge->Name);
     $event = $badge->Event;
     $cost = $badge->Cost;
     if ($badge->From == '') {
@@ -443,7 +459,7 @@ function save_badge($badge)
     )
     VALUES
         (
-            NULL, '$from', '$to', $cost, $event, '$name'
+            NULL, '$from', '$to', $cost, $event, $name
         )
 SQL;
     } else {
@@ -460,6 +476,56 @@ SQL;
         `BadgeTypeID` = $id
 SQL;
     }
+    DB::run($sql);
+
+}
+
+
+function save_event($event)
+{
+    $id = $event->Id;
+    $name = MyPDO::quote($event->Name);
+    $from = $event->From;
+    $to = $event->To;
+
+    $cycle_to = lookup_cycleID($to);
+    $cycle_from = lookup_cycleID($from);
+    if ($cycle_to != $cycle_from) {
+        header("HTTP/1.0 404");
+        return;
+    }
+
+    if ($id == -1) {
+        $sql = <<<SQL
+    INSERT INTO `Events` (
+        `EventID`, `AnnualCycleID`, `DateFrom`, `DateTo`, `EventName`
+    )
+    VALUES
+        (
+            NULL, '$cycle_from', '$from', '$to', $name
+        )
+SQL;
+    } else {
+        $sql = <<<SQL
+    UPDATE
+        `Events`
+    SET
+        `DateFrom` = '$from',
+        `DateTo` = '$to',
+        `AnnualCycleID` = $cycle_from,
+        `EventName` = $name
+    WHERE
+        `EventID` = $id
+SQL;
+    }
+    DB::run($sql);
+
+}
+
+
+function delete_event($id)
+{
+    $sql = "DELETE FROM `Events` WHERE `EventID` = $id;";
     DB::run($sql);
 
 }
