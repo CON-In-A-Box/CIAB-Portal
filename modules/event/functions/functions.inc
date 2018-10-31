@@ -455,7 +455,7 @@ SQL;
         `AvailableTo` = '$to',
         `Cost` = $cost,
         `EventID` = $event,
-        `Name` = '$name'
+        `Name` = $name
     WHERE
         `BadgeTypeID` = $id
 SQL;
