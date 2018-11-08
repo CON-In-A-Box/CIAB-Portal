@@ -254,3 +254,104 @@ function saveBadge() {
   );
 
 }
+
+function editEvent(name, data) {
+  var evnt = JSON.parse(atob(data));
+
+  document.getElementById('event_id').value = evnt.Id;
+  document.getElementById('event_name').value = name;
+  document.getElementById('event_to').value = evnt.To;
+  document.getElementById('event_from').value = evnt.From;
+  showSidebar('edit_event');
+
+}
+
+function processNewEvent() {
+  confirmbox.close();
+
+  var data = {
+      'Id': document.getElementById('event_id').value,
+      'Name': document.getElementById('event_name').value,
+      'To': document.getElementById('event_to').value,
+      'From': document.getElementById('event_from').value,
+    };
+  var param = btoa(JSON.stringify(data));
+
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        hideSidebar();
+        location.reload();
+      } else if (this.status == 404) {
+        window.alert('Event Failed to Save, Check if proper cycle exists.');
+        return;
+      }
+    };
+  xhttp.open('POST', 'index.php?Function=event', true);
+  xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+  xhttp.send('event=' + param);
+
+}
+
+function saveEvent() {
+  var To = document.getElementById('event_to').value;
+  var From = document.getElementById('event_from').value;
+  var name = document.getElementById('event_name').value;
+  if (From === '') {
+    window.alert('Event "From" date missing');
+    return;
+  } else if (To === '') {
+    window.alert('Event "To" date missing');
+    return;
+  } else if (name === '') {
+    window.alert('Event "Name" missing');
+    return;
+  }
+  confirmbox.start(
+      'Confirm Event',
+      'Save Event "' + name + '" ?',
+      processNewEvent
+  );
+
+}
+
+function newEvent() {
+  document.getElementById('event_id').value = -1;
+  document.getElementById('event_name').value = 'New Event';
+  document.getElementById('event_from').value = '0000-00-00';
+  document.getElementById('event_to').value = '0000-00-00';
+  showSidebar('edit_event');
+
+}
+
+var _deletedEvent = 0;
+
+function processEventDeletion() {
+  confirmbox.close();
+
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        hideSidebar();
+        location.reload();
+      } else if (this.status == 404) {
+        window.alert('404!');
+      } else if (this.status == 409) {
+        window.alert('409!');
+      }
+    };
+  xhttp.open('POST', 'index.php?Function=event', true);
+  xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+  xhttp.send('deleteEvent=' + _deletedEvent);
+
+}
+
+function deleteEvent(id, name) {
+  _deletedEvent = id;
+  confirmbox.start(
+      'Confirms Event Deletion',
+      'Delete event \'' + name + '\' ?',
+      processEventDeletion
+  );
+
+}

@@ -180,6 +180,24 @@ SQL;
 
 }
 
+function lookup_cycleID($date)
+{
+    if ($date instanceof DateTime) {
+        $year  = date("Y-m-d", $date);
+    } else {
+        $time = strtotime($date);
+        $year  = date("Y-m-d", $time);
+    }
+    $sql = "SELECT AnnualCycleID FROM AnnualCycles WHERE DateTo >= '$year' AND DateFrom <= '$year';";
+    $result = DB::run($sql);
+    $value = $result->fetch();
+    if ($value) {
+        $cycle = $value['AnnualCycleID'];
+        return $cycle;
+    }
+    return null;
+
+}
 
 $_currentCycle = null;
 $_currentEvent = null;

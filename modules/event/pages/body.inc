@@ -44,9 +44,15 @@ require_once __DIR__.'/../functions/functions.inc'
                 <span id="events_button">Events<span> <i id="events_arrow" class="fa fa-caret-down"></i>
             </button>
             <div id="events" class="w3-container w3-margin w3-hide">
+             <div class="w3-container w3-margin w3-center">
+                <button id='new_event' class='w3-button w3-round-xxlarge event-color-primary'
+                    onclick='newEvent()'>Add New Event</button>
+             </div>
+             <div>
                 <table class="w3-table w3-striped w3-border w3-white w3-padding">
     <?php list_events() ?>
                 </table>
+             </div>
             </div>
         </div>
 
@@ -145,6 +151,32 @@ foreach ($events as $event) {
         <div class='w3-center'>
             <button class='w3-button w3-round-xxlarge event-color-primary'
                 onclick='saveBadge();'>
+              Save
+            </button>
+            <button class='w3-button w3-round-xxlarge w3-red'
+                onclick='hideSidebar();'>
+              Close
+            </button>
+        </div>
+    </div>
+
+    <div class='w3-hide w3-padding' id='edit_event' style="display: inline-block; position: fixed;">
+        <div class='w3-center'>
+            <h2 class='w3-red'>Event Details</h2>
+        </div>
+        <div>
+            <input class="w3-input w3-disabled w3-hide" id="event_id" value='-1' readonly>
+            <label for='event_name'>Event Name:</label>
+            <input class="w3-input w3-border" id="event_name" value='New Event'>
+            <label for='event_from'>From:</label>
+            <input class="w3-input w3-border" type="date" id="event_from">
+            <label for='event_to'>To:</label>
+            <input class="w3-input w3-border" type="date" id="event_to">
+        </div>
+        <hr>
+        <div class='w3-center'>
+            <button class='w3-button w3-round-xxlarge event-color-primary'
+                onclick='saveEvent();'>
               Save
             </button>
             <button class='w3-button w3-round-xxlarge w3-red'
