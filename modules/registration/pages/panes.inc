@@ -34,7 +34,7 @@ function badges()
                 $lines[$badge['EventName']][] = [
                 'Id' => $badge['AccountID'],
                 'Badge Name' => $name,
-                'Emergency Contact' => $badge['EmergencyContact'],
+                'Badge Type' => $badge['Badge'],
                 'Purchased' => $badge['RegistrationDate'],
                 'Purchaser' => $badge['RegisteredByID']
                                                 ];
@@ -42,7 +42,7 @@ function badges()
                 $lines[$badge['EventName']] = [[
                 'Id' => $badge['AccountID'],
                 'Badge Name' => $name,
-                'Emergency Contact' => $badge['EmergencyContact'],
+                'Badge Type' => $badge['Badge'],
                 'Purchased' => $badge['RegistrationDate'],
                 'Purchaser' => $badge['RegisteredByID']
                                                ]];
@@ -62,11 +62,12 @@ function badges()
             </div>
         </div>
 
-        <table class='w3-table w3-striped w3-bordered w3-white'>
+        <table class='w3-table w3-striped w3-bordered w3-white w3-responsive'>
 <?php
 foreach ($lines as $con => $names) {
+    $colspan = count($names[0]);
     echo "<table class='w3-table w3-striped w3-bordered w3-white'>\n";
-    echo "<tr><th class='w3-center event-color-primary' colspan=5'>".$con;
+    echo "<tr><th class='w3-center event-color-primary' colspan='$colspan'>".$con;
     echo " (".count($names)." badges)</th></tr>\n";
     $keys = array_keys($names[0]);
     echo "<tr><th>";

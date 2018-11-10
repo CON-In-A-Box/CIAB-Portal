@@ -22,7 +22,15 @@ function get_tickets($id, $event = null)
                     `Events` AS e
                 WHERE
                     r.EventID = e.EventID
-            ) AS EventName
+            ) AS EventName,
+            (
+                SELECT
+                    Name
+                FROM
+                    `BadgeTypes` AS t
+                WHERE
+                    t.BadgeTypeID = r.BadgeTypeID
+            ) AS Badge
         FROM
             `Registrations` AS r
         WHERE
