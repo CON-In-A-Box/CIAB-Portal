@@ -41,7 +41,7 @@ if (!isset($Departments)) {
         $result = $db->run($sql);
         $value = $result->fetch();
         while ($value !== false) {
-            array_push($Departments[$dept['name']]['Email'], $value['EMail']);
+            array_push($Departments[$dept['name']]['Email'], $value);
             $value = $result->fetch();
         }
     }

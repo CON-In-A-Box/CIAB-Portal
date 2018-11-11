@@ -18,7 +18,11 @@ function getDivision($dep)
 
 function getDepartmentEmails($dep)
 {
-    return($GLOBALS['Departments'][$dep]['Email']);
+    $result = [];
+    foreach ($GLOBALS['Departments'][$dep]['Email'] as $email) {
+        array_push($result, $email['EMail']);
+    }
+    return $result;
 
 }
 
@@ -466,8 +470,18 @@ function _departments($division)
             echo "class='w3-quarter event-color-secondary w3-xlarge w3-padding w3-margin w3-round-xxlarge' ";
             echo "id=".$id." ";
             echo "draggable='true' ";
-            echo "ondblclick='dblClick(0, \"$name\", \"$id\", $DivId, 0, ".$deptCount[$id].");' ";
-            echo "ondrop='dragDropParent(event, 1);'  ";
+            $data = [
+            'Divison' => 0,
+            'Name' => $name,
+            'Id' => $id,
+            'Pid' => $DivId,
+            'Children' => 0,
+            'Count' => $deptCount[$id],
+            'Email' => $Departments[$name]['Email']
+                    ];
+            $data_enc = base64_encode(json_encode($data));
+            echo "ondblclick='dblClick(\"".$data_enc."\");' ";
+            echo "ondrop='dragDropParent(event, 1);'";
             echo "ondragstart='drag(event);'";
             echo ">$name</div>\n";
         }
@@ -497,8 +511,18 @@ function build_structure_sections()
             continue;
         }
         $div_content_id = "division_content_$id";
+        $data = [
+        'Divison' => 1,
+        'Name' => $div,
+        'Id' => $id,
+        'Pid' => $id,
+        'Children' => $Departments[$div]['c  hildCount'],
+        'Count' => $deptCount[$id],
+        'Email' => null
+                ];
+        $data_enc = base64_encode(json_encode($data));
         echo "<div id='division_$id' class='w3-container w3-margin'>\n";
-        echo "<span class='event-color-primary w3-xxxlarge w3-padding w3-margin w3-round-xlarge' ondblclick='dblClick(1, \"$div\", $id, $id, ".$Departments[$div]['childCount'].", ".$deptCount[$id].");'>$div</span>";
+        echo "<span class='event-color-primary w3-xxxlarge w3-padding w3-margin w3-round-xlarge' ondblclick='dblClick(\"".$data_enc."\");'>$div</span>";
         echo "<div id='$div_content_id' class='w3-container w3-buffer w3-section' ondragover='dragOverDivision(\"$div_content_id\");' ondragleave='dragLeaveDivision(\"$div_content_id\");' ondragend='dragLeaveDivision(\"$div_content_id\");' ondrop='dragDropDivision(event);' data-dbId=\"$id\">\n";
         _departments($div);
         echo "</div>";
@@ -587,6 +611,31 @@ function delete_position($id)
     $sql = "UPDATE `Departments` SET `ParentDepartmentID` = 0 WHERE `DepartmentID` = $id";
     DB::run($sql);
     $sql = "DELETE FROM `Departments` WHERE `DepartmentID` = $id";
+    DB::run($sql);
+
+}
+
+
+function save_email($data)
+{
+    if ($data->Id != -1) {
+        $sql = "UPDATE `EMails` SET ";
+        $sql .= " `DepartmentID` = '".$data->Dept."' ";
+        $sql .= ", `IsAlias` = ".$data->Alias;
+        $sql .= ", `EMail` = '".$data->Email."' ";
+        $sql .= " WHERE `EMailAliasID` = ".$data->Id;
+        DB::run($sql);
+    } else {
+        $sql = "INSERT INTO `EMails` (`EMailAliasID`, `DepartmentID`, `IsAlias`, `EMail`) VALUES (NULL, ".$data->Dept.", ".$data->Alias.", '".$data->Email."');";
+        DB::run($sql);
+    }
+
+}
+
+
+function delete_email($id)
+{
+    $sql = "DELETE FROM `EMails` WHERE `EMailAliasID` = $id";
     DB::run($sql);
 
 }
