@@ -38,14 +38,22 @@ function getPositionID($position)
 }
 
 
-function printTableHeader($section)
+function printTableHeader($section, $long = true)
 {
     echo "<tr id=\"table_head_$section\" class=\"event-color-secondary w3-small\">";
-    echo '<th class="">Department</th>';
-    echo '<th class="">Division</th>';
+    if ($long) {
+        echo '<th class="">Department</th>';
+        echo '<th class="">Division</th>';
+    } else {
+        echo '<th class="" colspan=2>Department</th>';
+    }
     echo '<th class="">First Name</th>';
-    echo '<th class="">Last Name</th>';
-    echo '<th class="">Position</th>';
+    if ($long) {
+        echo '<th class="">Last Name</th>';
+        echo '<th class="">Position</th>';
+    } else {
+        echo '<th class="" colspan=2>Last Name</th>';
+    }
     echo '<th class="">Email</th>';
     echo '<th class="" colspan=2>Note</th>';
     echo "</tr>\n";
@@ -88,7 +96,9 @@ function ConComListDisplay()
         echo '</th><th colspan=3>';
         echo implode('<br />', getDepartmentEmails($div));
         echo "</th></tr>\n";
-        printTableHeader($div);
+        if ($div != 'Corporate Staff' && $div != 'Committees') {
+            printTableHeader($div);
+        }
         // Division Directors
         if (isset($printList[$div]['Division Director'])) {
             foreach ($printList[$div]['Division Director'] as $pos) {
@@ -180,8 +190,14 @@ function ConComListDisplay()
                 echo implode('<br />', getDepartmentEmails($kdep));
                 echo "</th></tr>\n";
             }
-            printTableHeader($kdep);
             if ($kdep != 'Division Director' && $kdep != 'Division Support') {
+                if ($div != 'Corporate Staff') {
+                    if ($div != 'Committees') {
+                        printTableHeader($div);
+                    } else {
+                        printTableHeader($div, false);
+                    }
+                }
                 foreach ($ConComPositions as $pos) {
                     if (isset($dep[$pos])) {
                         foreach ($dep[$pos] as $kfName => $fName) {
