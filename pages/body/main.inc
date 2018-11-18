@@ -1,3 +1,5 @@
+<div id="page" class="w3-cell-row w3-padding w3-mobile">
+
 <?php require($PAGESDIR.'/base/leftnav.inc');
 
 $homepage_panes = [];
@@ -16,7 +18,7 @@ foreach ($modules as $key => $value) {
 }
 ?>
 
-<div id="main_content" class="w3-cell w3-cell-top w3-mobile">
+<div id="main_content" class="w3-padding w3-cell w3-cell-top w3-mobile">
 
 <?php
 echo '<div class="w3-container w3-center">';
@@ -30,3 +32,4 @@ foreach ($homepage_panes as $drawfunc) {
 ?>
 
 </div><!--close main_content div-->
+</div>
