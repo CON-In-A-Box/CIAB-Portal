@@ -68,26 +68,59 @@ function downloadFile(element, filename, mime) {
     'Are you sure you want to download ' + _filename, getFile);
 }
 
-function loadFiles() {
+function loadFiles(path) {
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
       hideSpinner();
-      var table = document.getElementById('file_table');
+      var fileTable = document.getElementById('file_table');
+      var folderTable = document.getElementById('folder_table');
+      var fileCount = 0;
+      var folderCount = 0;
       var resp = JSON.parse(this.response);
-      resp.forEach(function(element) {
-        var row = table.insertRow(-1);
-        row.classList.add('event-hover-primary');
-        row.setAttribute('onclick', 'downloadFile("' + element[2] + '", "' +
-            element[0] + '", "' + element[3] + '");');
+      if (resp.path) {
+        document.getElementById('root_path').innerHTML = resp.path;
+      } else {
+        document.getElementById('root_path').innerHTML = '';
+      }
+      resp.output.forEach(function(element) {
+        var row;
+        var icon;
+        if (element[3] == 'application/vnd.google-apps.folder') {
+          row = folderTable.insertRow(-1);
+          icon = '<i class="fa fa-folder"></i> ';
+          folderCount += 1;
+        } else {
+          row = fileTable.insertRow(-1);
+          icon = '<i class="fa fa-file"></i> ';
+          fileCount += 1;
+        }
         var cell = row.insertCell(0);
-        cell.innerHTML = element[0];
-        cell = row.insertCell(1);
-        cell.innerHTML = element[1];
+        cell.innerHTML = icon + '<span>' + element[0] + '</span>';
+        row.classList.add('event-hover-secondary');
+        if (element[3] == 'application/vnd.google-apps.folder') {
+          row.setAttribute('onclick', 'window.location="index.php?' +
+            'Function=documents&path=' + element[0] + '";');
+        } else {
+          row.setAttribute('onclick', 'downloadFile("' + element[2] + '", "' +
+                element[0] + '", "' + element[3] + '");');
+          cell = row.insertCell(1);
+          cell.innerHTML = element[1];
+        }
       });
+      if (folderCount === 0) {
+        folderTable.classList.add('w3-hide');
+      } else {
+        folderTable.classList.remove('w3-hide');
+      }
+      if (fileCount === 0) {
+        fileTable.classList.add('w3-hide');
+      } else {
+        fileTable.classList.remove('w3-hide');
+      }
     }
   };
   showSpinner();
-  xhttp.open('GET', 'index.php?Function=documents&loadFiles=1', true);
+  xhttp.open('GET', 'index.php?Function=documents&loadFiles=' + path, true);
   xhttp.send();
 }
