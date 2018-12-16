@@ -114,15 +114,17 @@ SQL;
             $value = $result->fetch();
         }
 
-        $str = "('".implode("', '", $ids)."')";
-        $users = lookup_users_by_ids($str);
+        if (!empty($ids)) {
+            $str = "('".implode("', '", $ids)."')";
+            $users = lookup_users_by_ids($str);
 
-        foreach ($users['users'] as $user) {
-            if (array_key_exists($user['Id'], $db_staff)) {
-                foreach ($db_staff[$user['Id']] as $entry_key => $entry) {
-                    $db_staff[$user['Id']][$entry_key]['First Name'] = $user['First Name'];
-                    $db_staff[$user['Id']][$entry_key]['Last Name'] = $user['Last Name'];
-                    $db_staff[$user['Id']][$entry_key]['Email'] = $user['Email'];
+            foreach ($users['users'] as $user) {
+                if (array_key_exists($user['Id'], $db_staff)) {
+                    foreach ($db_staff[$user['Id']] as $entry_key => $entry) {
+                        $db_staff[$user['Id']][$entry_key]['First Name'] = $user['First Name'];
+                        $db_staff[$user['Id']][$entry_key]['Last Name'] = $user['Last Name'];
+                        $db_staff[$user['Id']][$entry_key]['Email'] = $user['Email'];
+                    }
                 }
             }
         }

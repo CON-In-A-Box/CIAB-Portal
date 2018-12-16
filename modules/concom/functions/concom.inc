@@ -19,8 +19,10 @@ function getDivision($dep)
 function getDepartmentEmails($dep)
 {
     $result = [];
-    foreach ($GLOBALS['Departments'][$dep]['Email'] as $email) {
-        array_push($result, $email['EMail']);
+    if ($GLOBALS['Departments'][$dep]['Email']) {
+        foreach ($GLOBALS['Departments'][$dep]['Email'] as $email) {
+            array_push($result, $email['EMail']);
+        }
     }
     return $result;
 
@@ -181,90 +183,92 @@ function ConComListDisplay()
             echo '<tr><td class="w3-center" colspan=8><a href="index.php?Function=concom&AddDepartment='.$div.'">Add someone to '.$div.'</a></td></tr>'."\n";
         }
         // Departments
-        foreach ($printList[$div] as $kdep => $dep) {
-            $currentDepHead = false;
-            if ($div != 'Corporate Staff' && $kdep != 'Division Director' && $kdep != 'Division Support') {
-                echo '<tr id="department" class="event-color-primary">';
-                if ($div == 'Committees') {
-                    echo '<th id="'.$kdep.'" colspan=5>'.$kdep.'</th>';
-                } else {
-                    echo '<th id="'.$kdep.'">'.$kdep.'</th><th colspan=4>'.$div.'</th>';
-                }
-                echo '<th colspan=3>';
-                echo implode('<br />', getDepartmentEmails($kdep));
-                echo "</th></tr>\n";
-            }
-            if ($kdep != 'Division Director' && $kdep != 'Division Support') {
-                if ($div != 'Corporate Staff') {
-                    if ($div != 'Committees') {
-                        printTableHeader($div);
+        if (!empty($printList[$div])) {
+            foreach ($printList[$div] as $kdep => $dep) {
+                $currentDepHead = false;
+                if ($div != 'Corporate Staff' && $kdep != 'Division Director' && $kdep != 'Division Support') {
+                    echo '<tr id="department" class="event-color-primary">';
+                    if ($div == 'Committees') {
+                        echo '<th id="'.$kdep.'" colspan=5>'.$kdep.'</th>';
                     } else {
-                        printTableHeader($div, false);
+                        echo '<th id="'.$kdep.'">'.$kdep.'</th><th colspan=4>'.$div.'</th>';
                     }
+                    echo '<th colspan=3>';
+                    echo implode('<br />', getDepartmentEmails($kdep));
+                    echo "</th></tr>\n";
                 }
-                foreach ($ConComPositions as $pos) {
-                    if (isset($dep[$pos])) {
-                        foreach ($dep[$pos] as $kfName => $fName) {
-                            foreach ($fName as $klName => $lName) {
-                                $tmp = explode('|', $lName);
-                                echo '<tr>';
-                                if ($div == 'Committees' || $div == 'Corporate Staff') {
-                                    echo '<td colspan=2>'.$kdep.'</td>';
-                                } else {
-                                    echo '<td>'.$kdep.'</td>';
-                                    echo '<td>'.$div.'</td>';
-                                }
-                                echo '<td>'.$kfName.'</td>';
-                                if ($div == 'Corporate Staff' || $div == 'Committees') {
-                                    echo '<td colspan=2>'.$klName.'</td>';
-                                } else {
-                                    echo '<td>'.$klName.'</td>';
-                                    echo '<td>'.$pos.'</td>';
-                                }
-                                if ($div == 'Corporate Staff') {
-                                    echo '<td>'.getDepartmentEmails($kdep)[0].'</td>';
-                                } else {
-                                    echo '<td>'.$tmp[0].'</td>';
-                                }
-                                if (isset($_SESSION['IS_ADMIN']) || $currentDivDirector || ($currentDepHead && $pos != 'Head')) {
-                                    echo '<td>';
-                                } else {
-                                    echo '<td colspan=2>';
-                                }
-                                echo $tmp[1];
-
-                                // Check to see if this is an entry for the logged in person
-                                if ($_SESSION['accountId'] == $tmp[2]) {
-                                    if (!empty($tmp[1])) {
-                                        echo '<br />';
+                if ($kdep != 'Division Director' && $kdep != 'Division Support') {
+                    if ($div != 'Corporate Staff') {
+                        if ($div != 'Committees') {
+                            printTableHeader($div);
+                        } else {
+                            printTableHeader($div, false);
+                        }
+                    }
+                    foreach ($ConComPositions as $pos) {
+                        if (isset($dep[$pos])) {
+                            foreach ($dep[$pos] as $kfName => $fName) {
+                                foreach ($fName as $klName => $lName) {
+                                    $tmp = explode('|', $lName);
+                                    echo '<tr>';
+                                    if ($div == 'Committees' || $div == 'Corporate Staff') {
+                                        echo '<td colspan=2>'.$kdep.'</td>';
+                                    } else {
+                                        echo '<td>'.$kdep.'</td>';
+                                        echo '<td>'.$div.'</td>';
                                     }
-                                    echo 'This is you!';
-                                    // Check to see if this person is a head of a department
-                                    if ($pos == 'Head') {
-                                        $currentDepHead = true;
-                                        if (isset($_SESSION['HEAD_OF'])) {
-                                            if (!in_array($kdep, $_SESSION['HEAD_OF'])) {
+                                    echo '<td>'.$kfName.'</td>';
+                                    if ($div == 'Corporate Staff' || $div == 'Committees') {
+                                        echo '<td colspan=2>'.$klName.'</td>';
+                                    } else {
+                                        echo '<td>'.$klName.'</td>';
+                                        echo '<td>'.$pos.'</td>';
+                                    }
+                                    if ($div == 'Corporate Staff') {
+                                        echo '<td>'.getDepartmentEmails($kdep)[0].'</td>';
+                                    } else {
+                                        echo '<td>'.$tmp[0].'</td>';
+                                    }
+                                    if (isset($_SESSION['IS_ADMIN']) || $currentDivDirector || ($currentDepHead && $pos != 'Head')) {
+                                        echo '<td>';
+                                    } else {
+                                        echo '<td colspan=2>';
+                                    }
+                                    echo $tmp[1];
+
+                                    // Check to see if this is an entry for the logged in person
+                                    if ($_SESSION['accountId'] == $tmp[2]) {
+                                        if (!empty($tmp[1])) {
+                                            echo '<br />';
+                                        }
+                                        echo 'This is you!';
+                                        // Check to see if this person is a head of a department
+                                        if ($pos == 'Head') {
+                                            $currentDepHead = true;
+                                            if (isset($_SESSION['HEAD_OF'])) {
+                                                if (!in_array($kdep, $_SESSION['HEAD_OF'])) {
+                                                    $_SESSION['HEAD_OF'][] = $kdep;
+                                                }
+                                            } else {
                                                 $_SESSION['HEAD_OF'][] = $kdep;
                                             }
-                                        } else {
-                                            $_SESSION['HEAD_OF'][] = $kdep;
                                         }
                                     }
-                                }
-                                echo '</td>';
-                                if (isset($_SESSION['IS_ADMIN']) || $currentDivDirector || ($currentDepHead && $pos != "Head")) {
-                                    echo '<td class="w3-red"><a href="index.php?Function=concom&Remove='.urlencode($tmp[2]).'&Department='.urlencode($kdep).'&Position='.$pos.'" onclick="return confirm(\'Are you sure you want to remove '.$kfName.' '.$klName.' from '.$kdep.'?\');">Remove</a></td>';
-                                }
+                                    echo '</td>';
+                                    if (isset($_SESSION['IS_ADMIN']) || $currentDivDirector || ($currentDepHead && $pos != "Head")) {
+                                        echo '<td class="w3-red"><a href="index.php?Function=concom&Remove='.urlencode($tmp[2]).'&Department='.urlencode($kdep).'&Position='.$pos.'" onclick="return confirm(\'Are you sure you want to remove '.$kfName.' '.$klName.' from '.$kdep.'?\');">Remove</a></td>';
+                                    }
 
-                                echo "</tr>\n";
+                                    echo "</tr>\n";
+                                }
+                                unset($tmp);
                             }
-                            unset($tmp);
                         }
                     }
                 }
-            }
-            if (($div != 'Corporate Staff' && $kdep != 'Division Director' && $kdep != 'Division Support') && (isset($_SESSION['IS_ADMIN']) || $currentDivDirector || ($currentDepHead && $pos != "Head"))) {
-                echo '<tr><td class="w3-center" colspan=8><a href="index.php?Function=concom&AddDepartment='.urlencode($kdep).'">Add someone to '.$kdep.'</a></td></tr>'."\n";
+                if (($div != 'Corporate Staff' && $kdep != 'Division Director' && $kdep != 'Division Support') && (isset($_SESSION['IS_ADMIN']) || $currentDivDirector || ($currentDepHead && $pos != "Head"))) {
+                    echo '<tr><td class="w3-center" colspan=8><a href="index.php?Function=concom&AddDepartment='.urlencode($kdep).'">Add someone to '.$kdep.'</a></td></tr>'."\n";
+                }
             }
         }
     }
