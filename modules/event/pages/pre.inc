@@ -36,6 +36,8 @@ if (!empty($_REQUEST)) {
     'badge' => FILTER_SANITIZE_STRING,
     'deleteEvent' => FILTER_SANITIZE_NUMBER,
     'event' => FILTER_SANITIZE_STRING,
+    'duplicateConcom' => FILTER_SANITIZE_NUMBER,
+    'from' => FILTER_SANITIZE_NUMBER,
     ];
 
     $updateData = filter_input_array(INPUT_POST, $arguments);
@@ -76,6 +78,11 @@ if (!empty($_REQUEST)) {
     if (isset($updateData['event'])) {
         $data = json_decode(base64_decode($updateData['event']));
         save_event($data);
+        exit();
+    }
+
+    if (isset($updateData['duplicateConcom'])) {
+        duplicate_concom($updateData['duplicateConcom'], $updateData['from']);
         exit();
     }
 }

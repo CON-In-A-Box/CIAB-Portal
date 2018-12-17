@@ -355,3 +355,42 @@ function deleteEvent(id, name) {
   );
 
 }
+
+function importConcom(event) {
+  document.getElementById('concom_event_id').value = event;
+  var sel = document.getElementById('import_from');
+  sel.selectedIndex = 0;
+  for (var index = 0; index < sel.options.length; index++) {
+    sel.options[index].disabled = false;
+  }
+
+  var idx = document.querySelector('#import_from option[value="' +
+     event + '"]');
+  idx.disabled = true;
+  if (sel.selectedIndex == idx.index) {
+    sel.selectedIndex ++;
+  }
+  showSidebar('import_concom');
+
+}
+
+function doImport() {
+  var to = document.getElementById('concom_event_id').value;
+  var sel = document.getElementById('import_from');
+  var from = sel.options[sel.selectedIndex].value;
+
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        hideSidebar();
+        location.reload();
+      } else if (this.status == 404) {
+        window.alert('404!');
+      } else if (this.status == 409) {
+        window.alert('409!');
+      }
+    };
+  xhttp.open('POST', 'index.php?Function=event', true);
+  xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+  xhttp.send('duplicateConcom=' + to + '&from=' + from);
+}
