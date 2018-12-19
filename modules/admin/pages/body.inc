@@ -240,81 +240,28 @@ foreach ($table as $line) {
 
 <!-- Debug code for admins, just in case -->
 <p></p>
-<script>
-function myDebug() {
-    var x = document.getElementById("DebugInfo");
-    var y = document.getElementById("ActivityLog");
-    if (x.className.indexOf("w3-show") == -1) {
-        x.className += " w3-show";
-        y.className = y.className.replace(" w3-show", "");
-    } else {
-        x.className = x.className.replace(" w3-show", "");
-    }
-}
 
-function setField(field) {
-  var value = document.getElementById("config_"+field).value;
-  value = btoa(value);
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-      location.reload();
-    }
-  };
-  xhttp.open('POST', 'index.php?Function=admin', true);
-  xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-  xhttp.send('&setField='+field+'&value='+value);
-}
+<div id="dbg_info_content" class="w3-section w3-container">
+  <button class="w3-button w3-small w3-block w3-left-align" onclick="expandSection('dbg_info');"><span>Debug Session Information&nbsp;</span><i id="dbg_info_arrow" class="fa fa-caret-down"></i></button>
 
-function addField() {
-  var field = document.getElementById("new_Field").value;
-  var value = document.getElementById("new_Value").value;
-  value = btoa(value);
-
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-      location.reload();
-    }
-  };
-  xhttp.open('POST', 'index.php?Function=admin', true);
-  xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-  xhttp.send('&newField='+field+'&value='+value);
-}
-
-</script>
-<div class="w3-dropdown-click w3-block">
-  <button class="w3-button w3-tiny w3-block w3-left-align" onclick="myDebug()">Debug Array Information</button>
-  <div id="DebugInfo" class="w3-dropdown-content w3-small">
-    <pre><?php print_r($_SESSION); ?></pre>
+  <div id="dbg_info" class="w3-section w3-margin w3-hide">
+      <div id="DebugInfo" class="w3-section w3-small">
+        <pre><?php print_r($_SESSION); ?></pre>
+      </div>
   </div>
 </div>
 
 <!-- Activity log - limited to last lines, in reverse order -->
 <p></p>
-<script>
-function myActivityLog() {
-    var x = document.getElementById("ActivityLog");
-    var y = document.getElementById("DebugInfo");
-    if (x.className.indexOf("w3-show") == -1) {
-        x.className += " w3-show";
-        y.className = y.className.replace(" w3-show", "");
-    } else {
-        x.className = x.className.replace(" w3-show", "");
-    }
-}
+<div id="db_log_content" class="w3-section w3-container">
+  <button class="w3-button w3-small w3-block w3-left-align" onclick="expandSection('db_log');"><span>DB Activity Log&nbsp;</span><i id="db_log_arrow" class="fa fa-caret-down"></i></button>
 
-function downloadLog() {
-  window.location = 'index.php?Function=admin&downloadLog=db';
-}
-
-</script>
-<div class="w3-dropdown-click w3-block">
-  <button class="w3-button w3-tiny w3-block w3-left-align" onclick="myActivityLog()">DB Activity Log</button>
-  <div id="ActivityLog" class="w3-dropdown-content">
-    <div>
-      <button class="w3-button w3-tiny w3-left-align w3-yellow" onclick="downloadLog()">Download Full Activity Log (CSV)</button>
-    </div>
-    <?php dbPrintLog(1000); ?>
+  <div id="db_log" class="w3-section w3-margin w3-hide">
+   <div id="ActivityLog" class="w3-section" style="width: 100%;">
+     <div>
+       <button class="w3-button w3-tiny w3-left-align w3-yellow" onclick="downloadLog()">Download Full Activity Log (CSV)</button>
+     </div>
+     <?php dbPrintLog(1000); ?>
+   </div>
   </div>
 </div>
