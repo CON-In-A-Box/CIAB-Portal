@@ -50,9 +50,10 @@ if (!empty($_REQUEST)) {
     $updateData = filter_input_array(INPUT_GET, $arguments);
 
     if (isset($updateData['loadFiles'])) {
+        $path = $updateData['loadFiles'];
         $client_info = create_client();
         $service = get_drive_service($client_info[0]);
-        $files = list_files($service);
+        $files = list_files($service, $path);
         echo json_encode($files);
         exit();
     }

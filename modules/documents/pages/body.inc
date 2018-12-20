@@ -2,9 +2,14 @@
 <h2 class="w3-center event-color-primary"> Staff Shared Documents </h2>
 <?php
 
+/*.
+    require_module 'standard';
+.*/
+
 require_once __DIR__.'/../functions/documents.inc';
 
 $client_info = create_client();
+$root = '/';
 
 if ($client_info[0] == null) {
 ?>
@@ -45,14 +50,30 @@ if (!isset($G_ROOTFOLDER) || $G_ROOTFOLDER === "") {
 <?php
 exit();
 } else {
+/*. string .*/
+    if (!empty($_REQUEST)) {
+    // Retrieve and sanitize POST data
+        $arguments = [
+        'path'      => FILTER_SANITIZE_SPECIAL_CHARS,
+        ];
+        $updateData = filter_input_array(INPUT_GET, $arguments);
+        $root = $updateData['path'];
+    }
+    echo '<h2 class="w3-center"><b id="root_path">'.$root.'</b></h2>';
+
 ?>
-<table class="w3-table w3-striped w3-border w3-white" id="file_table">
-<tr><th class="event-color-primary w3-center">File</th><th class="event-color-primary w3-center">Last Modified</th></th>
+<table class="w3-table w3-striped w3-border w3-white w3-margin" id="folder_table">
+<tr><th class="event-color-primary w3-center">Folder</th></tr>
+</table>
+<table class="w3-table w3-striped w3-border w3-white w3-margin" id="file_table">
+<tr><th class="event-color-primary w3-center">File</th><th class="event-color-primary w3-center">Last Modified</th></tr>
 <?php
 }
 ?>
 </table>
 <script>
-    loadFiles();
+<?php
+echo 'loadFiles("'.$root.'");';
+?>
 </script>
 </div>

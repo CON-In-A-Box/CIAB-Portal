@@ -73,14 +73,68 @@ function get_drive_service($client)
 }
 
 
-function list_files($service)
+function _check_children($service, $response, $target)
+{
+    foreach ($response->files as $file) {
+        if ($file->name == $target) {
+            return $file->id;
+        }
+
+        $q = "mimeType='application/vnd.google-apps.folder' and "."'".$file->id."' in parents and not trashed";
+
+        $response = $service->files->listFiles(array(
+            'pageSize' => '100',
+            'q' => $q,
+            'fields' => 'nextPageToken, files(id, name, mimeType, parents, trashed)'
+        ));
+
+        if ($response != null) {
+            $r = _check_children($service, $response, $target);
+            if ($r != null) {
+                return $r;
+            }
+        }
+    }
+    return null;
+
+}
+
+
+function find_sub_folder($service, $target)
 {
     global $G_ROOTFOLDER;
+
+    $q = "mimeType='application/vnd.google-apps.folder' and '$G_ROOTFOLDER' "."in parents and not trashed";
+
+    $response = $service->files->listFiles(array(
+        'pageSize' => '100',
+        'q' => $q,
+        'fields' => 'nextPageToken, files(id, name, mimeType, parents, trashed)'
+    ));
+
+    return _check_children($service, $response, $target);
+
+}
+
+
+function list_files($service, $path = null)
+{
+    global $G_ROOTFOLDER;
+
+    $folder = null;
+
+    if ($path !== null && $path != '/') {
+        $folder = find_sub_folder($service, $path);
+    }
+    if ($folder === null) {
+        $path = null;
+        $folder = $G_ROOTFOLDER;
+    }
 
     $output = [];
     $optParams = array(
       'pageSize' => '100',
-      'q' => "'$G_ROOTFOLDER' in parents",
+      'q' => "'$folder' in parents",
       'fields' => 'nextPageToken, files(id, name, trashed, modifiedTime, mimeType)'
     );
 
@@ -93,8 +147,7 @@ function list_files($service)
         if ($entry['trashed']) {
             continue;
         }
-        if (!$entry['mimeType'] ||
-             $entry['mimeType'] === 'application/vnd.google-apps.folder') {
+        if (!$entry['mimeType']) {
             continue;
         }
         $output[] = [$entry['name'], $entry['modifiedTime'], $entry['id'],
@@ -108,8 +161,7 @@ function list_files($service)
             if ($entry['trashed']) {
                 continue;
             }
-            if (!$entry['mimeType'] ||
-                 $entry['mimeType'] === 'application/vnd.google-apps.folder') {
+            if (!$entry['mimeType']) {
                 continue;
             }
             $output[] = [$entry['name'], $entry['modifiedTime'], $entry['id'],
@@ -117,7 +169,9 @@ function list_files($service)
         }
     }
     sort($output);
-    return $output;
+
+    $result = [ 'path' => $path, 'output' => $output ];
+    return $result;
 
 }
 
