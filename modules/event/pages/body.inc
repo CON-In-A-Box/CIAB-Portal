@@ -186,4 +186,33 @@ foreach ($events as $event) {
         </div>
     </div>
 
+    <div class='w3-hide w3-padding' id='import_concom' style="display: inline-block; position: fixed;">
+        <div class='w3-center'>
+            <h2 class='w3-red'>Import Concom</h2>
+        </div>
+        <div>
+            <input class="w3-input w3-disabled w3-hide" id="concom_event_id" value='-1' readonly>
+            <label for='event_from'>From:</label>
+            <select class="w3-input w3-border" id="import_from">
+<?php
+$events = select_events();
+foreach ($events as $event) {
+    print "<option value=".$event['Id'].">".$event['Name']."</option>\n";
+}
+?>
+            </select>
+        </div>
+        <hr>
+        <div class='w3-center'>
+            <button class='w3-button w3-round-xxlarge event-color-primary'
+                onclick='doImport();'>
+              Import
+            </button>
+            <button class='w3-button w3-round-xxlarge w3-red'
+                onclick='hideSidebar();'>
+              Close
+            </button>
+        </div>
+    </div>
+
 </div>

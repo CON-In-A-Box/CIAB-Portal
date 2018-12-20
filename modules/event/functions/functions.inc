@@ -189,10 +189,14 @@ SQL;
         print "<table class='w3-table-all'>";
         foreach ($details as $key => $detail) {
             print "<tr><td>".$key."</td><td>";
-            print $detail."</td></tr>";
+            print $detail;
             if ($can_delete && intval($detail) > 0) {
                 $can_delete = false;
             }
+            if (intval($detail) === 0 && $key === 'concom' && count($event_data) > 1) {
+        print "&nbsp;&nbsp;<button id='import' class='w3-button w3-round-xxlarge event-color-primary' onclick='importConcom(".$entry['Id'].")'>Import</button>";
+            }
+            print "</td></tr>";
         }
         print "</table>";
         print "<div class='w3-center'>";
@@ -526,6 +530,36 @@ SQL;
 function delete_event($id)
 {
     $sql = "DELETE FROM `Events` WHERE `EventID` = $id;";
+    DB::run($sql);
+
+}
+
+function duplicate_concom($to, $from)
+{
+    $sql = <<<SQL
+    INSERT INTO `ConComList` (
+        EventID, AccountID, DepartmentID,
+        Note, PositionID
+    )
+    SELECT
+        "$to",
+        AccountID,
+        DepartmentID,
+        Note,
+        PositionID
+    FROM
+        `ConComList`
+    WHERE
+        EventID = "$from"
+        AND DepartmentID NOT IN (
+            SELECT
+                `DepartmentID`
+            FROM
+                `Departments`
+            WHERE
+                Name = 'Historical Placeholder'
+        )
+SQL;
     DB::run($sql);
 
 }
