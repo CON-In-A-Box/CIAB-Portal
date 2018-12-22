@@ -146,6 +146,8 @@ foreach ($events as $event) {
             <input class="UI-input" type="date" id="badge_from">
             <label for='badge_to'>Avalible To:</label>
             <input class="UI-input" type="date" id="badge_to">
+            <label for='badge_image'>Background Image File on Printer:</label>
+            <input class="UI-input" id="badge_image" value=''>
         </div>
         <hr>
         <div class='UI-center'>

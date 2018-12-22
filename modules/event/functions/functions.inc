@@ -117,7 +117,8 @@ SQL;
                     r.`BadgeTypeID` = b.`BadgeTypeID`
             ) as Sold,
             AvailableFrom,
-            AvailableTo
+            AvailableTo,
+            BackgroundImage
         FROM
             `BadgeTypes` as b
 SQL;
@@ -129,6 +130,7 @@ SQL;
     'Sold' => 'Sold',
     'From' => 'AvailableFrom',
     'To' => 'AvailableTo',
+    'BackgroundImage' => 'BackgroundImage',
     ];
     $badge_data = load_table($sql, $values);
     $badge_keys = array_keys($values);
@@ -149,6 +151,7 @@ SQL;
         unset($badge_keys[3]);
         unset($badge_keys[5]);
         unset($badge_keys[6]);
+        unset($badge_keys[7]);
         print "<th>".implode('</th><th>', $badge_keys)."</th><th></th>";
         print "</tr>\n";
         foreach ($badge_data as $badge) {
@@ -162,6 +165,7 @@ SQL;
                 unset($badge['From']);
                 unset($badge['To']);
                 unset($badge['EventName']);
+                unset($badge['BackgroundImage']);
                 print "<tr> ";
                 print "<td>".implode('</td><td>', $badge)."</td>";
                 print "<td class='UI-center'>";
@@ -445,25 +449,26 @@ function save_badge($badge)
     $name = MyPDO::quote($badge->Name);
     $event = $badge->Event;
     $cost = $badge->Cost;
+    $image = MyPDO::quote($badge->Image);
     if ($badge->From == '') {
-        $from = '0000-00-00';
+        $from = MyPDO::quote('0000-00-00');
     } else {
-        $from = $badge->From;
+        $from = MyPDO::quote($badge->From);
     }
     if ($badge->To == '') {
-        $to = '0000-00-00';
+        $to = MyPDO::quote('0000-00-00');
     } else {
-        $to = $badge->To;
+        $to = MyPDO::quote($badge->To);
     }
     if ($id == -1) {
         $sql = <<<SQL
     INSERT INTO `BadgeTypes` (
         `BadgeTypeID`, `AvailableFrom`, `AvailableTo`, `Cost`, `EventID`,
-        `Name`
+        `Name`, `BackgroundImage`
     )
     VALUES
         (
-            NULL, '$from', '$to', $cost, $event, $name
+            NULL, $from, $to, $cost, $event, $name, $image
         )
 SQL;
     } else {
@@ -471,11 +476,12 @@ SQL;
     UPDATE
         `BadgeTypes`
     SET
-        `AvailableFrom` = '$from',
-        `AvailableTo` = '$to',
+        `AvailableFrom` = $from,
+        `AvailableTo` = $to,
         `Cost` = $cost,
         `EventID` = $event,
-        `Name` = $name
+        `Name` = $name,
+        `BackgroundImage` = $image
     WHERE
         `BadgeTypeID` = $id
 SQL;

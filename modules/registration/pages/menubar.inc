@@ -4,13 +4,10 @@
     require_module 'standard';
 .*/
 
-if (class_exists('\\concom\\REGISTRATION') && method_exists('\\concom\\REGISTRATION', 'inRegistration')) {
-    $in_registration = concom\REGISTRATION::inRegistration($_SESSION['accountId']);
-} else {
-    $in_registration = false;
-}
+require_once $BASEDIR.'/kiosk/kiosk.inc';
+require_once __DIR__.'/../functions/events.inc';
 
-if (!empty($_SESSION['IS_ADMIN']) || $in_registration) {
+if (in_registration()) {
     $base_menus[] = array('base style' => '',
      'selected style' => 'event-color-primary',
      'function' => 'registration',
@@ -18,4 +15,6 @@ if (!empty($_SESSION['IS_ADMIN']) || $in_registration) {
      'i class' => 'fa fa-address-card-o',
      'text' => 'Member Registration',
      'responsive' => true);
+
+    generate_kiosk_menus('registration');
 }
