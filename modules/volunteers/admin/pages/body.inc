@@ -2,10 +2,14 @@
 
 /*.
     require_module 'standard';
+    require_module 'json';
 .*/
 
 require_once $FUNCTIONDIR.'/volunteer.inc';
 require_once $FUNCTIONDIR.'/users.inc';
+require_once $BASEDIR.'/kiosk/kiosk.inc';
+
+kiosk_body_data();
 
 $totalHours = 0;
 $prizeData = null;
@@ -30,7 +34,7 @@ if (isset($_SESSION['IS_ADMIN']) || $_SESSION['IS_VOLUNTEERS']) {
     }
 }
 
-if ($admin_mode && isset($_SESSION['kioskMode'])) {
+if ($admin_mode && in_kiosk()) {
     if (array_key_exists('VOL_ADMINKIOSK', $GLOBALS)) {
         $admin_mode = ($GLOBALS['VOL_ADMINKIOSK'] == '1');
     } else {
@@ -561,7 +565,7 @@ echo "</div>\n"
 <div class="w3-rest w3-center">
 <?php
 if (isset($_SESSION['IS_ADMIN']) || $_SESSION['IS_VOLUNTEERS']) {
-    if (!isset($_SESSION['kioskMode']) || (
+    if (!in_kiosk() || (
             array_key_exists('VOL_ADMINKIOSK', $GLOBALS) &&
             $GLOBALS['VOL_ADMINKIOSK'])) {
 ?>
@@ -580,22 +584,8 @@ if (isset($_SESSION['IS_ADMIN']) || $_SESSION['IS_VOLUNTEERS']) {
   </div>
 <?php
     }
-?>
 
-  <div>
-    <div class="w3-show-inline-block w3-left event-color-secondary w3-margin">
-      <table class='switch-table'><tr><td>
-        Kiosk Mode
-        <label class=switch><input type="checkbox" class=toggle id=kiosk_slider <?php
-        if (array_key_exists('kioskMode', $_SESSION) && $_SESSION['kioskMode']) {
-            echo "checked";
-        }
-?> onclick='toggleKioskMode();'>
-          <div class=slider></div></label></td></tr>
-      </table>
-    </div>
-  </div>
-<?php
+    generate_kiosk_slider('volunteers');
 }
 ?>
 
@@ -953,7 +943,5 @@ if (isset($uid)) {
     echo "  var unclaimed = [];\n";
 }
 echo "  var adminMode = ".json_encode($admin_mode).";\n";
-echo "  var userEmail = '".$_SESSION['email']."';\n";
-echo "  var kioskMode = ".json_encode(array_key_exists('kioskMode', $_SESSION) && $_SESSION['kioskMode']).";\n";
 ?>
 </script>

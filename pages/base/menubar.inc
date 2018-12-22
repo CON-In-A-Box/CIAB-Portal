@@ -14,6 +14,8 @@
 
 <?php
 
+require_once $BASEDIR.'/kiosk/kiosk.inc';
+
 if (!isset($base_styles)) {
     $base_styles = " w3-bar-item w3-button ";
 }
@@ -21,9 +23,9 @@ if (!isset($resp_styles)) {
     $resp_styles = " w3-hide-small w3-hide-medium ";
 }
 
-$kioskMode = (array_key_exists('kioskMode', $_SESSION) && isset($_SESSION['kioskMode']));
+$kiosk = get_kiosk();
 
-if (!$kioskMode) {
+if ($kiosk === null) {
     if (!isset($base_menus)) {
         $base_menus = array();
         $base_menus[] = array('base style' => '',
@@ -51,7 +53,7 @@ if (!$kioskMode) {
     $modules = scandir($MODULESDIR);
     foreach ($modules as $key => $value) {
         if (!in_array($value, array(".", ".."))) {
-            if (!$kioskMode && in_array($value, $DISABLEDMODULES)) {
+            if ($kiosk === null && in_array($value, $DISABLEDMODULES)) {
                 continue;
             }
             if (is_dir($MODULESDIR.DIRECTORY_SEPARATOR.$value)) {
@@ -63,15 +65,18 @@ if (!$kioskMode) {
     }
 } else {
     $base_menus = array();
-    if (is_dir($MODULESDIR.DIRECTORY_SEPARATOR.$_SESSION['kioskMode'])) {
-        if (is_file($MODULESDIR.DIRECTORY_SEPARATOR.$_SESSION['kioskMode'].DIRECTORY_SEPARATOR.'pages/menubar.inc')) {
-            require_once($MODULESDIR.DIRECTORY_SEPARATOR.$_SESSION['kioskMode'].DIRECTORY_SEPARATOR.'pages/menubar.inc');
+    if (!isset($admin_menus)) {
+        $admin_menus = array();
+    }
+    if (is_dir($MODULESDIR.DIRECTORY_SEPARATOR.$kiosk)) {
+        if (is_file($MODULESDIR.DIRECTORY_SEPARATOR.$kiosk.DIRECTORY_SEPARATOR.'pages/menubar.inc')) {
+            require_once($MODULESDIR.DIRECTORY_SEPARATOR.$kiosk.DIRECTORY_SEPARATOR.'pages/menubar.inc');
         }
     }
 }
 
 foreach ($base_menus as $menu) {
-    if (!$kioskMode && in_array($menu['function'], $DISABLEDMODULES)) {
+    if ($kiosk === null && in_array($menu['function'], $DISABLEDMODULES)) {
         continue;
     }
     if ($menu['responsive']) {
@@ -95,7 +100,7 @@ foreach ($base_menus as $menu) {
 
 $have_admin = false;
 foreach ($admin_menus as $menu) {
-    if (!$kioskMode && in_array($menu['function'], $DISABLEDMODULES)) {
+    if ($kiosk === null && in_array($menu['function'], $DISABLEDMODULES)) {
         continue;
     }
 
@@ -130,7 +135,7 @@ if ($have_admin) {
     echo "</div>";
 }
 
-if (!$kioskMode) {
+if ($kiosk === null) {
 ?>
     <a class="w3-bar-item w3-block w3-center w3-button w3-hide-large"
       href="javascript:void(0)"
@@ -150,7 +155,7 @@ if (!$kioskMode) {
 
 <?php
 foreach ($base_menus as $menu) {
-    if (!$kioskMode && in_array($menu['function'], $DISABLEDMODULES)) {
+    if ($kiosk === null && in_array($menu['function'], $DISABLEDMODULES)) {
         continue;
     }
     if ($menu['responsive']) {
@@ -170,7 +175,7 @@ foreach ($base_menus as $menu) {
 
 $have_admin = false;
 foreach ($admin_menus as $menu) {
-    if (!$kioskMode && in_array($menu['function'], $DISABLEDMODULES)) {
+    if ($kiosk === null && in_array($menu['function'], $DISABLEDMODULES)) {
         continue;
     }
 
