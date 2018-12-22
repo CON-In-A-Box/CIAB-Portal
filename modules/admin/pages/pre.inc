@@ -1,4 +1,8 @@
 <?php
+/*.
+    require_module 'standard';
+.*/
+
 if (!isset($_SESSION['IS_ADMIN'])) {
     // This is for SystemAdmins only!  Silently return to main.
     goSite();
@@ -13,6 +17,7 @@ if (!empty($_REQUEST)) {
     'setField'     => FILTER_SANITIZE_SPECIAL_CHARS,
     'newField'     => FILTER_SANITIZE_SPECIAL_CHARS,
     'value'        => FILTER_UNSAFE_RAW,
+    'removeAdmin'  => FILTER_BOOLEAN,
     ];
 
     $updateData = filter_input_array(INPUT_POST, $arguments);
@@ -34,6 +39,11 @@ if (!empty($_REQUEST)) {
         $value = base64_decode($updateData['value']);
         add_conf_value($updateData['newField'], $value);
         exit();
+    }
+
+    if (isset($updateData['removeAdmin'])) {
+        unset($_SESSION['IS_ADMIN']);
+        goSite();
     }
 
     $arguments = [

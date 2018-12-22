@@ -170,6 +170,9 @@ if (!empty($searchCriteria['firstName']) ||
     <input type="text" class="form-control" name="SUDO" value="" />
     <input type="submit" value="Execute" class="btn btn-default" />
     </form>
+    <br>
+    <input type="submit" value="Reload without Admin Priv" class="btn btn-default"
+        onclick="removeAdmin();"/>
 <hr>
 <?php if ($result && !$result['code']) : ?>
   <table class="table table-striped">
@@ -261,7 +264,7 @@ foreach ($table as $line) {
      <div>
        <button class="w3-button w3-tiny w3-left-align w3-yellow" onclick="downloadLog()">Download Full Activity Log (CSV)</button>
      </div>
-     <?php dbPrintLog(1000); ?>
+        <?php dbPrintLog(1000); ?>
    </div>
   </div>
 </div>
