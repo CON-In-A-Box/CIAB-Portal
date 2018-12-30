@@ -1,11 +1,16 @@
 <?php
 
+/*.
+    require_module 'standard';
+.*/
+
 if (!file_exists(__DIR__."/.ht_meetingsignin_config.php")) {
     header("Location: http://".$_SERVER['SERVER_NAME']."/configure_system.php");
 }
 
 // Load in basic functions
-require_once('functions/functions.inc');
+require_once __DIR__.'/functions/functions.inc';
+require_once __DIR__.'/kiosk/kiosk.inc';
 
 // Divert to public page if we are not under function control
 if (empty($_REQUEST['Function'])) {
@@ -19,9 +24,10 @@ if (in_array($arr[0], $DISABLEDMODULES)) {
 }
 
 // Force kiosk mode to the proper module
-if (isset($_SESSION['kioskMode'])) {
-    if ($_REQUEST['Function'] != 'functions' && !strstr($_REQUEST['Function'], $_SESSION['kioskMode'])) {
-        goSite('/index.php?Function='.$_SESSION['kioskMode']);
+$mode = get_kiosk();
+if ($mode !== null) {
+    if ($_REQUEST['Function'] != 'functions' && !strstr($_REQUEST['Function'], $mode)) {
+        goSite('/index.php?Function='.$mode);
     }
 }
 
