@@ -229,15 +229,17 @@ function lookup_users_by_name_email($first, $last, $email, $fields, $single_user
 
 function lookup_user_by_login($user)
 {
-    $output = lookup_users_by_email($user, true);
+    $output = lookup_users_by_email($user, false);
     if (count($output['users']) == 0) {
-        $output = _lookup_user([['Account Login Name', 'EQUAL', $user]], true);
+        $output = _lookup_user([['Account Login Name', 'EQUAL', $user]], false);
     }
     if (count($output['users']) == 0) {
-        return false;
+        return array();
     } else {
-        $output['users'][0]['AccountID'] = $output['users'][0]['Id'];
-        return $output['users'][0];
+        foreach($output['users'] as $key => $user) {
+            $output['users'][$key]['AccountID'] = $user['Id'];
+        }
+        return $output['users'];
     }
 
 }
