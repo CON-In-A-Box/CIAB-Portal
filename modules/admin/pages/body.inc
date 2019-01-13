@@ -1,10 +1,15 @@
-<?php require($PAGESDIR.'/base/leftnav.inc'); ?>
+<?php
+/*.
+    require_module 'standard';
+.*/
+require_once($PAGESDIR.'/base/leftnav.inc');
+require_once($FUNCTIONDIR.'/authentication.inc');
+require_once(__DIR__."/../functions/admin.inc");
+require_once($FUNCTIONDIR.'/users.inc');
+?>
 <div id="main_content"  class="w3-cell w3-cell-top w3-mobile">
 <?php
 echo "<h2 class='w3-center'>Welcome ".$_SESSION['preferredName']."!</h2>\n";
-
-require_once(__dir__."/../functions/admin.inc");
-require_once($FUNCTIONDIR.'/users.inc');
 /*
 if( isset($_REQUEST['DoFeed'])) {
 echo "<hr><h3>Starting DeFeed Routine:</h3>\n";
@@ -167,10 +172,20 @@ if (!empty($searchCriteria['firstName']) ||
 <hr>
     <form action="index.php?Function=admin" method="POST" class="form-inline">
     SUDO:
-    <input type="text" class="form-control" name="SUDO" value="" />
+    <input type="text" class="form-control" name="SUDO" value=""
+     placeholder="<account id>"/>
     <input type="submit" value="Execute" class="btn btn-default" />
     </form>
-    <br>
+<hr>
+    <form action="index.php?Function=admin" method="POST" class="form-inline">
+    Set Account Temporary Password:<br>
+    <input type="text" class="form-control" name="tmp_login" value=""
+        placeholder="<account login>" autocomplete="off"/>
+    <input type="text" class="form-control" name="tmp_passwd" value=
+    "<?php echo rppg();?>" autocomplete="off"/>
+    <input type="submit" value="Set Password" class="btn btn-default" />
+    </form>
+<hr>
     <input type="submit" value="Reload without Admin Priv" class="btn btn-default"
         onclick="removeAdmin();"/>
 <hr>
