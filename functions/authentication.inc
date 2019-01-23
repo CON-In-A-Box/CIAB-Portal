@@ -270,7 +270,7 @@ function rppg()
 }
 
 
-function reset_password($id)
+function reset_password($id, $password=null)
 {
     global $CONSITENAME, $ADMINEMAIL, $PASSWORDRESET;
 
@@ -285,7 +285,9 @@ function reset_password($id)
     if (count($value)) {
         $user = $value[0]['AccountID'];
         $email = $value[0]['Email'];
-        $password = rppg();
+        if (!$password) {
+            $password = rppg();
+        }
         $oneexpired = date('Y-m-d H:i', strtotime($duration));
         $newauth = password_hash($password, PASSWORD_DEFAULT);
         $auth = 'NULL';

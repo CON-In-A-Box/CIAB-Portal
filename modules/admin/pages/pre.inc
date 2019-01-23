@@ -10,6 +10,7 @@ if (!isset($_SESSION['IS_ADMIN'])) {
 
 require_once($FUNCTIONDIR.'/session.inc');
 require_once($FUNCTIONDIR.'/database.inc');
+require_once($FUNCTIONDIR.'/authentication.inc');
 
 if (!empty($_REQUEST)) {
     $arguments = [
@@ -18,6 +19,8 @@ if (!empty($_REQUEST)) {
     'newField'     => FILTER_SANITIZE_SPECIAL_CHARS,
     'value'        => FILTER_UNSAFE_RAW,
     'removeAdmin'  => FILTER_BOOLEAN,
+    'tmp_login'    => FILTER_SANITIZE_SPECIAL_CHARS,
+    'tmp_passwd'   => FILTER_SANITIZE_SPECIAL_CHARS,
     ];
 
     $updateData = filter_input_array(INPUT_POST, $arguments);
@@ -44,6 +47,16 @@ if (!empty($_REQUEST)) {
     if (isset($updateData['removeAdmin'])) {
         unset($_SESSION['IS_ADMIN']);
         goSite();
+    }
+
+    if (isset($updateData['tmp_login'])) {
+        if (!reset_password($updateData['tmp_login'], $updateData['tmp_passwd'])) {
+            echo "<b>Failed to find account login ".$updateData['tmp_login'];
+            echo " and so unable to set password!</b>";
+            exit();
+        } else {
+            goSite();
+        }
     }
 
     $arguments = [
