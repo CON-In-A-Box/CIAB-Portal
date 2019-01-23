@@ -23,6 +23,7 @@ if (!empty($_POST)) {
 
     'new_NEONID'        => FILTER_SANITIZE_RAW,
     'new_NEONKEY'       => FILTER_SANITIZE_RAW,
+    'new_NEONBETA'      => FILTER_SANITIZE_RAW,
     'new_ADMINACCOUNTS' => FILTER_SANITIZE_RAW,
     'new_ADMINEMAIL'    => FILTER_SANITIZE_RAW,
     'new_CONHOST'       => FILTER_SANITIZE_RAW,
@@ -38,6 +39,7 @@ if (!empty($_POST)) {
 
     $new_NEONID = $updateData['new_NEONID'];
     $new_NEONKEY = $updateData['new_NEONKEY'];
+    $new_NEONBETA = $updateData['new_NEONBETA'];
     $new_ADMINACCOUNTS = $updateData['new_ADMINACCOUNTS'];
     $new_CONHOST = $updateData['new_CONHOST'];
     $new_ADMINEMAIL = $updateData['new_ADMINEMAIL'];
@@ -111,6 +113,11 @@ DONE
             $sql = "UPDATE `Configuration` SET ";
             $sql .= " Value = '".$new_NEONKEY."' ";
             $sql .= "WHERE Field = 'NEONKEY';";
+            DB::run($sql);
+
+            $sql = "INSERT INTO `Configuration`(`Field`, `Value`)";
+            $sql .= " VALUES ('NEONTRIAL', '".$new_NEONBETA."') ";
+            $sql .= "ON DUPLICATE KEY UPDATE `Value` = '".$new_NEONBETA."';";
             DB::run($sql);
 
             $sql = "UPDATE `Configuration` SET ";
@@ -235,6 +242,18 @@ if (strlen($failed_message)) {
         echo '"';
     }
 ?> placeholder="<example: home>">
+    </br>
+
+    <label>Is Neon Trial Account:</label> <br>
+    <input type="checkbox" name="new_NEONBETA" class="w3-checkbox <?php
+    if ($updateData != null && $updateData['new_NEONBETA']) {
+        echo '" checked"';
+    } elseif ($tried) {
+        echo 'w3-red"';
+    } else {
+        echo '"';
+    }
+?>>
     </br>
 
     <hr>

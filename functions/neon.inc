@@ -9,11 +9,20 @@
  * Pulled 12/20/2015
  */
 
+function is_true($val, $return_null=false){
+    $boolval = ( is_string($val) ? filter_var($val, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) : (bool) $val );
+    return ( $boolval===null && !$return_null ? false : $boolval );
+}
+
 class Neon 
 {
   // Abstracted HTTP request, used by other class methods
   private function apiCore($method, $parameters) {
-    $url = 'https://api.neoncrm.com/neonws/services/api/' . $method;
+    if (isset($GLOBALS['NEONTRIAL']) && is_true($GLOBALS['NEONTRIAL'])) {
+        $url = 'https://trial.z2systems.com/neonws/services/api/' . $method;
+    } else {
+        $url = 'https://api.neoncrm.com/neonws/services/api/' . $method;
+    }
     $ch = curl_init();
     curl_setopt($ch,CURLOPT_URL, $url);
     curl_setopt($ch,CURLOPT_POST, TRUE);
