@@ -193,10 +193,10 @@ function doUserAndPasswordMatch($user, $password)
 {
     loadDefinedFields();
     $value = lookup_user_by_login($user);
-    if ($value) {
-        $check = check_authentication($value['AccountID'], $password, $user);
+    if (count($value)>0) {
+        $check = check_authentication($value[0]['AccountID'], $password, $user);
         if ($check === true) {
-            $id = $value['AccountID'];
+            $id = $value[0]['AccountID'];
             $now = date('Y-m-d H:i');
             $sql = <<<SQL
                 UPDATE `Authentication`
@@ -204,7 +204,10 @@ function doUserAndPasswordMatch($user, $password)
                 WHERE AccountId = $id;
 SQL;
             DB::run($sql);
-            return $value;
+            if (count($value) > 1) {
+                $_SESSION['duplicates'] = array_column($value, 'AccountID');
+            }
+            return $value[0];
         } elseif ($check === null) {
             return null;
         } elseif ($check === -1) {
@@ -279,9 +282,9 @@ function reset_password($id)
 
     loadDefinedFields();
     $value = lookup_user_by_login($id);
-    if ($value) {
-        $user = $value['AccountID'];
-        $email = $value['Email'];
+    if (count($value)) {
+        $user = $value[0]['AccountID'];
+        $email = $value[0]['Email'];
         $password = rppg();
         $oneexpired = date('Y-m-d H:i', strtotime($duration));
         $newauth = password_hash($password, PASSWORD_DEFAULT);
