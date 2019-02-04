@@ -310,7 +310,9 @@ function DumpConComList()
     $email = array_unique(array_column($db_staff, 'Email'));
 
     foreach ($Departments as $kdep => $dep) {
-        array_push($email, $dep['Email'][0]);
+        foreach ($dep['Email'] as $listEmails) {
+            array_push($email, $listEmails);
+        }
     }
 
     foreach ($Divisions as $div) {
