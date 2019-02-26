@@ -309,8 +309,9 @@ function reset_password($id, $password=null)
                 OneTime = '$newauth',
                 OneTimeExpires= '$oneexpired',
                 Authentication = $auth,
-                LastLogin = $last;
-                Expires = '$realexpires',
+                LastLogin = $last,
+                Expires = $realexpires,
+                FailedAttempts = 0;
 SQL;
         DB::run($sql);
         $servername = 'https://'.$_SERVER['SERVER_NAME'];
