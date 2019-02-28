@@ -5,7 +5,7 @@
 .*/
 
 if (!file_exists(__DIR__."/.ht_meetingsignin_config.php")) {
-    header("Location: http://".$_SERVER['SERVER_NAME']."/configure_system.php");
+    header("Location: http://".$_SERVER['SERVER_NAME'].":".$_SERVER['SERVER_PORT']."/configure_system.php");
 }
 
 // Load in basic functions
