@@ -311,7 +311,7 @@ function DumpConComList()
 
     foreach ($Departments as $kdep => $dep) {
         foreach ($dep['Email'] as $listEmails) {
-            array_push($email, $listEmails);
+            array_push($email, $listEmails['EMail']);
         }
     }
 
