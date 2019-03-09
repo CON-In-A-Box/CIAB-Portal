@@ -1,3 +1,12 @@
+<?php
+
+/*.
+    require_module 'standard';
+.*/
+
+require_once($FUNCTIONDIR."/authentication.inc");
+?>
+
 <header class="w3-cell-row event-color-primary w3-mobile">
   <?php require($PAGESDIR.'/base/logo.inc'); ?>
   <div class="w3-container w3-cell w3-mobile">
@@ -12,20 +21,28 @@ if (!empty($EXPIRED)) {
 <div class="w3-container w3-mobile">
   <div class="w3-container w3-cell w3-third w3-border">
     <h2>Log In</h2>
-    
     <?php
-    if (!empty($RETRY)) {
-        echo '<hr>';
-        echo 'Login Incorrect, Please Try Again.';
-        echo "</hr>\n";
-    } elseif (!empty($LOCKED)) {
-        echo '<div class="w3-center w3-border w3-margin w3-padding w3-red">';
-        echo '<h2 class="w3-red w3-bold w3-header">Account Locked</h2>';
-        echo '<span class="w3-red w3-bold w3-header">';
-        echo 'Too many unsuccessful login attempts.</span><br>';
-        echo '<span class="w3-red w3-bold w3-header">';
-        echo 'Reset the password gain entry.';
-        echo "</span></div>\n";
+    if (!empty($FAILURE)) {
+        if ($FAILURE == AUTH_BAD) {
+            echo '<div class="w3-center w3-border w3-margin w3-padding w3-red">';
+            echo '<h2 class="w3-red w3-bold w3-header">Login Incorrect<br>Please Try Again</h2></div>';
+        } elseif ($FAILURE == AUTH_LOCKED) {
+            echo '<div class="w3-center w3-border w3-margin w3-padding w3-red">';
+            echo '<h2 class="w3-red w3-bold w3-header">Account Locked</h2>';
+            echo '<span class="w3-red w3-bold w3-header">';
+            echo 'Too many unsuccessful login attempts.</span><br>';
+            echo '<span class="w3-red w3-bold w3-header">';
+            echo 'Reset the password gain entry.';
+            echo "</span></div>\n";
+        } elseif ($FAILURE == AUTH_DUPLICATE) {
+            echo '<div class="w3-center w3-border w3-margin w3-padding w3-yellow">';
+            echo '<h2 class="w3-yellow w3-bold w3-header">Duplicate Accounts Present</h2>';
+            echo '<span class="w3-yellowd w3-bold w3-header">';
+            echo 'This e-mail address has duplicate accounts present.</span><br>';
+            echo '</div>';
+            echo '<div class="w3-center w3-border w3-margin w3-padding w3-red">';
+            echo '<h2 class="w3-red w3-bold w3-header">Login Incorrect<br>Please Try Again</h2></div>';
+        }
     }
     ?>
 
