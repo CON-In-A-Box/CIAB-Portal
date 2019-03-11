@@ -92,6 +92,11 @@ function checkNeonForUserAndPasswordMatch($user, $password)
 
 }
 
+const AUTH_SUCCESS   = 0x0;
+const AUTH_BAD       = 0x1;
+const AUTH_EXPIRED   = 0x2;
+const AUTH_LOCKED    = 0x3;
+const AUTH_DUPLICATE = 0x10;
 
 function check_authentication($account, $password, $user)
 {
@@ -110,7 +115,7 @@ SQL;
     $value = $result->fetch();
     if ($value !== false) {
         if ($value['FailedAttempts'] >= $max_fail) {
-            return -1;
+            return AUTH_LOCKED;
         }
         if (password_verify($password, $value['Authentication'])) {
             if ($value['OneTime']) {
@@ -119,33 +124,33 @@ SQL;
             $now = strtotime("now");
             $expire = strtotime($value['Expires']);
             if ($now > $expire) {
-                return null;
+                return AUTH_EXPIRED;
             }
             reset_failed($account);
-            return true;
+            return AUTH_SUCCESS;
         }
         if ($value['OneTime']) {
             $expire = strtotime($value['OneTimeExpires']);
             $now = strtotime("now");
             if ($now > $expire) {
                 clear_onetime($account);
-                return false;
+                return AUTH_BAD;
             }
             if (password_verify($password, $value['OneTime'])) {
                 accept_onetime($account, $value['OneTime']);
                 reset_failed($account);
-                return true;
+                return AUTH_SUCESS;
             }
         }
         increment_failed($account);
-        return false;
+        return AUTH_BAD;
     } else {
         $value = checkNeonForUserAndPasswordMatch($user, $password);
         if ($value !== false) {
             set_password($account, $password);
-            return true;
+            return AUTH_SUCCESS;
         }
-        return null;
+        return AUTH_EXPIRED;
     }
 
 }
@@ -192,29 +197,36 @@ SQL;
 function doUserAndPasswordMatch($user, $password)
 {
     loadDefinedFields();
+    $results = array();
     $value = lookup_user_by_login($user);
     if (count($value)>0) {
-        $check = check_authentication($value[0]['AccountID'], $password, $user);
-        if ($check === true) {
-            $id = $value[0]['AccountID'];
-            $now = date('Y-m-d H:i');
-            $sql = <<<SQL
-                UPDATE `Authentication`
-                SET LastLogin = '$now'
-                WHERE AccountId = $id;
+        foreach ($value as $entry) {
+            $check = check_authentication($entry['AccountID'], $password, $user);
+            if ($check === AUTH_SUCCESS) {
+                $id = $value[0]['AccountID'];
+                $now = date('Y-m-d H:i');
+                $sql = <<<SQL
+                    UPDATE `Authentication`
+                    SET LastLogin = '$now'
+                    WHERE AccountId = $id;
 SQL;
-            DB::run($sql);
-            if (count($value) > 1) {
-                $_SESSION['duplicates'] = array_column($value, 'AccountID');
+                DB::run($sql);
+                if (count($value) > 1) {
+                    $_SESSION['duplicates'] = array_column($value, 'AccountID');
+                }
+                return array("entry"=>$entry, "result"=>AUTH_SUCCESS);
+            } else {
+                array_push($results, array("entry"=>null, "result"=>$check));
             }
-            return $value[0];
-        } elseif ($check === null) {
-            return null;
-        } elseif ($check === -1) {
-            return -1;
         }
+    } else {
+        return array("entry"=>null, "result"=>AUTH_BAD);
     }
-    return false;
+    if (count($results) <= 1)
+    {
+        return $results[0];
+    }
+    return array("entry"=>null, "result"=>AUTH_DUPLICATE);
 
 }
 
@@ -222,18 +234,14 @@ SQL;
 function LoginUser($user, $password)
 {
     $result = doUserAndPasswordMatch($user, $password);
-    if ($result !== null && $result !== false && $result !== -1) {
+    if ($result['entry'] !== null) {
+        $entry = $result['entry'];
         // Log in the User - Session started in Functions
         $_SESSION['username']  = $user; // Save the Username for easy forms
-        $_SESSION['fullName']  = $result['FirstName']; // Save the FullName for ease
-        $_SESSION['accountId'] = $result['AccountID']; //Save the ID for updates
-        return(true);
-    } elseif ($result === false) {
-        return(false);
-    } elseif ($result === -1) {
-        return -1;
+        $_SESSION['fullName']  = $entry['FirstName']; // Save the FullName for ease
+        $_SESSION['accountId'] = $entry['AccountID']; //Save the ID for updates
     }
-    return null;
+    return ($result["result"]);
 
 }
 
