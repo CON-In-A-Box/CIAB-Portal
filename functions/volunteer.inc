@@ -11,8 +11,6 @@ require_once(__DIR__."/users.inc");
 
 function get_volunteer_hour_summary($id = null, $event = null)
 {
-    global $db;
-
     if ($event === null) {
         $event = current_eventID();
     }
@@ -72,7 +70,7 @@ SQL;
     }
 
     $data = array();
-    $result = $db->run($sql);
+    $result = DB::run($sql);
     $value = $result->fetch();
     while ($value !== false) {
         $data[] = [
@@ -92,8 +90,6 @@ SQL;
 
 function get_volunteer_year_summery($event = null)
 {
-    global $db;
-
     if ($event === null) {
         $event = current_eventID();
     }
@@ -127,7 +123,7 @@ function get_volunteer_year_summery($event = null)
             EventID;
 SQL;
 
-    $result = $db->run($sql);
+    $result = DB::run($sql);
     $value = $result->fetch();
 
     $output = [
@@ -153,8 +149,6 @@ SQL;
 
 function get_volunteer_hours_for_user($id, $event = null)
 {
-    global $db;
-
     if ($event === null) {
         $event = current_eventID();
     }
@@ -169,7 +163,7 @@ function get_volunteer_hours_for_user($id, $event = null)
 SQL;
 
     $data = array();
-    $result = $db->run($sql);
+    $result = DB::run($sql);
     $value = $result->fetch();
     while ($value !== false) {
         $data[] = [
@@ -201,8 +195,6 @@ function record_volunteer_hours(
     $authorized,
     $event = null
 ) {
-    global $db;
-
     if ($event === null) {
         /* Convention ... assume most recent one */
         $event = current_eventID();
@@ -211,7 +203,7 @@ function record_volunteer_hours(
     /* Get the department id from name if it is a name */
     if (!is_int($department)) {
         $sql = "SELECT DepartmentID FROM Departments WHERE Name = '$department';";
-        $result = $db->run($sql);
+        $result = DB::run($sql);
         $value = $result->fetch();
         if ($value) {
             $departmentID = $value['DepartmentID'];
@@ -230,7 +222,7 @@ function record_volunteer_hours(
                 $authorized, $event);
 SQL;
 
-    $result = $db->run($sql);
+    $result = DB::run($sql);
     if ($result === false) {
         return PDO::errorInfo();
     }
@@ -250,8 +242,6 @@ function update_volunteer_hours(
     $authorized = null,
     $event = null
 ) {
-    global $db;
-
     if ($user === null && $hours === null && $end === null &&
         $modifier === null && $department === null && $enterer === null &&
         $authorized === null && $event === null) {
@@ -264,7 +254,7 @@ function update_volunteer_hours(
     if ($department !== null) {
         if (!is_int($department)) {
             $sql = "SELECT `DepartmentID` FROM Departments WHERE Name = ".MyPDO::quote($department).";";
-            $result = $db->run($sql);
+            $result = DB::run($sql);
             $value = $result->fetch();
             if ($value) {
                 $departmentID = $value['DepartmentID'];
@@ -306,7 +296,7 @@ function update_volunteer_hours(
     $sql .= " WHERE HourEntryID = ";
     $sql .= $record_id;
 
-    $result = $db->run($sql);
+    $result = DB::run($sql);
     if ($result === false) {
         return PDO::errorInfo();
     }
@@ -317,24 +307,20 @@ function update_volunteer_hours(
 
 function delete_volunteer_hours($record_id)
 {
-    global $db;
-
     $sql = <<<SQL
         DELETE FROM `VolunteerHours` WHERE `HourEntryID` = $record_id;
 SQL;
 
-    $db->run($sql);
+    DB::run($sql);
 
 }
 
 
 function volunteer_prizes()
 {
-    global $db;
-
     $groups = array();
     $sql = " SELECT * FROM RewardGroup;";
-    $result = $db->run($sql);
+    $result = DB::run($sql);
     $value = $result->fetch();
     while ($value !== false) {
         $groups[$value['RewardGroupID']] = $value;
@@ -347,7 +333,7 @@ function volunteer_prizes()
         ORDER BY Promo Desc, RewardGroupID Desc, Value Asc, Name Asc;
 SQL;
 
-    $result = $db->run($sql);
+    $result = DB::run($sql);
     $value = $result->fetch();
     while ($value !== false) {
         $id = intval($value['PrizeID']);
@@ -369,7 +355,7 @@ SQL;
 
     $keys = array_keys($prizes);
     $sql = "SELECT PrizeID, COUNT(PrizeID) as Claimed FROM HourRedemptions GROUP BY PrizeID;";
-    $result = $db->run($sql);
+    $result = DB::run($sql);
     $value = $result->fetch();
     while ($value !== false) {
         $prizes[$value['PrizeID']]['Remaining'] = $prizes[$value['PrizeID']]['TotalInventory'] - $value['Claimed'];
@@ -383,11 +369,9 @@ SQL;
 
 function volunteer_prize_groups()
 {
-    global $db;
-
     $groups = array();
     $sql = " SELECT * FROM `RewardGroup`;";
-    $result = $db->run($sql);
+    $result = DB::run($sql);
     $value = $result->fetch();
     while ($value !== false) {
         $groups[$value['RewardGroupID']] = $value['RedeemLimit'];
@@ -400,13 +384,11 @@ function volunteer_prize_groups()
 
 function add_volunteer_prize_group($limit = 1)
 {
-    global $db;
-
     $sql = "INSERT INTO `RewardGroup` (RedeemLimit) VALUES($limit);";
-    $result = $db->run($sql);
+    $result = DB::run($sql);
 
     $sql = "SELECT RewardGroupID FROM `RewardGroup` ORDER BY RewardGroupID DESC LIMIT 1;";
-    $result = $db->run($sql);
+    $result = DB::run($sql);
     $value = $result->fetch();
     return $value['RewardGroupID'];
 
@@ -415,22 +397,18 @@ function add_volunteer_prize_group($limit = 1)
 
 function update_volunteer_prize_group($group_id, $limit)
 {
-    global $db;
-
     $sql = <<<SQL
         UPDATE `RewardGroup`
         SET RedeemLimit = $limit
         WHERE RewardGroupID = $group_id;
 SQL;
-    $db->run($sql);
+    DB::run($sql);
 
 }
 
 
 function volunteer_prizes_for_user($id, $event = null)
 {
-    global $db;
-
     $data = volunteer_prizes();
 
     if ($event === null) {
@@ -445,7 +423,7 @@ function volunteer_prizes_for_user($id, $event = null)
             GROUP BY h.PrizeID;
 SQL;
 
-    $result = $db->run($sql);
+    $result = DB::run($sql);
     $value = $result->fetch();
     while ($value !== false) {
         $data[$value['PrizeID']]['Aquired'] = $value['Claimed'];
@@ -459,8 +437,6 @@ SQL;
 
 function award_prizes($id, $prizes, $event = null)
 {
-    global $db;
-
     if ($event === null) {
         $event = current_eventID();
     }
@@ -476,7 +452,7 @@ SQL;
     }
     $sql .= implode(',', $stmt);
     $sql .= ";";
-    $db->run($sql);
+    DB::run($sql);
     return true;
 
 }
@@ -490,8 +466,6 @@ function update_volunteer_prize(
     $group = null,
     $total = null
 ) {
-    global $db;
-
     if ($name === null && $value === null && $promo === null &&
         $group === null && $total === null) {
         return null;
@@ -527,7 +501,7 @@ function update_volunteer_prize(
     $sql .= " WHERE PrizeID = ";
     $sql .= $record_id;
 
-    $result = $db->run($sql);
+    $result = DB::run($sql);
     if ($result === false) {
         return PDO::errorInfo();
     }
@@ -538,13 +512,11 @@ function update_volunteer_prize(
 
 function delete_volunteer_prize($record_id)
 {
-    global $db;
-
     $sql = <<<SQL
         DELETE FROM `VolunteerRewards` WHERE `PrizeID` = $record_id;
 SQL;
 
-    $db->run($sql);
+    DB::run($sql);
 
 }
 
@@ -556,8 +528,6 @@ function new_volunteer_prize(
     $group,
     $total
 ) {
-    global $db;
-
     if ($promo) {
         $promo = 1;
     } else {
@@ -572,7 +542,7 @@ function new_volunteer_prize(
                 (Name, Value, Promo, RewardGroupID, TotalInventory)
             VALUES ($name, $value, $promo, $group, $total);
 SQL;
-    $db->run($sql);
+    DB::run($sql);
 
 }
 
@@ -634,12 +604,10 @@ SQL;
 
 function volunteers_in_dept($department)
 {
-    global $db;
-
     /* Get the department id from name if it is a name */
     if (!is_int($department)) {
         $sql = "SELECT DepartmentID FROM Departments WHERE Name = '$department';";
-        $result = $db->run($sql);
+        $result = DB::run($sql);
         $value = $result->fetch();
         if ($value) {
             $departmentID = $value['DepartmentID'];
@@ -663,7 +631,7 @@ function volunteers_in_dept($department)
             DepartmentID
 SQL;
 
-    $result = $db->run($sql);
+    $result = DB::run($sql);
     $value = $result->fetch();
     while ($value !== false) {
         $members[] = $value['AccountID'];
@@ -689,8 +657,6 @@ SQL;
 
 function refund_prizes($id, $prizes, $event = null)
 {
-    global $db;
-
     if ($event === null) {
         $event = current_eventID();
     }
@@ -707,7 +673,7 @@ function refund_prizes($id, $prizes, $event = null)
             LIMIT
                 1
 SQL;
-        $db->run($sql);
+        DB::run($sql);
     }
     return true;
 
@@ -716,7 +682,6 @@ SQL;
 
 function find_overlap_hours($endtime, $hours, $uid)
 {
-    global $db;
     $checkend = strtotime($endtime);
     $checkstart = $checkend - (intval($hours) * 3600);
 
@@ -734,7 +699,7 @@ function find_overlap_hours($endtime, $hours, $uid)
         ($checkend <= `EndTime` AND $checkend > `StartTime`) OR
         ($checkstart <= `StartTime` AND $checkend >= `EndTime`)
 SQL;
-    $result = $db->run($sql);
+    $result = DB::run($sql);
     $value = $result->fetch();
     if ($value !== false)
         return $value;

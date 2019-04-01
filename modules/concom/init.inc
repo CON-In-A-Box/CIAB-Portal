@@ -8,7 +8,7 @@ require_once(__DIR__.'/functions/LIST.inc');
 if (!isset($ConComPositions)) {
     $ConComPositions = array();
     $sql = "SELECT * FROM ConComPositions;";
-    $result = $db->run($sql);
+    $result = DB::run($sql);
     $value = $result->fetch();
     while ($value !== false) {
         $ConComPositions[$value['PositionID']] = $value['Name'];

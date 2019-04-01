@@ -15,7 +15,7 @@ if (!isset($Departments)) {
     $temp_dept = array();
 
     $sql = "SELECT * FROM Departments WHERE DepartmentID NOT IN (SELECT `DepartmentID` FROM `Departments` WHERE Name = 'Historical Placeholder')";
-    $result = $db->run($sql);
+    $result = DB::run($sql);
     $value = $result->fetch();
     while ($value !== false) {
         $temp_dept[$value['DepartmentID']] = ['name' => $value['Name'], 'parent' => $value['ParentDepartmentID'], 'childCount' => 0];
@@ -38,7 +38,7 @@ if (!isset($Departments)) {
         }
 
         $sql = "SELECT * FROM EMails WHERE DepartmentID = ".$id.";";
-        $result = $db->run($sql);
+        $result = DB::run($sql);
         $value = $result->fetch();
         while ($value !== false) {
             array_push($Departments[$dept['name']]['Email'], $value);

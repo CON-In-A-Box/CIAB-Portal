@@ -7,14 +7,12 @@ require_once(__DIR__."/../functions/volunteer.inc");
 
 function random_concom_id()
 {
-    global $db;
-
     $sql = <<<SQL
         SELECT AccountID FROM ConComList
         ORDER BY RAND()
         LIMIT 1
 SQL;
-    $result = $db->run($sql);
+    $result = DB::run($sql);
     $value = $result->fetch();
     return (int)($value['AccountID']);
 
@@ -23,14 +21,12 @@ SQL;
 
 function random_department()
 {
-    global $db;
-
     $sql = <<<SQL
         SELECT Name FROM Departments
         ORDER BY RAND()
         LIMIT 1
 SQL;
-    $result = $db->run($sql);
+    $result = DB::>run($sql);
     $value = $result->fetch();
     return $value['Name'];
 
@@ -39,12 +35,10 @@ SQL;
 
 function populate_vol()
 {
-    global $db;
-
     print "Populate Hours\n";
 
     $sql = "DELETE FROM `VolunteerHours` WHERE 1";
-    $db->run($sql);
+    DB::run($sql);
 
 
     $id = 0;
@@ -67,14 +61,12 @@ function populate_vol()
 
 function populate_prizes()
 {
-    global $db;
-
     print "Populate Gifts\n";
 
     $sql = "DELETE FROM `RewardGroup` WHERE 1";
-    $db->run($sql);
+    DB::run($sql);
     $sql = "DELETE FROM `VolunteerRewards` WHERE 1";
-    $db->run($sql);
+    DB::run($sql);
 
     /* Add 5 groups */
     for ($i = 0; $i < 5; $i++) {
@@ -84,7 +76,7 @@ function populate_prizes()
     }
 
     $sql = "SELECT RewardGroupID FROM RewardGroup LIMIT 1;";
-    $result = $db->run($sql);
+    $result = DB::run($sql);
     $value = $result->fetch();
     $bottom = (int)($value['RewardGroupID']);
 
@@ -138,17 +130,15 @@ function populate_prizes()
 
 function populate_redeem()
 {
-    global $db;
-
     print "Populate Redeem\n";
 
     $sql = "DELETE FROM `HourRedemptions` WHERE 1";
-    $db->run($sql);
+    DB::run($sql);
 
     $sql = <<<SQL
         SELECT AccountID FROM ConComList;
 SQL;
-    $result = $db->run($sql);
+    $result = DB::run($sql);
     $value = $result->fetch();
     while ($value != false) {
         $id = (int)($value['AccountID']);
@@ -158,7 +148,7 @@ SQL;
             ORDER BY RAND()
             LIMIT 10
 SQL;
-        $result2 = $db->run($sql);
+        $result2 = DB::run($sql);
         $value2 = $result2->fetch();
         $prizes = [];
         while ($value2 != false) {

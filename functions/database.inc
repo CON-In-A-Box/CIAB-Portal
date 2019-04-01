@@ -205,7 +205,7 @@ $_currentEvent = null;
 
 function current_cycleID()
 {
-    global $_currentCycle, $db, $_SESSION;
+    global $_currentCycle, $_SESSION;
 
     if ($_currentCycle == null) {
         /* Place 1 - Look for it in the session */
@@ -217,7 +217,7 @@ function current_cycleID()
         /* Place 2 - try to get it from the database */
 
         $sql = "SELECT Value FROM Configuration WHERE Field='CurrentCycleID';";
-        $result = $db->run($sql);
+        $result = DB::run($sql);
         $value = $result->fetch();
         if ($value) {
             $_currentCycle = $value['CurrentCycleID'];
@@ -228,7 +228,7 @@ function current_cycleID()
 
         $year = date("Y-m-d");
         $sql = "SELECT AnnualCycleID FROM AnnualCycles WHERE DateTo > '$year';";
-        $result = $db->run($sql);
+        $result = DB::run($sql);
         $value = $result->fetch();
         if ($value) {
             $_currentCycle = $value['AnnualCycleID'];
@@ -238,7 +238,7 @@ function current_cycleID()
         /* Fallback - Last year in database*/
 
         $sql = "SELECT AnnualCycleID FROM AnnualCycles ORDER BY AnnualCycleID DESC LIMIT 1;";
-        $result = $db->run($sql);
+        $result = DB::run($sql);
         $value = $result->fetch();
         if ($value) {
             $_currentCycle = $value['AnnualCycleID'];
@@ -254,7 +254,7 @@ function current_cycleID()
 
 function current_eventID()
 {
-    global $_currentEvent, $db, $_SESSION;
+    global $_currentEvent, $_SESSION;
 
     if ($_currentEvent == null) {
         /* Place 1 - Look for it in the session */
@@ -266,7 +266,7 @@ function current_eventID()
         /* Place 2 - try to get it from the database */
 
         $sql = "SELECT Value FROM Configuration WHERE Field='CurrentEventID';";
-        $result = $db->run($sql);
+        $result = DB::run($sql);
         $value = $result->fetch();
         if ($value) {
             $_currentEvent = $value['CurrentEventID'];
@@ -277,7 +277,7 @@ function current_eventID()
 
         $year = date("Y-m-d");
         $sql = "SELECT EventID FROM Events WHERE DateTo >= '$year';";
-        $result = $db->run($sql);
+        $result = DB::run($sql);
         $value = $result->fetch();
         if ($value) {
             $_currentEvent = $value['EventID'];
@@ -287,7 +287,7 @@ function current_eventID()
         /* Fallback - Last year in database*/
 
         $sql = "SELECT EventID FROM Events ORDER BY EventID DESC LIMIT 1;";
-        $result = $db->run($sql);
+        $result = DB::run($sql);
         $value = $result->fetch();
         if ($value) {
             $_currentEvent = $value['EventID'];
@@ -328,11 +328,9 @@ function lookup_names(&$data, $column_name)
 
 function dump_sql_to_csv($sql, $lookup_account = false)
 {
-    global $db;
-
     $data = [];
     $data[] = array();
-    $result = $db->run($sql);
+    $result = DB::run($sql);
     for ($i = 0; $i < $result->columnCount(); $i++) {
         $data[0][] = $result->getColumnMeta($i)['name'];
     }

@@ -10,8 +10,6 @@ require_once($FUNCTIONDIR."/database.inc");
 
 function get_tickets($id, $event = null)
 {
-    global $db;
-
     $sql = <<<SQL
         SELECT
             *,
@@ -45,7 +43,7 @@ SQL;
     $sql .= ";";
 
     $badges = [];
-    $result = $db->run($sql);
+    $result = DB::run($sql);
     $value = $result->fetch();
     while ($value !== false) {
         $badges[] = $value;

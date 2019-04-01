@@ -105,8 +105,6 @@ function _ConComListBuild()
 
 function _build_ConComList()
 {
-    global $db;
-
     $event = current_eventID();
 
     $data = _ConComListBuild();
@@ -117,7 +115,7 @@ function _build_ConComList()
                 $id = 1;
             } else {
                 $sql = "SELECT COALESCE(PositionID, 0) as PositionID FROM ConComPositions WHERE Name = '".$line['Position']."';";
-                $result = $db->run($sql);
+                $result = DB::run($sql);
                 $value = $result->fetch();
                 if ($value) {
                     $id = $value['PositionID'];
@@ -128,7 +126,7 @@ function _build_ConComList()
             }
 
             $sql = "SELECT DepartmentID FROM Departments WHERE Name = '".$line['Department']."';";
-            $result = $db->run($sql);
+            $result = DB::run($sql);
             $value = $result->fetch();
             if ($value) {
                 $did = $value['DepartmentID'];
@@ -139,7 +137,7 @@ function _build_ConComList()
 
             /* Do we have this record already? If so then DB is god */
             $sql = "SELECT AccountID FROM ConComList WHERE AccountID = ".$line['Account ID']." AND DepartmentID = ".$did." AND PositionID = ".$id.";";
-            $result = $db->run($sql);
+            $result = DB::run($sql);
             $value = $result->fetch();
             if ($value) {
                 print '<span>Record for '.$line['First Name'].' '.$line['Last Name'].'('.$line['Account ID'].') as '.$line['Department'].' '.$line['Position'].' already exists. Skip Import from Neon.</span><br>';
@@ -151,7 +149,7 @@ function _build_ConComList()
             } else {
                 $sql = "INSERT INTO ConComList (AccountID, DepartmentID, PositionID, EventID) VALUES (".$line['Account ID'].", ".$did.", ".$id.", $event);";
             }
-            $db->run($sql);
+            DB::run($sql);
             print '<span style="color:green">Imported '.$line['First Name'].' '.$line['Last Name'].'('.$line['Account ID'].') as '.$line['Department'].' '.$line['Position'].' from Neon.</span><br>';
         }
     }
@@ -196,7 +194,7 @@ function lookup_events($page = 1, $output = null, $all = true)
 
 function _Neon_import_badges($event)
 {
-    global $Neon, $db;
+    global $Neon;
 
     $search = [
     'method' => 'event/listEventTickets',
@@ -216,11 +214,11 @@ function _Neon_import_badges($event)
             $name = $ticket['ticketName'];
             $cost = $ticket['fee'];
             $sql = "SELECT BadgeTypeID FROM `BadgeTypes` WHERE BadgeTypeID = $id;";
-            $result = $db->run($sql);
+            $result = DB::run($sql);
             $values = $result->fetch();
             if ($values === false) {
                 $sql = "INSERT INTO `BadgeTypes` (BadgeTypeID, EventID, Name, Cost, AvailableFrom, AvailableTo) VALUES ($id, $event, '$name', $cost, '0000-00-00', '0000-00-00');";
-                $db->run($sql);
+                DB::run($sql);
             }
         }
     }
@@ -230,11 +228,9 @@ function _Neon_import_badges($event)
 
 function _get_cycleID($eventdate)
 {
-    global $db;
-
     $year = $eventdate->format("Y-m-d");
     $sql = "SELECT AnnualCycleID FROM AnnualCycles WHERE DateTo > '$year';";
-    $result = $db->run($sql);
+    $result = DB::run($sql);
     $value = $result->fetch();
     if ($value) {
         $_currentYear = $value['AnnualCycleID'];
@@ -247,8 +243,6 @@ function _get_cycleID($eventdate)
 
 function _Neon_import_events()
 {
-    global $db;
-
     $events = lookup_events(1, null, true);
     if ($events) {
         // Drop Events we do not care about.
@@ -275,13 +269,13 @@ function _Neon_import_events()
             $evt['AnnualCycleID'] = $cycle;
             $id = $evt['Event ID'];
             $sql = "SELECT EventID FROM `Events` WHERE EventID = $id;";
-            $result = $db->run($sql);
+            $result = DB::run($sql);
             $values = $result->fetch();
             if ($values === false) {
                 $sql = "INSERT INTO `Events` (EventID, EventName, AnnualCycleID, DateFrom, DateTo) VALUES ($id, '$name', $cycle, '$from', '$to');";
-                $db->run($sql);
+                DB::run($sql);
                 $sql = "SELECT EventID FROM `Events` ORDER BY EventID DESC LIMIT 1;";
-                $result = $db->run($sql);
+                $result = DB::run($sql);
                 $value = $result->fetch();
                 $eventID = $value['EventID'];
             } else {

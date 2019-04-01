@@ -13,13 +13,12 @@ if (isset($GLOBALS['NEONID']) && isset($GLOBALS['NEONKEY'])) {
 
 function _update_DB_Version($target)
 {
-    global $db;
     $sql = <<<SQL
         UPDATE Configuration
         SET Value = '$target'
         WHERE Field = 'DBSchemaVersion';
 SQL;
-    $db->run($sql);
+    DB::run($sql);
     echo "<br><hr>";
     echo "<h3>Database Schema updated to: $target</h3>";
     echo "<h3>Done!</h3>";

@@ -158,8 +158,6 @@ function lookup_users_by_pref_name($name, $single = false)
 
 function lookup_users_by_badgename($badge, $single_user = false)
 {
-    global $db;
-
     $sql = <<<SQL
         SELECT
             AccountID
@@ -168,7 +166,7 @@ function lookup_users_by_badgename($badge, $single_user = false)
         WHERE
             BadgeName = '$badge';
 SQL;
-    $result = $db->run($sql);
+    $result = DB::run($sql);
     $value = $result->fetch();
     $users = [];
     while ($value !== false) {

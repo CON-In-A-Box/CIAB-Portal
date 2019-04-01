@@ -31,10 +31,8 @@ function getDepartmentEmails($dep)
 
 function getPositionID($position)
 {
-    global $db;
-
     $sql = "SELECT PositionID FROM ConComPositions WHERE Name = '$position';";
-    $result = $db->run($sql);
+    $result = DB::run($sql);
     $value = $result->fetch();
     if ($value === false) {
         return null;
@@ -331,7 +329,7 @@ function DumpConComList()
 
 function AddConComPosition($accountid, $department, $position, $note, $notify = true)
 {
-    global $Departments, $db;
+    global $Departments;
 
     $positionid = getPositionID($position);
     if ($positionid == null) {
@@ -348,7 +346,7 @@ function AddConComPosition($accountid, $department, $position, $note, $notify = 
     $user = $data['users'][0];
 
     $sql = "SELECT ListRecordID FROM ConComList WHERE DepartmentID = ".$Departments[$department]['id']." AND AccountID = $accountid and EventID = $event;";
-    $result = $db->run($sql);
+    $result = DB::run($sql);
     $value = $result->fetch();
     if ($value !== false) {
         // if the department is already assigned to this user, wipe it and replace it with the new info
@@ -357,7 +355,7 @@ function AddConComPosition($accountid, $department, $position, $note, $notify = 
     } else {
         $sql = "INSERT INTO ConComList (AccountID, DepartmentID, PositionID, EventID, Note) VALUES ($accountid, ".$Departments[$department]['id'].", $positionid, $event, '$note');";
     }
-    $result = $db->run($sql);
+    $result = DB::run($sql);
 
     if ($notify && $result) {
         /* Notify the Division Director, so they know */
@@ -381,7 +379,7 @@ function AddConComPosition($accountid, $department, $position, $note, $notify = 
 
 function RemoveConComPosition($accountid, $department, $position, $notify = true)
 {
-    global $Departments, $db;
+    global $Departments;
 
     $positionid = getPositionID($position);
     if ($positionid == null) {
@@ -389,7 +387,7 @@ function RemoveConComPosition($accountid, $department, $position, $notify = true
     }
 
     $sql = "DELETE FROM ConComList WHERE AccountID = $accountid AND DepartmentID = ".$Departments[$department]['id']." AND PositionID = $positionid";
-    $result = $db->run($sql);
+    $result = DB::run($sql);
     if ($result) {
         if ($nodify) {
             // Notify the Division Director, so they know
@@ -419,8 +417,6 @@ function RemoveConComPosition($accountid, $department, $position, $notify = true
 
 function events_served($accountid)
 {
-    global $db;
-
     $sql = <<<SQL
         SELECT
             (
@@ -439,7 +435,7 @@ function events_served($accountid)
             `EventID`
 SQL;
 
-    $result = $db->run($sql);
+    $result = DB::run($sql);
     $years = [];
     $value = $result->fetch();
     while ($value !== false) {

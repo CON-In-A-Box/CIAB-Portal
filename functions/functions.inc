@@ -40,10 +40,8 @@ function goSite($Site = false)
 
 function _config_from_Database()
 {
-    global $db;
-
     $sql = "SELECT * FROM Configuration;";
-    $result = $db->run($sql);
+    $result = DB::run($sql);
     $value = $result->fetch();
     while ($value !== false) {
         $GLOBALS[$value['Field']] = $value['Value'];
