@@ -55,6 +55,7 @@ function display_volunteer_hours()
 function _cmp_name($a, $b)
 {
     return strcmp($a['Name'], $b['Name']);
+
 }
 
 

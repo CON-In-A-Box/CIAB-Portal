@@ -701,9 +701,10 @@ function find_overlap_hours($endtime, $hours, $uid)
 SQL;
     $result = DB::run($sql);
     $value = $result->fetch();
-    if ($value !== false)
+    if ($value !== false) {
         return $value;
-    else
+    } else {
         return null;
+    }
 
 }
