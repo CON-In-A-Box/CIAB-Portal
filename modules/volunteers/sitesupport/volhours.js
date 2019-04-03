@@ -28,16 +28,16 @@ function calculateHours() {
   if (creditHours == 1) {
     tag = ' hour';
   }
-  if (creditMinutes== 1) {
+  if (creditMinutes == 1) {
     mtag = ' minute';
   }
   document.getElementById('totalhours').innerHTML = '';
   if (creditHours > 0) {
-      document.getElementById('totalhours').innerHTML = creditHours + tag;
+    document.getElementById('totalhours').innerHTML = creditHours + tag;
   }
   if (creditMinutes > 0) {
-      document.getElementById('totalhours').innerHTML += ' ' + creditMinutes +
-                                                         mtag ;
+    document.getElementById('totalhours').innerHTML += ' ' + creditMinutes +
+                                                       mtag ;
   }
   document.getElementById('actualhours').value = Number(hours) +
                                                  Number(am / 60);

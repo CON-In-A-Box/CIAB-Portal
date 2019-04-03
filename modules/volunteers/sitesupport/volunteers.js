@@ -6,7 +6,7 @@
 /* jshint -W097 */
 /* globals confirmbox, userId, escapeHtml, userEmail, checkAuthentication,
            groupData, checkAuthentication, adminMode, unclaimed,
-           hoursRemain, userLookup */
+           hoursRemain, userLookup, hideSidebar, showSidebar */
 
 'use strict';
 
