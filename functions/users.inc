@@ -234,7 +234,7 @@ function lookup_user_by_login($user)
     if (count($output['users']) == 0) {
         return array();
     } else {
-        foreach($output['users'] as $key => $user) {
+        foreach ($output['users'] as $key => $user) {
             $output['users'][$key]['AccountID'] = $user['Id'];
         }
         return $output['users'];

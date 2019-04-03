@@ -194,7 +194,7 @@ SQL;
                 $can_delete = false;
             }
             if (intval($detail) === 0 && $key === 'concom' && count($event_data) > 1) {
-        print "&nbsp;&nbsp;<button id='import' class='w3-button w3-round-xxlarge event-color-primary' onclick='importConcom(".$entry['Id'].")'>Import</button>";
+                print "&nbsp;&nbsp;<button id='import' class='w3-button w3-round-xxlarge event-color-primary' onclick='importConcom(".$entry['Id'].")'>Import</button>";
             }
             print "</td></tr>";
         }
@@ -533,6 +533,7 @@ function delete_event($id)
     DB::run($sql);
 
 }
+
 
 function duplicate_concom($to, $from)
 {

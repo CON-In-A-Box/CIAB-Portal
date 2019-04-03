@@ -31,12 +31,7 @@ echo "</div>\n";
 
 if (isset($_SESSION['duplicates'])) {
     echo '<p class="w3-container w3-center w3-border w3-red w3-large">';
-    echo "This e-mail has ".count($_SESSION['duplicates'])." duplicate ".
-         "accounts. IDs:[".implode(", ", $_SESSION['duplicates'])."]. ".
-         "This is only displaying information for one of these Accounts.".
-         "<br />".
-         "<b>Please</b> contact IT to have this situation corrected.<br />".
-         "</p>";
+    echo "This e-mail has ".count($_SESSION['duplicates'])." duplicate "."accounts. IDs:[".implode(", ", $_SESSION['duplicates'])."]. "."This is only displaying information for one of these Accounts."."<br />"."<b>Please</b> contact IT to have this situation corrected.<br />"."</p>";
 }
 
 foreach ($homepage_panes as $drawfunc) {

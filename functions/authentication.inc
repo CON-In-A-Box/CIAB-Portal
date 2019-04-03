@@ -92,11 +92,13 @@ function checkNeonForUserAndPasswordMatch($user, $password)
 
 }
 
+
 const AUTH_SUCCESS   = 0x0;
 const AUTH_BAD       = 0x1;
 const AUTH_EXPIRED   = 0x2;
 const AUTH_LOCKED    = 0x3;
 const AUTH_DUPLICATE = 0x10;
+
 
 function check_authentication($account, $password, $user)
 {
@@ -199,7 +201,7 @@ function doUserAndPasswordMatch($user, $password)
     loadDefinedFields();
     $results = array();
     $value = lookup_user_by_login($user);
-    if (count($value)>0) {
+    if (count($value) > 0) {
         foreach ($value as $entry) {
             $check = check_authentication($entry['AccountID'], $password, $user);
             if ($check === AUTH_SUCCESS) {
@@ -214,19 +216,18 @@ SQL;
                 if (count($value) > 1) {
                     $_SESSION['duplicates'] = array_column($value, 'AccountID');
                 }
-                return array("entry"=>$entry, "result"=>AUTH_SUCCESS);
+                return array("entry" => $entry, "result" => AUTH_SUCCESS);
             } else {
-                array_push($results, array("entry"=>null, "result"=>$check));
+                array_push($results, array("entry" => null, "result" => $check));
             }
         }
     } else {
-        return array("entry"=>null, "result"=>AUTH_BAD);
+        return array("entry" => null, "result" => AUTH_BAD);
     }
-    if (count($results) <= 1)
-    {
+    if (count($results) <= 1) {
         return $results[0];
     }
-    return array("entry"=>null, "result"=>AUTH_DUPLICATE);
+    return array("entry" => null, "result" => AUTH_DUPLICATE);
 
 }
 
@@ -278,7 +279,7 @@ function rppg()
 }
 
 
-function reset_password($id, $password=null)
+function reset_password($id, $password = null)
 {
     global $CONSITENAME, $ADMINEMAIL, $PASSWORDRESET;
 
