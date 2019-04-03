@@ -26,7 +26,7 @@ function random_department()
         ORDER BY RAND()
         LIMIT 1
 SQL;
-    $result = DB::>run($sql);
+    $result = DB::run($sql);
     $value = $result->fetch();
     return $value['Name'];
 
