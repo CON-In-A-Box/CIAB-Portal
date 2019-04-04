@@ -1,0 +1,31 @@
+version: "3.7"
+services:
+  app:
+    build: 
+      context: .
+      dockerfile: Dockerfile.dev
+    environment:
+      APACHE_RUN_USER: '#1000'
+      APACHE_RUN_GROUP: '#1000'
+    links:
+      - db
+    ports:
+      - 80:80
+    volumes:
+      - .:/var/www/html
+
+  db:
+    image: mysql:5.7
+    environment:
+      MYSQL_DATABASE: ciab
+      MYSQL_ONETIME_PASSWORD: 1
+      MYSQL_PASSWORD: llama
+      MYSQL_RANDOM_ROOT_PASSWORD: 1
+      MYSQL_USER: ciab
+    ports:
+      - 3306:3306
+    volumes:
+      - datadir:/var/lib/mysql
+volumes:
+  datadir:
+
