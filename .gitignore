@@ -43,3 +43,7 @@ Thumbs.db
 favicon.ico
 favicon.gif
 error_log
+
+# Composer files #
+##################
+vendor

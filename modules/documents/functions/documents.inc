@@ -5,7 +5,7 @@
     require_module 'json';
 .*/
 
-require_once $BASEDIR.'/library/google-api/vendor/autoload.php';
+require_once $BASEDIR.'/vendor/autoload.php';
 
 
 function create_client()
