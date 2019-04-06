@@ -1,4 +1,18 @@
 FROM php:apache
-RUN apt update && apt install -y libcurl4-openssl-dev
+ENV APP_DIR=/var/www/html
+
+RUN useradd -u 1000 ciab
+RUN apt update && apt install -y libcurl4-openssl-dev libzip-dev zlib1g-dev git
 RUN a2enmod headers
-RUN docker-php-ext-install curl pdo pdo_mysql mysqli
+RUN docker-php-ext-install curl pdo pdo_mysql mysqli zip
+#Install Composer
+RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+RUN php composer-setup.php --install-dir=. --filename=composer
+RUN mv composer /usr/local/bin/
+
+VOLUME ${APP_DIR}
+WORKDIR ${APP_DIR}
+COPY --chown=ciab . /var/www/html
+COPY docker-entrypoint.sh /
+ENTRYPOINT ["/bin/bash", "/docker-entrypoint.sh"]
+CMD ["dev"]
