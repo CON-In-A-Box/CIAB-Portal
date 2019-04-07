@@ -73,6 +73,14 @@ if (is_file($PAGESDIR.'/head/'.$_REQUEST['Function'].'.inc')) {
 } elseif (is_file($MODULESDIR.'/'.$_REQUEST['Function'].'/pages/head.inc')) {
     require($MODULESDIR.'/'.$_REQUEST['Function'].'/pages/head.inc');
 }
+
+/* SCSS processing */
+if (is_file($MODULESDIR.'/'.$_REQUEST['Function'].'/scss/style.php')) {
+    print "<link rel='stylesheet' href='style.php/".$_REQUEST['Function']."/scss/styles.scss'/>";
+} else {
+    print "<link rel='stylesheet' href='style.php/styles.scss'/>";
+}
+
 require($PAGESDIR.'/base/header_end.inc');
 
 // Page Body <process_body>
