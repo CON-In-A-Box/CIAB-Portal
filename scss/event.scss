@@ -1,0 +1,31 @@
+@import '_CONvergence';
+
+.event-color-primary,.event-hover-primary:hover {
+    color: $primary-color!important;
+    background-color: $primary-background!important
+}
+
+.event-color-secondary,.event-hover-secondary:hover {
+    color: $secondary-color!important;
+    background-color: $secondary-background!important
+}
+
+.event-icon {
+  background-image: url($icon-image);
+  background-size: cover;
+  width: 91px;
+  height: 72px;
+  overflow: auto;
+}
+
+.event-default-user-icon {
+    content: url("/images/default-user.jpg");
+}
+
+.event-bar-icon {
+  background-image: url($icon-image);
+  background-size: cover;
+  width: 48px;
+  height: 38px !important;
+  overflow: auto;
+}
