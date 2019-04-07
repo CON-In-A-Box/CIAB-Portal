@@ -139,6 +139,21 @@ class SCHEMA
         'OneTime' => 'VARCHAR(110)',
         'OneTimeExpires' => 'DATETIME',
     ],
+
+    'EmailLists' => [
+        'EmailListID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
+        'Name' => 'VARCHAR(100) NOT NULL',
+        'Description' => 'TEXT NOT NULL',
+        'Code' => 'TEXT',
+    ],
+
+    'EmailListAccess' => [
+        'DepartmentID' => 'INT UNSIGNED NOT NULL',
+        'PositionID' => 'INT UNSIGNED NOT NULL',
+        'EmailListID' => 'INT UNSIGNED NOT NULL',
+        'EditList' => 'BOOLEAN NOT NULL',
+        'ChangeAccess' => 'BOOLEAN NOT NULL',
+    ]
   ];
 
   public static $DB_foreignKeys = [
@@ -192,6 +207,7 @@ class SCHEMA
 
   public static $DB_primaryKeys = [
     'TempEventPage' => ['AccountID', 'PageFound'],
+    'EmailListAccess' => ['DepartmentID', 'PositionID', 'EmailListID'],
   ];
 }
 ?>

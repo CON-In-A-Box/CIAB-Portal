@@ -52,6 +52,7 @@ SQL;
                 $retvalue = array();
             }
             $retvalue[] = ['position' => $value['Position'],
+            'positionId' => $value['PositionID'],
             'department' => $value['Department'],
             'departmentId' => $value['DepartmentID'],
             'note' => $value['Note']];
