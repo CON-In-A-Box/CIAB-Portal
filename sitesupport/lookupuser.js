@@ -36,7 +36,7 @@ var userLookup = (function(options) {
         response.forEach(function(item) {
           var div = document.createElement('DIV');
           div.classList.add('w3-bar-item');
-          div.classList.add('w3-button');
+          div.classList.add('UI-button');
           if (target) {
             div.setAttribute('onclick',
               'userLookup.gotoTarget("' + target.href + '", ' +
@@ -223,7 +223,7 @@ var userLookup = (function(options) {
           var button = document.createElement('BUTTON');
           div3.appendChild(button);
           button.type = 'button';
-          button.classList.add('w3-button');
+          button.classList.add('UI-button');
           button.classList.add('w3-bar-item');
           button.classList.add('w3-border');
           button.classList.add('icon-barcode');

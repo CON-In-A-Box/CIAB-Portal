@@ -8,7 +8,7 @@ $deptCount = departmentDetails();
 ?>
 <div id="admin_content" class="w3-section w3-container">
 
-    <div class="w3-rest w3-center w3-red w3-xlarge w3-button w3-block w3-left-align">
+    <div class="UI-admin-sectionbar w3-block w3-left-align">
         <span>ConCom Structure</span>
     </div>
 
@@ -68,15 +68,15 @@ foreach ($Divisions as $division) {
 
        <div class='w3-center'>
             <hr>
-            <button class='w3-button w3-round-xxlarge event-color-primary'
+            <button class='UI-eventbutton'
                 onclick='savePosition();'>
               Save
             </button>
-            <button class='w3-button w3-round-xxlarge w3-yellow'
+            <button class='UI-yellowbutton'
                 onclick='hideSidebar();'>
               Close
             </button>
-            <button class='w3-button w3-round-xxlarge w3-red' id='delete_btn'
+            <button class='UI-redbutton' id='delete_btn'
                 onclick='deletePosition();'>
               Delete
             </button>
@@ -99,15 +99,15 @@ foreach ($Divisions as $division) {
         </div>
         <div class='w3-center'>
             <hr>
-            <button class='w3-button w3-round-xxlarge event-color-primary'
+            <button class='UI-eventbutton'
                 id='email_save_btn' onclick='saveEmail();'>
               Save
             </button>
-            <button class='w3-button w3-round-xxlarge w3-yellow'
+            <button class='UI-yellowbutton'
                 onclick='returnPosition();'>
               Close
             </button>
-            <button class='w3-button w3-round-xxlarge w3-red' id='email_delete_btn'
+            <button class='UI-redbutton' id='email_delete_btn'
                 onclick='deleteEmail();'>
               Delete
             </button>

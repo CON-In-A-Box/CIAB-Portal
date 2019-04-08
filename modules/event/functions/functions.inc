@@ -165,12 +165,12 @@ SQL;
                 print "<tr> ";
                 print "<td>".implode('</td><td>', $badge)."</td>";
                 print "<td class='w3-center'>";
-                print "<button class='w3-button w3-small w3-round-xxlarge w3-green'  onclick='editBadge(\"$json\");'>Edit</button>  ";
+                print "<button class='w3-small UI-eventbutton'  onclick='editBadge(\"$json\");'>Edit</button>  ";
                 if (intval($badge['Sold']) == 0) {
                     $name = $badge['Badge Name'];
-                    print "<button class='w3-button w3-small w3-round-xxlarge w3-red' onclick='deleteBadge($id,\"$name\");'>Delete</button>";
+                    print "<button class='w3-small UI-redbutton' onclick='deleteBadge($id,\"$name\");'>Delete</button>";
                 } else {
-                    print "<button class='w3-button w3-small w3-round-xxlarge w3-red' disabled>Delete</button>";
+                    print "<button class='w3-small UI-redbutton' disabled>Delete</button>";
                 }
                 print "</td>";
                 print "</tr>\n";
@@ -178,7 +178,7 @@ SQL;
         }
         print "<tr> <td colspan=4 class='w3-center'>";
         $event = $entry['Id'];
-        print "<button id='new' class='w3-button w3-round-xxlarge event-color-primary' onclick='newBadge($event, \"$plain_name\")'>Add New Badge</button>";
+        print "<button id='new' class='UI-eventbutton' onclick='newBadge($event, \"$plain_name\")'>Add New Badge</button>";
         print "</td></tr>";
         print "</table>";
         print "</div></td>";
@@ -194,7 +194,7 @@ SQL;
                 $can_delete = false;
             }
             if (intval($detail) === 0 && $key === 'concom' && count($event_data) > 1) {
-                print "&nbsp;&nbsp;<button id='import' class='w3-button w3-round-xxlarge event-color-primary' onclick='importConcom(".$entry['Id'].")'>Import</button>";
+                print "&nbsp;&nbsp;<button id='import' class='UI-eventbutton' onclick='importConcom(".$entry['Id'].")'>Import</button>";
             }
             print "</td></tr>";
         }
@@ -202,13 +202,13 @@ SQL;
         print "<div class='w3-center'>";
         $json = json_encode($entry);
         $json = base64_encode($json);
-        print "<button class='w3-button w3-round-xxlarge event-color-primary w3-margin' onclick='editEvent(\"$plain_name\",\"$json\")'>Modify Event</button>";
+        print "<button class='UI-eventbutton UI-margin' onclick='editEvent(\"$plain_name\",\"$json\")'>Modify Event</button>";
         print "</div>";
         print "<div class='w3-center'>";
         if ($can_delete) {
-            print "<button class='w3-button w3-round-xxlarge w3-red' onclick='deleteEvent(".$entry['Id'].",\"$plain_name\")'>Delete Event</button>";
+            print "<button class='UI-redbutton' onclick='deleteEvent(".$entry['Id'].",\"$plain_name\")'>Delete Event</button>";
         } else {
-            print "<button class='w3-button w3-round-xxlarge w3-red w3-disabled' >Delete Event</button>";
+            print "<button class='UI-redbutton w3-disabled' >Delete Event</button>";
         }
         print "</div>";
         print "</div></td>";
@@ -266,12 +266,12 @@ SQL;
         $json = json_encode($entry);
         $json = base64_encode($json);
         print "<tr><td>".implode('</td><td>', $entry);
-        print "<td> <button class='w3-button w3-round-xxlarge event-color-primary' onclick='editMeeting(\"$json\")'>Modify Meeting</button> </td>";
+        print "<td> <button class='UI-eventbutton' onclick='editMeeting(\"$json\")'>Modify Meeting</button> </td>";
         $attendance = _check_attendance($entry['Id']);
         if ($attendance > 0) {
-            print "<td class='w3-center'> <span class='w3-button w3-round-xxlarge w3-red w3-disabled'>".$attendance." Attended </span> </td>";
+            print "<td class='w3-center'> <span class='UI-redbutton w3-disabled'>".$attendance." Attended </span> </td>";
         } else {
-            print "<td class='w3-center'> <button class='w3-button w3-round-xxlarge w3-red' onclick='deleteMeeting(\"".$entry['Name'].'",'.$entry['Id'].")'>Delete Meeting</button> </td>";
+            print "<td class='w3-center'> <button class='UI-redbutton' onclick='deleteMeeting(\"".$entry['Name'].'",'.$entry['Id'].")'>Delete Meeting</button> </td>";
         }
         print "</tr>\n";
     }

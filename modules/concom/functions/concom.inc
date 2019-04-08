@@ -469,7 +469,7 @@ function _departments($division)
             $id = $Departments[$name]['id'];
             $DivId = $Departments[$Departments[$name]['Division']]['id'];
             echo "<div ";
-            echo "class='w3-quarter event-color-secondary w3-xlarge w3-padding w3-margin w3-round-xxlarge' ";
+            echo "class='w3-quarter event-color-secondary w3-xlarge w3-padding UI-margin w3-round-xxlarge' ";
             echo "id=".$id." ";
             echo "draggable='true' ";
             $data = [
@@ -488,9 +488,9 @@ function _departments($division)
             echo ">$name</div>\n";
         }
     }
-    echo "<div class='w3-quarter w3-xlarge w3-padding w3-margin w3-round-xxlarge'>\n";
+    echo "<div class='w3-quarter w3-xlarge w3-padding UI-margin w3-round-xxlarge'>\n";
     echo "<button onclick='newEntry($did)' ";
-    echo "class='w3-yellow w3-xlarge w3-button w3-round-xxlarge' ";
+    echo "class='w3-xlarge UI-yellowbutton' ";
     echo "ondrop='dragDropParent(event, 2);'>";
     echo "<i class='fa fa-plus-square' ";
     echo "ondrop='dragDropParent(event, 3);'></i></button>\n";
@@ -503,8 +503,8 @@ function build_structure_sections()
 {
     global $Divisions, $Departments, $deptCount;
 
-    echo "<div id='division_new' class='w3-container w3-margin'>";
-    echo "<button onclick='newEntry(-1)' class='w3-yellow w3-xlarge w3-button w3-round-xxlarge'><span>Add New Division</span> <i class='fa fa-plus-square'></i></button>";
+    echo "<div id='division_new' class='w3-container UI-margin'>";
+    echo "<button onclick='newEntry(-1)' class='UI-yellowbutton'><span>Add New Division</span> <i class='fa fa-plus-square'></i></button>";
     echo "</div>\n";
 
     foreach ($Divisions as $div) {
@@ -523,8 +523,8 @@ function build_structure_sections()
         'Email' => null
                 ];
         $data_enc = base64_encode(json_encode($data));
-        echo "<div id='division_$id' class='w3-container w3-margin'>\n";
-        echo "<span class='event-color-primary w3-xxxlarge w3-padding w3-margin w3-round-xlarge' ondblclick='dblClick(\"".$data_enc."\");'>$div</span>";
+        echo "<div id='division_$id' class='w3-container UI-margin'>\n";
+        echo "<span class='event-color-primary w3-xxxlarge w3-padding UI-margin w3-round-xlarge' ondblclick='dblClick(\"".$data_enc."\");'>$div</span>";
         echo "<div id='$div_content_id' class='w3-container w3-buffer w3-section' ondragover='dragOverDivision(\"$div_content_id\");' ondragleave='dragLeaveDivision(\"$div_content_id\");' ondragend='dragLeaveDivision(\"$div_content_id\");' ondrop='dragDropDivision(event);' data-dbId=\"$id\">\n";
         _departments($div);
         echo "</div>";

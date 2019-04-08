@@ -9,7 +9,7 @@ require_once($FUNCTIONDIR.'/users.inc');
 ?>
 <div id="main_content"  class="w3-cell w3-cell-top w3-mobile">
 <?php
-echo "<h2 class='w3-center'>Welcome ".$_SESSION['preferredName']."!</h2>\n";
+echo "<h2 class='UI-sectionbar'>Welcome ".$_SESSION['preferredName']."!</h2>\n";
 /*
 if( isset($_REQUEST['DoFeed'])) {
 echo "<hr><h3>Starting DeFeed Routine:</h3>\n";
@@ -153,7 +153,7 @@ if (!empty($searchCriteria['firstName']) ||
 
 ?>
 
-<div id="left_bar" class="w3-content w3-left w3-margin">
+<div id="left_bar" class="w3-content w3-left UI-margin">
 <form action="index.php?Function=admin" method="POST" class="form-inline">
   <fieldset>
     <legend>Basic NeonCRM Account Search</legend>
@@ -166,7 +166,7 @@ if (!empty($searchCriteria['firstName']) ||
       <label>Email</label>
       <input type="text" class="form-control" name="email" value="<?php echo htmlentities($searchCriteria['email']); ?>" />
     </p>
-    <input type="submit" value="Search" class="btn btn-default" />
+    <input type="submit" value="Search" class="UI-graybutton" />
   </fieldset>
 </form>
 <hr>
@@ -174,7 +174,7 @@ if (!empty($searchCriteria['firstName']) ||
     SUDO:
     <input type="text" class="form-control" name="SUDO" value=""
      placeholder="<account id>"/>
-    <input type="submit" value="Execute" class="btn btn-default" />
+    <input type="submit" value="Execute" class="UI-graybutton" />
     </form>
 <hr>
     <form action="index.php?Function=admin" method="POST" class="form-inline">
@@ -183,10 +183,10 @@ if (!empty($searchCriteria['firstName']) ||
         placeholder="<account login>" autocomplete="off"/>
     <input type="text" class="form-control" name="tmp_passwd" value=
     "<?php echo rppg();?>" autocomplete="off"/>
-    <input type="submit" value="Set Password" class="btn btn-default" />
+    <input type="submit" value="Set Password" class="UI-graybutton" />
     </form>
 <hr>
-    <input type="submit" value="Reload without Admin Priv" class="btn btn-default"
+    <input type="submit" value="Reload without Admin Priv" class="UI-graybutton"
         onclick="removeAdmin();"/>
 <hr>
 <?php if ($result && !$result['code']) : ?>
@@ -201,7 +201,7 @@ if (!empty($searchCriteria['firstName']) ||
       <tr>
         <td><?php echo $r['First Name']; ?> <?php echo $r['Last Name']; ?></td>
         <td>
-          <a href="index.php?Function=admin&ID=<?php echo $r['Id']; ?>" class="w3-button">
+          <a href="index.php?Function=admin&ID=<?php echo $r['Id']; ?>" class="UI-roundbutton">
             <?php echo $r['Id']; ?>
           </a>
         </td>
@@ -224,7 +224,7 @@ if (!empty($searchCriteria['ID'])) {
 }
 ?>
 </div> <!-- left_bar --!>
-<div id="right_bar" class="w3-right w3-content w3-margin">
+<div id="right_bar" class="w3-right w3-content UI-margin">
 <h2 class="w3-red w3-center">Site Configuration</h2>
 <table class="w3-table w3-striped w3-border">
 <tr><th class="w3-center">Field</th> <th class="w3-center">Value</th><th></th></tr>
@@ -233,7 +233,7 @@ $table = get_config();
 foreach ($table as $line) {
     echo "<tr><td>".$line['Field']."</td>\n";
     echo "<td><input type='text' id=config_".$line['Field']." value=\"".$line['Value']."\" class='w3-input w3-border'></td>\n";
-    echo "<td><button class='w3-button w3-round-xxlarge event-color-primary' onclick='setField(\"".$line['Field']."\")';>Set</button></td></tr>\n";
+    echo "<td><button class='UI-eventbutton' onclick='setField(\"".$line['Field']."\")';>Set</button></td></tr>\n";
 }
 ?>
     <tr><td>
@@ -241,7 +241,7 @@ foreach ($table as $line) {
     </td><td>
       <input type='text' id=new_Value  value="" class='w3-input w3-border'>
     </td><td>
-      <button class='w3-button w3-round-xxlarge w3-red' onclick='addField()';>Add</button>
+      <button class='UI-redbutton' onclick='addField()';>Add</button>
     </td></tr>
 </table>
 </div>
@@ -260,9 +260,9 @@ foreach ($table as $line) {
 <p></p>
 
 <div id="dbg_info_content" class="w3-section w3-container">
-  <button class="w3-button w3-small w3-block w3-left-align" onclick="expandSection('dbg_info');"><span>Debug Session Information&nbsp;</span><i id="dbg_info_arrow" class="fa fa-caret-down"></i></button>
+  <button class="UI-roundbutton w3-small w3-block w3-left-align" onclick="expandSection('dbg_info');"><span>Debug Session Information&nbsp;</span><i id="dbg_info_arrow" class="fa fa-caret-down"></i></button>
 
-  <div id="dbg_info" class="w3-section w3-margin w3-hide">
+  <div id="dbg_info" class="w3-section UI-margin w3-hide">
       <div id="DebugInfo" class="w3-section w3-small">
         <pre><?php print_r($_SESSION); ?></pre>
       </div>
@@ -272,12 +272,12 @@ foreach ($table as $line) {
 <!-- Activity log - limited to last lines, in reverse order -->
 <p></p>
 <div id="db_log_content" class="w3-section w3-container">
-  <button class="w3-button w3-small w3-block w3-left-align" onclick="expandSection('db_log');"><span>DB Activity Log&nbsp;</span><i id="db_log_arrow" class="fa fa-caret-down"></i></button>
+  <button class="UI-roundbutton w3-small w3-block w3-left-align" onclick="expandSection('db_log');"><span>DB Activity Log&nbsp;</span><i id="db_log_arrow" class="fa fa-caret-down"></i></button>
 
-  <div id="db_log" class="w3-section w3-margin w3-hide">
+  <div id="db_log" class="w3-section UI-margin w3-hide">
    <div id="ActivityLog" class="w3-section" style="width: 100%;">
      <div>
-       <button class="w3-button w3-tiny w3-left-align w3-yellow" onclick="downloadLog()">Download Full Activity Log (CSV)</button>
+       <button class="UI-yellowbutton w3-tiny w3-left-align" onclick="downloadLog()">Download Full Activity Log (CSV)</button>
      </div>
         <?php dbPrintLog(1000); ?>
    </div>

@@ -29,7 +29,7 @@ if (isset($_SESSION['accountInfo']['individualAccount']['primaryContact']['addre
   <div class="w3-lime w3-row">
     <div>
       Legal Name
-      <button class="w3-button w3-brown w3-right" style="padding: 0px 16px;">Update Profile</button>
+      <button class="UI-button w3-brown w3-right" style="padding: 0px 16px;">Update Profile</button>
     </div>
     <div class="w3-container">
       <div class="w3-half">
@@ -57,7 +57,7 @@ if (isset($_SESSION['accountInfo']['individualAccount']['primaryContact']['addre
   <div class="w3-teal">
     <div>
       Preferred Name
-      <button class="w3-button w3-brown w3-right" style="padding: 0px 16px;">Update Profile</button>
+      <button class="UI-button w3-brown w3-right" style="padding: 0px 16px;">Update Profile</button>
     </div>
     <div class="w3-container">
       <div class="w3-half">
@@ -92,7 +92,7 @@ if (isset($_SESSION['accountInfo']['individualAccount']['primaryContact']['addre
   <div class="w3-indigo">
     <div>
       Emails
-      <button class="w3-button w3-brown w3-right" style="padding: 0px 16px;">Update Profile</button>
+      <button class="UI-button w3-brown w3-right" style="padding: 0px 16px;">Update Profile</button>
     </div>
     <div class="w3-container">
       <input type="text" name="email1" value="
@@ -114,7 +114,7 @@ echo $_SESSION['accountInfo']['individualAccount']['primaryContact']['email3'];
   <div class="w3-blue">
     <div>
       Phone Numbers
-      <button class="w3-button w3-brown w3-right" style="padding: 0px 16px;">Update Profile</button>
+      <button class="UI-button w3-brown w3-right" style="padding: 0px 16px;">Update Profile</button>
     </div>
     <div class="w3-container">
       <input type="text" name="phone1" value="<?php
@@ -157,7 +157,7 @@ if (isset($_SESSION['accountInfo']['individualAccount']['primaryContact']['phone
   <div class="w3-purple">
     <div>
       Address
-      <button class="w3-button w3-brown w3-right" style="padding: 0px 16px;">Update Profile</button>
+      <button class="UI-button w3-brown w3-right" style="padding: 0px 16px;">Update Profile</button>
     </div>
     <div class="w3-container">
       <input type="text" name="addressLine1" value="
@@ -234,7 +234,7 @@ if (isset($_SESSION['accountInfo']['individualAccount']['primaryContact']['addre
   </div>
   
   <p></p>
-  <button class="w3-button w3-block w3-brown">Update Profile</button>
+  <button class="UI-button w3-block w3-brown">Update Profile</button>
 </form>
 
 <hr>
@@ -256,7 +256,7 @@ if (isset($_SESSION['accountInfo']['individualAccount']['primaryContact']['addre
       </div>
     </div>
   </div>
-  <button class="w3-button w3-block w3-red" onclick="changePassword();">Update Password</button>
+  <button class="UI-button w3-block w3-red" onclick="changePassword();">Update Password</button>
 </div>
 
 <script>

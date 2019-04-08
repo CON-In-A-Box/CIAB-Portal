@@ -68,7 +68,7 @@ function checkAuthentication(username, success, failure, params) {
 
     var x = document.createElement('SPAN');
     x.onclick = _cancelAuthentication;
-    x.classList.add('w3-button');
+    x.classList.add('UI-button');
     x.classList.add('w3-display-topright');
     x.innerHTML = '&times;';
     content.appendChild(x);
@@ -101,7 +101,7 @@ function checkAuthentication(username, success, failure, params) {
     i.classList.add('w3-center');
     i.classList.add('w3-input');
     i.classList.add('w3-border');
-    i.classList.add('w3-margin');
+    i.classList.add('UI-margin');
     i.classList.add('w3-padding');
     i.setAttribute('type', 'password');
     i.id = 'password_input';

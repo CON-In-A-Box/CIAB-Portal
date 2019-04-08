@@ -247,17 +247,17 @@ function hour_table($uid)
     echo "<tr><th class='w3-center event-color-primary' colspan=9></th></tr>\n";
     echo "</table>";
     echo "</div>";
-    echo '<div class="w3-col w3-center w3-xlarge event-color-primary">';
+    echo '<div class="UI-event-sectionbar">';
     if (isset($uid)) {
         echo "<span>Total : ";
         _printHours($totalHours);
         echo "</span>";
     } elseif (!isset($locked)) {
-        echo "<span class='w3-margin'>Total Hours : ";
+        echo "<span class='UI-margin'>Total Hours : ";
         _printHours($summary['TotalHours']);
         echo "</span>";
-        echo "<span class='w3-margin'>Total Volunteers : ".$summary['VolunteerCount']."</span>";
-        echo "<span class='we-margin'>Total Spent Hours : ";
+        echo "<span class='UI-margin'>Total Volunteers : ".$summary['VolunteerCount']."</span>";
+        echo "<span class='UI-margin'>Total Spent Hours : ";
         _printHours($summary['TotalHoursSpent']);
         echo "</span>";
     }
@@ -282,7 +282,7 @@ function _prize_table_start($uid = 0, $spent = 0, $hoursRemain = 0)
     global $admin_mode;
 
     if ($uid) {
-        echo '<div class="w3-col w3-center w3-xlarge event-color-secondary">';
+        echo '<div class="w3-col UI-secondary-sectionbar">';
         echo "<span>Spent <span id='h_spent'>";
         _printHours($spent);
         echo "</span>  |  ";
@@ -334,7 +334,7 @@ function _prize_table_start($uid = 0, $spent = 0, $hoursRemain = 0)
         }
         $json = json_encode($record);
         $json = base64_encode($json);
-        echo "<input id='return_items' type='button' class='w3-button w3-orange' ";
+        echo "<input id='return_items' type='button' class='UI-orangebutton' ";
         echo "onclick='showReturn(\"".$json."\")' value='Return Items'>";
     }
     echo "</th>\n";
@@ -501,12 +501,12 @@ function messages($uid)
         if ($display) {
             echo "<div class='w3-col w3-cell-row w3-padding' ";
             echo "style='max-height:10vh; overflow:scroll;'>\n";
-            echo "<div id='volunteer_messages' class='w3-container w3-padding w3-border-red w3-border w3-margin w3-cell'>\n";
+            echo "<div id='volunteer_messages' class='w3-container w3-padding w3-border-red w3-border UI-margin w3-cell'>\n";
             echo $promo;
             echo "</div>\n";
             if ($unclaimed_promo && sizeof($unclaimed_promo)) {
                 echo "<div id='aquire_promo' class='w3-continer w3-padding w3-cell w3-cell-middle'>\n";
-                echo "<button id='promo_check' class='w3-button w3-round-xxlarge w3-red'";
+                echo "<button id='promo_check' class='UI-redbutton'";
                 $names = array_column($unclaimed_promo, 'Name');
                 echo "onclick=addPromoToCheckout();";
                 echo ">";
@@ -532,14 +532,14 @@ function admin_bar($uid)
 {
     echo "<div class='w3-col w3-cell-row w3-padding' ";
     echo "style='max-height:10vh; overflow:scroll;'>\n";
-    echo "<div id='volunteer_admin_bar' class='w3-container w3-padding w3-border-red w3-border w3-margin w3-cell'>\n";
-    echo "<button id='add_prize' class='w3-button w3-round-xxlarge w3-red'";
+    echo "<div id='volunteer_admin_bar' class='w3-container w3-padding w3-border-red w3-border UI-margin w3-cell'>\n";
+    echo "<button id='add_prize' class='UI-redbutton'";
     echo "onclick='showEditPrize(null)';>Add New Gift</button>\n";
-    echo "<button id='min_hours' class='w3-button w3-round-xxlarge w3-red'";
+    echo "<button id='min_hours' class='UI-redbutton'";
     echo "onclick='minHourReport()';>Minimum Hour Report</button>\n";
-    echo "<button id='gen_der_csv' class='w3-button w3-round-xxlarge w3-red'";
+    echo "<button id='gen_der_csv' class='UI-redbutton'";
     echo "onclick='generateDerivedCSV()';>Export Derived CSV</button>\n";
-    echo "<button id='gen_csv' class='w3-button w3-round-xxlarge w3-red'";
+    echo "<button id='gen_csv' class='UI-redbutton'";
     echo "onclick='generateCSV()';>Export Raw CSV Table</button>\n";
     echo "</div>\n";
     echo "</div>\n";
@@ -551,12 +551,12 @@ echo '<div id="main_content" style="height:94vh;" class="w3-row-padding';
 if ($admin_mode) {
     echo ' w3-topbar w3-bottombar w3-leftbar w3-rightbar w3-border-red">';
     echo "\n";
-    echo "<div class='w3-rest w3-center w3-xlarge w3-red'>\n";
+    echo "<div class='UI-admin-sectionbar'>\n";
     echo "<span>Volunteer Administration</span>\n";
 } else {
     echo '">';
     echo "\n";
-    echo "<div class='w3-rest w3-center w3-xlarge event-color-primary'>\n";
+    echo "<div class='UI-event-sectionbar'>\n";
     echo "<span>Volunteer Management</span>\n";
 }
 echo "</div>\n"
@@ -570,7 +570,7 @@ if (isset($_SESSION['IS_ADMIN']) || $_SESSION['IS_VOLUNTEERS']) {
             $GLOBALS['VOL_ADMINKIOSK'])) {
 ?>
   <div>
-    <div class="w3-show-inline-block w3-right w3-red w3-margin">
+    <div class="w3-show-inline-block w3-right w3-red UI-margin">
       <table class='switch-table'><tr><td>
         Admin Mode
         <label class=switch><input type="checkbox" class=toggle id=admin_slider <?php
@@ -641,11 +641,11 @@ if (!isset($locked)) {
         </div>
         <hr>
         <div class='w3-center'>
-            <button id='generate_dept_report' class='w3-button w3-round-xxlarge event-color-primary'
+            <button id='generate_dept_report' class='UI-eventbutton'
                 onclick='generateDeptReport();'>
                Generate Report &lt;CSV&gt;
             </button>
-            <button class='w3-button w3-round-xxlarge w3-red'
+            <button class='UI-redbutton'
                 onclick='hideSidebar();'>
               Close
             </button>
@@ -659,7 +659,7 @@ if (!isset($locked)) {
         <div class='w3-center'>
             <label for='csv_table'>
             Table:</label>
-            <select class="w3-margin w3-select w3-border" style="width:auto" id="csv_table">
+            <select class="UI-margin w3-select w3-border" style="width:auto" id="csv_table">
               <option value=HourRedemptions>HourRedemptions</option>
               <option value=VolunteerHours selected>VolunteerHours</option>
               <option value=VolunteerRewards>VolunteerRewards</option>
@@ -667,11 +667,11 @@ if (!isset($locked)) {
             </select>
         </div>
         <div class='w3-center'>
-            <button id='generate_csv' class='w3-button w3-round-xxlarge event-color-primary'
+            <button id='generate_csv' class='UI-eventbutton'
                 onclick='generatCSVReport();'>
                Generate CSV
             </button>
-            <button class='w3-button w3-round-xxlarge w3-red'
+            <button class='UI-redbutton'
                 onclick='hideSidebar();'>
               Close
             </button>
@@ -685,18 +685,18 @@ if (!isset($locked)) {
         <div class='w3-center'>
             <label for='der_csv_table'>
             Table:</label>
-            <select class="w3-margin w3-select w3-border" style="width:auto" id="der_csv_table">
+            <select class="UI-margin w3-select w3-border" style="width:auto" id="der_csv_table">
               <option value="SELECT r.*, (SELECT COUNT(h.PrizeID) FROM HourRedemptions AS h WHERE h.PrizeID = r.PrizeID GROUP BY h.PrizeID) as Claimed FROM VolunteerRewards as r;">Volunteer Rewards</option>
               <option value="SELECT v.*, (SELECT Name FROM `Departments` as d WHERE v.DepartmentID = d.DepartmentID) as DepartmentName FROM `VolunteerHours` as v;">Volunteer Hours</option>
               <option value="SELECT *, (SELECT Name FROM VolunteerRewards WHERE VolunteerRewards.prizeid = HourRedemptions.PrizeID) AS PrizeName FROM `HourRedemptions` ORDER BY AccountID">Prize Redemption</option>
             </select>
         </div>
         <div class='w3-center'>
-            <button id='generate_csv' class='w3-button w3-round-xxlarge event-color-primary'
+            <button id='generate_csv' class='UI-eventbutton'
                 onclick='generateDerivedCSVReport();'>
                Generate CSV
             </button>
-            <button class='w3-button w3-round-xxlarge w3-red'
+            <button class='UI-redbutton'
                 onclick='hideSidebar();'>
               Close
             </button>
@@ -713,11 +713,11 @@ if (!isset($locked)) {
             <input class="w3-input w3-border" id="report_hour_min">
         </div>
         <div class='w3-center'>
-            <button id='generate_report' class='w3-button w3-round-xxlarge event-color-primary'
+            <button id='generate_report' class='UI-eventbutton'
                 onclick='generateHourReport();'>
                Generate Report &lt;CSV&gt;
             </button>
-            <button class='w3-button w3-round-xxlarge w3-red'
+            <button class='UI-redbutton'
                 onclick='hideSidebar();'>
               Close
             </button>
@@ -781,15 +781,15 @@ if (!isset($locked)) {
           </form>
         </div>
         <div class='w3-center'>
-            <button id='set_prize_button' class='w3-button w3-round-xxlarge event-color-primary'
+            <button id='set_prize_button' class='UI-eventbutton'
                 onclick='commitPrize();'>
                 Commit
             </button>
-            <button id='delete_prize_button' class='w3-button w3-round-xxlarge event-color-secondary'
+            <button id='delete_prize_button' class='UI-secondarybutton'
                 onclick='deletePrize();'>
                 Delete
             </button>
-            <button id='exit_prize_button' class='w3-button w3-round-xxlarge w3-red'
+            <button id='exit_prize_button' class='UI-redbutton'
                 onclick='hideSidebar();'>
                Cancel
             </button>
@@ -834,15 +834,15 @@ foreach ($Departments as $dep => $set) {
           </form>
         </div>
         <div class='w3-center'>
-            <button id='set_hours_button' class='w3-button w3-round-xxlarge event-color-primary'
+            <button id='set_hours_button' class='UI-eventbutton'
                 onclick='commitHours();'>
                 Commit
             </button>
-            <button id='delete_hours_button' class='w3-button w3-round-xxlarge event-color-secondary'
+            <button id='delete_hours_button' class='UI-secondarybutton'
                 onclick='deleteHours();'>
                 Delete
             </button>
-            <button id='exit_hours_button' class='w3-button w3-round-xxlarge w3-red'
+            <button id='exit_hours_button' class='UI-redbutton'
                 onclick='hideSidebar();'>
                Cancel
             </button>
@@ -855,15 +855,15 @@ foreach ($Departments as $dep => $set) {
         </div>
         <table class='w3-table w3-striped w3-border w3-white' id='return_table'>
         </table>
-        <div class="w3-container w3-center w3-large event-color-primary w3-margin">
+        <div class="w3-container w3-center w3-large event-color-primary UI-margin">
             <span>Hours To Be Credited: <span id="credit_hours">0</span></span>
         </div>
         <div class='w3-center'>
-            <button id='return_button' class='w3-button w3-round-xxlarge event-color-primary'
+            <button id='return_button' class='UI-eventbutton'
                 onclick='processReturn();'>
                 Return Items
             </button>
-            <button id='return_clear_button' class='w3-button w3-round-xxlarge w3-red'
+            <button id='return_clear_button' class='UI-redbutton'
                 onclick='hideSidebar();'>
                Cancel
             </button>
@@ -874,7 +874,7 @@ foreach ($Departments as $dep => $set) {
             <div class="w3-container">
               <span onclick="document.getElementById('return_success_dlg').style.display='none';
                 location.reload();"
-              class="w3-button w3-display-topright">&times;</span>
+              class="UI-button w3-display-topright">&times;</span>
               <h2 class="w3-center event-color-primary">Please collect and return the following gifts</h2>
               <hr>
               <table class='w3-center w3-border w3-table w3-striped w3-white w3-xlarge w3-padding' id='return_list'>
@@ -891,17 +891,17 @@ foreach ($Departments as $dep => $set) {
         </div>
         <table class='w3-table w3-striped w3-border w3-white' id='checkout_table'>
         </table>
-        <div class="w3-container w3-center w3-large event-color-primary w3-margin">
+        <div class="w3-container w3-center w3-large event-color-primary UI-margin">
             <span>Hours Left: <span id="hours_left">0</span></span>
             <br>
             <span>Hours Spent: <span id="hours_used">0</span></span>
         </div>
         <div class='w3-center'>
-            <button id='checkout_button' class='w3-button w3-round-xxlarge event-color-primary'
+            <button id='checkout_button' class='UI-eventbutton'
                 onclick='processCheckout();'>
                 Distribute Items
             </button>
-            <button id='clear_button' class='w3-button w3-round-xxlarge w3-red'
+            <button id='clear_button' class='UI-redbutton'
                 onclick='clearCheckout();'>
                Clear
             </button>
@@ -914,7 +914,7 @@ foreach ($Departments as $dep => $set) {
     <div class="w3-container">
       <span onclick="document.getElementById('success_dlg').style.display='none';
         location.reload();"
-      class="w3-button w3-display-topright">&times;</span>
+      class="UI-button w3-display-topright">&times;</span>
       <h2 class="w3-center event-color-primary">Please get the volunteer the following new gifts!</h2>
       <hr>
       <table class='w3-center w3-border w3-table w3-striped w3-white w3-xlarge w3-padding' id='reward_list'>

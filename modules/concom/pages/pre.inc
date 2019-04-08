@@ -74,7 +74,7 @@ function doConComAddAssign($department, $accountid)
     echo 'Note';
     echo '<input type=text name="note"></input>';
     echo "</p>\n";
-    echo '<input type="submit" value="Assign to ConCom" class="btn btn-default">';
+    echo '<input type="submit" value="Assign to ConCom" class="UI-eventbutton">';
     echo '</fieldset>';
     echo "</form>\n";
 

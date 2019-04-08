@@ -35,7 +35,7 @@ function badges($account)
     <div class='w3-center event-color-secondary'>
         <b style="margin-left: 100px;">Badges Purchased</b>
         <div class='w3-right'>
-            <input id='refresh' type='button' class='w3-button w3-orange'
+            <input id='refresh' type='button' class='UI-button w3-orange'
                    onclick='refreshBadgeData(<?php echo $account;?>)' value='refresh'>
         </div>
     </div>
@@ -101,7 +101,7 @@ if (!empty($badges)) {
 ?>
 
 <div id="main_content" style="height:94vh;" class="w3-row-padding">
-  <div class="w3-rest w3-center w3-xlarge event-color-primary">
+  <div class="UI-event-sectionbar">
     <span>Registration</span>
   </div>
 

@@ -1,5 +1,6 @@
-<div class="w3-content">
-<h2 class="w3-center event-color-primary"> Staff Shared Documents </h2>
+<div id="page" class="w3-container">
+<div id="main_content" class="w3-container">
+<h2 class="UI-event-sectionbar"> Staff Shared Documents </h2>
 <?php
 
 /*.
@@ -21,7 +22,7 @@ going to be accessed. Setup an OAuth 'Client ID' of type <b>other</b>.  <a href=
     <br>
     <span> Once you have done that you need to download the JSON for the key. It will be saved as "client_secret_&lt;something&gt;.json. Open the text file and copy the contents here: </span>
 <div><textarea class="w3-input w3-border" id="secret"></textarea>
-<button id="set_code" class="w3-button w3-round-xxlarge event-color-primary" onclick='setSecret()'>Enter</button>
+<button id="set_code" class="UI-eventbutton" onclick='setSecret()'>Enter</button>
     </div>
 <?php
 exit();
@@ -34,7 +35,7 @@ if ($client_info[1] === false) {
 <h3 class="w3-center">Service needs authorization</h3>
 <div><span>Click <a href="<?php echo $url;?>" target="_blank">HERE</a> to get authorization code</span></div>
 <div><label>Enter Code Here:</label><input class="w3-input w3-border" id="code">
-<button id="set_code" class="w3-button w3-round-xxlarge event-color-primary" onclick='authCode()'>Enter</button>
+<button id="set_code" class="UI-eventbutton" onclick='authCode()'>Enter</button>
 </div>
 <?php
 exit();
@@ -45,7 +46,7 @@ if (!isset($G_ROOTFOLDER) || $G_ROOTFOLDER === "") {
 <hr>
 <h3 class="w3-center">Configure root folder</h3>
 <div><label>Shared Drive Root Folder:</label><input class="w3-input w3-border" id="folder">
-<button id="set_folder" class="w3-button w3-round-xxlarge event-color-primary" onclick='setFolder()'>Enter</button>
+<button id="set_folder" class="UI-eventbutton" onclick='setFolder()'>Enter</button>
 </div>
 <?php
 exit();
@@ -62,10 +63,11 @@ exit();
     echo '<h2 class="w3-center"><b id="root_path">'.$root.'</b></h2>';
 
 ?>
-<table class="w3-table w3-striped w3-border w3-white w3-margin" id="folder_table">
+<table class="w3-table w3-striped w3-border w3-white w3-padding" id="folder_table">
 <tr><th class="event-color-primary w3-center">Folder</th></tr>
 </table>
-<table class="w3-table w3-striped w3-border w3-white w3-margin" id="file_table">
+<br>
+<table class="w3-table w3-striped w3-border w3-white w3-padding" id="file_table">
 <tr><th class="event-color-primary w3-center">File</th><th class="event-color-primary w3-center">Last Modified</th></tr>
 <?php
 }
@@ -76,4 +78,5 @@ exit();
 echo 'loadFiles("'.$root.'");';
 ?>
 </script>
+</div>
 </div>

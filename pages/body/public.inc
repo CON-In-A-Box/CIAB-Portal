@@ -24,10 +24,10 @@ if (!empty($EXPIRED)) {
     <?php
     if (!empty($FAILURE)) {
         if ($FAILURE == AUTH_BAD) {
-            echo '<div class="w3-center w3-border w3-margin w3-padding w3-red">';
+            echo '<div class="w3-center w3-border UI-margin w3-padding w3-red">';
             echo '<h2 class="w3-red w3-bold w3-header">Login Incorrect<br>Please Try Again</h2></div>';
         } elseif ($FAILURE == AUTH_LOCKED) {
-            echo '<div class="w3-center w3-border w3-margin w3-padding w3-red">';
+            echo '<div class="w3-center w3-border UI-margin w3-padding w3-red">';
             echo '<h2 class="w3-red w3-bold w3-header">Account Locked</h2>';
             echo '<span class="w3-red w3-bold w3-header">';
             echo 'Too many unsuccessful login attempts.</span><br>';
@@ -35,12 +35,12 @@ if (!empty($EXPIRED)) {
             echo 'Reset the password gain entry.';
             echo "</span></div>\n";
         } elseif ($FAILURE == AUTH_DUPLICATE) {
-            echo '<div class="w3-center w3-border w3-margin w3-padding w3-yellow">';
+            echo '<div class="w3-center w3-border UI-margin w3-padding w3-yellow">';
             echo '<h2 class="w3-yellow w3-bold w3-header">Duplicate Accounts Present</h2>';
             echo '<span class="w3-yellowd w3-bold w3-header">';
             echo 'This e-mail address has duplicate accounts present.</span><br>';
             echo '</div>';
-            echo '<div class="w3-center w3-border w3-margin w3-padding w3-red">';
+            echo '<div class="w3-center w3-border UI-margin w3-padding w3-red">';
             echo '<h2 class="w3-red w3-bold w3-header">Login Incorrect<br>Please Try Again</h2></div>';
         }
     }
@@ -56,7 +56,7 @@ if (!empty($EXPIRED)) {
       <input name="password" type="password" class="w3-input w3-border">
       
       <p>
-        <input type="submit" value="Log In" class="w3-button w3-round-xlarge event-color-primary">
+        <input type="submit" value="Log In" class="UI-eventbutton">
       </p>
       <p>
         <a href='index.php?Function=recovery'>Forgot Password?</a>

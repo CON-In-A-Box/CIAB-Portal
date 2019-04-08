@@ -220,8 +220,8 @@ for ($i = 0; $i < 60; $i += $hour_round_interval) {
 <div class='w3-bar'>
   <div class="w3-bar-item">
     <div class="w3-bar">
-      <button id="submitbtn" class="w3-button w3-ripple event-color-primary" disabled>Submit Hours</button>
-      <button class="w3-button w3-ripple w3-khaki" type="button" onclick="resetForm()">Clear Form</button>
+      <button id="submitbtn" class="UI-eventbutton w3-ripple" disabled>Submit Hours</button>
+      <button class="UI-secondarybutton w3-ripple" type="button" onclick="resetForm()">Clear Form</button>
     </div>
   </div>
 </div>
@@ -243,11 +243,11 @@ for ($i = 0; $i < 60; $i += $hour_round_interval) {
         <h2 class="w3-center event-color-primary">Volunteer CSV File To Upload</h2>
       </div>
       <div class="w3-row">
-        <p class="w3-margin w3-center">CSV file format:
+        <p class="UI-margin w3-center">CSV file format:
         <code class="w3-block w3-gray w3-center">&lt;Account,ActualHours,AuthorizedBy,Department,EndDateTime,EnteredBy,Event,TimeModifier&gt;</code></p>
-        <p class="w3-margin w3-center"><b>Account fields</b> (Account, AuthorizedBy, EnteredBy)  can be badge number, name, or email. However it has to uniquly identify the user so badge number is always the safest.</p>
-        <p class="w3-margin w3-center"><b>Event</b> is optional. If left empty then the current upcoming event is used.</p>
-        <p class="w3-margin w3-center"><b>EndDateTime</b> should be quoted. The format is "YYYY-MM-DD HH:MM:SS".</p>
+        <p class="UI-margin w3-center"><b>Account fields</b> (Account, AuthorizedBy, EnteredBy)  can be badge number, name, or email. However it has to uniquly identify the user so badge number is always the safest.</p>
+        <p class="UI-margin w3-center"><b>Event</b> is optional. If left empty then the current upcoming event is used.</p>
+        <p class="UI-margin w3-center"><b>EndDateTime</b> should be quoted. The format is "YYYY-MM-DD HH:MM:SS".</p>
         <h2 class="w3-block w3-center">Example</h2>
         <table class="w3-table w3-center w3-striped w3-border w3-white">
            <tr><td>Attendee Joe,1.000,Connie VonRobot,IT,"2018-06-04 08:15:00",Connie VonRobot,,1.0</tr></td>
@@ -256,14 +256,14 @@ for ($i = 0; $i < 60; $i += $hour_round_interval) {
         </table>
       </div>
       <div class="w3-row">
-          <div class="w3-left w3-margin w3-half">
+          <div class="w3-left UI-margin w3-half">
               <input style="width: 100%;" type="file" id="batch_file" onchange="fileChange()">
           </div>
           <div class="w3-right">
-              <button class="w3-button w3-round w3-red w3-margin" onclick="batchCancel()">Cancel</button>
+              <button class="UI-redbutton UI-margin" onclick="batchCancel()">Cancel</button>
           </div>
           <div class="w3-right">
-              <button class="w3-button w3-round w3-green w3-margin w3-disabled" id="batch_import" onclick="batchImport()">Import</button>
+              <button class="UI-eventbutton UI-margin w3-disabled" id="batch_import" onclick="batchImport()">Import</button>
           </div>
       </div>
     </div>
@@ -281,7 +281,7 @@ for ($i = 0; $i < 60; $i += $hour_round_interval) {
             </table>
         </div>
         <div class="w3-center">
-              <button class="w3-button w3-round w3-green w3-margin" id="batch_done" onclick="batchDone()">Done</button>
+              <button class="UI-eventbutton UI-margin" id="batch_done" onclick="batchDone()">Done</button>
         </div>
     </div>
   </div>

@@ -213,14 +213,14 @@ function dblClick(json) {
       var data = input.Email[i];
       div.innerHTML += '<button onclick=\'editEmail("' + json + '", ' +
                         i + ', ' + input.Id + ');\'' +
-                       ' class="w3-button w3-round-xxlarge">' + data.EMail +
+                       ' class="UI-roundbutton">' + data.EMail +
                        '</button>';
       div.innerHTML += '<br>\n';
     }
   }
   div.innerHTML += '<button onclick=\'editEmail(null, -1, ' + input.Id +
                    ');\' ' +
-                   'class="w3-button w3-round-xxlarge"> ' +
+                   'class="UI-roundbutton"> ' +
                    '<i class=\'fa fa-plus-square\'></i></button>\n';
 
   updateDeptSection(input.Division, input.Pid);

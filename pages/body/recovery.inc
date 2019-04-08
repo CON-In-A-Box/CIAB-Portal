@@ -14,7 +14,7 @@ if (isset($updateData['expired'])) {
 </header>
 
 <div class="w3-container w3-mobile">
-  <div class="w3-container w3-center w3-border w3-margin w3-padding">
+  <div class="w3-container w3-center w3-border UI-margin w3-padding">
 <?php
 if ($expired) {
     echo "<h2 class='event-color-primary'> Expired Password </h2>\n";
@@ -37,7 +37,7 @@ echo $body."\n";
 ?>
     <div>
         <input class="w3-center w3-input w3-border" id="email"></input>
-        <button class="w3-button event-color-primary w3-margin" onclick="resetPassword()">Reset Password</button>
+        <button class="UI-eventbutton UI-margin" onclick="resetPassword()">Reset Password</button>
     </div>
   </div>
 </div>
