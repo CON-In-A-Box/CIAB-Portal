@@ -1,2 +1,27 @@
 @import "w3";
 @import "event";
+
+.UI-rest {
+    @extend .w3-rest;
+}
+
+.UI-sectionbar {
+    @extend .w3-xlarge;
+    @extend .w3-center;
+    @extend .UI_rest;
+}
+
+.UI-event-sectionbar {
+    @extend .event-color-primary;
+    @extend .UI-sectionbar;
+}
+
+.UI-secondary-sectionbar {
+    @extend .event-color-secondary;
+    @extend .UI-sectionbar;
+}
+
+.UI-admin-sectionbar {
+    @extend .w3-red;
+    @extend .UI-sectionbar;
+}

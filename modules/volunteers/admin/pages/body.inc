@@ -247,7 +247,7 @@ function hour_table($uid)
     echo "<tr><th class='w3-center event-color-primary' colspan=9></th></tr>\n";
     echo "</table>";
     echo "</div>";
-    echo '<div class="w3-col w3-center w3-xlarge event-color-primary">';
+    echo '<div class="UI-event-sectionbar">';
     if (isset($uid)) {
         echo "<span>Total : ";
         _printHours($totalHours);
@@ -282,7 +282,7 @@ function _prize_table_start($uid = 0, $spent = 0, $hoursRemain = 0)
     global $admin_mode;
 
     if ($uid) {
-        echo '<div class="w3-col w3-center w3-xlarge event-color-secondary">';
+        echo '<div class="w3-col UI-secondary-sectionbar">';
         echo "<span>Spent <span id='h_spent'>";
         _printHours($spent);
         echo "</span>  |  ";
@@ -551,12 +551,12 @@ echo '<div id="main_content" style="height:94vh;" class="w3-row-padding';
 if ($admin_mode) {
     echo ' w3-topbar w3-bottombar w3-leftbar w3-rightbar w3-border-red">';
     echo "\n";
-    echo "<div class='w3-rest w3-center w3-xlarge w3-red'>\n";
+    echo "<div class='UI-admin-sectionbar'>\n";
     echo "<span>Volunteer Administration</span>\n";
 } else {
     echo '">';
     echo "\n";
-    echo "<div class='w3-rest w3-center w3-xlarge event-color-primary'>\n";
+    echo "<div class='UI-event-sectionbar'>\n";
     echo "<span>Volunteer Management</span>\n";
 }
 echo "</div>\n"

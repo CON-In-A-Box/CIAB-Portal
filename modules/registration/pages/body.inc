@@ -101,7 +101,7 @@ if (!empty($badges)) {
 ?>
 
 <div id="main_content" style="height:94vh;" class="w3-row-padding">
-  <div class="w3-rest w3-center w3-xlarge event-color-primary">
+  <div class="UI-event-sectionbar">
     <span>Registration</span>
   </div>
 

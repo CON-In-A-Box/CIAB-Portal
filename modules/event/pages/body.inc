@@ -10,7 +10,7 @@ require_once __DIR__.'/../functions/functions.inc'
     <div id="main_content"  class="w3-container">
 
         <div id="meetings_content" class="w3-section w3-container">
-            <button onclick="expandSection('meetings')" class="w3-rest w3-center event-color-primary w3-xlarge w3-button w3-block w3-left-align">
+            <button onclick="expandSection('meetings')" class="UI-event-sectionbar w3-button w3-block w3-left-align">
                 <span>Meetings<span> <i id="meetings_arrow" class="fa fa-caret-up"></i>
             </button>
             <div id="meetings" class="w3-container w3-margin w3-hide w3-show">
@@ -25,7 +25,7 @@ require_once __DIR__.'/../functions/functions.inc'
         </div>
 
         <div id="cycles_content" class="w3-section w3-container">
-            <button onclick="expandSection('cycles')" class="w3-rest w3-center event-color-primary w3-xlarge w3-button w3-block w3-left-align">
+            <button onclick="expandSection('cycles')" class="UI-event-sectionbar w3-button w3-block w3-left-align">
                 <span id="cycles_button">Annual Cycles<span> <i id="cycles_arrow" class="fa fa-caret-down"></i>
             </button>
             <div id="cycles" class="w3-container w3-margin w3-hide  w3-responsive">
@@ -40,7 +40,7 @@ require_once __DIR__.'/../functions/functions.inc'
         </div>
 
         <div id="events_content" class="w3-section w3-container">
-            <button onclick="expandSection('events')" class="w3-rest w3-center event-color-primary w3-xlarge w3-button w3-block w3-left-align">
+            <button onclick="expandSection('events')" class="UI-event-sectionbar w3-button w3-block w3-left-align">
                 <span id="events_button">Events<span> <i id="events_arrow" class="fa fa-caret-down"></i>
             </button>
             <div id="events" class="w3-container w3-margin w3-hide">
@@ -57,7 +57,7 @@ require_once __DIR__.'/../functions/functions.inc'
         </div>
 
         <div id="neon_content" class="w3-section w3-container">
-            <button onclick="expandSection('neon')" class="w3-rest w3-center event-color-primary w3-xlarge w3-button w3-block w3-left-align">
+            <button onclick="expandSection('neon')" class="UI-event-sectionbar w3-button w3-block w3-left-align">
                 <span id="neon_button">Neon<span> <i id="neon_arrow" class="fa fa-caret-up"></i>
             </button>
             <div id="neon" class="w3-container w3-margin w3-hide w3-show">

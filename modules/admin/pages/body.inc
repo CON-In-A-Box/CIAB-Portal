@@ -9,7 +9,7 @@ require_once($FUNCTIONDIR.'/users.inc');
 ?>
 <div id="main_content"  class="w3-cell w3-cell-top w3-mobile">
 <?php
-echo "<h2 class='w3-center'>Welcome ".$_SESSION['preferredName']."!</h2>\n";
+echo "<h2 class='UI-sectionbar'>Welcome ".$_SESSION['preferredName']."!</h2>\n";
 /*
 if( isset($_REQUEST['DoFeed'])) {
 echo "<hr><h3>Starting DeFeed Routine:</h3>\n";

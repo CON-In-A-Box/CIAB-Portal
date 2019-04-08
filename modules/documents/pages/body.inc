@@ -1,5 +1,6 @@
-<div class="w3-content">
-<h2 class="w3-center event-color-primary"> Staff Shared Documents </h2>
+<div id="page" class="w3-container">
+<div id="main_content" class="w3-container">
+<h2 class="UI-event-sectionbar"> Staff Shared Documents </h2>
 <?php
 
 /*.
@@ -62,10 +63,11 @@ exit();
     echo '<h2 class="w3-center"><b id="root_path">'.$root.'</b></h2>';
 
 ?>
-<table class="w3-table w3-striped w3-border w3-white w3-margin" id="folder_table">
+<table class="w3-table w3-striped w3-border w3-white w3-padding" id="folder_table">
 <tr><th class="event-color-primary w3-center">Folder</th></tr>
 </table>
-<table class="w3-table w3-striped w3-border w3-white w3-margin" id="file_table">
+<br>
+<table class="w3-table w3-striped w3-border w3-white w3-padding" id="file_table">
 <tr><th class="event-color-primary w3-center">File</th><th class="event-color-primary w3-center">Last Modified</th></tr>
 <?php
 }
@@ -76,4 +78,5 @@ exit();
 echo 'loadFiles("'.$root.'");';
 ?>
 </script>
+</div>
 </div>

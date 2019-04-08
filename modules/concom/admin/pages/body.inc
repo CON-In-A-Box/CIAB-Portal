@@ -8,7 +8,7 @@ $deptCount = departmentDetails();
 ?>
 <div id="admin_content" class="w3-section w3-container">
 
-    <div class="w3-rest w3-center w3-red w3-xlarge w3-button w3-block w3-left-align">
+    <div class="UI-admin-sectionbar w3-block w3-left-align">
         <span>ConCom Structure</span>
     </div>
 
