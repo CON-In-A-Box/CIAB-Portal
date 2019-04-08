@@ -17,7 +17,7 @@
 require_once $BASEDIR.'/kiosk/kiosk.inc';
 
 if (!isset($base_styles)) {
-    $base_styles = " w3-bar-item w3-button ";
+    $base_styles = " w3-bar-item UI-button ";
 }
 if (!isset($resp_styles)) {
     $resp_styles = " w3-hide-small w3-hide-medium ";
@@ -106,7 +106,7 @@ foreach ($admin_menus as $menu) {
 
     if (!$have_admin) {
         echo "<div class='w3-dropdown-hover'>";
-        echo "<button class='w3-button w3-yellow ".$resp_styles."'><i class='fa fa-key'></i> Administer</button>";
+        echo "<button class='UI-button w3-yellow ".$resp_styles."'><i class='fa fa-key'></i> Administer</button>";
         echo "<div class='w3-dropdown-content w3-bar-block w3-card-4'>";
         $have_admin = true;
     }
@@ -137,12 +137,12 @@ if ($have_admin) {
 
 if ($kiosk === null) {
 ?>
-    <a class="w3-bar-item w3-block w3-center w3-button w3-hide-large"
+    <a class="w3-bar-item w3-block w3-center UI-button w3-hide-large"
       href="javascript:void(0)"
       onclick="myMenuBar()">
       <i class="fa fa-bars"></i>
     </a>
-    <a class="w3-bar-item w3-button w3-red w3-right"
+    <a class="w3-bar-item UI-button w3-red w3-right"
       href="index.php?Function=public" title="Log out and Restart">
       <i class="fa fa-sign-out"></i>
       Log Out
@@ -181,7 +181,7 @@ foreach ($admin_menus as $menu) {
 
     if (!$have_admin) {
         echo "<div class='w3-dropdown-hover'>";
-        echo "<button class='w3-button w3-yellow'><i class='fa fa-key'></i> Administer</button>";
+        echo "<button class='UI-button w3-yellow'><i class='fa fa-key'></i> Administer</button>";
         echo "<div class='w3-dropdown-content w3-bar-block w3-card-4'>";
         $have_admin = true;
     }

@@ -25,3 +25,46 @@
     @extend .w3-red;
     @extend .UI-sectionbar;
 }
+
+.UI-margin{
+    @extend .w3-margin;
+}
+
+.UI-button {
+    @extend .w3-button;
+}
+
+.UI-roundbutton {
+    @extend .UI-button;
+    @extend .w3-round-xxlarge;
+}
+
+.UI-graybutton {
+    @extend .UI-roundbutton;
+    @extend .w3-gray;
+}
+
+.UI-redbutton {
+    @extend .UI-roundbutton;
+    @extend .w3-red;
+}
+
+.UI-yellowbutton {
+    @extend .UI-roundbutton;
+    @extend .w3-yellow;
+}
+
+.UI-orangebutton {
+    @extend .UI-roundbutton;
+    @extend .w3-orange;
+}
+
+.UI-eventbutton {
+    @extend .UI-roundbutton;
+    @extend .event-color-primary;
+}
+
+.UI-secondarybutton {
+    @extend .UI-roundbutton;
+    @extend .event-color-secondary;
+}

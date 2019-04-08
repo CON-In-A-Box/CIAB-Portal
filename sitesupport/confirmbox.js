@@ -45,20 +45,20 @@ var confirmbox = (function() {
             content.appendChild(form);
 
             var b1 = document.createElement('BUTTON');
-            b1.classList.add('w3-button');
+            b1.classList.add('UI-button');
             b1.classList.add('w3-center');
             b1.classList.add('w3-border');
-            b1.classList.add('w3-margin');
+            b1.classList.add('UI-margin');
             b1.classList.add('w3-padding');
             b1.innerHTML = 'Yes';
             b1.id = 'confirm_yes_button';
             form.appendChild(b1);
 
             var b2 = document.createElement('BUTTON');
-            b2.classList.add('w3-button');
+            b2.classList.add('UI-button');
             b2.classList.add('w3-center');
             b2.classList.add('w3-border');
-            b2.classList.add('w3-margin');
+            b2.classList.add('UI-margin');
             b2.classList.add('w3-padding');
             b2.innerHTML = 'No';
             b2.id = 'confirm_no_button';

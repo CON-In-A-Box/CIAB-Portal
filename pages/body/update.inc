@@ -18,7 +18,7 @@ if (!empty($_REQUEST)) {
     db_do_update($updateData['from'], $updateData['to']);
 
     echo "<div>\n";
-    echo "<button type='button' class='w3-button w3-green w3-left' onclick=window.location.href='http://".$_SERVER['SERVER_NAME']."'>Proceed</button>\n";
+    echo "<button type='button' class='UI-eventbutton w3-left' onclick=window.location.href='http://".$_SERVER['SERVER_NAME']."'>Proceed</button>\n";
     echo "</div>\n";
 }
 

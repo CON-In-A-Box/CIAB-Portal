@@ -306,7 +306,7 @@ if (strlen($failed_message)) {
 ?> placeholder="<example: America/Chicago>">
     </br>
 
-    <input type="submit" class="w3-button w3-green w3-center">
+    <input type="submit" class="UI-eventbutton w3-center">
 </form>
 
 <?php

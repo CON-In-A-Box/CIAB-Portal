@@ -10,27 +10,27 @@ require_once __DIR__.'/../functions/functions.inc'
     <div id="main_content"  class="w3-container">
 
         <div id="meetings_content" class="w3-section w3-container">
-            <button onclick="expandSection('meetings')" class="UI-event-sectionbar w3-button w3-block w3-left-align">
+            <button onclick="expandSection('meetings')" class="UI-event-sectionbar UI-button w3-block w3-left-align">
                 <span>Meetings<span> <i id="meetings_arrow" class="fa fa-caret-up"></i>
             </button>
-            <div id="meetings" class="w3-container w3-margin w3-hide w3-show">
+            <div id="meetings" class="w3-container UI-margin w3-hide w3-show">
                 <table class='w3-table w3-striped w3-border w3-white'>
     <?php list_meetings() ?>
                 </table>
-                <div class="w3-container w3-margin w3-center">
-                    <button id='new' class='w3-button w3-round-xxlarge event-color-primary'
+                <div class="w3-container UI-margin w3-center">
+                    <button id='new' class='UI-eventbutton'
                         onclick='newMeeting()'>Add New Meeting</button>
                 </div>
             </div>
         </div>
 
         <div id="cycles_content" class="w3-section w3-container">
-            <button onclick="expandSection('cycles')" class="UI-event-sectionbar w3-button w3-block w3-left-align">
+            <button onclick="expandSection('cycles')" class="UI-event-sectionbar UI-button w3-block w3-left-align">
                 <span id="cycles_button">Annual Cycles<span> <i id="cycles_arrow" class="fa fa-caret-down"></i>
             </button>
-            <div id="cycles" class="w3-container w3-margin w3-hide  w3-responsive">
-                <div class="w3-container w3-margin w3-center">
-                    <button id='new_cycle' class='w3-button w3-round-xxlarge event-color-primary'
+            <div id="cycles" class="w3-container UI-margin w3-hide  w3-responsive">
+                <div class="w3-container UI-margin w3-center">
+                    <button id='new_cycle' class='UI-eventbutton'
                         onclick='newCycle()'>Add New Cycle</button>
                 </div>
                 <table class="w3-table w3-striped w3-border w3-white w3-padding">
@@ -40,12 +40,12 @@ require_once __DIR__.'/../functions/functions.inc'
         </div>
 
         <div id="events_content" class="w3-section w3-container">
-            <button onclick="expandSection('events')" class="UI-event-sectionbar w3-button w3-block w3-left-align">
+            <button onclick="expandSection('events')" class="UI-event-sectionbar UI-button w3-block w3-left-align">
                 <span id="events_button">Events<span> <i id="events_arrow" class="fa fa-caret-down"></i>
             </button>
-            <div id="events" class="w3-container w3-margin w3-hide">
-             <div class="w3-container w3-margin w3-center">
-                <button id='new_event' class='w3-button w3-round-xxlarge event-color-primary'
+            <div id="events" class="w3-container UI-margin w3-hide">
+             <div class="w3-container UI-margin w3-center">
+                <button id='new_event' class='UI-eventbutton'
                     onclick='newEvent()'>Add New Event</button>
              </div>
              <div>
@@ -57,12 +57,12 @@ require_once __DIR__.'/../functions/functions.inc'
         </div>
 
         <div id="neon_content" class="w3-section w3-container">
-            <button onclick="expandSection('neon')" class="UI-event-sectionbar w3-button w3-block w3-left-align">
+            <button onclick="expandSection('neon')" class="UI-event-sectionbar UI-button w3-block w3-left-align">
                 <span id="neon_button">Neon<span> <i id="neon_arrow" class="fa fa-caret-up"></i>
             </button>
-            <div id="neon" class="w3-container w3-margin w3-hide w3-show">
-                <div class="w3-container w3-margin w3-center">
-                    <button id='reload' class='w3-button w3-round-xxlarge w3-red'
+            <div id="neon" class="w3-container UI-margin w3-hide w3-show">
+                <div class="w3-container UI-margin w3-center">
+                    <button id='reload' class='UI-redbutton'
                         onclick='reloadFromNeon()'>Reload From Neon</button>
                 </div>
             </div>
@@ -92,11 +92,11 @@ foreach ($events as $event) {
         </div>
         <hr>
         <div class='w3-center'>
-            <button class='w3-button w3-round-xxlarge event-color-primary'
+            <button class='UI-eventbutton'
                 onclick='saveMeeting();'>
               Save
             </button>
-            <button class='w3-button w3-round-xxlarge w3-red'
+            <button class='UI-redbutton'
                 onclick='hideSidebar();'>
               Close
             </button>
@@ -118,11 +118,11 @@ foreach ($events as $event) {
         </div>
         <hr>
         <div class='w3-center'>
-            <button class='w3-button w3-round-xxlarge event-color-primary'
+            <button class='UI-eventbutton'
                 onclick='saveCycle();'>
               Save
             </button>
-            <button class='w3-button w3-round-xxlarge w3-red'
+            <button class='UI-redbutton'
                 onclick='hideSidebar();'>
               Close
             </button>
@@ -149,11 +149,11 @@ foreach ($events as $event) {
         </div>
         <hr>
         <div class='w3-center'>
-            <button class='w3-button w3-round-xxlarge event-color-primary'
+            <button class='UI-eventbutton'
                 onclick='saveBadge();'>
               Save
             </button>
-            <button class='w3-button w3-round-xxlarge w3-red'
+            <button class='UI-redbutton'
                 onclick='hideSidebar();'>
               Close
             </button>
@@ -175,11 +175,11 @@ foreach ($events as $event) {
         </div>
         <hr>
         <div class='w3-center'>
-            <button class='w3-button w3-round-xxlarge event-color-primary'
+            <button class='UI-eventbutton'
                 onclick='saveEvent();'>
               Save
             </button>
-            <button class='w3-button w3-round-xxlarge w3-red'
+            <button class='UI-redbutton'
                 onclick='hideSidebar();'>
               Close
             </button>
@@ -204,11 +204,11 @@ foreach ($events as $event) {
         </div>
         <hr>
         <div class='w3-center'>
-            <button class='w3-button w3-round-xxlarge event-color-primary'
+            <button class='UI-eventbutton'
                 onclick='doImport();'>
               Import
             </button>
-            <button class='w3-button w3-round-xxlarge w3-red'
+            <button class='UI-redbutton'
                 onclick='hideSidebar();'>
               Close
             </button>

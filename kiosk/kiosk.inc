@@ -73,7 +73,7 @@ function generate_kiosk_slider($type)
 {
 ?>
   <div>
-    <div class="w3-show-inline-block w3-left event-color-secondary w3-margin">
+    <div class="w3-show-inline-block w3-left event-color-secondary UI-margin">
       <table class='switch-table'><tr><td>
         Kiosk Mode
         <label class=switch><input type="checkbox" class=toggle id=kiosk_slider <?php

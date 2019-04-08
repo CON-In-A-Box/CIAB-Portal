@@ -57,7 +57,7 @@ function badges()
         <div class='w3-center event-color-secondary'>
             <b style="margin-left: 100px;">Badges Purchased</b>
             <div class='w3-right'>
-                <input id='refresh' type='button' class='w3-button w3-orange'
+                <input id='refresh' type='button' class='UI-button w3-orange'
                        onclick='refreshBadgeData(<?php echo $_SESSION['accountId'];?>)' value='refresh'>
             </div>
         </div>

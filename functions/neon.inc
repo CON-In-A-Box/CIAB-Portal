@@ -342,7 +342,7 @@ class Neon
       echo '<div class="w3-row w3-green">';
         echo '<div>';
           echo 'NeonCRM Account Search';
-          echo '<button class="w3-button w3-brown w3-right" style="padding: 0px 16px;">Search</button>';
+          echo '<button class="UI-button w3-brown w3-right" style="padding: 0px 16px;">Search</button>';
         echo '</div>';
         echo '<div class="w3-container">';
           echo '<div class="w3-half">';
@@ -354,7 +354,7 @@ class Neon
           echo '<div>';
             echo '<input type="text" class="w3-input w3-border" name="email" placeholder="Email" value="' . htmlentities( $searchCriteria['email']) . '" />';
           echo '</div>';
-          echo '<button class="w3-button w3-block w3-brown">Search</button>';
+          echo '<button class="UI-button w3-block w3-brown">Search</button>';
         echo '</div>';
       echo '</div>';
     echo '</form>';
