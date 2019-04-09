@@ -99,6 +99,12 @@ if (!empty($badges)) {
 
 
 ?>
+<script>
+    userLookup.options({
+        message: "Member Badge Number, or E-Mail or Name Partial Match",
+        partialMatch: true,
+        });
+</script>
 
 <div id="main_content" style="height:94vh;" class="w3-row-padding">
   <div class="UI-event-sectionbar">
@@ -115,5 +121,4 @@ if (isset($uid)) {
 
 
 ?>
-
 </div>

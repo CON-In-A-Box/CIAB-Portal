@@ -26,6 +26,7 @@ if (!empty($_REQUEST)) {
     $arguments = [
     'lookupId'   => FILTER_SANITIZE_SPECIAL_CHARS,
     'useBadgeName'  => FILTER_SANITIZE_NUMBER_INT,
+    'partialMatch'  => FILTER_SANITIZE_NUMBER_INT,
     ];
 
     $updateData = filter_input_array(INPUT_GET, $arguments);
@@ -34,7 +35,9 @@ if (!empty($_REQUEST)) {
         require_once($FUNCTIONDIR."/users.inc");
 
         $badge = ($updateData['useBadgeName'] == 1);
-        $data = lookup_users_by_key($updateData['lookupId'], false, $badge);
+        $substring = ($updateData['partialMatch'] == 1);
+        $data = lookup_users_by_key($updateData['lookupId'], false, $badge,
+                                    $substring);
 
         if (!$data['code']) {
             if (count($data['users']) == 0) {

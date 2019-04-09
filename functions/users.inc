@@ -99,73 +99,199 @@ function lookup_user_by_id($id)
 }
 
 
-function lookup_users_by_email($email, $single = true)
+function lookup_users_by_email($email, $single = true, $substring = false)
 {
-    return _lookup_user([['Email', 'EQUAL', $email]], $single);
-
-}
-
-
-function lookup_users_by_name($name, $single = false)
-{
-    $names = explode(" ", $name);
-    if (count($names) != 2) {
-        return ['code' => '400 Bad Request', 'users' => array()];
+    if ($substring) {
+        $operator = 'CONTAIN';
+    } else {
+        $operator = 'EQUAL';
     }
-    return _lookup_user(
-        [['First Name', 'EQUAL', $names[0]],
-                         ['Last Name', 'EQUAL', $names[1]]],
-        $single
-    );
+    return _lookup_user([['Email', $operator, $email]], $single);
 
 }
 
 
-function lookup_users_by_pref_name($name, $single = false)
+$_set = array();
+
+
+function filter_users($user)
+{
+    global $_set;
+    if (in_array($user['Id'], $_set)) {
+        return false;
+    } else {
+        $_set[] = $user['Id'];
+        return true;
+    }
+
+}
+
+
+function sort_users($a, $b)
+{
+    return intval($a['Id']) > intval($b['Id']);
+
+}
+
+
+function merge_results($result1, $result2)
+{
+    global $_set;
+    $_set = array();
+    $output = ['code' => '404 Not Found', 'users' => array()];
+
+    if ($result1['code'] === null) {
+        $output['code'] = null;
+        $output['users'] = array_merge($output['users'], $result1['users']);
+        foreach ($result1['users'] as $u) {
+            $_set[] = $u['Id'];
+        }
+    }
+
+    if ($result2['code'] === null) {
+        if ($output['code'] === null) {
+            $result = array_filter($result2['users'], 'filter_users');
+        } else {
+            $result = $result2['users'];
+            $output['code'] = null;
+        }
+        $output['users'] = array_merge($output['users'], $result);
+    }
+
+    usort($output['users'], "sort_users");
+
+    return $output;
+
+}
+
+
+function lookup_users_by_name($name, $single = false, $substring = false)
+{
+    if ($substring) {
+        $names = explode(" ", $name);
+        if (count($names) < 2) {
+            $result = _lookup_user([['First Name', 'CONTAIN', $name]], $single);
+            $result2 = _lookup_user([['Last Name', 'CONTAIN', $name]], $single);
+            return merge_results($result, $result2);
+        } else {
+            return _lookup_user(
+                [['First Name', 'EQUAL', $names[0]],
+                                 ['Last Name', 'CONTAIN', $names[1]]],
+                $single
+            );
+        }
+    } else {
+        $names = explode(" ", $name);
+        if (count($names) != 2) {
+            return ['code' => '400 Bad Request', 'users' => array()];
+        }
+        return _lookup_user(
+            [['First Name', 'EQUAL', $names[0]],
+                             ['Last Name', 'EQUAL', $names[1]]],
+            $single
+        );
+    }
+
+}
+
+
+function lookup_users_by_pref_name($name, $single = false, $substring = false)
 {
     $preferredFirstName = search_definedFields('Preferred First Name');
     $preferredLastName = search_definedFields('Preferred Last Name');
-    $names = explode(" ", $name);
-    if (count($names) != 2) {
-        return ['code' => '400 Bad Request', 'users' => array()];
-    }
+    if ($substring) {
+        $names = explode(" ", $name);
+        if (count($names) < 2) {
+            $result = _lookup_user([[$preferredFirstName, 'CONTAIN', $name]], $single);
+            $result2 = _lookup_user([[$preferredLastName, 'CONTAIN', $name]], $single);
+            return merge_results($result, $result2);
+        } else {
+            $result = _lookup_user(
+                [[$preferredFirstName, 'EQUAL', $names[0]],
+                 [$preferredLastName, 'CONTAIN', $names[1]]
+                ],
+                $single
+            );
+            $result2 = _lookup_user(
+                [['First Name', 'EQUAL', $names[0]],
+                 [$preferredLastName, 'CONTAIN', $names[1]]
+                ],
+                $single
+            );
+            $result = merge_results($result, $result2);
+            $result2 = _lookup_user(
+                [['First Name', 'EQUAL', $names[0]],
+                 ['Last Name', 'CONTAIN', $names[1]]
+                ],
+                $single
+            );
+            $result = merge_results($result, $result2);
+            $result2 = _lookup_user(
+                [[$preferredFirstName, 'EQUAL', $names[0]],
+                 ['Last Name', 'CONTAIN', $names[1]]
+                ],
+                $single
+            );
+            $result = merge_results($result, $result2);
+            return $result;
+        }
+    } else {
+        $names = explode(" ", $name);
+        if (count($names) != 2) {
+            return ['code' => '400 Bad Request', 'users' => array()];
+        }
 
-    /* We have to do a few searchs due to Neon stupidity */
-    $output = _lookup_user(
-        [[$preferredFirstName, 'EQUAL', $names[0]],
-         [$preferredLastName, 'EQUAL', $names[1]]],
-        $single
-    );
-    if (count($output['users']) != 0) {
-        return $output;
+        /* We have to do a few searchs due to Neon stupidity */
+        $output = _lookup_user(
+            [[$preferredFirstName, 'EQUAL', $names[0]],
+             [$preferredLastName, 'EQUAL', $names[1]]],
+            $single
+        );
+        if (count($output['users']) != 0) {
+            return $output;
+        }
+        $output = _lookup_user(
+            [[$preferredFirstName, 'EQUAL', $names[0]],
+             ['Last Name', 'EQUAL', $names[1]]],
+            $single
+        );
+        if (count($output['users']) != 0) {
+            return $output;
+        }
+        return _lookup_user(
+            [['First Name', $operator, $names[0]],
+             [$preferredLastName, $operator, $names[1]]],
+            $single
+        );
     }
-    $output = _lookup_user(
-        [[$preferredFirstName, 'EQUAL', $names[0]],
-         ['Last Name', 'EQUAL', $names[1]]],
-        $single
-    );
-    if (count($output['users']) != 0) {
-        return $output;
-    }
-    return _lookup_user(
-        [['First Name', 'EQUAL', $names[0]],
-         [$preferredLastName, 'EQUAL', $names[1]]],
-        $single
-    );
 
 }
 
 
-function lookup_users_by_badgename($badge, $single_user = false)
-{
-    $sql = <<<SQL
-        SELECT
-            AccountID
-        FROM
-            `Registrations`
-        WHERE
-            BadgeName = '$badge';
+function lookup_users_by_badgename(
+    $badge,
+    $single_user = false,
+    $substring = false
+) {
+    if ($substring) {
+        $sql = <<<SQL
+            SELECT
+                AccountID
+            FROM
+                `Registrations`
+            WHERE
+                BadgeName LIKE '%{$badge}%';
 SQL;
+    } else {
+        $sql = <<<SQL
+            SELECT
+                AccountID
+            FROM
+                `Registrations`
+            WHERE
+                BadgeName = '$badge';
+SQL;
+    }
     $result = DB::run($sql);
     $value = $result->fetch();
     $users = [];
@@ -182,42 +308,77 @@ SQL;
 }
 
 
-function lookup_users_by_key($key, $single = true, $badgename = true)
+function lookup_users_by_key($key, $single = true, $badgename = true, $substring = false)
 {
-    if (is_numeric($key) ||
-        (strtoupper($key)[0] == 'A' && is_numeric(substr($key, 1)))) {
-        if (strtoupper($key)[0] == 'A') {
-            return lookup_user_by_id(substr($key, 1));
-        } else {
-            return lookup_user_by_id($key);
+    if ($substring) {
+        $output = ['code' => '404 Not Found', 'users' => array()];
+        if (is_numeric($key) ||
+            (strtoupper($key)[0] == 'A' && is_numeric(substr($key, 1)))) {
+            if (strtoupper($key)[0] == 'A') {
+                $result = lookup_user_by_id(substr($key, 1));
+                $output = merge_results($output, $result);
+            } else {
+                $result = lookup_user_by_id($key);
+                $output = merge_results($output, $result);
+            }
         }
-    } elseif (strpos($key, '@') !== false) {
-        return lookup_users_by_email($key, $single);
-    } else {
-        $output = lookup_users_by_name($key, $single);
-        if (count($output['users']) == 0) {
-            $output = lookup_users_by_pref_name($key, $single);
-        }
-        if ($badgename && count($output['users']) == 0) {
-            $output = lookup_users_by_badgename($key, $single);
-        }
+        $result = lookup_users_by_email($key, $single, true);
+        $output = merge_results($output, $result);
+        $result = lookup_users_by_name($key, $single, true);
+        $output = merge_results($output, $result);
+        $result = lookup_users_by_pref_name($key, $single, true);
+        $output = merge_results($output, $result);
+        $result = lookup_users_by_badgename($key, $single, true);
+        $output = merge_results($output, $result);
         return $output;
+    } else {
+        if (is_numeric($key) ||
+            (strtoupper($key)[0] == 'A' && is_numeric(substr($key, 1)))) {
+            if (strtoupper($key)[0] == 'A') {
+                return lookup_user_by_id(substr($key, 1));
+            } else {
+                return lookup_user_by_id($key);
+            }
+        } elseif (strpos($key, '@') !== false) {
+            return lookup_users_by_email($key, $single);
+        } else {
+            $output = lookup_users_by_name($key, $single);
+            if (count($output['users']) == 0) {
+                $output = lookup_users_by_pref_name($key, $single);
+            }
+            if ($badgename && count($output['users']) == 0) {
+                $output = lookup_users_by_badgename($key, $single);
+            }
+            return $output;
+        }
     }
 
 }
 
 
-function lookup_users_by_name_email($first, $last, $email, $fields, $single_user = false)
+function lookup_users_by_name_email($first, $last, $email, $fields, $single_user = false, $substring = false)
 {
     $criteria = array();
     if ($first) {
-        array_push($criteria, ['First Name', 'EQUAL', $first]);
+        if ($substring) {
+            array_push($criteria, ['First Name', 'CONTAIN', $first]);
+        } else {
+            array_push($criteria, ['First Name', 'EQUAL', $first]);
+        }
     }
     if ($last) {
-        array_push($criteria, ['Last Name', 'EQUAL', $last]);
+        if ($substring) {
+            array_push($criteria, ['Last Name', 'CONTAIN', $last]);
+        } else {
+            array_push($criteria, ['Last Name', 'EQUAL', $last]);
+        }
     }
     if ($email) {
-        array_push($criteria, ['Email', 'EQUAL', $email]);
+        if ($substring) {
+            array_push($criteria, ['Email', 'CONTAIN', $email]);
+        } else {
+            array_push($criteria, ['Email', 'EQUAL', $email]);
+        }
     }
 
     return _lookup_user($criteria, $single_user, $fields);
@@ -225,11 +386,15 @@ function lookup_users_by_name_email($first, $last, $email, $fields, $single_user
 }
 
 
-function lookup_user_by_login($user)
+function lookup_user_by_login($user, $substring = false)
 {
     $output = lookup_users_by_email($user, false);
     if (count($output['users']) == 0) {
-        $output = _lookup_user([['Account Login Name', 'EQUAL', $user]], false);
+        if ($substring) {
+            $output = _lookup_user([['Account Login Name', 'CONTAIN', $user]], false);
+        } else {
+            $output = _lookup_user([['Account Login Name', 'EQUAL', $user]], false);
+        }
     }
     if (count($output['users']) == 0) {
         return array();
