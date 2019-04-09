@@ -18,6 +18,7 @@ var userLookup = (function(options) {
           needForm: true,
           lookupTarget: 'index.php?Function=functions&lookupId=',
           badgeName: true,
+          partialMatch: false,
         }, options);
 
     function _lookupSuccess(target, response) {
@@ -148,6 +149,9 @@ var userLookup = (function(options) {
             var url = settings.lookupTarget + id;
             if (settings.badgeName) {
               url += '&useBadgeName=1';
+            }
+            if (settings.partialMatch) {
+              url += '&partialMatch=1';
             }
             xhttp.open('GET', url, true);
             xhttp.send();
