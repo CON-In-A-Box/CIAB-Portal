@@ -1,4 +1,4 @@
-<div id="page" class="w3-cell-row w3-padding w3-mobile">
+<div id="page" class="w3-cell-row w3-padding UI-maincontent">
 <?php
 /*.
   require_module 'standard';
@@ -25,12 +25,12 @@ foreach ($modules as $key => $value) {
 <div id="main_content" class="w3-padding w3-cell w3-cell-top w3-mobile">
 
 <?php
-echo '<div class="w3-container w3-center">';
+echo '<div class="UI-sectionbar">';
 echo '<b>Welcome '.$_SESSION['preferredName'].'!</b>';
 echo "</div>\n";
 
 if (isset($_SESSION['duplicates'])) {
-    echo '<p class="w3-container w3-center w3-border w3-red w3-large">';
+    echo '<p class="UI-container UI-center w3-border UI-red w3-large">';
     echo "This e-mail has ".count($_SESSION['duplicates'])." duplicate "."accounts. IDs:[".implode(", ", $_SESSION['duplicates'])."]. "."This is only displaying information for one of these Accounts."."<br />"."<b>Please</b> contact IT to have this situation corrected.<br />"."</p>";
 }
 

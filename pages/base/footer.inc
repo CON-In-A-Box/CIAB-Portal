@@ -1,4 +1,4 @@
-<footer class="w3-container">
+<footer class="UI-container">
 <?php
 if ($_REQUEST['Function'] == "public") {
     require($PAGESDIR.'/base/disclaimer.inc');

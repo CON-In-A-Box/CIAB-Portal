@@ -23,8 +23,8 @@ var confirmbox = (function() {
             content.classList.add('w3-modal-content');
 
             var h = document.createElement('H2');
-            h.classList.add('w3-red');
-            h.classList.add('w3-center');
+            h.classList.add('UI-red');
+            h.classList.add('UI-center');
 
             var s = document.createElement('SPAN');
             s.id = 'confirm_title';
@@ -33,7 +33,7 @@ var confirmbox = (function() {
             content.appendChild(h);
 
             h = document.createElement('H3');
-            h.classList.add('w3-center');
+            h.classList.add('UI-center');
             s = document.createElement('SPAN');
             s.id = 'confirm_message';
             s.innerHTML = '';
@@ -41,12 +41,12 @@ var confirmbox = (function() {
             content.appendChild(h);
 
             var form = document.createElement('DIV');
-            form.classList.add('w3-center');
+            form.classList.add('UI-center');
             content.appendChild(form);
 
             var b1 = document.createElement('BUTTON');
             b1.classList.add('UI-button');
-            b1.classList.add('w3-center');
+            b1.classList.add('UI-center');
             b1.classList.add('w3-border');
             b1.classList.add('UI-margin');
             b1.classList.add('w3-padding');
@@ -56,7 +56,7 @@ var confirmbox = (function() {
 
             var b2 = document.createElement('BUTTON');
             b2.classList.add('UI-button');
-            b2.classList.add('w3-center');
+            b2.classList.add('UI-center');
             b2.classList.add('w3-border');
             b2.classList.add('UI-margin');
             b2.classList.add('w3-padding');

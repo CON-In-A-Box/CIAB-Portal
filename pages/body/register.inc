@@ -1,5 +1,5 @@
 <?php require($PAGESDIR.'/base/leftnav.inc'); ?>
-<div id="main_content" class="w3-cell w3-cell-top w3-mobile">
+<div id="main_content" class="w3-cell w3-cell-top UI-maincontent">
 <h2>To check to see if you are registered for CONvergence:</h2>
 
 <img src="images/Neon-MainScreen.png" alt="Main login page" style="border:5px solid black;">

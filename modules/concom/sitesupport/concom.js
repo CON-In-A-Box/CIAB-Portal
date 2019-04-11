@@ -46,19 +46,19 @@ function drag(ev) {
 
 function dragOverDivision(division) {
   event.preventDefault();
-  document.getElementById(division).classList.add('w3-red');
+  document.getElementById(division).classList.add('UI-red');
 
 }
 
 function dragLeaveDivision(division) {
   event.preventDefault();
-  document.getElementById(division).classList.remove('w3-red');
+  document.getElementById(division).classList.remove('UI-red');
 
 }
 
 function dropOn(target, source) {
   var tid = document.getElementById(target).getAttribute('data-dbId');
-  document.getElementById(target).classList.remove('w3-red');
+  document.getElementById(target).classList.remove('UI-red');
   setParent(source, tid);
 
 }

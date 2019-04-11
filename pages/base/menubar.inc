@@ -137,12 +137,12 @@ if ($have_admin) {
 
 if ($kiosk === null) {
 ?>
-    <a class="w3-bar-item w3-block w3-center UI-button w3-hide-large"
+    <a class="w3-bar-item w3-block UI-center UI-button w3-hide-large"
       href="javascript:void(0)"
       onclick="myMenuBar()">
       <i class="fa fa-bars"></i>
     </a>
-    <a class="w3-bar-item UI-button w3-red w3-right"
+    <a class="w3-bar-item UI-button UI-red UI-right"
       href="index.php?Function=public" title="Log out and Restart">
       <i class="fa fa-sign-out"></i>
       Log Out

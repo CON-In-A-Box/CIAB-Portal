@@ -46,15 +46,15 @@ function calculateHours() {
 
 function markEndTime(invalid) {
   if (invalid) {
-    document.getElementById('end_date').classList.add('w3-red');
-    document.getElementById('end_hours').classList.add('w3-red');
-    document.getElementById('end_minutes').classList.add('w3-red');
-    document.getElementById('end_ampm').classList.add('w3-red');
+    document.getElementById('end_date').classList.add('UI-red');
+    document.getElementById('end_hours').classList.add('UI-red');
+    document.getElementById('end_minutes').classList.add('UI-red');
+    document.getElementById('end_ampm').classList.add('UI-red');
   } else {
-    document.getElementById('end_date').classList.remove('w3-red');
-    document.getElementById('end_hours').classList.remove('w3-red');
-    document.getElementById('end_minutes').classList.remove('w3-red');
-    document.getElementById('end_ampm').classList.remove('w3-red');
+    document.getElementById('end_date').classList.remove('UI-red');
+    document.getElementById('end_hours').classList.remove('UI-red');
+    document.getElementById('end_minutes').classList.remove('UI-red');
+    document.getElementById('end_ampm').classList.remove('UI-red');
   }
 }
 
@@ -160,7 +160,7 @@ function handleResult(origin, response) {
     document.getElementById('submitbtn').disabled = true;
     document.getElementById('volunteername').innerHTML = 'a Volunteer';
     document.getElementById('lookupname').innerHTML =
-        '<span class="w3-red w3-large">' + name +
+        '<span class="UI-red w3-large">' + name +
         ' is on ConCom (' + uid + ')</span>';
   } else {
     userLookup.clearFailure();
@@ -214,15 +214,15 @@ function onFail(target, resp, name, code) {
 
   if (code == 404) {
     document.getElementById('lookupname').innerHTML =
-        '<span class="w3-red w3-large">' + name + ' not found.</span>';
+        '<span class="UI-red w3-large">' + name + ' not found.</span>';
   }
   else if (code == 409) {
     document.getElementById('lookupname').innerHTML =
-      '<span class="w3-red w3-large">There are too many matches.</span>';
+      '<span class="UI-red w3-large">There are too many matches.</span>';
   }
   else {
     document.getElementById('lookupname').innerHTML = name +
-        '<span class="w3-red w3-large">invalid name lookup.(' + code +
+        '<span class="UI-red w3-large">invalid name lookup.(' + code +
         ')</span>';
   }
 }
@@ -261,7 +261,7 @@ function reportImport(report) {
     if (item.indexOf(': success:') != -1) {
       cell.className = 'w3-green';
     } else {
-      cell.className = 'w3-red';
+      cell.className = 'UI-red';
     }
     cell.innerHTML = item;
   });

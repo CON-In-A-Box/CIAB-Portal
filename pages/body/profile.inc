@@ -15,9 +15,9 @@ if (empty($_SESSION['state']) && empty($_SESSION['accountInfo']['individualAccou
     $_SESSION['state'] = 'MN';
 }
 ?>
-<div id="main_content"  class="w3-cell w3-cell-top w3-mobile">
+<div id="main_content"  class="w3-cell w3-cell-top UI-maincontent">
 <h3>Your current profile information</h3>
-<form action="index.php?Function=profile" method="post" onsubmit="return validate_form(this)" name="Profile" id="profile_update" class="w3-container">
+<form action="index.php?Function=profile" method="post" onsubmit="return validate_form(this)" name="Profile" id="profile_update" class="UI-container">
 
   <input type="hidden" name="accountId" value="<?php echo $_SESSION['accountId']; ?>">
   <input type="hidden" name="contactId" value="<?php echo $_SESSION['contactId']; ?>">
@@ -29,26 +29,26 @@ if (isset($_SESSION['accountInfo']['individualAccount']['primaryContact']['addre
   <div class="w3-lime w3-row">
     <div>
       Legal Name
-      <button class="UI-button w3-brown w3-right" style="padding: 0px 16px;">Update Profile</button>
+      <button class="UI-button w3-brown UI-right" style="padding: 0px 16px;">Update Profile</button>
     </div>
-    <div class="w3-container">
+    <div class="UI-container">
       <div class="w3-half">
         <div class="w3-twothird">
-          <input type="text" name="firstName" value="<?php echo $_SESSION['firstName']; ?>" class="w3-input w3-border" placeholder="First (Required)">
+          <input type="text" name="firstName" value="<?php echo $_SESSION['firstName']; ?>" class="UI-input" placeholder="First (Required)">
         </div>
 
         <div class="w3-third">
-          <input type="text" name="middleName" value="<?php echo $_SESSION['accountInfo']['individualAccount']['primaryContact']['middleName']; ?>" class="w3-input w3-border" placeholder="Middle">
+          <input type="text" name="middleName" value="<?php echo $_SESSION['accountInfo']['individualAccount']['primaryContact']['middleName']; ?>" class="UI-input" placeholder="Middle">
         </div>
       </div>
 
       <div class="w3-half">
         <div class="w3-threequarter">
-          <input type="text" name="lastName" value="<?php echo $_SESSION['lastName']; ?>" class="w3-input w3-border" placeholder="Last (Required)">
+          <input type="text" name="lastName" value="<?php echo $_SESSION['lastName']; ?>" class="UI-input" placeholder="Last (Required)">
         </div>
       
         <div class="w3-quarter">
-          <input type="text" name="suffix" value="<?php echo $_SESSION['accountInfo']['individualAccount']['primaryContact']['suffix']; ?>" class="w3-input w3-border" placeholder="Suffix">
+          <input type="text" name="suffix" value="<?php echo $_SESSION['accountInfo']['individualAccount']['primaryContact']['suffix']; ?>" class="UI-input" placeholder="Suffix">
         </div>
       </div>
     </div>
@@ -57,15 +57,15 @@ if (isset($_SESSION['accountInfo']['individualAccount']['primaryContact']['addre
   <div class="w3-teal">
     <div>
       Preferred Name
-      <button class="UI-button w3-brown w3-right" style="padding: 0px 16px;">Update Profile</button>
+      <button class="UI-button w3-brown UI-right" style="padding: 0px 16px;">Update Profile</button>
     </div>
-    <div class="w3-container">
+    <div class="UI-container">
       <div class="w3-half">
         <input type="text" name="preferredFirstName" value="<?php
         if (isset($_SESSION['customFields'][$preferredFirstName][0])) {
             echo $_SESSION['customFields'][$preferredFirstName][0];
         }
-?>" class="w3-input w3-border" placeholder="First - If Different">
+?>" class="UI-input" placeholder="First - If Different">
       </div>
         
       <div class="w3-half">
@@ -73,7 +73,7 @@ if (isset($_SESSION['accountInfo']['individualAccount']['primaryContact']['addre
         if (isset($_SESSION['customFields'][$preferredLastName][0])) {
             echo $_SESSION['customFields'][$preferredLastName][0];
         }
-?>" class="w3-input w3-border" placeholder="Last - If Different">
+?>" class="UI-input" placeholder="Last - If Different">
       </div>
     </div>
   </div>
@@ -82,9 +82,9 @@ if (isset($_SESSION['accountInfo']['individualAccount']['primaryContact']['addre
     <div>
       Badge Number
     </div>
-    <div class="w3-container">
+    <div class="UI-container">
         <input type="text" name="preferredLastName"  disabled value="
-<?php echo $_SESSION['accountId'];?>" class="w3-input w3-border" >
+<?php echo $_SESSION['accountId'];?>" class="UI-input" >
     </div>
   </div>
 
@@ -92,21 +92,21 @@ if (isset($_SESSION['accountInfo']['individualAccount']['primaryContact']['addre
   <div class="w3-indigo">
     <div>
       Emails
-      <button class="UI-button w3-brown w3-right" style="padding: 0px 16px;">Update Profile</button>
+      <button class="UI-button w3-brown UI-right" style="padding: 0px 16px;">Update Profile</button>
     </div>
-    <div class="w3-container">
+    <div class="UI-container">
       <input type="text" name="email1" value="
 <?php
 echo $_SESSION['email'];
-    ?>" class="w3-input w3-border" placeholder="Primary Email and Login (Required)">
+    ?>" class="UI-input" placeholder="Primary Email and Login (Required)">
       <input type="text" name="email2" value="
 <?php
 echo $_SESSION['accountInfo']['individualAccount']['primaryContact']['email2'];
-    ?>" class="w3-input w3-border" placeholder="Secondary Email">
+    ?>" class="UI-input" placeholder="Secondary Email">
       <input type="text" name="email3" value="
 <?php
 echo $_SESSION['accountInfo']['individualAccount']['primaryContact']['email3'];
-    ?>" class="w3-input w3-border" placeholder="Other Email">
+    ?>" class="UI-input" placeholder="Other Email">
     </div>
   </div>
 
@@ -114,24 +114,24 @@ echo $_SESSION['accountInfo']['individualAccount']['primaryContact']['email3'];
   <div class="w3-blue">
     <div>
       Phone Numbers
-      <button class="UI-button w3-brown w3-right" style="padding: 0px 16px;">Update Profile</button>
+      <button class="UI-button w3-brown UI-right" style="padding: 0px 16px;">Update Profile</button>
     </div>
-    <div class="w3-container">
+    <div class="UI-container">
       <input type="text" name="phone1" value="<?php
         if (isset($_SESSION['accountInfo']['individualAccount']['primaryContact']['phone1'])) {
             echo $_SESSION['accountInfo']['individualAccount']['primaryContact']['phone1'];
         }
-    ?>" class="w3-input w3-border w3-half" placeholder="Primary (Required)">
+    ?>" class="UI-input w3-half" placeholder="Primary (Required)">
       <input type="text" name="phone2" value="
 <?php
 if (isset($_SESSION['accountInfo']['individualAccount']['primaryContact']['phone2'])) {
     echo $_SESSION['accountInfo']['individualAccount']['primaryContact']['phone2'];
 }
-    ?>" class="w3-input w3-border w3-half" placeholder="Other">
+    ?>" class="UI-input w3-half" placeholder="Other">
         <?php
         if (isset($_SESSION['customFields']['currConComPos'])) {
             echo '<div class="w3-row">';
-            echo '<span class="w3-right-align w3-col m7 l6">Display Phone number on the ConCom list?</span>';
+            echo '<span class="UI-right-align w3-col m7 l6">Display Phone number on the ConCom list?</span>';
             echo '<select name="conComDisplayPhone" class="w3-col m5 l6" required>';
             if (empty($_SESSION['customFields'][$cvgConComPhoneDisplay][0])) {
                 echo '<option value="" disabled selected>Choose</option>';
@@ -157,22 +157,22 @@ if (isset($_SESSION['accountInfo']['individualAccount']['primaryContact']['phone
   <div class="w3-purple">
     <div>
       Address
-      <button class="UI-button w3-brown w3-right" style="padding: 0px 16px;">Update Profile</button>
+      <button class="UI-button w3-brown UI-right" style="padding: 0px 16px;">Update Profile</button>
     </div>
-    <div class="w3-container">
+    <div class="UI-container">
       <input type="text" name="addressLine1" value="
 <?php
 echo $_SESSION['addr1'];
-    ?>" class="w3-input w3-border" placeholder="Address (Required)">
+    ?>" class="UI-input" placeholder="Address (Required)">
       <input type="text" name="addressLine2" value="
 <?php
 echo $_SESSION['addr2'];
-    ?>" class="w3-input w3-border">
+    ?>" class="UI-input">
       
       <input type="text" name="city" value="
 <?php
 echo $_SESSION['city'];
-    ?>" class="w3-input w3-border w3-half" placeholder="City (Required)">
+    ?>" class="UI-input w3-half" placeholder="City (Required)">
       <select name="state" onChange="ExpandOut(this.value, 'otherCountries')" class="w3-select w3-border w3-quarter">
         <option value=""<?php
         if (empty($_SESSION['state'])) {
@@ -197,13 +197,13 @@ echo $_SESSION['city'];
         <input type="text" name="zipCode" value="
 <?php
 echo $_SESSION['zip'];
-    ?>" class="w3-input w3-border w3-right-align w3-col l8 m7 s7" placeholder="Zip Code (Required)">
+    ?>" class="UI-input UI-right-align w3-col l8 m7 s7" placeholder="Zip Code (Required)">
         <input type="text" name="zipPlus4" value="
 <?php
 if (isset($_SESSION['accountInfo']['individualAccount']['primaryContact']['addresses']['address']['0']['zipCodeSuffix'])) {
     echo $_SESSION['accountInfo']['individualAccount']['primaryContact']['addresses']['address']['0']['zipCodeSuffix'];
 }
-    ?>" class="w3-input w3-border w3-col l4 m5 s5" placeholder="Zip+4">
+    ?>" class="UI-input w3-col l4 m5 s5" placeholder="Zip+4">
       </div>
       
       <select name="country" class="w3-select w3-border">
@@ -228,7 +228,7 @@ foreach ($result as $country) {
 if (isset($_SESSION['accountInfo']['individualAccount']['primaryContact']['addresses']['address']['0']['province'])) {
     echo $_SESSION['accountInfo']['individualAccount']['primaryContact']['addresses']['address']['0']['province'];
 }
-    ?>" class="w3-input w3-border w3-gray" placeholder="Province (Foreign Only)">
+    ?>" class="UI-input w3-gray" placeholder="Province (Foreign Only)">
       </div>
     </div>
   </div>
@@ -239,24 +239,24 @@ if (isset($_SESSION['accountInfo']['individualAccount']['primaryContact']['addre
 
 <hr>
 <h3>Your current security information</h3>
-<div id="password_form" class="w3-container w3-padding">
-  <div class="w3-red w3-row">
+<div id="password_form" class="UI-container w3-padding">
+  <div class="UI-red w3-row">
     <div>
      Change Password
     </div>
-    <div class="w3-container">
+    <div class="UI-container">
       <div class="w3-third">
-        <input type="password" id="ciab_currentPassword" value="" class="w3-input w3-border" placeholder="Current Password (Required)">
+        <input type="password" id="ciab_currentPassword" value="" class="UI-input" placeholder="Current Password (Required)">
       </div>
       <div class="w3-third">
-        <input type="password" id="ciab_newPassword" value="" class="w3-input w3-border" placeholder="New Password(Required)">
+        <input type="password" id="ciab_newPassword" value="" class="UI-input" placeholder="New Password(Required)">
       </div>
       <div class="w3-third">
-        <input type="password" id="ciab_againPassword" value="" class="w3-input w3-border" placeholder="New Password Again(Required)">
+        <input type="password" id="ciab_againPassword" value="" class="UI-input" placeholder="New Password Again(Required)">
       </div>
     </div>
   </div>
-  <button class="UI-button w3-block w3-red" onclick="changePassword();">Update Password</button>
+  <button class="UI-button w3-block UI-red" onclick="changePassword();">Update Password</button>
 </div>
 
 <script>

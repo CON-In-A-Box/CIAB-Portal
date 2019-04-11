@@ -142,7 +142,7 @@ SQL;
         print "<td>".implode('</td><td>', $entry)."</td>";
         print "</tr>\n";
 
-        print "<tr><td colspan=5><div name='badges_".$entry['Id']."' class=' w3-hide'><table class='w3-table-all w3-center'>";
+        print "<tr><td colspan=5><div name='badges_".$entry['Id']."' class=' w3-hide'><table class='UI-stripedtable UI-center'>";
 
         print "<tr>";
         unset($badge_keys[0]);
@@ -164,7 +164,7 @@ SQL;
                 unset($badge['EventName']);
                 print "<tr> ";
                 print "<td>".implode('</td><td>', $badge)."</td>";
-                print "<td class='w3-center'>";
+                print "<td class='UI-center'>";
                 print "<button class='w3-small UI-eventbutton'  onclick='editBadge(\"$json\");'>Edit</button>  ";
                 if (intval($badge['Sold']) == 0) {
                     $name = $badge['Badge Name'];
@@ -176,7 +176,7 @@ SQL;
                 print "</tr>\n";
             }
         }
-        print "<tr> <td colspan=4 class='w3-center'>";
+        print "<tr> <td colspan=4 class='UI-center'>";
         $event = $entry['Id'];
         print "<button id='new' class='UI-eventbutton' onclick='newBadge($event, \"$plain_name\")'>Add New Badge</button>";
         print "</td></tr>";
@@ -186,7 +186,7 @@ SQL;
 
         $details = _event_details($entry['Id']);
         $can_delete = true;
-        print "<table class='w3-table-all'>";
+        print "<table class='UI-stripedtable'>";
         foreach ($details as $key => $detail) {
             print "<tr><td>".$key."</td><td>";
             print $detail;
@@ -199,12 +199,12 @@ SQL;
             print "</td></tr>";
         }
         print "</table>";
-        print "<div class='w3-center'>";
+        print "<div class='UI-center'>";
         $json = json_encode($entry);
         $json = base64_encode($json);
         print "<button class='UI-eventbutton UI-margin' onclick='editEvent(\"$plain_name\",\"$json\")'>Modify Event</button>";
         print "</div>";
-        print "<div class='w3-center'>";
+        print "<div class='UI-center'>";
         if ($can_delete) {
             print "<button class='UI-redbutton' onclick='deleteEvent(".$entry['Id'].",\"$plain_name\")'>Delete Event</button>";
         } else {
@@ -269,9 +269,9 @@ SQL;
         print "<td> <button class='UI-eventbutton' onclick='editMeeting(\"$json\")'>Modify Meeting</button> </td>";
         $attendance = _check_attendance($entry['Id']);
         if ($attendance > 0) {
-            print "<td class='w3-center'> <span class='UI-redbutton w3-disabled'>".$attendance." Attended </span> </td>";
+            print "<td class='UI-center'> <span class='UI-redbutton w3-disabled'>".$attendance." Attended </span> </td>";
         } else {
-            print "<td class='w3-center'> <button class='UI-redbutton' onclick='deleteMeeting(\"".$entry['Name'].'",'.$entry['Id'].")'>Delete Meeting</button> </td>";
+            print "<td class='UI-center'> <button class='UI-redbutton' onclick='deleteMeeting(\"".$entry['Name'].'",'.$entry['Id'].")'>Delete Meeting</button> </td>";
         }
         print "</tr>\n";
     }

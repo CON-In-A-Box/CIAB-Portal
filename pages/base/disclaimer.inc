@@ -7,7 +7,7 @@ $year = date('Y');
     <button class="w3-bar-item UI-button w3-tiny"><img src="images/dualXicon.png" style="height: 2em; width: 2em;" alt="Dual X Icon - Con-In-A-Box"> Information</button>
     <div class="w3-dropdown-content">
       <div class="w3-panel w3-leftbar w3-sand">
-        <div class="w3-large w3-center">
+        <div class="w3-large UI-center">
           Con-In-A-Box&trade;
 <?php
 echo 'In use by '.$CONHOST;
@@ -26,7 +26,7 @@ echo "</div>\n";
 
       <div class="w3-panel w3-leftbar w3-small w3-lime">
         All parts of Con-In-A-Box&trade;, including but not limited to the Dual-X icon, CON-In-A-Box&trade; logo, name CON-In-A-Box&trade;, scripts, programs, coding, styles, data models, CGI, HTML, custom PHP, structure, feeds, or methods, except where otherwise protected (exceptions include but not limited to the Neon-php library maintained by z2systems, the Speller Pages Project from Sourceforge.net protected under the GNU Public License, or the PHP-Fortune script from Henrik Aasted Sorensen) are:
-        <div class="w3-container w3-center w3-large">
+        <div class="UI-container UI-center w3-large">
           &copy; Copyright 2005-<?php echo $year; ?> - Convergence Events, Inc.
         </div>
       </div>
@@ -34,7 +34,7 @@ echo "</div>\n";
       <div class="w3-panel w3-leftbar w3-small w3-khaki">
         Licensed under the Apache License, Version 2.0 (the "License"); you may not use any part of Con-In-A-Box&trade; except in compliance with the License. You may obtain a copy of the License at
 
-        <div class="w3-container">
+        <div class="UI-container">
           <a href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a>
         </div>
         

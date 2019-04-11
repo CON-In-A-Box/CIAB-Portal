@@ -18,7 +18,7 @@ if (!is_kiosk('volunteers')) {
         $basecolor = 'w3-yellow';
         if (array_key_exists('CIAB_VOLUNTEERADMIN', $_COOKIE) &&
            $_COOKIE["CIAB_VOLUNTEERADMIN"]) {
-            $basecolor = 'w3-red';
+            $basecolor = 'UI-red';
         }
         $admin_menus[] = array('base style' => $basecolor,
          'selected style' => 'event-color-primary',

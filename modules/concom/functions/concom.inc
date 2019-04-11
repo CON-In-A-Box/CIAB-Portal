@@ -79,14 +79,14 @@ function ConComListDisplay()
     ksort_recursive($printList);
 
     // Start the crazy print routine!
-    echo "<table class='w3-table-all w3-hoverable'>\n";
+    echo "<table class='UI-stripedtable w3-hoverable'>\n";
     foreach ($Divisions as $div) {
         $currentDivDirector = false;
-        echo '<tr id="division" class="event-color-secondary"><th id="'.$div.'" class="w3-center" colspan=2>'.$div;
+        echo '<tr id="division" class="event-color-secondary"><th id="'.$div.'" class="UI-center" colspan=2>'.$div;
         if ($div != 'Committees' && $div != 'Corporate Staff' && $div != 'CFO Staff') {
             echo ' Division';
         }
-        echo '</th><th class="w3-center" colspan=3>';
+        echo '</th><th class="UI-center" colspan=3>';
         echo '<div class="w3-dropdown-hover event-color-secondary">';
         echo '  Go To Section';
         echo '  <div class="w3-dropdown-content event-color-secondary">';
@@ -138,7 +138,7 @@ function ConComListDisplay()
                         echo "</td>";
                         // System Admins can remove anyone
                         if (isset($_SESSION['IS_ADMIN'])) {
-                            echo '<td class="w3-red"><a href="index.php?Function=concom&Remove='.urlencode($tmp[2]).'&Department='.urlencode($div).'&Position=Director" onclick="return confirm(\'Are you sure you want to remove '.$kfName.' '.$klName.' from '.$div.'?\');">Remove</a></td>';
+                            echo '<td class="UI-red"><a href="index.php?Function=concom&Remove='.urlencode($tmp[2]).'&Department='.urlencode($div).'&Position=Director" onclick="return confirm(\'Are you sure you want to remove '.$kfName.' '.$klName.' from '.$div.'?\');">Remove</a></td>';
                         }
                         echo "</tr>\n";
                     }
@@ -168,7 +168,7 @@ function ConComListDisplay()
                         }
                         echo '</td>';
                         if (isset($_SESSION['IS_ADMIN']) || $currentDivDirector) {
-                            echo '<td class="w3-red"><a href="index.php?Function=concom&Remove='.urlencode($tmp[2]).'&Department='.urlencode($div).'&Position=Specialist" onclick="return confirm(\'Are you sure you want to remove '.$kfName.' '.$klName.' from '.$div.'?\');">Remove</a></td>';
+                            echo '<td class="UI-red"><a href="index.php?Function=concom&Remove='.urlencode($tmp[2]).'&Department='.urlencode($div).'&Position=Specialist" onclick="return confirm(\'Are you sure you want to remove '.$kfName.' '.$klName.' from '.$div.'?\');">Remove</a></td>';
                         }
                         echo "</tr>\n";
                     }
@@ -178,7 +178,7 @@ function ConComListDisplay()
             unset($pos);
         }
         if ($div != 'Committees' && $div != 'Corporate Staff' && (isset($_SESSION['IS_ADMIN']) || $currentDivDirector)) {
-            echo '<tr><td class="w3-center" colspan=8><a href="index.php?Function=concom&AddDepartment='.$div.'">Add someone to '.$div.'</a></td></tr>'."\n";
+            echo '<tr><td class="UI-center" colspan=8><a href="index.php?Function=concom&AddDepartment='.$div.'">Add someone to '.$div.'</a></td></tr>'."\n";
         }
         // Departments
         if (!empty($printList[$div])) {
@@ -254,7 +254,7 @@ function ConComListDisplay()
                                     }
                                     echo '</td>';
                                     if (isset($_SESSION['IS_ADMIN']) || $currentDivDirector || ($currentDepHead && $pos != "Head")) {
-                                        echo '<td class="w3-red"><a href="index.php?Function=concom&Remove='.urlencode($tmp[2]).'&Department='.urlencode($kdep).'&Position='.$pos.'" onclick="return confirm(\'Are you sure you want to remove '.$kfName.' '.$klName.' from '.$kdep.'?\');">Remove</a></td>';
+                                        echo '<td class="UI-red"><a href="index.php?Function=concom&Remove='.urlencode($tmp[2]).'&Department='.urlencode($kdep).'&Position='.$pos.'" onclick="return confirm(\'Are you sure you want to remove '.$kfName.' '.$klName.' from '.$kdep.'?\');">Remove</a></td>';
                                     }
 
                                     echo "</tr>\n";
@@ -265,7 +265,7 @@ function ConComListDisplay()
                     }
                 }
                 if (($div != 'Corporate Staff' && $kdep != 'Division Director' && $kdep != 'Division Support') && (isset($_SESSION['IS_ADMIN']) || $currentDivDirector || ($currentDepHead && $pos != "Head"))) {
-                    echo '<tr><td class="w3-center" colspan=8><a href="index.php?Function=concom&AddDepartment='.urlencode($kdep).'">Add someone to '.$kdep.'</a></td></tr>'."\n";
+                    echo '<tr><td class="UI-center" colspan=8><a href="index.php?Function=concom&AddDepartment='.urlencode($kdep).'">Add someone to '.$kdep.'</a></td></tr>'."\n";
                 }
             }
         }
@@ -503,7 +503,7 @@ function build_structure_sections()
 {
     global $Divisions, $Departments, $deptCount;
 
-    echo "<div id='division_new' class='w3-container UI-margin'>";
+    echo "<div id='division_new' class='UI-container UI-margin'>";
     echo "<button onclick='newEntry(-1)' class='UI-yellowbutton'><span>Add New Division</span> <i class='fa fa-plus-square'></i></button>";
     echo "</div>\n";
 
@@ -523,9 +523,9 @@ function build_structure_sections()
         'Email' => null
                 ];
         $data_enc = base64_encode(json_encode($data));
-        echo "<div id='division_$id' class='w3-container UI-margin'>\n";
+        echo "<div id='division_$id' class='UI-container UI-margin'>\n";
         echo "<span class='event-color-primary w3-xxxlarge w3-padding UI-margin w3-round-xlarge' ondblclick='dblClick(\"".$data_enc."\");'>$div</span>";
-        echo "<div id='$div_content_id' class='w3-container w3-buffer w3-section' ondragover='dragOverDivision(\"$div_content_id\");' ondragleave='dragLeaveDivision(\"$div_content_id\");' ondragend='dragLeaveDivision(\"$div_content_id\");' ondrop='dragDropDivision(event);' data-dbId=\"$id\">\n";
+        echo "<div id='$div_content_id' class='UI-container w3-buffer w3-section' ondragover='dragOverDivision(\"$div_content_id\");' ondragleave='dragLeaveDivision(\"$div_content_id\");' ondragend='dragLeaveDivision(\"$div_content_id\");' ondrop='dragDropDivision(event);' data-dbId=\"$id\">\n";
         _departments($div);
         echo "</div>";
         echo "</div>";

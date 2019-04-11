@@ -1,14 +1,37 @@
 @import "w3";
 @import "event";
 
+.UI-container {
+    @extend .w3-container;
+}
+
+.UI-content {
+    @extend .w3-content;
+}
+
 .UI-rest {
     @extend .w3-rest;
 }
 
+.UI-maincontent {
+    @extend .UI-container;
+    @extend .w3-mobile;
+    @extend .w3-responsive;
+}
+
+.UI-center {
+    @extend .w3-center;
+}
+
+.UI-red {
+    @extend .w3-red;
+}
+
 .UI-sectionbar {
     @extend .w3-xlarge;
-    @extend .w3-center;
-    @extend .UI_rest;
+    @extend .UI-center;
+    @extend .UI-rest;
+    @extend .UI-container;
 }
 
 .UI-event-sectionbar {
@@ -22,7 +45,7 @@
 }
 
 .UI-admin-sectionbar {
-    @extend .w3-red;
+    @extend .UI-red;
     @extend .UI-sectionbar;
 }
 
@@ -46,7 +69,7 @@
 
 .UI-redbutton {
     @extend .UI-roundbutton;
-    @extend .w3-red;
+    @extend .UI-red;
 }
 
 .UI-yellowbutton {
@@ -67,4 +90,34 @@
 .UI-secondarybutton {
     @extend .UI-roundbutton;
     @extend .event-color-secondary;
+}
+
+.UI-right {
+    @extend .w3-right;
+}
+
+.UI-adminborder {
+    @extend .w3-topbar;
+    @extend .w3-bottombar;
+    @extend .w3-leftbar;
+    @extend .w3-rightbar;
+    @extend .w3-border-red;
+}
+
+.UI-stripedtable {
+    @extend .w3-table;
+    @extend .w3-striped;
+    @extend .w3-border;
+    @extend .w3-white;
+}
+
+.UI-input {
+    @extend .w3-input;
+    @extend .w3-border;
+}
+
+.UI-hiddeninput {
+    @extend .w3-input;
+    @extend .w3-hide;
+    @extend .w3-disabled;
 }

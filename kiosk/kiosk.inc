@@ -98,8 +98,8 @@ function generate_kiosk_menus($type)
 {
     global $base_menus;
     if (is_kiosk($type)) {
-        $base_menus[] = array('base style' => 'w3-right event-secondary-color',
-         'selected style' => 'event-color-primary w3-right',
+        $base_menus[] = array('base style' => 'UI-right event-secondary-color',
+         'selected style' => 'event-color-primary UI-right',
          'function' => $type.'/kiosk',
          'title' => 'Change Kiosk User from '.kiosk_user(),
          'i class' => 'fa fa-exchange',
