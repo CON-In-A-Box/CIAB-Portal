@@ -182,3 +182,30 @@ SQL;
     DB::run($sql);
 
 }
+
+
+function csv_headers($filename)
+{
+    header("Content-Type: application/CSV; charset=UTF-8");
+    header("Content-Language: en");
+    header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
+    header("Last-Modified: ".gmdate("D, d M Y H:i:s")." GMT");
+    header("Cache-Control: no-store, no-cache, must-revalidate");
+    header("Cache-Control: post-check=0, pre-check=0", false);
+    header('Content-Disposition: attachment; filename="'.$filename.'"');
+    header("Pragma: no-cache");
+
+}
+
+
+function output_csv($report, $filename)
+{
+    csv_headers($filename);
+    print implode(",", array_keys($report[0]));
+    print "\n";
+    foreach ($report as $entry) {
+        print htmlspecialchars_decode(implode(",", $entry), ENT_QUOTES);
+        print "\n";
+    }
+
+}
