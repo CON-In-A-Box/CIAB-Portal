@@ -164,7 +164,7 @@ foreach ($events as $event) {
 
     <div class='w3-hide w3-padding' id='edit_event' style="display: inline-block; position: fixed;">
         <div class='UI-center'>
-            <h2 class='UI3-red'>Event Details</h2>
+            <h2 class='UI-red'>Event Details</h2>
         </div>
         <div>
             <input class="UI-hiddeninput" id="event_id" value='-1' readonly>
