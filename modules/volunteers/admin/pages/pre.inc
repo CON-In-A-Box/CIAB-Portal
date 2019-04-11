@@ -4,32 +4,6 @@
     require_module 'standard';
 .*/
 
-function csv_headers($filename)
-{
-    header("Content-Type: application/CSV; charset=UTF-8");
-    header("Content-Language: en");
-    header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
-    header("Last-Modified: ".gmdate("D, d M Y H:i:s")." GMT");
-    header("Cache-Control: no-store, no-cache, must-revalidate");
-    header("Cache-Control: post-check=0, pre-check=0", false);
-    header('Content-Disposition: attachment; filename="'.$filename.'"');
-    header("Pragma: no-cache");
-
-}
-
-
-function output_cvs($report, $filename)
-{
-    csv_headers($filename);
-    print implode(",", array_keys($report[0]));
-    print "\n";
-    foreach ($report as $entry) {
-        print htmlspecialchars_decode(implode(",", $entry), ENT_QUOTES);
-        print "\n";
-    }
-
-}
-
 
 /* This should only be accessable from volunteer staff */
 if (!(isset($_SESSION['IS_ADMIN']) || $_SESSION['IS_VOLUNTEERS'])) {
@@ -58,7 +32,7 @@ if (!empty($_REQUEST)) {
         if (isset($_SESSION['IS_ADMIN']) || $_SESSION['IS_VOLUNTEERS']) {
             $min = $updateData['min_hour'];
             $report = volunteer_minimum_hour_report($min);
-            output_cvs($report, "hour_report.csv");
+            output_csv($report, "hour_report.csv");
             exit();
         } else {
             header("HTTP/1.0 401");
@@ -71,7 +45,7 @@ if (!empty($_REQUEST)) {
             $dept = $updateData['dept_report'];
             $name = $updateData['dept_name'];
             $report = volunteers_in_dept(intval($dept));
-            output_cvs($report, "department_report_".$name.".csv");
+            output_csv($report, "department_report_".$name.".csv");
             exit();
         } else {
             header("HTTP/1.0 401");

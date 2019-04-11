@@ -197,6 +197,7 @@ function newBadge(id,name) {
   document.getElementById('badge_cost').value = 0;
   document.getElementById('badge_from').value = '0000-00-00';
   document.getElementById('badge_to').value = '0000-00-00';
+  document.getElementById('badge_image').value = '';
   showSidebar('edit_badge');
 
 }
@@ -210,6 +211,7 @@ function editBadge(data) {
   document.getElementById('badge_cost').value = badge.Cost;
   document.getElementById('badge_from').value = badge.From;
   document.getElementById('badge_to').value = badge.To;
+  document.getElementById('badge_image').value = badge.BackgroundImage;
   showSidebar('edit_badge');
 
 }
@@ -224,6 +226,7 @@ function processNewBadge() {
       'Cost': document.getElementById('badge_cost').value,
       'From': document.getElementById('badge_from').value,
       'To': document.getElementById('badge_to').value,
+      'Image': document.getElementById('badge_image').value,
     };
   var param = btoa(JSON.stringify(data));
 

@@ -29,7 +29,7 @@ function showSpinner() {
     dlg.appendChild(content);
     content.classList.add('w3-modal-content');
     content.classList.add('w3-jumbo');
-    content.classList.add('w3-center');
+    content.classList.add('UI-center');
     content.classList.add('w3-round-xxlarge');
     content.style.width = '90px';
     content.style.backgroundColor = 'orange';

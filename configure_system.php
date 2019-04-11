@@ -143,11 +143,11 @@ if (is_file(__DIR__."/.ht_meetingsignin_config.php")) {
 }
 ?>
 
-<h2 class="w3-center w3-green"> First Run Setup </h2>
+<h2 class="UI-center w3-green"> First Run Setup </h2>
 
 <?php
 if (strlen($failed_message)) {
-    echo '<div class="w3-panel w3-padding-16 w3-red w3-red w3-center"><h2>'.$failed_message."</h2></div>\n";
+    echo '<div class="w3-panel w3-padding-16 UI-red UI-center"><h2>'.$failed_message."</h2></div>\n";
 }
 ?>
 
@@ -159,60 +159,60 @@ if (strlen($failed_message)) {
 <i>Note: The Database and database user have to be created by hand before you begin the process. </i>
 </div>
 
-<div class="w3-panel w3-blue w3-center">
+<div class="w3-panel w3-blue UI-center">
 <p> In order to configure your site we need to know the following information. </p>
 </div>
 
 <hr>
 
-<form action="configure_system.php" method="POST" class="w3-container">
+<form action="configure_system.php" method="POST" class="UI-container">
     <label>Database Host:</label> <br>
-    <input type="text" name="DBHOST" class="w3-input w3-border<?php
+    <input type="text" name="DBHOST" class="UI-input <?php
     if ($updateData != null && strlen($updateData['DBHOST'])) {
         echo '" value="'.$updateData['DBHOST'].'"';
     } elseif (isset($DBHOST)) {
         echo '" value="'.$DBHOST.'"';
     } elseif ($tried) {
-        echo 'w3-red"';
+        echo 'UI-red"';
     } else {
         echo '"';
     }
 ?>>
     </br>
     <label>Database Username:</label> <br>
-    <input type="text" name="DBUSER" class="w3-input w3-border <?php
+    <input type="text" name="DBUSER" class="UI-input <?php
     if ($updateData != null && strlen($updateData['DBUSER'])) {
         echo '" value="'.$updateData['DBUSER'].'"';
     } elseif (isset($DBUSER)) {
         echo '" value="'.$DBUSER.'"';
     } elseif ($tried) {
-        echo 'w3-red"';
+        echo 'UI-red"';
     } else {
         echo '"';
     }
 ?>>
     </br>
     <label>Database Name:</label> <br>
-    <input type="text" name="DBNAME" class="w3-input w3-border <?php
+    <input type="text" name="DBNAME" class="UI-input <?php
     if ($updateData != null && strlen($updateData['DBNAME'])) {
         echo '" value="'.$updateData['DBNAME'].'"';
     } elseif (isset($DBNAME)) {
         echo '" value="'.$DBNAME.'"';
     } elseif ($tried) {
-        echo 'w3-red"';
+        echo 'UI-red"';
     } else {
         echo '"';
     }
 ?>>
     </br>
     <label>Database Password:</label> <br>
-    <input type="text" name="DBPASS" class="w3-input w3-border <?php
+    <input type="text" name="DBPASS" class="UI-input <?php
     if ($updateData != null && strlen($updateData['DBPASS'])) {
         echo '" value="'.$updateData['DBPASS'].'"';
     } elseif (isset($DBPASS)) {
         echo '" value="'.$DBPASS.'"';
     } elseif ($tried) {
-        echo 'w3-red"';
+        echo 'UI-red"';
     } else {
         echo '"';
     }
@@ -221,11 +221,11 @@ if (strlen($failed_message)) {
     <hr>
 
     <label>Neon Key:</label> <br>
-    <input type="text" name="new_NEONKEY" class="w3-input w3-border <?php
+    <input type="text" name="new_NEONKEY" class="UI-input <?php
     if ($updateData != null && strlen($updateData['new_NEONKEY'])) {
         echo '" value="'.$updateData['new_NEONKEY'].'"';
     } elseif ($tried) {
-        echo 'w3-red"';
+        echo 'UI-red"';
     } else {
         echo '"';
     }
@@ -233,11 +233,11 @@ if (strlen($failed_message)) {
     </br>
 
     <label>Neon ID:</label> <br>
-    <input type="text" name="new_NEONID" class="w3-input w3-border <?php
+    <input type="text" name="new_NEONID" class="UI-input <?php
     if ($updateData != null && strlen($updateData['new_NEONID'])) {
         echo '" value="'.$updateData['new_NEONID'].'"';
     } elseif ($tried) {
-        echo 'w3-red"';
+        echo 'UI-red"';
     } else {
         echo '"';
     }
@@ -249,7 +249,7 @@ if (strlen($failed_message)) {
     if ($updateData != null && $updateData['new_NEONBETA']) {
         echo '" checked"';
     } elseif ($tried) {
-        echo 'w3-red"';
+        echo 'UI-red"';
     } else {
         echo '"';
     }
@@ -259,11 +259,11 @@ if (strlen($failed_message)) {
     <hr>
 
     <label>Event Host:</label> <br>
-    <input type="text" name="new_CONHOST" class="w3-input w3-border <?php
+    <input type="text" name="new_CONHOST" class="UI-input <?php
     if ($updateData != null && strlen($updateData['new_CONHOST'])) {
         echo '" value="'.$updateData['new_CONHOST'].'"';
     } elseif ($tried) {
-        echo 'w3-red"';
+        echo 'UI-red"';
     } else {
         echo '"';
     }
@@ -271,11 +271,11 @@ if (strlen($failed_message)) {
     </br>
 
     <label>Admin User IDs (comma seperated):</label> <br>
-    <input type="text" name="new_ADMINACCOUNTS" class="w3-input w3-border <?php
+    <input type="text" name="new_ADMINACCOUNTS" class="UI-input <?php
     if ($updateData != null && strlen($updateData['new_ADMINACCOUNTS'])) {
         echo '" value="'.$updateData['new_ADMINACCOUNTS'].'"';
     } elseif ($tried) {
-        echo 'w3-red"';
+        echo 'UI-red"';
     } else {
         echo '"';
     }
@@ -283,11 +283,11 @@ if (strlen($failed_message)) {
     </br>
 
     <label>Admin Email:</label> <br>
-    <input type="text" name="new_ADMINEMAIL" class="w3-input w3-border <?php
+    <input type="text" name="new_ADMINEMAIL" class="UI-input <?php
     if ($updateData != null && strlen($updateData['new_ADMINEMAIL'])) {
         echo '" value="'.$updateData['new_ADMINEMAIL'].'"';
     } elseif ($tried) {
-        echo 'w3-red"';
+        echo 'UI-red"';
     } else {
         echo '"';
     }
@@ -295,18 +295,18 @@ if (strlen($failed_message)) {
     </br>
 
     <label>Timezone:</label> <br>
-    <input type="text" name="new_TIMEZONE" class="w3-input w3-border <?php
+    <input type="text" name="new_TIMEZONE" class="UI-input <?php
     if ($updateData != null && strlen($updateData['new_TIMEZONE'])) {
         echo '" value="'.$updateData['new_TIMEZONE'].'"';
     } elseif ($tried) {
-        echo 'w3-red"';
+        echo 'UI-red"';
     } else {
         echo '"';
     }
 ?> placeholder="<example: America/Chicago>">
     </br>
 
-    <input type="submit" class="UI-eventbutton w3-center">
+    <input type="submit" class="UI-eventbutton UI-center">
 </form>
 
 <?php

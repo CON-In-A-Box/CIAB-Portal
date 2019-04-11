@@ -29,6 +29,7 @@ class SCHEMA
         'Cost' => 'DECIMAL(6,2) NOT NULL',
         'EventID' => 'INT UNSIGNED NOT NULL',
         'Name' => 'VARCHAR(50) NOT NULL',
+        'BackgroundImage' => 'VARCHAR(100)',
     ],
     'Configuration' => [
         'Field' => 'VARCHAR(15) NOT NULL PRIMARY KEY',

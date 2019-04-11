@@ -1,4 +1,4 @@
-<div id="main_content" class="w3-cell w3-cell-top w3-mobile">
+<div id="main_content" class="w3-cell w3-cell-top UI-maincontent">
 
 <?php
 /*.
@@ -11,11 +11,11 @@ $hour_round_interval = 15;
 
 if (isset($updateComplete)) {
     if ($updateComplete === true) {
-        echo '<div class="w3-block w3-center event-color-primary">';
+        echo '<div class="w3-block UI-center event-color-primary">';
         echo "Hours Recorded";
         echo "</div>\n";
     } else {
-        echo '<div class="w3-block w3-center w3-red">';
+        echo '<div class="w3-block UI-center UI-red">';
         echo 'Hour Recording Failed!!  Error!';
         echo "</div>\n";
         $output = print_r($handoff, true);
@@ -25,7 +25,7 @@ if (isset($updateComplete)) {
 }
 ?>
 
-<div id="message" class='w3-block w3-center w3-red'></div>
+<div id="message" class='w3-block UI-center UI-red'></div>
 
 <script>
     userLookup.options({
@@ -90,7 +90,7 @@ for ($i = 0; $i < 60; $i += $hour_round_interval) {
   </div>
   <div class='w3-bar-item'>
     <label>Date/Time that the Shift Ended</label>
-    <input class="w3-input w3-border" type="date" name="EndDate" id="end_date" pattern="\d{4}-\d{2}-\d{2}T\d{2}:\d{2}" value="<?php
+    <input class="UI-input" type="date" name="EndDate" id="end_date" pattern="\d{4}-\d{2}-\d{2}T\d{2}:\d{2}" value="<?php
     echo date('Y-m-d');
     ?>" required onchange="checkHours();">
 
@@ -110,7 +110,7 @@ $pm = ($h > 12);
 $h %= 12;
 ?>
 
-    <input class="w3-input w3-bar-item w3-border" type=number id="end_hours" value=<?php echo $h ?> style="width: 75px;" required onchange="checkHours();" name="EndHours" min=0>
+    <input class="UI-input w3-bar-item" type=number id="end_hours" value=<?php echo $h ?> style="width: 75px;" required onchange="checkHours();" name="EndHours" min=0>
     <select class="w3-select w3-bar-item w3-border" type=number name="EndMinutes" id="end_minutes" title="" style="height: 40px;" required onchange="checkHours();" name="EndMinutes">
 <?php
 for ($i = 0; $i < 60; $i += $hour_round_interval) {
@@ -135,7 +135,7 @@ for ($i = 0; $i < 60; $i += $hour_round_interval) {
   </div>
 </div>
 
-<div class='w3-container'>
+<div class='UI-container'>
   <div class='w3-block'>
     <label>Volunteer Time Modifier - Must be per policy</label><br />
     <select class="w3-select w3-border" style="width:auto" name="TimeModifier" id="modifier" onchange="calculateHours();">
@@ -180,7 +180,7 @@ for ($i = 0; $i < 60; $i += $hour_round_interval) {
 </div>
 
 <div class='w3-bar'>
-  <div class="w3-bar-item w3-center">
+  <div class="w3-bar-item UI-center">
   <p name=summery>
       Crediting
       <span id="totalhours">1 hour</span>
@@ -202,7 +202,7 @@ for ($i = 0; $i < 60; $i += $hour_round_interval) {
     if (($_SESSION['IS_VOLUNTEERS'] || isset($_SESSION['IS_ADMIN'])) &&
         !kiosk_user()) {
         echo '<label class="w3-left">Hours Authorized By</label>';
-        echo '<input class="w3-input w3-border" type=text';
+        echo '<input class="UI-input" type=text';
     } else {
         echo '<input type=hidden';
     }
@@ -227,7 +227,7 @@ for ($i = 0; $i < 60; $i += $hour_round_interval) {
 </div>
 
 <div class='w3-bar'>
-  <div class="w3-bar-item w3-center" style="width:inherit;">
+  <div class="w3-bar-item UI-center" style="width:inherit;">
     <p class="w3-small">
         <a href='javascript:void(0)' onclick='batch()'>batch file upload</a>
     </p>
@@ -238,18 +238,18 @@ for ($i = 0; $i < 60; $i += $hour_round_interval) {
 
 <div id='csv_import' class='w3-modal'>
   <div class="w3-modal-content">
-    <div class=w3-container">
+    <div class=UI-container">
       <div class="w3-row">
-        <h2 class="w3-center event-color-primary">Volunteer CSV File To Upload</h2>
+        <h2 class="UI-center event-color-primary">Volunteer CSV File To Upload</h2>
       </div>
       <div class="w3-row">
-        <p class="UI-margin w3-center">CSV file format:
-        <code class="w3-block w3-gray w3-center">&lt;Account,ActualHours,AuthorizedBy,Department,EndDateTime,EnteredBy,Event,TimeModifier&gt;</code></p>
-        <p class="UI-margin w3-center"><b>Account fields</b> (Account, AuthorizedBy, EnteredBy)  can be badge number, name, or email. However it has to uniquly identify the user so badge number is always the safest.</p>
-        <p class="UI-margin w3-center"><b>Event</b> is optional. If left empty then the current upcoming event is used.</p>
-        <p class="UI-margin w3-center"><b>EndDateTime</b> should be quoted. The format is "YYYY-MM-DD HH:MM:SS".</p>
-        <h2 class="w3-block w3-center">Example</h2>
-        <table class="w3-table w3-center w3-striped w3-border w3-white">
+        <p class="UI-margin UI-center">CSV file format:
+        <code class="w3-block w3-gray UI-center">&lt;Account,ActualHours,AuthorizedBy,Department,EndDateTime,EnteredBy,Event,TimeModifier&gt;</code></p>
+        <p class="UI-margin UI-center"><b>Account fields</b> (Account, AuthorizedBy, EnteredBy)  can be badge number, name, or email. However it has to uniquly identify the user so badge number is always the safest.</p>
+        <p class="UI-margin UI-center"><b>Event</b> is optional. If left empty then the current upcoming event is used.</p>
+        <p class="UI-margin UI-center"><b>EndDateTime</b> should be quoted. The format is "YYYY-MM-DD HH:MM:SS".</p>
+        <h2 class="w3-block UI-center">Example</h2>
+        <table class="UI-stripedtable">
            <tr><td>Attendee Joe,1.000,Connie VonRobot,IT,"2018-06-04 08:15:00",Connie VonRobot,,1.0</tr></td>
            <tr><td>joe@attendee.com,1.000,60055,Gaming,"2018-06-05 08:15:00",Connie VonRobot,,1.0</tr></td>
            <tr><td>60054,1.000,60055,Hotel,"2018-06-06 08:15:00",60055,,1.0</tr></td>
@@ -259,10 +259,10 @@ for ($i = 0; $i < 60; $i += $hour_round_interval) {
           <div class="w3-left UI-margin w3-half">
               <input style="width: 100%;" type="file" id="batch_file" onchange="fileChange()">
           </div>
-          <div class="w3-right">
+          <div class="UI-right">
               <button class="UI-redbutton UI-margin" onclick="batchCancel()">Cancel</button>
           </div>
-          <div class="w3-right">
+          <div class="UI-right">
               <button class="UI-eventbutton UI-margin w3-disabled" id="batch_import" onclick="batchImport()">Import</button>
           </div>
       </div>
@@ -272,15 +272,15 @@ for ($i = 0; $i < 60; $i += $hour_round_interval) {
 
 <div id='csv_import_report' class='w3-modal'>
   <div class="w3-modal-content">
-    <div class=w3-container">
+    <div class=UI-container">
         <div>
-            <h2 class="w3-center event-color-primary">Volunteer CSV Import Result</h2>
+            <h2 class="UI-center event-color-primary">Volunteer CSV Import Result</h2>
         </div>
         <div>
-            <table class='w3-table w3-striped w3-bordered w3-white' id="import_report">
+            <table class='UI-stripedtable' id="import_report">
             </table>
         </div>
-        <div class="w3-center">
+        <div class="UI-center">
               <button class="UI-eventbutton UI-margin" id="batch_done" onclick="batchDone()">Done</button>
         </div>
     </div>

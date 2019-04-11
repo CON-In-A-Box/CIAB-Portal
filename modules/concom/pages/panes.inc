@@ -12,9 +12,9 @@ require_once(__DIR__.'/../functions/concom.inc');
 function draw_status()
 {
     // Display Current ConCom Status
-    echo "<div class='w3-container w3-black'>\n";
-    echo "<table class='w3-table w3-striped w3-bordered w3-white'>\n";
-    echo "<tr><th class='w3-center w3-black'>Current ConCom Status</th></tr>\n";
+    echo "<div class='UI-container w3-black'>\n";
+    echo "<table class=''UI-stripedtable>\n";
+    echo "<tr><th class='UI-center w3-black'>Current ConCom Status</th></tr>\n";
     foreach ($_SESSION['customFields']['currConComPos'] as $val) {
         echo "<tr><td>".$val['position']." of ".$val['department'];
         if (!empty($val['note'])) {
@@ -37,8 +37,8 @@ function draw_history()
     $events = events_served($_SESSION['accountId']);
     $c = count($events);
 
-    echo "<div class='w3-container event-color-primary'>\n";
-    echo "<table class='w3-table w3-striped w3-bordered w3-white'>\n";
+    echo "<div class='UI-container event-color-primary'>\n";
+    echo "<table class='UI-stripedtable'>\n";
     echo "<tr><th style=\"text-align:center;\" class=\"event-color-primary\" colspan=5>Served on ConCom for ".$c;
     if ($c > 1) {
         echo " Events!  ";
@@ -59,7 +59,7 @@ function draw_history()
         $i++;
     }
     echo "</tr>\n";
-    echo "<tr class=\"event-color-primary\" ><th colspan=5 class='w3-center'>";
+    echo "<tr class=\"event-color-primary\" ><th colspan=5 class='UI-center'>";
     echo "Thank you for your help!</th></tr>";
     echo "</table>\n";
     echo "</div>\n";
@@ -72,7 +72,7 @@ function phone_number()
     // If this person is on ConCom, but hasn't elected about their phone number, nudge them
     $cvgConComPhoneDisplay = search_definedFields('CVGConCom Publish Phone');
     if (isset($_SESSION['customFields']['currConComPos']) && empty($_SESSION['customFields'][$cvgConComPhoneDisplay])) {
-        echo '<p class="w3-container w3-center">';
+        echo '<p class="UI-container UI-center">';
         echo "We've noticed you haven't decided about your phone number.<br />";
         echo 'Please <a href="index.php?Function=profile">Update Your Profile</a> to make that selection.';
         echo '</p>';
@@ -84,9 +84,9 @@ function phone_number()
 function meetings()
 {
     // Display Meeting Sign In Info
-    echo "<div class='w3-container event-color-primary'>\n";
-    echo "<table class='w3-table w3-striped w3-bordered w3-white'>\n";
-    echo "<tr><th class='w3-center event-color-primary' colspan=3>Official Meeting Attendance</th></tr>\n";
+    echo "<div class='UI-container event-color-primary'>\n";
+    echo "<table class='UI-stripedtable'>\n";
+    echo "<tr><th class='UI-center event-color-primary' colspan=3>Official Meeting Attendance</th></tr>\n";
     $nowDate = date("Y-m-d");
 
     $sql = "SELECT * from `OfficialMeetings`";

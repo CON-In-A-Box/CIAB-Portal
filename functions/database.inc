@@ -201,6 +201,7 @@ function lookup_cycleID($date)
 
 $_currentCycle = null;
 $_currentEvent = null;
+$_currentEventName = null;
 
 
 function current_cycleID()
@@ -297,6 +298,25 @@ function current_eventID()
         die("Could not get Current Convention Event");
     }
     return $_currentEvent;
+
+}
+
+
+function current_eventName()
+{
+    global $_currentEventName;
+
+    if ($_currentEventName === null) {
+        $event = current_eventID();
+        $sql = "SELECT `EventName` FROM Events WHERE EventID=$event;";
+        $result = DB::run($sql);
+        $value = $result->fetch();
+        if ($value) {
+            $_currentEventName = $value['EventName'];
+            return $_currentEventName;
+        }
+    }
+    return $_currentEventName;
 
 }
 

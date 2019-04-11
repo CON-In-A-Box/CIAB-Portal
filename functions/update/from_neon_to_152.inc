@@ -108,7 +108,7 @@ function _build_ConComList()
     $event = current_eventID();
 
     $data = _ConComListBuild();
-    print '<div id="update_staff" class="w3-container">';
+    print '<div id="update_staff" class="UI-container">';
     foreach ($data as $line) {
         if (!empty($line['Account ID'])) {
             if ($line['Position'] == 'Director') {

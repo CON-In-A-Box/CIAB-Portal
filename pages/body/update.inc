@@ -1,7 +1,7 @@
 <?php
 // Main update process
 ?>
-<div id="main_content" class="w3-cell w3-cell-top w3-mobile">
+<div id="main_content" class="w3-cell w3-cell-top UI-maincontent">
 <h2>Preforming system upgrade</h2>
 <?php
 

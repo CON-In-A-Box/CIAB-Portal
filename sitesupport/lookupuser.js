@@ -106,19 +106,19 @@ var userLookup = (function(options) {
 
         markFailure: function() {
           document.getElementById('userLookup_member').classList.add(
-            'w3-red');
+            'UI-red');
           document.getElementById('userLookup_spinner').innerHTML = '';
         },
 
         clearFailure: function() {
           document.getElementById('userLookup_member').classList.remove(
-            'w3-red');
+            'UI-red');
           document.getElementById('userLookup_spinner').innerHTML = '';
         },
 
         clear: function() {
           document.getElementById('userLookup_member').classList.remove(
-            'w3-red');
+            'UI-red');
           document.getElementById('userLookup_spinner').innerHTML = '';
           document.getElementById('userLookup_member').value = '';
         },
@@ -208,8 +208,7 @@ var userLookup = (function(options) {
           div2.appendChild(div3);
           var input = document.createElement('INPUT');
           div3.appendChild(input);
-          input.classList.add('w3-input');
-          input.classList.add('w3-border');
+          input.classList.add('UI-input');
           input.classList.add('w3-bar-item');
           input.classList.add('w3-padding');
           input.name = 'MemberID';

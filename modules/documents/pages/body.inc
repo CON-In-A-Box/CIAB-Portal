@@ -1,5 +1,5 @@
-<div id="page" class="w3-container">
-<div id="main_content" class="w3-container">
+<div id="page" class="UI-container">
+<div id="main_content" class="UI-maincontent">
 <h2 class="UI-event-sectionbar"> Staff Shared Documents </h2>
 <?php
 
@@ -14,14 +14,14 @@ $root = '/';
 
 if ($client_info[0] == null) {
 ?>
-    <h3 class="w3-center">Service Not Configured</h3>
+    <h3 class="UI-center">Service Not Configured</h3>
 
     <div>
     <span>You need to setup a google API key for the account that is
 going to be accessed. Setup an OAuth 'Client ID' of type <b>other</b>.  <a href="https://console.developers.google.com/apis/credentials">HERE</a>.</span>
     <br>
     <span> Once you have done that you need to download the JSON for the key. It will be saved as "client_secret_&lt;something&gt;.json. Open the text file and copy the contents here: </span>
-<div><textarea class="w3-input w3-border" id="secret"></textarea>
+<div><textarea class="UI-input" id="secret"></textarea>
 <button id="set_code" class="UI-eventbutton" onclick='setSecret()'>Enter</button>
     </div>
 <?php
@@ -32,9 +32,9 @@ if ($client_info[1] === false) {
     $url = get_auth_url($client_info[0]);
 ?>
 <hr>
-<h3 class="w3-center">Service needs authorization</h3>
+<h3 class="UI-center">Service needs authorization</h3>
 <div><span>Click <a href="<?php echo $url;?>" target="_blank">HERE</a> to get authorization code</span></div>
-<div><label>Enter Code Here:</label><input class="w3-input w3-border" id="code">
+<div><label>Enter Code Here:</label><input class="UI-input" id="code">
 <button id="set_code" class="UI-eventbutton" onclick='authCode()'>Enter</button>
 </div>
 <?php
@@ -44,8 +44,8 @@ exit();
 if (!isset($G_ROOTFOLDER) || $G_ROOTFOLDER === "") {
 ?>
 <hr>
-<h3 class="w3-center">Configure root folder</h3>
-<div><label>Shared Drive Root Folder:</label><input class="w3-input w3-border" id="folder">
+<h3 class="UI-center">Configure root folder</h3>
+<div><label>Shared Drive Root Folder:</label><input class="UI-input" id="folder">
 <button id="set_folder" class="UI-eventbutton" onclick='setFolder()'>Enter</button>
 </div>
 <?php
@@ -60,15 +60,15 @@ exit();
         $updateData = filter_input_array(INPUT_GET, $arguments);
         $root = $updateData['path'];
     }
-    echo '<h2 class="w3-center"><b id="root_path">'.$root.'</b></h2>';
+    echo '<h2 class="UI-center"><b id="root_path">'.$root.'</b></h2>';
 
 ?>
-<table class="w3-table w3-striped w3-border w3-white w3-padding" id="folder_table">
-<tr><th class="event-color-primary w3-center">Folder</th></tr>
+<table class="UI-stripedtable w3-padding" id="folder_table">
+<tr><th class="event-color-primary UI-center">Folder</th></tr>
 </table>
 <br>
-<table class="w3-table w3-striped w3-border w3-white w3-padding" id="file_table">
-<tr><th class="event-color-primary w3-center">File</th><th class="event-color-primary w3-center">Last Modified</th></tr>
+<table class="UI-stripedtable w3-padding" id="file_table">
+<tr><th class="event-color-primary UI-center">File</th><th class="event-color-primary UI-center">Last Modified</th></tr>
 <?php
 }
 ?>

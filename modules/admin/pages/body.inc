@@ -7,7 +7,7 @@ require_once($FUNCTIONDIR.'/authentication.inc');
 require_once(__DIR__."/../functions/admin.inc");
 require_once($FUNCTIONDIR.'/users.inc');
 ?>
-<div id="main_content"  class="w3-cell w3-cell-top w3-mobile">
+<div id="main_content"  class="w3-cell w3-cell-top UI-maincontent">
 <?php
 echo "<h2 class='UI-sectionbar'>Welcome ".$_SESSION['preferredName']."!</h2>\n";
 /*
@@ -153,7 +153,7 @@ if (!empty($searchCriteria['firstName']) ||
 
 ?>
 
-<div id="left_bar" class="w3-content w3-left UI-margin">
+<div id="left_bar" class="UI-content w3-left UI-margin">
 <form action="index.php?Function=admin" method="POST" class="form-inline">
   <fieldset>
     <legend>Basic NeonCRM Account Search</legend>
@@ -224,22 +224,22 @@ if (!empty($searchCriteria['ID'])) {
 }
 ?>
 </div> <!-- left_bar --!>
-<div id="right_bar" class="w3-right w3-content UI-margin">
-<h2 class="w3-red w3-center">Site Configuration</h2>
-<table class="w3-table w3-striped w3-border">
-<tr><th class="w3-center">Field</th> <th class="w3-center">Value</th><th></th></tr>
+<div id="right_bar" class="UI-right UI-content UI-margin">
+<h2 class="UI-red UI-center">Site Configuration</h2>
+<table class="UI-stripedtable">
+<tr><th class="UI-center">Field</th> <th class="UI-center">Value</th><th></th></tr>
 <?php
 $table = get_config();
 foreach ($table as $line) {
     echo "<tr><td>".$line['Field']."</td>\n";
-    echo "<td><input type='text' id=config_".$line['Field']." value=\"".$line['Value']."\" class='w3-input w3-border'></td>\n";
+    echo "<td><input type='text' id=config_".$line['Field']." value=\"".$line['Value']."\" class='UI-input'></td>\n";
     echo "<td><button class='UI-eventbutton' onclick='setField(\"".$line['Field']."\")';>Set</button></td></tr>\n";
 }
 ?>
     <tr><td>
-      <input type='text' id=new_Field  value="" class='w3-input w3-border'>
+      <input type='text' id=new_Field  value="" class='UI-input'>
     </td><td>
-      <input type='text' id=new_Value  value="" class='w3-input w3-border'>
+      <input type='text' id=new_Value  value="" class='UI-input'>
     </td><td>
       <button class='UI-redbutton' onclick='addField()';>Add</button>
     </td></tr>
@@ -259,7 +259,7 @@ foreach ($table as $line) {
 <!-- Debug code for admins, just in case -->
 <p></p>
 
-<div id="dbg_info_content" class="w3-section w3-container">
+<div id="dbg_info_content" class="w3-section UI-container">
   <button class="UI-roundbutton w3-small w3-block w3-left-align" onclick="expandSection('dbg_info');"><span>Debug Session Information&nbsp;</span><i id="dbg_info_arrow" class="fa fa-caret-down"></i></button>
 
   <div id="dbg_info" class="w3-section UI-margin w3-hide">
@@ -271,7 +271,7 @@ foreach ($table as $line) {
 
 <!-- Activity log - limited to last lines, in reverse order -->
 <p></p>
-<div id="db_log_content" class="w3-section w3-container">
+<div id="db_log_content" class="w3-section UI-container">
   <button class="UI-roundbutton w3-small w3-block w3-left-align" onclick="expandSection('db_log');"><span>DB Activity Log&nbsp;</span><i id="db_log_arrow" class="fa fa-caret-down"></i></button>
 
   <div id="db_log" class="w3-section UI-margin w3-hide">

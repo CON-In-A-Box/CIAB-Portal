@@ -117,7 +117,8 @@ SQL;
                     r.`BadgeTypeID` = b.`BadgeTypeID`
             ) as Sold,
             AvailableFrom,
-            AvailableTo
+            AvailableTo,
+            BackgroundImage
         FROM
             `BadgeTypes` as b
 SQL;
@@ -129,6 +130,7 @@ SQL;
     'Sold' => 'Sold',
     'From' => 'AvailableFrom',
     'To' => 'AvailableTo',
+    'BackgroundImage' => 'BackgroundImage',
     ];
     $badge_data = load_table($sql, $values);
     $badge_keys = array_keys($values);
@@ -142,13 +144,14 @@ SQL;
         print "<td>".implode('</td><td>', $entry)."</td>";
         print "</tr>\n";
 
-        print "<tr><td colspan=5><div name='badges_".$entry['Id']."' class=' w3-hide'><table class='w3-table-all w3-center'>";
+        print "<tr><td colspan=5><div name='badges_".$entry['Id']."' class=' w3-hide'><table class='UI-stripedtable UI-center'>";
 
         print "<tr>";
         unset($badge_keys[0]);
         unset($badge_keys[3]);
         unset($badge_keys[5]);
         unset($badge_keys[6]);
+        unset($badge_keys[7]);
         print "<th>".implode('</th><th>', $badge_keys)."</th><th></th>";
         print "</tr>\n";
         foreach ($badge_data as $badge) {
@@ -162,9 +165,10 @@ SQL;
                 unset($badge['From']);
                 unset($badge['To']);
                 unset($badge['EventName']);
+                unset($badge['BackgroundImage']);
                 print "<tr> ";
                 print "<td>".implode('</td><td>', $badge)."</td>";
-                print "<td class='w3-center'>";
+                print "<td class='UI-center'>";
                 print "<button class='w3-small UI-eventbutton'  onclick='editBadge(\"$json\");'>Edit</button>  ";
                 if (intval($badge['Sold']) == 0) {
                     $name = $badge['Badge Name'];
@@ -176,7 +180,7 @@ SQL;
                 print "</tr>\n";
             }
         }
-        print "<tr> <td colspan=4 class='w3-center'>";
+        print "<tr> <td colspan=4 class='UI-center'>";
         $event = $entry['Id'];
         print "<button id='new' class='UI-eventbutton' onclick='newBadge($event, \"$plain_name\")'>Add New Badge</button>";
         print "</td></tr>";
@@ -186,7 +190,7 @@ SQL;
 
         $details = _event_details($entry['Id']);
         $can_delete = true;
-        print "<table class='w3-table-all'>";
+        print "<table class='UI-stripedtable'>";
         foreach ($details as $key => $detail) {
             print "<tr><td>".$key."</td><td>";
             print $detail;
@@ -199,12 +203,12 @@ SQL;
             print "</td></tr>";
         }
         print "</table>";
-        print "<div class='w3-center'>";
+        print "<div class='UI-center'>";
         $json = json_encode($entry);
         $json = base64_encode($json);
         print "<button class='UI-eventbutton UI-margin' onclick='editEvent(\"$plain_name\",\"$json\")'>Modify Event</button>";
         print "</div>";
-        print "<div class='w3-center'>";
+        print "<div class='UI-center'>";
         if ($can_delete) {
             print "<button class='UI-redbutton' onclick='deleteEvent(".$entry['Id'].",\"$plain_name\")'>Delete Event</button>";
         } else {
@@ -269,9 +273,9 @@ SQL;
         print "<td> <button class='UI-eventbutton' onclick='editMeeting(\"$json\")'>Modify Meeting</button> </td>";
         $attendance = _check_attendance($entry['Id']);
         if ($attendance > 0) {
-            print "<td class='w3-center'> <span class='UI-redbutton w3-disabled'>".$attendance." Attended </span> </td>";
+            print "<td class='UI-center'> <span class='UI-redbutton w3-disabled'>".$attendance." Attended </span> </td>";
         } else {
-            print "<td class='w3-center'> <button class='UI-redbutton' onclick='deleteMeeting(\"".$entry['Name'].'",'.$entry['Id'].")'>Delete Meeting</button> </td>";
+            print "<td class='UI-center'> <button class='UI-redbutton' onclick='deleteMeeting(\"".$entry['Name'].'",'.$entry['Id'].")'>Delete Meeting</button> </td>";
         }
         print "</tr>\n";
     }
@@ -445,25 +449,26 @@ function save_badge($badge)
     $name = MyPDO::quote($badge->Name);
     $event = $badge->Event;
     $cost = $badge->Cost;
+    $image = MyPDO::quote($badge->Image);
     if ($badge->From == '') {
-        $from = '0000-00-00';
+        $from = MyPDO::quote('0000-00-00');
     } else {
-        $from = $badge->From;
+        $from = MyPDO::quote($badge->From);
     }
     if ($badge->To == '') {
-        $to = '0000-00-00';
+        $to = MyPDO::quote('0000-00-00');
     } else {
-        $to = $badge->To;
+        $to = MyPDO::quote($badge->To);
     }
     if ($id == -1) {
         $sql = <<<SQL
     INSERT INTO `BadgeTypes` (
         `BadgeTypeID`, `AvailableFrom`, `AvailableTo`, `Cost`, `EventID`,
-        `Name`
+        `Name`, `BackgroundImage`
     )
     VALUES
         (
-            NULL, '$from', '$to', $cost, $event, $name
+            NULL, $from, $to, $cost, $event, $name, $image
         )
 SQL;
     } else {
@@ -471,11 +476,12 @@ SQL;
     UPDATE
         `BadgeTypes`
     SET
-        `AvailableFrom` = '$from',
-        `AvailableTo` = '$to',
+        `AvailableFrom` = $from,
+        `AvailableTo` = $to,
         `Cost` = $cost,
         `EventID` = $event,
-        `Name` = $name
+        `Name` = $name,
+        `BackgroundImage` = $image
     WHERE
         `BadgeTypeID` = $id
 SQL;

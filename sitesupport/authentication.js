@@ -74,8 +74,8 @@ function checkAuthentication(username, success, failure, params) {
     content.appendChild(x);
 
     var h = document.createElement('H2');
-    h.classList.add('w3-red');
-    h.classList.add('w3-center');
+    h.classList.add('UI-red');
+    h.classList.add('UI-center');
     var t;
     if (params && ('title' in params)) {
       t = document.createTextNode(params.title);
@@ -88,19 +88,18 @@ function checkAuthentication(username, success, failure, params) {
     content.appendChild(r);
 
     h = document.createElement('H3');
-    h.classList.add('w3-center');
+    h.classList.add('UI-center');
     t = document.createTextNode('Verify password for ' + username);
     h.appendChild(t);
     content.appendChild(h);
 
     var form = document.createElement('DIV');
-    form.classList.add('w3-center');
+    form.classList.add('UI-center');
     content.appendChild(form);
 
     var i = document.createElement('INPUT');
-    i.classList.add('w3-center');
-    i.classList.add('w3-input');
-    i.classList.add('w3-border');
+    i.classList.add('UI-center');
+    i.classList.add('UI-input');
     i.classList.add('UI-margin');
     i.classList.add('w3-padding');
     i.setAttribute('type', 'password');

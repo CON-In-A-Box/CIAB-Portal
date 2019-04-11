@@ -39,7 +39,7 @@ function doConComAddSearch($department)
     echo '<h3>Add someone to '.$department."</h3>\n";
 ?>
     <fieldset><legend>Search the User Database</legend>
-    <div class='w3-rest w3-center' id='userLookup_div'> </div>
+    <div class='UI-rest UI-center' id='userLookup_div'> </div>
     </fieldset>
 <?php
 

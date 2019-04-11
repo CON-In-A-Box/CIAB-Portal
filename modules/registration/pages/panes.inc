@@ -52,22 +52,22 @@ function badges()
 ?>
         <script src="sitesupport/common.js"></script>
         <script src="modules/registration/sitesupport/registration.js"></script>
-        <div class='w3-container event-color-secondary'>
+        <div class='UI-container event-color-secondary'>
 
-        <div class='w3-center event-color-secondary'>
+        <div class='UI-center event-color-secondary'>
             <b style="margin-left: 100px;">Badges Purchased</b>
-            <div class='w3-right'>
-                <input id='refresh' type='button' class='UI-button w3-orange'
+            <div class='UI-right'>
+                <input id='refresh' type='button' class='UI-orangebutton'
                        onclick='refreshBadgeData(<?php echo $_SESSION['accountId'];?>)' value='refresh'>
             </div>
         </div>
 
-        <table class='w3-table w3-striped w3-bordered w3-white w3-responsive'>
+        <table class='UI-stripedtable'>
 <?php
 foreach ($lines as $con => $names) {
     $colspan = count($names[0]);
-    echo "<table class='w3-table w3-striped w3-bordered w3-white'>\n";
-    echo "<tr><th class='w3-center event-color-primary' colspan='$colspan'>".$con;
+    echo "<table class='UI-stripedtable'>\n";
+    echo "<tr><th class='UI-center event-color-primary' colspan='$colspan'>".$con;
     echo " (".count($names)." badges)</th></tr>\n";
     $keys = array_keys($names[0]);
     echo "<tr><th>";
@@ -81,7 +81,7 @@ foreach ($lines as $con => $names) {
     echo "</table>\n";
 }
 ?>
-        <tr class='event-color-secondary'><th colspan=5 class='w3-center'></th></tr>
+        <tr class='event-color-secondary'><th colspan=5 class='UI-center'></th></tr>
         </table>
         </div>
 <?php
