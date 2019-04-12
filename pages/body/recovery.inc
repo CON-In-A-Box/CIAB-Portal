@@ -14,7 +14,7 @@ if (isset($updateData['expired'])) {
 </header>
 
 <div class="UI-container w3-mobile">
-  <div class="UI-container UI-center w3-border UI-margin w3-padding">
+  <div class="UI-container UI-center UI-border UI-margin w3-padding">
 <?php
 if ($expired) {
     echo "<h2 class='event-color-primary'> Expired Password </h2>\n";

@@ -501,7 +501,7 @@ function messages($uid)
         if ($display) {
             echo "<div class='w3-col w3-cell-row w3-padding' ";
             echo "style='max-height:10vh; overflow:scroll;'>\n";
-            echo "<div id='volunteer_messages' class='UI-container w3-padding w3-border-red w3-border UI-margin w3-cell'>\n";
+            echo "<div id='volunteer_messages' class='UI-container w3-padding w3-border-red UI-border UI-margin w3-cell'>\n";
             echo $promo;
             echo "</div>\n";
             if ($unclaimed_promo && sizeof($unclaimed_promo)) {
@@ -532,7 +532,7 @@ function admin_bar($uid)
 {
     echo "<div class='w3-col w3-cell-row w3-padding' ";
     echo "style='max-height:10vh; overflow:scroll;'>\n";
-    echo "<div id='volunteer_admin_bar' class='UI-container w3-padding w3-border-red w3-border UI-margin w3-cell'>\n";
+    echo "<div id='volunteer_admin_bar' class='UI-container w3-padding w3-border-red UI-border UI-margin w3-cell'>\n";
     echo "<button id='add_prize' class='UI-redbutton'";
     echo "onclick='showEditPrize(null)';>Add New Gift</button>\n";
     echo "<button id='min_hours' class='UI-redbutton'";
@@ -659,7 +659,7 @@ if (!isset($locked)) {
         <div class='UI-center'>
             <label for='csv_table'>
             Table:</label>
-            <select class="UI-margin w3-select w3-border" style="width:auto" id="csv_table">
+            <select class="UI-margin UI-select" style="width:auto" id="csv_table">
               <option value=HourRedemptions>HourRedemptions</option>
               <option value=VolunteerHours selected>VolunteerHours</option>
               <option value=VolunteerRewards>VolunteerRewards</option>
@@ -685,7 +685,7 @@ if (!isset($locked)) {
         <div class='UI-center'>
             <label for='der_csv_table'>
             Table:</label>
-            <select class="UI-margin w3-select w3-border" style="width:auto" id="der_csv_table">
+            <select class="UI-margin UI-select" style="width:auto" id="der_csv_table">
               <option value="SELECT r.*, (SELECT COUNT(h.PrizeID) FROM HourRedemptions AS h WHERE h.PrizeID = r.PrizeID GROUP BY h.PrizeID) as Claimed FROM VolunteerRewards as r;">Volunteer Rewards</option>
               <option value="SELECT v.*, (SELECT Name FROM `Departments` as d WHERE v.DepartmentID = d.DepartmentID) as DepartmentName FROM `VolunteerHours` as v;">Volunteer Hours</option>
               <option value="SELECT *, (SELECT Name FROM VolunteerRewards WHERE VolunteerRewards.prizeid = HourRedemptions.PrizeID) AS PrizeName FROM `HourRedemptions` ORDER BY AccountID">Prize Redemption</option>
@@ -728,7 +728,7 @@ if (!isset($locked)) {
         <div class='UI-center UI-red'>
             <h2 id='edit_prize_title'>Edit Gift Entry</h2>
         </div>
-        <div class='w3-border w3-padding'>
+        <div class='UI-border w3-padding'>
           <form>
 
             <label for='edit_prize_name' class="w3-tooltip">
@@ -748,7 +748,7 @@ if (!isset($locked)) {
                   style="position:absolute;left:-80px;right:-80px;bottom:18px"
                   class="w3-text w3-tag event-color-primary w3-round-xlarge">If 'yes' this item does not cost hours but instead is free at the given hour mark. Also enforces a limit of 1.</span>
             Promo Item:</label>
-            <select class="w3-select w3-border" id="edit_prize_promo">
+            <select class="UI-select" id="edit_prize_promo">
               <option value='yes'>Yes</option>
               <option value='no'>No</option>
             </select>
@@ -767,7 +767,7 @@ if (!isset($locked)) {
                     Gift Group:</label>
             <div class="w3-row">
                 <div class='w3-col w3-threequarter w3-padding'>
-                    <select class="w3-select w3-border" id="edit_prize_group"
+                    <select class="UI-select" id="edit_prize_group"
                      onchange="prizeGroupChange()">
                       <option value='none'>&lt;none&gt;</option>
                     </select>
@@ -801,14 +801,14 @@ if (!isset($locked)) {
         <div class='UI-center UI-red'>
             <h2>Edit Hours Entry</h2>
         </div>
-        <div class='w3-border w3-padding'>
+        <div class='UI-border w3-padding'>
           <form>
             <label for='edit_name'>Volunteer:</label>
             <input class="UI-input w3-disabled" id="edit_name" readonly>
             <label for='edit_hours'>Actual Hours:</label>
             <input class="UI-input" id="edit_hours">
             <label for='edit_mod'>Time Modifier</label><br />
-            <select class="w3-select w3-border" style="width:auto" name="TimeModifier" id="edit_mod">
+            <select class="UI-select" style="width:auto" name="TimeModifier" id="edit_mod">
               <option value=0.5>Half Time - 1 hour = 0.5 hours credit</option>
               <option value=1 selected>Normal - 1 hour = 1 hour</option>
               <option value=1.5>Time Plus Half - 1 hour = 1.5 hours credit</option>
@@ -817,7 +817,7 @@ if (!isset($locked)) {
             <label for='edit_end'>End Time:</label>
             <input class="UI-input" type="datetime-local" id="edit_end" pattern="\d{4}-\d{2}-\d{2}T\d{2}:\d{2}">
             <label for='edit_dept'>Department</label><br />
-            <select class="w3-select w3-border" style="width:auto" name="DepartmentWorked" id="edit_dept">
+            <select class="UI-select" style="width:auto" name="DepartmentWorked" id="edit_dept">
 <?php
 require_once($FUNCTIONDIR."/divisional.inc");
 foreach ($Departments as $dep => $set) {

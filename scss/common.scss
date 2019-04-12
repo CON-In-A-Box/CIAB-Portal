@@ -100,6 +100,10 @@
     @extend .w3-right;
 }
 
+.UI-border {
+    @extend .w3-border;
+}
+
 .UI-adminborder {
     @extend .w3-topbar;
     @extend .w3-bottombar;
@@ -111,17 +115,22 @@
 .UI-stripedtable {
     @extend .w3-table;
     @extend .w3-striped;
-    @extend .w3-border;
+    @extend .UI-border;
     @extend .w3-white;
 }
 
 .UI-input {
     @extend .w3-input;
-    @extend .w3-border;
+    @extend .UI-border;
 }
 
 .UI-hiddeninput {
     @extend .w3-input;
     @extend .w3-hide;
     @extend .w3-disabled;
+}
+
+.UI-select {
+    @extend .w3-select;
+    @extend .UI-border;
 }

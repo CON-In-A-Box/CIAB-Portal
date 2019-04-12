@@ -30,7 +30,7 @@ echo '<b>Welcome '.$_SESSION['preferredName'].'!</b>';
 echo "</div>\n";
 
 if (isset($_SESSION['duplicates'])) {
-    echo '<p class="UI-container UI-center w3-border UI-red w3-large">';
+    echo '<p class="UI-container UI-center UI-border UI-red w3-large">';
     echo "This e-mail has ".count($_SESSION['duplicates'])." duplicate "."accounts. IDs:[".implode(", ", $_SESSION['duplicates'])."]. "."This is only displaying information for one of these Accounts."."<br />"."<b>Please</b> contact IT to have this situation corrected.<br />"."</p>";
 }
 

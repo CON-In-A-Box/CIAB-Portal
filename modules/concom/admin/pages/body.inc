@@ -38,7 +38,7 @@ build_structure_sections();
             <label for='position_name'>Position Name:</label>
             <input class="UI-input" id="dept_name" value=''>
             <label for='position_email'>Position Emails:</label>
-            <div class='w3-border' id="dept_email">
+            <div class='UI-border' id="dept_email">
             </div>
             <label for='dept_count'>Staff Count:</label>
             <input class="UI-input" readonly id="dept_count" value=''>
@@ -48,7 +48,7 @@ build_structure_sections();
             </div>
             <div id="parent">
                 <label for='dept_parent'>Division:</label>
-                <select class="w3-select w3-border" style="width:auto" name="Parent" id="dept_parent">
+                <select class="UI-select" style="width:auto" name="Parent" id="dept_parent">
 <?php
 foreach ($Divisions as $division) {
     echo "<option value=".$Departments[$division]['id'].">$division</option>\n";
