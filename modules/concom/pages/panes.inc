@@ -13,7 +13,7 @@ function draw_status()
 {
     // Display Current ConCom Status
     echo "<div class='UI-container w3-black'>\n";
-    echo "<table class=''UI-stripedtable>\n";
+    echo "<table class='UI-stripedtable'>\n";
     echo "<tr><th class='UI-center w3-black'>Current ConCom Status</th></tr>\n";
     foreach ($_SESSION['customFields']['currConComPos'] as $val) {
         echo "<tr><td>".$val['position']." of ".$val['department'];
