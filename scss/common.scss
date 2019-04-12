@@ -3,6 +3,7 @@
 
 .UI-container {
     @extend .w3-container;
+    @extend .w3-responsive;
 }
 
 .UI-content {
@@ -16,7 +17,6 @@
 .UI-maincontent {
     @extend .UI-container;
     @extend .w3-mobile;
-    @extend .w3-responsive;
 }
 
 .UI-center {

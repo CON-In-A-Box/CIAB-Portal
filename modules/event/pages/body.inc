@@ -28,7 +28,7 @@ require_once __DIR__.'/../functions/functions.inc'
             <button onclick="expandSection('cycles')" class="UI-event-sectionbar UI-button w3-block w3-left-align">
                 <span id="cycles_button">Annual Cycles<span> <i id="cycles_arrow" class="fa fa-caret-down"></i>
             </button>
-            <div id="cycles" class="UI-container UI-margin w3-hide  w3-responsive">
+            <div id="cycles" class="UI-container UI-margin w3-hide">
                 <div class="UI-container UI-margin UI-center">
                     <button id='new_cycle' class='UI-eventbutton'
                         onclick='newCycle()'>Add New Cycle</button>
