@@ -18,7 +18,7 @@ echo 'In use by '.$CONHOST;
 echo '<div class="w3-small">';
 echo 'Included Modules:';
 echo '<ul>';
-echo '<li>'.$MODULENAME.' v-'.$VERSION."</li>";
+echo '<li>'.$MODULENAME.' v-'.getVersion()."</li>";
 echo '</ul>';
 echo "</div>\n";
 ?>
