@@ -228,7 +228,7 @@ var userLookup = (function(options) {
           button.type = 'button';
           button.classList.add('UI-button');
           button.classList.add('w3-bar-item');
-          button.classList.add('w3-border');
+          button.classList.add('UI-border');
           button.classList.add('icon-barcode');
           button.classList.add('button-scan');
           button.setAttribute('onclick',

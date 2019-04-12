@@ -51,7 +51,7 @@ if (isset($uid)) {
   <div class='w3-bar-item'>
     <label>Actual hours worked</label>
     <div class='w3-bar'>
-      <select class="w3-select w3-bar-item w3-border" type=text name="ActualHours" id="hours" onchange="calculateHours();" title="Actual Hours Worked.">
+      <select class="UI-select w3-bar-item" type=text name="ActualHours" id="hours" onchange="calculateHours();" title="Actual Hours Worked.">
         <option value=0>0</option>
         <option value=1 selected>1</option>
         <option value=2>2</option>
@@ -73,7 +73,7 @@ if (isset($uid)) {
         <option value=18>18</option>
         <option value=19>19</option>
       </select>
-      <select class="w3-select w3-bar-item w3-border" type=text name="ActualMinutes" id="minutes" onchange="calculateHours();" title="Actual Minutes Worked, to the nearest 15 minutes">
+      <select class="UI-select w3-bar-item" type=text name="ActualMinutes" id="minutes" onchange="calculateHours();" title="Actual Minutes Worked, to the nearest 15 minutes">
 
 <?php
 for ($i = 0; $i < 60; $i += $hour_round_interval) {
@@ -111,7 +111,7 @@ $h %= 12;
 ?>
 
     <input class="UI-input w3-bar-item" type=number id="end_hours" value=<?php echo $h ?> style="width: 75px;" required onchange="checkHours();" name="EndHours" min=0>
-    <select class="w3-select w3-bar-item w3-border" type=number name="EndMinutes" id="end_minutes" title="" style="height: 40px;" required onchange="checkHours();" name="EndMinutes">
+    <select class="UI-select w3-bar-item" type=number name="EndMinutes" id="end_minutes" title="" style="height: 40px;" required onchange="checkHours();" name="EndMinutes">
 <?php
 for ($i = 0; $i < 60; $i += $hour_round_interval) {
     echo "<option value = $i ";
@@ -122,7 +122,7 @@ for ($i = 0; $i < 60; $i += $hour_round_interval) {
 }
 ?>
     </select>
-    <select class="w3-select w3-bar-item w3-border" type=text name="EndAMPM" id="end_ampm" title="" style="height: 40px;" required onchange="checkHours();" name="EndAMPM">
+    <select class="UI-select w3-bar-item" type=text name="EndAMPM" id="end_ampm" title="" style="height: 40px;" required onchange="checkHours();" name="EndAMPM">
       <option value="AM" <?php
         if (!$pm) {
             echo 'selected';
@@ -138,7 +138,7 @@ for ($i = 0; $i < 60; $i += $hour_round_interval) {
 <div class='UI-container'>
   <div class='w3-block'>
     <label>Volunteer Time Modifier - Must be per policy</label><br />
-    <select class="w3-select w3-border" style="width:auto" name="TimeModifier" id="modifier" onchange="calculateHours();">
+    <select class="UI-select" style="width:auto" name="TimeModifier" id="modifier" onchange="calculateHours();">
       <option value=1 selected>Normal - 1 hour = 1 hour</option>
       <option value=0.5>Half Time - 1 hour = 0.5 hours credit</option>
       <option value=1.5>Time Plus Half - 1 hour = 1.5 hours credit</option>
@@ -147,7 +147,7 @@ for ($i = 0; $i < 60; $i += $hour_round_interval) {
   </div>
   <div class='w3-block'>
     <label>Department worked</label><br />
-    <select class="w3-select w3-border" style="width:auto" name="DepartmentWorked" id="department">
+    <select class="UI-select" style="width:auto" name="DepartmentWorked" id="department">
         <?php
         $isVolunteers = false;
         foreach ($_SESSION['customFields']['currConComPos'] as $position) {

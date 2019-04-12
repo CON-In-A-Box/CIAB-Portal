@@ -11,7 +11,7 @@ if (isset($_SESSION['customFields']['currConComPos']) ||
 }
 
 if (isset($_SESSION['IS_ADMIN'])) {
-    $admin_menus[] = array('base style' => 'w3-yellow',
+    $admin_menus[] = array('base style' => 'UI-yellow',
          'selected style' => 'event-color-primary',
          'function' => 'concom/admin',
          'title' => 'ConCom Structure',

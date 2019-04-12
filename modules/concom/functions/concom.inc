@@ -90,10 +90,10 @@ function ConComListDisplay()
         echo '<div class="w3-dropdown-hover event-color-secondary">';
         echo '  Go To Section';
         echo '  <div class="w3-dropdown-content event-color-secondary">';
-        echo '    <a href="#main_nav" class="w3-border">Top of Page</a><br />';
+        echo '    <a href="#main_nav" class="UI-border">Top of Page</a><br />';
         foreach ($Divisions as $menuDiv) {
             // ##==## Likely need to add some translation here to blot out '&'
-            echo '    <a href="#'.$menuDiv.'" class="w3-border">'.$menuDiv.'</a><br />';
+            echo '    <a href="#'.$menuDiv.'" class="UI-border">'.$menuDiv.'</a><br />';
         }
         echo '  </div>';
         echo '</div>';

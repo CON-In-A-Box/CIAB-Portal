@@ -173,7 +173,7 @@ echo $_SESSION['addr2'];
 <?php
 echo $_SESSION['city'];
     ?>" class="UI-input w3-half" placeholder="City (Required)">
-      <select name="state" onChange="ExpandOut(this.value, 'otherCountries')" class="w3-select w3-border w3-quarter">
+      <select name="state" onChange="ExpandOut(this.value, 'otherCountries')" class="UI-select w3-quarter">
         <option value=""<?php
         if (empty($_SESSION['state'])) {
             echo " selected";
@@ -206,7 +206,7 @@ if (isset($_SESSION['accountInfo']['individualAccount']['primaryContact']['addre
     ?>" class="UI-input w3-col l4 m5 s5" placeholder="Zip+4">
       </div>
       
-      <select name="country" class="w3-select w3-border">
+      <select name="country" class="UI-select">
         <option value="">Select Country</option>
 <?php
 require_once($FUNCTIONDIR.'/users.inc');

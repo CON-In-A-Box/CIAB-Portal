@@ -106,7 +106,7 @@ foreach ($admin_menus as $menu) {
 
     if (!$have_admin) {
         echo "<div class='w3-dropdown-hover'>";
-        echo "<button class='UI-button w3-yellow ".$resp_styles."'><i class='fa fa-key'></i> Administer</button>";
+        echo "<button class='UI-button UI-yellow ".$resp_styles."'><i class='fa fa-key'></i> Administer</button>";
         echo "<div class='w3-dropdown-content w3-bar-block w3-card-4'>";
         $have_admin = true;
     }
@@ -181,7 +181,7 @@ foreach ($admin_menus as $menu) {
 
     if (!$have_admin) {
         echo "<div class='w3-dropdown-hover'>";
-        echo "<button class='UI-button w3-yellow'><i class='fa fa-key'></i> Administer</button>";
+        echo "<button class='UI-button UI-yellow'><i class='fa fa-key'></i> Administer</button>";
         echo "<div class='w3-dropdown-content w3-bar-block w3-card-4'>";
         $have_admin = true;
     }

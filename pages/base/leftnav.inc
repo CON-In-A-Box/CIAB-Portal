@@ -1,5 +1,5 @@
 <?php
-echo '<div id="left_nav" class="w3-cell w3-border w3-hide-small">';
+echo '<div id="left_nav" class="w3-cell UI-border w3-hide-small">';
 echo '<img src="/resources/images/members/'.$_SESSION['accountId'].'.jpg" onerror='."'this.classList.add(".'"event-default-user-icon")'."'>";
 
 echo "<p style=\"font-weight:bold;\">".$_SESSION['preferredName']."</p>\n";
