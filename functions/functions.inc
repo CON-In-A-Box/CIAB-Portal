@@ -6,8 +6,6 @@
 
 // Main setup function
 $MODULENAME  = "Member Portal";
-$BUILD       = "154";
-$VERSION     = "1.3 - Captain America, Build: ".$BUILD; // Major.Minor.Revision Format - This is a string, version names allowed
 
 // Discover Self Location
 $FUNCTIONDIR    = dirname(__FILE__);
@@ -24,6 +22,52 @@ $MODULESDIR     = $BASEDIR."/modules";
 
 // Set a Date stamp for use anywhere
 $DS             = uniqid('', true);
+
+
+function getVersion()
+{
+    $version = parse_ini_file($BASEDIR."version.ini");
+    $tag = "";
+    $build = intval(exec('git rev-list HEAD|wc -l'));
+    if ($build > 0) {
+        $output = exec('git rev-parse --short HEAD', $data, $result);
+        if ($result != 0) {
+            $rev = "unknown";
+        } else {
+            $rev = $output;
+        }
+        $dirty = false;
+        exec('git rev-list -n 1 HEAD --not --remotes=origin', $data, $result);
+        $dirty = ($data == "0");
+        if (!$dirty) {
+            exec(
+                'git update-index --refresh --unmerged -q >/dev/null',
+                $data,
+                $result
+            );
+            $dirty = ($result != 0);
+        }
+        if (!$dirty) {
+            exec(
+                'git diff-index --ignore-submodules=untracked --quiet HEAD',
+                $data,
+                $result
+            );
+            $dirty = ($result != 0);
+        }
+        $tag .= ', Tree: '.$rev;
+        if ($dirty) {
+            $tag .= ' local';
+        }
+    } else {
+        $build = $version['build'];
+    }
+
+    $result = $version['major'].'.'.$version['minor'].'.'.$build.'  - '.$version['tag'].$tag;
+    return $result;
+
+}
+
 
 // Basic site redirector
 function goSite($Site = false)
