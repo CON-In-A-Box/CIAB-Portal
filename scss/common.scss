@@ -27,6 +27,10 @@
     @extend .w3-red;
 }
 
+.UI-yellow {
+    @extend .w3-yellow;
+}
+
 .UI-sectionbar {
     @extend .w3-xlarge;
     @extend .UI-center;
@@ -74,7 +78,7 @@
 
 .UI-yellowbutton {
     @extend .UI-roundbutton;
-    @extend .w3-yellow;
+    @extend .UI-yellow;
 }
 
 .UI-orangebutton {

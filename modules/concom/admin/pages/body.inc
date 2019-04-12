@@ -15,7 +15,7 @@ $deptCount = departmentDetails();
 <div id="admin" class="UI-maincontent w3-show">
 <div class="UI-container w3-padding UI-center">Basic Usage:
 <p>Use the <i class='fa fa-plus-square'></i> to add a new department</p>
-<p>Use the <span class='w3-yellow'>Add New Division<i class='fa fa-plus-square'></i></span> button to add a new Division</p>
+<p>Use the <span class='UI-yellow'>Add New Division<i class='fa fa-plus-square'></i></span> button to add a new Division</p>
 <p>Drag departments around to change the division</p>
 <p>Double click on Divisions or Departments to change the properties</p>
 </div>

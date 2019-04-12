@@ -103,7 +103,7 @@ function meetings()
                 echo "<td class='w3-lime'>Checked In";
             } else {
                 if ($nowDate == $checkDate) {
-                    echo "<td class='w3-yellow'><a href='index.php?Function=concom/signin&meeting=".$value['MeetingID']."'>Sign In Now!</a>";
+                    echo "<td class='UI-yellow'><a href='index.php?Function=concom/signin&meeting=".$value['MeetingID']."'>Sign In Now!</a>";
                 } else {
                     echo "<td>Not Checked In";
                 }

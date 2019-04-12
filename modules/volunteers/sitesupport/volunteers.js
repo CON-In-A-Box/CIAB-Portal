@@ -588,11 +588,11 @@ function markDelete(index, tableRow) {
   var row = table.rows[tableRow];
 
   if (returnCart[index].Returned) {
-    row.classList.remove('w3-yellow');
+    row.classList.remove('UI-yellow');
     row.style.fontWeight = 'normal';
     returnCart[index].Returned = false;
   } else {
-    row.classList.add('w3-yellow');
+    row.classList.add('UI-yellow');
     row.style.fontWeight = 'bold';
     returnCart[index].Returned = true;
   }

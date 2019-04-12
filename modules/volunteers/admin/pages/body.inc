@@ -353,7 +353,7 @@ function prizes_table($uid)
     $group_styles  = [
     'w3-amber', 'w3-aqua', 'w3-brown', 'w3-cyan',
     'w3-indigo', 'w3-khaki', 'w3-lime', 'w3-orange',
-    'w3-pink', 'w3-purple', 'w3-red', 'w3-sand', 'w3-teal', 'w3-yellow',
+    'w3-pink', 'w3-purple', 'UI-red', 'w3-sand', 'w3-teal', 'UI-yellow',
     'w3-deep-purple', 'w3-deep-orange', 'w3-light-blue',
     'event-color-secondary-grey', 'w3-light-green'];
 

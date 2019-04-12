@@ -35,9 +35,9 @@ if (!empty($EXPIRED)) {
             echo 'Reset the password gain entry.';
             echo "</span></div>\n";
         } elseif ($FAILURE == AUTH_DUPLICATE) {
-            echo '<div class="UI-center w3-border UI-margin w3-padding w3-yellow">';
-            echo '<h2 class="w3-yellow w3-bold w3-header">Duplicate Accounts Present</h2>';
-            echo '<span class="w3-yellowd w3-bold w3-header">';
+            echo '<div class="UI-center w3-border UI-margin w3-padding UI-yellow">';
+            echo '<h2 class="UI-yellow w3-bold w3-header">Duplicate Accounts Present</h2>';
+            echo '<span class="UI-yellow w3-bold w3-header">';
             echo 'This e-mail address has duplicate accounts present.</span><br>';
             echo '</div>';
             echo '<div class="UI-center w3-border UI-margin w3-padding UI-red">';
