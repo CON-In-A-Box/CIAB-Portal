@@ -222,7 +222,7 @@ foreach ($result as $country) {
 }
 ?>
       </select>
-      <div id="otherCountries" class="w3-hide">
+      <div id="otherCountries" class="UI-hide">
         <input type="text" name="province" value="
 <?php
 if (isset($_SESSION['accountInfo']['individualAccount']['primaryContact']['addresses']['address']['0']['province'])) {

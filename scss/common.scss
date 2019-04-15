@@ -134,3 +134,26 @@
     @extend .w3-select;
     @extend .UI-border;
 }
+
+.UI-hide {
+    @extend .w3-hide;
+}
+
+.UI-mainsection-sidebar-shown {
+    @extend .w3-threequarter;
+}
+
+.UI-sidebar-hidden {
+    @extend .UI-hide;
+    @extend .w3-padding;
+}
+
+.UI-sidebar-shown {
+    @extend .w3-padding;
+    @extend .w3-quarter;
+}
+
+.UI-fixed {
+    display: inline-block;
+    position: fixed !important;
+}

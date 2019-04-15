@@ -151,7 +151,7 @@ if ($kiosk === null) {
 
 
     <!--Responsive menu for tables and moblie-->
-    <div id="main_nav_list" class="w3-bar-block w3-hide w3-hide-large">
+    <div id="main_nav_list" class="w3-bar-block UI-hide w3-hide-large">
 
 <?php
 foreach ($base_menus as $menu) {

@@ -629,7 +629,7 @@ if (!isset($locked)) {
 ?>
     </div>
 
-    <div class='w3-hide w3-padding' id='department_report_div'>
+    <div class='UI-sidebar-hidden' id='department_report_div'>
         <div class='UI-center'>
             <h2 class='UI-red'>Department Report</h2>
         </div>
@@ -652,7 +652,7 @@ if (!isset($locked)) {
         </div>
     </div>
 
-    <div class='w3-hide w3-padding' id='csv_export_div'>
+    <div class='UI-sidebar-hidden' id='csv_export_div'>
         <div class='UI-center'>
             <h2 class='UI-red'>Export Raw CSV Data</h2>
         </div>
@@ -678,7 +678,7 @@ if (!isset($locked)) {
         </div>
     </div>
 
-    <div class='w3-hide w3-padding' id='csv_export_derived_div'>
+    <div class='UI-sidebar-hidden' id='csv_export_derived_div'>
         <div class='UI-center'>
             <h2 class='UI-red'>Export Derived CSV Data</h2>
         </div>
@@ -703,7 +703,7 @@ if (!isset($locked)) {
         </div>
     </div>
 
-    <div class='w3-hide w3-padding' id='hour_report_div'>
+    <div class='UI-sidebar-hidden' id='hour_report_div'>
         <div class='UI-center'>
             <h2 class='UI-red'>Report of all Volunteers with minimum hours or more</h2>
         </div>
@@ -724,7 +724,7 @@ if (!isset($locked)) {
         </div>
     </div>
 
-    <div class='w3-hide w3-padding' id='edit_prize_div'>
+    <div class='UI-sidebar-hidden' id='edit_prize_div'>
         <div class='UI-center UI-red'>
             <h2 id='edit_prize_title'>Edit Gift Entry</h2>
         </div>
@@ -777,7 +777,7 @@ if (!isset($locked)) {
                 </div>
             </div>
 
-            <input class="UI-input w3-disabled w3-hide" id="prize_data" readonly>
+            <input class="UI-input w3-disabled UI-hide" id="prize_data" readonly>
           </form>
         </div>
         <div class='UI-center'>
@@ -797,7 +797,7 @@ if (!isset($locked)) {
     </div>
 
 
-    <div class='w3-hide w3-padding' id='edit_user_hour_div'>
+    <div class='UI-sidebar-hidden' id='edit_user_hour_div'>
         <div class='UI-center UI-red'>
             <h2>Edit Hours Entry</h2>
         </div>
@@ -830,7 +830,7 @@ foreach ($Departments as $dep => $set) {
             <input class="UI-input w3-disabled" id="edit_enter" readonly>
             <label for='edit_auth'>Authorized By:</label>
             <input class="UI-input" id="edit_auth">
-            <input class="UI-input w3-disabled w3-hide" id="edit_data" readonly>
+            <input class="UI-input w3-disabled UI-hide" id="edit_data" readonly>
           </form>
         </div>
         <div class='UI-center'>
@@ -849,7 +849,7 @@ foreach ($Departments as $dep => $set) {
         </div>
     </div>
 
-    <div class='w3-hide w3-padding' id='return_div'>
+    <div class='UI-sidebar-hidden' id='return_div'>
         <div class='UI-center'>
             <h2>Items being returned now:</h2>
         </div>
@@ -885,7 +885,7 @@ foreach ($Departments as $dep => $set) {
         </div>
     </div>
 
-    <div class='w3-hide w3-padding' id='checkout_div'>
+    <div class='UI-sidebar-hidden' id='checkout_div'>
         <div class='UI-center'>
             <h2>Items claimed now</h2>
         </div>

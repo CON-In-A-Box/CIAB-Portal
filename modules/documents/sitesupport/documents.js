@@ -109,14 +109,14 @@ function loadFiles(path) {
         }
       });
       if (folderCount === 0) {
-        folderTable.classList.add('w3-hide');
+        folderTable.classList.add('UI-hide');
       } else {
-        folderTable.classList.remove('w3-hide');
+        folderTable.classList.remove('UI-hide');
       }
       if (fileCount === 0) {
-        fileTable.classList.add('w3-hide');
+        fileTable.classList.add('UI-hide');
       } else {
-        fileTable.classList.remove('w3-hide');
+        fileTable.classList.remove('UI-hide');
       }
     }
   };

@@ -48,7 +48,7 @@ var userLookup = (function(options) {
             ' (' + item.Email + ')</span>';
           e.appendChild(div);
         });
-        e.classList.remove('w3-hide');
+        e.classList.remove('UI-hide');
         return;
       }
       if (target) {
@@ -164,8 +164,8 @@ var userLookup = (function(options) {
 
         keydown: function(keyCode, obj, target) {
           var e = document.getElementById('userLookup_dropdown');
-          if (!e.classList.contains('w3-hide')) {
-            e.classList.add('w3-hide');
+          if (!e.classList.contains('UI-hide')) {
+            e.classList.add('UI-hide');
           }
           if (keyCode == 13) {
             userLookup.lookupId(obj, target);
@@ -243,7 +243,7 @@ var userLookup = (function(options) {
           span.id = 'userLookup_message';
           var drop = document.createElement('DIV');
           div3.appendChild(drop);
-          drop.classList.add('w3-hide');
+          drop.classList.add('UI-hide');
           drop.classList.add('w3-black');
           drop.classList.add('w3-bar-block');
           drop.id = 'userLookup_dropdown';

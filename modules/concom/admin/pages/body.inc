@@ -28,7 +28,7 @@ build_structure_sections();
 </div>
 </div><!--close main_content div-->
 
-    <div class='w3-hide w3-padding' style="display: inline-block; position: fixed;" id='edit_position'>
+    <div class='UI-sidebar-hidden UI-fixed' id='edit_position'>
         <div class='UI-center'>
             <h2 class='UI-red'>Position Details</h2>
         </div>
@@ -83,7 +83,7 @@ foreach ($Divisions as $division) {
         </div>
     </div>
 
-    <div class='w3-hide w3-padding' style="display: inline-block; position: fixed;" id='edit_email'>
+    <div class='UI-sidebar-hidden UI-fixed' id='edit_email'>
         <div class='UI-center'>
             <h2 class='UI-red'>Position Email</h2>
         </div>
@@ -92,10 +92,10 @@ foreach ($Divisions as $division) {
             <label for='email_email'>EMail:</label>
             <input class="UI-input" id="email_email" 
             oninput='changeEmail();'>
-            <input class="w3-hide" id="email_original" readonly>
-            <input class="w3-hide" id="email_alias" readonly>
-            <input class="w3-hide" id="email_index" readonly>
-            <input class="w3-hide" id="email_dept" readonly>
+            <input class="UI-hide" id="email_original" readonly>
+            <input class="UI-hide" id="email_alias" readonly>
+            <input class="UI-hide" id="email_index" readonly>
+            <input class="UI-hide" id="email_dept" readonly>
         </div>
         <div class='UI-center'>
             <hr>
