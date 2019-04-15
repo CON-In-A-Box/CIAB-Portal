@@ -79,16 +79,16 @@ function dragDropParent(ev, depth) {
 function updateDeptSection(division, pid) {
   if (division) {
     document.getElementById('dept_slider').checked = true;
-    document.getElementById('sub_dept').classList.remove('w3-hide');
-    if (!document.getElementById('parent').classList.contains('w3-hide')) {
-      document.getElementById('parent').classList.add('w3-hide');
+    document.getElementById('sub_dept').classList.remove('UI-hide');
+    if (!document.getElementById('parent').classList.contains('UI-hide')) {
+      document.getElementById('parent').classList.add('UI-hide');
     }
   } else {
-    if (!document.getElementById('sub_dept').classList.contains('w3-hide')) {
-      document.getElementById('sub_dept').classList.add('w3-hide');
+    if (!document.getElementById('sub_dept').classList.contains('UI-hide')) {
+      document.getElementById('sub_dept').classList.add('UI-hide');
     }
     document.getElementById('dept_slider').checked = false;
-    document.getElementById('parent').classList.remove('w3-hide');
+    document.getElementById('parent').classList.remove('UI-hide');
   }
 
 }

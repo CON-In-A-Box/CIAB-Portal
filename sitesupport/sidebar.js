@@ -2,11 +2,11 @@ var currentSidebar = null;
 
 function hideSidebar() {
   if (currentSidebar) {
-    currentSidebar.classList.add('w3-hide');
-    currentSidebar.classList.remove('w3-quarter');
+    currentSidebar.classList.remove('UI-sidebar-shown');
+    currentSidebar.classList.add('UI-sidebar-hidden');
     var section = document.getElementById(sidebarMainDiv);
-    section.classList.add('w3-rest');
-    section.classList.remove('w3-threequarter');
+    section.classList.add('UI-rest');
+    section.classList.remove('UI-mainsection-sidebar-shown');
     currentSidebar = null;
   }
 }
@@ -17,9 +17,9 @@ function showSidebar(Id) {
   }
 
   currentSidebar = document.getElementById(Id);
-  currentSidebar.classList.remove('w3-hide');
-  currentSidebar.classList.add('w3-quarter');
+  currentSidebar.classList.remove('UI-sidebar-hidden');
+  currentSidebar.classList.add('UI-sidebar-shown');
   var section = document.getElementById(sidebarMainDiv);
-  section.classList.remove('w3-rest');
-  section.classList.add('w3-threequarter');
+  section.classList.remove('UI-rest');
+  section.classList.add('UI-mainsection-sidebar-shown');
 }

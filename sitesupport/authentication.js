@@ -109,7 +109,7 @@ function checkAuthentication(username, success, failure, params) {
     form.appendChild(i);
 
     i = document.createElement('INPUT');
-    i.classList.add('w3-hide');
+    i.classList.add('UI-hide');
     i.id = 'target';
     i.value = null;
     if (params && ('target' in params)) {

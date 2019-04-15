@@ -144,7 +144,7 @@ SQL;
         print "<td>".implode('</td><td>', $entry)."</td>";
         print "</tr>\n";
 
-        print "<tr><td colspan=5><div name='badges_".$entry['Id']."' class=' w3-hide'><table class='UI-stripedtable UI-center'>";
+        print "<tr><td colspan=5><div name='badges_".$entry['Id']."' class=' UI-hide'><table class='UI-stripedtable UI-center'>";
 
         print "<tr>";
         unset($badge_keys[0]);
@@ -186,7 +186,7 @@ SQL;
         print "</td></tr>";
         print "</table>";
         print "</div></td>";
-        print "<td> <div name='badges_".$entry['Id']."' class=' w3-hide'>";
+        print "<td> <div name='badges_".$entry['Id']."' class=' UI-hide'>";
 
         $details = _event_details($entry['Id']);
         $can_delete = true;

@@ -267,7 +267,7 @@ if (isset($uid)) {
 ?>
 </div>
 
-<div class='w3-hide w3-padding' id='update_badge_div'>
+<div class='UI-sidebar-hidden' id='update_badge_div'>
     <div class='UI-center'>
         <h2 class='UI-red'>Update Badge Data</h2>
     </div>

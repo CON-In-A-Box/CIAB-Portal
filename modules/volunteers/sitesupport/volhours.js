@@ -147,8 +147,8 @@ function checkHours() {
 
 function handleResult(origin, response) {
   var e = document.getElementById('userLookup_dropdown');
-  if (!e.classList.contains('w3-hide')) {
-    e.classList.add('w3-hide');
+  if (!e.classList.contains('UI-hide')) {
+    e.classList.add('UI-hide');
   }
   markEndTime(false);
   document.getElementById('message').innerHTML = '';

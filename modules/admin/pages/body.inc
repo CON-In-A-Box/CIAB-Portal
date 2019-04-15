@@ -262,7 +262,7 @@ foreach ($table as $line) {
 <div id="dbg_info_content" class="w3-section UI-container">
   <button class="UI-roundbutton w3-small w3-block w3-left-align" onclick="expandSection('dbg_info');"><span>Debug Session Information&nbsp;</span><i id="dbg_info_arrow" class="fa fa-caret-down"></i></button>
 
-  <div id="dbg_info" class="w3-section UI-margin w3-hide">
+  <div id="dbg_info" class="w3-section UI-margin UI-hide">
       <div id="DebugInfo" class="w3-section w3-small">
         <pre><?php print_r($_SESSION); ?></pre>
       </div>
@@ -274,7 +274,7 @@ foreach ($table as $line) {
 <div id="db_log_content" class="w3-section UI-container">
   <button class="UI-roundbutton w3-small w3-block w3-left-align" onclick="expandSection('db_log');"><span>DB Activity Log&nbsp;</span><i id="db_log_arrow" class="fa fa-caret-down"></i></button>
 
-  <div id="db_log" class="w3-section UI-margin w3-hide">
+  <div id="db_log" class="w3-section UI-margin UI-hide">
    <div id="ActivityLog" class="w3-section" style="width: 100%;">
      <div>
        <button class="UI-yellowbutton w3-tiny w3-left-align" onclick="downloadLog()">Download Full Activity Log (CSV)</button>

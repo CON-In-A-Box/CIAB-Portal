@@ -13,7 +13,7 @@ require_once __DIR__.'/../functions/functions.inc'
             <button onclick="expandSection('meetings')" class="UI-event-sectionbar UI-button w3-block w3-left-align">
                 <span>Meetings<span> <i id="meetings_arrow" class="fa fa-caret-up"></i>
             </button>
-            <div id="meetings" class="UI-container UI-margin w3-hide w3-show">
+            <div id="meetings" class="UI-container UI-margin UI-hide w3-show">
                 <table class='UI-stripedtable'>
     <?php list_meetings() ?>
                 </table>
@@ -28,7 +28,7 @@ require_once __DIR__.'/../functions/functions.inc'
             <button onclick="expandSection('cycles')" class="UI-event-sectionbar UI-button w3-block w3-left-align">
                 <span id="cycles_button">Annual Cycles<span> <i id="cycles_arrow" class="fa fa-caret-down"></i>
             </button>
-            <div id="cycles" class="UI-container UI-margin w3-hide">
+            <div id="cycles" class="UI-container UI-margin UI-hide">
                 <div class="UI-container UI-margin UI-center">
                     <button id='new_cycle' class='UI-eventbutton'
                         onclick='newCycle()'>Add New Cycle</button>
@@ -43,7 +43,7 @@ require_once __DIR__.'/../functions/functions.inc'
             <button onclick="expandSection('events')" class="UI-event-sectionbar UI-button w3-block w3-left-align">
                 <span id="events_button">Events<span> <i id="events_arrow" class="fa fa-caret-down"></i>
             </button>
-            <div id="events" class="UI-container UI-margin w3-hide">
+            <div id="events" class="UI-container UI-margin UI-hide">
              <div class="UI-container UI-margin UI-center">
                 <button id='new_event' class='UI-eventbutton'
                     onclick='newEvent()'>Add New Event</button>
@@ -60,7 +60,7 @@ require_once __DIR__.'/../functions/functions.inc'
             <button onclick="expandSection('neon')" class="UI-event-sectionbar UI-button w3-block w3-left-align">
                 <span id="neon_button">Neon<span> <i id="neon_arrow" class="fa fa-caret-up"></i>
             </button>
-            <div id="neon" class="UI-container UI-margin w3-hide w3-show">
+            <div id="neon" class="UI-container UI-margin UI-hide w3-show">
                 <div class="UI-container UI-margin UI-center">
                     <button id='reload' class='UI-redbutton'
                         onclick='reloadFromNeon()'>Reload From Neon</button>
@@ -69,7 +69,7 @@ require_once __DIR__.'/../functions/functions.inc'
         </div>
     </div>
 
-    <div class='w3-hide w3-padding' id='edit_meeting' style="display: inline-block; position: fixed;">
+    <div class='UI-sidebar-hidden UI-fixed' id='edit_meeting'>
         <div class='UI-center'>
             <h2 class='UI-red'>Meeting Details</h2>
         </div>
@@ -103,7 +103,7 @@ foreach ($events as $event) {
         </div>
     </div>
 
-    <div class='w3-hide w3-padding' id='edit_cycle' style="display: inline-block; position: fixed;">
+    <div class='UI-sidebar-hidden UI-fixed' id='edit_cycle'>
         <div class='UI-center'>
             <h2 class='UI-red'>New Cycle Details</h2>
         </div>
@@ -129,7 +129,7 @@ foreach ($events as $event) {
         </div>
     </div>
 
-    <div class='w3-hide w3-padding' id='edit_badge' style="display: inline-block; position: fixed;">
+    <div class='UI-sidebar-hidden UI-fixed' id='edit_badge'>
         <div class='UI-center'>
             <h2 class='UI-red'>Badge Details</h2>
         </div>
@@ -162,7 +162,7 @@ foreach ($events as $event) {
         </div>
     </div>
 
-    <div class='w3-hide w3-padding' id='edit_event' style="display: inline-block; position: fixed;">
+    <div class='UI-sidebar-hidden UI-fixed' id='edit_event'>
         <div class='UI-center'>
             <h2 class='UI-red'>Event Details</h2>
         </div>
@@ -188,7 +188,7 @@ foreach ($events as $event) {
         </div>
     </div>
 
-    <div class='w3-hide w3-padding' id='import_concom' style="display: inline-block; position: fixed;">
+    <div class='UI-sidebar-hidden UI-fixed' id='import_concom'>
         <div class='UI-center'>
             <h2 class='UI-red'>Import Concom</h2>
         </div>
