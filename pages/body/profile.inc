@@ -239,7 +239,7 @@ if (isset($_SESSION['accountInfo']['individualAccount']['primaryContact']['addre
 
 <hr>
 <h3>Your current security information</h3>
-<div id="password_form" class="UI-container w3-padding">
+<div id="password_form" class="UI-container UI-padding">
   <div class="UI-red w3-row">
     <div>
      Change Password

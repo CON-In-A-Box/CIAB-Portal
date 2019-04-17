@@ -33,7 +33,7 @@ require_once __DIR__.'/../functions/functions.inc'
                     <button id='new_cycle' class='UI-eventbutton'
                         onclick='newCycle()'>Add New Cycle</button>
                 </div>
-                <table class="UI-stripedtable w3-padding">
+                <table class="UI-stripedtable UI-padding">
     <?php list_cycles() ?>
                 </table>
             </div>
@@ -49,7 +49,7 @@ require_once __DIR__.'/../functions/functions.inc'
                     onclick='newEvent()'>Add New Event</button>
              </div>
              <div>
-                <table class="UI-stripedtable w3-padding">
+                <table class="UI-stripedtable UI-padding">
     <?php list_events() ?>
                 </table>
              </div>

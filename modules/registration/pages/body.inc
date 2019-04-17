@@ -276,7 +276,7 @@ if (isset($uid)) {
         Badge Name:</label>
         <input class="UI-input" id="badge_name">
     </div>
-    <div class='UI-center w3-padding'>
+    <div class='UI-center UI-padding'>
         <button id='update_badge' class='UI-eventbutton'
             onclick='updateBadge();'>
           Update

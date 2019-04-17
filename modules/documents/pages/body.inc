@@ -63,11 +63,11 @@ exit();
     echo '<h2 class="UI-center"><b id="root_path">'.$root.'</b></h2>';
 
 ?>
-<table class="UI-stripedtable w3-padding" id="folder_table">
+<table class="UI-stripedtable UI-padding" id="folder_table">
 <tr><th class="event-color-primary UI-center">Folder</th></tr>
 </table>
 <br>
-<table class="UI-stripedtable w3-padding" id="file_table">
+<table class="UI-stripedtable UI-padding" id="file_table">
 <tr><th class="event-color-primary UI-center">File</th><th class="event-color-primary UI-center">Last Modified</th></tr>
 <?php
 }

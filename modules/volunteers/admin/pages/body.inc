@@ -499,13 +499,13 @@ function messages($uid)
         $promo .= "</ul>\n";
 
         if ($display) {
-            echo "<div class='w3-col w3-cell-row w3-padding' ";
+            echo "<div class='w3-col w3-cell-row UI-padding' ";
             echo "style='max-height:10vh; overflow:scroll;'>\n";
-            echo "<div id='volunteer_messages' class='UI-container w3-padding w3-border-red UI-border UI-margin w3-cell'>\n";
+            echo "<div id='volunteer_messages' class='UI-container UI-padding w3-border-red UI-border UI-margin w3-cell'>\n";
             echo $promo;
             echo "</div>\n";
             if ($unclaimed_promo && sizeof($unclaimed_promo)) {
-                echo "<div id='aquire_promo' class='UI-continer w3-padding w3-cell w3-cell-middle'>\n";
+                echo "<div id='aquire_promo' class='UI-continer UI-padding w3-cell w3-cell-middle'>\n";
                 echo "<button id='promo_check' class='UI-redbutton'";
                 $names = array_column($unclaimed_promo, 'Name');
                 echo "onclick=addPromoToCheckout();";
@@ -530,9 +530,9 @@ function messages($uid)
 
 function admin_bar($uid)
 {
-    echo "<div class='w3-col w3-cell-row w3-padding' ";
+    echo "<div class='w3-col w3-cell-row UI-padding' ";
     echo "style='max-height:10vh; overflow:scroll;'>\n";
-    echo "<div id='volunteer_admin_bar' class='UI-container w3-padding w3-border-red UI-border UI-margin w3-cell'>\n";
+    echo "<div id='volunteer_admin_bar' class='UI-container UI-padding w3-border-red UI-border UI-margin w3-cell'>\n";
     echo "<button id='add_prize' class='UI-redbutton'";
     echo "onclick='showEditPrize(null)';>Add New Gift</button>\n";
     echo "<button id='min_hours' class='UI-redbutton'";
@@ -728,7 +728,7 @@ if (!isset($locked)) {
         <div class='UI-center UI-red'>
             <h2 id='edit_prize_title'>Edit Gift Entry</h2>
         </div>
-        <div class='UI-border w3-padding'>
+        <div class='UI-border UI-padding'>
           <form>
 
             <label for='edit_prize_name' class="w3-tooltip">
@@ -766,13 +766,13 @@ if (!isset($locked)) {
                           class="w3-text w3-tag event-color-primary w3-round-xlarge">If in a group there can be only a limited total number of the items in the group claimed by the volunteer</span>
                     Gift Group:</label>
             <div class="w3-row">
-                <div class='w3-col w3-threequarter w3-padding'>
+                <div class='w3-col w3-threequarter UI-padding'>
                     <select class="UI-select" id="edit_prize_group"
                      onchange="prizeGroupChange()">
                       <option value='none'>&lt;none&gt;</option>
                     </select>
                 </div>
-                <div class='w3-col w3-quarter w3-padding'>
+                <div class='w3-col w3-quarter UI-padding'>
                     <input class="UI-input w3-disabled" id="edit_prize_group_count" disabled placeholder="max">
                 </div>
             </div>
@@ -801,7 +801,7 @@ if (!isset($locked)) {
         <div class='UI-center UI-red'>
             <h2>Edit Hours Entry</h2>
         </div>
-        <div class='UI-border w3-padding'>
+        <div class='UI-border UI-padding'>
           <form>
             <label for='edit_name'>Volunteer:</label>
             <input class="UI-input w3-disabled" id="edit_name" readonly>
@@ -877,7 +877,7 @@ foreach ($Departments as $dep => $set) {
               class="UI-button w3-display-topright">&times;</span>
               <h2 class="UI-center event-color-primary">Please collect and return the following gifts</h2>
               <hr>
-              <table class='UI-center UI-stripedtable w3-xlarge w3-padding' id='return_list'>
+              <table class='UI-center UI-stripedtable w3-xlarge UI-padding' id='return_list'>
               </table>
               <h2 class="UI-center UI-red">Close this window when all returns have been processed!</h2>
             </div>
@@ -917,7 +917,7 @@ foreach ($Departments as $dep => $set) {
       class="UI-button w3-display-topright">&times;</span>
       <h2 class="UI-center event-color-primary">Please get the volunteer the following new gifts!</h2>
       <hr>
-      <table class='UI-center UI-stripedtable w3-xlarge w3-padding' id='reward_list'>
+      <table class='UI-center UI-stripedtable w3-xlarge UI-padding' id='reward_list'>
       </table>
       <h2 class="UI-center UI-red">Close this window when all gifts have been claimed!</h2>
     </div>
