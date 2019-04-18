@@ -198,7 +198,7 @@ var userLookup = (function(options) {
           div2.classList.add('w3-bar-item');
           div.appendChild(div2);
           var label = document.createElement('LABEL');
-          label.classList.add('w3-padding');
+          label.classList.add('UI-padding');
           label.classList.add('w3-bar-item');
           label.innerHTML = settings.message;
           div2.appendChild(label);
@@ -210,7 +210,7 @@ var userLookup = (function(options) {
           div3.appendChild(input);
           input.classList.add('UI-input');
           input.classList.add('w3-bar-item');
-          input.classList.add('w3-padding');
+          input.classList.add('UI-padding');
           input.name = 'MemberID';
           input.id = 'userLookup_member';
           input.name = settings.memberName;

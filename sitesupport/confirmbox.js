@@ -49,7 +49,7 @@ var confirmbox = (function() {
             b1.classList.add('UI-center');
             b1.classList.add('UI-border');
             b1.classList.add('UI-margin');
-            b1.classList.add('w3-padding');
+            b1.classList.add('UI-padding');
             b1.innerHTML = 'Yes';
             b1.id = 'confirm_yes_button';
             form.appendChild(b1);
@@ -59,7 +59,7 @@ var confirmbox = (function() {
             b2.classList.add('UI-center');
             b2.classList.add('UI-border');
             b2.classList.add('UI-margin');
-            b2.classList.add('w3-padding');
+            b2.classList.add('UI-padding');
             b2.innerHTML = 'No';
             b2.id = 'confirm_no_button';
             form.appendChild(b2);

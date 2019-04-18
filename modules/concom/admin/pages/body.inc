@@ -13,7 +13,7 @@ $deptCount = departmentDetails();
     </div>
 
 <div id="admin" class="UI-maincontent w3-show">
-<div class="UI-container w3-padding UI-center">Basic Usage:
+<div class="UI-container UI-padding UI-center">Basic Usage:
 <p>Use the <i class='fa fa-plus-square'></i> to add a new department</p>
 <p>Use the <span class='UI-yellow'>Add New Division<i class='fa fa-plus-square'></i></span> button to add a new Division</p>
 <p>Drag departments around to change the division</p>
@@ -58,11 +58,11 @@ foreach ($Divisions as $division) {
             </div>
         </div>
           <div
-          <table class='switch-table w3-padding UI-center' id='dept_slider_parent'><tr><td>
-            <span class='w3-padding'>Department</span>
+          <table class='switch-table UI-padding UI-center' id='dept_slider_parent'><tr><td>
+            <span class='UI-padding'>Department</span>
             <label class=switch><input type="checkbox" class=toggle
                 id=dept_slider onclick='toggleDept();'>
-              <div class=slider></div></label></td><td><span class='w3-padding'>Division</span></td></tr>
+              <div class=slider></div></label></td><td><span class='UI-padding'>Division</span></td></tr>
           </table>
         </div>
 

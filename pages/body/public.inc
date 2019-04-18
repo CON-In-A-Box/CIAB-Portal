@@ -24,10 +24,10 @@ if (!empty($EXPIRED)) {
     <?php
     if (!empty($FAILURE)) {
         if ($FAILURE == AUTH_BAD) {
-            echo '<div class="UI-center UI-border UI-margin w3-padding UI-red">';
+            echo '<div class="UI-center UI-border UI-margin UI-padding UI-red">';
             echo '<h2 class="UI-red w3-bold w3-header">Login Incorrect<br>Please Try Again</h2></div>';
         } elseif ($FAILURE == AUTH_LOCKED) {
-            echo '<div class="UI-center UI-border UI-margin w3-padding UI-red">';
+            echo '<div class="UI-center UI-border UI-margin UI-padding UI-red">';
             echo '<h2 class="UI-red w3-bold w3-header">Account Locked</h2>';
             echo '<span class="UI-red w3-bold w3-header">';
             echo 'Too many unsuccessful login attempts.</span><br>';
@@ -35,12 +35,12 @@ if (!empty($EXPIRED)) {
             echo 'Reset the password gain entry.';
             echo "</span></div>\n";
         } elseif ($FAILURE == AUTH_DUPLICATE) {
-            echo '<div class="UI-center UI-border UI-margin w3-padding UI-yellow">';
+            echo '<div class="UI-center UI-border UI-margin UI-padding UI-yellow">';
             echo '<h2 class="UI-yellow w3-bold w3-header">Duplicate Accounts Present</h2>';
             echo '<span class="UI-yellow w3-bold w3-header">';
             echo 'This e-mail address has duplicate accounts present.</span><br>';
             echo '</div>';
-            echo '<div class="UI-center UI-border UI-margin w3-padding UI-red">';
+            echo '<div class="UI-center UI-border UI-margin UI-padding UI-red">';
             echo '<h2 class="UI-red w3-bold w3-header">Login Incorrect<br>Please Try Again</h2></div>';
         }
     }

@@ -101,7 +101,7 @@ function checkAuthentication(username, success, failure, params) {
     i.classList.add('UI-center');
     i.classList.add('UI-input');
     i.classList.add('UI-margin');
-    i.classList.add('w3-padding');
+    i.classList.add('UI-padding');
     i.setAttribute('type', 'password');
     i.id = 'password_input';
     i.style.width = '95%';

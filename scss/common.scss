@@ -139,17 +139,21 @@
     @extend .w3-hide;
 }
 
+.UI-padding {
+    @extend .w3-padding;
+}
+
 .UI-mainsection-sidebar-shown {
     @extend .w3-threequarter;
 }
 
 .UI-sidebar-hidden {
     @extend .UI-hide;
-    @extend .w3-padding;
+    @extend .UI-padding;
 }
 
 .UI-sidebar-shown {
-    @extend .w3-padding;
+    @extend .UI-padding;
     @extend .w3-quarter;
 }
 
