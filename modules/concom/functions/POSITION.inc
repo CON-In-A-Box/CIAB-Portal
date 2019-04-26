@@ -62,5 +62,19 @@ SQL;
     }
 
 
+    public static function listConComPositions()
+    {
+        $sql = "SELECT * FROM `ConComPositions`";
+        $result = \DB::run($sql);
+        $value = $result->fetch();
+        $retvalue = [];
+        while ($value !== false) {
+            $retvalue[] = $value;
+            $value = $result->fetch();
+        }
+        return $retvalue;
+    }
+
+
     /* end POSITION */
 }
