@@ -161,3 +161,15 @@
     display: inline-block;
     position: fixed !important;
 }
+
+.UI-table { display: table; width: 100%; }
+.UI-table-row { display: table-row; }
+.UI-table-header { display: table-header-group;  }
+.UI-table-body { display: table-row-group; }
+.UI-table-cell { display: table-cell; border: 1px solid #999999;}
+.UI-table-hidden { display: none;}
+.UI-table-vertical {
+    writing-mode: vertical-lr;
+    text-orientation: upright;
+    letter-spacing: -5px
+}

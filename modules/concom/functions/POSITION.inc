@@ -52,6 +52,7 @@ SQL;
                 $retvalue = array();
             }
             $retvalue[] = ['position' => $value['Position'],
+            'positionId' => $value['PositionID'],
             'department' => $value['Department'],
             'departmentId' => $value['DepartmentID'],
             'note' => $value['Note']];
@@ -59,6 +60,20 @@ SQL;
         }
         return $retvalue;
 
+    }
+
+
+    public static function listConComPositions()
+    {
+        $sql = "SELECT * FROM `ConComPositions`";
+        $result = \DB::run($sql);
+        $value = $result->fetch();
+        $retvalue = [];
+        while ($value !== false) {
+            $retvalue[] = $value;
+            $value = $result->fetch();
+        }
+        return $retvalue;
     }
 
 
