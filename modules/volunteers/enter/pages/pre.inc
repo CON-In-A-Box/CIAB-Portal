@@ -37,7 +37,7 @@ if (!empty($_REQUEST)) {
         && !empty($updateData['AuthorizedBy'])
     ) {
         $time = intval($updateData['EndHours']);
-        if ($updateData['EndAMPM'] == 'PM') {
+        if (($updateData['EndAMPM'] == 'PM') && ($time < 12)) {
             $time += 12;
         }
         $date = $updateData['EndDate'].'T'.$time.':';
