@@ -485,9 +485,6 @@ function messages($uid)
                 $totalHours >= $record['Value'] &&
                 !isset($record['Aquired'])) {
                 if ($record['RewardGroupID'] !== null) {
-                    if ($record['group_soldout']) {
-                        continue;
-                    }
                     $promo .= "<li>Free Group Gift <b>".htmlspecialchars($record['Name'])."</b> (at ".$record['Value']." hours) is available and has not been acquired! <b>Pick 1 below!</b></li>\n";
                 } else {
                     $promo .= "<li>Free Gift <b>".htmlspecialchars($record['Name'])."</b> (at ".$record['Value']." hours) is available and has not been acquired!</li>\n";
