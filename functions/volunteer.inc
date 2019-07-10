@@ -602,8 +602,21 @@ SQL;
 }
 
 
-function volunteers_in_dept($department)
+function volunteers_in_dept($department, $event = null)
 {
+    if ($event === null) {
+        $event = current_eventID();
+    }
+
+    $conditional = "";
+    if (is_array($event)) {
+        if (!empty($event)) {
+            $conditional = "AND EventID IN (".implode(', ',$event).")";
+        }
+    } else {
+        $conditional = "AND EventID = ".strval($event);
+    }
+
     /* Get the department id from name if it is a name */
     if (!is_int($department)) {
         $sql = "SELECT DepartmentID FROM Departments WHERE Name = '$department';";
@@ -626,6 +639,7 @@ function volunteers_in_dept($department)
             `VolunteerHours`
         WHERE
             DepartmentID = $departmentID
+            $conditional
         Group by
             AccountID,
             DepartmentID

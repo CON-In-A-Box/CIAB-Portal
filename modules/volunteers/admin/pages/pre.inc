@@ -4,7 +4,6 @@
     require_module 'standard';
 .*/
 
-
 /* This should only be accessable from volunteer staff */
 if (!(isset($_SESSION['IS_ADMIN']) || $_SESSION['IS_VOLUNTEERS'])) {
     if (!$_SESSION['customFields']['currConComPos']) {
@@ -25,6 +24,7 @@ if (!empty($_REQUEST)) {
     ];
 
     require_once($FUNCTIONDIR."/volunteer.inc");
+    require_once($FUNCTIONDIR."/database.inc");
 
     $updateData = filter_input_array(INPUT_GET, $arguments);
 
@@ -44,8 +44,9 @@ if (!empty($_REQUEST)) {
         if (isset($_SESSION['IS_ADMIN']) || $_SESSION['IS_VOLUNTEERS']) {
             $dept = $updateData['dept_report'];
             $name = $updateData['dept_name'];
-            $report = volunteers_in_dept(intval($dept));
-            output_csv($report, "department_report_".$name.".csv");
+            $event = current_eventID();
+            $report = volunteers_in_dept(intval($dept), $event);
+            output_csv($report, "department_report_".$name."_".$event.".csv");
             exit();
         } else {
             header("HTTP/1.0 401");
