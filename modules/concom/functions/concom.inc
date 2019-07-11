@@ -83,7 +83,7 @@ function ConComListDisplay()
     foreach ($Divisions as $div) {
         $currentDivDirector = false;
         echo '<tr id="division" class="event-color-secondary"><th id="'.$div.'" class="UI-center" colspan=2>'.$div;
-        if ($div != 'Committees' && $div != 'Corporate Staff' && $div != 'CFO Staff') {
+        if ($div != 'Committees' && $div != 'Corporate Staff' && $div != 'Board Staff') {
             echo ' Division';
         }
         echo '</th><th class="UI-center" colspan=3>';
@@ -100,7 +100,7 @@ function ConComListDisplay()
         echo '</th><th colspan=3>';
         echo implode('<br />', getDepartmentEmails($div));
         echo "</th></tr>\n";
-        if ($div != 'Corporate Staff' && $div != 'Committees') {
+        if ($div != 'Board Staff' && $div != 'Corporate Staff' && $div != 'Committees') {
             printTableHeader($div);
         }
         // Division Directors
@@ -109,11 +109,7 @@ function ConComListDisplay()
                 foreach ($pos as $kfName => $fName) {
                     foreach ($fName as $klName => $lName) {
                         $tmp = explode('|', $lName);
-                        if ($div != "CFO Staff") {
-                            echo '<tr><td>Division Director</td><td>'.$div.'</td>';
-                        } else {
-                            echo '<tr><td colspan=2>CFO</td>';
-                        }
+                        echo '<tr><td>Division Director</td><td>'.$div.'</td>';
                         echo '<td>'.$kfName.'</td><td>'.$klName.'</td><td>Director</td><td>'.getDepartmentEmails($div)[0].'</td>';
                         if (isset($_SESSION['IS_ADMIN'])) {
                             echo '<td>';
