@@ -26,7 +26,8 @@ $DS             = uniqid('', true);
 
 function getVersion()
 {
-    $version = parse_ini_file($BASEDIR."version.ini");
+    global $BASEDIR;
+    $version = parse_ini_file($BASEDIR."/version.ini");
     $tag = "";
     $build = intval(exec('git rev-list HEAD|wc -l'));
     if ($build > 0) {
