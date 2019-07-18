@@ -5,8 +5,12 @@
     require_module 'json';
 .*/
 
-/* This should only be accessable from volunteer staff */
-if (!(isset($_SESSION['IS_ADMIN']) || $_SESSION['IS_VOLUNTEERS'])) {
+/* This should only be accessable to CONCOM */
+$concom = null;
+if (class_exists('\\concom\\POSITION') && method_exists('\\concom\\POSITION', 'getConComPosition')) {
+    $concom = \concom\POSITION::getConComPosition($_SESSION['accountId']);
+}
+if (!(isset($_SESSION['IS_ADMIN']) || !($concom === null))) {
     goSite();
 }
 
