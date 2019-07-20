@@ -80,7 +80,25 @@ while (!feof($file)) {
         }
         $enterer = $output['users'][0]['Id'];
 
-        $overlap = find_overlap_hours($csv[4], $csv[1], $user);
+        /* Fixup Hours */
+        $when = date_parse($csv[4]);
+        if ($when['year'] === false || $when['month'] === false ||
+            $when['day'] === false || $when['hour'] === false ||
+            $when['minute'] === false) {
+            $response[] = strval($lineno).': failed: '.$csv[4].' : Invalid date format.';
+            continue;
+        }
+        $date = sprintf(
+            "%d-%02d-%02d %02d:%02d:%02d",
+            $when['year'],
+            $when['month'],
+            $when['day'],
+            $when['hour'],
+            $when['minute'],
+            $when['second']
+        );
+
+        $overlap = find_overlap_hours($date, $csv[1], $user);
         if ($overlap != null) {
             $response[] = strval($lineno).': overlap: '.strval($data).' : Hours Overlap with existing hours.';
             continue;
@@ -90,7 +108,7 @@ while (!feof($file)) {
             $result = record_volunteer_hours(
                 $user,
                 $csv[1],
-                $csv[4],
+                $date,
                 $csv[7],
                 $csv[3],
                 $enterer,
