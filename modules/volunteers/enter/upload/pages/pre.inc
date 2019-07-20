@@ -18,6 +18,23 @@ require_once($FUNCTIONDIR."/volunteer.inc");
 
 $response = array();
 
+$user_cache = array();
+
+
+function lookup_user($user)
+{
+    global $user_cache;
+    if (array_key_exists($user, $user_cache)) {
+        return $user_cache[$user];
+    } else {
+        $output = lookup_users_by_key($csv[0]);
+        $user_cache[$user] = $output;
+        return $output;
+    }
+
+}
+
+
 $file = fopen('php://input', 'r');
 $lineno = 0;
 while (!feof($file)) {
@@ -43,21 +60,20 @@ while (!feof($file)) {
         }
         /* user lookups */
         $user = null;
-        $output = lookup_users_by_key($csv[0]);
+        $output = lookup_user($csv[0]);
         if (count($output['users']) != 1) {
             $response[] = strval($lineno).': failed: '.strval($data).': Unable to lookup user.';
             continue;
         }
         $user = $output['users'][0]['Id'];
 
-        $output = lookup_users_by_key($csv[2]);
+        $output = lookup_user($csv[2]);
         if (count($output['users']) != 1) {
             $response[] = strval($lineno).': failed: '.strval($data).' : Unable to lookup authorizer.';
             continue;
         }
         $authorizer = $output['users'][0]['Id'];
-
-        $output = lookup_users_by_key($csv[5]);
+        $output = lookup_user($csv[5]);
         if (count($output['users']) != 1) {
             $response[] = strval($lineno).': failed: '.strval($data).' : Unable to lookup enterer.';
             continue;
