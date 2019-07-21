@@ -18,30 +18,30 @@ if (!empty($EXPIRED)) {
 }
 ?>
 </header><!--close header div-->
-<div class="UI-container w3-mobile">
+<div class="UI-maincontent">
   <div class="UI-container w3-cell w3-third UI-border">
     <h2>Log In</h2>
     <?php
     if (!empty($FAILURE)) {
         if ($FAILURE == AUTH_BAD) {
             echo '<div class="UI-center UI-border UI-margin UI-padding UI-red">';
-            echo '<h2 class="UI-red w3-bold w3-header">Login Incorrect<br>Please Try Again</h2></div>';
+            echo '<h2 class="UI-error-header">Login Incorrect<br>Please Try Again</h2></div>';
         } elseif ($FAILURE == AUTH_LOCKED) {
             echo '<div class="UI-center UI-border UI-margin UI-padding UI-red">';
-            echo '<h2 class="UI-red w3-bold w3-header">Account Locked</h2>';
-            echo '<span class="UI-red w3-bold w3-header">';
+            echo '<h2 class="UI-error-header">Account Locked</h2>';
+            echo '<span class="UI-error-header">';
             echo 'Too many unsuccessful login attempts.</span><br>';
-            echo '<span class="UI-red w3-bold w3-header">';
+            echo '<span class="UI-error-header">';
             echo 'Reset the password gain entry.';
             echo "</span></div>\n";
         } elseif ($FAILURE == AUTH_DUPLICATE) {
             echo '<div class="UI-center UI-border UI-margin UI-padding UI-yellow">';
-            echo '<h2 class="UI-yellow w3-bold w3-header">Duplicate Accounts Present</h2>';
-            echo '<span class="UI-yellow w3-bold w3-header">';
+            echo '<h2 class="UI-warning-header">Duplicate Accounts Present</h2>';
+            echo '<span class="UI-warning-header">';
             echo 'This e-mail address has duplicate accounts present.</span><br>';
             echo '</div>';
             echo '<div class="UI-center UI-border UI-margin UI-padding UI-red">';
-            echo '<h2 class="UI-red w3-bold w3-header">Login Incorrect<br>Please Try Again</h2></div>';
+            echo '<h2 class="UI-error-header">Login Incorrect<br>Please Try Again</h2></div>';
         }
     }
     ?>

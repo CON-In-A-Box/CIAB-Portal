@@ -173,3 +173,15 @@
     text-orientation: upright;
     letter-spacing: -5px
 }
+
+.UI-error-header {
+    @extend .UI-red;
+    @extend .w3-bold;
+    @extend .w3-header;
+}
+
+.UI-warning-header{
+    @extend .UI-yellow;
+    @extend .w3-bold;
+    @extend .w3-header;
+}
