@@ -1,4 +1,4 @@
-<div id="page" class="w3-cell-row UI-padding UI-maincontent">
+<div id="page" class="UI-cell-row UI-padding UI-maincontent">
 <?php
 /*.
   require_module 'standard';
@@ -22,7 +22,7 @@ foreach ($modules as $key => $value) {
 }
 ?>
 
-<div id="main_content" class="UI-padding w3-cell w3-cell-top w3-mobile">
+<div id="main_content" class="UI-padding UI-cell-top w3-mobile">
 
 <?php
 echo '<div class="UI-sectionbar">';

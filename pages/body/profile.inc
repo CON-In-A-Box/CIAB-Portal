@@ -15,7 +15,7 @@ if (empty($_SESSION['state']) && empty($_SESSION['accountInfo']['individualAccou
     $_SESSION['state'] = 'MN';
 }
 ?>
-<div id="main_content"  class="w3-cell w3-cell-top UI-maincontent">
+<div id="main_content"  class="UI-cell-top UI-maincontent">
 <h3>Your current profile information</h3>
 <form action="index.php?Function=profile" method="post" onsubmit="return validate_form(this)" name="Profile" id="profile_update" class="UI-container">
 

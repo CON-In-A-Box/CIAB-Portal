@@ -189,3 +189,22 @@
 .UI-label {
     @extend .w3-label;
 }
+
+
+.UI-cell-row {
+    @extend .w3-cell-row;
+}
+
+.UI-cell {
+    @extend .w3-cell;
+}
+
+.UI-cell-middle {
+    @extend .UI-cell;
+    @extend .w3-cell-middle;
+}
+
+.UI-cell-top {
+    @extend .UI-cell;
+    @extend .w3-cell-top;
+}

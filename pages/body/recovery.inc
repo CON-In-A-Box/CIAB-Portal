@@ -6,9 +6,9 @@ if (isset($updateData['expired'])) {
     $expired = true;
 }
 ?>
-<header class="w3-cell-row event-color-primary w3-mobile">
+<header class="UI-cell-row event-color-primary w3-mobile">
     <?php require($PAGESDIR.'/base/logo.inc'); ?>
-  <div class="UI-container w3-cell w3-mobile">
+  <div class="UI-container UI-cell w3-mobile">
     <h2><?php echo $CONSITENAME; ?></h2>
   </div>
 </header>

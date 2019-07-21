@@ -7,7 +7,7 @@ require_once($FUNCTIONDIR.'/authentication.inc');
 require_once(__DIR__."/../functions/admin.inc");
 require_once($FUNCTIONDIR.'/users.inc');
 ?>
-<div id="main_content"  class="w3-cell w3-cell-top UI-maincontent">
+<div id="main_content"  class="UI-cell-top UI-maincontent">
 <?php
 echo "<h2 class='UI-sectionbar'>Welcome ".$_SESSION['preferredName']."!</h2>\n";
 /*

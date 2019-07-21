@@ -496,13 +496,13 @@ function messages($uid)
         $promo .= "</ul>\n";
 
         if ($display) {
-            echo "<div class='w3-col w3-cell-row UI-padding' ";
+            echo "<div class='w3-col UI-cell-row UI-padding' ";
             echo "style='max-height:10vh; overflow:scroll;'>\n";
-            echo "<div id='volunteer_messages' class='UI-container UI-padding w3-border-red UI-border UI-margin w3-cell'>\n";
+            echo "<div id='volunteer_messages' class='UI-container UI-padding w3-border-red UI-border UI-margin UI-cell'>\n";
             echo $promo;
             echo "</div>\n";
             if ($unclaimed_promo && sizeof($unclaimed_promo)) {
-                echo "<div id='aquire_promo' class='UI-continer UI-padding w3-cell w3-cell-middle'>\n";
+                echo "<div id='aquire_promo' class='UI-continer UI-padding UI-cell-middle'>\n";
                 echo "<button id='promo_check' class='UI-redbutton'";
                 $names = array_column($unclaimed_promo, 'Name');
                 echo "onclick=addPromoToCheckout();";
@@ -527,9 +527,9 @@ function messages($uid)
 
 function admin_bar($uid)
 {
-    echo "<div class='w3-col w3-cell-row UI-padding' ";
+    echo "<div class='w3-col UI-cell-row UI-padding' ";
     echo "style='max-height:10vh; overflow:scroll;'>\n";
-    echo "<div id='volunteer_admin_bar' class='UI-container UI-padding w3-border-red UI-border UI-margin w3-cell'>\n";
+    echo "<div id='volunteer_admin_bar' class='UI-container UI-padding w3-border-red UI-border UI-margin UI-cell'>\n";
     echo "<button id='add_prize' class='UI-redbutton'";
     echo "onclick='showEditPrize(null)';>Add New Gift</button>\n";
     echo "<button id='min_hours' class='UI-redbutton'";
