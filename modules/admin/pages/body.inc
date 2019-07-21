@@ -158,12 +158,12 @@ if (!empty($searchCriteria['firstName']) ||
   <fieldset>
     <legend>Basic NeonCRM Account Search</legend>
     <p>
-      <label>First Name</label>
+      <label class='UI-label'>First Name</label>
       <input type="text" class="form-control" name="firstName" value="<?php echo htmlentities($searchCriteria['firstName']); ?>"/>
-      <label>Last Name</label>
+      <label class='UI-label'>Last Name</label>
       <input type="text" class="form-control" name="lastName" value="<?php echo htmlentities($searchCriteria['lastName']); ?>" />
     </p><p>
-      <label>Email</label>
+      <label class='UI-label'>Email</label>
       <input type="text" class="form-control" name="email" value="<?php echo htmlentities($searchCriteria['email']); ?>" />
     </p>
     <input type="submit" value="Search" class="UI-graybutton" />

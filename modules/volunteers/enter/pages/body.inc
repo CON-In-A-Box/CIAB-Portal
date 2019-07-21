@@ -49,7 +49,7 @@ if (isset($uid)) {
 
 <div class='w3-bar'>
   <div class='w3-bar-item'>
-    <label>Actual hours worked</label>
+    <label class='UI-label'>Actual hours worked</label>
     <div class='w3-bar'>
       <select class="UI-select w3-bar-item" type=text name="ActualHours" id="hours" onchange="calculateHours();" title="Actual Hours Worked.">
         <option value=0>0</option>
@@ -89,7 +89,7 @@ for ($i = 0; $i < 60; $i += $hour_round_interval) {
     <input type=hidden name="ActualHoursWorked" id="actualhours" value=1>
   </div>
   <div class='w3-bar-item'>
-    <label>Date/Time that the Shift Ended</label>
+    <label class='UI-label'>Date/Time that the Shift Ended</label>
     <input class="UI-input" type="date" name="EndDate" id="end_date" pattern="\d{4}-\d{2}-\d{2}T\d{2}:\d{2}" value="<?php
     echo date('Y-m-d');
     ?>" required onchange="checkHours();">
@@ -137,7 +137,7 @@ for ($i = 0; $i < 60; $i += $hour_round_interval) {
 
 <div class='UI-container'>
   <div class='w3-block'>
-    <label>Volunteer Time Modifier - Must be per policy</label><br />
+    <label class='UI-label'>Volunteer Time Modifier - Must be per policy</label><br />
     <select class="UI-select" style="width:auto" name="TimeModifier" id="modifier" onchange="calculateHours();">
       <option value=1 selected>Normal - 1 hour = 1 hour</option>
       <option value=0.5>Half Time - 1 hour = 0.5 hours credit</option>
@@ -146,7 +146,7 @@ for ($i = 0; $i < 60; $i += $hour_round_interval) {
     </select>
   </div>
   <div class='w3-block'>
-    <label>Department worked</label><br />
+    <label class='UI-label'>Department worked</label><br />
     <select class="UI-select" style="width:auto" name="DepartmentWorked" id="department">
         <?php
         $isVolunteers = false;
@@ -201,7 +201,7 @@ for ($i = 0; $i < 60; $i += $hour_round_interval) {
     <?php
     if (($_SESSION['IS_VOLUNTEERS'] || isset($_SESSION['IS_ADMIN'])) &&
         !kiosk_user()) {
-        echo '<label class="w3-left">Hours Authorized By</label>';
+        echo '<label class="UI-label" class="w3-left">Hours Authorized By</label>';
         echo '<input class="UI-input" type=text';
     } else {
         echo '<input type=hidden';

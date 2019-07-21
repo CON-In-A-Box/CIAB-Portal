@@ -47,12 +47,12 @@ if (!empty($EXPIRED)) {
     ?>
 
     <form action="index.php?Function=public" method="post" onsubmit="return validate_form(this)" name="Log In" id="login_form" class="UI-container">
-      <label class="w3-label">Email Address</label>
+      <label class="UI-label">Email Address</label>
       <input name="user" type="text" class="UI-input">
 
       <p></p>
       
-      <label class="w3-label">Password</label>
+      <label class="UI-label">Password</label>
       <input name="password" type="password" class="UI-input">
       
       <p>

@@ -34,7 +34,7 @@ if ($client_info[1] === false) {
 <hr>
 <h3 class="UI-center">Service needs authorization</h3>
 <div><span>Click <a href="<?php echo $url;?>" target="_blank">HERE</a> to get authorization code</span></div>
-<div><label>Enter Code Here:</label><input class="UI-input" id="code">
+<div><label class='UI-label'>Enter Code Here:</label><input class="UI-input" id="code">
 <button id="set_code" class="UI-eventbutton" onclick='authCode()'>Enter</button>
 </div>
 <?php
@@ -45,7 +45,7 @@ if (!isset($G_ROOTFOLDER) || $G_ROOTFOLDER === "") {
 ?>
 <hr>
 <h3 class="UI-center">Configure root folder</h3>
-<div><label>Shared Drive Root Folder:</label><input class="UI-input" id="folder">
+<div><label class='UI-label'>Shared Drive Root Folder:</label><input class="UI-input" id="folder">
 <button id="set_folder" class="UI-eventbutton" onclick='setFolder()'>Enter</button>
 </div>
 <?php
