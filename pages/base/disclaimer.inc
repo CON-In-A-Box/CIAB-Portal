@@ -3,9 +3,9 @@ $year = date('Y');
 ?>
 <p></p>
 <div class="w3-bar">
-  <div class="w3-dropdown-hover">
+  <div class="UI-dropdown-hover">
     <button class="w3-bar-item UI-button w3-tiny"><img src="images/dualXicon.png" style="height: 2em; width: 2em;" alt="Dual X Icon - Con-In-A-Box"> Information</button>
-    <div class="w3-dropdown-content">
+    <div class="UI-dropdown-content">
       <div class="w3-panel w3-leftbar w3-sand">
         <div class="w3-large UI-center">
           Con-In-A-Box&trade;

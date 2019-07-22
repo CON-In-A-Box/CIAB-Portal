@@ -208,3 +208,26 @@
     @extend .UI-cell;
     @extend .w3-cell-top;
 }
+
+.UI-dropdown-content {
+    @extend .w3-dropdown-content;
+}
+
+.UI-dropdown-hover {
+    @extend .w3-dropdown-hover;
+}
+
+.UI-admin-menu-div {
+    @extend .UI-dropdown-hover;
+}
+
+.UI-admin-menu {
+    @extend .UI-button;
+    @extend .UI-yellow;
+}
+
+.UI-admin-menu-end {
+    @extend .UI-dropdown-content;
+    @extend .w3-bar-block;
+    @extend .w3-card-4;
+}
