@@ -277,7 +277,7 @@ foreach ($table as $line) {
   <div id="db_log" class="w3-section UI-margin UI-hide">
    <div id="ActivityLog" class="w3-section" style="width: 100%;">
      <div>
-       <button class="UI-yellowbutton w3-tiny w3-left-align" onclick="downloadLog()">Download Full Activity Log (CSV)</button>
+       <button class="UI-yellowbutton UI-tiny w3-left-align" onclick="downloadLog()">Download Full Activity Log (CSV)</button>
      </div>
         <?php dbPrintLog(1000); ?>
    </div>

@@ -292,3 +292,7 @@
     @extend .UI-cell;
     @extend .w3-padding-0;
 }
+
+.UI-tiny {
+    @extend .w3-tiny;
+}

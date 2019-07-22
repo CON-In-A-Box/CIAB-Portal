@@ -7,7 +7,7 @@ echo "<p style=\"font-weight:bold;\">".$_SESSION['preferredName']."</p>\n";
 if (isset($_SESSION['addr1']) && !empty($_SESSION['addr1'])) {
     echo "<p><span style=\"font-weight:bold;\">Address:</span><br />\n";
     echo $_SESSION['addr1']."<br />\n";
-    
+
     if (isset($_SESSION['addr2']) && !empty($_SESSION['addr2'])) {
         echo $_SESSION['addr2']."<br />\n";
     }
@@ -26,7 +26,7 @@ if (isset($_SESSION['addr1']) && !empty($_SESSION['addr1'])) {
 
 if (isset($_SESSION['email']) && !empty($_SESSION['email'])) {
     echo "<p><b>Email:</b><br />";
-    echo '<span class="w3-tiny">'.$_SESSION['email']."</span></p>\n";
+    echo '<span class="UI-tiny">'.$_SESSION['email']."</span></p>\n";
 }
 
 if (isset($_SESSION['phone']) && !empty($_SESSION['phone'])) {
