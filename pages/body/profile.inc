@@ -263,12 +263,12 @@ if (isset($_SESSION['accountInfo']['individualAccount']['primaryContact']['addre
 function ExpandOut(val, id) {
     var x = document.getElementById(id);
     if (val === '') {
-        if (x.className.indexOf("w3-show") == -1) {
-            x.className += " w3-show";
+        if (x.className.indexOf("UI-show") == -1) {
+            x.className += " UI-show";
         }
     } else {
-        if (x.className.indexOf("w3-show") != -1) {
-            x.className = x.className.replace(" w3-show", "");
+        if (x.className.indexOf("UI-show") != -1) {
+            x.className = x.className.replace(" UI-show", "");
         }
     }
 }

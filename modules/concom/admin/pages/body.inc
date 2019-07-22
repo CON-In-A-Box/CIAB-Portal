@@ -12,7 +12,7 @@ $deptCount = departmentDetails();
         <span>ConCom Structure</span>
     </div>
 
-<div id="admin" class="UI-maincontent w3-show">
+<div id="admin" class="UI-maincontent UI-show">
 <div class="UI-container UI-padding UI-center">Basic Usage:
 <p>Use the <i class='fa fa-plus-square'></i> to add a new department</p>
 <p>Use the <span class='UI-yellow'>Add New Division<i class='fa fa-plus-square'></i></span> button to add a new Division</p>

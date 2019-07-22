@@ -13,7 +13,7 @@ require_once __DIR__.'/../functions/functions.inc'
             <button onclick="expandSection('meetings')" class="UI-event-sectionbar UI-button w3-block w3-left-align">
                 <span>Meetings<span> <i id="meetings_arrow" class="fa fa-caret-up"></i>
             </button>
-            <div id="meetings" class="UI-container UI-margin UI-hide w3-show">
+            <div id="meetings" class="UI-container UI-margin UI-hide UI-show">
                 <table class='UI-stripedtable'>
     <?php list_meetings() ?>
                 </table>
@@ -60,7 +60,7 @@ require_once __DIR__.'/../functions/functions.inc'
             <button onclick="expandSection('neon')" class="UI-event-sectionbar UI-button w3-block w3-left-align">
                 <span id="neon_button">Neon<span> <i id="neon_arrow" class="fa fa-caret-up"></i>
             </button>
-            <div id="neon" class="UI-container UI-margin UI-hide w3-show">
+            <div id="neon" class="UI-container UI-margin UI-hide UI-show">
                 <div class="UI-container UI-margin UI-center">
                     <button id='reload' class='UI-redbutton'
                         onclick='reloadFromNeon()'>Reload From Neon</button>
