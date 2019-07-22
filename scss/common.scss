@@ -286,3 +286,9 @@
     @extend .UI-hide;
     @extend .w3-hide-large;
 }
+
+.UI-icon-div {
+    @extend .UI-container;
+    @extend .UI-cell;
+    @extend .w3-padding-0;
+}
