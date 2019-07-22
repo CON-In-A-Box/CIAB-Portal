@@ -139,6 +139,10 @@
     @extend .w3-hide;
 }
 
+.UI-show {
+    @extend .w3-show;
+}
+
 .UI-padding {
     @extend .w3-padding;
 }
@@ -230,4 +234,55 @@
     @extend .UI-dropdown-content;
     @extend .w3-bar-block;
     @extend .w3-card-4;
+}
+
+.UI-bar {
+    @extend .w3-bar;
+}
+
+.UI-bar-item {
+    @extend .w3-bar-item;
+}
+
+.UI-main-bar-div {
+    @extend .w3-top;
+}
+
+.UI-main-bar {
+    @extend .UI-bar;
+    @extend .w3-dark-grey;
+}
+
+.UI-main-bar-item {
+    @extend .w3-bar-item;
+    @extend .UI-button;
+}
+
+.UI-main-responsive-bar-item {
+    @extend .w3-hide-small;
+    @extend .w3-hide-medium;
+}
+
+.UI-main-logout-bar-item {
+    @extend .UI-main-bar-item;
+    @extend .UI-red;
+    @extend .UI-right;
+}
+
+.UI-main-bar-icon {
+    @extend .w3-left;
+    @extend .event-bar-icon;
+}
+
+.UI-main-bar-pancake {
+    @extend .UI-main-bar-item;
+    @extend .w3-block;
+    @extend .UI-center;
+    @extend .w3-hide-large;
+}
+
+.UI-main-bar-pancake-div {
+    @extend .w3-bar-block;
+    @extend .UI-hide;
+    @extend .w3-hide-large;
 }
