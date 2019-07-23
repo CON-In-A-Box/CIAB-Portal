@@ -31,6 +31,18 @@
     @extend .w3-yellow;
 }
 
+.UI-lime {
+    @extend .w3-lime;
+}
+
+.UI-khaki {
+    @extend .w3-khaki;
+}
+
+.UI-orange {
+    @extend .w3-orange;
+}
+
 .UI-sectionbar {
     @extend .w3-xlarge;
     @extend .UI-center;
@@ -295,4 +307,45 @@
 
 .UI-tiny {
     @extend .w3-tiny;
+}
+
+.UI-small {
+    @extend .w3-small;
+}
+
+.UI-large-center-container {
+    @extend .UI-container;
+    @extend .UI-center;
+    @extend .w3-large;
+}
+
+.UI-disclaimer-info-button {
+    @extend .w3-bar-item;
+    @extend .UI-button;
+    @extend .UI-tiny;
+}
+
+.UI-disclaimer-panel {
+    @extend .w3-panel;
+    @extend .w3-leftbar;
+}
+
+.UI-modules-panel {
+    @extend .UI-small;
+}
+
+.UI-small-disclaimer-panel {
+    @extend .UI-disclaimer-panel;
+    @extend .w3-small;
+}
+
+.UI-disclaimer-info-panel {
+    @extend .w3-panel;
+    @extend .w3-leftbar;
+    @extend .w3-sand
+}
+
+.UI-disclaimer-copyright-div {
+    @extend .w3-large;
+    @extend .UI-center;
 }
