@@ -349,3 +349,121 @@
     @extend .w3-large;
     @extend .UI-center;
 }
+
+.UI-profile-update-button {
+    @extend .UI-button;
+    @extend .w3-brown;
+    @extend .UI-right;
+    padding: 0px 16px;
+}
+
+.UI-profile-update-button-end {
+    @extend .UI-button;
+    @extend .w3-block;
+    @extend .w3-brown;
+}
+
+.UI-half {
+    @extend .w3-half;
+}
+
+.UI-twothird {
+    @extend .w3-twothird;
+}
+
+.UI-third {
+    @extend .w3-third;
+}
+
+.UI-threequarter {
+    @extend .w3-threequarter;
+}
+
+.UI-quarter {
+    @extend .w3-quarter;
+}
+
+.UI-profile-name-div {
+    @extend .w3-lime;
+    @extend .w3-row;
+}
+
+.UI-profile-pref-name-div {
+    @extend .w3-teal;
+    @extend .w3-row;
+}
+
+.UI-profile-badge-number-div {
+    @extend .w3-orange;
+    @extend .w3-row;
+}
+
+.UI-profile-email-div {
+    @extend .w3-indigo;
+    @extend .w3-row;
+}
+
+.UI-profile-phone-div {
+    @extend .w3-blue;
+    @extend .w3-row;
+}
+
+.UI-profile-concom-div {
+    @extend .w3-row;
+}
+
+.UI-profile-concom-label {
+    @extend .UI-right-align;
+    @extend .w3-col;
+    @extend .m7;
+    @extend .l6;
+}
+
+.UI-profile-concom-select {
+    @extend .w3-col;
+    @extend .m5;
+    @extend .l6;
+}
+
+.UI-profile-address-div {
+    @extend .w3-purple;
+    @extend .w3-row;
+}
+
+.UI-profile-province-field {
+    @extend .UI-input;
+    @extend .w3-gray;
+}
+
+.UI-profile-zip-div {
+    @extend .w3-quarter;
+    @extend .w3-row;
+}
+
+.UI-profile-zip-field {
+    @extend .UI-input;
+    @extend .UI-right-align;
+    @extend .w3-col;
+    @extend .l8;
+    @extend .m7;
+    @extend .s7;
+}
+
+.UI-profile-zip-4-field {
+    @extend .UI-input;
+    @extend .w3-col;
+    @extend .l4;
+    @extend .m5;
+    @extend .s5;
+}
+
+.UI-profile-password-div {
+    @extend .w3-red;
+    @extend .w3-row;
+}
+
+.UI-profile-update-password-button {
+    @extend .w3-red;
+    @extend .w3-block;
+    @extend .UI-button;
+}
