@@ -16,11 +16,11 @@ var confirmbox = (function() {
           var dlg = document.getElementById('confirm_box');
           if (!dlg) {
             dlg = document.createElement('DIV');
-            dlg.classList.add('w3-modal');
+            dlg.classList.add('UI-modal');
             dlg.id = 'confirm_box';
             var content = document.createElement('DIV');
             dlg.appendChild(content);
-            content.classList.add('w3-modal-content');
+            content.classList.add('UI-modal-content');
 
             var h = document.createElement('H2');
             h.classList.add('UI-red');

@@ -516,3 +516,38 @@
     @extend .w3-third;
     @extend .UI-border;
 }
+
+.UI-modal {
+    @extend .w3-modal;
+}
+
+.UI-modal-content {
+    @extend .w3-modal-content;
+}
+
+.UI-close-button {
+    @extend .w3-display-topright;
+    @extend .UI-button;
+}
+
+.UI-spinner-div {
+    @extend .w3-modal-content;
+    @extend .w3-jumbo;
+    @extend .UI-center;
+    @extend .w3-round-xxlarge;
+}
+
+.UI-spin {
+    @extend .w3-spin;
+}
+
+.UI-lookup-user-button {
+    @extend .UI-button;
+    @extend .w3-bar-item;
+    @extend .UI-border;
+}
+
+.UI-lookup-user-dropdown {
+    @extend .UI-black;
+    @extend .w3-bar-block;
+}
