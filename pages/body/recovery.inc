@@ -6,14 +6,14 @@ if (isset($updateData['expired'])) {
     $expired = true;
 }
 ?>
-<header class="UI-cell-row event-color-primary w3-mobile">
+<header class="UI-page-title-bar">
     <?php require($PAGESDIR.'/base/logo.inc'); ?>
-  <div class="UI-container UI-cell w3-mobile">
+  <div class="UI-page-title">
     <h2><?php echo $CONSITENAME; ?></h2>
   </div>
 </header>
 
-<div class="UI-container w3-mobile">
+<div class="UI-maincontent">
   <div class="UI-container UI-center UI-border UI-margin UI-padding">
 <?php
 if ($expired) {
@@ -26,11 +26,11 @@ if ($expired) {
 <?php
 if ($expired) {
     $body = <<<BOD
-        <span class="UI-center w3-bold">Your password has expired and needs to be reset, enter the login name or e-mail address associated with your account and we'll e-mail infomation to reset your password.</span>
+        <span class="UI-recovery-text-block">Your password has expired and needs to be reset, enter the login name or e-mail address associated with your account and we'll e-mail infomation to reset your password.</span>
 BOD;
 } else {
     $body = <<<BOD
-        <span class="UI-center w3-bold">If you forgot your password, enter the login name or e-mail address associated with your account and we'll e-mail infomation to reset your password.</span>
+        <span class="UI-recovery-text-block">If you forgot your password, enter the login name or e-mail address associated with your account and we'll e-mail infomation to reset your password.</span>
 BOD;
 }
 echo $body."\n";

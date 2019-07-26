@@ -24,7 +24,7 @@ If you are registered for this year, the top listing will show the current conve
 <p>&nbsp;</p>
 
 <p>
-<a onclick="Profile=window.open('https://www.z2systems.com/np/clients/ce/login.jsp', 'Profile Update', 'height=800,width=1000'); return false;" class="w3-btn event-primary-color w3-round-xlarge">Click here to get started!</a>
+<a onclick="Profile=window.open('https://www.z2systems.com/np/clients/ce/login.jsp', 'Profile Update', 'height=800,width=1000'); return false;" class="UI-register-start-button">Click here to get started!</a>
 </p>
 
 </div><!--close main_content div-->

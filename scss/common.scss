@@ -467,3 +467,52 @@
     @extend .w3-block;
     @extend .UI-button;
 }
+
+.UI-update-proceed-button {
+    @extend .UI-eventbutton;
+    @extend .w3-left;
+}
+
+.UI-page-title-bar {
+    @extend .UI-cell-row;
+    @extend .event-color-primary;
+    @extend .w3-mobile;
+}
+
+.UI-page-title {
+    @extend .UI-container;
+    @extend .UI-cell;
+    @extend .w3-mobile;
+}
+
+.UI-recovery-text-block {
+    @extend .UI-center;
+    @extend .UI-bold;
+}
+
+.UI-main-content-div {
+    @extend .UI-padding;
+    @extend .UI-cell-top;
+    @extend .w3-mobile;
+}
+
+.UI-main-email-warning {
+    @extend .UI-container;
+    @extend .UI-center;
+    @extend .UI-border;
+    @extend .UI-red;
+    @extend .w3-large;
+}
+
+.UI-register-start-button {
+    @extend .w3-btn;
+    @extend .event-primary-color;
+    @extend .w3-round-xlarge;
+}
+
+.UI-login-main-div {
+    @extend .UI-container;
+    @extend .UI-cell;
+    @extend .w3-third;
+    @extend .UI-border;
+}
