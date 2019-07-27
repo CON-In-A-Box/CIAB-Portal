@@ -304,7 +304,7 @@ function _prize_table_start($uid = 0, $spent = 0, $hoursRemain = 0)
     if (!$admin_mode) {
         echo "<input id='soldoutcheck' type='checkbox' class='w3-check' ";
         echo "onclick='showHideSoldOut()'>";
-        echo "<label for='soldoutcheck'>";
+        echo "<label class='UI-label' for='soldoutcheck'>";
         if (isset($uid)) {
             echo "Hide volunteer's soldout items";
         } else {
@@ -496,13 +496,13 @@ function messages($uid)
         $promo .= "</ul>\n";
 
         if ($display) {
-            echo "<div class='w3-col w3-cell-row UI-padding' ";
+            echo "<div class='w3-col UI-cell-row UI-padding' ";
             echo "style='max-height:10vh; overflow:scroll;'>\n";
-            echo "<div id='volunteer_messages' class='UI-container UI-padding w3-border-red UI-border UI-margin w3-cell'>\n";
+            echo "<div id='volunteer_messages' class='UI-container UI-padding w3-border-red UI-border UI-margin UI-cell'>\n";
             echo $promo;
             echo "</div>\n";
             if ($unclaimed_promo && sizeof($unclaimed_promo)) {
-                echo "<div id='aquire_promo' class='UI-continer UI-padding w3-cell w3-cell-middle'>\n";
+                echo "<div id='aquire_promo' class='UI-continer UI-padding UI-cell-middle'>\n";
                 echo "<button id='promo_check' class='UI-redbutton'";
                 $names = array_column($unclaimed_promo, 'Name');
                 echo "onclick=addPromoToCheckout();";
@@ -527,9 +527,9 @@ function messages($uid)
 
 function admin_bar($uid)
 {
-    echo "<div class='w3-col w3-cell-row UI-padding' ";
+    echo "<div class='w3-col UI-cell-row UI-padding' ";
     echo "style='max-height:10vh; overflow:scroll;'>\n";
-    echo "<div id='volunteer_admin_bar' class='UI-container UI-padding w3-border-red UI-border UI-margin w3-cell'>\n";
+    echo "<div id='volunteer_admin_bar' class='UI-container UI-padding w3-border-red UI-border UI-margin UI-cell'>\n";
     echo "<button id='add_prize' class='UI-redbutton'";
     echo "onclick='showEditPrize(null)';>Add New Gift</button>\n";
     echo "<button id='min_hours' class='UI-redbutton'";
@@ -654,7 +654,7 @@ if (!isset($locked)) {
             <h2 class='UI-red'>Export Raw CSV Data</h2>
         </div>
         <div class='UI-center'>
-            <label for='csv_table'>
+            <label class='UI-label' for='csv_table'>
             Table:</label>
             <select class="UI-margin UI-select" style="width:auto" id="csv_table">
               <option value=HourRedemptions>HourRedemptions</option>
@@ -680,7 +680,7 @@ if (!isset($locked)) {
             <h2 class='UI-red'>Export Derived CSV Data</h2>
         </div>
         <div class='UI-center'>
-            <label for='der_csv_table'>
+            <label class='UI-label' for='der_csv_table'>
             Table:</label>
             <select class="UI-margin UI-select" style="width:auto" id="der_csv_table">
               <option value="SELECT r.*, (SELECT COUNT(h.PrizeID) FROM HourRedemptions AS h WHERE h.PrizeID = r.PrizeID GROUP BY h.PrizeID) as Claimed FROM VolunteerRewards as r;">Volunteer Rewards</option>
@@ -705,7 +705,7 @@ if (!isset($locked)) {
             <h2 class='UI-red'>Report of all Volunteers with minimum hours or more</h2>
         </div>
         <div class='UI-center'>
-            <label for='report_hour_min'>
+            <label class='UI-label' for='report_hour_min'>
             Minimum hours:</label>
             <input class="UI-input" id="report_hour_min">
         </div>
@@ -728,19 +728,19 @@ if (!isset($locked)) {
         <div class='UI-border UI-padding'>
           <form>
 
-            <label for='edit_prize_name' class="w3-tooltip">
+            <label class='UI-label' for='edit_prize_name' class="w3-tooltip">
                 <span
                   style="position:absolute;left:-80px;right:-80px;bottom:18px"
                   class="w3-text w3-tag event-color-primary w3-round-xlarge">Visible name of the item</span>
             Name:</label>
             <input class="UI-input" id="edit_prize_name" placeholder="<name>">
-            <label for='edit_prize_value' class="w3-tooltip">
+            <label class='UI-label' for='edit_prize_value' class="w3-tooltip">
                 <span
                   style="position:absolute;left:-80px;right:-80px;bottom:18px"
                   class="w3-text w3-tag event-color-primary w3-round-xlarge">Hour cost of the item</span>
             Value:</label>
             <input class="UI-input" id="edit_prize_value">
-            <label for='edit_prize_value' class="w3-tooltip">
+            <label class='UI-label' for='edit_prize_value' class="w3-tooltip">
                 <span
                   style="position:absolute;left:-80px;right:-80px;bottom:18px"
                   class="w3-text w3-tag event-color-primary w3-round-xlarge">If 'yes' this item does not cost hours but instead is free at the given hour mark. Also enforces a limit of 1.</span>
@@ -750,14 +750,14 @@ if (!isset($locked)) {
               <option value='no'>No</option>
             </select>
 
-            <label for='edit_prize_count' class="w3-tooltip">
+            <label class='UI-label' for='edit_prize_count' class="w3-tooltip">
                 <span
                   style="position:absolute;left:-80px;right:-80px;bottom:18px"
                   class="w3-text w3-tag event-color-primary w3-round-xlarge">Changing this will adjust Total items</span>
             Inventory Remaining:</label>
             <input class="UI-input" id="edit_prize_count">
 
-                    <label for='edit_prize_group' class="w3-tooltip">
+                    <label class='UI-label' for='edit_prize_group' class="w3-tooltip">
                         <span
                           style="position:absolute;left:-80px;right:-80px;bottom:18px"
                           class="w3-text w3-tag event-color-primary w3-round-xlarge">If in a group there can be only a limited total number of the items in the group claimed by the volunteer</span>
@@ -800,20 +800,20 @@ if (!isset($locked)) {
         </div>
         <div class='UI-border UI-padding'>
           <form>
-            <label for='edit_name'>Volunteer:</label>
+            <label class='UI-label' for='edit_name'>Volunteer:</label>
             <input class="UI-input w3-disabled" id="edit_name" readonly>
-            <label for='edit_hours'>Actual Hours:</label>
+            <label class='UI-label' for='edit_hours'>Actual Hours:</label>
             <input class="UI-input" id="edit_hours">
-            <label for='edit_mod'>Time Modifier</label><br />
+            <label class='UI-label' for='edit_mod'>Time Modifier</label><br />
             <select class="UI-select" style="width:auto" name="TimeModifier" id="edit_mod">
               <option value=0.5>Half Time - 1 hour = 0.5 hours credit</option>
               <option value=1 selected>Normal - 1 hour = 1 hour</option>
               <option value=1.5>Time Plus Half - 1 hour = 1.5 hours credit</option>
               <option value=2>Double - 1 hour = 2 hours credit</option>
             </select>
-            <label for='edit_end'>End Time:</label>
+            <label class='UI-label' for='edit_end'>End Time:</label>
             <input class="UI-input" type="datetime-local" id="edit_end" pattern="\d{4}-\d{2}-\d{2}T\d{2}:\d{2}">
-            <label for='edit_dept'>Department</label><br />
+            <label class='UI-label' for='edit_dept'>Department</label><br />
             <select class="UI-select" style="width:auto" name="DepartmentWorked" id="edit_dept">
 <?php
 require_once($FUNCTIONDIR."/divisional.inc");
@@ -823,9 +823,9 @@ foreach ($Departments as $dep => $set) {
 }
 ?>
             </select>
-            <label for='edit_enter'>Entered By:</label>
+            <label class='UI-label' for='edit_enter'>Entered By:</label>
             <input class="UI-input w3-disabled" id="edit_enter" readonly>
-            <label for='edit_auth'>Authorized By:</label>
+            <label class='UI-label' for='edit_auth'>Authorized By:</label>
             <input class="UI-input" id="edit_auth">
             <input class="UI-input w3-disabled UI-hide" id="edit_data" readonly>
           </form>

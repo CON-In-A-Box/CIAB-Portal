@@ -18,11 +18,11 @@ function expandSection(id) {
   }
   var y = document.getElementById(id + '_arrow');
   for (var i = 0; i < x.length; i++) {
-    if (x[i].className.indexOf('w3-show') == -1) {
-      x[i].className += ' w3-show';
+    if (x[i].className.indexOf('UI-show') == -1) {
+      x[i].className += ' UI-show';
       y.className = 'fa fa-caret-up';
     } else {
-      x[i].className = x[i].className.replace(' w3-show', '');
+      x[i].className = x[i].className.replace(' UI-show', '');
       y.className = 'fa fa-caret-down';
     }
   }

@@ -239,7 +239,7 @@ if ($access) {
 
 ?>
     <div class="w3-show-inline-block UI-right w3-margin w3-row-padding">
-        <label for='workstation_id' class="w3-half">
+        <label class='UI-label' for='workstation_id' class="w3-half">
         Workstation ID:</label>
         <input class="UI-input w3-half" id="workstation_id" placeholder="Required for Kiosk"
 <?php
@@ -272,7 +272,7 @@ if (isset($uid)) {
         <h2 class='UI-red'>Update Badge Data</h2>
     </div>
     <div class='UI-center'>
-        <label for='badge_name'>
+        <label class='UI-label' for='badge_name'>
         Badge Name:</label>
         <input class="UI-input" id="badge_name">
     </div>

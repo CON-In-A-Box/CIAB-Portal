@@ -13,7 +13,7 @@ require_once __DIR__.'/../functions/functions.inc'
             <button onclick="expandSection('meetings')" class="UI-event-sectionbar UI-button w3-block w3-left-align">
                 <span>Meetings<span> <i id="meetings_arrow" class="fa fa-caret-up"></i>
             </button>
-            <div id="meetings" class="UI-container UI-margin UI-hide w3-show">
+            <div id="meetings" class="UI-container UI-margin UI-hide UI-show">
                 <table class='UI-stripedtable'>
     <?php list_meetings() ?>
                 </table>
@@ -60,7 +60,7 @@ require_once __DIR__.'/../functions/functions.inc'
             <button onclick="expandSection('neon')" class="UI-event-sectionbar UI-button w3-block w3-left-align">
                 <span id="neon_button">Neon<span> <i id="neon_arrow" class="fa fa-caret-up"></i>
             </button>
-            <div id="neon" class="UI-container UI-margin UI-hide w3-show">
+            <div id="neon" class="UI-container UI-margin UI-hide UI-show">
                 <div class="UI-container UI-margin UI-center">
                     <button id='reload' class='UI-redbutton'
                         onclick='reloadFromNeon()'>Reload From Neon</button>
@@ -75,9 +75,9 @@ require_once __DIR__.'/../functions/functions.inc'
         </div>
         <div>
             <input class="UI-hiddeninput" id="meet_id" value='-1' readonly>
-            <label for='meet_name'>Meeting Name:</label>
+            <label class='UI-label' for='meet_name'>Meeting Name:</label>
             <input class="UI-input" id="meet_name" value='New Meeting'>
-            <label for='meet_event'>Event:</label>
+            <label class='UI-label' for='meet_event'>Event:</label>
             <select class="UI-input" id="meet_event">
 <?php
 $events = select_events();
@@ -86,7 +86,7 @@ foreach ($events as $event) {
 }
 ?>
             </select>
-            <label for='meet_date'>Date:</label>
+            <label class='UI-label' for='meet_date'>Date:</label>
             <input class="UI-input" type="date" id="meet_date"
                 value="<?php echo date('Y-m-d');?>">
         </div>
@@ -109,10 +109,10 @@ foreach ($events as $event) {
         </div>
         <div>
             <input class="UI-hiddeninput" id="cycle_id" value='-1' readonly>
-            <label for='cycle_from'>From:</label>
+            <label class='UI-label' for='cycle_from'>From:</label>
             <input class="UI-input" type="date" id="cycle_from"
                 value="<?php echo date('Y-m-d', strtotime($last_cycle['To']." +1 days"));?>">
-            <label for='cycle_to'>To:</label>
+            <label class='UI-label' for='cycle_to'>To:</label>
             <input class="UI-input" type="date" id="cycle_to"
                 value="<?php echo date('Y-m-d', strtotime($last_cycle['To']." +1 years"));?>">
         </div>
@@ -136,17 +136,17 @@ foreach ($events as $event) {
         <div>
             <input class="UI-hiddeninput" id="badge_id" value='-1' readonly>
             <input class="UI-hiddeninput" id="badge_event" value='-1' readonly>
-            <label for='badge_name'>Badge Name:</label>
+            <label class='UI-label' for='badge_name'>Badge Name:</label>
             <input class="UI-input" id="badge_name" value='New Badge'>
-            <label for='badge_event_name'>Event:</label>
+            <label class='UI-label' for='badge_event_name'>Event:</label>
             <input class="UI-input" id="badge_event_name" value='' readonly>
-            <label for='badge_cost'>Badge Cost:</label>
+            <label class='UI-label' for='badge_cost'>Badge Cost:</label>
             <input class="UI-input" id="badge_cost" type=int value=0>
-            <label for='badge_from'>Avaliable From:</label>
+            <label class='UI-label' for='badge_from'>Avaliable From:</label>
             <input class="UI-input" type="date" id="badge_from">
-            <label for='badge_to'>Avalible To:</label>
+            <label class='UI-label' for='badge_to'>Avalible To:</label>
             <input class="UI-input" type="date" id="badge_to">
-            <label for='badge_image'>Background Image File on Printer:</label>
+            <label class='UI-label' for='badge_image'>Background Image File on Printer:</label>
             <input class="UI-input" id="badge_image" value=''>
         </div>
         <hr>
@@ -168,11 +168,11 @@ foreach ($events as $event) {
         </div>
         <div>
             <input class="UI-hiddeninput" id="event_id" value='-1' readonly>
-            <label for='event_name'>Event Name:</label>
+            <label class='UI-label' for='event_name'>Event Name:</label>
             <input class="UI-input" id="event_name" value='New Event'>
-            <label for='event_from'>From:</label>
+            <label class='UI-label' for='event_from'>From:</label>
             <input class="UI-input" type="date" id="event_from">
-            <label for='event_to'>To:</label>
+            <label class='UI-label' for='event_to'>To:</label>
             <input class="UI-input" type="date" id="event_to">
         </div>
         <hr>
@@ -194,7 +194,7 @@ foreach ($events as $event) {
         </div>
         <div>
             <input class="UI-hiddeninput" id="concom_event_id" value='-1' readonly>
-            <label for='event_from'>From:</label>
+            <label class='UI-label' for='event_from'>From:</label>
             <select class="UI-input" id="import_from">
 <?php
 $events = select_events();

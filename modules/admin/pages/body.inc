@@ -7,7 +7,7 @@ require_once($FUNCTIONDIR.'/authentication.inc');
 require_once(__DIR__."/../functions/admin.inc");
 require_once($FUNCTIONDIR.'/users.inc');
 ?>
-<div id="main_content"  class="w3-cell w3-cell-top UI-maincontent">
+<div id="main_content"  class="UI-cell-top UI-maincontent">
 <?php
 echo "<h2 class='UI-sectionbar'>Welcome ".$_SESSION['preferredName']."!</h2>\n";
 /*
@@ -158,12 +158,12 @@ if (!empty($searchCriteria['firstName']) ||
   <fieldset>
     <legend>Basic NeonCRM Account Search</legend>
     <p>
-      <label>First Name</label>
+      <label class='UI-label'>First Name</label>
       <input type="text" class="form-control" name="firstName" value="<?php echo htmlentities($searchCriteria['firstName']); ?>"/>
-      <label>Last Name</label>
+      <label class='UI-label'>Last Name</label>
       <input type="text" class="form-control" name="lastName" value="<?php echo htmlentities($searchCriteria['lastName']); ?>" />
     </p><p>
-      <label>Email</label>
+      <label class='UI-label'>Email</label>
       <input type="text" class="form-control" name="email" value="<?php echo htmlentities($searchCriteria['email']); ?>" />
     </p>
     <input type="submit" value="Search" class="UI-graybutton" />
@@ -277,7 +277,7 @@ foreach ($table as $line) {
   <div id="db_log" class="w3-section UI-margin UI-hide">
    <div id="ActivityLog" class="w3-section" style="width: 100%;">
      <div>
-       <button class="UI-yellowbutton w3-tiny w3-left-align" onclick="downloadLog()">Download Full Activity Log (CSV)</button>
+       <button class="UI-yellowbutton UI-tiny w3-left-align" onclick="downloadLog()">Download Full Activity Log (CSV)</button>
      </div>
         <?php dbPrintLog(1000); ?>
    </div>

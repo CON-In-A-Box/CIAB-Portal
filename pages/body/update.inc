@@ -1,7 +1,7 @@
 <?php
 // Main update process
 ?>
-<div id="main_content" class="w3-cell w3-cell-top UI-maincontent">
+<div id="main_content" class="UI-cell-top UI-maincontent">
 <h2>Preforming system upgrade</h2>
 <?php
 
@@ -18,7 +18,7 @@ if (!empty($_REQUEST)) {
     db_do_update($updateData['from'], $updateData['to']);
 
     echo "<div>\n";
-    echo "<button type='button' class='UI-eventbutton w3-left' onclick=window.location.href='http://".$_SERVER['SERVER_NAME']."'>Proceed</button>\n";
+    echo "<button type='button' class='UI-update-proceed-button' onclick=window.location.href='http://".$_SERVER['SERVER_NAME']."'>Proceed</button>\n";
     echo "</div>\n";
 }
 

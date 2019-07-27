@@ -1,5 +1,5 @@
 <?php require($PAGESDIR.'/base/leftnav.inc'); ?>
-<div id="main_content" class="w3-cell w3-cell-top UI-maincontent">
+<div id="main_content" class="UI-cell-top UI-maincontent">
 <h2>To check to see if you are registered for CONvergence:</h2>
 
 <img src="images/Neon-MainScreen.png" alt="Main login page" style="border:5px solid black;">
@@ -24,7 +24,7 @@ If you are registered for this year, the top listing will show the current conve
 <p>&nbsp;</p>
 
 <p>
-<a onclick="Profile=window.open('https://www.z2systems.com/np/clients/ce/login.jsp', 'Profile Update', 'height=800,width=1000'); return false;" class="w3-btn event-primary-color w3-round-xlarge">Click here to get started!</a>
+<a onclick="Profile=window.open('https://www.z2systems.com/np/clients/ce/login.jsp', 'Profile Update', 'height=800,width=1000'); return false;" class="UI-register-start-button">Click here to get started!</a>
 </p>
 
 </div><!--close main_content div-->
