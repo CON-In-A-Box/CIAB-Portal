@@ -131,6 +131,10 @@
     @extend .w3-white;
 }
 
+.UI-disabled {
+    @extend .w3-disabled;
+}
+
 .UI-input {
     @extend .w3-input;
     @extend .UI-border;

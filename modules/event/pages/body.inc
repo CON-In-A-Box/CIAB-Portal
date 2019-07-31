@@ -9,8 +9,8 @@ require_once __DIR__.'/../functions/functions.inc'
 <div id="page"  class="UI-container">
     <div id="main_content"  class="UI-maincontent">
 
-        <div id="meetings_content" class="w3-section UI-container">
-            <button onclick="expandSection('meetings')" class="UI-event-sectionbar UI-button w3-block w3-left-align">
+        <div id="meetings_content" class="EVENT-content">
+            <button onclick="expandSection('meetings')" class="EVENT-section-bar">
                 <span>Meetings<span> <i id="meetings_arrow" class="fa fa-caret-up"></i>
             </button>
             <div id="meetings" class="UI-container UI-margin UI-hide UI-show">
@@ -24,8 +24,8 @@ require_once __DIR__.'/../functions/functions.inc'
             </div>
         </div>
 
-        <div id="cycles_content" class="w3-section UI-container">
-            <button onclick="expandSection('cycles')" class="UI-event-sectionbar UI-button w3-block w3-left-align">
+        <div id="cycles_content" class="EVENT-content">
+            <button onclick="expandSection('cycles')" class="EVENT-section-bar">
                 <span id="cycles_button">Annual Cycles<span> <i id="cycles_arrow" class="fa fa-caret-down"></i>
             </button>
             <div id="cycles" class="UI-container UI-margin UI-hide">
@@ -39,8 +39,8 @@ require_once __DIR__.'/../functions/functions.inc'
             </div>
         </div>
 
-        <div id="events_content" class="w3-section UI-container">
-            <button onclick="expandSection('events')" class="UI-event-sectionbar UI-button w3-block w3-left-align">
+        <div id="events_content" class="EVENT-content">
+            <button onclick="expandSection('events')" class="EVENT-section-bar">
                 <span id="events_button">Events<span> <i id="events_arrow" class="fa fa-caret-down"></i>
             </button>
             <div id="events" class="UI-container UI-margin UI-hide">
@@ -56,8 +56,8 @@ require_once __DIR__.'/../functions/functions.inc'
             </div>
         </div>
 
-        <div id="neon_content" class="w3-section UI-container">
-            <button onclick="expandSection('neon')" class="UI-event-sectionbar UI-button w3-block w3-left-align">
+        <div id="neon_content" class="EVENT-content">
+            <button onclick="expandSection('neon')" class="EVENT-section-bar">
                 <span id="neon_button">Neon<span> <i id="neon_arrow" class="fa fa-caret-up"></i>
             </button>
             <div id="neon" class="UI-container UI-margin UI-hide UI-show">
