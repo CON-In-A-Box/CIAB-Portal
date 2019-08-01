@@ -12,9 +12,9 @@ require_once(__DIR__.'/../functions/concom.inc');
 function draw_status()
 {
     // Display Current ConCom Status
-    echo "<div class='UI-container w3-black'>\n";
+    echo "<div class='CONCOM-status'>\n";
     echo "<table class='UI-stripedtable'>\n";
-    echo "<tr><th class='UI-center w3-black'>Current ConCom Status</th></tr>\n";
+    echo "<tr><th class='CONCOM-status-title'>Current ConCom Status</th></tr>\n";
     foreach ($_SESSION['customFields']['currConComPos'] as $val) {
         echo "<tr><td>".$val['position']." of ".$val['department'];
         if (!empty($val['note'])) {
@@ -100,10 +100,10 @@ function meetings()
             echo "<tr><td>".$value['Date']."</td>";
             echo "<td>".$value['Name']."</td>";
             if ($attend) {
-                echo "<td class='w3-lime'>Checked In";
+                echo "<td class='CONCOM-checkin'>Checked In";
             } else {
                 if ($nowDate == $checkDate) {
-                    echo "<td class='UI-yellow'><a href='index.php?Function=concom/signin&meeting=".$value['MeetingID']."'>Sign In Now!</a>";
+                    echo "<td class='CONCOM-checkin-now'><a href='index.php?Function=concom/signin&meeting=".$value['MeetingID']."'>Sign In Now!</a>";
                 } else {
                     echo "<td>Not Checked In";
                 }
@@ -117,7 +117,7 @@ function meetings()
 
 }
 
- 
+
 if (isset($_SESSION['customFields']['currConComPos'])) {
     $homepage_panes[] = 'concom\panes\phone_number';
     $homepage_panes[] = 'concom\panes\draw_status';

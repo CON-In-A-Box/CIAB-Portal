@@ -77,6 +77,8 @@ if (is_file($PAGESDIR.'/head/'.$_REQUEST['Function'].'.inc')) {
 /* SCSS processing */
 if (is_file($MODULESDIR.'/'.$_REQUEST['Function'].'/scss/styles.scss')) {
     print "<link rel='stylesheet' href='style.php/".$_REQUEST['Function']."/scss/styles.scss'/>";
+} elseif ($_REQUEST['Function'] == 'main') {
+    print "<link rel='stylesheet' href='style.php/panel.scss'/>";
 } else {
     print "<link rel='stylesheet' href='style.php/styles.scss'/>";
 }
