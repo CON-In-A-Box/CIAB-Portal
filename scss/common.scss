@@ -23,6 +23,14 @@
     @extend .w3-center;
 }
 
+.UI-black {
+    @extend .w3-black;
+}
+
+.UI-blue {
+    @extend .w3-blue;
+}
+
 .UI-red {
     @extend .w3-red;
 }
@@ -577,4 +585,19 @@
     @extend .w3-left;
     @extend .event-color-secondary;
     @extend .UI-margin;
+}
+
+.UI-configure-panel {
+    @extend .w3-panel;
+    @extend .w3-padding-16;
+}
+
+.UI-checkbox {
+    @extend .w3-checkbox;
+}
+
+.UI-configure-info-panel {
+    @extend .w3-panel;
+    @extend .UI-blue;
+    @extend .UI-center;
 }
