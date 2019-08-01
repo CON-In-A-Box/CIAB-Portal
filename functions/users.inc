@@ -259,8 +259,8 @@ function lookup_users_by_pref_name($name, $single = false, $substring = false)
             return $output;
         }
         return _lookup_user(
-            [['First Name', $operator, $names[0]],
-             [$preferredLastName, $operator, $names[1]]],
+            [['First Name', 'EQUAL', $names[0]],
+             [$preferredLastName, 'EQUAL', $names[1]]],
             $single
         );
     }
