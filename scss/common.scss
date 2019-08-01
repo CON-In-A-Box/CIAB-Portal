@@ -43,6 +43,10 @@
     @extend .w3-orange;
 }
 
+.UI-gray {
+    @extend .w3-gray;
+}
+
 .UI-sectionbar {
     @extend .w3-xlarge;
     @extend .UI-center;
