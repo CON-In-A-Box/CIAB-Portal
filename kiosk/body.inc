@@ -4,8 +4,8 @@ require_once __DIR__.'/kiosk.inc';
 
 if (!in_kiosk()) {
 ?>
-<div id="kiosk_dlg" class="w3-modal">
-  <div class="w3-modal-content">
+<div id="kiosk_dlg" class="UI-modal">
+  <div class="UI-modal-content">
     <div class="UI-container">
       <h2 class="UI-center event-color-primary"><?php echo $kiosk_title;?></h2>
       <hr>
@@ -17,8 +17,8 @@ if (!in_kiosk()) {
 <?php
 } else {
 ?>
-<div id="kiosk_dlg" class="w3-modal">
-  <div class="w3-modal-content">
+<div id="kiosk_dlg" class="UI-modal">
+  <div class="UI-modal-content">
     <div class="UI-container">
       <h2 class="UI-center event-color-primary">Switch Kiosk User Mode</h2>
       <hr>

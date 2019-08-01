@@ -571,3 +571,10 @@
 .UI-tooltip {
     @extend .w3-tooltop;
 }
+
+.UI-kiosk-slider {
+    @extend .w3-show-inline-block;
+    @extend .w3-left;
+    @extend .event-color-secondary;
+    @extend .UI-margin;
+}
