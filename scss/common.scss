@@ -47,6 +47,10 @@
     @extend .w3-gray;
 }
 
+.UI-dark-gray {
+    @extend .w3-dark-gray;
+}
+
 .UI-sectionbar {
     @extend .w3-xlarge;
     @extend .UI-center;
