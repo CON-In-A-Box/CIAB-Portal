@@ -27,6 +27,10 @@
     @extend .w3-red;
 }
 
+.UI-green {
+    @extend .w3-green;
+}
+
 .UI-yellow {
     @extend .w3-yellow;
 }
@@ -562,4 +566,8 @@
 .UI-lookup-user-dropdown {
     @extend .UI-black;
     @extend .w3-bar-block;
+}
+
+.UI-tooltip {
+    @extend .w3-tooltop;
 }

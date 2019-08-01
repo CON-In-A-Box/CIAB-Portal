@@ -160,7 +160,7 @@ function handleResult(origin, response) {
     document.getElementById('submitbtn').disabled = true;
     document.getElementById('volunteername').innerHTML = 'a Volunteer';
     document.getElementById('lookupname').innerHTML =
-        '<span class="UI-red w3-large">' + name +
+        '<span class="VOL-enter-error-span">' + name +
         ' is on ConCom (' + uid + ')</span>';
   } else {
     userLookup.clearFailure();
@@ -169,7 +169,7 @@ function handleResult(origin, response) {
     document.getElementById('volunteername').innerHTML = name + ' (' +
         uid + ')';
     document.getElementById('lookupname').innerHTML =
-        '<span class="w3-large">' + name + ' (' + uid + ')<span>';
+        '<span class="VOL-enter-id-span">' + name + ' (' + uid + ')<span>';
 
     var depts = document.getElementById('department');
 
@@ -214,15 +214,15 @@ function onFail(target, resp, name, code) {
 
   if (code == 404) {
     document.getElementById('lookupname').innerHTML =
-        '<span class="UI-red w3-large">' + name + ' not found.</span>';
+        '<span class="VOL-enter-error-span">' + name + ' not found.</span>';
   }
   else if (code == 409) {
     document.getElementById('lookupname').innerHTML =
-      '<span class="UI-red w3-large">There are too many matches.</span>';
+      '<span class="VOL-enter-error-span">There are too many matches.</span>';
   }
   else {
     document.getElementById('lookupname').innerHTML = name +
-        '<span class="UI-red w3-large">invalid name lookup.(' + code +
+        '<span class="VOL-enter-error-span">invalid name lookup.(' + code +
         ')</span>';
   }
 }
@@ -235,10 +235,10 @@ function fileChange() {
   var file = document.getElementById('batch_file');
   var e = document.getElementById('batch_import');
   if (file.value !== '') {
-    e.classList.remove('w3-disabled');
+    e.classList.remove('UI-disabled');
   } else {
-    if (!e.classList.contains('w3-disabled')) {
-      e.classList.add('w3-disabled');
+    if (!e.classList.contains('UI-disabled')) {
+      e.classList.add('UI-disabled');
     }
   }
 }
@@ -259,7 +259,7 @@ function reportImport(report) {
     var row = table.insertRow();
     var cell = row.insertCell(0);
     if (item.indexOf(': success:') != -1) {
-      cell.className = 'w3-green';
+      cell.className = 'UI-green';
     } else {
       cell.className = 'UI-red';
     }
