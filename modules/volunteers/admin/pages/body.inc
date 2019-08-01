@@ -215,13 +215,13 @@ function hour_table($uid)
                 }
             }
             if ($uid && $admin_mode) {
-                echo "<tr class='w3-hover-red' ";
+                echo "<tr class='VOL-hover-red' ";
                 $json = json_encode($record);
                 $json = base64_encode($json);
                 echo 'onclick=\'showEditHours("'.$json;
                 echo '");\'>';
             } elseif (!isset($uid) && $admin_mode) {
-                echo "<tr class='w3-hover-red' ";
+                echo "<tr class='VOL-hover-red' ";
                 echo 'onclick=\'departmentReport("'.$record['Department Worked'].'", '.$record['Department ID'].');\'';
                 echo ">";
             } else {
@@ -242,7 +242,7 @@ function hour_table($uid)
             echo "</td></tr>\n";
         }
     } else {
-        echo "<tr><th class='UI-center w3-gray w3-opacity' colspan=9>No Entries...</th></tr>\n";
+        echo "<tr><th class='VOL-no-entries' colspan=9>No Entries...</th></tr>\n";
     }
     echo "<tr><th class='UI-center event-color-primary' colspan=9></th></tr>\n";
     echo "</table>";
@@ -282,7 +282,7 @@ function _prize_table_start($uid = 0, $spent = 0, $hoursRemain = 0)
     global $admin_mode;
 
     if ($uid) {
-        echo '<div class="w3-col UI-secondary-sectionbar">';
+        echo '<div class="VOL-prize-bar">';
         echo "<span>Spent <span id='h_spent'>";
         _printHours($spent);
         echo "</span>  |  ";
@@ -302,7 +302,7 @@ function _prize_table_start($uid = 0, $spent = 0, $hoursRemain = 0)
     echo "<tr>";
     echo "<th class='event-color-secondary'>";
     if (!$admin_mode) {
-        echo "<input id='soldoutcheck' type='checkbox' class='w3-check' ";
+        echo "<input id='soldoutcheck' type='checkbox' class='VOL-check' ";
         echo "onclick='showHideSoldOut()'>";
         echo "<label class='UI-label' for='soldoutcheck'>";
         if (isset($uid)) {
@@ -351,11 +351,13 @@ function prizes_table($uid)
     $data = $prizeData;
 
     $group_styles  = [
-    'w3-amber', 'w3-aqua', 'w3-brown', 'w3-cyan',
-    'w3-indigo', 'w3-khaki', 'w3-lime', 'w3-orange',
-    'w3-pink', 'w3-purple', 'UI-red', 'w3-sand', 'w3-teal', 'UI-yellow',
-    'w3-deep-purple', 'w3-deep-orange', 'w3-light-blue',
-    'event-color-secondary-grey', 'w3-light-green'];
+    'VOL-color-amber', 'VOL-color-aqua', 'VOL-color-brown',
+    'VOL-color-cyan', 'VOL-color-indigo', 'VOL-color-khaki',
+    'VOL-color-lime', 'VOL-color-orange', 'VOL-color-pink',
+    'VOL-color-purple', 'VOL-color-red', 'VOL-color-sand',
+    'VOL-color-teal', 'VOL-color-yellow', 'VOL-color-deep-purple',
+    'VOL-color-deep-orange', 'VOL-color-light-blue',
+    'VOL-color-light-grey', 'VOL-color-light-green'];
 
     $last_group = null;
     $group = 0;
@@ -396,7 +398,7 @@ function prizes_table($uid)
         foreach ($data as $key => $record) {
             if (!isset($uid) && $admin_mode) {
                 echo "<tr ";
-                echo "class='w3-hover-red' ";
+                echo "class='VOL-hover-red' ";
                 $json = json_encode($record);
                 $json = base64_encode($json);
                 echo 'onclick=\'showEditPrize("'.$json.'");\'';
@@ -405,7 +407,7 @@ function prizes_table($uid)
                 if ($record['Remaining'] <= 0) {
                     echo "<tr class='soldoutrow UI-red'>";
                 } elseif ($record['Promo'] == 'yes' && array_key_exists('Aquired', $record) && $record['Aquired'] > 0) {
-                    echo "<tr class='soldoutrow w3-disabled'>";
+                    echo "<tr class='soldoutrow UI-disabled'>";
                 } elseif ($record['RewardGroupID']) {
                     $record['GroupLimit'] = $record['Limit'];
                     if ($last_group !== null && $last_group != $record['RewardGroupID']) {
@@ -426,7 +428,7 @@ function prizes_table($uid)
                     $classes = $group_styles[($group % count($group_styles))];
 
                     if (isset($record['group_soldout'])) {
-                        echo "<tr class='$classes soldoutrow w3-disabled'>";
+                        echo "<tr class='$classes soldoutrow UI-disabled'>";
                     } else {
                         echo "<tr class='$classes";
                         if (!$admin_mode && isset($uid) && acquireable_item($record)) {
@@ -461,7 +463,7 @@ function prizes_table($uid)
         }
     } else {
         _prize_table_start();
-        echo "<tr><th class='UI-center w3-gray w3-opacity' colspan=9>No Entries...</th></tr>\n";
+        echo "<tr><th class='VOL-no-entries' colspan=9>No Entries...</th></tr>\n";
     }
     echo "<tr><th class='UI-center event-color-secondary' colspan=8></th></tr>\n";
     echo "</table>\n";
@@ -496,9 +498,9 @@ function messages($uid)
         $promo .= "</ul>\n";
 
         if ($display) {
-            echo "<div class='w3-col UI-cell-row UI-padding' ";
+            echo "<div class='VOL-messages-div' ";
             echo "style='max-height:10vh; overflow:scroll;'>\n";
-            echo "<div id='volunteer_messages' class='UI-container UI-padding w3-border-red UI-border UI-margin UI-cell'>\n";
+            echo "<div id='volunteer_messages' class='VOL-messages'>\n";
             echo $promo;
             echo "</div>\n";
             if ($unclaimed_promo && sizeof($unclaimed_promo)) {
@@ -527,9 +529,9 @@ function messages($uid)
 
 function admin_bar($uid)
 {
-    echo "<div class='w3-col UI-cell-row UI-padding' ";
+    echo "<div class='VOL-admin' ";
     echo "style='max-height:10vh; overflow:scroll;'>\n";
-    echo "<div id='volunteer_admin_bar' class='UI-container UI-padding w3-border-red UI-border UI-margin UI-cell'>\n";
+    echo "<div id='volunteer_admin_bar' class='VOL-admin-bar'>\n";
     echo "<button id='add_prize' class='UI-redbutton'";
     echo "onclick='showEditPrize(null)';>Add New Gift</button>\n";
     echo "<button id='min_hours' class='UI-redbutton'";
@@ -544,7 +546,7 @@ function admin_bar($uid)
 }
 
 
-echo '<div id="main_content" style="height:94vh;" class="w3-row-padding UI-maincontent';
+echo '<div id="main_content" style="height:94vh;" class="VOL-main';
 if ($admin_mode) {
     echo ' UI-adminborder">';
     echo "\n";
@@ -567,7 +569,7 @@ if (isset($_SESSION['IS_ADMIN']) || $_SESSION['IS_VOLUNTEERS']) {
             $GLOBALS['VOL_ADMINKIOSK'])) {
 ?>
   <div>
-    <div class="w3-show-inline-block UI-right UI-red UI-margin">
+    <div class="VOL-admin-switch">
       <table class='switch-table'><tr><td>
         Admin Mode
         <label class=switch><input type="checkbox" class=toggle id=admin_slider <?php
@@ -596,9 +598,9 @@ if (isset($_SESSION['IS_ADMIN']) || $_SESSION['IS_VOLUNTEERS']) {
 
 <?php
 if (isset($uid)) {
-    echo "<div class='w3-bar-item' id='userLookup_div' data-user='$uid'> </div>\n";
+    echo "<div class='UI-bar-item' id='userLookup_div' data-user='$uid'> </div>\n";
 } else {
-    echo "<div class='w3-bar-item' id='userLookup_div'> </div>\n";
+    echo "<div class='UI-bar-item' id='userLookup_div'> </div>\n";
 }
 ?>
 
@@ -608,7 +610,7 @@ if (isset($uid)) {
 
 <!------ Main Section ----->
 
-<div class='w3-row-padding'>
+<div class='VOL-row-padding'>
     <div id='info_div' class='UI-rest'>
 <?php
 if (!isset($locked)) {
@@ -728,53 +730,48 @@ if (!isset($locked)) {
         <div class='UI-border UI-padding'>
           <form>
 
-            <label class='UI-label' for='edit_prize_name' class="w3-tooltip">
+            <label class='UI-label' for='edit_prize_name' class="UI-tooltip">
                 <span
-                  style="position:absolute;left:-80px;right:-80px;bottom:18px"
-                  class="w3-text w3-tag event-color-primary w3-round-xlarge">Visible name of the item</span>
+                  class="VOL-gift-label">Visible name of the item</span>
             Name:</label>
             <input class="UI-input" id="edit_prize_name" placeholder="<name>">
-            <label class='UI-label' for='edit_prize_value' class="w3-tooltip">
+            <label class='UI-label' for='edit_prize_value' class="UI-tooltip">
                 <span
-                  style="position:absolute;left:-80px;right:-80px;bottom:18px"
-                  class="w3-text w3-tag event-color-primary w3-round-xlarge">Hour cost of the item</span>
+                  class="VOL-gift-label">Hour cost of the item</span>
             Value:</label>
             <input class="UI-input" id="edit_prize_value">
-            <label class='UI-label' for='edit_prize_value' class="w3-tooltip">
+            <label class='UI-label' for='edit_prize_value' class="UI-tooltip">
                 <span
-                  style="position:absolute;left:-80px;right:-80px;bottom:18px"
-                  class="w3-text w3-tag event-color-primary w3-round-xlarge">If 'yes' this item does not cost hours but instead is free at the given hour mark. Also enforces a limit of 1.</span>
+                  class="VOL-gift-label">If 'yes' this item does not cost hours but instead is free at the given hour mark. Also enforces a limit of 1.</span>
             Promo Item:</label>
             <select class="UI-select" id="edit_prize_promo">
               <option value='yes'>Yes</option>
               <option value='no'>No</option>
             </select>
 
-            <label class='UI-label' for='edit_prize_count' class="w3-tooltip">
+            <label class='UI-label' for='edit_prize_count' class="UI-tooltip">
                 <span
-                  style="position:absolute;left:-80px;right:-80px;bottom:18px"
-                  class="w3-text w3-tag event-color-primary w3-round-xlarge">Changing this will adjust Total items</span>
+                  class="VOL-gift-label">Changing this will adjust Total items</span>
             Inventory Remaining:</label>
             <input class="UI-input" id="edit_prize_count">
 
-                    <label class='UI-label' for='edit_prize_group' class="w3-tooltip">
+                    <label class='UI-label' for='edit_prize_group' class="UI-tooltip">
                         <span
-                          style="position:absolute;left:-80px;right:-80px;bottom:18px"
-                          class="w3-text w3-tag event-color-primary w3-round-xlarge">If in a group there can be only a limited total number of the items in the group claimed by the volunteer</span>
+                          class="VOL-gift-label">If in a group there can be only a limited total number of the items in the group claimed by the volunteer</span>
                     Gift Group:</label>
-            <div class="w3-row">
-                <div class='w3-col w3-threequarter UI-padding'>
+            <div class="VOL-gift-group-row">
+                <div class='VOL-gift-group-select'>
                     <select class="UI-select" id="edit_prize_group"
                      onchange="prizeGroupChange()">
                       <option value='none'>&lt;none&gt;</option>
                     </select>
                 </div>
-                <div class='w3-col w3-quarter UI-padding'>
-                    <input class="UI-input w3-disabled" id="edit_prize_group_count" disabled placeholder="max">
+                <div class='VOL-gift-group-max'>
+                    <input class="UI-input UI-disabled" id="edit_prize_group_count" disabled placeholder="max">
                 </div>
             </div>
 
-            <input class="UI-input w3-disabled UI-hide" id="prize_data" readonly>
+            <input class="UI-input UI-disabled UI-hide" id="prize_data" readonly>
           </form>
         </div>
         <div class='UI-center'>
@@ -801,7 +798,7 @@ if (!isset($locked)) {
         <div class='UI-border UI-padding'>
           <form>
             <label class='UI-label' for='edit_name'>Volunteer:</label>
-            <input class="UI-input w3-disabled" id="edit_name" readonly>
+            <input class="UI-input UI-disabled" id="edit_name" readonly>
             <label class='UI-label' for='edit_hours'>Actual Hours:</label>
             <input class="UI-input" id="edit_hours">
             <label class='UI-label' for='edit_mod'>Time Modifier</label><br />
@@ -824,10 +821,10 @@ foreach ($Departments as $dep => $set) {
 ?>
             </select>
             <label class='UI-label' for='edit_enter'>Entered By:</label>
-            <input class="UI-input w3-disabled" id="edit_enter" readonly>
+            <input class="UI-input UI-disabled" id="edit_enter" readonly>
             <label class='UI-label' for='edit_auth'>Authorized By:</label>
             <input class="UI-input" id="edit_auth">
-            <input class="UI-input w3-disabled UI-hide" id="edit_data" readonly>
+            <input class="UI-input UI-disabled UI-hide" id="edit_data" readonly>
           </form>
         </div>
         <div class='UI-center'>
@@ -852,7 +849,7 @@ foreach ($Departments as $dep => $set) {
         </div>
         <table class='UI-stripedtable' id='return_table'>
         </table>
-        <div class="UI-container UI-center w3-large event-color-primary UI-margin">
+        <div class="VOL-return-hours">
             <span>Hours To Be Credited: <span id="credit_hours">0</span></span>
         </div>
         <div class='UI-center'>
@@ -866,15 +863,15 @@ foreach ($Departments as $dep => $set) {
             </button>
         </div>
 
-        <div id="return_success_dlg" class="w3-modal">
-          <div class="w3-modal-content">
+        <div id="return_success_dlg" class="UI-modal">
+          <div class="UI-modal-content">
             <div class="UI-container">
               <span onclick="document.getElementById('return_success_dlg').style.display='none';
                 location.reload();"
-              class="UI-button w3-display-topright">&times;</span>
+              class="VOL-return-label">&times;</span>
               <h2 class="UI-center event-color-primary">Please collect and return the following gifts</h2>
               <hr>
-              <table class='UI-center UI-stripedtable w3-xlarge UI-padding' id='return_list'>
+              <table class='VOL-return-table' id='return_list'>
               </table>
               <h2 class="UI-center UI-red">Close this window when all returns have been processed!</h2>
             </div>
@@ -888,7 +885,7 @@ foreach ($Departments as $dep => $set) {
         </div>
         <table class='UI-stripedtable' id='checkout_table'>
         </table>
-        <div class="UI-container UI-center w3-large event-color-primary UI-margin">
+        <div class="VOL-claim-hour-div">
             <span>Hours Left: <span id="hours_left">0</span></span>
             <br>
             <span>Hours Spent: <span id="hours_used">0</span></span>
@@ -906,15 +903,15 @@ foreach ($Departments as $dep => $set) {
     </div>
 </div>
 
-<div id="success_dlg" class="w3-modal">
-  <div class="w3-modal-content">
+<div id="success_dlg" class="UI-modal">
+  <div class="UI-modal-content">
     <div class="UI-container">
       <span onclick="document.getElementById('success_dlg').style.display='none';
         location.reload();"
-      class="UI-button w3-display-topright">&times;</span>
+      class="VOL-give-close">&times;</span>
       <h2 class="UI-center event-color-primary">Please get the volunteer the following new gifts!</h2>
       <hr>
-      <table class='UI-center UI-stripedtable w3-xlarge UI-padding' id='reward_list'>
+      <table class='VOL-give-gift-table' id='reward_list'>
       </table>
       <h2 class="UI-center UI-red">Close this window when all gifts have been claimed!</h2>
     </div>

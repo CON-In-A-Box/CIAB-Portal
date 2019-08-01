@@ -143,23 +143,23 @@ if (is_file(__DIR__."/.ht_meetingsignin_config.php")) {
 }
 ?>
 
-<h2 class="UI-center w3-green"> First Run Setup </h2>
+<h2 class="UI-center UI-green"> First Run Setup </h2>
 
 <?php
 if (strlen($failed_message)) {
-    echo '<div class="w3-panel w3-padding-16 UI-red UI-center"><h2>'.$failed_message."</h2></div>\n";
+    echo '<div class="UI-configure-panel UI-red UI-center"><h2>'.$failed_message."</h2></div>\n";
 }
 ?>
 
-<div class="w3-panel w3-padding-16">
+<div class="UI-configure-panel">
 <p> Hello and welcome to Con-In-A-Box. This page will help to get your instance up and running. Please make sure all the information is correct before submitting. </p>
 </div>
 
-<div class="w3-panel w3-padding-16">
+<div class="UI-configure-panel">
 <i>Note: The Database and database user have to be created by hand before you begin the process. </i>
 </div>
 
-<div class="w3-panel w3-blue UI-center">
+<div class="UI-configure-info-panel">
 <p> In order to configure your site we need to know the following information. </p>
 </div>
 
@@ -245,7 +245,7 @@ if (strlen($failed_message)) {
     </br>
 
     <label>Is Neon Trial Account:</label> <br>
-    <input type="checkbox" name="new_NEONBETA" class="w3-checkbox <?php
+    <input type="checkbox" name="new_NEONBETA" class="UI-checkbox <?php
     if ($updateData != null && $updateData['new_NEONBETA']) {
         echo '" checked"';
     } elseif ($tried) {

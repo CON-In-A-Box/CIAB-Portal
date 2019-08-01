@@ -153,7 +153,7 @@ if (!empty($searchCriteria['firstName']) ||
 
 ?>
 
-<div id="left_bar" class="UI-content w3-left UI-margin">
+<div id="left_bar" class="ADMIN-center-bar">
 <form action="index.php?Function=admin" method="POST" class="form-inline">
   <fieldset>
     <legend>Basic NeonCRM Account Search</legend>
@@ -259,11 +259,11 @@ foreach ($table as $line) {
 <!-- Debug code for admins, just in case -->
 <p></p>
 
-<div id="dbg_info_content" class="w3-section UI-container">
-  <button class="UI-roundbutton w3-small w3-block w3-left-align" onclick="expandSection('dbg_info');"><span>Debug Session Information&nbsp;</span><i id="dbg_info_arrow" class="fa fa-caret-down"></i></button>
+<div id="dbg_info_content" class="ADMIN-info-section">
+  <button class="ADMIN-button" onclick="expandSection('dbg_info');"><span>Debug Session Information&nbsp;</span><i id="dbg_info_arrow" class="fa fa-caret-down"></i></button>
 
-  <div id="dbg_info" class="w3-section UI-margin UI-hide">
-      <div id="DebugInfo" class="w3-section w3-small">
+  <div id="dbg_info" class="ADMIN-info-parent UI-hide">
+      <div id="DebugInfo" class="ADMIN-DebugInfo">
         <pre><?php print_r($_SESSION); ?></pre>
       </div>
   </div>
@@ -271,13 +271,13 @@ foreach ($table as $line) {
 
 <!-- Activity log - limited to last lines, in reverse order -->
 <p></p>
-<div id="db_log_content" class="w3-section UI-container">
-  <button class="UI-roundbutton w3-small w3-block w3-left-align" onclick="expandSection('db_log');"><span>DB Activity Log&nbsp;</span><i id="db_log_arrow" class="fa fa-caret-down"></i></button>
+<div id="db_log_content" class="ADMIN-info-section">
+  <button class="ADMIN-button" onclick="expandSection('db_log');"><span>DB Activity Log&nbsp;</span><i id="db_log_arrow" class="fa fa-caret-down"></i></button>
 
-  <div id="db_log" class="w3-section UI-margin UI-hide">
-   <div id="ActivityLog" class="w3-section" style="width: 100%;">
+  <div id="db_log" class="ADMIN-info-parent UI-hide">
+   <div id="ActivityLog" class="ADMIN-ActivityLog">
      <div>
-       <button class="UI-yellowbutton UI-tiny w3-left-align" onclick="downloadLog()">Download Full Activity Log (CSV)</button>
+       <button class="ADMIN-download-button" onclick="downloadLog()">Download Full Activity Log (CSV)</button>
      </div>
         <?php dbPrintLog(1000); ?>
    </div>

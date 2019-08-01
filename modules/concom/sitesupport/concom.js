@@ -241,11 +241,11 @@ function dblClick(json) {
   }
   if (input.Children > 0) {
     document.getElementById('dept_slider').disabled = true;
-    document.getElementById('dept_slider_parent').classList.add('w3-gray');
+    document.getElementById('dept_slider_parent').classList.add('UI-gray');
     document.getElementById('delete_btn').disabled = true;
   } else {
     document.getElementById('dept_slider').disabled = false;
-    document.getElementById('dept_slider_parent').classList.remove('w3-gray');
+    document.getElementById('dept_slider_parent').classList.remove('UI-gray');
     if (input.Count !== 0) {
       document.getElementById('delete_btn').disabled = true;
     } else {

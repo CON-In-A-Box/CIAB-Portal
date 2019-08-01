@@ -1,0 +1,73 @@
+@import "common";
+@import "modules/concom/scss/panel.scss";
+
+.CONCOM-table-head {
+    @extend .event-color-secondary;
+    @extend .w3-small;
+}
+
+.CONCOM-division-table {
+    @extend .UI-stripedtable;
+    @extend .w3-hoverable;
+}
+
+.CONCOM-goto-dropdown {
+    @extend .w3-dropdown-hover;
+    @extend .event-color-secondary;
+}
+
+.CONCOM-goto-dropdown-content {
+    @extend .w3-dropdown-content;
+    @extend .event-color-secondary;
+}
+
+.CONCOM-department {
+    @extend .w3-quarter;
+    @extend .event-color-secondary;
+    @extend .w3-xlarge;
+    @extend .UI-padding;
+    @extend .UI-margin;
+    @extend .w3-round-xxlarge;
+}
+
+.CONCOM-new-department-div {
+    @extend .w3-quarter;
+    @extend .w3-xlarge;
+    @extend .UI-padding;
+    @extend .UI-margin;
+    @extend .w3-round-xxlarge;
+}
+
+.CONCOM-new-department-button {
+    @extend .w3-xlarge;
+    @extend .UI-yellowbutton;
+}
+
+.CONCOM-new-division-button {
+    @extend .UI-yellowbutton;
+}
+
+.CONCOM-division-span {
+    @extend .event-color-primary;
+    @extend .w3-xxxlarge;
+    @extend .UI-padding;
+    @extend .UI-margin;
+    @extend .w3-round-xlarge;
+}
+
+.CONCOM-division-drag-div {
+    @extend .UI-container;
+    @extend .w3-buffer;
+    @extend .w3-section;
+}
+
+.CONCOM-admin-content {
+    @extend .w3-section;
+    @extend .UI-container;
+}
+
+.CONCOM-admin-section {
+    @extend .UI-admin-sectionbar;
+    @extend .w3-block;
+    @extend .w3-left-align;
+}

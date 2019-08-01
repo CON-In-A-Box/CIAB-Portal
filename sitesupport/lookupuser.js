@@ -36,7 +36,7 @@ var userLookup = (function(options) {
         }
         response.forEach(function(item) {
           var div = document.createElement('DIV');
-          div.classList.add('w3-bar-item');
+          div.classList.add('UI-bar-item');
           div.classList.add('UI-button');
           if (target) {
             div.setAttribute('onclick',
@@ -135,7 +135,7 @@ var userLookup = (function(options) {
           if (id) {
             var xhttp = new XMLHttpRequest();
             document.getElementById('userLookup_spinner').innerHTML =
-              '<i class=\'fa fa-spinner w3-spin\'></i>';
+              '<i class=\'fa fa-spinner UI-spin\'></i>';
             document.getElementById('userLookup_message').innerHTML = '';
             xhttp.onreadystatechange = function() {
               var response = JSON.parse(this.responseText);
@@ -187,29 +187,29 @@ var userLookup = (function(options) {
             div.appendChild(form);
             form.method = 'post';
             div = document.createElement('DIV');
-            div.classList.add('w3-bar');
+            div.classList.add('UI-bar');
             form.appendChild(div);
           } else {
             var divI = document.createElement('DIV');
-            divI.classList.add('w3-bar');
+            divI.classList.add('UI-bar');
             div.appendChild(divI);
           }
           var div2 = document.createElement('DIV');
-          div2.classList.add('w3-bar-item');
+          div2.classList.add('UI-bar-item');
           div.appendChild(div2);
           var label = document.createElement('LABEL');
           label.classList.add('UI-padding');
-          label.classList.add('w3-bar-item');
+          label.classList.add('UI-bar-item');
           label.innerHTML = settings.message;
           div2.appendChild(label);
           var div3 = document.createElement('DIV');
-          div3.classList.add('w3-bar');
-          label.classList.add('w3-bar-item');
+          div3.classList.add('UI-bar');
+          label.classList.add('UI-bar-item');
           div2.appendChild(div3);
           var input = document.createElement('INPUT');
           div3.appendChild(input);
           input.classList.add('UI-input');
-          input.classList.add('w3-bar-item');
+          input.classList.add('UI-bar-item');
           input.classList.add('UI-padding');
           input.name = 'MemberID';
           input.id = 'userLookup_member';
@@ -226,26 +226,23 @@ var userLookup = (function(options) {
           var button = document.createElement('BUTTON');
           div3.appendChild(button);
           button.type = 'button';
-          button.classList.add('UI-button');
-          button.classList.add('w3-bar-item');
-          button.classList.add('UI-border');
           button.classList.add('icon-barcode');
           button.classList.add('button-scan');
+          button.classList.add('UI-lookup-user-button');
           button.setAttribute('onclick',
             'QuaggaApp.init("userLookup_member", userLookup.lookupId)');
           var span = document.createElement('SPAN');
           div3.appendChild(span);
-          span.classList.add('w3-bar-item');
+          span.classList.add('UI-bar-item');
           span.id = 'userLookup_spinner';
           span = document.createElement('SPAN');
           div3.appendChild(span);
-          span.classList.add('w3-bar-item');
+          span.classList.add('UI-bar-item');
           span.id = 'userLookup_message';
           var drop = document.createElement('DIV');
           div3.appendChild(drop);
           drop.classList.add('UI-hide');
-          drop.classList.add('w3-black');
-          drop.classList.add('w3-bar-block');
+          drop.classList.add('UI-lookup-user-dropdown');
           drop.id = 'userLookup_dropdown';
         }
 

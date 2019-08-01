@@ -367,7 +367,7 @@ function buildAccessList(list) {
             position[idx] = element.PositionID;
         } else if (!hide) {
             var checked = !!+element[propertyName];
-            output += '<input class="w3-check" id="check'+ check;
+            output += '<input class="EMAILER-check" id="check'+ check;
             output += '_'+idx +'" type="checkbox" ';
             if (checked) {
                 output += 'checked="checked"';
@@ -382,7 +382,7 @@ function buildAccessList(list) {
     idx += 1;
   });
   // Blank One
-  output += "<div class='UI-table-row w3-red'>\n";
+  output += "<div class='UI-table-row UI-red'>\n";
   output += "<div class=UI-table-cell>";
   output += buildDepartmentList("new");
   output += "</div>";
@@ -390,10 +390,10 @@ function buildAccessList(list) {
   output += buildPositionList("new");
   output += "</div>";
   output += "<div class=UI-table-cell>";
-  output += '<input class="w3-check" id="check1_new" type="checkbox">';
+  output += '<input class="EMAILER-check" id="check1_new" type="checkbox">';
   output += "</div>";
   output += "<div class=UI-table-cell>";
-  output += '<input class="w3-check" id="check2_new" type="checkbox">';
+  output += '<input class="EMAILER-check" id="check2_new" type="checkbox">';
   output += "</div>";
   output += "<div class=UI-table-cell><button class='UI-roundbutton' onclick='addAccess()'><i class='fa fa-plus-square'></i></button></div>";
   output += "</div>\n";

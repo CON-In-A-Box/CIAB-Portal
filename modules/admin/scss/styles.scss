@@ -1,0 +1,72 @@
+@import "common";
+
+.ADMIN-center-bar {
+    @extend .UI-content;
+    @extend .w3-left;
+    @extend .UI-margin;
+}
+
+.ADMIN-info-section {
+    @extend .w3-section;
+    @extend .UI-container;
+}
+
+.ADMIN-button {
+    @extend .UI-roundbutton;
+    @extend .w3-small;
+    @extend .w3-block;
+    @extend .w3-left-align;
+}
+
+.ADMIN-info-parent {
+    @extend .w3-section;
+    @extend .UI-margin;
+}
+
+.ADMIN-DebugInfo {
+    @extend .w3-section;
+    @extend .w3-small;
+}
+
+.ADMIN-ActivityLog {
+    @extend .w3-section;
+    width: 100%;
+}
+
+.ADMIN-download-button {
+    @extend .UI-yellowbutton;
+    @extend .UI-tiny;
+    @extend .w3-left-align;
+}
+
+.ADMIN-log-row {
+    @extend .w3-row;
+}
+
+.ADMIN-log-col-date {
+    @extend .w3-col;
+    @extend .s2;
+    @extend .m2;
+    @extend .l2;
+}
+
+.ADMIN-log-col-id {
+    @extend .w3-col;
+    @extend .s1;
+    @extend .m1;
+    @extend .l1;
+}
+
+.ADMIN-log-col-function {
+    @extend .w3-col;
+    @extend .s2;
+    @extend .m2;
+    @extend .l2;
+}
+
+.ADMIN-log-col-query {
+    @extend .w3-col;
+    @extend .s7;
+    @extend .m7;
+    @extend .l7;
+}

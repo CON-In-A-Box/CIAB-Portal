@@ -1,0 +1,213 @@
+@import "common";
+
+.VOL-hover-red {
+    @extend .w3-hover-red;
+}
+
+.VOL-no-entries {
+    @extend .UI-center;
+    @extend .w3-gray;
+    @extend .w3-opacity;
+}
+
+.VOL-prize-bar {
+    @extend .w3-col;
+    @extend .UI-secondary-sectionbar;
+}
+
+.VOL-check {
+    @extend .w3-check;
+}
+
+@mixin color($property) {
+    .VOL-color-#{$property} {
+        @extend .w3-#{$property};
+    }
+}
+
+@include color(amber);
+@include color(aqua);
+@include color(brown);
+@include color(cyan);
+@include color(indigo);
+@include color(khaki);
+@include color(lime);
+@include color(orange);
+@include color(pink);
+@include color(purple);
+@include color(red);
+@include color(sand);
+@include color(teal);
+@include color(yellow);
+@include color(deep-purple);
+@include color(deep-orange);
+@include color(light-grey);
+@include color(light-blue);
+@include color(light-green);
+
+.VOL-messages-div {
+    @extend .w3-col;
+    @extend .UI-cell-row;
+    @extend .UI-padding;
+}
+
+.VOL-messages {
+    @extend .UI-container;
+    @extend .UI-padding;
+    @extend .w3-border-red;
+    @extend .UI-border;
+    @extend .UI-margin;
+    @extend .UI-cell;
+}
+
+.VOL-admin {
+    @extend .w3-col;
+    @extend .UI-cell-row;
+    @extend .UI-padding;
+}
+
+.VOL-admin-bar {
+    @extend .UI-container;
+    @extend .UI-padding;
+    @extend .w3-border-red;
+    @extend .UI-border;
+    @extend .UI-margin;
+    @extend .UI-cell;
+}
+
+.VOL-main {
+    @extend .w3-row-padding;
+    @extend .UI-maincontent;
+}
+
+.VOL-admin-switch {
+    @extend .w3-show-inline-block;
+    @extend .UI-right;
+    @extend .UI-red;
+    @extend .UI-margin;
+}
+
+.VOL-row-padding {
+    @extend .w3-row-padding;
+}
+
+.VOL-gift-label {
+    @extend .w3-text;
+    @extend .w3-tag;
+    @extend .event-color-primary;
+    @extend .w3-round-xlarge;
+    position:absolute;
+    left:-80px;
+    right:-80px;
+    bottom:18px;
+}
+
+.VOL-gift-group-row {
+    @extend .w3-row;
+}
+
+.VOL-gift-group-select {
+    @extend .w3-col;
+    @extend .w3-threequarter;
+    @extend .UI-padding;
+}
+
+.VOL-gift-group-max {
+    @extend .w3-col;
+    @extend .w3-quarter;
+    @extend .UI-padding;
+}
+
+.VOL-return-hours {
+    @extend .UI-container;
+    @extend .UI-center;
+    @extend .w3-large;
+    @extend .event-color-primary;
+    @extend .UI-margin;
+}
+
+.VOL-return-label {
+    @extend .UI-button;
+    @extend .w3-display-topright;
+}
+
+.VOL-return-table {
+    @extend .UI-center;
+    @extend .UI-stripedtable;
+    @extend .w3-xlarge;
+    @extend .UI-padding;
+}
+
+.VOL-claim-hour-div {
+    @extend .UI-container;
+    @extend .UI-center;
+    @extend .w3-large;
+    @extend .event-color-primary;
+    @extend .UI-margin;
+}
+
+.VOL-give-close {
+    @extend .UI-button;
+    @extend .w3-display-topright;
+}
+
+.VOL-give-gift-table {
+    @extend .UI-center;
+    @extend .UI-stripedtable;
+    @extend .w3-xlarge;
+    @extend .UI-padding;
+}
+
+.VOL-enter-msg {
+    @extend .w3-block;
+    @extend .UI-center;
+    @extend .event-color-primary;
+}
+
+.VOL-enter-msg-error {
+    @extend .w3-block;
+    @extend .UI-center;
+    @extend .UI-red;
+}
+
+.VOL-enter-id-span {
+    @extend .w3-large;
+}
+
+.VOL-enter-error-span {
+    @extend .UI-red;
+    @extend .w3-large;
+}
+
+.VOL-enter-block {
+    @extend .w3-block;
+}
+
+.VOL-authorized-label {
+    @extend .UI-label;
+    @extend .w3-left;
+}
+
+.VOL-ripple-button {
+    @extend .w3-ripple;
+}
+
+.VOL-batch-link {
+    @extend .w3-small;
+}
+
+.VOL-row {
+    @extend .w3-row;
+}
+
+.VOL-code-block {
+    @extend .VOL-enter-block;
+    @extend .w3-gray;
+    @extend .UI-center;
+}
+
+.VOL-code-enter {
+    @extend .w3-left;
+    @extend .UI-margin;
+    @extend .w3-half;
+}

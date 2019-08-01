@@ -23,8 +23,20 @@
     @extend .w3-center;
 }
 
+.UI-black {
+    @extend .w3-black;
+}
+
+.UI-blue {
+    @extend .w3-blue;
+}
+
 .UI-red {
     @extend .w3-red;
+}
+
+.UI-green {
+    @extend .w3-green;
 }
 
 .UI-yellow {
@@ -41,6 +53,14 @@
 
 .UI-orange {
     @extend .w3-orange;
+}
+
+.UI-gray {
+    @extend .w3-gray;
+}
+
+.UI-dark-gray {
+    @extend .w3-dark-gray;
 }
 
 .UI-sectionbar {
@@ -129,6 +149,10 @@
     @extend .w3-striped;
     @extend .UI-border;
     @extend .w3-white;
+}
+
+.UI-disabled {
+    @extend .w3-disabled;
 }
 
 .UI-input {
@@ -515,4 +539,65 @@
     @extend .UI-cell;
     @extend .w3-third;
     @extend .UI-border;
+}
+
+.UI-modal {
+    @extend .w3-modal;
+}
+
+.UI-modal-content {
+    @extend .w3-modal-content;
+}
+
+.UI-close-button {
+    @extend .w3-display-topright;
+    @extend .UI-button;
+}
+
+.UI-spinner-div {
+    @extend .w3-modal-content;
+    @extend .w3-jumbo;
+    @extend .UI-center;
+    @extend .w3-round-xxlarge;
+}
+
+.UI-spin {
+    @extend .w3-spin;
+}
+
+.UI-lookup-user-button {
+    @extend .UI-button;
+    @extend .w3-bar-item;
+    @extend .UI-border;
+}
+
+.UI-lookup-user-dropdown {
+    @extend .UI-black;
+    @extend .w3-bar-block;
+}
+
+.UI-tooltip {
+    @extend .w3-tooltop;
+}
+
+.UI-kiosk-slider {
+    @extend .w3-show-inline-block;
+    @extend .w3-left;
+    @extend .event-color-secondary;
+    @extend .UI-margin;
+}
+
+.UI-configure-panel {
+    @extend .w3-panel;
+    @extend .w3-padding-16;
+}
+
+.UI-checkbox {
+    @extend .w3-checkbox;
+}
+
+.UI-configure-info-panel {
+    @extend .w3-panel;
+    @extend .UI-blue;
+    @extend .UI-center;
 }

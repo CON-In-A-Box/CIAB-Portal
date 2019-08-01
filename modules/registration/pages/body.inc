@@ -152,7 +152,7 @@ if (!empty($badges)) {
         echo "</table>\n";
     }
 } else {
-    echo "<tr><th class='UI-center w3-gray w3-opacity' colspan=9>No Entries...</th></tr>\n";
+    echo "<tr><th class='REG-no-entries' colspan=9>No Entries...</th></tr>\n";
 }
 ?>
     <tr class='event-color-secondary'><th colspan=5 class='UI-center'></th></tr>
@@ -209,7 +209,7 @@ if (!empty($badges)) {
         });
 </script>
 
-<div id="main_content" style="height:94vh;" class="UI-maincontent w3-row-padding">
+<div id="main_content" style="height:94vh;" class="REG-main-content">
   <div class="UI-event-sectionbar">
         <span>Registration
 <?php
@@ -231,17 +231,17 @@ if (kiosk_user()) {
 if ($access) {
     echo '<div id="kiosk_mode"';
     if (empty($id)) {
-        echo ' class="w3-disabled"';
+        echo ' class="UI-disabled"';
     }
     echo '>';
     generate_kiosk_slider("registration");
     echo '</div>';
 
 ?>
-    <div class="w3-show-inline-block UI-right w3-margin w3-row-padding">
-        <label class='UI-label' for='workstation_id' class="w3-half">
+    <div class="REG-id-div">
+        <label class='UI-label UI-half' for='workstation_id'>
         Workstation ID:</label>
-        <input class="UI-input w3-half" id="workstation_id" placeholder="Required for Kiosk"
+        <input class="UI-input UI-half" id="workstation_id" placeholder="Required for Kiosk"
 <?php
 if (isset($_COOKIE["CIAB_REGISTRATIONWORKSTATION"])) {
     echo " value='".$_COOKIE['CIAB_REGISTRATIONWORKSTATION']."'";
@@ -254,9 +254,9 @@ if (in_kiosk()) {
 <?php
 
 if (isset($uid)) {
-    echo "<div class='w3-bar-item' id='userLookup_div' data-user='$uid'> </div>\n";
+    echo "<div class='UI-bar-item' id='userLookup_div' data-user='$uid'> </div>\n";
 } else {
-    echo "<div class='w3-bar-item' id='userLookup_div'> </div>\n";
+    echo "<div class='UI-bar-item' id='userLookup_div'> </div>\n";
 }
 }
 echo "</div>";

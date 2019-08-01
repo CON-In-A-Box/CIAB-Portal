@@ -11,11 +11,11 @@ $hour_round_interval = 15;
 
 if (isset($updateComplete)) {
     if ($updateComplete === true) {
-        echo '<div class="w3-block UI-center event-color-primary">';
+        echo '<div class="VOL-enter-msg">';
         echo "Hours Recorded";
         echo "</div>\n";
     } else {
-        echo '<div class="w3-block UI-center UI-red">';
+        echo '<div class="VOL-enter-msg-error">';
         echo 'Hour Recording Failed!!  Error!';
         echo "</div>\n";
         $output = print_r($handoff, true);
@@ -25,7 +25,7 @@ if (isset($updateComplete)) {
 }
 ?>
 
-<div id="message" class='w3-block UI-center UI-red'></div>
+<div id="message" class='VOL-enter-msg-error'></div>
 
 <script>
     userLookup.options({
@@ -47,11 +47,11 @@ if (isset($uid)) {
 ?>
   <span class='' id='lookupname'></span>
 
-<div class='w3-bar'>
-  <div class='w3-bar-item'>
+<div class='UI-bar'>
+  <div class='UI-bar-item'>
     <label class='UI-label'>Actual hours worked</label>
-    <div class='w3-bar'>
-      <select class="UI-select w3-bar-item" type=text name="ActualHours" id="hours" onchange="calculateHours();" title="Actual Hours Worked.">
+    <div class='UI-bar'>
+      <select class="UI-select UI-bar-item" type=text name="ActualHours" id="hours" onchange="calculateHours();" title="Actual Hours Worked.">
         <option value=0>0</option>
         <option value=1 selected>1</option>
         <option value=2>2</option>
@@ -73,7 +73,7 @@ if (isset($uid)) {
         <option value=18>18</option>
         <option value=19>19</option>
       </select>
-      <select class="UI-select w3-bar-item" type=text name="ActualMinutes" id="minutes" onchange="calculateHours();" title="Actual Minutes Worked, to the nearest 15 minutes">
+      <select class="UI-select UI-bar-item" type=text name="ActualMinutes" id="minutes" onchange="calculateHours();" title="Actual Minutes Worked, to the nearest 15 minutes">
 
 <?php
 for ($i = 0; $i < 60; $i += $hour_round_interval) {
@@ -88,7 +88,7 @@ for ($i = 0; $i < 60; $i += $hour_round_interval) {
     </div>
     <input type=hidden name="ActualHoursWorked" id="actualhours" value=1>
   </div>
-  <div class='w3-bar-item'>
+  <div class='UI-bar-item'>
     <label class='UI-label'>Date/Time that the Shift Ended</label>
     <input class="UI-input" type="date" name="EndDate" id="end_date" pattern="\d{4}-\d{2}-\d{2}T\d{2}:\d{2}" value="<?php
     echo date('Y-m-d');
@@ -110,8 +110,8 @@ $pm = ($h > 12);
 $h %= 12;
 ?>
 
-    <input class="UI-input w3-bar-item" type=number id="end_hours" value=<?php echo $h ?> style="width: 75px;" required onchange="checkHours();" name="EndHours" min=0>
-    <select class="UI-select w3-bar-item" type=number name="EndMinutes" id="end_minutes" title="" style="height: 40px;" required onchange="checkHours();" name="EndMinutes">
+    <input class="UI-input UI-bar-item" type=number id="end_hours" value=<?php echo $h ?> style="width: 75px;" required onchange="checkHours();" name="EndHours" min=0>
+    <select class="UI-select UI-bar-item" type=number name="EndMinutes" id="end_minutes" title="" style="height: 40px;" required onchange="checkHours();" name="EndMinutes">
 <?php
 for ($i = 0; $i < 60; $i += $hour_round_interval) {
     echo "<option value = $i ";
@@ -122,7 +122,7 @@ for ($i = 0; $i < 60; $i += $hour_round_interval) {
 }
 ?>
     </select>
-    <select class="UI-select w3-bar-item" type=text name="EndAMPM" id="end_ampm" title="" style="height: 40px;" required onchange="checkHours();" name="EndAMPM">
+    <select class="UI-select UI-bar-item" type=text name="EndAMPM" id="end_ampm" title="" style="height: 40px;" required onchange="checkHours();" name="EndAMPM">
       <option value="AM" <?php
         if (!$pm) {
             echo 'selected';
@@ -136,7 +136,7 @@ for ($i = 0; $i < 60; $i += $hour_round_interval) {
 </div>
 
 <div class='UI-container'>
-  <div class='w3-block'>
+  <div class='VOL-enter-block'>
     <label class='UI-label'>Volunteer Time Modifier - Must be per policy</label><br />
     <select class="UI-select" style="width:auto" name="TimeModifier" id="modifier" onchange="calculateHours();">
       <option value=1 selected>Normal - 1 hour = 1 hour</option>
@@ -145,7 +145,7 @@ for ($i = 0; $i < 60; $i += $hour_round_interval) {
       <option value=2>Double - 1 hour = 2 hours credit</option>
     </select>
   </div>
-  <div class='w3-block'>
+  <div class='VOL-enter-block'>
     <label class='UI-label'>Department worked</label><br />
     <select class="UI-select" style="width:auto" name="DepartmentWorked" id="department">
         <?php
@@ -179,8 +179,8 @@ for ($i = 0; $i < 60; $i += $hour_round_interval) {
   </div>
 </div>
 
-<div class='w3-bar'>
-  <div class="w3-bar-item UI-center">
+<div class='UI-bar'>
+  <div class="UI-bar-item UI-center">
   <p name=summery>
       Crediting
       <span id="totalhours">1 hour</span>
@@ -196,12 +196,12 @@ for ($i = 0; $i < 60; $i += $hour_round_interval) {
   </div>
 </div>
 
-<div class='w3-bar'>
-  <div class="w3-bar-item">
+<div class='UI-bar'>
+  <div class="UI-bar-item">
     <?php
     if (($_SESSION['IS_VOLUNTEERS'] || isset($_SESSION['IS_ADMIN'])) &&
         !kiosk_user()) {
-        echo '<label class="UI-label" class="w3-left">Hours Authorized By</label>';
+        echo '<label class="VOL-authorized-label">Hours Authorized By</label>';
         echo '<input class="UI-input" type=text';
     } else {
         echo '<input type=hidden';
@@ -217,18 +217,18 @@ for ($i = 0; $i < 60; $i += $hour_round_interval) {
   </div>
 </div>
 
-<div class='w3-bar'>
-  <div class="w3-bar-item">
-    <div class="w3-bar">
-      <button id="submitbtn" class="UI-eventbutton w3-ripple" disabled>Submit Hours</button>
-      <button class="UI-secondarybutton w3-ripple" type="button" onclick="resetForm()">Clear Form</button>
+<div class='UI-bar'>
+  <div class="UI-bar-item">
+    <div class="UI-bar">
+      <button id="submitbtn" class="UI-eventbutton VOL-ripple-button" disabled>Submit Hours</button>
+      <button class="UI-secondarybutton VOL-ripple-button" type="button" onclick="resetForm()">Clear Form</button>
     </div>
   </div>
 </div>
 
-<div class='w3-bar'>
-  <div class="w3-bar-item UI-center" style="width:inherit;">
-    <p class="w3-small">
+<div class='UI-bar'>
+  <div class="UI-bar-item UI-center" style="width:inherit;">
+    <p class="VOL-batch-link">
         <a href='javascript:void(0)' onclick='batch()'>batch file upload</a>
     </p>
   </div>
@@ -236,42 +236,42 @@ for ($i = 0; $i < 60; $i += $hour_round_interval) {
 
 </form>
 
-<div id='csv_import' class='w3-modal'>
-  <div class="w3-modal-content">
+<div id='csv_import' class='UI-modal'>
+  <div class="UI-modal-content">
     <div class=UI-container">
-      <div class="w3-row">
+      <div class="VOL-row">
         <h2 class="UI-center event-color-primary">Volunteer CSV File To Upload</h2>
       </div>
-      <div class="w3-row">
+      <div class="VOL-row">
         <p class="UI-margin UI-center">CSV file format:
-        <code class="w3-block w3-gray UI-center">&lt;Account,ActualHours,AuthorizedBy,Department,EndDateTime,EnteredBy,Event,TimeModifier&gt;</code></p>
+        <code class="VOL-code-block">&lt;Account,ActualHours,AuthorizedBy,Department,EndDateTime,EnteredBy,Event,TimeModifier&gt;</code></p>
         <p class="UI-margin UI-center"><b>Account fields</b> (Account, AuthorizedBy, EnteredBy)  can be badge number, name, or email. However it has to uniquly identify the user so badge number is always the safest.</p>
         <p class="UI-margin UI-center"><b>Event</b> is optional. If left empty then the current upcoming event is used.</p>
         <p class="UI-margin UI-center"><b>EndDateTime</b> should be quoted. The format is "YYYY-MM-DD HH:MM:SS".</p>
-        <h2 class="w3-block UI-center">Example</h2>
+        <h2 class="VOL-enter-block UI-center">Example</h2>
         <table class="UI-stripedtable">
            <tr><td>Attendee Joe,1.000,Connie VonRobot,IT,"2018-06-04 08:15:00",Connie VonRobot,,1.0</tr></td>
            <tr><td>joe@attendee.com,1.000,60055,Gaming,"2018-06-05 08:15:00",Connie VonRobot,,1.0</tr></td>
            <tr><td>60054,1.000,60055,Hotel,"2018-06-06 08:15:00",60055,,1.0</tr></td>
         </table>
       </div>
-      <div class="w3-row">
-          <div class="w3-left UI-margin w3-half">
+      <div class="VOL-row">
+          <div class="VOL-code-enter">
               <input style="width: 100%;" type="file" id="batch_file" onchange="fileChange()">
           </div>
           <div class="UI-right">
               <button class="UI-redbutton UI-margin" onclick="batchCancel()">Cancel</button>
           </div>
           <div class="UI-right">
-              <button class="UI-eventbutton UI-margin w3-disabled" id="batch_import" onclick="batchImport()">Import</button>
+              <button class="UI-eventbutton UI-margin UI-disabled" id="batch_import" onclick="batchImport()">Import</button>
           </div>
       </div>
     </div>
   </div>
 </div>
 
-<div id='csv_import_report' class='w3-modal'>
-  <div class="w3-modal-content">
+<div id='csv_import_report' class='UI-modal'>
+  <div class="UI-modal-content">
     <div class=UI-container">
         <div>
             <h2 class="UI-center event-color-primary">Volunteer CSV Import Result</h2>

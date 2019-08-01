@@ -44,7 +44,7 @@ function getPositionID($position)
 
 function printTableHeader($section, $long = true)
 {
-    echo "<tr id=\"table_head_$section\" class=\"event-color-secondary w3-small\">";
+    echo "<tr id=\"table_head_$section\" class=\"CONCOM-table-head\">";
     if ($long) {
         echo '<th class="">Department</th>';
         echo '<th class="">Division</th>';
@@ -79,7 +79,7 @@ function ConComListDisplay()
     ksort_recursive($printList);
 
     // Start the crazy print routine!
-    echo "<table class='UI-stripedtable w3-hoverable'>\n";
+    echo "<table class='CONCOM-division-table'>\n";
     foreach ($Divisions as $div) {
         $currentDivDirector = false;
         echo '<tr id="division" class="event-color-secondary"><th id="'.$div.'" class="UI-center" colspan=2>'.$div;
@@ -87,9 +87,9 @@ function ConComListDisplay()
             echo ' Division';
         }
         echo '</th><th class="UI-center" colspan=3>';
-        echo '<div class="w3-dropdown-hover event-color-secondary">';
+        echo '<div class="CONCOM-goto-dropdown">';
         echo '  Go To Section';
-        echo '  <div class="w3-dropdown-content event-color-secondary">';
+        echo '  <div class="CONCOM-goto-dropdown-content">';
         echo '    <a href="#main_nav" class="UI-border">Top of Page</a><br />';
         foreach ($Divisions as $menuDiv) {
             // ##==## Likely need to add some translation here to blot out '&'
@@ -465,7 +465,7 @@ function _departments($division)
             $id = $Departments[$name]['id'];
             $DivId = $Departments[$Departments[$name]['Division']]['id'];
             echo "<div ";
-            echo "class='w3-quarter event-color-secondary w3-xlarge UI-padding UI-margin w3-round-xxlarge' ";
+            echo "class='CONCOM-department' ";
             echo "id=".$id." ";
             echo "draggable='true' ";
             $data = [
@@ -484,9 +484,9 @@ function _departments($division)
             echo ">$name</div>\n";
         }
     }
-    echo "<div class='w3-quarter w3-xlarge UI-padding UI-margin w3-round-xxlarge'>\n";
+    echo "<div class='CONCOM-new-department-div'>\n";
     echo "<button onclick='newEntry($did)' ";
-    echo "class='w3-xlarge UI-yellowbutton' ";
+    echo "class='CONCOM-new-department-button' ";
     echo "ondrop='dragDropParent(event, 2);'>";
     echo "<i class='fa fa-plus-square' ";
     echo "ondrop='dragDropParent(event, 3);'></i></button>\n";
@@ -500,7 +500,7 @@ function build_structure_sections()
     global $Divisions, $Departments, $deptCount;
 
     echo "<div id='division_new' class='UI-container UI-margin'>";
-    echo "<button onclick='newEntry(-1)' class='UI-yellowbutton'><span>Add New Division</span> <i class='fa fa-plus-square'></i></button>";
+    echo "<button onclick='newEntry(-1)' class='CONCOM-new-division-button'><span>Add New Division</span> <i class='fa fa-plus-square'></i></button>";
     echo "</div>\n";
 
     foreach ($Divisions as $div) {
@@ -520,8 +520,8 @@ function build_structure_sections()
                 ];
         $data_enc = base64_encode(json_encode($data));
         echo "<div id='division_$id' class='UI-container UI-margin'>\n";
-        echo "<span class='event-color-primary w3-xxxlarge UI-padding UI-margin w3-round-xlarge' ondblclick='dblClick(\"".$data_enc."\");'>$div</span>";
-        echo "<div id='$div_content_id' class='UI-container w3-buffer w3-section' ondragover='dragOverDivision(\"$div_content_id\");' ondragleave='dragLeaveDivision(\"$div_content_id\");' ondragend='dragLeaveDivision(\"$div_content_id\");' ondrop='dragDropDivision(event);' data-dbId=\"$id\">\n";
+        echo "<span class='CONCOM-division-span' ondblclick='dblClick(\"".$data_enc."\");'>$div</span>";
+        echo "<div id='$div_content_id' class='CONCOM-division-drag-div' ondragover='dragOverDivision(\"$div_content_id\");' ondragleave='dragLeaveDivision(\"$div_content_id\");' ondragend='dragLeaveDivision(\"$div_content_id\");' ondrop='dragDropDivision(event);' data-dbId=\"$id\">\n";
         _departments($div);
         echo "</div>";
         echo "</div>";

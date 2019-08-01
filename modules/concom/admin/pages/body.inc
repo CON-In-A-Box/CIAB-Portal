@@ -6,9 +6,9 @@
 <?php
 $deptCount = departmentDetails();
 ?>
-<div id="admin_content" class="w3-section UI-container">
+<div id="admin_content" class="CONCOM-admin-content">
 
-    <div class="UI-admin-sectionbar w3-block w3-left-align">
+    <div class="CONCOM-admin-section">
         <span>ConCom Structure</span>
     </div>
 

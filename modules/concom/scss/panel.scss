@@ -1,0 +1,17 @@
+.CONCOM-status {
+    @extend .UI-container;
+    @extend .w3-black;
+}
+
+.CONCOM-status-title {
+    @extend .UI-center;
+    @extend .w3-black;
+}
+
+.CONCOM-checkin {
+    @extend .w3-lime;
+}
+
+.CONCOM-checkin-now {
+    @extend .w3-yellow;
+}

@@ -3,7 +3,7 @@
 require_once __DIR__."/../functions/emailer.inc";
 
 if (email::allowed()) {
-    $admin_menus[] = array('base style' => 'w3-yellow',
+    $admin_menus[] = array('base style' => 'UI-yellow',
         'selected style' => 'event-color-primary',
         'function' => 'emailer',
         'title' => 'Send E-mail',

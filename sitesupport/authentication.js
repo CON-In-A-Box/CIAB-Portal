@@ -60,16 +60,15 @@ function checkAuthentication(username, success, failure, params) {
   user = username;
   if (!dlg) {
     dlg = document.createElement('DIV');
-    dlg.classList.add('w3-modal');
+    dlg.classList.add('UI-modal');
     dlg.id = 'reauthentication_dlg';
     var content = document.createElement('DIV');
     dlg.appendChild(content);
-    content.classList.add('w3-modal-content');
+    content.classList.add('UI-modal-content');
 
     var x = document.createElement('SPAN');
     x.onclick = _cancelAuthentication;
-    x.classList.add('UI-button');
-    x.classList.add('w3-display-topright');
+    x.classList.add('UI-close-button');
     x.innerHTML = '&times;';
     content.appendChild(x);
 
