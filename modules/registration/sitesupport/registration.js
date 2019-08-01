@@ -90,12 +90,12 @@ function workstationChange() {
   document.cookie = "CIAB_REGISTRATIONWORKSTATION=" + value + expires +
                     ";path=/";
   var element = document.getElementById('kiosk_mode');
-  var disabled = element.classList.contains('w3-disabled');
+  var disabled = element.classList.contains('UI-disabled');
   var state = (value === "");
   if (state !== disabled) {
         if (state && !disabled)
-          element.classList.add('w3-disabled');
+          element.classList.add('UI-disabled');
         if (disabled && !state)
-          element.classList.remove('w3-disabled');
+          element.classList.remove('UI-disabled');
   }
 }
