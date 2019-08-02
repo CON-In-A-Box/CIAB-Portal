@@ -87,6 +87,7 @@ function _lookup_user($criteria, $single_result = false, $additional_fields = ar
 
 function lookup_users_by_ids($id)
 {
+    $id = trim($id);
     return _lookup_user([['Account ID', 'IN_RANGE', $id]]);
 
 }
@@ -94,6 +95,7 @@ function lookup_users_by_ids($id)
 
 function lookup_user_by_id($id)
 {
+    $id = trim($id);
     return _lookup_user([['Account ID', 'EQUAL', $id]], true);
 
 }
@@ -101,6 +103,7 @@ function lookup_user_by_id($id)
 
 function lookup_users_by_email($email, $single = true, $substring = false)
 {
+    $email = trim($email);
     if ($substring) {
         $operator = 'CONTAIN';
     } else {
@@ -167,6 +170,7 @@ function merge_results($result1, $result2)
 
 function lookup_users_by_name($name, $single = false, $substring = false)
 {
+    $name = trim(preg_replace('/\s+/', ' ', $name));
     if ($substring) {
         $names = explode(" ", $name);
         if (count($names) < 2) {
@@ -197,6 +201,7 @@ function lookup_users_by_name($name, $single = false, $substring = false)
 
 function lookup_users_by_pref_name($name, $single = false, $substring = false)
 {
+    $name = trim(preg_replace('/\s+/', ' ', $name));
     $preferredFirstName = search_definedFields('Preferred First Name');
     $preferredLastName = search_definedFields('Preferred Last Name');
     if ($substring) {
@@ -273,6 +278,7 @@ function lookup_users_by_badgename(
     $single_user = false,
     $substring = false
 ) {
+    $badge = trim($badge);
     if ($substring) {
         $sql = <<<SQL
             SELECT
@@ -310,6 +316,7 @@ SQL;
 
 function lookup_users_by_key($key, $single = true, $badgename = true, $substring = false)
 {
+    $key = trim(preg_replace('/\s+/', ' ', $key));
     if ($substring) {
         $output = ['code' => '404 Not Found', 'users' => array()];
         if (is_numeric($key) ||
