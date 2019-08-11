@@ -112,6 +112,14 @@ function get_volunteer_year_summery($event = null)
                     `HourRedemptions` as h
                 WHERE
                     EventID = $event
+                    AND (
+                        SELECT
+                            Promo
+                        FROM
+                            VolunteerRewards v
+                        WHERE
+                            v.prizeID = h.prizeID
+                       ) != 1
                 GROUP BY
                     EventID
             ) as TotalHoursSpent
