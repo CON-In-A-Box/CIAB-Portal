@@ -16,5 +16,5 @@ There are tools that are in process and will live in the tools directory that ca
 
 There is a basic release script located in `tools/prepare_release.php` This tool will update the version.ini and tag the branch with an automated tag name. It is again appropriate for CONvergence but may need modification or generalization for other events. 
 
-This tool is meant to be run on the **Production** branch to the the proper tagging. It can take a `--dry-run` option to see what is happening without actually taking any action. 
+This tool is meant to be run on the **Production** branch to do the proper tagging. It can take a `--dry-run` option to see what is happening without actually taking any action. 
 
