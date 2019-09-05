@@ -13,7 +13,7 @@ require_once($FUNCTIONDIR."/authentication.inc");
     <h2><?php echo $CONSITENAME; ?></h2>
   </div><!--close header text div-->
 <?php
-if (!empty($EXPIRED)) {
+if (!empty($FAILURE) && $FAILURE == AUTH_EXPIRED) {
     echo '<meta http-equiv="refresh" content="0; url=/index.php?Function=recovery&expired=1" />';
 }
 ?>
