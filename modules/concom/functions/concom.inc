@@ -134,7 +134,7 @@ function ConComListDisplay()
                         echo "</td>";
                         // System Admins can remove anyone
                         if (isset($_SESSION['IS_ADMIN'])) {
-                            echo '<td class="UI-red"><a href="index.php?Function=concom&Remove='.urlencode($tmp[2]).'&Department='.urlencode($div).'&Position=Director" onclick="return confirm(\'Are you sure you want to remove '.$kfName.' '.$klName.' from '.$div.'?\');">Remove</a></td>';
+                            echo '<td class="UI-red"><a href="index.php?Function=concom&Remove='.urlencode($tmp[2]).'&Department='.urlencode($div).'&Position=Head" onclick="return confirm(\'Are you sure you want to remove '.$kfName.' '.$klName.' from '.$div.'?\');">Remove</a></td>';
                         }
                         echo "</tr>\n";
                     }

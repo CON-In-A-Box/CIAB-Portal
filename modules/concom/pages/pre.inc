@@ -60,7 +60,7 @@ function doConComAddAssign($department, $accountid)
     echo '<select name="Position">';
     if (getDivision($department) == $department) {
         if (isset($_SESSION['IS_ADMIN'])) {
-            echo '<option value="Director">Division Director</option>';
+            echo '<option value="Head">Division Director</option>';
         }
         echo '<option value="Specialist">Divisional Support</option>';
     } else {
