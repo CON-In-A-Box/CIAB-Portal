@@ -7,52 +7,52 @@
 require_once($FUNCTIONDIR."/authentication.inc");
 ?>
 
-<header class="w3-cell-row event-color-primary w3-mobile">
+<header class="UI-page-title-bar">
     <?php require($PAGESDIR.'/base/logo.inc'); ?>
-  <div class="UI-container w3-cell w3-mobile">
+  <div class="UI-page-title">
     <h2><?php echo $CONSITENAME; ?></h2>
   </div><!--close header text div-->
 <?php
-if (!empty($EXPIRED)) {
+if (!empty($FAILURE) && $FAILURE == AUTH_EXPIRED) {
     echo '<meta http-equiv="refresh" content="0; url=/index.php?Function=recovery&expired=1" />';
 }
 ?>
 </header><!--close header div-->
-<div class="UI-container w3-mobile">
-  <div class="UI-container w3-cell w3-third UI-border">
+<div class="UI-maincontent">
+  <div class="UI-login-main-div">
     <h2>Log In</h2>
     <?php
     if (!empty($FAILURE)) {
         if ($FAILURE == AUTH_BAD) {
             echo '<div class="UI-center UI-border UI-margin UI-padding UI-red">';
-            echo '<h2 class="UI-red w3-bold w3-header">Login Incorrect<br>Please Try Again</h2></div>';
+            echo '<h2 class="UI-error-header">Login Incorrect<br>Please Try Again</h2></div>';
         } elseif ($FAILURE == AUTH_LOCKED) {
             echo '<div class="UI-center UI-border UI-margin UI-padding UI-red">';
-            echo '<h2 class="UI-red w3-bold w3-header">Account Locked</h2>';
-            echo '<span class="UI-red w3-bold w3-header">';
+            echo '<h2 class="UI-error-header">Account Locked</h2>';
+            echo '<span class="UI-error-header">';
             echo 'Too many unsuccessful login attempts.</span><br>';
-            echo '<span class="UI-red w3-bold w3-header">';
+            echo '<span class="UI-error-header">';
             echo 'Reset the password gain entry.';
             echo "</span></div>\n";
         } elseif ($FAILURE == AUTH_DUPLICATE) {
             echo '<div class="UI-center UI-border UI-margin UI-padding UI-yellow">';
-            echo '<h2 class="UI-yellow w3-bold w3-header">Duplicate Accounts Present</h2>';
-            echo '<span class="UI-yellow w3-bold w3-header">';
+            echo '<h2 class="UI-warning-header">Duplicate Accounts Present</h2>';
+            echo '<span class="UI-warning-header">';
             echo 'This e-mail address has duplicate accounts present.</span><br>';
             echo '</div>';
             echo '<div class="UI-center UI-border UI-margin UI-padding UI-red">';
-            echo '<h2 class="UI-red w3-bold w3-header">Login Incorrect<br>Please Try Again</h2></div>';
+            echo '<h2 class="UI-error-header">Login Incorrect<br>Please Try Again</h2></div>';
         }
     }
     ?>
 
     <form action="index.php?Function=public" method="post" onsubmit="return validate_form(this)" name="Log In" id="login_form" class="UI-container">
-      <label class="w3-label">Email Address</label>
+      <label class="UI-label">Email Address</label>
       <input name="user" type="text" class="UI-input">
 
       <p></p>
       
-      <label class="w3-label">Password</label>
+      <label class="UI-label">Password</label>
       <input name="password" type="password" class="UI-input">
       
       <p>
@@ -63,7 +63,7 @@ if (!empty($EXPIRED)) {
       </p>
     </form>
   </div>
-  <div class="UI-container w3-cell w3-twothird">
+  <div class="UI-container UI-cell UI-twothird">
     <p>
       Please sign in using the same email address and password you have used to register for CONvergence in the past.
     </p>

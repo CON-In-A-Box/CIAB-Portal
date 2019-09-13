@@ -169,12 +169,12 @@ SQL;
                 print "<tr> ";
                 print "<td>".implode('</td><td>', $badge)."</td>";
                 print "<td class='UI-center'>";
-                print "<button class='w3-small UI-eventbutton'  onclick='editBadge(\"$json\");'>Edit</button>  ";
+                print "<button class='UI-small UI-eventbutton'  onclick='editBadge(\"$json\");'>Edit</button>  ";
                 if (intval($badge['Sold']) == 0) {
                     $name = $badge['Badge Name'];
-                    print "<button class='w3-small UI-redbutton' onclick='deleteBadge($id,\"$name\");'>Delete</button>";
+                    print "<button class='UI-small UI-redbutton' onclick='deleteBadge($id,\"$name\");'>Delete</button>";
                 } else {
-                    print "<button class='w3-small UI-redbutton' disabled>Delete</button>";
+                    print "<button class='UI-small UI-redbutton' disabled>Delete</button>";
                 }
                 print "</td>";
                 print "</tr>\n";
@@ -212,7 +212,7 @@ SQL;
         if ($can_delete) {
             print "<button class='UI-redbutton' onclick='deleteEvent(".$entry['Id'].",\"$plain_name\")'>Delete Event</button>";
         } else {
-            print "<button class='UI-redbutton w3-disabled' >Delete Event</button>";
+            print "<button class='UI-redbutton UI-disabled' >Delete Event</button>";
         }
         print "</div>";
         print "</div></td>";
@@ -273,7 +273,7 @@ SQL;
         print "<td> <button class='UI-eventbutton' onclick='editMeeting(\"$json\")'>Modify Meeting</button> </td>";
         $attendance = _check_attendance($entry['Id']);
         if ($attendance > 0) {
-            print "<td class='UI-center'> <span class='UI-redbutton w3-disabled'>".$attendance." Attended </span> </td>";
+            print "<td class='UI-center'> <span class='UI-redbutton UI-disabled'>".$attendance." Attended </span> </td>";
         } else {
             print "<td class='UI-center'> <button class='UI-redbutton' onclick='deleteMeeting(\"".$entry['Name'].'",'.$entry['Id'].")'>Delete Meeting</button> </td>";
         }

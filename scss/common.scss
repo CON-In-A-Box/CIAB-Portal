@@ -23,12 +23,44 @@
     @extend .w3-center;
 }
 
+.UI-black {
+    @extend .w3-black;
+}
+
+.UI-blue {
+    @extend .w3-blue;
+}
+
 .UI-red {
     @extend .w3-red;
 }
 
+.UI-green {
+    @extend .w3-green;
+}
+
 .UI-yellow {
     @extend .w3-yellow;
+}
+
+.UI-lime {
+    @extend .w3-lime;
+}
+
+.UI-khaki {
+    @extend .w3-khaki;
+}
+
+.UI-orange {
+    @extend .w3-orange;
+}
+
+.UI-gray {
+    @extend .w3-gray;
+}
+
+.UI-dark-gray {
+    @extend .w3-dark-gray;
 }
 
 .UI-sectionbar {
@@ -119,6 +151,10 @@
     @extend .w3-white;
 }
 
+.UI-disabled {
+    @extend .w3-disabled;
+}
+
 .UI-input {
     @extend .w3-input;
     @extend .UI-border;
@@ -137,6 +173,10 @@
 
 .UI-hide {
     @extend .w3-hide;
+}
+
+.UI-show {
+    @extend .w3-show;
 }
 
 .UI-padding {
@@ -172,4 +212,392 @@
     writing-mode: vertical-lr;
     text-orientation: upright;
     letter-spacing: -5px
+}
+
+.UI-error-header {
+    @extend .UI-red;
+    @extend .w3-bold;
+    @extend .w3-header;
+}
+
+.UI-warning-header{
+    @extend .UI-yellow;
+    @extend .w3-bold;
+    @extend .w3-header;
+}
+
+.UI-label {
+    @extend .w3-label;
+}
+
+
+.UI-cell-row {
+    @extend .w3-cell-row;
+}
+
+.UI-cell {
+    @extend .w3-cell;
+}
+
+.UI-cell-middle {
+    @extend .UI-cell;
+    @extend .w3-cell-middle;
+}
+
+.UI-cell-top {
+    @extend .UI-cell;
+    @extend .w3-cell-top;
+}
+
+.UI-dropdown-content {
+    @extend .w3-dropdown-content;
+}
+
+.UI-dropdown-hover {
+    @extend .w3-dropdown-hover;
+}
+
+.UI-admin-menu-div {
+    @extend .UI-dropdown-hover;
+}
+
+.UI-admin-menu {
+    @extend .UI-button;
+    @extend .UI-yellow;
+}
+
+.UI-admin-menu-end {
+    @extend .UI-dropdown-content;
+    @extend .w3-bar-block;
+    @extend .w3-card-4;
+}
+
+.UI-bar {
+    @extend .w3-bar;
+}
+
+.UI-bar-item {
+    @extend .w3-bar-item;
+}
+
+.UI-main-bar-div {
+    @extend .w3-top;
+}
+
+.UI-main-bar {
+    @extend .UI-bar;
+    @extend .w3-dark-grey;
+}
+
+.UI-main-bar-item {
+    @extend .w3-bar-item;
+    @extend .UI-button;
+}
+
+.UI-main-responsive-bar-item {
+    @extend .w3-hide-small;
+    @extend .w3-hide-medium;
+}
+
+.UI-main-logout-bar-item {
+    @extend .UI-main-bar-item;
+    @extend .UI-red;
+    @extend .UI-right;
+}
+
+.UI-main-bar-icon {
+    @extend .w3-left;
+    @extend .event-bar-icon;
+}
+
+.UI-main-bar-pancake {
+    @extend .UI-main-bar-item;
+    @extend .w3-block;
+    @extend .UI-center;
+    @extend .w3-hide-large;
+}
+
+.UI-main-bar-pancake-div {
+    @extend .w3-bar-block;
+    @extend .UI-hide;
+    @extend .w3-hide-large;
+}
+
+.UI-icon-div {
+    @extend .UI-container;
+    @extend .UI-cell;
+    @extend .w3-padding-0;
+}
+
+.UI-tiny {
+    @extend .w3-tiny;
+}
+
+.UI-small {
+    @extend .w3-small;
+}
+
+.UI-large-center-container {
+    @extend .UI-container;
+    @extend .UI-center;
+    @extend .w3-large;
+}
+
+.UI-disclaimer-info-button {
+    @extend .w3-bar-item;
+    @extend .UI-button;
+    @extend .UI-tiny;
+}
+
+.UI-disclaimer-panel {
+    @extend .w3-panel;
+    @extend .w3-leftbar;
+}
+
+.UI-modules-panel {
+    @extend .UI-small;
+}
+
+.UI-small-disclaimer-panel {
+    @extend .UI-disclaimer-panel;
+    @extend .w3-small;
+}
+
+.UI-disclaimer-info-panel {
+    @extend .w3-panel;
+    @extend .w3-leftbar;
+    @extend .w3-sand
+}
+
+.UI-disclaimer-copyright-div {
+    @extend .w3-large;
+    @extend .UI-center;
+}
+
+.UI-profile-update-button {
+    @extend .UI-button;
+    @extend .w3-brown;
+    @extend .UI-right;
+    padding: 0px 16px;
+}
+
+.UI-profile-update-button-end {
+    @extend .UI-button;
+    @extend .w3-block;
+    @extend .w3-brown;
+}
+
+.UI-half {
+    @extend .w3-half;
+}
+
+.UI-twothird {
+    @extend .w3-twothird;
+}
+
+.UI-third {
+    @extend .w3-third;
+}
+
+.UI-threequarter {
+    @extend .w3-threequarter;
+}
+
+.UI-quarter {
+    @extend .w3-quarter;
+}
+
+.UI-profile-name-div {
+    @extend .w3-lime;
+    @extend .w3-row;
+}
+
+.UI-profile-pref-name-div {
+    @extend .w3-teal;
+    @extend .w3-row;
+}
+
+.UI-profile-badge-number-div {
+    @extend .w3-orange;
+    @extend .w3-row;
+}
+
+.UI-profile-email-div {
+    @extend .w3-indigo;
+    @extend .w3-row;
+}
+
+.UI-profile-phone-div {
+    @extend .w3-blue;
+    @extend .w3-row;
+}
+
+.UI-profile-concom-div {
+    @extend .w3-row;
+}
+
+.UI-profile-concom-label {
+    @extend .UI-right-align;
+    @extend .w3-col;
+    @extend .m7;
+    @extend .l6;
+}
+
+.UI-profile-concom-select {
+    @extend .w3-col;
+    @extend .m5;
+    @extend .l6;
+}
+
+.UI-profile-address-div {
+    @extend .w3-purple;
+    @extend .w3-row;
+}
+
+.UI-profile-province-field {
+    @extend .UI-input;
+    @extend .w3-gray;
+}
+
+.UI-profile-zip-div {
+    @extend .w3-quarter;
+    @extend .w3-row;
+}
+
+.UI-profile-zip-field {
+    @extend .UI-input;
+    @extend .UI-right-align;
+    @extend .w3-col;
+    @extend .l8;
+    @extend .m7;
+    @extend .s7;
+}
+
+.UI-profile-zip-4-field {
+    @extend .UI-input;
+    @extend .w3-col;
+    @extend .l4;
+    @extend .m5;
+    @extend .s5;
+}
+
+.UI-profile-password-div {
+    @extend .w3-red;
+    @extend .w3-row;
+}
+
+.UI-profile-update-password-button {
+    @extend .w3-red;
+    @extend .w3-block;
+    @extend .UI-button;
+}
+
+.UI-update-proceed-button {
+    @extend .UI-eventbutton;
+    @extend .w3-left;
+}
+
+.UI-page-title-bar {
+    @extend .UI-cell-row;
+    @extend .event-color-primary;
+    @extend .w3-mobile;
+}
+
+.UI-page-title {
+    @extend .UI-container;
+    @extend .UI-cell;
+    @extend .w3-mobile;
+}
+
+.UI-recovery-text-block {
+    @extend .UI-center;
+    @extend .UI-bold;
+}
+
+.UI-main-content-div {
+    @extend .UI-padding;
+    @extend .UI-cell-top;
+    @extend .w3-mobile;
+}
+
+.UI-main-email-warning {
+    @extend .UI-container;
+    @extend .UI-center;
+    @extend .UI-border;
+    @extend .UI-red;
+    @extend .w3-large;
+}
+
+.UI-register-start-button {
+    @extend .w3-btn;
+    @extend .event-primary-color;
+    @extend .w3-round-xlarge;
+}
+
+.UI-login-main-div {
+    @extend .UI-container;
+    @extend .UI-cell;
+    @extend .w3-third;
+    @extend .UI-border;
+}
+
+.UI-modal {
+    @extend .w3-modal;
+}
+
+.UI-modal-content {
+    @extend .w3-modal-content;
+}
+
+.UI-close-button {
+    @extend .w3-display-topright;
+    @extend .UI-button;
+}
+
+.UI-spinner-div {
+    @extend .w3-modal-content;
+    @extend .w3-jumbo;
+    @extend .UI-center;
+    @extend .w3-round-xxlarge;
+}
+
+.UI-spin {
+    @extend .w3-spin;
+}
+
+.UI-lookup-user-button {
+    @extend .UI-button;
+    @extend .w3-bar-item;
+    @extend .UI-border;
+}
+
+.UI-lookup-user-dropdown {
+    @extend .UI-black;
+    @extend .w3-bar-block;
+}
+
+.UI-tooltip {
+    @extend .w3-tooltop;
+}
+
+.UI-kiosk-slider {
+    @extend .w3-show-inline-block;
+    @extend .w3-left;
+    @extend .event-color-secondary;
+    @extend .UI-margin;
+}
+
+.UI-configure-panel {
+    @extend .w3-panel;
+    @extend .w3-padding-16;
+}
+
+.UI-checkbox {
+    @extend .w3-checkbox;
+}
+
+.UI-configure-info-panel {
+    @extend .w3-panel;
+    @extend .UI-blue;
+    @extend .UI-center;
 }

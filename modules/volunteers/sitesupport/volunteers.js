@@ -147,7 +147,7 @@ function updateCheckout() {
     var row = table.insertRow(-1);
     item = output[index];
     row.setAttribute('data-prizeid', item.prize.PrizeID);
-    row.classList.add('w3-hover-red');
+    row.classList.add('VOL-hover-red');
     row.setAttribute('onclick', 'removeFromCheckout(' + item.prize.PrizeID +
       ', ' + item.prize.cost + ', ' + item.prize.RewardGroupID + ');');
     var cell = row.insertCell(0);
@@ -526,15 +526,15 @@ function prizeGroupChange() {
   if (grp === 'none') {
     cnt.disabled = true;
     cnt.value = '';
-    cnt.classList.add('w3-disabled');
+    cnt.classList.add('UI-disabled');
   } else if (grp === 'new') {
     cnt.value = 1;
     cnt.disabled = false;
-    cnt.classList.remove('w3-disabled');
+    cnt.classList.remove('UI-disabled');
   } else {
     cnt.value = groupsNow[grp];
     cnt.disabled = false;
-    cnt.classList.remove('w3-disabled');
+    cnt.classList.remove('UI-disabled');
   }
 }
 
@@ -625,7 +625,7 @@ function showReturn(json) {
     for (var i = 0; i < item.Aquired; i++) {
       var row = table.insertRow(-1);
       row.setAttribute('data-prizeid', item.PrizeID);
-      row.classList.add('w3-hover-red');
+      row.classList.add('VOL-hover-red');
       row.setAttribute('onclick', 'markDelete(' + returnCart.length +
         ', ' + row.rowIndex + ');');
       var cell = row.insertCell(0);

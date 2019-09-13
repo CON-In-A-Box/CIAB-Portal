@@ -1,26 +1,26 @@
 <script>
   function myMenuBar() {
     var x = document.getElementById("main_nav_list");
-    if (x.className.indexOf("w3-show") == -1) {
-      x.className += " w3-show";
-    } else { 
-      x.className = x.className.replace(" w3-show", "");
+    if (x.className.indexOf("UI-show") == -1) {
+      x.className += " UI-show";
+    } else {
+      x.className = x.className.replace(" UI-show", "");
     }
   }
 </script>
-<div class="w3-top">
-  <div id="main_nav" class="w3-bar w3-dark-grey">
-  <img class="w3-left event-bar-icon">
+<div class="UI-main-bar-div">
+  <div id="main_nav" class="UI-main-bar">
+  <img class="UI-main-bar-icon">
 
 <?php
 
 require_once $BASEDIR.'/kiosk/kiosk.inc';
 
 if (!isset($base_styles)) {
-    $base_styles = " w3-bar-item UI-button ";
+    $base_styles = " UI-main-bar-item";
 }
 if (!isset($resp_styles)) {
-    $resp_styles = " w3-hide-small w3-hide-medium ";
+    $resp_styles = " UI-main-responsive-bar-item";
 }
 
 $kiosk = get_kiosk();
@@ -105,9 +105,9 @@ foreach ($admin_menus as $menu) {
     }
 
     if (!$have_admin) {
-        echo "<div class='w3-dropdown-hover'>";
-        echo "<button class='UI-button UI-yellow ".$resp_styles."'><i class='fa fa-key'></i> Administer</button>";
-        echo "<div class='w3-dropdown-content w3-bar-block w3-card-4'>";
+        echo "<div class='UI-admin-menu-div'>";
+        echo "<button class='UI-admin-menu ".$resp_styles."'><i class='fa fa-key'></i> Administer</button>";
+        echo "<div class='UI-admin-menu-end'>";
         $have_admin = true;
     }
 
@@ -137,12 +137,12 @@ if ($have_admin) {
 
 if ($kiosk === null) {
 ?>
-    <a class="w3-bar-item w3-block UI-center UI-button w3-hide-large"
+    <a class="UI-main-bar-pancake"
       href="javascript:void(0)"
       onclick="myMenuBar()">
       <i class="fa fa-bars"></i>
     </a>
-    <a class="w3-bar-item UI-button UI-red UI-right"
+    <a class="UI-main-logout-bar-item"
       href="index.php?Function=public" title="Log out and Restart">
       <i class="fa fa-sign-out"></i>
       Log Out
@@ -151,7 +151,7 @@ if ($kiosk === null) {
 
 
     <!--Responsive menu for tables and moblie-->
-    <div id="main_nav_list" class="w3-bar-block UI-hide w3-hide-large">
+    <div id="main_nav_list" class="UI-main-bar-pancake-div">
 
 <?php
 foreach ($base_menus as $menu) {
@@ -180,9 +180,9 @@ foreach ($admin_menus as $menu) {
     }
 
     if (!$have_admin) {
-        echo "<div class='w3-dropdown-hover'>";
-        echo "<button class='UI-button UI-yellow'><i class='fa fa-key'></i> Administer</button>";
-        echo "<div class='w3-dropdown-content w3-bar-block w3-card-4'>";
+        echo "<div class='UI-admin-menu-div'>";
+        echo "<button class='UI-admin-menu'><i class='fa fa-key'></i> Administer</button>";
+        echo "<div class='UI-admin-menu-end'>";
         $have_admin = true;
     }
 

@@ -8,7 +8,7 @@ if (isset($_SESSION['customFields']['currConComPos']) ||
     if (isset($G_CLIENT_SECRET) && isset($G_CLIENT_CRED) &&
         !empty($G_CLIENT_SECRET) && !empty($G_CLIENT_CRED) &&
         isset($G_ROOTFOLDER) && !empty($G_ROOTFOLDER)) {
-        $base_menus[] = array('base style' => 'w3-dark-gray',
+        $base_menus[] = array('base style' => 'UI-dark-gray',
          'selected style' => 'event-color-primary',
          'function' => 'documents',
          'title' => 'ConCom Documents',

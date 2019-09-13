@@ -1,0 +1,19 @@
+@import "common";
+
+.REG-main-content {
+    @extend .UI-maincontent;
+    @extend .w3-row-padding;
+}
+
+.REG-id-div {
+    @extend .w3-show-inline-block;
+    @extend .UI-right;
+    @extend .w3-margin;
+    @extend .w3-row-padding;
+}
+
+.REG-no-entries {
+    @extend .UI-center;
+    @extend .w3-gray;
+    @extend .w3-opacity;
+}

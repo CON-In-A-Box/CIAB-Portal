@@ -1,0 +1,13 @@
+@import "common";
+
+.EVENT-content {
+    @extend .w3-section;
+    @extend .UI-container;
+}
+
+.EVENT-section-bar {
+    @extend .UI-event-sectionbar;
+    @extend .UI-button;
+    @extend .w3-block;
+    @extend .w3-left-align;
+}

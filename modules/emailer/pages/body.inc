@@ -15,7 +15,7 @@ $emailer = new \mailer\Email();
         </div>
         <div id="body" class="UI-padding">
             <div class="UI-rest">
-                <label for="email_from">
+                <label class='UI-label' for="email_from">
                 From:</label>
                 <select class="UI-input" id="email_from">
 <?php
@@ -29,7 +29,7 @@ foreach ($address as $addr) {
 }
 ?>
                 </select>
-                <label for="email_reply">
+                <label class='UI-label' for="email_reply">
                 Reply-To:</label>
                 <select class="UI-input" id="email_reply">
 <?php
@@ -43,10 +43,10 @@ foreach ($address as $addr) {
 }
 ?>
                 </select>
-                <label for="email_subject">
+                <label class='UI-label' for="email_subject">
                 Subject:</label>
                 <input class="UI-input" id="email_subject" placeholder="<subject>">
-                <label for="email_to">
+                <label class='UI-label' for="email_to">
                 To (<span id='to_count'>0</span>) :</label>
                 <div class="UI-border">
                 <select class="UI-input" onchange="toChanged()" id="email_to">
@@ -59,7 +59,7 @@ foreach ($who as $addr) {
 ?>
                 </select>
                 </div>
-                <label for="email_body">
+                <label class='UI-label' for="email_body">
                 Body:</label>
                 <div class="UI-input" id="email_body" style="line-height: 2.5ex; height: 50ex;"> </div>
             </div>
@@ -84,7 +84,7 @@ foreach ($who as $addr) {
         <h2 class='UI-red'>Update E-mail Lists</h2>
     </div>
     <div class='UI-center'>
-        <label for='list_name'>
+        <label class='UI-label' for='list_name'>
         Lists :</label>
         <div class='UI-border' id="email_lists">
         </div>
@@ -113,11 +113,11 @@ if ($emailer->canAdd()) {
     </div>
     <div class='UI-center'>
         <input class="UI-hide" id="email_id" readonly>
-        <label for='email_name'>Name:</label>
+        <label class='UI-label' for='email_name'>Name:</label>
         <input class="UI-input" id="email_name">
-        <label for='email_description'>Description:</label>
+        <label class='UI-label' for='email_description'>Description:</label>
         <input class="UI-input" id="email_description">
-        <label for='email_code'>SELECT Email FROM `Members` WHERE</label>
+        <label class='UI-label' for='email_code'>SELECT Email FROM `Members` WHERE</label>
         <textarea class="UI-input" id="email_code" rows="5"></textarea>
     </div>
     <div class='UI-center UI-padding'>
