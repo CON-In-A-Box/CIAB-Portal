@@ -29,12 +29,12 @@ class MyPDO
             PDO::ATTR_EMULATE_PREPARES => true,
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             ];
-            $username = $GLOBALS['DBUSER']; // Pulled from Config file
-            $password = $GLOBALS['DBPASS']; // Pulled from Config file
+            $username = $_ENV['DBUSER']; // Pulled from Config file
+            $password = $_ENV['DBPASS']; // Pulled from Config file
             $charset = 'utf8'; // Default, Future need update for locale?
             $dsn = 'mysql:';
-            $dsn .= 'host='.$GLOBALS['DBHOST']; // Pulled from Config file
-            $dsn .= ';dbname='.$GLOBALS['DBNAME']; // Pulled from Config file
+            $dsn .= 'host='.$_ENV['DBHOST']; // Pulled from Config file
+            $dsn .= ';dbname='.$_ENV['DBNAME']; // Pulled from Config file
             $dsn .= ';charset='.$charset;
             self::$instance = new PDO($dsn, $username, $password, $options);
         }

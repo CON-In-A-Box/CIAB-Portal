@@ -47,3 +47,7 @@ error_log
 # Composer files #
 ##################
 vendor
+
+# Configuration #
+#################
+.env
