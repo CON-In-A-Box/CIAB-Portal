@@ -6,7 +6,7 @@
 
 // Currently, this database class is set for the MySQL PDO filter/backend. Future version will expand it to be agnostic
 
-require_once($BACKEND.'/'.$DB_BACKEND); // MyPDO Definition used
+require_once($BACKEND.'/'.$_ENV['DB_BACKEND']); // MyPDO Definition used
 
 class DB
 {

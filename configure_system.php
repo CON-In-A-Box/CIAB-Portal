@@ -4,7 +4,18 @@
     require_module 'standard';
 .*/
 
-if (file_exists(__DIR__."/.ht_meetingsignin_config.php")) {
+require __DIR__."/vendor/autoload.php";
+$dotenv = Dotenv\Dotenv::create(__DIR__);
+$dotenv->load();
+
+$configure = false;
+try {
+    $dotenv->required(['DBHOST', 'DBUSER', 'DBNAME', 'DBPASS', 'DB_BACKEND']);
+} catch (RuntimeException $e) {
+    $configure = true;
+}
+
+if (!$configure) {
     header("Location: http://".$_SERVER['SERVER_NAME']."/index.php?Function=public");
 }
 
@@ -56,29 +67,28 @@ if (!empty($_POST)) {
         strlen($new_CONHOST) > 0 &&
         strlen($new_ADMINEMAIL) > 0 &&
         strlen($new_TIMEZONE) > 0) {
-        if (file_exists(__DIR__."/.ht_meetingsignin_config.php")) {
-            chmod(__DIR__."/.ht_meetingsignin_config.php", 0600);
+        if (file_exists(__DIR__."/.env")) {
+            chmod(__DIR__."/.env", 0600);
         }
 
-        $myfile = fopen(__DIR__."/.ht_meetingsignin_config.php", "w");
+        $myfile = fopen(__DIR__."/.env", "w");
         fwrite($myfile, <<<DONE
-<?php
-// CON-In-A-Box Site Config (module)
-// Setup via web page
+# CON-In-A-Box Site Config (module)
+# Setup via web page
 
-\$DB_BACKEND = "mysqlpdo.inc";
+DB_BACKEND=mysqlpdo.inc
 
-// DBConfig, passwords, etc
-// Do not share this info
-\$DBHOST = "$DBHOST"; // Where the DB Runs
-\$DBUSER = "$DBUSER"; // The Database Username
-\$DBNAME = "$DBNAME"; // The Database Name
-\$DBPASS = "$DBPASS"; // *PLAIN TEXT* database user's password
+# DBConfig, passwords, etc
+# Do not share this info
+DBHOST="$DBHOST" # Where the DB Runs
+DBUSER="$DBUSER" # The Database Username
+DBNAME="$DBNAME" # The Database Name
+DBPASS="$DBPASS" # *PLAIN TEXT* database user's password
 
 DONE
         );
         fclose($myfile);
-        chmod(__DIR__."/.ht_meetingsignin_config.php", 0400);
+        chmod(__DIR__."/.env", 0400);
 
         $good = true;
         try {
@@ -135,12 +145,9 @@ DONE
 
 $CONSITENAME = "First Run Setup";
 require(__DIR__.'/pages/base/header_start.inc');
+print "<link rel='stylesheet' href='style.php/styles.scss'/>";
 require(__DIR__.'/pages/base/header_end.inc');
 require(__DIR__.'/pages/base/body_begin.inc');
-
-if (is_file(__DIR__."/.ht_meetingsignin_config.php")) {
-    require_once(__DIR__."/.ht_meetingsignin_config.php");
-}
 ?>
 
 <h2 class="UI-center UI-green"> First Run Setup </h2>
@@ -170,8 +177,8 @@ if (strlen($failed_message)) {
     <input type="text" name="DBHOST" class="UI-input <?php
     if ($updateData != null && strlen($updateData['DBHOST'])) {
         echo '" value="'.$updateData['DBHOST'].'"';
-    } elseif (isset($DBHOST)) {
-        echo '" value="'.$DBHOST.'"';
+    } elseif (isset($_ENV['DBHOST'])) {
+        echo '" value="'.$_ENV['DBHOST'].'"';
     } elseif ($tried) {
         echo 'UI-red"';
     } else {
@@ -183,8 +190,8 @@ if (strlen($failed_message)) {
     <input type="text" name="DBUSER" class="UI-input <?php
     if ($updateData != null && strlen($updateData['DBUSER'])) {
         echo '" value="'.$updateData['DBUSER'].'"';
-    } elseif (isset($DBUSER)) {
-        echo '" value="'.$DBUSER.'"';
+    } elseif (isset($_ENV['DBUSER'])) {
+        echo '" value="'.$_ENV['DBUSER'].'"';
     } elseif ($tried) {
         echo 'UI-red"';
     } else {
@@ -196,8 +203,8 @@ if (strlen($failed_message)) {
     <input type="text" name="DBNAME" class="UI-input <?php
     if ($updateData != null && strlen($updateData['DBNAME'])) {
         echo '" value="'.$updateData['DBNAME'].'"';
-    } elseif (isset($DBNAME)) {
-        echo '" value="'.$DBNAME.'"';
+    } elseif (isset($_ENV['DBNAME'])) {
+        echo '" value="'.$_ENV['DBNAME'].'"';
     } elseif ($tried) {
         echo 'UI-red"';
     } else {
@@ -209,8 +216,8 @@ if (strlen($failed_message)) {
     <input type="text" name="DBPASS" class="UI-input <?php
     if ($updateData != null && strlen($updateData['DBPASS'])) {
         echo '" value="'.$updateData['DBPASS'].'"';
-    } elseif (isset($DBPASS)) {
-        echo '" value="'.$DBPASS.'"';
+    } elseif (isset($_ENV['DBPASS'])) {
+        echo '" value="'.$_ENV['DBPASS'].'"';
     } elseif ($tried) {
         echo 'UI-red"';
     } else {
