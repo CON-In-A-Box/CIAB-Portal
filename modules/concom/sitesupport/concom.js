@@ -158,7 +158,18 @@ function newEntry(division) {
   } else {
     name = 'New Department';
   }
-  dblClick(isDiv, name, -1, division, 0, 0, null);
+
+  var data = {
+      'Division': isDiv,
+      'Name': name,
+      'Id': -1,
+      'Pid': division,
+      'Count' : 0,
+      'Children': 0,
+      'Email': null
+    };
+
+  dblClick(btoa(JSON.stringify(data)));
   document.getElementById('delete_btn').disabled = true;
   showSidebar('edit_position');
 
@@ -228,7 +239,7 @@ function dblClick(json) {
     document.getElementById('dept_parent').getElementsByTagName('option');
   if (input.Division) {
     for (i = 0; i < op.length; i++) {
-      if (op[i].value == pid) {
+      if (op[i].value == input.Pid) {
         op[i].disabled = true;
       } else {
         op[i].disabled = false;
