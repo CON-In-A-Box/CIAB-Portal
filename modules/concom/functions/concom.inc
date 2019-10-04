@@ -3,6 +3,7 @@
 require_once($FUNCTIONDIR.'/divisional.inc');
 require_once($FUNCTIONDIR."/database.inc");
 require_once($FUNCTIONDIR.'/users.inc');
+require_once($BACKEND.'/email.inc');
 require_once(__DIR__.'/VOLUNTEERS.inc');
 require_once(__DIR__.'/POSITION.inc');
 require_once(__DIR__.'/REGISTRATION.inc');
@@ -364,7 +365,7 @@ function AddConComPosition($accountid, $department, $position, $note, $notify = 
         $headers = 'From: noreply@convergence-con.org'."\r\n";
         $headers .= 'Reply-To: noreply@convergence-con.org';
 
-        mail($to, $subject, $message, $headers);
+        \ciab\Email::mail($to, $subject, $message, $headers);
         return true;
     } elseif (!$result) {
         die("Failed Add comcon member to database!");
@@ -401,7 +402,7 @@ function RemoveConComPosition($accountid, $department, $position, $notify = true
             $headers = 'From: noreply@convergence-con.org'."\r\n";
             $headers .= 'Reply-To: noreply@convergence-con.org';
 
-            mail($to, $subject, $message, $headers);
+            \ciab\Email::mail($to, $subject, $message, $headers);
         }
         return true;
     } else {

@@ -7,6 +7,7 @@
 
 require_once $FUNCTIONDIR."/divisional.inc";
 require_once $FUNCTIONDIR."/database.inc";
+require_once $BACKEND."/email.inc";
 
 class Email
 {
@@ -461,7 +462,8 @@ SQL;
         $headers .= "Content-Type: text/html; charset=ISO-8859-1\r\n";
         if (count($to) > 0) {
             foreach ($to as $target) {
-                mail($target, $data->subject, $data->body, $headers);
+                \ciab\Email::mail($target, $data->subject, $data->body,
+                                  $headers);
             }
         }
 
