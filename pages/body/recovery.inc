@@ -38,6 +38,7 @@ echo $body."\n";
     <div>
         <input class="UI-center UI-input" id="email"></input>
         <button class="UI-eventbutton UI-margin" onclick="resetPassword()">Reset Password</button>
+        <button class="UI-redbutton UI-margin" onclick="window.history.back();">Back</button>
     </div>
   </div>
 </div>
