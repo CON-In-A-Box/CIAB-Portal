@@ -4,6 +4,7 @@
     require_module 'standard';
 .*/
 
+require_once(__DIR__."/../backends/email.inc");
 require __DIR__."/../vendor/autoload.php";
 
 // Main setup function
@@ -182,7 +183,7 @@ function sendError($msg, $arrChunk = null)
     $headers = 'From: noreply@convergence-con.org'."\r\n";
     $headers .= 'Reply-To: noreply@convergence-con.org';
 
-    mail($to, $subject, $message, $headers);
+    \ciab\Email::mail($to, $subject, $message, $headers);
     trigger_error($msg);
 
 }

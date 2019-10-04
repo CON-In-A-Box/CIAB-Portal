@@ -7,6 +7,7 @@
 
 require_once(__DIR__.'/users.inc');
 require_once(__DIR__.'/session.inc');
+require_once(__DIR__."/../backends/email.inc");
 
 if (isset($GLOBALS['NEONID']) && isset($GLOBALS['NEONKEY'])) {
     require_once($FUNCTIONDIR.'/neon.inc');
@@ -346,8 +347,8 @@ MSG;
         $headers = 'From: noreply@convergence-con.org'."\r\n";
         $headers .= 'Reply-To: noreply@convergence-con.org';
 
-        mail($email, $subject, $message, $headers);
-        mail($ADMINEMAIL, $subject, $adminMessage, $headers);
+        \ciab\Email::mail($email, $subject, $message, $headers);
+        \ciab\Email::mail($ADMINEMAIL, $subject, $adminMessage, $headers);
         error_log($adminMessage);
         return true;
     }
