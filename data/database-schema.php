@@ -153,6 +153,13 @@ class SCHEMA
         'EmailListID' => 'INT UNSIGNED NOT NULL',
         'EditList' => 'BOOLEAN NOT NULL',
         'ChangeAccess' => 'BOOLEAN NOT NULL',
+    ],
+
+    'ConComPermissions' => [
+        'PermissionID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
+        'Position' => 'VARCHAR(100) NOT NULL',
+        'Permission' => 'VARCHAR(100) NOT NULL',
+        'Note' => 'TEXT'
     ]
   ];
 
