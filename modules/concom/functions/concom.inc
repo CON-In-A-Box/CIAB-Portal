@@ -470,7 +470,7 @@ function _departments($division)
             echo "id=".$id." ";
             echo "draggable='true' ";
             $data = [
-            'Divison' => 0,
+            'Division' => 0,
             'Name' => $name,
             'Id' => $id,
             'Pid' => $DivId,
@@ -511,11 +511,11 @@ function build_structure_sections()
         }
         $div_content_id = "division_content_$id";
         $data = [
-        'Divison' => 1,
+        'Division' => 1,
         'Name' => $div,
         'Id' => $id,
         'Pid' => $id,
-        'Children' => $Departments[$div]['c  hildCount'],
+        'Children' => $Departments[$div]['childCount'],
         'Count' => $deptCount[$id],
         'Email' => null
                 ];
