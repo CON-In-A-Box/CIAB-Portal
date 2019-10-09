@@ -37,14 +37,38 @@ class RBAC
     }
 
 
-    public static function havePermission($what)
+    public static function reload()
+    {
+        if (self::$instance !== null) {
+            self::$instance = null;
+        }
+
+    }
+
+
+    public static function havePermission(/*.string.*/ $name)
     {
         if (self::instance() !== null) {
-            return self::instance()->havePermission($what);
+            return self::instance()->havePermission($name);
         } else {
             return ($_SESSION['IS_ADMIN']);
         }
+
     }
+
+
+    public static function getPermissions(
+        /*.string.*/ $role,
+        /*.bool.*/ $children = true
+    ) {
+        if (self::instance() !== null) {
+            return self::instance()->getPermissions($role, $children);
+        } else {
+            return null;
+        }
+
+    }
+
 
     /* end class */
 }

@@ -12,9 +12,9 @@ require_once(__DIR__."/POSITION.inc");
 use Zend\Permissions\Rbac\Rbac;
 use Zend\Permissions\Rbac\Role;
 
-
 class ConComRBAC
 {
+
     /**
      * @var ConComRBAC
      */
@@ -25,15 +25,18 @@ class ConComRBAC
      */
     protected $rbac = null;
 
+
     protected function __construct()
     {
 
     }
 
+
     protected function __clone()
     {
 
     }
+
 
     public static function instance()
     {
@@ -58,7 +61,7 @@ class ConComRBAC
             $value = $result->fetch();
             while ($value !== false) {
                 $parent = 'admin';
-                foreach($positions as $pos) {
+                foreach ($positions as $pos) {
                     $new = $value['DepartmentID'].'.'.$pos;
                     $rbac->rbac->addRole($new, $parent);
                     $parent = $new;
@@ -71,7 +74,7 @@ class ConComRBAC
             $value = $result->fetch();
             while ($value !== false) {
                 $parent = $value['ParentDepartmentID'].'.'.end($positions);
-                foreach($positions as $pos) {
+                foreach ($positions as $pos) {
                     $new = $value['DepartmentID'].'.'.$pos;
                     $rbac->rbac->addRole($new, $parent);
                     $parent = $new;
@@ -97,36 +100,65 @@ class ConComRBAC
         }
 
         return self::$instance;
+
     }
 
-    protected static function positionHasPermission($pos, $what)
-    {
+
+    protected static function positionHasPermission(
+        /*.mixed.*/$pos,
+        /*.string.*/$name
+    ) {
         try {
             return self::instance()->rbac->getRole(
-                strval($pos))->hasPermission($what);
+                strval($pos)
+            )->hasPermission($name);
         } catch (Exception\InvalidArgumentException $e) {
             return false;
         }
+
     }
 
-    public static function hasPermissions($accountId, $what)
-    {
+
+    public static function hasPermissions(
+        /*.mixed.*/$accountId,
+        /*.string.*/$name
+    ) {
         if ($_SESSION['IS_ADMIN']) {
             return true;
         }
         $positions = POSITION::getConComPosition('accountId');
-        foreach($positions as $pos) {
+        foreach ($positions as $pos) {
             $value = $pos['departmentId'].'.'.$pos['positionId'];
-            if (self::positionHasPermission($value, $what))
+            if (self::positionHasPermission($value, $name)) {
                 return true;
+            }
         }
         return false;
+
     }
 
-    public static function havePermission($what)
+
+    public static function havePermission(/*.string.*/$name)
     {
-        return self::hasPermissions($_SESSION['accountId'], $what);
+        return self::hasPermissions($_SESSION['accountId'], $name);
+
     }
+
+
+    public static function getPermissions(
+        /*.string.*/$role,
+        /*.bool.*/ $children = true
+    ) {
+        try {
+            return self::instance()->rbac->getRole(
+                strval($role)
+            )->getPermissions($children);
+        } catch (Exception\InvalidArgumentException $e) {
+            return null;
+        }
+
+    }
+
 
     /* end RBAC */
 }

@@ -4,7 +4,7 @@
 
 /* jshint browser: true */
 /* jshint -W097 */
-/* globals confirmbox, showSidebar, hideSidebar */
+/* globals confirmbox, showSidebar, hideSidebar, showSpinner, hideSpinner */
 
 function setParent(id, newParent) {
   var data = {
@@ -234,6 +234,11 @@ function dblClick(json) {
                    'class="UI-roundbutton"> ' +
                    '<i class=\'fa fa-plus-square\'></i></button>\n';
 
+  div = document.getElementById('dept_rbac');
+  if (div) {
+    div.setAttribute('onclick','showRBAC(' + input.Id + ');');
+  }
+
   updateDeptSection(input.Division, input.Pid);
   var op =
     document.getElementById('dept_parent').getElementsByTagName('option');
@@ -373,4 +378,154 @@ function processSaveEmail() {
   xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
   xhttp.send('email=' + btoa(param));
 
+}
+
+function editRBAC(dep, input) {
+  var permissions = JSON.parse(input);
+  var block = '';
+  var inh;
+  var data;
+  var key;
+  for (key in permissions) {
+    data = permissions[key];
+    block += '<span><b>' + data.name + '</b>:  ';
+    for (inh in data.inherited) {
+      block += '<span>' + data.inherited[inh] + '</span>  ';
+    }
+    block += '</span><br>';
+  }
+  var div = document.getElementById('inherited');
+  div.innerHTML = block;
+
+  block = '';
+  for (key in permissions) {
+    data = permissions[key];
+    block += '<span><b>' + data.name + '</b>:  ';
+    for (inh in data.position) {
+      block += '<button onclick=\'deleteAC(' + dep + ',' + key + ',"' +
+                data.position[inh] + '");\'' +
+                   ' class="UI-roundbutton">' +
+                   '<i class=\'fa fa-minus-square\'></i>&nbsp;' +
+                   data.position[inh] +
+                   '</button>';
+    }
+    block += '<button onclick=\'newAC(' + dep + ',' + key + ');\' ' +
+               'class="UI-roundbutton"> ' +
+               '<i class=\'fa fa-plus-square\'></i></button>\n';
+    block += '</span><br>';
+  }
+  div = document.getElementById('position');
+  div.innerHTML = block;
+  showSidebar('edit_rbac');
+}
+
+function showRBAC(id) {
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        hideSpinner();
+        editRBAC(id, this.responseText);
+      } else if (this.status == 404) {
+        window.alert('404!');
+      } else if (this.status == 409) {
+        window.alert('409!');
+      }
+    };
+  xhttp.open('GET', 'index.php?Function=concom/admin&permissions=' + id, true);
+  showSpinner();
+  xhttp.send();
+}
+
+var _dep;
+var _pos;
+var _perm;
+
+function deleteAC(dep, pos, perm) {
+  _dep = dep;
+  _pos = pos;
+  _perm = perm;
+  confirmbox.start(
+      'Confirms Permission Deletion',
+      'Really delete "' + perm + '" permission?',
+      permissionDeletion
+  );
+
+}
+
+function permissionDeletion() {
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        hideSpinner();
+        showRBAC(_dep);
+      } else if (this.status == 404) {
+        window.alert('404!');
+      } else if (this.status == 409) {
+        window.alert('409!');
+      }
+    };
+  confirmbox.close();
+  showSpinner();
+  xhttp.open('POST', 'index.php?Function=concom/admin', true);
+  xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+  xhttp.send('deleteAC=' + _dep + '&position=' + _pos + '&permission=' + _perm);
+}
+
+function newAC(department, position) {
+  _dep = department;
+  document.getElementById('perm_dept').value = department;
+  document.getElementById('perm_position').value = position;
+  document.getElementById('perm_perm').options.length = 0;
+  var compare = function(a,b) {
+    return (a.permission > b.permission);
+  };
+  PERMISSIONS.sort(compare);
+  PERMISSIONS.forEach(function(val) {
+    var option = document.createElement('option');
+    option.text = val.permission;
+    option.title = val.description;
+    document.getElementById('perm_perm').options.add(option);
+  });
+  hideSidebar();
+  showSidebar('add_ac');
+}
+
+function returnRBAC() {
+  hideSidebar();
+  showRBAC(_dep);
+}
+
+function savePermission() {
+  var dep = document.getElementById('perm_dept').value;
+  var pos = document.getElementById('perm_position').value;
+  var perm =  document.getElementById('perm_perm').value;
+  confirmbox.start(
+      'Confirms Permission Addition',
+      'Really add permission \'' + perm + '\' ?',
+      permissionSave
+  );
+
+}
+
+function permissionSave() {
+  var dep = document.getElementById('perm_dept').value;
+  var pos = document.getElementById('perm_position').value;
+  var perm =  document.getElementById('perm_perm').value;
+
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        hideSpinner();
+        showRBAC(dep);
+      } else if (this.status == 404) {
+        window.alert('404!');
+      } else if (this.status == 409) {
+        window.alert('409!');
+      }
+    };
+  confirmbox.close();
+  showSpinner();
+  xhttp.open('POST', 'index.php?Function=concom/admin', true);
+  xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+  xhttp.send('addAC=' + dep + '&position=' + pos + '&permission=' + perm);
 }
