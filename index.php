@@ -4,8 +4,24 @@
     require_module 'standard';
 .*/
 
-if (!file_exists(__DIR__."/.ht_meetingsignin_config.php")) {
-    header("Location: http://".$_SERVER['SERVER_NAME'].":".$_SERVER['SERVER_PORT']."/configure_system.php");
+require __DIR__."/vendor/autoload.php";
+$dotenv = Dotenv\Dotenv::create(__DIR__);
+$dotenv->load();
+
+$configure = false;
+try {
+    $dotenv->required(['DBHOST', 'DBUSER', 'DBNAME', 'DBPASS', 'DB_BACKEND']);
+} catch (RuntimeException $e) {
+    if (file_exists(__DIR__."/.ht_meetingsignin_config.php")) {
+        require_once __DIR__."/.ht_meetingsignin_config.php";
+        if (!array_key_exists('DB_BACKEND', $_ENV)) $_ENV['DB_BACKEND'] = $DB_BACKEND;
+        if (!array_key_exists('DBHOST', $_ENV)) $_ENV['DBHOST'] = $DBHOST;
+        if (!array_key_exists('DBUSER', $_ENV)) $_ENV['DBUSER'] = $DBUSER;
+        if (!array_key_exists('DBNAME', $_ENV)) $_ENV['DBNAME'] = $DBNAME;
+        if (!array_key_exists('DBPASS', $_ENV)) $_ENV['DBPASS'] = $DBPASS;
+    } else {
+        header("Location: http://".$_SERVER['SERVER_NAME'].":".$_SERVER['SERVER_PORT']."/configure_system.php");
+    }
 }
 
 // Load in basic functions

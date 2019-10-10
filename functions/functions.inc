@@ -4,6 +4,9 @@
     require_module 'standard';
 .*/
 
+require_once(__DIR__."/../backends/email.inc");
+require __DIR__."/../vendor/autoload.php";
+
 // Main setup function
 $MODULENAME  = "Member Portal";
 
@@ -12,7 +15,6 @@ $FUNCTIONDIR    = dirname(__FILE__);
 $BASEDIR        = dirname($FUNCTIONDIR);
 $WEBSERVER      = $_SERVER['SERVER_NAME'];
 $BASEURL        = "http://".$WEBSERVER;
-$SITECONFIG     = $BASEDIR.'/.ht_meetingsignin_config.php'; // Location of the module config file
 
 // Static Variables
 $SITESUPPORTDIR = $BASEDIR."/sitesupport";
@@ -23,6 +25,8 @@ $MODULESDIR     = $BASEDIR."/modules";
 // Set a Date stamp for use anywhere
 $DS             = uniqid('', true);
 
+$dotenv = Dotenv\Dotenv::create($BASEDIR);
+$dotenv->load();
 
 function getVersion()
 {
@@ -118,8 +122,8 @@ function _config_from_Database()
 
 
 // Load Site Specific info
-if (is_file($SITECONFIG)) {
-    require_once($SITECONFIG);
+try {
+    $dotenv->required(['DBHOST', 'DBUSER', 'DBNAME', 'DBPASS', 'DB_BACKEND']);
     // Start the session so we are ready to go no matter what we do!
     session_start();
 
@@ -145,21 +149,21 @@ if (is_file($SITECONFIG)) {
             }
         }
     }
-} else {
+} catch (RuntimeException $e) {
     // Give a default config file
     echo '
     <html>
       <head>CON-In-A-Box Site Config ('.$MODULENAME.' module)</head>
     <body>
       <pre>
-        SITE CONFIGURATION ERROR -- '.$SITECONFIG.' missing.
-        
-	Please see the
-	>> '.$SITECONFIG.'-EXAMPLE <<
-	config file, update it for your location, and copy/rename it correctly.
-        
-        Note: This file should have limited permissions to protect your system
-        information and passwords.
+        SITE CONFIGURATION ERROR -- Database Environment missing or incorrect.';
+    print "\n";
+    if (array_key_exists('DBPASS', $_ENV)) {
+        $_ENV['DBPASS'] = "&lt;&lt;hidden&gt;&gt;";
+    }
+    print_r($_ENV, false);
+    print_r($e, false);
+    echo '
       </pre>
     </body>
   </html>';
@@ -179,7 +183,7 @@ function sendError($msg, $arrChunk = null)
     $headers = 'From: noreply@convergence-con.org'."\r\n";
     $headers .= 'Reply-To: noreply@convergence-con.org';
 
-    mail($to, $subject, $message, $headers);
+    \ciab\Email::mail($to, $subject, $message, $headers);
     trigger_error($msg);
 
 }

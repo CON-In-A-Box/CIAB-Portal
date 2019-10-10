@@ -29,6 +29,7 @@
         "php": ">=5.6",
         "google/apiclient": "^2.0",
         "leafo/scssphp": "0.0.12",
-        "bshaffer/oauth2-server-php": "^1.10"
+        "bshaffer/oauth2-server-php": "^1.10",
+        "vlucas/phpdotenv": "^3.6"
     }
 }

@@ -3,6 +3,7 @@
 require_once($FUNCTIONDIR.'/divisional.inc');
 require_once($FUNCTIONDIR."/database.inc");
 require_once($FUNCTIONDIR.'/users.inc');
+require_once($BACKEND.'/email.inc');
 require_once(__DIR__.'/VOLUNTEERS.inc');
 require_once(__DIR__.'/POSITION.inc');
 require_once(__DIR__.'/REGISTRATION.inc');
@@ -260,7 +261,7 @@ function ConComListDisplay()
                         }
                     }
                 }
-                if (($div != 'Corporate Staff' && $kdep != 'Division Director' && $kdep != 'Division Support') && (isset($_SESSION['IS_ADMIN']) || $currentDivDirector || ($currentDepHead && $pos != "Head"))) {
+                if (($kdep != 'Division Director' && $kdep != 'Division Support') && (isset($_SESSION['IS_ADMIN']) || $currentDivDirector || ($currentDepHead && $pos != "Head"))) {
                     echo '<tr><td class="UI-center" colspan=8><a href="index.php?Function=concom&AddDepartment='.urlencode($kdep).'">Add someone to '.$kdep.'</a></td></tr>'."\n";
                 }
             }
@@ -364,7 +365,7 @@ function AddConComPosition($accountid, $department, $position, $note, $notify = 
         $headers = 'From: noreply@convergence-con.org'."\r\n";
         $headers .= 'Reply-To: noreply@convergence-con.org';
 
-        mail($to, $subject, $message, $headers);
+        \ciab\Email::mail($to, $subject, $message, $headers);
         return true;
     } elseif (!$result) {
         die("Failed Add comcon member to database!");
@@ -401,7 +402,7 @@ function RemoveConComPosition($accountid, $department, $position, $notify = true
             $headers = 'From: noreply@convergence-con.org'."\r\n";
             $headers .= 'Reply-To: noreply@convergence-con.org';
 
-            mail($to, $subject, $message, $headers);
+            \ciab\Email::mail($to, $subject, $message, $headers);
         }
         return true;
     } else {
@@ -469,7 +470,7 @@ function _departments($division)
             echo "id=".$id." ";
             echo "draggable='true' ";
             $data = [
-            'Divison' => 0,
+            'Division' => 0,
             'Name' => $name,
             'Id' => $id,
             'Pid' => $DivId,
@@ -510,11 +511,11 @@ function build_structure_sections()
         }
         $div_content_id = "division_content_$id";
         $data = [
-        'Divison' => 1,
+        'Division' => 1,
         'Name' => $div,
         'Id' => $id,
         'Pid' => $id,
-        'Children' => $Departments[$div]['c  hildCount'],
+        'Children' => $Departments[$div]['childCount'],
         'Count' => $deptCount[$id],
         'Email' => null
                 ];
