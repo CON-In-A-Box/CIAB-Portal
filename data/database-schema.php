@@ -216,5 +216,10 @@ class SCHEMA
     'TempEventPage' => ['AccountID', 'PageFound'],
     'EmailListAccess' => ['DepartmentID', 'PositionID', 'EmailListID'],
   ];
+
+
+  public static $DB_index = [
+    'ConComPermissions' => ['Permission'],
+  ];
 }
 ?>
