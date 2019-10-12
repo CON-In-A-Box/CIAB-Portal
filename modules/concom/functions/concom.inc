@@ -4,6 +4,7 @@ require_once($FUNCTIONDIR.'/divisional.inc');
 require_once($FUNCTIONDIR."/database.inc");
 require_once($FUNCTIONDIR.'/users.inc');
 require_once($BACKEND.'/email.inc');
+require_once($BACKEND.'/RBAC.inc');
 require_once(__DIR__.'/VOLUNTEERS.inc');
 require_once(__DIR__.'/POSITION.inc');
 require_once(__DIR__.'/REGISTRATION.inc');
@@ -636,5 +637,44 @@ function delete_email($id)
 {
     $sql = "DELETE FROM `EMails` WHERE `EMailAliasID` = $id";
     DB::run($sql);
+
+}
+
+
+function getDepartmentPermissions($depId)
+{
+    $rc = [];
+    $sql = "SELECT * FROM `ConComPositions`;";
+    $result = DB::run($sql);
+    $value = $result->fetch();
+    while ($value !== false) {
+        $id = $depId.'.'.$value['PositionID'];
+        $mine = \ciab\RBAC::getPermissions($id, false);
+        $inherited = \ciab\RBAC::getPermissions($id, true);
+        $inherited = array_diff($inherited, $mine);
+        $rc[$value['PositionID']]  = ['name' => $value['Name'], 'position' => $mine, 'inherited' => $inherited];
+        $value = $result->fetch();
+    }
+    return $rc;
+
+}
+
+
+function deleteDepartmentPermission($depId, $posId, $perm)
+{
+    $id = $depId.'.'.$posId;
+    $sql = "DELETE FROM `ConComPermissions` WHERE `Position` = $id AND `Permission` = '$perm';";
+    DB::run($sql);
+    \ciab\RBAC::reload();
+
+}
+
+
+function addDepartmentPermission($depId, $posId, $perm)
+{
+    $id = $depId.'.'.$posId;
+    $sql = "INSERT INTO`ConComPermissions` (`Position`, `Permission`) VALUES ('$id', '$perm');";
+    DB::run($sql);
+    \ciab\RBAC::reload();
 
 }

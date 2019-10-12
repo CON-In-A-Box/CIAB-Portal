@@ -37,9 +37,18 @@ build_structure_sections();
             <input class="UI-hiddeninput" id="dept_id" value='-1' readonly>
             <label class='UI-label' for='position_name'>Position Name:</label>
             <input class="UI-input" id="dept_name" value=''>
-            <label class='UI-label' for='position_email'>Position Emails:</label>
+            <label class='UI-label' for='dept_email'>Position Emails:</label>
             <div class='UI-border' id="dept_email">
             </div>
+<?php
+if (\ciab\RBAC::havePermission("site.concom.permissions")) {
+?>
+            <button class='UI-redbutton UI-padding UI-margin' id='dept_rbac'>
+                 Position Site Permissions (RBAC)
+            </button><br>
+<?php
+}
+?>
             <label class='UI-label' for='dept_count'>Staff Count:</label>
             <input class="UI-input" readonly id="dept_count" value=''>
             <div id="sub_dept">
@@ -110,6 +119,51 @@ foreach ($Divisions as $division) {
             <button class='UI-redbutton' id='email_delete_btn'
                 onclick='deleteEmail();'>
               Delete
+            </button>
+        </div>
+    </div>
+
+    <div class='UI-sidebar-hidden UI-fixed' id='edit_rbac'>
+        <div class='UI-center'>
+            <h2 class='UI-red'>Position Permissions</h2>
+        </div>
+        <div>
+            <label class='UI-label' for='inherited'>Inherited Permissions:</label>
+            <div class='UI-border' id="inherited">
+            </div>
+            <label class='UI-label' for='present'>Department Permissions:</label>
+            <div class='UI-border' id="position">
+            </div>
+        </div>
+        <div class='UI-center'>
+            <button class='UI-yellowbutton'
+                onclick='returnPosition();'>
+              Close
+            </button>
+        </div>
+    </div>
+
+    <div class='UI-sidebar-hidden UI-fixed' id='add_ac'>
+        <div class='UI-center'>
+            <h2 class='UI-red'>Add Permission</h2>
+        </div>
+        <div>
+            <hr>
+            <select class="UI-select" style="width:auto" id="perm_perm">
+            </select>
+
+            <input class="UI-hide" id="perm_dept" readonly>
+            <input class="UI-hide" id="perm_position" readonly>
+        </div>
+        <div class='UI-center'>
+            <hr>
+            <button class='UI-eventbutton'
+                id='ac_perm_save_btn' onclick='savePermission();'>
+              Save
+            </button>
+            <button class='UI-yellowbutton'
+                onclick='returnRBAC();'>
+              Close
             </button>
         </div>
     </div>

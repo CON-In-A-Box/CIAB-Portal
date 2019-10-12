@@ -10,7 +10,7 @@ if (isset($_SESSION['customFields']['currConComPos']) ||
          'responsive' => true);
 }
 
-if (isset($_SESSION['IS_ADMIN'])) {
+if (\ciab\RBAC::havePermission("site.concom.structure")) {
     $admin_menus[] = array('base style' => 'UI-yellow',
          'selected style' => 'event-color-primary',
          'function' => 'concom/admin',
