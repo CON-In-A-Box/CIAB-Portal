@@ -5,13 +5,17 @@
 .*/
 
 require __DIR__."/vendor/autoload.php";
-$dotenv = Dotenv\Dotenv::create(__DIR__);
-$dotenv->load();
+if (is_file(__DIR__.'/.env')) {
+    $dotenv = Dotenv\Dotenv::create(__DIR__);
+    $dotenv->load();
 
-$configure = false;
-try {
-    $dotenv->required(['DBHOST', 'DBUSER', 'DBNAME', 'DBPASS', 'DB_BACKEND']);
-} catch (RuntimeException $e) {
+    $configure = false;
+    try {
+        $dotenv->required(['DBHOST', 'DBUSER', 'DBNAME', 'DBPASS', 'DB_BACKEND']);
+    } catch (RuntimeException $e) {
+        $configure = true;
+    }
+} else {
     $configure = true;
 }
 
