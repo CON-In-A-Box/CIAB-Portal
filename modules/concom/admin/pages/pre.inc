@@ -4,12 +4,13 @@
     require_module 'json';
 .*/
 
-if (!isset($_SESSION['IS_ADMIN'])) {
-    // This is for ConCom members only!  Silently return to main.
+require_once($BACKEND.'/RBAC.inc');
+
+if (!\ciab\RBAC::havePermission("site.concom.structure")) {
     goSite();
 }
 
-require_once(__dir__."/../../functions/concom.inc");
+require_once(__DIR__."/../../functions/concom.inc");
 
 $arguments = [
 'modify' => FILTER_SANITIZE_STRING,
@@ -17,6 +18,10 @@ $arguments = [
 'delete' => FILTER_SANITIZE_STRING,
 'deleteEmail' => FILTER_SANITIZE_STRING,
 'email' => FILTER_SANITIZE_STRING,
+'deleteAC' => FILTER_SANITIZE_STRING,
+'position' => FILTER_SANITIZE_STRING,
+'permission' => FILTER_SANITIZE_STRING,
+'addAC' => FILTER_SANITIZE_STRING,
 ];
 
 $updateData = filter_input_array(INPUT_POST, $arguments);
@@ -47,4 +52,38 @@ if (isset($updateData['email'])) {
     $data = json_decode(base64_decode($updateData['email']));
     save_email($data);
     exit();
+}
+
+if (\ciab\RBAC::havePermission("site.concom.permissions")) {
+    if (isset($updateData['deleteAC'])) {
+        deleteDepartmentPermission(
+            $updateData['deleteAC'],
+            $updateData['position'],
+            $updateData['permission']
+        );
+        exit();
+    }
+
+    if (isset($updateData['addAC'])) {
+        addDepartmentPermission(
+            $updateData['addAC'],
+            $updateData['position'],
+            $updateData['permission']
+        );
+        exit();
+    }
+
+    /* GET */
+
+    $arguments = [
+    'permissions' => FILTER_SANITIZE_STRING,
+    ];
+
+    $updateData = filter_input_array(INPUT_GET, $arguments);
+
+    if (isset($updateData['permissions'])) {
+        $perm = getDepartmentPermissions($updateData['permissions']);
+        print json_encode($perm);
+        exit();
+    }
 }

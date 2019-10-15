@@ -116,6 +116,23 @@ SQL;
                 }
             }
         }
+
+        //  Create index
+        foreach (SCHEMA::$DB_index as $table => $keys) {
+            $build = "SHOW INDEX FROM `".$table."`;";
+            $result = mypdo::instance()->query($build);
+            $arr = [];
+            foreach ($result as $value) {
+               $arr[] = $value['Column_name'];
+            }
+
+            $keys  = array_diff($keys, $arr);
+            if (count($keys)) {
+                $build = "alter table ".$table;
+                $build .= " ADD INDEX (`".implode("`, `", $keys)."`);";
+                MyPDO::instance()->query($build);
+            }
+        }
     }
 
     public function __construct()

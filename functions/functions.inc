@@ -25,8 +25,10 @@ $MODULESDIR     = $BASEDIR."/modules";
 // Set a Date stamp for use anywhere
 $DS             = uniqid('', true);
 
-$dotenv = Dotenv\Dotenv::create($BASEDIR);
-$dotenv->load();
+if (is_file($BASEDIR.'/.env')) {
+    $dotenv = Dotenv\Dotenv::create($BASEDIR);
+    $dotenv->load();
+}
 
 function getVersion()
 {
@@ -123,7 +125,9 @@ function _config_from_Database()
 
 // Load Site Specific info
 try {
-    $dotenv->required(['DBHOST', 'DBUSER', 'DBNAME', 'DBPASS', 'DB_BACKEND']);
+    if (isset($dotenv)) {
+        $dotenv->required(['DBHOST', 'DBUSER', 'DBNAME', 'DBPASS', 'DB_BACKEND']);
+    }
     // Start the session so we are ready to go no matter what we do!
     session_start();
 

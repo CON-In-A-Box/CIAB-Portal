@@ -5,12 +5,18 @@
 .*/
 
 require __DIR__."/vendor/autoload.php";
-$dotenv = Dotenv\Dotenv::create(__DIR__);
-$dotenv->load();
+if (is_file(__DIR__.'/.env')) {
+    $dotenv = Dotenv\Dotenv::create(__DIR__);
+    $dotenv->load();
+}
 
 $configure = false;
 try {
-    $dotenv->required(['DBHOST', 'DBUSER', 'DBNAME', 'DBPASS', 'DB_BACKEND']);
+    if (isset($dotenv)) {
+        $dotenv->required(['DBHOST', 'DBUSER', 'DBNAME', 'DBPASS', 'DB_BACKEND']);
+    } else {
+        throw new RuntimeException();
+    }
 } catch (RuntimeException $e) {
     if (file_exists(__DIR__."/.ht_meetingsignin_config.php")) {
         require_once __DIR__."/.ht_meetingsignin_config.php";

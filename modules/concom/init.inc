@@ -4,6 +4,7 @@ require_once(__DIR__.'/functions/VOLUNTEERS.inc');
 require_once(__DIR__.'/functions/POSITION.inc');
 require_once(__DIR__.'/functions/REGISTRATION.inc');
 require_once(__DIR__.'/functions/LIST.inc');
+require_once(__DIR__.'/functions/RBAC.inc');
 
 if (!isset($ConComPositions)) {
     $ConComPositions = array();
