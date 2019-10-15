@@ -1,6 +1,11 @@
 <div id=page" class="UI-container">
 <div id="main_content" class="UI-maincontent">
 <div class="UI-event-sectionbar">ConCom</div>
+<div id="donut"></div>
+<script>
+<?php print buildDonutData();?>
+drawDonutChart(window.innerWidth-50, window.innerHeight-50, data, '#donut');
+</script>
 <div id="concom" class="UI-maincontent">
 
 <?php
