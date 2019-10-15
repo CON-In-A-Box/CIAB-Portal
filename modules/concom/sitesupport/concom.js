@@ -262,7 +262,7 @@ function dblClick(json) {
   } else {
     document.getElementById('dept_slider').disabled = false;
     document.getElementById('dept_slider_parent').classList.remove('UI-gray');
-    if (input.Count !== 0) {
+    if (parseInt(input.Count) !== 0) {
       document.getElementById('delete_btn').disabled = true;
     } else {
       document.getElementById('delete_btn').disabled = false;
