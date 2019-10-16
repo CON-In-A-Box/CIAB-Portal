@@ -11,6 +11,13 @@
     require_module 'hash';
 .*/
 
+// Load in the .env file, if it exists
+require __DIR__."/../vendor/autoload.php";
+if (is_file(__DIR__.'/../.env')) {
+   $dotenv = Dotenv\Dotenv::create(__DIR__.'/../');
+   $dotenv->load();
+}
+
 $secret = getenv('GITHUB_SECRET');
 if ($secret === false) {
     die('GITHUB_SECRET not defined');
