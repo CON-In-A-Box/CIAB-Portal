@@ -61,7 +61,7 @@ try {
     die('Unparsable json');
 }
 if ($data['ref'] === "refs/heads/$branch") {
-    $workDir = dirname(__DIR__);
+    $workDir = dirname(__DIR__."/../");
     $command = "git -C $workDir pull 2>&1";
     exec($command, $output, $returnCode);
 
