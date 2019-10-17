@@ -678,3 +678,68 @@ function addDepartmentPermission($depId, $posId, $perm)
     \ciab\RBAC::reload();
 
 }
+
+
+function buildDonutData()
+{
+    global $Departments;
+    $data = [];
+    foreach($Departments as $dpt => $d){
+        if ($d['Division'] == $dpt)
+        $data[$dpt] = [];
+    }
+    ksort($data);
+    foreach($Departments as $dpt => $d) {
+        if ($d['Division'] == $dpt) continue;
+        $data[$d['Division']][] = $dpt;
+    }
+    foreach($data as $dpt) {
+        ksort($dpt);
+    }
+
+    $output = "var data = [";
+    $pid = 0;
+    foreach($data as $i => $d) {
+      $output .= "{'nodeData':{";
+      $output .= "'label':'$i',";
+      $output .= "'colorIndex': $pid,";
+      $output .= "'strokeWidth': 3,";
+      $output .= "'link': 'index.php?Function=concom#".$i."',";
+      $output .= "'dsize':1,";
+      $output .= "},";
+
+      if (count($d)>0) {
+          $output .= "'subData':[";
+          $ii = 0;
+          foreach($d as $j) {
+              $z = $ii + $pid;
+              $output .= "{";
+              $output .= "'nodeData': {";
+              $output .= "'label': '$j',";
+              $output .= "'colorIndex': $z,";
+              $output .= "'strokeWidth': 1,";
+              $output .= "'link': 'index.php?Function=concom#".$j."',";
+              $output .= "'dsize': ".strval(1 / count($d)).",";
+              $output .= "},";
+              $output .= "},";
+              $ii++;
+          }
+          $output .= "],";
+      } else {
+          $output .= "'subData':[";
+          $output .= "{";
+          $output .= "'nodeData': {";
+          $output .= "'colorIndex': 'rgba(255, 255, 255, .4)',";
+          $output .= "'strokeWidth': 0,";
+          $output .= "'dsize': 1,";
+          $output .= "},";
+          $output .= "},";
+          $output .= "],";
+      }
+      $output .= "},";
+      $pid++;
+    }
+    $output .= "];";
+
+    return $output;
+}

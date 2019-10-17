@@ -11,6 +11,13 @@
     require_module 'hash';
 .*/
 
+// Load in the .env file, if it exists
+require __DIR__."/../vendor/autoload.php";
+if (is_file(__DIR__.'/../.env')) {
+   $dotenv = Dotenv\Dotenv::create(__DIR__.'/../');
+   $dotenv->load();
+}
+
 $secret = getenv('GITHUB_SECRET');
 if ($secret === false) {
     die('GITHUB_SECRET not defined');
@@ -54,7 +61,7 @@ try {
     die('Unparsable json');
 }
 if ($data['ref'] === "refs/heads/$branch") {
-    $workDir = dirname(__DIR__);
+    $workDir = dirname(__DIR__."/../");
     $command = "git -C $workDir pull 2>&1";
     exec($command, $output, $returnCode);
 

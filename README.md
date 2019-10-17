@@ -60,9 +60,7 @@ For a fairly technical overview of process of getting an instance of the project
 
 # Next Steps
 
-* The present primary goal is to have the first pieces of CIAB finished and put into production for the CONvergence 2018 event in July of 2018. This would primarily be the volunteers module and the core system.
-
-* After that the goal is to fully move off of Neon and host the whole backend on the mySQL database. This would involve migrating from Neon, replacing all the functionality as well as finding a way to safely and securely do credit card processing for event registration.
+* The current goal is to fully move off of Neon and host the whole backend on the mySQL database. This would involve migrating from Neon, replacing all the functionality as well as finding a way to safely and securely do credit card processing for event registration.
 
 * Additionally we want to continue to expand the cross-event structure to try to encourage other events to use this tool. We believe ti can be very power and helpful for many events and would like our work to be welcome in as many places as it fits.  This likely involves making it easier to skin the site and pull out many of the CONvergence assumptions and making them configurable based on the event. 
 
