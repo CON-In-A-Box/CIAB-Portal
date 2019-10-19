@@ -68,6 +68,21 @@ class ConcomList
             WHERE
                 Name = 'Historical Placeholder'
         )
+        AND l.DepartmentID NOT IN (
+            SELECT
+                `DepartmentID`
+            FROM
+                `Departments`
+            WHERE
+                ParentDepartmentID IN (
+                    SELECT
+                        `DepartmentID`
+                    FROM
+                        `Departments`
+                    WHERE
+                        Name = 'Historical Placeholder'
+                )
+        )
 SQL;
 
         $ids = array();

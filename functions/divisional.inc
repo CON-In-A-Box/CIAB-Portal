@@ -14,7 +14,30 @@ if (!isset($Departments)) {
 
     $temp_dept = array();
 
-    $sql = "SELECT * FROM Departments WHERE DepartmentID NOT IN (SELECT `DepartmentID` FROM `Departments` WHERE Name = 'Historical Placeholder')";
+    $sql = <<<SQL
+        SELECT
+            *
+        FROM
+            Departments
+        WHERE
+            DepartmentID NOT IN (
+                SELECT
+                    `DepartmentID`
+                FROM
+                    `Departments`
+                WHERE
+                    Name = 'Historical Placeholder'
+            )
+            AND ParentDepartmentID NOT IN (
+                SELECT
+                    `DepartmentID`
+                FROM
+                    `Departments`
+                WHERE
+                    Name = 'Historical Placeholder'
+            );
+SQL;
+
     $result = DB::run($sql);
     $value = $result->fetch();
     while ($value !== false) {
