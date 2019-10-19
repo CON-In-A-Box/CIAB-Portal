@@ -608,9 +608,32 @@ SQL;
 
 function delete_position($id)
 {
-    $sql = "UPDATE `Departments` SET `ParentDepartmentID` = 0 WHERE `DepartmentID` = $id";
+    $sql = "DELETE FROM `Emails` WHERE `DepartmentID` = $id";
     DB::run($sql);
-    $sql = "DELETE FROM `Departments` WHERE `DepartmentID` = $id";
+    $sql = "DELETE FROM `EmailListAccess` WHERE `DepartmentID` = $id";
+    DB::run($sql);
+    $sql = <<<SQL
+        UPDATE
+            `Departments`
+        SET
+            `ParentDepartmentID` = (
+                SELECT
+                    `DepartmentID`
+                FROM
+                    (
+                        SELECT
+                            *
+                        FROM
+                            `Departments`
+                    ) as x
+                WHERE
+                    Name = 'Historical Placeholder'
+                LIMIT
+                    1
+            )
+        WHERE
+            `DepartmentID` = $id;
+SQL;
     DB::run($sql);
 
 }

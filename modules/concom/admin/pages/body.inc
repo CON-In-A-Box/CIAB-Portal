@@ -4,7 +4,7 @@
 </script>
 <div id="main_content" class="UI-maincontent">
 <?php
-$deptCount = departmentDetails();
+$deptCount = departmentDetails(current_eventID());
 ?>
 <div id="admin_content" class="CONCOM-admin-content">
 

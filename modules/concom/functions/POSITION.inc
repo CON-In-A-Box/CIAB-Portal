@@ -43,6 +43,21 @@ class POSITION
                     WHERE
                         Name = 'Historical Placeholder'
                 )
+                AND DepartmentID NOT IN (
+                    SELECT
+                        `DepartmentID`
+                    FROM
+                        `Departments`
+                    WHERE
+                        ParentDepartmentID IN (
+                            SELECT
+                                `DepartmentID`
+                            FROM
+                                `Departments`
+                            WHERE
+                                Name = 'Historical Placeholder'
+                        )
+                )
 SQL;
         $result = \DB::run($sql);
         $value = $result->fetch();
@@ -57,6 +72,9 @@ SQL;
             'departmentId' => $value['DepartmentID'],
             'note' => $value['Note']];
             $value = $result->fetch();
+        }
+        if ($retvalue == null) {
+            $retvalue = array();
         }
         return $retvalue;
 

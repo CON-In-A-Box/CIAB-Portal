@@ -8,9 +8,30 @@ class VOLUNTEERS
 
     public static function inVolunteers($lookup)
     {
-        $sql = "SELECT count(ListRecordID) as count From ConComList";
-        $sql .= " WHERE AccountID = $lookup";
-        $sql .= " AND DepartmentID = (SELECT DepartmentID FROM Departments WHERE Name = 'Volunteers');";
+        $sql = <<<SQL
+            SELECT
+                count(ListRecordID) as count
+            From
+                ConComList
+            WHERE
+                AccountID = $lookup
+                AND DepartmentID = (
+                    SELECT
+                        DepartmentID
+                    FROM
+                        Departments
+                    WHERE
+                        Name = 'Volunteers'
+                        AND ParentDepartmentID NOT IN (
+                            SELECT
+                                `DepartmentID`
+                            FROM
+                                `Departments`
+                            WHERE
+                                Name = 'Historical Placeholder'
+                        )
+                );
+SQL;
         $result = \DB::run($sql);
         $value = $result->fetch();
         if ($value !== false && $value['count']) {
