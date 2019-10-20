@@ -608,7 +608,7 @@ SQL;
 
 function delete_position($id)
 {
-    $sql = "DELETE FROM `Emails` WHERE `DepartmentID` = $id";
+    $sql = "DELETE FROM `EMails` WHERE `DepartmentID` = $id";
     DB::run($sql);
     $sql = "DELETE FROM `EmailListAccess` WHERE `DepartmentID` = $id";
     DB::run($sql);
