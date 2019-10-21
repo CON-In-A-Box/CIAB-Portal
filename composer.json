@@ -31,6 +31,7 @@
         "leafo/scssphp": "0.0.12",
         "bshaffer/oauth2-server-php": "^1.10",
         "vlucas/phpdotenv": "^3.6",
-        "zendframework/zend-permissions-rbac": "^3.0"
+        "zendframework/zend-permissions-rbac": "^3.0",
+        "sendgrid/sendgrid": "^7.3"
     }
 }

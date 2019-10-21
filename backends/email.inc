@@ -51,14 +51,16 @@ class Email
         $subject,
         $message,
         $additional_headers = null,
-        $additional_parameters = null
+        $additional_parameters = null,
+        $from = null
     ) {
         return self::instance()->mail(
             $to,
             $subject,
             $message,
             $additional_headers,
-            $additional_parameters
+            $additional_parameters,
+            $from
         );
 
     }

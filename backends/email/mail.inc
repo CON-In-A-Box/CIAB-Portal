@@ -25,7 +25,8 @@ class Email
         $subject,
         $message,
         $additional_headers = null,
-        $additional_parameters = null
+        $additional_parameters = null,
+        $from = null
     ) {
         return @mail(
             $to,
