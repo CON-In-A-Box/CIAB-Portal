@@ -457,12 +457,11 @@ SQL;
     public function send($data)
     {
         $to = $this->getToById($data->to);
-        $headers = 'Reply-To: '.$data->reply;
-        $headers .= "MIME-Version: 1.0\r\n";
+        $headers = "MIME-Version: 1.0\r\n";
         $headers .= "Content-Type: text/html; charset=ISO-8859-1\r\n";
         if (count($to) > 0) {
             foreach ($to as $target) {
-                \ciab\Email::mail($target, $data->from, $data->subject, $data->body, $headers);
+                \ciab\Email::mail($target, $data->from, $data->subject, $data->body, $data->reply, $headers);
             }
         }
 

@@ -184,8 +184,6 @@ function sendError($msg, $arrChunk = null)
     if (!empty($arrChunk)) {
         $message .= "\n\n".print_r($arrChunk, true);
     }
-    $headers = 'Reply-To: noreply@convergence-con.org';
-
     \ciab\Email::mail($to, 'noreply@convergence-con.org', $subject, $message, $headers);
     trigger_error($msg);
 

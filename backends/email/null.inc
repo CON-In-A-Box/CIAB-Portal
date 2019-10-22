@@ -25,6 +25,7 @@ class Email
         $from,
         $subject,
         $message,
+        $replyTo = null,
         $additional_headers = null,
         $additional_parameters = null
     ) {

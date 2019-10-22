@@ -25,6 +25,7 @@ class Email
         $from,
         $subject,
         $message,
+        $replyTo = null,
         $additional_headers = null,
         $additional_parameters = null
     ) {
@@ -35,6 +36,10 @@ class Email
             $headers .= "\r\n";
         }
         $headers .= "From: $from";
+        if ($replyTo !== null) {
+            $headers .= "\r\n";
+            $headers .= "Reply-To: $replyTo";
+        }
         return @mail(
             $to,
             $subject,

@@ -26,6 +26,7 @@ class Email
         $from,
         $subject,
         $message,
+        $replyTo = null,
         $additional_headers = null,
         $additional_parameters = null
     ) {
@@ -41,6 +42,9 @@ class Email
         $email = new \SendGrid\Mail\Mail();
         $email->setFrom($from);
         $email->setSubject($subject);
+        if ($replyTo !== null) {
+            $email->setReplyTo($replyTo);
+        }
         $email->addTo($to);
         $email->addContent("text/plain", $message);
         $sendgrid = new \SendGrid(getenv('SENDGRID_API_KEY'));

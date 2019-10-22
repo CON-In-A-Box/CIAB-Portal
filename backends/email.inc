@@ -51,6 +51,7 @@ class Email
         $from,
         $subject,
         $message,
+        $replyTo = null,
         $additional_headers = null,
         $additional_parameters = null
     ) {
@@ -59,6 +60,7 @@ class Email
             $from,
             $subject,
             $message,
+            ($replyTo?$replyTo:$from),
             $additional_headers,
             $additional_parameters
         );
