@@ -22,17 +22,26 @@ class Email
 
     public function mail(
         $to,
+        $from,
         $subject,
         $message,
-        $additional_headers = null,
-        $additional_parameters = null
+        $replyTo = null,
+        $type = null
     ) {
+        $headers = "MIME-Version: 1.0\r\n";
+        if ($type !== null) {
+            $headers .= "Content-Type: $type; charset=ISO-8859-1\r\n";
+        }
+        $headers .= "From: $from";
+        if ($replyTo !== null) {
+            $headers .= "\r\n";
+            $headers .= "Reply-To: $replyTo";
+        }
         return @mail(
             $to,
             $subject,
             $message,
-            $additional_headers,
-            $additional_parameters
+            $headers
         );
 
     }

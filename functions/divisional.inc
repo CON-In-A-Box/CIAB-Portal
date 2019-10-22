@@ -68,7 +68,7 @@ SQL;
             $value = $result->fetch();
         }
     }
-    asort($Departments);
+    ksort($Departments);
     asort($Divisions);
 
     // Push non-divisions to the end of the list (force order)

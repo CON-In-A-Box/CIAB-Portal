@@ -8,6 +8,7 @@
 require_once $FUNCTIONDIR."/divisional.inc";
 require_once $FUNCTIONDIR."/database.inc";
 require_once $BACKEND."/email.inc";
+require_once($BACKEND."/RBAC.inc");
 
 class Email
 {
@@ -23,7 +24,7 @@ class Email
 
     public static function allowed()
     {
-        if (isset($_SESSION['IS_ADMIN'])) {
+        if (\ciab\RBAC::havePermission("site.email_lists")) {
             return true;
         }
 
@@ -68,7 +69,7 @@ class Email
 
     public function canAdd()
     {
-        if (isset($_SESSION['IS_ADMIN'])) {
+        if (\ciab\RBAC::havePermission("site.email_lists")) {
             return true;
         }
         return false;
@@ -177,7 +178,7 @@ class Email
     public function buildTo()
     {
         $response = [];
-        if (isset($_SESSION['IS_ADMIN'])) {
+        if (\ciab\RBAC::havePermission("site.email_lists")) {
             $sql = "SELECT * FROM `EmailLists`";
             $result = \DB::run($sql);
             $value = $result->fetch();
@@ -222,7 +223,7 @@ SQL;
     public function buildEdit()
     {
         $response = [];
-        if (isset($_SESSION['IS_ADMIN'])) {
+        if (\ciab\RBAC::havePermission("site.email_lists")) {
             $sql = "SELECT * FROM `EmailLists`";
             $result = \DB::run($sql);
             $value = $result->fetch();
@@ -456,14 +457,9 @@ SQL;
     public function send($data)
     {
         $to = $this->getToById($data->to);
-        $headers = 'From: '.$data->from."\r\n";
-        $headers .= 'Reply-To: '.$data->reply;
-        $headers .= "MIME-Version: 1.0\r\n";
-        $headers .= "Content-Type: text/html; charset=ISO-8859-1\r\n";
         if (count($to) > 0) {
             foreach ($to as $target) {
-                \ciab\Email::mail($target, $data->subject, $data->body,
-                                  $headers);
+                \ciab\Email::mail($target, $data->from, $data->subject, $data->body, $data->reply, \ciab\Email::EMAIL_TYPE_HTML);
             }
         }
 
