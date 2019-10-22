@@ -25,15 +25,10 @@ class Email
         $from,
         $subject,
         $message,
-        $replyTo = null,
-        $additional_headers = null
+        $replyTo = null
     ) {
-        $headers = $additional_headers;
-        if ($headers === null) {
-            $headers = "";
-        } else {
-            $headers .= "\r\n";
-        }
+        $headers = "MIME-Version: 1.0\r\n"
+        $headers .= "Content-Type: text/html; charset=ISO-8859-1\r\n";
         $headers .= "From: $from";
         if ($replyTo !== null) {
             $headers .= "\r\n";

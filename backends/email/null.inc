@@ -25,8 +25,7 @@ class Email
         $from,
         $subject,
         $message,
-        $replyTo = null,
-        $additional_headers = null
+        $replyTo = null
     ) {
         error_log("No e-mailer configured. Unable to send email "."('$to', '$subject')");
 
