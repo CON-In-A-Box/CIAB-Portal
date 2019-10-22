@@ -34,7 +34,7 @@ function doSendEmail() {
     "to" : document.getElementById('email_to').value,
     "body" : quill.container.firstChild.innerHTML
   };
-  var param = btoa(JSON.stringify(data));
+  var param = urlsafe_b64encode(JSON.stringify(data));
 
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {

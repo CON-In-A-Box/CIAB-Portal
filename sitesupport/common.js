@@ -41,3 +41,11 @@ function showSpinner() {
 function hideSpinner() {
   document.getElementById('refresh_spinner').style.display = 'none';
 }
+
+function urlsafe_b64encode(data) {
+    return btoa(data).replace(/\+/g, '-').replace(/\//g, '_');
+}
+
+function urlsafe_b64decode(data) {
+    return atob(data.replace(/-/g, '+').replace(/_/g, '/'));
+}

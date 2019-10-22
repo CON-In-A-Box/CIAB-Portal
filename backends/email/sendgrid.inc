@@ -23,11 +23,11 @@ class Email
 
     public function mail(
         $to,
+        $from,
         $subject,
         $message,
-        $additional_headers = null,
-        $additional_parameters = null,
-        $from = null
+        $replyTo = null,
+        $type = null
     ) {
         if ($from == null) {
             $from = getenv('SENDGRID_MAIL_FROM');
@@ -41,8 +41,14 @@ class Email
         $email = new \SendGrid\Mail\Mail();
         $email->setFrom($from);
         $email->setSubject($subject);
+        if ($replyTo !== null) {
+            $email->setReplyTo($replyTo);
+        }
         $email->addTo($to);
-        $email->addContent("text/plain", $message);
+        if ($type === null) {
+            $type = "text/plain";
+        }
+        $email->addContent($type, $message);
         $sendgrid = new \SendGrid(getenv('SENDGRID_API_KEY'));
         try {
             $response = $sendgrid->send($email);

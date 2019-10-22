@@ -7,6 +7,8 @@ namespace ciab;
 
 class Email
 {
+    public const EMAIL_TYPE_TEXT = 'text/plain';
+    public const EMAIL_TYPE_HTML = 'text/html';
 
     protected static $instance = null;
 
@@ -48,19 +50,19 @@ class Email
 
     public static function mail(
         $to,
+        $from,
         $subject,
         $message,
-        $additional_headers = null,
-        $additional_parameters = null,
-        $from = null
+        $replyTo = null,
+        $messageType = null
     ) {
         return self::instance()->mail(
             $to,
+            $from,
             $subject,
             $message,
-            $additional_headers,
-            $additional_parameters,
-            $from
+            ($replyTo?$replyTo:$from),
+            $messageType
         );
 
     }

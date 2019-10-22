@@ -22,11 +22,11 @@ class Email
 
     public function mail(
         $to,
+        $from,
         $subject,
         $message,
-        $additional_headers = null,
-        $additional_parameters = null,
-        $from = null
+        $replyTo = null,
+        $type = null
     ) {
         error_log("No e-mailer configured. Unable to send email "."('$to', '$subject')");
 
