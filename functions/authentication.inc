@@ -344,11 +344,10 @@ This new password will expire at $expire;
 
 Thank you
 MSG;
-        $headers = 'From: noreply@convergence-con.org'."\r\n";
-        $headers .= 'Reply-To: noreply@convergence-con.org';
+        $headers = 'Reply-To: noreply@convergence-con.org';
 
-        \ciab\Email::mail($email, $subject, $message, $headers);
-        \ciab\Email::mail($ADMINEMAIL, $subject, $adminMessage, $headers);
+        \ciab\Email::mail($email, 'noreply@convergence-con.org', $subject, $message, $headers);
+        \ciab\Email::mail($ADMINEMAIL, 'noreply@convergence-con.org', $subject, $adminMessage, $headers);
         error_log($adminMessage);
         return true;
     }

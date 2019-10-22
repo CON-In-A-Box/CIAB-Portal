@@ -363,10 +363,9 @@ function AddConComPosition($accountid, $department, $position, $note, $notify = 
         $name = $user['First Name']." ".$user['Last Name'];
 
         $message = $_SESSION['fullName'].' has added '.$name." to ".$department.' as '.$position.'.';
-        $headers = 'From: noreply@convergence-con.org'."\r\n";
-        $headers .= 'Reply-To: noreply@convergence-con.org';
+        $headers = 'Reply-To: noreply@convergence-con.org';
 
-        \ciab\Email::mail($to, $subject, $message, $headers);
+        \ciab\Email::mail($to, 'noreply@convergence-con.org', $subject, $message, $headers);
         return true;
     } elseif (!$result) {
         die("Failed Add comcon member to database!");
@@ -400,10 +399,9 @@ function RemoveConComPosition($accountid, $department, $position, $notify = true
             $subject = 'ConCom Division Removal to '.$department;
             $name = $user['First Name']." ".$user['Last Name'];
             $message = $_SESSION['fullName'].' has removed '.$name." from ".$department.'.';
-            $headers = 'From: noreply@convergence-con.org'."\r\n";
-            $headers .= 'Reply-To: noreply@convergence-con.org';
+            $headers = 'Reply-To: noreply@convergence-con.org';
 
-            \ciab\Email::mail($to, $subject, $message, $headers);
+            \ciab\Email::mail($to, 'noreply@convergence-con.org', $subject, $message, $headers);
         }
         return true;
     } else {

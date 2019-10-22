@@ -48,19 +48,19 @@ class Email
 
     public static function mail(
         $to,
+        $from,
         $subject,
         $message,
         $additional_headers = null,
-        $additional_parameters = null,
-        $from = null
+        $additional_parameters = null
     ) {
         return self::instance()->mail(
             $to,
+            $from,
             $subject,
             $message,
             $additional_headers,
-            $additional_parameters,
-            $from
+            $additional_parameters
         );
 
     }

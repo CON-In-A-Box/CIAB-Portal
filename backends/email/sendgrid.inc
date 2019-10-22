@@ -23,11 +23,11 @@ class Email
 
     public function mail(
         $to,
+        $from,
         $subject,
         $message,
         $additional_headers = null,
-        $additional_parameters = null,
-        $from = null
+        $additional_parameters = null
     ) {
         if ($from == null) {
             $from = getenv('SENDGRID_MAIL_FROM');
