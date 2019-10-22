@@ -26,8 +26,7 @@ class Email
         $subject,
         $message,
         $replyTo = null,
-        $additional_headers = null,
-        $additional_parameters = null
+        $additional_headers = null
     ) {
         $headers = $additional_headers;
         if ($headers === null) {
@@ -44,8 +43,7 @@ class Email
             $to,
             $subject,
             $message,
-            $headers,
-            $additional_parameters
+            $headers
         );
 
     }

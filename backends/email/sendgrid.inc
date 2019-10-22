@@ -27,8 +27,7 @@ class Email
         $subject,
         $message,
         $replyTo = null,
-        $additional_headers = null,
-        $additional_parameters = null
+        $additional_headers = null
     ) {
         if ($from == null) {
             $from = getenv('SENDGRID_MAIL_FROM');

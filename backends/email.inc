@@ -52,8 +52,7 @@ class Email
         $subject,
         $message,
         $replyTo = null,
-        $additional_headers = null,
-        $additional_parameters = null
+        $additional_headers = null
     ) {
         return self::instance()->mail(
             $to,
@@ -61,8 +60,7 @@ class Email
             $subject,
             $message,
             ($replyTo?$replyTo:$from),
-            $additional_headers,
-            $additional_parameters
+            $additional_headers
         );
 
     }
