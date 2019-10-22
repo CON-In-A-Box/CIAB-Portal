@@ -26,7 +26,8 @@ class Email
         $from,
         $subject,
         $message,
-        $replyTo = null
+        $replyTo = null,
+        $type = null
     ) {
         if ($from == null) {
             $from = getenv('SENDGRID_MAIL_FROM');
@@ -44,7 +45,10 @@ class Email
             $email->setReplyTo($replyTo);
         }
         $email->addTo($to);
-        $email->addContent("text/plain", $message);
+        if ($type === null) {
+            $type = "text/plain";
+        }
+        $email->addContent($type, $message);
         $sendgrid = new \SendGrid(getenv('SENDGRID_API_KEY'));
         try {
             $response = $sendgrid->send($email);

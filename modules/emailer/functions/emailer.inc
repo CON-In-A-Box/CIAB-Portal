@@ -459,7 +459,7 @@ SQL;
         $to = $this->getToById($data->to);
         if (count($to) > 0) {
             foreach ($to as $target) {
-                \ciab\Email::mail($target, $data->from, $data->subject, $data->body, $data->reply);
+                \ciab\Email::mail($target, $data->from, $data->subject, $data->body, $data->reply, \ciab\Email::EMAIL_TYPE_HTML);
             }
         }
 
