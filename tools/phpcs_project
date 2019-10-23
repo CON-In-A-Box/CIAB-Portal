@@ -8,12 +8,12 @@ fi
 
 if [ -z "$1" ]
     then
-        phpcs --standard=./data/phpcs_ruleset.xml --report=summary --colors --ignore=sitesupport,neon,data,vendor,library,*.js *;
+        phpcs --report=summary --colors
     else
         if [ "$1" == "--fix" ]
         then
-            phpcbf --standard=./data/phpcs_ruleset.xml --ignore=*.js $2;
+            phpcbf --ignore=*.js $2;
         else
-            phpcs --standard=./data/phpcs_ruleset.xml --colors --ignore=sitesupport,neon,data,vendor,library.*.js $1;
+            phpcs --colors $1;
         fi
 fi;
