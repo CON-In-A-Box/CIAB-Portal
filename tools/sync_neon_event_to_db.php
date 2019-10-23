@@ -16,8 +16,13 @@ function _Neon_import_people($fields, $event)
     $round = 0;
     print "Event: ".$event['Event ID']."\n";
     do {
-        $people = _lookup_events_attendees($fields, $event['Event ID'], $page, null,
-            false);
+        $people = _lookup_events_attendees(
+            $fields,
+            $event['Event ID'],
+            $page,
+            null,
+            false
+        );
         $count = count($people['attendees']);
         if ($count) {
             $round = _import_page_of_people($event, $people, $page);

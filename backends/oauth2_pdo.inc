@@ -10,16 +10,7 @@ require_once __DIR__."/../functions/users.inc";
 use \OAuth2\OpenID\Storage\UserClaimsInterface;
 use \OAuth2\OpenID\Storage\AuthorizationCodeInterface as OpenIDAuthorizationCodeInterface;
 
-class Pdo implements
-    \OAuth2\OpenID\Storage\AuthorizationCodeInterface,
-    \OAuth2\Storage\AccessTokenInterface,
-    \OAuth2\Storage\ClientCredentialsInterface,
-    \OAuth2\Storage\UserCredentialsInterface,
-    \OAuth2\Storage\RefreshTokenInterface,
-    \OAuth2\Storage\JwtBearerInterface,
-    \OAuth2\Storage\ScopeInterface,
-    \OAuth2\Storage\PublicKeyInterface,
-    \OAuth2\OpenID\Storage\UserClaimsInterface
+class Pdo implements \OAuth2\OpenID\Storage\AuthorizationCodeInterface, \OAuth2\Storage\AccessTokenInterface, \OAuth2\Storage\ClientCredentialsInterface, \OAuth2\Storage\UserCredentialsInterface, \OAuth2\Storage\RefreshTokenInterface, \OAuth2\Storage\JwtBearerInterface, \OAuth2\Storage\ScopeInterface, \OAuth2\Storage\PublicKeyInterface, \OAuth2\OpenID\Storage\UserClaimsInterface
 {
 
     protected $base;
@@ -249,6 +240,7 @@ class Pdo implements
         $pattern = '/CREATE TABLE.*\n+.*username[\w\s(),]*;/';
         $replacement = '';
         return preg_replace($pattern, $replacement, $sql);
+
     }
 
 

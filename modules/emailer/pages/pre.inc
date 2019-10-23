@@ -61,7 +61,7 @@ if (!empty($_POST)) {
         exit();
     }
     if (isset($updateData['send'])) {
-        $source = str_replace(" ","", $updateData['send']);
+        $source = str_replace(" ", "", $updateData['send']);
         $data = json_decode(urlsafe_b64decode($source));
         $emailer->send($data);
         print "done";
