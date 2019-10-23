@@ -51,8 +51,7 @@ function updateVersion($gitver)
 
     if ($gitver[0] != $version['build']) {
         $gitver[0] = $gitver[0] + 1;
-        print "-- Updating build number from ".$version['build']." to ".
-              $gitver[0]."\n";
+        print "-- Updating build number from ".$version['build']." to ".$gitver[0]."\n";
         $version['build'] = $gitver[0];
         $output = <<<E
 [Version]
@@ -94,6 +93,7 @@ function tagSource($version)
 
 }
 
+
 function release($tag)
 {
     $file = "/tmp/$tag.tar.gz";
@@ -103,15 +103,16 @@ function release($tag)
     exec("git archive --format=tar.gz --prefix ciab/ --output $file HEAD");
     @chdir($cwd);
     print "Archive stored '$file'\n";
+
 }
 
 
 $dry_run = (in_array('--dry-run', $argv));
 
 if ($dry_run) {
-    print" ===============  DRY RUN ================= \n";
+    print " ===============  DRY RUN ================= \n";
 } else {
-    print" ===============  Prepearing Release ================= \n";
+    print " ===============  Prepearing Release ================= \n";
 }
 
 $gitver = getGitVersion();
@@ -123,6 +124,6 @@ if (intval($gitver[1]) > 0) {
 }
 $version = updateVersion($gitver);
 $tag = tagSource($version);
-print" ===============  Archiving ================= \n";
+print " ===============  Archiving ================= \n";
 release($tag);
-print" ===============  DONE ================= \n";
+print " ===============  DONE ================= \n";

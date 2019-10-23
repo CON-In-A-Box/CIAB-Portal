@@ -61,7 +61,7 @@ class Email
             $from,
             $subject,
             $message,
-            ($replyTo?$replyTo:$from),
+            ($replyTo ? $replyTo : $from),
             $messageType
         );
 

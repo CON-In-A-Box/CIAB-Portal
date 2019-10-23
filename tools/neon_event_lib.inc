@@ -2,6 +2,7 @@
 
 require_once(__DIR__."/../functions/database.inc");
 
+
 function _loadEventCustomFields()
 {
     global $Neon;

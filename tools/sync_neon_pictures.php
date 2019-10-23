@@ -6,6 +6,7 @@
 
 require_once(__DIR__."/../functions/functions.inc");
 
+
 function do_Neon_import()
 {
     $IMAGEDIR = __DIR__."/../resources/images/members/";
@@ -25,7 +26,9 @@ function do_Neon_import()
         }
         $value = $result->fetch();
     }
+
 }
+
 
 $cmd = "pgrep -f ".basename(__FILE__);
 exec($cmd, $pids);
