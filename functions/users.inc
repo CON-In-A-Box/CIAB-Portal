@@ -5,6 +5,116 @@
     require_module 'json';
 .*/
 
+/*********************************/
+/* Neon migration path functions */
+/*********************************/
+
+
+function _quote($value)
+{
+    if ($value === null || $value === '') {
+        return 'NULL';
+    } else {
+        return MyPDO::quote($value);
+    }
+
+}
+
+
+function _memberDBfromList($person)
+{
+    $aid = $person['Account ID'];
+    $fn = _quote($person['First Name']);
+    $ln = _quote($person['Last Name']);
+    $mn = _quote($person['Middle Name']);
+    $su = _quote($person['Suffix']);
+    $em1 = _quote($person['Email 1']);
+    $em2 = _quote($person['Email 2']);
+    $em3 = _quote($person['Email 3']);
+    $ph1 = _quote($person['Phone 1 Full Number (F)']);
+    $ph2 = _quote($person['Phone 2 Full Number (F)']);
+    $al1 = _quote($person['Address Line 1']);
+    $al2 = _quote($person['Address Line 2']);
+    $ac = _quote($person['City']);
+    $ast = _quote($person['State']);
+    $az = _quote($person['Zip Code']);
+    $azs = _quote($person['Zip Code Suffix']);
+    $aco = _quote($person['Country']);
+    $ap = _quote($person['Province']);
+    $dc = ($person['Deceased'] === 'Yes') ? 'true' : 'false';
+    $dnc = ($person['Do Not Contact'] === 'Yes') ? 'true' : 'false';
+    $eoo = ($person['Email Opt-Out'] === 'Yes') ? 'true' : 'false';
+    if ($person['DOB Month']) {
+        $time = strtotime($person['DOB Month'].'/'.$person['DOB Day'].'/'.$person['DOB Year']);
+        $dob = _quote(date('Y-m-d', $time));
+    } else {
+        $dob = 'NULL';
+    }
+    $gn = _quote($person['Gender']);
+    $pfn = _quote($person['Preferred First Name']);
+    $pln = _quote($person['Preferred Last Name']);
+    $li = _quote($person['Account Login Name']);
+    if ($person['CVGConCom Publish Phone'] === null) {
+        $dph = 'NULL';
+    } else {
+        $dph = $person['CVGConCom Publish Phone'];
+    }
+
+    $sql = <<<SQL
+        REPLACE INTO `Members` (AccountID, FirstName, MiddleName, LastName,
+            Suffix, Email, Email2, Email3, Phone, Phone2,
+            AddressLine1, AddressLine2, AddressCity,
+            AddressState, AddressZipCode, AddressZipCodeSuffix,
+            AddressCountry, AddressProvince, PreferredFirstName,
+            PreferredLastName, Login, Deceased, DoNotContact, EmailOptOut,
+            Birthdate, Gender, DisplayPhone)
+        VALUES ($aid, $fn, $mn,$ln,
+                $su, $em1, $em2, $em3, $ph1, $ph2,
+                $al1, $al2, $ac,
+                $ast, $az, $azs,
+                $aco, $ap, $pfn,
+                $pln, $li, $dc, $dnc, $eoo,
+                $dob, $gn, $dph);
+
+SQL;
+    return $sql;
+
+}
+
+
+function neon_importAccountListToDB($results)
+{
+    if (!array_key_exists('_MAX_SQL_LENGTH', $GLOBALS)) {
+        $sql = "SHOW VARIABLES LIKE 'max_allowed_packet';";
+        $result = \DB::run($sql);
+        $value = $result->fetch();
+        $GLOBALS['_MAX_SQL_LENGTH'] = intval($value['Value']) / 160;
+    }
+
+    $sql = "";
+    if (isset($results['operationResult']) && $results['operationResult'] == 'SUCCESS') {
+        foreach ($results['searchResults'] as $val) {
+            $line = _memberDBfromList($val);
+            if (strlen($sql) + strlen($line) >= $GLOBALS['_MAX_SQL_LENGTH']) {
+                \DB::run($sql);
+                $sql = $line;
+            } else {
+                $sql .= $line;
+            }
+        }
+    }
+
+    if (!empty($sql)) {
+        \DB::run($sql);
+    }
+
+}
+
+
+/*************************************/
+/* END Neon migration path functions */
+/*************************************/
+
 
 function _parse_user($result, $additional_fields)
 {
@@ -43,12 +153,13 @@ function _lookup_user($criteria, $single_result = false, $additional_fields = ar
     global $Neon;
     $preferredFirstName = search_definedFields('Preferred First Name');
     $preferredLastName = search_definedFields('Preferred Last Name');
+    $cvgConComPhoneDisplay = search_definedFields('CVGConCom Publish Phone');
 
     $search = [
     'method' => 'account/listAccounts',
     'columns' => [
-    'standardFields' => ['Account ID', 'First Name', 'Last Name', 'Email 1'],
-    'customFields' => [$preferredFirstName, $preferredLastName],
+    'standardFields' => ['Account ID', 'First Name', 'Last Name', 'Middle Name', 'Suffix', 'City', 'State', 'Email 1', 'Email 2', 'Email 3', 'Phone 1 Full Number (F)', 'Phone 2 Full Number (F)', 'Address Type', 'Address Line 1', 'Address Line 2', 'Zip Code', 'Zip Code Suffix', 'Country', 'Province', 'Account Login Name', 'Deceased', 'Do Not Contact', 'Email Opt-Out', 'DOB Day', 'DOB Month', 'DOB Year', 'Gender'],
+    'customFields' => [$preferredFirstName, $preferredLastName, $cvgConComPhoneDisplay],
     ],
     'criteria' => $criteria,
     'page' => [
@@ -59,9 +170,16 @@ function _lookup_user($criteria, $single_result = false, $additional_fields = ar
     ],
     ];
     if (!empty($additional_fields)) {
-        $search['columns']['standardFields'] = array_merge($search['columns']['standardFields'], $additional_fields);
+        foreach ($additional_fields as $field) {
+            if (!in_array($field, $search['columns']['standardFields'])) {
+                $search['columns']['standardFields'][] = $field;
+            }
+        }
     }
     $results = $Neon->search($search);
+
+    neon_importAccountListToDB($results);
+
     if (isset($results['operationResult']) && $results['operationResult'] == 'SUCCESS') {
         if ($single_result && $results['page']['totalResults'] > 1) {
             return array('code' => '409 Conflict', 'users' => array());
