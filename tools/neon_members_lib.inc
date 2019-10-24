@@ -2,6 +2,7 @@
 
 require_once(__DIR__."/../functions/functions.inc");
 require_once(__DIR__."/../functions/database.inc");
+require_once(__DIR__."/../functions/users.inc");
 
 
 function _loadEventCustomFields()
@@ -94,61 +95,8 @@ function _quote($value)
 
 function _updateMemberSql($person, $add)
 {
-    $aid = $person['Account ID'];
-    $fn = _quote($person['First Name']);
-    $ln = _quote($person['Last Name']);
-    $mn = _quote($person['Middle Name']);
-    $su = _quote($person['Suffix']);
-    $em1 = _quote($person['Email 1']);
-    $em2 = _quote($person['Email 2']);
-    $em3 = _quote($person['Email 3']);
-    $ph1 = _quote($person['Phone 1 Full Number (F)']);
-    $ph2 = _quote($person['Phone 2 Full Number (F)']);
-    $al1 = _quote($person['Address Line 1']);
-    $al2 = _quote($person['Address Line 2']);
-    $ac = _quote($person['City']);
-    $ast = _quote($person['State']);
-    $az = _quote($person['Zip Code']);
-    $azs = _quote($person['Zip Code Suffix']);
-    $aco = _quote($person['Country']);
-    $ap = _quote($person['Province']);
-    $dc = ($person['Deceased'] === 'Yes') ? 'true' : 'false';
-    $dnc = ($person['Do Not Contact'] === 'Yes') ? 'true' : 'false';
-    $eoo = ($person['Email Opt-Out'] === 'Yes') ? 'true' : 'false';
-    if ($person['DOB Month']) {
-        $time = strtotime($person['DOB Month'].'/'.$person['DOB Day'].'/'.$person['DOB Year']);
-        $dob = _quote(date('Y-m-d', $time));
-    } else {
-        $dob = 'NULL';
-    }
-    $gn = _quote($person['Gender']);
-    $pfn = _quote($person['Preferred First Name']);
-    $pln = _quote($person['Preferred Last Name']);
-    $li = _quote($person['Account Login Name']);
-    if ($person['CVGConCom Publish Phone'] === null) {
-        $dph = 'NULL';
-    } else {
-        $dph = $person['CVGConCom Publish Phone'];
-    }
-
     if ($add) {
-        $sql = <<<SQL
-            INSERT INTO `Members` (AccountID, FirstName, MiddleName, LastName,
-                Suffix, Email, Email2, Email3, Phone, Phone2,
-                AddressLine1, AddressLine2, AddressCity,
-                AddressState, AddressZipCode, AddressZipCodeSuffix,
-                AddressCountry, AddressProvince, PreferredFirstName,
-                PreferredLastName, Login, Deceased, DoNotContact, EmailOptOut,
-                Birthdate, Gender, DisplayPhone)
-            VALUES ($aid, $fn, $mn,$ln,
-                    $su, $em1, $em2, $em3, $ph1, $ph2,
-                    $al1, $al2, $ac,
-                    $ast, $az, $azs,
-                    $aco, $ap, $pfn,
-                    $pln, $li, $dc, $dnc, $eoo,
-                    $dob, $gn, $dph);
-SQL;
-        return $sql;
+        return _memberDBfromList($person);
     } else {
         return "";
     }
