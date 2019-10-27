@@ -308,9 +308,15 @@ function reset_password($id, $password = null)
         $result = DB::run($sql);
         $value = $result->fetch();
         if ($value !== false) {
-            $auth = "'".$value['Authentication']."'";
-            $last = "'".$value['LastLogin']."'";
-            $realexpires = "'".$value['Expires']."'";
+            if (!empty($value['Authentication'])) {
+                $auth = "'".$value['Authentication']."'";
+            }
+            if (!empty($value['LastLogin'])) {
+                $last = "'".$value['LastLogin']."'";
+            }
+            if (!empty($value['Expires'])) {
+                $realexpires = "'".$value['Expires']."'";
+            }
         }
 
         $sql = <<<SQL
