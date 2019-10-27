@@ -106,7 +106,6 @@ function check_authentication($account, $password, $user)
     global $MAXLOGINFAIL;
 
     $max_fail = 5;
-
     if (isset($MAXLOGINFAIL) && !empty($MAXLOGINFAIL)) {
         $max_fail = intval($MAXLOGINFAIL);
     }
@@ -142,7 +141,7 @@ SQL;
             if (password_verify($password, $value['OneTime'])) {
                 accept_onetime($account, $value['OneTime']);
                 reset_failed($account);
-                return AUTH_SUCESS;
+                return AUTH_SUCCESS;
             }
         }
         increment_failed($account);
