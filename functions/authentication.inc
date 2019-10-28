@@ -9,7 +9,10 @@ require_once(__DIR__.'/users.inc');
 require_once(__DIR__.'/session.inc');
 require_once(__DIR__."/../backends/email.inc");
 
-if (isset($GLOBALS['NEONID']) && isset($GLOBALS['NEONKEY'])) {
+if (array_key_exists('NEONID', $GLOBALS) &&
+    array_key_exists('NEONKEY', $GLOBALS) &&
+    !empty($GLOBALS['NEONID']) &&
+    !empty($GLOBALS['NEONKEY'])) {
     require_once($FUNCTIONDIR.'/neon.inc');
 }
 
@@ -18,7 +21,9 @@ function LogoutUser()
 {
     // Since we check for username, clearing the session logs the user out.
     // Because of that, we do not need to destroy the session, all the data and info is gone anyway.
-    $GLOBALS['Neon']->logout();
+    if (array_key_exists('Neon', $GLOBALS)) {
+        $GLOBALS['Neon']->logout();
+    }
     $_SESSION = [];
 
     // Remove cookies!
@@ -94,7 +99,7 @@ SQL;
 
 function checkNeonForUserAndPasswordMatch($user, $password)
 {
-    if (isset($GLOBALS['Neon'])) {
+    if (array_key_exists('Neon', $GLOBALS)) {
         $request = [
         'method' => 'common/authenticateUser',
         'parameters' => [
@@ -167,10 +172,12 @@ SQL;
         increment_failed($account);
         return AUTH_BAD;
     } else {
-        $value = checkNeonForUserAndPasswordMatch($user, $password);
-        if ($value !== false) {
-            set_password($account, $password);
-            return AUTH_SUCCESS;
+        if (array_key_exists('Neon', $GLOBALS)) {
+            $value = checkNeonForUserAndPasswordMatch($user, $password);
+            if ($value !== false) {
+                set_password($account, $password);
+                return AUTH_SUCCESS;
+            }
         }
         return AUTH_EXPIRED;
     }

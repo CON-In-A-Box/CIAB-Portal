@@ -55,7 +55,9 @@ require_once __DIR__.'/../functions/functions.inc'
              </div>
             </div>
         </div>
-
+<?php
+if (array_key_exists('Neon', $GLOBALS)) {
+?>
         <div id="neon_content" class="EVENT-content">
             <button onclick="expandSection('neon')" class="EVENT-section-bar">
                 <span id="neon_button">Neon<span> <i id="neon_arrow" class="fa fa-caret-up"></i>
@@ -67,6 +69,9 @@ require_once __DIR__.'/../functions/functions.inc'
                 </div>
             </div>
         </div>
+<?php
+}
+?>
     </div>
 
     <div class='UI-sidebar-hidden UI-fixed' id='edit_meeting'>
