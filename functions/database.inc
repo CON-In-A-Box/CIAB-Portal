@@ -267,7 +267,7 @@ function current_cycleID()
             return $_currentCycle;
         }
 
-        die("Could not get Current Convention Cycle");
+        return null;
     }
     return $_currentCycle;
 
@@ -316,7 +316,7 @@ function current_eventID()
             return $_currentEvent;
         }
 
-        die("Could not get Current Convention Event");
+        return null;
     }
     return $_currentEvent;
 

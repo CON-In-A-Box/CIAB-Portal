@@ -18,6 +18,9 @@ class ConcomList
         global $Departments;
 
         $event = \current_eventID();
+        if ($event === null) {
+            return array();
+        }
         $sql = <<<SQL
     SELECT
         l.AccountID,
