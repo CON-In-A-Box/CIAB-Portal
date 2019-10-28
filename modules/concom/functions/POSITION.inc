@@ -10,6 +10,9 @@ class POSITION
     {
         if ($event == null) {
             $event = current_eventID();
+            if ($event === null) {
+                return array();
+            }
         }
         $sql = <<<SQL
             SELECT
