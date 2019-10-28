@@ -10,15 +10,15 @@ require_once($BACKEND.'/'.$_ENV['DB_BACKEND']); // MyPDO Definition used
 
 class DB
 {
-    private static function _getCurrentDBVersion()
+
+
+    private static function getCurrentDBVersion()
     {
         /* check if we have a database at all */
-        $found = false;
         $result = MyPDO::instance()->query("SHOW TABLES LIKE 'Configuration';");
-        foreach ($result as $value)
-            $found = true;
-        if (!$found)
+        if ($result === false) {
             return false;
+        }
 
         $sql = <<<SQL
             SELECT Value AS DBSchemaVersion
@@ -32,9 +32,11 @@ SQL;
         } else {
             return $value['DBSchemaVersion'];
         }
+
     }
 
-    private static function _buildMissingTables()
+
+    private static function buildMissingTables()
     {
         // This function cannot call the run function as we don't know if the activitylog table is created
         // Besides, this is maintenance, not user log tracking
@@ -57,7 +59,7 @@ SQL;
                 $result = MyPDO::instance()->query($build);
                 $f_arr = [];
                 foreach ($result as $value) {
-                   $f_arr[] = $value['Field'];
+                    $f_arr[] = $value['Field'];
                 }
 
                 // Check the list of fields to make sure we are set
@@ -103,7 +105,7 @@ SQL;
         $result = MyPDO::instance()->query($build);
         $arr = [];
         foreach ($result as $value) {
-           $arr[] = $value['TABLE_NAME'].":".$value['COLUMN_NAME'];
+            $arr[] = $value['TABLE_NAME'].":".$value['COLUMN_NAME'];
         }
         // Verify every foreign key we need exists, if not, create.
         foreach (SCHEMA::$DB_foreignKeys as $table => $fields) {
@@ -123,7 +125,7 @@ SQL;
             $result = mypdo::instance()->query($build);
             $arr = [];
             foreach ($result as $value) {
-               $arr[] = $value['Column_name'];
+                $arr[] = $value['Column_name'];
             }
 
             $keys  = array_diff($keys, $arr);
@@ -133,14 +135,16 @@ SQL;
                 MyPDO::instance()->query($build);
             }
         }
+
     }
+
 
     public function __construct()
     {
         require_once($GLOBALS['BASEDIR'].'/data/database-schema.php');
-        DB::_buildMissingTables();
+        DB::buildMissingTables();
         if (!empty($_REQUEST['Function']) && $_REQUEST['Function'] != 'update') {
-            $upgrade = DB::_getCurrentDBVersion();
+            $upgrade = DB::getCurrentDBVersion();
             if ($upgrade != SCHEMA::$REQUIED_DB_SCHEMA) {
             // If we have to do an update, do it
                 header("Location: http://".$_SERVER['SERVER_NAME']."/index.php?Function=update&from=".$upgrade."&to=".SCHEMA::$REQUIED_DB_SCHEMA);
@@ -150,7 +154,7 @@ SQL;
     }
 
 
-    private static function _dbLogEntry($sql)
+    private static function dbLogEntry($sql)
     {
         if (substr(ltrim($sql), 0, 6) !== "SELECT") {
             // Prepare a log entry for this query
@@ -158,15 +162,12 @@ SQL;
         
             if (empty($_SESSION['accountId'])) {
                 $account = 0;
-            }
-            else {
+            } else {
                 $account = $_SESSION['accountId'];
             }
-        
             if (empty($_SESSION['Function'])) {
                 $function = "public";
-            }
-            else {
+            } else {
                 $function = $_SESSION['Function'];
             }
 
@@ -184,7 +185,7 @@ SQL;
 
     public static function run($sql, $args = [])
     {
-        DB::_dbLogEntry($sql); // Capture all queries in the ActivityLog
+        DB::dbLogEntry($sql); // Capture all queries in the ActivityLog
         if (!$args) {
             return MyPDO::instance()->query($sql);
         }
@@ -195,7 +196,9 @@ SQL;
     }
 
 
+   /* end */
 }
+
 
 function lookup_cycleID($date)
 {
@@ -215,6 +218,7 @@ function lookup_cycleID($date)
     return null;
 
 }
+
 
 $_currentCycle = null;
 $_currentEvent = null;
@@ -341,8 +345,7 @@ function current_eventName()
 function lookup_names(&$data, $column_name)
 {
     /* HACK Lookup AccountIDs */
-    if (in_array($column_name, $data[0]))
-    {
+    if (in_array($column_name, $data[0])) {
         $data[0][] = $column_name.'Name';
         $colmn = array_search($column_name, $data[0]);
         $ids = array_column($data, $colmn);
@@ -377,7 +380,7 @@ function dump_sql_to_csv($sql, $lookup_account = false)
         $value = $result->fetch();
     }
 
-    if ($lookup_account ) {
+    if ($lookup_account) {
         lookup_names($data, 'AccountID');
         lookup_names($data, 'AuthorizedByID');
         lookup_names($data, 'EnteredByID');
@@ -386,7 +389,7 @@ function dump_sql_to_csv($sql, $lookup_account = false)
     $fh = fopen('php://output', 'w');
     ob_start();
 
-    foreach($data as $line) {
+    foreach ($data as $line) {
         fputcsv($fh, $line);
     }
     $text = ob_get_clean();
@@ -412,8 +415,7 @@ function load_table($sql, $association = null)
     while ($value !== false) {
         if ($association !== null) {
             $entry = [];
-            foreach ($association as $key => $dbkey)
-            {
+            foreach ($association as $key => $dbkey) {
                 $entry[$key] = $value[$dbkey];
             }
             $data[] = $entry;

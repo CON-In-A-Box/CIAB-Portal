@@ -619,7 +619,7 @@ function volunteers_in_dept($department, $event = null)
     $conditional = "";
     if (is_array($event)) {
         if (!empty($event)) {
-            $conditional = "AND EventID IN (".implode(', ',$event).")";
+            $conditional = "AND EventID IN (".implode(', ', $event).")";
         }
     } else {
         $conditional = "AND EventID = ".strval($event);

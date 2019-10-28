@@ -6,6 +6,8 @@
 
 1. On your MySQL server make a user, such as `con_concomsi-dev`, and a database, such as `con_concomsi`. Give the user full access to the database. 
 
+1. You are going to need [composer](https://getcomposer.org/download/) setup and make sure to do `php composer.phar install` or the command you need to do to get the vendor directory properly populated.
+
 1. Use a web client to access the web server. You will get redirected to `http://<host>/configure_system.php`. There you will need to fill out all the information about your configuration. Make sure the database information matches the database you setup in the above step.
 
 1. Once all that is filled in. You should get redirected to `http://<host>/index.php?Function=public`. The updates will proceed automatically.

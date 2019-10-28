@@ -52,4 +52,16 @@
  <rule ref="Squiz.WhiteSpace.SemicolonSpacing"/>
  <rule ref="Squiz.WhiteSpace.SuperfluousWhitespace"/>
  <rule ref="Squiz.Strings.ConcatenationSpacing"/>
+
+ <exclude-pattern>*/vendor/**</exclude-pattern>
+ <exclude-pattern>*/neon/**</exclude-pattern>
+ <exclude-pattern>*/data/**</exclude-pattern>
+ <exclude-pattern>*.js</exclude-pattern>
+ <exclude-pattern>*.css</exclude-pattern>
+ <exclude-pattern>*/functions/neon.inc</exclude-pattern>
+ <exclude-pattern>*/functions/externals/*neon*</exclude-pattern>
+ <exclude-pattern>*/sitesupport/speller/**</exclude-pattern>
+ <exclude-pattern>*/test/*neon*</exclude-pattern>
+
+  <file>./</file>
 </ruleset>

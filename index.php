@@ -20,11 +20,21 @@ try {
 } catch (RuntimeException $e) {
     if (file_exists(__DIR__."/.ht_meetingsignin_config.php")) {
         require_once __DIR__."/.ht_meetingsignin_config.php";
-        if (!array_key_exists('DB_BACKEND', $_ENV)) $_ENV['DB_BACKEND'] = $DB_BACKEND;
-        if (!array_key_exists('DBHOST', $_ENV)) $_ENV['DBHOST'] = $DBHOST;
-        if (!array_key_exists('DBUSER', $_ENV)) $_ENV['DBUSER'] = $DBUSER;
-        if (!array_key_exists('DBNAME', $_ENV)) $_ENV['DBNAME'] = $DBNAME;
-        if (!array_key_exists('DBPASS', $_ENV)) $_ENV['DBPASS'] = $DBPASS;
+        if (!array_key_exists('DB_BACKEND', $_ENV)) {
+            $_ENV['DB_BACKEND'] = $DB_BACKEND;
+        }
+        if (!array_key_exists('DBHOST', $_ENV)) {
+            $_ENV['DBHOST'] = $DBHOST;
+        }
+        if (!array_key_exists('DBUSER', $_ENV)) {
+            $_ENV['DBUSER'] = $DBUSER;
+        }
+        if (!array_key_exists('DBNAME', $_ENV)) {
+            $_ENV['DBNAME'] = $DBNAME;
+        }
+        if (!array_key_exists('DBPASS', $_ENV)) {
+            $_ENV['DBPASS'] = $DBPASS;
+        }
     } else {
         header("Location: http://".$_SERVER['SERVER_NAME'].":".$_SERVER['SERVER_PORT']."/configure_system.php");
     }
@@ -97,7 +107,7 @@ if (is_file($PAGESDIR.'/head/'.$_REQUEST['Function'].'.inc')) {
 }
 
 /* SCSS processing */
-$modules = explode('/',$_REQUEST['Function']);
+$modules = explode('/', $_REQUEST['Function']);
 $module = $modules[0];
 
 if (is_file($MODULESDIR.'/'.$module.'/scss/styles.scss')) {

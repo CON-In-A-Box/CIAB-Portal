@@ -36,8 +36,12 @@ if (!empty($_REQUEST)) {
 
         $badge = ($updateData['useBadgeName'] == 1);
         $substring = ($updateData['partialMatch'] == 1);
-        $data = lookup_users_by_key($updateData['lookupId'], false, $badge,
-                                    $substring);
+        $data = lookup_users_by_key(
+            $updateData['lookupId'],
+            false,
+            $badge,
+            $substring
+        );
 
         if (!$data['code']) {
             if (count($data['users']) == 0) {
