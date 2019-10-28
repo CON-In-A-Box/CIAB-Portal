@@ -6,7 +6,7 @@
 
 require_once(__DIR__.'/functions.inc');
 require_once(__DIR__.'/session.inc');
-if (isset($GLOBALS['NEONID']) && isset($GLOBALS['NEONKEY'])) {
+if (array_key_exists('Neon', $GLOBALS)) {
     require_once(__DIR__.'/neon.inc');
 }
 
@@ -28,7 +28,7 @@ SQL;
 
 function db_do_update($from, $to)
 {
-    if (isset($GLOBALS['Neon'])) {
+    if (array_key_exists('Neon', $GLOBALS)) {
         loadDefinedFields();
         if ($from < 2018011700) {
             require_once(__DIR__."/update/from_neon_to_152.inc");

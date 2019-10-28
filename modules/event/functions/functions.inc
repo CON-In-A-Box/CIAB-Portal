@@ -6,7 +6,9 @@
 .*/
 
 require_once($FUNCTIONDIR."/database.inc");
-require_once($FUNCTIONDIR."/update/from_neon_to_152.inc");
+if (array_key_exists('Neon', $GLOBALS)) {
+    require_once($FUNCTIONDIR."/update/from_neon_to_152.inc");
+}
 
 
 function _event_details($id)
@@ -329,7 +331,9 @@ SQL;
 
 function import_events()
 {
-    _Neon_import_events();
+    if (array_key_exists('Neon', $GLOBALS)) {
+        _Neon_import_events();
+    }
 
 }
 

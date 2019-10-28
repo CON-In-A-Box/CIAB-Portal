@@ -127,7 +127,12 @@ try {
     _config_from_Database();
 
     // Include NeonCRM for DB calls via API
-    require_once(__DIR__."/neon.inc");
+    if (array_key_exists('NEONID', $GLOBALS) &&
+        array_key_exists('NEONKEY', $GLOBALS) &&
+        !empty($GLOBALS['NEONID']) &&
+        !empty($GLOBALS['NEONKEY'])) {
+        require_once(__DIR__."/neon.inc");
+    }
 
     // Load the base of all active modules
     $modules = scandir($MODULESDIR);
@@ -330,7 +335,10 @@ function urlsafe_b64encode($string)
 
 function loadDefinedFields()
 {
-    global $_SESSION, $Neon, $ADMINACCOUNTS;
+    global $_SESSION, $ADMINACCOUNTS;
+    if (!array_key_exists('Neon', $GLOBALS)) {
+        return;
+    }
 
     // Custom Field Data for Session - Parse it to an easy to use array
     $request = [
@@ -339,7 +347,7 @@ function loadDefinedFields()
     'searchCriteria.component' => "Account",
         ],
         ];
-    $result = $Neon->go($request);
+    $result = $GLOBALS['Neon']->go($request);
     if (isset($result['operationResult']) && $result['operationResult'] == 'SUCCESS') {
         $_SESSION['definedFields']['customField'] = $result['customFields']['customField'];
         foreach ($result['customFields']['customField'] as $val) {
