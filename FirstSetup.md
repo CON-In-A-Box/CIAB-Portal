@@ -4,7 +4,7 @@
     1. Note: the apache server needs the headers and php7 modules
     1. Note: php needs the libcurl integration (php7-curl)
 
-1. On your MySQL server make a user, such as `con_concomsi-dev`, and a database, such as `con_concomsi`. Give the user full access to the database. 
+1. On your MySQL server make a user, such as `con_concomsi-dev`, and a database, such as `con_concomsi`. Give the user full access to the database.  If you want to take a shortcut there is a script `tools/create_database.sh` that take your database root password and sets up a base database and generates a base .env file.
 
 1. You are going to need [composer](https://getcomposer.org/download/) setup and make sure to do `php composer.phar install` or the command you need to do to get the vendor directory properly populated.
 
