@@ -6,7 +6,7 @@
 require_once __DIR__."/vendor/autoload.php";
 
 $scss = new scssc();
-$scss->addImportPath("scss");
+$scss->addImportPath("scss"  );
 $scss->setFormatter("scss_formatter_compressed");
 
 $uri = explode("/", $_SERVER['REQUEST_URI']);
