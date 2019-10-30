@@ -4,6 +4,9 @@
     require_module 'standard';
 .*/
 
+// Start the session so we are ready to go no matter what we do!
+session_start();
+
 require __DIR__."/vendor/autoload.php";
 if (is_file(__DIR__.'/.env')) {
     $dotenv = Dotenv\Dotenv::create(__DIR__);
