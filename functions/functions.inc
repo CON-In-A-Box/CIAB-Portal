@@ -129,8 +129,6 @@ try {
     if (isset($dotenv)) {
         $dotenv->required(['DBHOST', 'DBUSER', 'DBNAME', 'DBPASS', 'DB_BACKEND']);
     }
-    // Start the session so we are ready to go no matter what we do!
-    session_start();
 
     // Include the Master Database
     require_once(__DIR__."/database.inc");

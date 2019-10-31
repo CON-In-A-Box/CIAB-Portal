@@ -27,10 +27,30 @@ function LogoutUser()
         foreach ($cookies as $cookie) {
             $parts = explode('=', $cookie);
             $name = trim($parts[0]);
-            setcookie($name, '', time() - 1000);
-            setcookie($name, '', time() - 1000, '/');
+            if (ini_get('session.use_cookies') && $name === session_name()) {
+                $p = session_get_cookie_params();
+                setcookie(
+                    $name,
+                    '',
+                    time() - 31536000,
+                    $p['path'],
+                    $p['domain'],
+                    $p['secure'],
+                    $p['httponly']
+                );
+            } else {
+                setcookie($name, '', time() - 1000);
+                setcookie($name, '', time() - 1000, '/');
+            }
         }
     }
+
+    session_destroy();
+    session_write_close();
+
+    /* restart the session */
+    session_start();
+    session_regenerate_id(true);
 
 }
 
