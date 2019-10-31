@@ -45,12 +45,12 @@ function LogoutUser()
         }
     }
 
-    session_unset();
     session_destroy();
     session_write_close();
 
     /* restart the session */
     session_start();
+    session_regenerate_id(true);
 
 }
 
