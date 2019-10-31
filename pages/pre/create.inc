@@ -33,6 +33,7 @@ if (!empty($_POST)) {
     $updateData = filter_input_array(INPUT_POST, $arguments);
 
     if (isset($updateData['email1'])) {
+        $password = rppg();
         if (array_key_exists('Neon', $GLOBALS)) {
             $account = neon_createUser(
                 $updateData['email1'],
@@ -42,6 +43,8 @@ if (!empty($_POST)) {
             if ($account) {
                 lookup_user_by_id($account);
             }
+            $updateData['username'] = $updateData['email1'];
+            $updateData['password'] = $password;
         } else {
             $account = createUser($updateData['email1'], 1000);
         }
@@ -52,7 +55,7 @@ if (!empty($_POST)) {
         }
         $updateData['accountId'] = $account;
         updateAccount($updateData);
-        if (!reset_password($updateData['email1'])) {
+        if (!reset_password($updateData['email1'], $password)) {
             header('HTTP/1.0 404 Not Found');
             echo "HTTP/1.0 404 Not Found";
         }
