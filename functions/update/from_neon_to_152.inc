@@ -149,8 +149,13 @@ function _build_ConComList()
             } else {
                 $sql = "INSERT INTO ConComList (AccountID, DepartmentID, PositionID, EventID) VALUES (".$line['Account ID'].", ".$did.", ".$id.", $event);";
             }
-            DB::run($sql);
-            print '<span style="color:green">Imported '.$line['First Name'].' '.$line['Last Name'].'('.$line['Account ID'].') as '.$line['Department'].' '.$line['Position'].' from Neon.</span><br>';
+            try {
+                DB::run($sql);
+                print '<span style="color:green">Imported '.$line['First Name'].' '.$line['Last Name'].'('.$line['Account ID'].') as '.$line['Department'].' '.$line['Position'].' from Neon.</span><br>';
+            } catch (Exception $e) {
+                print '<span style="color:red">FAILED Import '.$line['First Name'].' '.$line['Last Name'].'('.$line['Account ID'].') as '.$line['Department'].' '.$line['Position'].' from Neon.</span><br>';
+                print "<span>$e</span>";
+            }
         }
     }
     print '</div>';

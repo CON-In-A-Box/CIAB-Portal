@@ -8,57 +8,6 @@ require_once(__DIR__."/../functions.inc");
 require_once(__DIR__."/../database.inc");
 
 
-function _ConComListBuildSearch($page)
-{
-    global $Neon;
-
-    $conComFieldId = search_definedFields('CVGConCom Current Position');
-
-    $search = [
-    'method' => 'account/listAccounts',
-    'criteria' => [
-    [$conComFieldId, 'NOT_BLANK', ''],
-    ],
-    'columns' => [
-    'standardFields' => ['Account ID'],
-    'customFields' => [$conComFieldId],
-    ],
-    'page' => [
-    'currentPage' => $page,
-    'pageSize' => 200,
-    'sortColumn' => 'Account ID',
-    'sortDirection' => 'ASC',
-    ],
-    ];
-    $result = $Neon->search($search);
-
-    if (isset($result['operationResult']) && $result['operationResult'] == 'SUCCESS') {
-        $data['pages'] = $result['page']['totalPage'];
-        foreach ($result['searchResults'] as $val) {
-            $positionsHeld = explode("|", $val['CVGConCom Current Position']);
-            foreach ($positionsHeld as $pos) {
-                $tmp = explode(",", $pos);
-                $line = [
-                'Account ID' => $val['Account ID'],
-                'Department' => $tmp[0],
-                'Position'   => $tmp[1],
-                ];
-
-                if (isset($tmp[2])) {
-                    $line['Note'] = $tmp[2];
-                } else {
-                    $line['Note'] = "";
-                }
-
-                $data['list'][] = $line;
-            }
-        }
-    }
-    return $data;
-
-}
-
-
 function _getEvent($year)
 {
     $date = "$year-1-1";
