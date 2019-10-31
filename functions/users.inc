@@ -898,6 +898,15 @@ function neon_updateAccount($updateData)
         $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldValue['.$key.']'] = $updateData['conComDisplayPhone'];
     }
 
+    /* Password setting */
+    if (!empty($updateData['password'])) {
+        if (empty($updateData['login'])) {
+            $updateData['login'] = $updateData['email1'];
+        }
+        $request['parameters']['individualAccount.login.username'] = $updateData['login'];
+        $request['parameters']['individualAccount.login.password'] = $updateData['password'];
+    }
+
     return $GLOBALS['Neon']->go1($request);
 
 }
