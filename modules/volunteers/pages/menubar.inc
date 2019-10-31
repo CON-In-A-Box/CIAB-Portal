@@ -2,7 +2,7 @@
 
 require_once $BASEDIR.'/kiosk/kiosk.inc';
 
-if (isset($_SESSION['customFields']['currConComPos'])) {
+if (!empty($_SESSION['customFields']['currConComPos'])) {
     $base_menus[] = array('base style' => '',
      'selected style' => 'event-color-primary',
      'function' => 'volunteers/enter',
@@ -13,8 +13,8 @@ if (isset($_SESSION['customFields']['currConComPos'])) {
 }
 
 if (!is_kiosk('volunteers')) {
-    if ($_SESSION['IS_VOLUNTEERS'] || !empty($_SESSION['IS_ADMIN']) ||
-        isset($_SESSION['customFields']['currConComPos'])) {
+    if ($_SESSION['IS_VOLUNTEERS'] || $_SESSION['IS_ADMIN'] ||
+        !empty($_SESSION['customFields']['currConComPos'])) {
         $basecolor = 'UI-yellow';
         if (array_key_exists('CIAB_VOLUNTEERADMIN', $_COOKIE) &&
            $_COOKIE["CIAB_VOLUNTEERADMIN"]) {
