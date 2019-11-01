@@ -7,6 +7,13 @@
 /* globals confirmbox, userId, escapeHtml, userEmail, checkAuthentication,
            groupData, checkAuthentication, adminMode, unclaimed,
            hoursRemain, userLookup, hideSidebar, showSidebar */
+/* exported processReturn, showReturn, markDelete, generateDerivedCSVReport,
+            generateDerivedCSV, generatCSVReport, generateCSV,
+            departmentReport, generateDeptReport, minHourReport,
+            generateHourReport, commitPrize, deletePrize, showEditPrize,
+            deleteHours, commitHours, showEditHours, toggleAdminMode,
+            addPromoToCheckout, removeFromCheckout, processCheckout,
+            showHideSoldOut, lookupFail, sidebarMainDiv */
 
 'use strict';
 
@@ -55,13 +62,13 @@ function fillReward() {
   }
 
   var list = {};
-  checkout.forEach(function(item, index) {
-      if (item.PrizeID in list) {
-        list[item.PrizeID].count += 1;
-      } else {
-        list[item.PrizeID] = {name: item.Name, count: 1};
-      }
-    });
+  checkout.forEach(function(item) {
+    if (item.PrizeID in list) {
+      list[item.PrizeID].count += 1;
+    } else {
+      list[item.PrizeID] = {name: item.Name, count: 1};
+    }
+  });
 
   for (var key in list) {
     var item = list[key];
@@ -171,8 +178,8 @@ function updateCheckout() {
 
 function removeFromCheckout(PrizeID, cost, group) {
   var found = checkout.findIndex(function(element) {
-      return element.PrizeID == PrizeID;
-    });
+    return element.PrizeID == PrizeID;
+  });
   if (found != -1) {
     updateCost(-1 * cost);
     checkout.splice(found, 1);
@@ -190,8 +197,8 @@ function addToCheckout(json) {
   var cost = parseFloat(item.Value);
   if (item.Promo == 'yes') {
     var found = checkout.find(function(element) {
-        return element.PrizeID == item.PrizeID;
-      });
+      return element.PrizeID == item.PrizeID;
+    });
     if (found) {
       window.alert('Promo item \'' + item.Name + '\' cannot be added twice');
       return;
@@ -237,11 +244,11 @@ function showCheckout() {
   hoursU.innerHTML = hoursSpent;
 }
 
-function  addPromoToCheckout(names) {
+function  addPromoToCheckout() {
   unclaimed.forEach(function(item) {
     var found = checkout.find(function(element) {
-        return element[0] == item.PrizeID;
-      });
+      return element[0] == item.PrizeID;
+    });
     if (!found) {
       addToCheckout(item.Json);
     }
@@ -270,7 +277,7 @@ function toggleAdminMode() {
   }
   if (!adminMode) {
     checkAuthentication(userEmail, enterAdmin, failAdmin,
-                        {target: 'volunteers/admin'});
+      {target: 'volunteers/admin'});
   } else {
     setTimeout(function() {window.location = target;}, 1000);
   }
@@ -472,7 +479,7 @@ function commitPrize() {
       return;
     }
     item = {Name:'', Value:0, RewardGroupID:null, GroupLimit:0,
-            Promo:'no', TotalInventory:0, Remaining:0};
+      Promo:'no', TotalInventory:0, Remaining:0};
   }
 
   item.Name = document.getElementById('edit_prize_name').value;
@@ -649,15 +656,15 @@ function finishReturn() {
   }
 
   var list = {};
-  returnCart.forEach(function(item, index) {
-      if (item.Returned) {
-        if (item.item.PrizeID in list) {
-          list[item.item.PrizeID].count += 1;
-        } else {
-          list[item.item.PrizeID] = {name: item.item.Name, count: 1};
-        }
+  returnCart.forEach(function(item) {
+    if (item.Returned) {
+      if (item.item.PrizeID in list) {
+        list[item.item.PrizeID].count += 1;
+      } else {
+        list[item.item.PrizeID] = {name: item.item.Name, count: 1};
       }
-    });
+    }
+  });
 
   for (var key in list) {
     var item = list[key];
