@@ -901,6 +901,7 @@ foreach ($Departments as $dep => $set) {
             </button>
         </div>
     </div>
+  </div>
 </div>
 
 <div id="success_dlg" class="UI-modal">
