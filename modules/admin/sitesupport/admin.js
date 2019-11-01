@@ -1,5 +1,6 @@
 /* jshint browser: true */
 /* jshint -W097 */
+/* exported downloadLog, setField, addField, removeAdmin */
 
 function downloadLog() {
   window.location = 'index.php?Function=admin&downloadLog=db';
