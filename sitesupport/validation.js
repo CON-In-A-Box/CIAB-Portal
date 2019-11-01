@@ -1,3 +1,11 @@
+/*
+ * Validation functions
+ */
+
+/* jshint browser: true */
+/* jshint -W097 */
+/* exported validateRequired, validateSelect, validateEmail, validateDate  */
+
 function validateRequired(field,alerttxt) {
   if (field.value === null || field.value === '') {
     alert(alerttxt);
@@ -35,8 +43,8 @@ function validateSelect(field,alerttxt) {
 // }
 
 function validateEmail(field,alerttxt) {
-  apos = field.value.indexOf('@');
-  dotpos = field.value.lastIndexOf('.');
+  var apos = field.value.indexOf('@');
+  var dotpos = field.value.lastIndexOf('.');
   if (apos < 1 || dotpos - apos < 2) {
     alert(alerttxt);
     return false;
@@ -56,7 +64,7 @@ function validateEmail(field,alerttxt) {
 // }
 
 function validateDate(field,alerttxt) {
-  re = /^(\d{4})-(\d{2})-(\d{2})$/;
+  var re = /^(\d{4})-(\d{2})-(\d{2})$/;
   if (field.value === null || !field.value.match(re)) {
     alert(alerttxt);
     return false;

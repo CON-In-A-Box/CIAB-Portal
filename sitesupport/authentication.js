@@ -4,6 +4,7 @@
 
 /* jshint browser: true */
 /* jshint -W097 */
+/* exported checkAuthentication */
 
 'use strict';
 
@@ -29,19 +30,19 @@ function _checkKey(event) {
     var target = document.getElementById('target').value;
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {
-          if (onSuccess) {
-            onSuccess();
-          }
-          return;
+      if (this.readyState == 4 && this.status == 200) {
+        if (onSuccess) {
+          onSuccess();
         }
-        else if (this.readyState == 4 && this.status != 200) {
-          if (onFail) {
-            onFail(this.status);
-          }
-          return;
+        return;
+      }
+      else if (this.readyState == 4 && this.status != 200) {
+        if (onFail) {
+          onFail(this.status);
         }
-      };
+        return;
+      }
+    };
     if (!target) {
       xhttp.open('POST', 'index.php?Function=functions', true);
     } else {
