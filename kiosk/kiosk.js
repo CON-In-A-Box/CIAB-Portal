@@ -4,7 +4,8 @@
 
 /* jshint browser: true */
 /* jshint -W097 */
-/* globals kioskMode */
+/* globals kioskMode, checkAuthentication, userEmail */
+/* exported toggleKioskMode */
 
 var kioskBase;
 
@@ -31,10 +32,10 @@ function toggleKioskMode(base) {
   kioskBase = base;
   if (kioskMode) {
     checkAuthentication(userEmail, switchKiosk, failKiosk,
-                        {title: 'Exiting Kiosk Mode'});
+      {title: 'Exiting Kiosk Mode'});
   } else {
     setTimeout(function() {
-        window.location = 'index.php?Function=' + base + '/kiosk';
-      }, 1000);
+      window.location = 'index.php?Function=' + base + '/kiosk';
+    }, 1000);
   }
 }
