@@ -1,0 +1,19 @@
+#!/bin/bash
+
+cwd=${PWD}
+
+if [[ $cwd = *"tools"* ]]; then
+  cd ..;
+fi
+
+if [ -z "$1" ]
+    then
+        eslint .
+    else
+        if [ "$1" == "--fix" ]
+        then
+            eslint --fix $2;
+        else
+            eslint $1;
+        fi
+fi;
