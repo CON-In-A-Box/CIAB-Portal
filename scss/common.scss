@@ -608,3 +608,26 @@
     @extend .UI-margin;
     @extend .UI-border;
 }
+
+.UI-footer-div {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    text-align: right;
+}
+
+.UI-footer {
+    @extend .UI-main-bar;
+}
+
+.UI-footer-icon {
+    @extend .w3-left;
+    @extend .event-bar-icon;
+}
+
+.UI-footer-issues-bar-item {
+    @extend .UI-main-bar-item;
+    @extend .UI-red;
+    @extend .UI-right;
+}
