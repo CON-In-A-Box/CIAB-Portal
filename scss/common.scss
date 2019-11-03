@@ -601,3 +601,10 @@
     @extend .UI-blue;
     @extend .UI-center;
 }
+
+.UI-configure-note {
+    @extend .UI-blue;
+    @extend .UI-padding-16;
+    @extend .UI-margin;
+    @extend .UI-border;
+}

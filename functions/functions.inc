@@ -174,9 +174,60 @@ try {
 }
 
 
+function getAdminEmail()
+{
+    return $GLOBALS['ADMINEMAIL'];
+
+}
+
+
+function getSecurityEmail()
+{
+    if (array_key_exists('SECURITY_EMAIL', $GLOBALS) &&
+        !empty($GLOBALS['SECURITY_EMAIL'])) {
+        return $GLOBALS['SECURITY_EMAIL'];
+    }
+    return getAdminEmail();
+
+}
+
+
+function getFeedbackEmail()
+{
+    if (array_key_exists('FEEDBACK_EMAIL', $GLOBALS) &&
+        !empty($GLOBALS['FEEDBACK_EMAIL'])) {
+        return $GLOBALS['FEEDBACK_EMAIL'];
+    }
+    return getAdminEmail();
+
+}
+
+
+function getHelpEmail()
+{
+    if (array_key_exists('HELP_EMAIL', $GLOBALS) &&
+        !empty($GLOBALS['HELP_EMAIL'])) {
+        return $GLOBALS['HELP_EMAIL'];
+    }
+    return getAdminEmail();
+
+}
+
+
+function getNoReplyAddress()
+{
+    if (array_key_exists('NOREPLY_EMAIL', $GLOBALS) &&
+        !empty($GLOBALS['NOREPLY_EMAIL'])) {
+        return $GLOBALS['NOREPLY_EMAIL'];
+    }
+    return "noreply@".$GLOBALS['CONHOST'].'.com';
+
+}
+
+
 function sendError($msg, $arrChunk = null)
 {
-    $to = $GLOBALS['ADMINEMAIL'];
+    $to = getAdminEmail();
     $subject = 'SIGNIN ERROR';
 
     $message = $msg;
