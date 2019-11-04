@@ -4,9 +4,10 @@
 
 /* jshint browser: true */
 /* jshint -W097 */
+/* exported expandSection */
 
 function expandSection(id) {
-  var x = [document.getElementById(id)];
+  var x = [ document.getElementById(id) ];
   if (x[0] === null) {
     x = document.getElementsByClassName(id);
   }
