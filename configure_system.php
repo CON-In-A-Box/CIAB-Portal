@@ -41,6 +41,10 @@ if (!empty($_POST)) {
     'new_NEONBETA'      => FILTER_SANITIZE_RAW,
     'new_ADMINACCOUNTS' => FILTER_SANITIZE_RAW,
     'new_ADMINEMAIL'    => FILTER_SANITIZE_RAW,
+    'new_NOREPLY_EMAIL' => FILTER_SANITIZE_SPECIAL_CHARS,
+    'new_FEEDBACK_EMAIL' => FILTER_SANITIZE_SPECIAL_CHARS,
+    'new_SECURITY_EMAIL' => FILTER_SANITIZE_SPECIAL_CHARS,
+    'new_HELP_EMAIL'    => FILTER_SANITIZE_SPECIAL_CHARS,
     'new_CONHOST'       => FILTER_SANITIZE_RAW,
     'new_TIMEZONE'      => FILTER_SANITIZE_RAW,
     ];
@@ -58,6 +62,10 @@ if (!empty($_POST)) {
     $new_ADMINACCOUNTS = $updateData['new_ADMINACCOUNTS'];
     $new_CONHOST = $updateData['new_CONHOST'];
     $new_ADMINEMAIL = $updateData['new_ADMINEMAIL'];
+    $new_FEEDBACK_EMAIL = $updateData['new_FEEDBACK_EMAIL'];
+    $new_SECURITY_EMAIL = $updateData['new_SECURITY_EMAIL'];
+    $new_HELP_EMAIL = $updateData['new_HELP_EMAIL'];
+    $new_NOREPLY_EMAIL = $updateData['new_NOREPLY_EMAIL'];
     $new_TIMEZONE = $updateData['new_TIMEZONE'];
 
 
@@ -70,6 +78,7 @@ if (!empty($_POST)) {
         strlen($new_ADMINACCOUNTS) > 0 &&
         strlen($new_CONHOST) > 0 &&
         strlen($new_ADMINEMAIL) > 0 &&
+        strlen($new_NOREPLY_EMAIL) > 0 &&
         strlen($new_TIMEZONE) > 0) {
         if (file_exists(__DIR__."/.env")) {
             chmod(__DIR__."/.env", 0600);
@@ -138,6 +147,34 @@ DONE
             $sql .= " Value = '".$new_TIMEZONE."' ";
             $sql .= "WHERE Field = 'TIMEZONE';";
             DB::run($sql);
+
+            if (!empty($new_FEEDBACK_EMAIL)) {
+                $sql = "INSERT INTO `Configuration`(`Field`, `Value`)";
+                $sql .= " VALUES ('FEEDBACK_EMAIL', '".$new_FEEDBACK_EMAIL."') ";
+                $sql .= "ON DUPLICATE KEY UPDATE `Value` = '".$new_FEEDBACK_EMAIL."';";
+                DB::run($sql);
+            }
+
+            if (!empty($new_SECURITY_EMAIL)) {
+                $sql = "INSERT INTO `Configuration`(`Field`, `Value`)";
+                $sql .= " VALUES ('SECURITY_EMAIL', '".$new_SECURITY_EMAIL."') ";
+                $sql .= "ON DUPLICATE KEY UPDATE `Value` = '".$new_SECURITY_EMAIL."';";
+                DB::run($sql);
+            }
+
+            if (!empty($new_HELP_EMAIL)) {
+                $sql = "INSERT INTO `Configuration`(`Field`, `Value`)";
+                $sql .= " VALUES ('HELP_EMAIL', '".$new_HELP_EMAIL."') ";
+                $sql .= "ON DUPLICATE KEY UPDATE `Value` = '".$new_HELP_EMAIL."';";
+                DB::run($sql);
+            }
+
+            if (!empty($new_NOREPLY_EMAIL)) {
+                $sql = "INSERT INTO `Configuration`(`Field`, `Value`)";
+                $sql .= " VALUES ('NOREPLY_EMAIL', '".$new_NOREPLY_EMAIL."') ";
+                $sql .= "ON DUPLICATE KEY UPDATE `Value` = '".$new_NOREPLY_EMAIL."';";
+                DB::run($sql);
+            }
 
             header("Location: http://".$_SERVER['SERVER_NAME']."/index.php?Function=public");
             exit();
@@ -293,6 +330,8 @@ if (strlen($failed_message)) {
 ?> placeholder="<example: 1234,5678,901234>">
     </br>
 
+    <div class="UI-configure-panel UI-border">
+
     <label>Admin Email:</label> <br>
     <input type="text" name="new_ADMINEMAIL" class="UI-input <?php
     if ($updateData != null && strlen($updateData['new_ADMINEMAIL'])) {
@@ -304,6 +343,49 @@ if (strlen($failed_message)) {
     }
 ?> placeholder="<example: admin@host.con>">
     </br>
+
+    <label>No-Reply Email:</label> <br>
+    <input type="text" name="new_NOREPLY_EMAIL" class="UI-input <?php
+    if ($updateData != null && strlen($updateData['new_NOREPLY_EMAIL'])) {
+        echo '" value="'.$updateData['new_NOREPLY_EMAIL'].'"';
+    } elseif ($tried) {
+        echo 'UI-red"';
+    } else {
+        echo '"';
+    }
+    ?> placeholder="<example: noreply@host.con>">
+    </br>
+
+    <label>Feedback Email: <span class='UI-configure-note'>Address for the feedback buttons and links. If unset, defaults to Admin Email address</span></label> <br>
+    <input type="text" name="new_FEEDBACK_EMAIL" class="UI-input <?php
+    if ($updateData != null && strlen($updateData['new_FEEDBACK_EMAIL'])) {
+        echo '" value="'.$updateData['new_FEEDBACK_EMAIL'].'"';
+    } else {
+        echo '"';
+    }
+    ?> placeholder="<example: feedback@host.con>">
+    </br>
+
+    <label>Security Email: <span class='UI-configure-note'>This email recieves all the forgotten password request and other security notices. If unset, defaults to Admin Email address</span></label> <br>
+    <input type="text" name="new_SECURITY_EMAIL" class="UI-input <?php
+    if ($updateData != null && strlen($updateData['new_SECURITY_EMAIL'])) {
+        echo '" value="'.$updateData['new_SECURITY_EMAIL'].'"';
+    } else {
+        echo '"';
+    }
+    ?> placeholder="<example: security@host.con>">
+    </br>
+
+    <label>Help Email: <span class='UI-configure-note'>Address for the help buttons and links. If unset, defaults to Admin Email address</span></label> <br>
+    <input type="text" name="new_HELP_EMAIL" class="UI-input <?php
+    if ($updateData != null && strlen($updateData['new_HELP_EMAIL'])) {
+        echo '" value="'.$updateData['new_HELP_EMAIL'].'"';
+    } else {
+        echo '"';
+    }
+    ?> placeholder="<example: help@host.con>">
+    </br>
+    </div>
 
     <label>Timezone:</label> <br>
     <input type="text" name="new_TIMEZONE" class="UI-input <?php
