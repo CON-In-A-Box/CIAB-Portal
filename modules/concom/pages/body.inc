@@ -2,10 +2,6 @@
 <div id="main_content" class="UI-maincontent">
 <div class="UI-event-sectionbar">ConCom</div>
 <div id="donut"></div>
-<script>
-<?php print buildDonutData();?>
-drawDonutChart(window.innerWidth-50, window.innerHeight-50, data, '#donut');
-</script>
 <div id="concom" class="UI-maincontent">
 
 <?php
@@ -24,7 +20,13 @@ if (isset($_REQUEST['AddDepartment'])) {
         doConComAddSearch($_REQUEST['AddDepartment']);
     }
 } else {
-    ConComListDisplay();
+?>
+<script>
+<?php print buildDonutData();?>
+drawDonutChart(window.innerWidth-50, window.innerHeight-50, data, '#donut');
+</script>
+<?php
+ConComListDisplay();
 }
 ?>
 </div>
