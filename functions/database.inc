@@ -147,7 +147,7 @@ SQL;
             $upgrade = DB::getCurrentDBVersion();
             if ($upgrade != SCHEMA::$REQUIED_DB_SCHEMA) {
             // If we have to do an update, do it
-                header("Location: http://".$_SERVER['SERVER_NAME']."/index.php?Function=update&from=".$upgrade."&to=".SCHEMA::$REQUIED_DB_SCHEMA);
+                header("Location: ".$BASEURL."/index.php?Function=update&from=".$upgrade."&to=".SCHEMA::$REQUIED_DB_SCHEMA);
             }
         }
 

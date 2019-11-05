@@ -4,6 +4,7 @@
     require_module 'standard';
 .*/
 
+require __DIR__."/functions/locations.inc";
 require __DIR__."/vendor/autoload.php";
 if (is_file(__DIR__.'/.env')) {
     $dotenv = Dotenv\Dotenv::create(__DIR__);
@@ -20,7 +21,7 @@ if (is_file(__DIR__.'/.env')) {
 }
 
 if (!$configure) {
-    header("Location: http://".$_SERVER['SERVER_NAME']."/index.php?Function=public");
+    header("Location: ".$BASEURL."/index.php?Function=public");
 }
 
 $updateData = null;
@@ -176,7 +177,7 @@ DONE
                 DB::run($sql);
             }
 
-            header("Location: http://".$_SERVER['SERVER_NAME']."/index.php?Function=public");
+            header("Location: ".$BASEURL."/index.php?Function=public");
             exit();
         }
     } else {
