@@ -7,6 +7,8 @@
 // Start the session so we are ready to go no matter what we do!
 session_start();
 
+require_once __DIR__.'/functions/locations.inc';
+
 require __DIR__."/vendor/autoload.php";
 if (is_file(__DIR__.'/.env')) {
     $dotenv = Dotenv\Dotenv::create(__DIR__);
@@ -39,7 +41,7 @@ try {
             $_ENV['DBPASS'] = $DBPASS;
         }
     } else {
-        header("Location: http://".$_SERVER['SERVER_NAME'].":".$_SERVER['SERVER_PORT']."/configure_system.php");
+        header("Location: ".$BASEURL."/configure_system.php");
     }
 }
 
