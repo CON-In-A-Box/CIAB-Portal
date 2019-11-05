@@ -58,6 +58,8 @@ At present in `scss/event.scss` is where the even specific styles are generated.
 
 For a step-by-step overview of process of getting a local instance of the project setup look at [FirstSetup.md](FirstSetup.md). 
 
+If you would like and are able to use docker then you should read [Docker.md](Docker.md). That will give you a quick and easy way to get started in that way.
+
 # Code Checking
 
 In order to try to keep the code as orderly as possible we are having GitHub lint code as it is submitted. The goal is to help catch errors and keep some coding consistency.

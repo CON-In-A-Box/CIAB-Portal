@@ -1,0 +1,8 @@
+docker
+docker-compose*
+.env*
+.ht_meetingsignin_config.php*
+.git
+scss/scss_cache
+resources/data
+resources/images
