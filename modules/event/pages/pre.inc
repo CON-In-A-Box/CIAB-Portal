@@ -30,14 +30,14 @@ if (!empty($_REQUEST)) {
 
     $arguments = [
     'modify' => FILTER_SANITIZE_STRING,
-    'delete' => FILTER_SANITIZE_NUMBER,
+    'delete' => FILTER_SANITIZE_NUMBER_INT,
     'cycle' => FILTER_SANITIZE_STRING,
-    'deleteBadge' => FILTER_SANITIZE_NUMBER,
+    'deleteBadge' => FILTER_SANITIZE_NUMBER_INT,
     'badge' => FILTER_SANITIZE_STRING,
-    'deleteEvent' => FILTER_SANITIZE_NUMBER,
+    'deleteEvent' => FILTER_SANITIZE_NUMBER_INT,
     'event' => FILTER_SANITIZE_STRING,
-    'duplicateConcom' => FILTER_SANITIZE_NUMBER,
-    'from' => FILTER_SANITIZE_NUMBER,
+    'duplicateConcom' => FILTER_SANITIZE_NUMBER_INT,
+    'from' => FILTER_SANITIZE_NUMBER_INT,
     ];
 
     $updateData = filter_input_array(INPUT_POST, $arguments);

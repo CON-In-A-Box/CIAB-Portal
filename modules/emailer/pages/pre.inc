@@ -16,7 +16,7 @@ if (!empty($_REQUEST)) {
     $arguments = [
     'loadList' => FILTER_SANITIZE_STRING,
     'test' => FILTER_SANITIZE_STRING,
-    'listCount' => FILTER_SANITIZE_INT,
+    'listCount' => FILTER_SANITIZE_NUMBER_INT,
     'accessControl' => FILTER_SANITIZE_STRING,
     ];
 

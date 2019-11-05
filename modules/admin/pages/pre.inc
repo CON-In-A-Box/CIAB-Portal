@@ -20,7 +20,7 @@ if (!empty($_REQUEST)) {
     'setField'     => FILTER_SANITIZE_SPECIAL_CHARS,
     'newField'     => FILTER_SANITIZE_SPECIAL_CHARS,
     'value'        => FILTER_UNSAFE_RAW,
-    'removeAdmin'  => FILTER_BOOLEAN,
+    'removeAdmin'  => FILTER_VALIDATE_BOOLEAN,
     'tmp_login'    => FILTER_SANITIZE_SPECIAL_CHARS,
     'tmp_passwd'   => FILTER_SANITIZE_SPECIAL_CHARS,
     ];
