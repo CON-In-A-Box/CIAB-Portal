@@ -56,7 +56,7 @@ At present in `scss/event.scss` is where the even specific styles are generated.
 
 # First Steps
 
-For a fairly technical overview of process of getting an instance of the project setup look at [FirstSetup.md](FirstSetup.md). 
+For a step-by-step overview of process of getting a local instance of the project setup look at [FirstSetup.md](FirstSetup.md). 
 
 # Code Checking
 
