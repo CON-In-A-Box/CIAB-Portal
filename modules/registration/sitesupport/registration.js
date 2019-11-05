@@ -5,6 +5,8 @@
 /* jshint browser: true */
 /* jshint -W097 */
 /* global confirmbox, showSpinner, showSidebar */
+/* exported sidebarMainDiv, refreshBadgeData, printBadge, showUpdateBadge,
+            updateBadge, workstationChange */
 
 'use strict';
 
@@ -46,8 +48,8 @@ function printBadge(data) {
     msg =  'Print badge for \'';
   }
   confirmbox.start('Confirm Print Badge',
-      msg + input['Badge Name'] + '\' ?',
-      doPrintBadge);
+    msg + input['Badge Name'] + '\' ?',
+    doPrintBadge);
 }
 
 function showUpdateBadge(data) {
@@ -85,17 +87,17 @@ function workstationChange() {
   var value = document.getElementById('workstation_id').value;
   var d = new Date();
   var exdays = 5;
-  d.setTime(d.getTime() + (exdays*24*60*60*1000));
-  var expires = ";expires="+ d.toUTCString();
-  document.cookie = "CIAB_REGISTRATIONWORKSTATION=" + value + expires +
-                    ";path=/";
+  d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+  var expires = ';expires=' + d.toUTCString();
+  document.cookie = 'CIAB_REGISTRATIONWORKSTATION=' + value + expires +
+                    ';path=/';
   var element = document.getElementById('kiosk_mode');
   var disabled = element.classList.contains('UI-disabled');
-  var state = (value === "");
+  var state = (value === '');
   if (state !== disabled) {
-        if (state && !disabled)
-          element.classList.add('UI-disabled');
-        if (disabled && !state)
-          element.classList.remove('UI-disabled');
+    if (state && !disabled)
+    {element.classList.add('UI-disabled');}
+    if (disabled && !state)
+    {element.classList.remove('UI-disabled');}
   }
 }

@@ -899,8 +899,9 @@ foreach ($Departments as $dep => $set) {
                 onclick='clearCheckout();'>
                Clear
             </button>
-        <div>
+        </div>
     </div>
+  </div>
 </div>
 
 <div id="success_dlg" class="UI-modal">

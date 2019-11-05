@@ -5,6 +5,8 @@
 /* jshint browser: true */
 /* jshint -W097 */
 /* globals userLookup, showSpinner, hideSpinner */
+/* exported batchImport, batchDone, batchCancel, fileChange, calculateHours,
+            batch, onFail, handleResult, resetForm */
 
 'use strict';
 
@@ -80,7 +82,7 @@ function resetForm() {
 function formatTime(time) {
 
   var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday',
-              'Saturday'];
+    'Saturday'];
   var pmam = null;
   if (time.getHours() >= 12) {
     pmam = ' PM';

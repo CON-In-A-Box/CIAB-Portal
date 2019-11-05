@@ -4,6 +4,8 @@
 
 /* jshint browser: true */
 /* jshint -W097 */
+/* exported escapeHtml, showSpinner, hideSpinner, urlsafeB64Encode,
+            urlsafeB64Decode */
 
 'use strict';
 
@@ -42,10 +44,10 @@ function hideSpinner() {
   document.getElementById('refresh_spinner').style.display = 'none';
 }
 
-function urlsafe_b64encode(data) {
-    return btoa(data).replace(/\+/g, '-').replace(/\//g, '_');
+function urlsafeB64Encode(data) {
+  return btoa(data).replace(/\+/g, '-').replace(/\//g, '_');
 }
 
-function urlsafe_b64decode(data) {
-    return atob(data.replace(/-/g, '+').replace(/_/g, '/'));
+function urlsafeB64Decode(data) {
+  return atob(data.replace(/-/g, '+').replace(/_/g, '/'));
 }

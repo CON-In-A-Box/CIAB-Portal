@@ -58,6 +58,18 @@ At present in `scss/event.scss` is where the even specific styles are generated.
 
 For a fairly technical overview of process of getting an instance of the project setup look at [FirstSetup.md](FirstSetup.md). 
 
+# Code Checking
+
+In order to try to keep the code as orderly as possible we are having GitHub lint code as it is submitted. The goal is to help catch errors and keep some coding consistency.
+
+For JavaScript files we are using [ESLint](https://eslint.org/). This should be relatively straight forward for to configure to be used on your platform.
+
+For PHP file we are using [PHPCS](https://github.com/squizlabs/PHP_CodeSniffer). Again pretty easy to get installed on most platforms.
+
+There are rules defined for each tool as well as simple wrapper tools in the tools/ directory. Expect that these tools will be run against any code submitted and it will have to pass.
+
+It recommend you make use of some githooks that are also defined in .githooks which you can use by running this command `git config core.hooksPath .githooks`
+
 # Next Steps
 
 * The current goal is to fully move off of Neon and host the whole backend on the mySQL database. This would involve migrating from Neon, replacing all the functionality as well as finding a way to safely and securely do credit card processing for event registration.

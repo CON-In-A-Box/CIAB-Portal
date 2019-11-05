@@ -25,15 +25,23 @@ if (!empty($FAILURE) && $FAILURE == AUTH_EXPIRED) {
     if (!empty($FAILURE)) {
         if ($FAILURE == AUTH_BAD) {
             echo '<div class="UI-center UI-border UI-margin UI-padding UI-red">';
-            echo '<h2 class="UI-error-header">Login Incorrect<br>Please Try Again</h2></div>';
+            echo '<h2 class="UI-error-header">Login Incorrect<br>';
+            echo 'Please Try Again</h2>';
+            echo 'or contact <a href="mailto:'.getHelpEmail();
+            echo '?subject=Login Issues">';
+            echo getHelpEmail().'</a>';
+            echo '</div>';
         } elseif ($FAILURE == AUTH_LOCKED) {
             echo '<div class="UI-center UI-border UI-margin UI-padding UI-red">';
             echo '<h2 class="UI-error-header">Account Locked</h2>';
             echo '<span class="UI-error-header">';
             echo 'Too many unsuccessful login attempts.</span><br>';
             echo '<span class="UI-error-header">';
-            echo 'Reset the password gain entry.';
-            echo "</span></div>\n";
+            echo 'Reset the password gain entry.</span>';
+            echo 'or contact <a href="mailto:'.getHelpEmail();
+            echo '?subject=Locked out of account">';
+            echo getHelpEmail().'</a>';
+            echo "</div>\n";
         } elseif ($FAILURE == AUTH_DUPLICATE) {
             echo '<div class="UI-center UI-border UI-margin UI-padding UI-yellow">';
             echo '<h2 class="UI-warning-header">Duplicate Accounts Present</h2>';

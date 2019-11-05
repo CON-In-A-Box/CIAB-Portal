@@ -5,6 +5,7 @@
 /* jshint browser: true */
 /* jshint -W097 */
 /* global confirmbox, hideSpinner, showSpinner */
+/* exported setSecret, authCode, setFolder, downloadFile, loadFiles */
 
 'use strict';
 

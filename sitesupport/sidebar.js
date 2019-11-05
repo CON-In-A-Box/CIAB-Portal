@@ -1,3 +1,12 @@
+/*
+ * Base function for a sidebar panel
+ */
+
+/* jshint browser: true */
+/* jshint -W097 */
+/* globals sidebarMainDiv */
+/* exported hideSidebar, showSidebar */
+
 var currentSidebar = null;
 
 function hideSidebar() {

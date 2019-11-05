@@ -301,7 +301,7 @@ function rppg()
 
 function reset_password($id, $password = null)
 {
-    global $CONSITENAME, $ADMINEMAIL, $PASSWORDRESET;
+    global $CONSITENAME, $PASSWORDRESET;
 
     if (isset($PASSWORDRESET) && !empty($PASSWORDRESET)) {
         $duration = $PASSWORDRESET;
@@ -369,8 +369,8 @@ This new password will expire at $expire;
 
 Thank you
 MSG;
-        \ciab\Email::mail($email, 'noreply@convergence-con.org', $subject, $message);
-        \ciab\Email::mail($ADMINEMAIL, 'noreply@convergence-con.org', $subject, $adminMessage);
+        \ciab\Email::mail($email, getNoReplyAddress(), $subject, $message);
+        \ciab\Email::mail(getSecurityEmail(), getNoReplyAddress(), $subject, $adminMessage);
         error_log($adminMessage);
         return true;
     }

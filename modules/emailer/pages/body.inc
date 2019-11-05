@@ -20,11 +20,9 @@ $emailer = new \mailer\Email();
                 From:</label>
                 <select class="UI-input" id="email_from">
 <?php
-$address = $emailer->buildFrom();
-$addr = explode("@", $address[0]);
-$addr[0] = "noreply";
-$value = implode("@", $addr);
+$value = getNoReplyAddress();
 print "<option selected>".$value."</option>\n";
+$address = $emailer->buildFrom();
 foreach ($address as $addr) {
     print "<option>".$addr."</option>\n";
 }
@@ -34,11 +32,9 @@ foreach ($address as $addr) {
                 Reply-To:</label>
                 <select class="UI-input" id="email_reply">
 <?php
-$address = $emailer->buildFrom();
-$addr = explode("@", $address[0]);
-$addr[0] = "noreply";
-$value = implode("@", $addr);
+$value = getNoReplyAddress();
 print "<option selected>".$value."</option>\n";
+$address = $emailer->buildFrom();
 foreach ($address as $addr) {
     print "<option>".$addr."</option>\n";
 }

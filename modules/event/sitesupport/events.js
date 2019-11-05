@@ -4,7 +4,11 @@
 
 /* jshint browser: true */
 /* jshint -W097 */
-/* globals confirmbox, showSidebar */
+/* globals confirmbox, showSidebar, hideSidebar, expandSection */
+/* exported doImport, importConcom, deleteEvent, newEvent, saveEvent,
+            editEvent, saveBadge, editBadge, newBadge, deleteBadge,
+            expandEvent, saveCycle, newCycle, deleteMeeting,
+            saveMeeting, editMeeting, newMeeting, reloadFromNeon */
 
 function reloadFromNeon() {
   window.location = 'index.php?Function=event&reloadFromNeon=1';
@@ -44,25 +48,25 @@ function processMeeting() {
   confirmbox.close();
 
   var data = {
-      'Id': document.getElementById('meet_id').value,
-      'Name': document.getElementById('meet_name').value,
-      'EventID': document.getElementById('meet_event').value,
-      'Date': document.getElementById('meet_date').value,
-    };
+    'Id': document.getElementById('meet_id').value,
+    'Name': document.getElementById('meet_name').value,
+    'EventID': document.getElementById('meet_event').value,
+    'Date': document.getElementById('meet_date').value,
+  };
   var param = JSON.stringify(data);
   console.log(param);
 
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 200) {
-        hideSidebar();
-        location.reload();
-      } else if (this.status == 404) {
-        window.alert('404!');
-      } else if (this.status == 409) {
-        window.alert('409!');
-      }
-    };
+    if (this.readyState == 4 && this.status == 200) {
+      hideSidebar();
+      location.reload();
+    } else if (this.status == 404) {
+      window.alert('404!');
+    } else if (this.status == 409) {
+      window.alert('409!');
+    }
+  };
   xhttp.open('POST', 'index.php?Function=event', true);
   xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
   xhttp.send('modify=' + btoa(param));
@@ -71,9 +75,9 @@ function processMeeting() {
 
 function saveMeeting() {
   confirmbox.start(
-      'Confirms Meeting Details',
-      'Are the meeting details correct?',
-      processMeeting
+    'Confirms Meeting Details',
+    'Are the meeting details correct?',
+    processMeeting
   );
 
 }
@@ -85,15 +89,15 @@ function processMeetingDeletion() {
 
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 200) {
-        hideSidebar();
-        location.reload();
-      } else if (this.status == 404) {
-        window.alert('404!');
-      } else if (this.status == 409) {
-        window.alert('409!');
-      }
-    };
+    if (this.readyState == 4 && this.status == 200) {
+      hideSidebar();
+      location.reload();
+    } else if (this.status == 404) {
+      window.alert('404!');
+    } else if (this.status == 409) {
+      window.alert('409!');
+    }
+  };
   xhttp.open('POST', 'index.php?Function=event', true);
   xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
   xhttp.send('delete=' + _deletedMeeting);
@@ -103,9 +107,9 @@ function processMeetingDeletion() {
 function deleteMeeting(name, id) {
   _deletedMeeting = id;
   confirmbox.start(
-      'Confirms Meeting Deletion',
-      'Delete meeting ' + name + '?',
-      processMeetingDeletion
+    'Confirms Meeting Deletion',
+    'Delete meeting ' + name + '?',
+    processMeetingDeletion
   );
 
 }
@@ -119,22 +123,22 @@ function processNewCycle() {
   confirmbox.close();
 
   var data = {
-      'From': document.getElementById('cycle_from').value,
-      'To': document.getElementById('cycle_to').value,
-    };
+    'From': document.getElementById('cycle_from').value,
+    'To': document.getElementById('cycle_to').value,
+  };
   var param = btoa(JSON.stringify(data));
 
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 200) {
-        hideSidebar();
-        location.reload();
-      } else if (this.status == 404) {
-        window.alert('404!');
-      } else if (this.status == 409) {
-        window.alert('409!');
-      }
-    };
+    if (this.readyState == 4 && this.status == 200) {
+      hideSidebar();
+      location.reload();
+    } else if (this.status == 404) {
+      window.alert('404!');
+    } else if (this.status == 409) {
+      window.alert('409!');
+    }
+  };
   xhttp.open('POST', 'index.php?Function=event', true);
   xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
   xhttp.send('cycle=' + param);
@@ -145,9 +149,9 @@ function saveCycle() {
   var from = document.getElementById('cycle_from').value;
   var to = document.getElementById('cycle_to').value;
   confirmbox.start(
-      'Confirm New Annual Cycle',
-      'Add Cycle [' + from + ' -> ' + to + '] ?',
-      processNewCycle
+    'Confirm New Annual Cycle',
+    'Add Cycle [' + from + ' -> ' + to + '] ?',
+    processNewCycle
   );
 
 }
@@ -164,15 +168,15 @@ function processBadgeDeletion() {
 
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 200) {
-        hideSidebar();
-        location.reload();
-      } else if (this.status == 404) {
-        window.alert('404!');
-      } else if (this.status == 409) {
-        window.alert('409!');
-      }
-    };
+    if (this.readyState == 4 && this.status == 200) {
+      hideSidebar();
+      location.reload();
+    } else if (this.status == 404) {
+      window.alert('404!');
+    } else if (this.status == 409) {
+      window.alert('409!');
+    }
+  };
   xhttp.open('POST', 'index.php?Function=event', true);
   xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
   xhttp.send('deleteBadge=' + _deletedBadge);
@@ -182,9 +186,9 @@ function processBadgeDeletion() {
 function deleteBadge(id, name) {
   _deletedBadge = id;
   confirmbox.start(
-      'Confirms Badge Deletion',
-      'Delete badge \'' + name + '\' ?',
-      processBadgeDeletion
+    'Confirms Badge Deletion',
+    'Delete badge \'' + name + '\' ?',
+    processBadgeDeletion
   );
 
 }
@@ -220,27 +224,27 @@ function processNewBadge() {
   confirmbox.close();
 
   var data = {
-      'Id': document.getElementById('badge_id').value,
-      'Name': document.getElementById('badge_name').value,
-      'Event': document.getElementById('badge_event').value,
-      'Cost': document.getElementById('badge_cost').value,
-      'From': document.getElementById('badge_from').value,
-      'To': document.getElementById('badge_to').value,
-      'Image': document.getElementById('badge_image').value,
-    };
+    'Id': document.getElementById('badge_id').value,
+    'Name': document.getElementById('badge_name').value,
+    'Event': document.getElementById('badge_event').value,
+    'Cost': document.getElementById('badge_cost').value,
+    'From': document.getElementById('badge_from').value,
+    'To': document.getElementById('badge_to').value,
+    'Image': document.getElementById('badge_image').value,
+  };
   var param = btoa(JSON.stringify(data));
 
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 200) {
-        hideSidebar();
-        location.reload();
-      } else if (this.status == 404) {
-        window.alert('404!');
-      } else if (this.status == 409) {
-        window.alert('409!');
-      }
-    };
+    if (this.readyState == 4 && this.status == 200) {
+      hideSidebar();
+      location.reload();
+    } else if (this.status == 404) {
+      window.alert('404!');
+    } else if (this.status == 409) {
+      window.alert('409!');
+    }
+  };
   xhttp.open('POST', 'index.php?Function=event', true);
   xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
   xhttp.send('badge=' + param);
@@ -251,9 +255,9 @@ function saveBadge() {
   var name = document.getElementById('badge_name').value;
   var evnt = document.getElementById('badge_event_name').value;
   confirmbox.start(
-      'Confirm Event Badge',
-      'Save Badge ' + name + ' for event  ' + evnt + ' ?',
-      processNewBadge
+    'Confirm Event Badge',
+    'Save Badge ' + name + ' for event  ' + evnt + ' ?',
+    processNewBadge
   );
 
 }
@@ -273,23 +277,23 @@ function processNewEvent() {
   confirmbox.close();
 
   var data = {
-      'Id': document.getElementById('event_id').value,
-      'Name': document.getElementById('event_name').value,
-      'To': document.getElementById('event_to').value,
-      'From': document.getElementById('event_from').value,
-    };
+    'Id': document.getElementById('event_id').value,
+    'Name': document.getElementById('event_name').value,
+    'To': document.getElementById('event_to').value,
+    'From': document.getElementById('event_from').value,
+  };
   var param = btoa(JSON.stringify(data));
 
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 200) {
-        hideSidebar();
-        location.reload();
-      } else if (this.status == 404) {
-        window.alert('Event Failed to Save, Check if proper cycle exists.');
-        return;
-      }
-    };
+    if (this.readyState == 4 && this.status == 200) {
+      hideSidebar();
+      location.reload();
+    } else if (this.status == 404) {
+      window.alert('Event Failed to Save, Check if proper cycle exists.');
+      return;
+    }
+  };
   xhttp.open('POST', 'index.php?Function=event', true);
   xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
   xhttp.send('event=' + param);
@@ -311,9 +315,9 @@ function saveEvent() {
     return;
   }
   confirmbox.start(
-      'Confirm Event',
-      'Save Event "' + name + '" ?',
-      processNewEvent
+    'Confirm Event',
+    'Save Event "' + name + '" ?',
+    processNewEvent
   );
 
 }
@@ -334,15 +338,15 @@ function processEventDeletion() {
 
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 200) {
-        hideSidebar();
-        location.reload();
-      } else if (this.status == 404) {
-        window.alert('404!');
-      } else if (this.status == 409) {
-        window.alert('409!');
-      }
-    };
+    if (this.readyState == 4 && this.status == 200) {
+      hideSidebar();
+      location.reload();
+    } else if (this.status == 404) {
+      window.alert('404!');
+    } else if (this.status == 409) {
+      window.alert('409!');
+    }
+  };
   xhttp.open('POST', 'index.php?Function=event', true);
   xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
   xhttp.send('deleteEvent=' + _deletedEvent);
@@ -352,9 +356,9 @@ function processEventDeletion() {
 function deleteEvent(id, name) {
   _deletedEvent = id;
   confirmbox.start(
-      'Confirms Event Deletion',
-      'Delete event \'' + name + '\' ?',
-      processEventDeletion
+    'Confirms Event Deletion',
+    'Delete event \'' + name + '\' ?',
+    processEventDeletion
   );
 
 }
@@ -371,7 +375,7 @@ function importConcom(event) {
      event + '"]');
   idx.disabled = true;
   if (sel.selectedIndex == idx.index) {
-    sel.selectedIndex ++;
+    sel.selectedIndex++;
   }
   showSidebar('import_concom');
 
@@ -384,15 +388,15 @@ function doImport() {
 
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 200) {
-        hideSidebar();
-        location.reload();
-      } else if (this.status == 404) {
-        window.alert('404!');
-      } else if (this.status == 409) {
-        window.alert('409!');
-      }
-    };
+    if (this.readyState == 4 && this.status == 200) {
+      hideSidebar();
+      location.reload();
+    } else if (this.status == 404) {
+      window.alert('404!');
+    } else if (this.status == 409) {
+      window.alert('409!');
+    }
+  };
   xhttp.open('POST', 'index.php?Function=event', true);
   xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
   xhttp.send('duplicateConcom=' + to + '&from=' + from);
