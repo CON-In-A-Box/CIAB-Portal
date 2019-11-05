@@ -6,21 +6,10 @@
 
 require_once(__DIR__."/../backends/email.inc");
 require __DIR__."/../vendor/autoload.php";
+require_once(__DIR__."/locations.inc");
 
 // Main setup function
 $MODULENAME  = "Member Portal";
-
-// Discover Self Location
-$FUNCTIONDIR    = dirname(__FILE__);
-$BASEDIR        = dirname($FUNCTIONDIR);
-$WEBSERVER      = $_SERVER['SERVER_NAME'];
-$BASEURL        = "http://".$WEBSERVER;
-
-// Static Variables
-$SITESUPPORTDIR = $BASEDIR."/sitesupport";
-$PAGESDIR       = $BASEDIR."/pages";
-$BACKEND        = $BASEDIR."/backends";
-$MODULESDIR     = $BASEDIR."/modules";
 
 // Set a Date stamp for use anywhere
 $DS             = uniqid('', true);
@@ -80,10 +69,12 @@ function getVersion()
 // Basic site redirector
 function goSite($Site = false)
 {
+    global $BASEURL;
+
     if ($Site != false) {
         header("Location: ".$Site);
     } else {
-        header("Location: /index.php?Function=main");
+        header("Location: ".$BASEURL."/index.php?Function=main");
     }
     exit(); // Dump this run, assume the new page will start from scratch
 
