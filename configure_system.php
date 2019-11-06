@@ -16,6 +16,16 @@ if (is_file(__DIR__.'/.env')) {
     } catch (RuntimeException $e) {
         $configure = true;
     }
+
+    if ($_ENV['DOCKER'] && !$configure) {
+        require_once(__DIR__."/functions/functions.inc");
+        $sql = "SELECT COUNT(`AccountID`) as count FROM `Authentication`;";
+        $result = DB::run($sql);
+        $value = $result->fetch();
+        if ($value === false || $value['count'] == 0) {
+            $configure = true;
+        }
+    }
 } else {
     $configure = true;
 }
@@ -81,12 +91,13 @@ if (!empty($_POST)) {
         strlen($new_ADMINEMAIL) > 0 &&
         strlen($new_NOREPLY_EMAIL) > 0 &&
         strlen($new_TIMEZONE) > 0) {
-        if (file_exists(__DIR__."/.env")) {
-            chmod(__DIR__."/.env", 0600);
-        }
+        if (!isset($_ENV['DOCKER'])) {
+            if (file_exists(__DIR__."/.env")) {
+                chmod(__DIR__."/.env", 0600);
+            }
 
-        $myfile = fopen(__DIR__."/.env", "w");
-        fwrite($myfile, <<<DONE
+            $myfile = fopen(__DIR__."/.env", "w");
+            fwrite($myfile, <<<DONE
 # CON-In-A-Box Site Config (module)
 # Setup via web page
 
@@ -100,9 +111,10 @@ DBNAME="$DBNAME" # The Database Name
 DBPASS="$DBPASS" # *PLAIN TEXT* database user's password
 
 DONE
-        );
-        fclose($myfile);
-        chmod(__DIR__."/.env", 0400);
+            );
+            fclose($myfile);
+            chmod(__DIR__."/.env", 0400);
+        }
 
         $good = true;
         try {
