@@ -39,7 +39,6 @@ if (!empty($_POST)) {
 
     'new_NEONID'        => FILTER_SANITIZE_RAW,
     'new_NEONKEY'       => FILTER_SANITIZE_RAW,
-    'new_NEONBETA'      => FILTER_SANITIZE_RAW,
     'new_ADMINACCOUNTS' => FILTER_SANITIZE_RAW,
     'new_ADMINEMAIL'    => FILTER_SANITIZE_RAW,
     'new_NOREPLY_EMAIL' => FILTER_SANITIZE_SPECIAL_CHARS,
@@ -59,7 +58,7 @@ if (!empty($_POST)) {
 
     $new_NEONID = $updateData['new_NEONID'];
     $new_NEONKEY = $updateData['new_NEONKEY'];
-    $new_NEONBETA = $updateData['new_NEONBETA'];
+    $new_NEONBETA = (isset($_POST['new_NEONBETA'])) ? 1 : 0;
     $new_ADMINACCOUNTS = $updateData['new_ADMINACCOUNTS'];
     $new_CONHOST = $updateData['new_CONHOST'];
     $new_ADMINEMAIL = $updateData['new_ADMINEMAIL'];
