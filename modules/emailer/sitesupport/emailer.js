@@ -336,8 +336,8 @@ function buildAccessList(list) {
       output += 'class=\'UI-table-vertical\'';
     }
     skip -= 1;
-    propertyName = propertyName.replace(/([A-Z])/g, '&nbsp;$1').trim();
-    output += '>' + propertyName + '</div>';
+    var cleanPropertyName = propertyName.replace(/([A-Z])/g, '&nbsp;$1').trim();
+    output += '>' + cleanPropertyName + '</div>';
     output += '</div>\n';
   }
   output += '<div class=\'UI-table-cell\'>' +

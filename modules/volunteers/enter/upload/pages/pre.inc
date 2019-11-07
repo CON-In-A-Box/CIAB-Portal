@@ -27,7 +27,7 @@ function lookup_user($user)
     if (array_key_exists($user, $user_cache)) {
         return $user_cache[$user];
     } else {
-        $output = lookup_users_by_key($csv[0]);
+        $output = lookup_users_by_key($user);
         $user_cache[$user] = $output;
         return $output;
     }

@@ -301,7 +301,7 @@ function rppg()
 
 function reset_password($id, $password = null)
 {
-    global $CONSITENAME, $PASSWORDRESET;
+    global $CONSITENAME, $PASSWORDRESET, $BASEURL;
 
     if (isset($PASSWORDRESET) && !empty($PASSWORDRESET)) {
         $duration = $PASSWORDRESET;
