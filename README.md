@@ -72,6 +72,8 @@ There are rules defined for each tool as well as simple wrapper tools in the too
 
 It recommend you make use of some githooks that are also defined in .githooks which you can use by running this command `git config core.hooksPath .githooks`
 
+The code is also monitored by [SonarCloud](https://sonarcloud.io/dashboard?id=CIAB-Portal). That is a great place to find first issues or things to work on. Once the code has become clean there it will start becoming a manditory check for pull requests as well. 
+
 # Next Steps
 
 * The current goal is to fully move off of Neon and host the whole backend on the mySQL database. This would involve migrating from Neon, replacing all the functionality as well as finding a way to safely and securely do credit card processing for event registration.
