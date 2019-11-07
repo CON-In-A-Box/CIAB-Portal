@@ -220,7 +220,7 @@ if (isset($_COOKIE["CIAB_REGISTRATIONWORKSTATION"]) &&
     $id = kiosk_user();
 }
 if (kiosk_user()) {
-    echo " Workstation ".$id;
+    echo " Workstation ".htmlspecialchars($id);
 }
 ?>
     </span>
@@ -244,7 +244,7 @@ if ($access) {
         <input class="UI-input UI-half" id="workstation_id" placeholder="Required for Kiosk"
 <?php
 if (isset($_COOKIE["CIAB_REGISTRATIONWORKSTATION"])) {
-    echo " value='".$_COOKIE['CIAB_REGISTRATIONWORKSTATION']."'";
+    echo " value='".htmlspecialchars($_COOKIE['CIAB_REGISTRATIONWORKSTATION'])."'";
 }
 if (in_kiosk()) {
     echo " readonly";
