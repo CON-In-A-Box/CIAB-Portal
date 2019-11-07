@@ -36,7 +36,7 @@ if (isset($_REQUEST['Remove']) && isset($_REQUEST['Department']) && isset($_REQU
 
 function doConComAddSearch($department)
 {
-    echo '<h3>Add someone to '.$department."</h3>\n";
+    echo '<h3>Add someone to '.htmlspecialchars($department)."</h3>\n";
 ?>
     <fieldset><legend>Search the User Database</legend>
     <div class='UI-rest UI-center' id='userLookup_div'> </div>
@@ -50,10 +50,10 @@ function doConComAddAssign($department, $accountid)
 {
     $user = lookup_user_by_id($accountid);
     $name = $user['users'][0]['First Name'].' '.$user['users'][0]['Last Name'];
-    echo '<h3>Add '.$name.' to '.$department.'</h3>';
+    echo '<h3>Add '.htmlspecialchars($name).' to '.htmlspecialchars($department).'</h3>';
     echo '<form action="index.php?Function=concom" method="POST" class="form-inline">';
-    echo '<input type="hidden" name="AddDepartment" value="'.$department.'">'."\n";
-    echo '<input type="hidden" name="accountId" value="'.$accountid.'">'."\n";
+    echo '<input type="hidden" name="AddDepartment" value="'.htmlspecialchars($department).'">'."\n";
+    echo '<input type="hidden" name="accountId" value="'.htmlspecialchars($accountid).'">'."\n";
     echo '<fieldset><legend>Assign '.$name.' to ConCom</legend>';
     echo '<p>';
     echo 'Position';
