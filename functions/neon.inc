@@ -52,9 +52,11 @@ class Neon
     $result = $this->apiCore($method, $parameters);
     // Check for obvious errors, maybe we timed out?
     if($result['operationResult'] != 'SUCCESS') {
+      $siteconfig = $GLOBALS['SITECONFIG'];
+      $neonid = $GLOBALS['NEONID'];
       switch($result['errors']['error'][0]['errorCode']) {
         case "2": // NeonCRM Crashed, we can't serve this call
-          sendError("Could not login to the NeonCRM System with OrgID " . $GLOBALS['NEONID'] . ".  Check the login/API settings in " . $GLOBALS['SITECONFIG'] . ". Error from " . __FILE__, $result);
+          sendError("Could not login to the NeonCRM System with OrgID " . $neonid . ".  Check the login/API settings in " . $siteconfig . ". Error from " . __FILE__, $result);
           die("Unable to connect to NeonCRM");
         break;
         case "4": // Invalid Session, try logging in again and rerun the call
@@ -66,7 +68,7 @@ class Neon
           $result = $this->apiCore($method, $parameters);
         break;
         case "5": // API Permissions
-          sendError($GLOBALS['NEONID'] . " does not have enough permissions to make this call.  Consult with your administrator. Error from " . __FILE__, $result);
+          sendError($neonid . " does not have enough permissions to make this call.  Consult with your administrator. Error from " . __FILE__, $result);
           die("API Permissions Failure");
         break;
       }
@@ -90,9 +92,11 @@ class Neon
 
   // Executes a login and stores the Session ID.
   public function login() {
-    if (isset($GLOBALS['NEONID']) && isset($GLOBALS['NEONKEY'])) {
+    $siteconfig = $GLOBALS['SITECONFIG'];
+    $neonid = $GLOBALS['NEONID'];
+    if (isset($neonid) && isset($GLOBALS['NEONKEY'])) {
       $method = 'common/login';
-      $parameters = '&login.apiKey=' . $GLOBALS['NEONKEY'] . '&login.orgid=' . $GLOBALS['NEONID'];
+      $parameters = '&login.apiKey=' . $GLOBALS['NEONKEY'] . '&login.orgid=' . $neonid;
       $response = $this->apiCore($method, $parameters);
       if($response['operationResult'] == 'SUCCESS') {
         $this->setSession($response['userSessionId']);
@@ -101,13 +105,13 @@ class Neon
         if($response['errors']['error'][0]['errorCode'] == "2") {
           echo "NeonCRM seems to be down, please try again later.";
         } else {
-          sendError("Could not login to the NeonCRM System with OrgID " . $GLOBALS['NEONID'] . ".  Check the login/API settings in " . $GLOBALS['SITECONFIG'] . ". Error from " . __FILE__, $response);
+          sendError("Could not login to the NeonCRM System with OrgID " . $neonid . ".  Check the login/API settings in " . $siteconfig . ". Error from " . __FILE__, $response);
           return $response;
         }
         die("Unable to connect to NeonCRM");
       }
     } else {
-      sendError("NeonCRM credentials have not been set yet.  Check the login/API settings in " . $SITECONFIG . ".  Error From " . __FILE__, $response);
+      sendError("NeonCRM credentials have not been set yet.  Check the login/API settings in " . $siteconfig . ".  Error From " . __FILE__, $response);
       die("CIAB Not Configured");
     }
   }
