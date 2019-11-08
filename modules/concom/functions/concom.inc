@@ -349,7 +349,7 @@ function AddConComPosition($accountid, $department, $position, $note, $notify = 
     if ($value !== false) {
         // if the department is already assigned to this user, wipe it and replace it with the new info
         $record = $value['ListRecordID'];
-        $sql = "UPDATE ConComList SET  PositionID = $positionid, Note = '$Note' WHERE ListRecordID = $record;";
+        $sql = "UPDATE ConComList SET  PositionID = $positionid, Note = '$note' WHERE ListRecordID = $record;";
     } else {
         $sql = "INSERT INTO ConComList (AccountID, DepartmentID, PositionID, EventID, Note) VALUES ($accountid, ".$Departments[$department]['id'].", $positionid, $event, '$note');";
     }
@@ -385,7 +385,7 @@ function RemoveConComPosition($accountid, $department, $position, $notify = true
     $sql = "DELETE FROM ConComList WHERE AccountID = $accountid AND DepartmentID = ".$Departments[$department]['id']." AND PositionID = $positionid";
     $result = DB::run($sql);
     if ($result) {
-        if ($nodify) {
+        if ($notify) {
             // Notify the Division Director, so they know
 
             $data = lookup_user_by_id($accountid);
