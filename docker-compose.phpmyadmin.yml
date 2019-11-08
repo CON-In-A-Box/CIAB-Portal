@@ -1,0 +1,16 @@
+version: "3.2"
+services:
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    depends_on:
+      - mysql
+    links:
+        - mysql:db
+    ports:
+        - 8000:80
+    networks:
+      - frontend
+      - backend
+    environment:
+        PMA_USER: ${DBUSER}
+        PMA_PASSWORD: ${DBPASS}

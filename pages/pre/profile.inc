@@ -47,7 +47,7 @@ if (!empty($_POST)) {
             $_SESSION['accountId'],
             $updateData['auth'],
             false
-        )) {
+        ) == 0) {
             set_password($_SESSION['accountId'], $updateData['password']);
             exit();
         } else {

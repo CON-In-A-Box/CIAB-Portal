@@ -1,5 +1,7 @@
 # Con In A Box
 
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=CON-In-A-Box_CIAB-Portal&metric=alert_status)](https://sonarcloud.io/dashboard?id=CON-In-A-Box_CIAB-Portal)
+
 Starting as a random collection of tools to help administrate a Midwest fan run science fiction and fantasy convention, [CONvergence](http://www.convergence-con.org/), CIAB is evolving to be a multi-faceted web portal for convention administration. 
 
 The goal is to have a fairly generic and skin-able web portal that can be used for a variety of conventions to aid in a number of administrative tasks as well as be useful to the event attendee to get information about their account.
@@ -56,7 +58,9 @@ At present in `scss/event.scss` is where the even specific styles are generated.
 
 # First Steps
 
-For a fairly technical overview of process of getting an instance of the project setup look at [FirstSetup.md](FirstSetup.md). 
+For a step-by-step overview of process of getting a local instance of the project setup look at [FirstSetup.md](FirstSetup.md). 
+
+If you would like and are able to use docker then you should read [Docker.md](Docker.md). That will give you a quick and easy way to get started in that way.
 
 # Code Checking
 
@@ -69,6 +73,8 @@ For PHP file we are using [PHPCS](https://github.com/squizlabs/PHP_CodeSniffer).
 There are rules defined for each tool as well as simple wrapper tools in the tools/ directory. Expect that these tools will be run against any code submitted and it will have to pass.
 
 It recommend you make use of some githooks that are also defined in .githooks which you can use by running this command `git config core.hooksPath .githooks`
+
+The code is also monitored by [SonarCloud](https://sonarcloud.io/dashboard?id=CON-In-A-Box_CIAB-Portal). That is a great place to find first issues or things to work on. Once the code has become clean there it will start becoming a manditory check for pull requests as well. 
 
 # Next Steps
 

@@ -11,14 +11,18 @@ $scss->setFormatter("scss_formatter_compressed");
 
 $uri = explode("/", $_SERVER['REQUEST_URI']);
 
+if (!is_dir('resources/scss_cache')) {
+    @mkdir('resources/scss_cache', 0777, true);
+}
+
 $MODULESDIR = "modules";
 if (count($uri) > 3) {
     $tgt_path = $MODULESDIR.'/'.$uri[3];
-    $scss_cache = "scss/scss_cache/".$uri[3];
+    $scss_cache = "resources/scss_cache/".$uri[3];
     $scss->addImportPath($tgt_path."/scss");
     $scss_dir = "modules";
 } elseif ($uri[2] === 'panel.scss') {
-    $scss_cache = "scss/scss_cache/panel";
+    $scss_cache = "resources/scss_cache/panel";
     $source = "@import 'styles';";
     $modules = scandir($MODULESDIR);
     foreach ($modules as $key => $value) {
@@ -36,7 +40,7 @@ if (count($uri) > 3) {
     echo $scss->compile($source);
     exit;
 } else {
-    $scss_cache = "scss/scss_cache";
+    $scss_cache = "resources/scss_cache";
     $scss_dir = "scss";
 }
 

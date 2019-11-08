@@ -22,7 +22,7 @@ function hideSidebar() {
 
 function showSidebar(Id) {
   if (currentSidebar) {
-    hideSidebar(sidebarMainDiv);
+    hideSidebar();
   }
 
   currentSidebar = document.getElementById(Id);

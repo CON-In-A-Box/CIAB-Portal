@@ -301,7 +301,7 @@ function rppg()
 
 function reset_password($id, $password = null)
 {
-    global $CONSITENAME, $PASSWORDRESET;
+    global $CONSITENAME, $PASSWORDRESET, $BASEURL;
 
     if (isset($PASSWORDRESET) && !empty($PASSWORDRESET)) {
         $duration = $PASSWORDRESET;
@@ -349,7 +349,6 @@ function reset_password($id, $password = null)
                 FailedAttempts = 0;
 SQL;
         DB::run($sql);
-        $servername = 'https://'.$_SERVER['SERVER_NAME'];
         $subject = 'Password Reset Request';
         $expire = date('h:i A D F jS Y', strtotime($duration));
         $adminMessage = "A password reset has been requested for '$id' on the '$CONSITENAME' web site.\n";
@@ -360,7 +359,7 @@ A password reset has been requested for '$id' on the '$CONSITENAME' web site.
 If this is correct then please use this password '$password' to log in and
 change yor password to one you like.
 
-$servername
+$BASEURL
 
 If you did not request this please log into your account as soon as possible
 to verify everything is still correct.
