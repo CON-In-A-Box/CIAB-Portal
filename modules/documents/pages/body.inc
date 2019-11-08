@@ -7,7 +7,7 @@
             require_module 'standard';
         .*/
 
-        require_once __DIR__ . '/../functions/documents.inc';
+        require_once __DIR__.'/../functions/documents.inc';
 
         $client_info = create_client();
         $root = '/';
@@ -61,7 +61,7 @@ going to be accessed. Setup an OAuth 'Client ID' of type <strong>other</strong>.
                 $updateData = filter_input_array(INPUT_GET, $arguments);
                 $root = $updateData['path'];
             }
-            echo '<h2 class="UI-center"><b id="root_path">' . $root . '</b></h2>'; ?>
+            echo '<h2 class="UI-center"><b id="root_path">'.$root.'</b></h2>'; ?>
             <table class="UI-stripedtable UI-padding" id="folder_table">
                 <caption>Folder Table</caption>
                 <tr>
@@ -82,7 +82,7 @@ going to be accessed. Setup an OAuth 'Client ID' of type <strong>other</strong>.
             </table>
             <script>
                 <?php
-                echo 'loadFiles("' . $root . '");';
+                echo 'loadFiles("'.$root.'");';
                 ?>
             </script>
         </div>

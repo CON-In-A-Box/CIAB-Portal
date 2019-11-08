@@ -3,10 +3,10 @@
     require_module 'standard';
 .*/
 
-require_once $PAGESDIR . '/base/leftnav.inc';
-require_once $FUNCTIONDIR . '/authentication.inc';
-require_once __DIR__ . "/../functions/admin.inc";
-require_once $FUNCTIONDIR . '/users.inc';
+require_once $PAGESDIR.'/base/leftnav.inc';
+require_once $FUNCTIONDIR.'/authentication.inc';
+require_once __DIR__."/../functions/admin.inc";
+require_once $FUNCTIONDIR.'/users.inc';
 
 const FIRST_NAME = 'firstName';
 const LAST_NAME = 'lastName';
@@ -16,14 +16,14 @@ const FIELD = 'Field';
 ?>
 <div id="main_content" class="UI-cell-top UI-maincontent">
     <?php
-    echo "<h2 class='UI-sectionbar'>Welcome " . $_SESSION['preferredName'] . "!</h2>\n";
+    echo "<h2 class='UI-sectionbar'>Welcome ".$_SESSION['preferredName']."!</h2>\n";
 
     /* Retrieve and sanitize POST data */
     $arguments = [
-        FIRST_NAME => FILTER_SANITIZE_SPECIAL_CHARS,
-        LAST_NAME => FILTER_SANITIZE_SPECIAL_CHARS,
-        EMAIL => FILTER_SANITIZE_EMAIL,
-        ID => FILTER_SANITIZE_SPECIAL_CHARS,
+    FIRST_NAME => FILTER_SANITIZE_SPECIAL_CHARS,
+    LAST_NAME => FILTER_SANITIZE_SPECIAL_CHARS,
+    EMAIL => FILTER_SANITIZE_EMAIL,
+    ID => FILTER_SANITIZE_SPECIAL_CHARS,
 
     ];
     if (!empty($_POST)) {
@@ -118,13 +118,13 @@ const FIELD = 'Field';
         <?php
         endif;
 
-        if (!empty($searchCriteria[ID])) {
-            unset($result);
-            $result = pullIndividualAccount($searchCriteria[ID]);
-            echo '<pre>';
-            print_r($result);
-            echo '</pre>';
-        }
+if (!empty($searchCriteria[ID])) {
+    unset($result);
+    $result = pullIndividualAccount($searchCriteria[ID]);
+    echo '<pre>';
+    print_r($result);
+    echo '</pre>';
+}
         ?>
     </div> <!-- left_bar -->
     <div id="right_bar" class="UI-right UI-content UI-margin">
@@ -139,9 +139,9 @@ const FIELD = 'Field';
             <?php
             $table = get_config();
             foreach ($table as $line) {
-                echo "<tr><td>" . $line[FIELD] . "</td>\n";
-                echo "<td><input type='text' id=config_" . $line[FIELD] . " value=\"" . $line['Value'] . "\" class='UI-input'></td>\n";
-                echo "<td><button class='UI-eventbutton' onclick='setField(\"" . $line[FIELD] . "\")';>Set</button></td></tr>\n";
+                echo "<tr><td>".$line[FIELD]."</td>\n";
+                echo "<td><input type='text' id=config_".$line[FIELD]." value=\"".$line['Value']."\" class='UI-input'></td>\n";
+                echo "<td><button class='UI-eventbutton' onclick='setField(\"".$line[FIELD]."\")';>Set</button></td></tr>\n";
             }
             ?>
             <tr>
@@ -164,7 +164,7 @@ const FIELD = 'Field';
   <pre><?php
       // A simple place for admins to do random testing.
 
-      ?></pre>
+        ?></pre>
 </div>
 <!--End Play Area-->
 
