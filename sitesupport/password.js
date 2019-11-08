@@ -4,6 +4,7 @@
 
 /* jshint browser: true */
 /* jshint -W097 */
+/* globals alertbox */
 /* exported changePassword, resetPassword */
 
 'use strict';
@@ -13,15 +14,15 @@ function changePassword() {
   var newPassword = document.getElementById('ciab_newPassword');
   var again = document.getElementById('ciab_againPassword');
   if (!current.value) {
-    window.alert('Current Password not supplied');
+    alertbox('Current Password not supplied');
     return;
   }
   if (!newPassword.value) {
-    window.alert('New Password not supplied');
+    alertbox('New Password not supplied');
     return;
   }
   if (!again.value || again.value != newPassword.value) {
-    window.alert('New Password confirmation does not match');
+    alertbox('New Password confirmation does not match');
     return;
   }
   if (!window.confirm('Proceed in changing your password?')) {
@@ -33,12 +34,15 @@ function changePassword() {
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
-      window.alert('Password Updated');
-      location.reload();
+      alertbox('Password Updated').then(
+        function() {
+          location.reload();
+        }
+      );
     }
     else if (this.status == 403) {
       if (current.value) {
-        window.alert('Current Password Incorrect');
+        alertbox('Current Password Incorrect');
       }
       current.value = '';
     }
@@ -52,19 +56,21 @@ function resetPassword() {
   var email = document.getElementById('email');
 
   if (!email.value) {
-    window.alert('Please enter your e-mail address to reset your password.');
+    alertbox('Please enter your e-mail address to reset ' +
+                     'your password.');
     return;
   }
 
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
-      window.alert('Email Sent');
-      window.location = '/index.php?Function=public';
+      alertbox('Email Sent').then(function() {
+        window.location = '/index.php?Function=public';
+      });
     }
     else if (this.status == 404) {
       if (email.value) {
-        window.alert('Account for ' + email.value + ' was not found.');
+        alertbox('Account for ' + email.value + ' was not found.');
       }
       email.value = '';
     }

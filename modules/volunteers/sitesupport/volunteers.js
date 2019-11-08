@@ -6,7 +6,7 @@
 /* jshint -W097 */
 /* globals confirmbox, userId, escapeHtml, userEmail, checkAuthentication,
            groupData, checkAuthentication, adminMode, unclaimed,
-           hoursRemain, userLookup, hideSidebar, showSidebar */
+           hoursRemain, userLookup, hideSidebar, showSidebar, alertbox */
 /* exported processReturn, showReturn, markDelete, generateDerivedCSVReport,
             generateDerivedCSV, generatCSVReport, generateCSV,
             departmentReport, generateDeptReport, minHourReport,
@@ -92,10 +92,10 @@ function applyReward() {
       document.getElementById('success_dlg').style.display = 'block';
     }
     else if (this.status == 404) {
-      window.alert('404!');
+      alertbox('404!');
     }
     else if (this.status == 409) {
-      window.alert('409!');
+      alertbox('409!');
     }
   };
   xhttp.open('POST', 'index.php?Function=volunteers/admin', true);
@@ -200,17 +200,17 @@ function addToCheckout(json) {
       return element.PrizeID == item.PrizeID;
     });
     if (found) {
-      window.alert('Promo item \'' + item.Name + '\' cannot be added twice');
+      alertbox('Promo item \'' + item.Name + '\' cannot be added twice');
       return;
     }
     cost = 0;
   }
   if (hoursRemain < hoursSpent + cost) {
-    window.alert('Volunteer does not have enough hours for the ' + item.Name);
+    alertbox('Volunteer does not have enough hours for the ' + item.Name);
     return;
   }
   if (groupsNow[item.RewardGroupID] + 1 > item.GroupLimit) {
-    window.alert('Too many items from limited group');
+    alertbox('Too many items from limited group');
     return;
   }
   var count = 0;
@@ -220,7 +220,7 @@ function addToCheckout(json) {
     }
   }
   if (count + 1 > item.Remaining) {
-    window.alert('Not enough items in inventory!');
+    alertbox('Not enough items in inventory!');
     return;
   }
 
@@ -262,7 +262,7 @@ function enterAdmin() {
 function failAdmin(error) {
   document.getElementById('admin_slider').checked = false;
   if (error) {
-    window.alert('Login Failed (' + error + ')');
+    alertbox('Login Failed (' + error + ')');
   }
 }
 
@@ -336,10 +336,10 @@ function commitHours() {
       location.reload();
     }
     else if (this.status == 404) {
-      window.alert('ERROR 404!');
+      alertbox('ERROR 404!');
     }
     else if (this.status == 409) {
-      window.alert('ERROR 409!');
+      alertbox('ERROR 409!');
     }
   };
   xhttp.open('POST', 'index.php?Function=volunteers/admin', true);
@@ -361,10 +361,10 @@ function deleteHours() {
       location.reload();
     }
     else if (this.status == 404) {
-      window.alert('ERROR 404!');
+      alertbox('ERROR 404!');
     }
     else if (this.status == 409) {
-      window.alert('ERROR 409!');
+      alertbox('ERROR 409!');
     }
   };
   xhttp.open('POST', 'index.php?Function=volunteers/admin', true);
@@ -446,10 +446,10 @@ function deletePrize() {
       location.reload();
     }
     else if (this.status == 404) {
-      window.alert('ERROR 404!');
+      alertbox('ERROR 404!');
     }
     else if (this.status == 409) {
-      window.alert('ERROR 409!');
+      alertbox('ERROR 409!');
     }
   };
   xhttp.open('POST', 'index.php?Function=volunteers/admin', true);
@@ -512,10 +512,10 @@ function commitPrize() {
       location.reload();
     }
     else if (this.status == 404) {
-      window.alert('ERROR 404!');
+      alertbox('ERROR 404!');
     }
     else if (this.status == 409) {
-      window.alert('ERROR 409!');
+      alertbox('ERROR 409!');
     }
   };
   xhttp.open('POST', 'index.php?Function=volunteers/admin', true);
@@ -688,10 +688,10 @@ function doReturn() {
       document.getElementById('return_success_dlg').style.display = 'block';
     }
     else if (this.status == 404) {
-      window.alert('404!');
+      alertbox('404!');
     }
     else if (this.status == 409) {
-      window.alert('409!');
+      alertbox('409!');
     }
   };
   xhttp.open('POST', 'index.php?Function=volunteers/admin', true);

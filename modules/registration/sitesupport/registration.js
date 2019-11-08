@@ -4,7 +4,7 @@
 
 /* jshint browser: true */
 /* jshint -W097 */
-/* global confirmbox, showSpinner, showSidebar */
+/* global confirmbox, showSpinner, showSidebar, alertbox */
 /* exported sidebarMainDiv, refreshBadgeData, printBadge, showUpdateBadge,
             updateBadge, workstationChange */
 
@@ -19,10 +19,10 @@ function refreshBadgeData(badge) {
       location.reload();
     }
     else if (this.status == 404) {
-      window.alert('404!');
+      alertbox('404!');
     }
     else if (this.status == 409) {
-      window.alert('409!');
+      alertbox('409!');
     }
   };
   showSpinner();
@@ -71,10 +71,10 @@ function updateBadge() {
       location.reload();
     }
     else if (this.status == 404) {
-      window.alert('404!');
+      alertbox('404!');
     }
     else if (this.status == 409) {
-      window.alert('409!');
+      alertbox('409!');
     }
   };
   showSpinner();

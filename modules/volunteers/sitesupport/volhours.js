@@ -4,7 +4,7 @@
 
 /* jshint browser: true */
 /* jshint -W097 */
-/* globals userLookup, showSpinner, hideSpinner */
+/* globals userLookup, showSpinner, hideSpinner, alertbox */
 /* exported batchImport, batchDone, batchCancel, fileChange, calculateHours,
             batch, onFail, handleResult, resetForm */
 
@@ -289,10 +289,10 @@ function batchImport() {
         reportImport(this.responseText);
       }
       else if (this.status == 404) {
-        window.alert('404!');
+        alertbox('404!');
       }
       else if (this.status == 409) {
-        window.alert('409!');
+        alertbox('409!');
       }
       if (this.readyState != 1) {
         hideSpinner();

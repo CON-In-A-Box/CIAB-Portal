@@ -4,7 +4,7 @@
 
 /* jshint browser: true */
 /* jshint -W097 */
-/* globals kioskMode, checkAuthentication, userEmail */
+/* globals kioskMode, checkAuthentication, userEmail, alertbox */
 /* exported toggleKioskMode */
 
 var kioskBase;
@@ -24,7 +24,7 @@ function switchKiosk() {
 function failKiosk(error) {
   document.getElementById('kiosk_slider').checked = true;
   if (error) {
-    window.alert('Login Failed (' + error + ')');
+    alertbox('Login Failed (' + error + ')');
   }
 }
 

@@ -4,7 +4,7 @@
 
 /* jshint browser: true */
 /* jshint -W097 */
-/* globals confirmbox, showSidebar, hideSidebar, expandSection */
+/* globals confirmbox, showSidebar, hideSidebar, expandSection, alertbox */
 /* exported doImport, importConcom, deleteEvent, newEvent, saveEvent,
             editEvent, saveBadge, editBadge, newBadge, deleteBadge,
             expandEvent, saveCycle, newCycle, deleteMeeting,
@@ -62,9 +62,9 @@ function processMeeting() {
       hideSidebar();
       location.reload();
     } else if (this.status == 404) {
-      window.alert('404!');
+      alertbox('404!');
     } else if (this.status == 409) {
-      window.alert('409!');
+      alertbox('409!');
     }
   };
   xhttp.open('POST', 'index.php?Function=event', true);
@@ -93,9 +93,9 @@ function processMeetingDeletion() {
       hideSidebar();
       location.reload();
     } else if (this.status == 404) {
-      window.alert('404!');
+      alertbox('404!');
     } else if (this.status == 409) {
-      window.alert('409!');
+      alertbox('409!');
     }
   };
   xhttp.open('POST', 'index.php?Function=event', true);
@@ -134,9 +134,9 @@ function processNewCycle() {
       hideSidebar();
       location.reload();
     } else if (this.status == 404) {
-      window.alert('404!');
+      alertbox('404!');
     } else if (this.status == 409) {
-      window.alert('409!');
+      alertbox('409!');
     }
   };
   xhttp.open('POST', 'index.php?Function=event', true);
@@ -172,9 +172,9 @@ function processBadgeDeletion() {
       hideSidebar();
       location.reload();
     } else if (this.status == 404) {
-      window.alert('404!');
+      alertbox('404!');
     } else if (this.status == 409) {
-      window.alert('409!');
+      alertbox('409!');
     }
   };
   xhttp.open('POST', 'index.php?Function=event', true);
@@ -240,9 +240,9 @@ function processNewBadge() {
       hideSidebar();
       location.reload();
     } else if (this.status == 404) {
-      window.alert('404!');
+      alertbox('404!');
     } else if (this.status == 409) {
-      window.alert('409!');
+      alertbox('409!');
     }
   };
   xhttp.open('POST', 'index.php?Function=event', true);
@@ -290,7 +290,7 @@ function processNewEvent() {
       hideSidebar();
       location.reload();
     } else if (this.status == 404) {
-      window.alert('Event Failed to Save, Check if proper cycle exists.');
+      alertbox('Event Failed to Save, Check if proper cycle exists.');
       return;
     }
   };
@@ -305,13 +305,13 @@ function saveEvent() {
   var From = document.getElementById('event_from').value;
   var name = document.getElementById('event_name').value;
   if (From === '') {
-    window.alert('Event "From" date missing');
+    alertbox('Event "From" date missing');
     return;
   } else if (To === '') {
-    window.alert('Event "To" date missing');
+    alertbox('Event "To" date missing');
     return;
   } else if (name === '') {
-    window.alert('Event "Name" missing');
+    alertbox('Event "Name" missing');
     return;
   }
   confirmbox.start(
@@ -342,9 +342,9 @@ function processEventDeletion() {
       hideSidebar();
       location.reload();
     } else if (this.status == 404) {
-      window.alert('404!');
+      alertbox('404!');
     } else if (this.status == 409) {
-      window.alert('409!');
+      alertbox('409!');
     }
   };
   xhttp.open('POST', 'index.php?Function=event', true);
@@ -392,9 +392,9 @@ function doImport() {
       hideSidebar();
       location.reload();
     } else if (this.status == 404) {
-      window.alert('404!');
+      alertbox('404!');
     } else if (this.status == 409) {
-      window.alert('409!');
+      alertbox('409!');
     }
   };
   xhttp.open('POST', 'index.php?Function=event', true);

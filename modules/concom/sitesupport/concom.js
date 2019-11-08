@@ -5,7 +5,7 @@
 /* jshint browser: true */
 /* jshint -W097 */
 /* globals confirmbox, showSidebar, hideSidebar, showSpinner, hideSpinner,
-           PERMISSIONS */
+           PERMISSIONS, alertbox */
 /* exported drag, dragOverDivision, dragLeaveDivision, dragDropDivision,
             dragDropParent, toggleDept, savePosition, newEntry,
             deletePosition, changeEmail, editEmail, returnPosition,
@@ -24,9 +24,9 @@ function setParent(id, newParent) {
     if (this.readyState == 4 && this.status == 200) {
       window.location = 'index.php?Function=concom/admin';
     } else if (this.status == 404) {
-      window.alert('404!');
+      alertbox('404!');
     } else if (this.status == 409) {
-      window.alert('409!');
+      alertbox('409!');
     }
   };
   xhttp.open('POST', 'index.php?Function=concom/admin', true);
@@ -133,9 +133,9 @@ function processPosition() {
       hideSidebar();
       window.location = 'index.php?Function=concom/admin';
     } else if (this.status == 404) {
-      window.alert('404!');
+      alertbox('404!');
     } else if (this.status == 409) {
-      window.alert('409!');
+      alertbox('409!');
     }
   };
   xhttp.open('POST', 'index.php?Function=concom/admin', true);
@@ -197,9 +197,9 @@ function processDeletion() {
       hideSidebar();
       window.location = 'index.php?Function=concom/admin';
     } else if (this.status == 404) {
-      window.alert('404!');
+      alertbox('404!');
     } else if (this.status == 409) {
-      window.alert('409!');
+      alertbox('409!');
     }
   };
   xhttp.open('POST', 'index.php?Function=concom/admin', true);
@@ -325,9 +325,9 @@ function processDeleteEmail() {
       hideSidebar();
       window.location = 'index.php?Function=concom/admin';
     } else if (this.status == 404) {
-      window.alert('404!');
+      alertbox('404!');
     } else if (this.status == 409) {
-      window.alert('409!');
+      alertbox('409!');
     }
   };
   xhttp.open('POST', 'index.php?Function=concom/admin', true);
@@ -367,9 +367,9 @@ function processSaveEmail() {
       hideSidebar();
       window.location = 'index.php?Function=concom/admin';
     } else if (this.status == 404) {
-      window.alert('404!');
+      alertbox('404!');
     } else if (this.status == 409) {
-      window.alert('409!');
+      alertbox('409!');
     }
   };
   xhttp.open('POST', 'index.php?Function=concom/admin', true);
@@ -424,9 +424,9 @@ function showRBAC(id) {
       hideSpinner();
       editRBAC(id, this.responseText);
     } else if (this.status == 404) {
-      window.alert('404!');
+      alertbox('404!');
     } else if (this.status == 409) {
-      window.alert('409!');
+      alertbox('409!');
     }
   };
   xhttp.open('GET', 'index.php?Function=concom/admin&permissions=' + id, true);
@@ -457,9 +457,9 @@ function permissionDeletion() {
       hideSpinner();
       showRBAC(_dep);
     } else if (this.status == 404) {
-      window.alert('404!');
+      alertbox('404!');
     } else if (this.status == 409) {
-      window.alert('409!');
+      alertbox('409!');
     }
   };
   confirmbox.close();
@@ -514,9 +514,9 @@ function permissionSave() {
       hideSpinner();
       showRBAC(dep);
     } else if (this.status == 404) {
-      window.alert('404!');
+      alertbox('404!');
     } else if (this.status == 409) {
-      window.alert('409!');
+      alertbox('409!');
     }
   };
   confirmbox.close();
