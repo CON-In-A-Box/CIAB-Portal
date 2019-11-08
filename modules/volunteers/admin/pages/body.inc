@@ -177,6 +177,9 @@ function hour_table($uid)
 
         if (!isset($locked) && class_exists('\\concom\\POSITION') && method_exists('\\concom\\POSITION', 'getConComPosition')) {
             $concom = concom\POSITION::getConComPosition($uid);
+            if (empty($concom)) {
+                $concom = null;
+            }
         }
 
         if ($concom) {
