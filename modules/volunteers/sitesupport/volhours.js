@@ -157,7 +157,7 @@ function handleResult(origin, response) {
 
   var name = response['First Name'] + ' ' + response['Last Name'];
   var uid = response.Id;
-  if (response.ConCom) {
+  if (response.ConCom && response.ConCom.length > 0) {
     userLookup.markFailure();
     document.getElementById('submitbtn').disabled = true;
     document.getElementById('volunteername').innerHTML = 'a Volunteer';

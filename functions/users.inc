@@ -22,7 +22,10 @@ function _parse_user($result, $additional_fields)
         $user['Last Name'] = $result['Last Name'];
     }
     if (class_exists('\\concom\\POSITION') && method_exists('\\concom\\POSITION', 'getConComPosition')) {
-        $user['ConCom'] = concom\POSITION::getConComPosition($user['Id']);
+        $value = concom\POSITION::getConComPosition($user['Id']);
+        if (!empty($value)) {
+            $user['ConCom'] = $value;
+        }
     }
     if (!empty($result['Email 1'])) {
         $user['Email'] = $result['Email 1'];

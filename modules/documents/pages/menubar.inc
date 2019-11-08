@@ -3,7 +3,7 @@
     require_module 'standard';
 .*/
 
-if (isset($_SESSION['customFields']['currConComPos']) ||
+if (!empty($_SESSION['customFields']['currConComPos']) ||
     isset($_SESSION['IS_ADMIN'])) {
     if (isset($G_CLIENT_SECRET) && isset($G_CLIENT_CRED) &&
         !empty($G_CLIENT_SECRET) && !empty($G_CLIENT_CRED) &&

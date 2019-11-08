@@ -129,7 +129,7 @@ if (isset($_SESSION['accountInfo']['individualAccount']['primaryContact']['phone
 }
     ?>" class="UI-input UI-half" placeholder="Other">
         <?php
-        if (isset($_SESSION['customFields']['currConComPos'])) {
+        if (!empty($_SESSION['customFields']['currConComPos'])) {
             echo '<div class="UI-profile-concom-div">';
             echo '<span class="UI-profile-concom-label">Display Phone number on the ConCom list?</span>';
             echo '<select name="conComDisplayPhone" class="UI-profile-concom-select" required>';

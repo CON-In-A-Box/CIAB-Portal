@@ -9,6 +9,9 @@
 $concom = null;
 if (class_exists('\\concom\\POSITION') && method_exists('\\concom\\POSITION', 'getConComPosition')) {
     $concom = \concom\POSITION::getConComPosition($_SESSION['accountId']);
+    if (empty($concom)) {
+        $concom = null;
+    }
 }
 if (!(isset($_SESSION['IS_ADMIN']) || !($concom === null))) {
     goSite();
