@@ -55,18 +55,15 @@ var _element;
 var _filename;
 var _mime;
 
-function getFile() {
-  confirmbox.close();
-  window.location =  'index.php?Function=documents&download=' + _element +
-    '&filename=' + _filename + '&mime=' + _mime;
-}
-
 function downloadFile(element, filename, mime) {
   _element = element;
   _filename = filename;
   _mime = mime;
-  confirmbox.start('Download File',
-    'Are you sure you want to download ' + _filename, getFile);
+  confirmbox('Download File',
+    'Are you sure you want to download ' + _filename).then(function() {
+    window.location =  'index.php?Function=documents&download=' + _element +
+    '&filename=' + _filename + '&mime=' + _mime;
+  });
 }
 
 function loadFiles(path) {

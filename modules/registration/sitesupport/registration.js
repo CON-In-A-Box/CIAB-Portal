@@ -33,11 +33,6 @@ function refreshBadgeData(badge) {
 
 var _badgeData = null;
 
-function doPrintBadge() {
-  confirmbox.close();
-  window.location = 'index.php?Function=registration&printBadge=' + _badgeData;
-}
-
 function printBadge(data) {
   var input = JSON.parse(atob(data));
   _badgeData = data;
@@ -47,9 +42,11 @@ function printBadge(data) {
   } else {
     msg =  'Print badge for \'';
   }
-  confirmbox.start('Confirm Print Badge',
-    msg + input['Badge Name'] + '\' ?',
-    doPrintBadge);
+  confirmbox('Confirm Print Badge',
+    msg + input['Badge Name'] + '\' ?').then(function() {
+    window.location = 'index.php?Function=registration&printBadge=' +
+                      _badgeData;
+  });
 }
 
 function showUpdateBadge(data) {

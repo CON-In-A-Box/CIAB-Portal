@@ -10,7 +10,7 @@
             dragDropParent, toggleDept, savePosition, newEntry,
             deletePosition, changeEmail, editEmail, returnPosition,
             deleteEmail, saveEmail, deleteAC, newAC, savePermission,
-            returnRBAC */
+            returnRBAC, confirmRemoval */
 
 function setParent(id, newParent) {
   var data = {
@@ -112,8 +112,6 @@ function toggleDept() {
 }
 
 function processPosition() {
-  confirmbox.close();
-
   var data = {
     'Id': document.getElementById('dept_id').value,
     'Name': document.getElementById('dept_name').value,
@@ -145,11 +143,9 @@ function processPosition() {
 }
 
 function savePosition() {
-  confirmbox.start(
+  confirmbox(
     'Confirms Position Details',
-    'Are the position details correct?',
-    processPosition
-  );
+    'Are the position details correct?').then(processPosition);
 
 }
 
@@ -180,16 +176,13 @@ function newEntry(division) {
 }
 
 function deletePosition() {
-  confirmbox.start(
+  confirmbox(
     'Confirms Position Deletion',
-    'Really delete this position?',
-    processDeletion
-  );
+    'Really delete this position?').then(processDeletion);
 
 }
 
 function processDeletion() {
-  confirmbox.close();
   var id = document.getElementById('dept_id').value;
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
@@ -308,16 +301,14 @@ function returnPosition() {
 
 function deleteEmail() {
   var email = document.getElementById('email_original').value;
-  confirmbox.start(
+  confirmbox(
     'Confirms Email Deletion',
-    'Really delete the e-mail address "' + email + '"?',
+    'Really delete the e-mail address "' + email + '"?').then(
     processDeleteEmail
   );
 }
 
 function processDeleteEmail() {
-  confirmbox.close();
-
   var id = document.getElementById('email_index').value;
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
@@ -337,16 +328,12 @@ function processDeleteEmail() {
 
 function saveEmail() {
   var email = document.getElementById('email_email').value;
-  confirmbox.start(
+  confirmbox(
     'Confirms Save Email',
-    'Really save the e-mail address "' + email + '"?',
-    processSaveEmail
-  );
+    'Really save the e-mail address "' + email + '"?').then(processSaveEmail);
 }
 
 function processSaveEmail() {
-  confirmbox.close();
-
   var data = {
     'Id': document.getElementById('email_index').value,
     'Alias': document.getElementById('email_alias').value,
@@ -442,11 +429,9 @@ function deleteAC(dep, pos, perm) {
   _dep = dep;
   _pos = pos;
   _perm = perm;
-  confirmbox.start(
+  confirmbox(
     'Confirms Permission Deletion',
-    'Really delete "' + perm + '" permission?',
-    permissionDeletion
-  );
+    'Really delete "' + perm + '" permission?').then(permissionDeletion);
 
 }
 
@@ -462,7 +447,6 @@ function permissionDeletion() {
       alertbox('409!');
     }
   };
-  confirmbox.close();
   showSpinner();
   xhttp.open('POST', 'index.php?Function=concom/admin', true);
   xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
@@ -495,11 +479,9 @@ function returnRBAC() {
 
 function savePermission() {
   var perm =  document.getElementById('perm_perm').value;
-  confirmbox.start(
+  confirmbox(
     'Confirms Permission Addition',
-    'Really add permission \'' + perm + '\' ?',
-    permissionSave
-  );
+    'Really add permission \'' + perm + '\' ?').then(permissionSave);
 
 }
 
@@ -519,9 +501,19 @@ function permissionSave() {
       alertbox('409!');
     }
   };
-  confirmbox.close();
   showSpinner();
   xhttp.open('POST', 'index.php?Function=concom/admin', true);
   xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
   xhttp.send('addAC=' + dep + '&position=' + pos + '&permission=' + perm);
+}
+
+function confirmRemoval(fname, lname, target, department, position) {
+  confirmbox(
+    'Are you sure you want to remove ' + fname + '&nbsp;' + lname +
+    ' from ' + position + ' in ' + department).then(function() {
+    window.location = 'index.php?Function=concom&Remove=' + encodeURI(target) +
+        '&Department=' + encodeURI(department) + '&Position=' +
+        encodeURI(position);
+  });
+
 }

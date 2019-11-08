@@ -45,8 +45,6 @@ function editMeeting(data) {
 }
 
 function processMeeting() {
-  confirmbox.close();
-
   var data = {
     'Id': document.getElementById('meet_id').value,
     'Name': document.getElementById('meet_name').value,
@@ -74,19 +72,15 @@ function processMeeting() {
 }
 
 function saveMeeting() {
-  confirmbox.start(
+  confirmbox(
     'Confirms Meeting Details',
-    'Are the meeting details correct?',
-    processMeeting
-  );
+    'Are the meeting details correct?').then(processMeeting);
 
 }
 
 var _deletedMeeting = 0;
 
 function processMeetingDeletion() {
-  confirmbox.close();
-
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
@@ -106,11 +100,9 @@ function processMeetingDeletion() {
 
 function deleteMeeting(name, id) {
   _deletedMeeting = id;
-  confirmbox.start(
+  confirmbox(
     'Confirms Meeting Deletion',
-    'Delete meeting ' + name + '?',
-    processMeetingDeletion
-  );
+    'Delete meeting ' + name + '?').then(processMeetingDeletion);
 
 }
 
@@ -120,8 +112,6 @@ function newCycle() {
 }
 
 function processNewCycle() {
-  confirmbox.close();
-
   var data = {
     'From': document.getElementById('cycle_from').value,
     'To': document.getElementById('cycle_to').value,
@@ -148,11 +138,9 @@ function processNewCycle() {
 function saveCycle() {
   var from = document.getElementById('cycle_from').value;
   var to = document.getElementById('cycle_to').value;
-  confirmbox.start(
+  confirmbox(
     'Confirm New Annual Cycle',
-    'Add Cycle [' + from + ' -> ' + to + '] ?',
-    processNewCycle
-  );
+    'Add Cycle [' + from + ' -> ' + to + '] ?').then(processNewCycle);
 
 }
 
@@ -164,8 +152,6 @@ function expandEvent(name) {
 var _deletedBadge = 0;
 
 function processBadgeDeletion() {
-  confirmbox.close();
-
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
@@ -185,11 +171,9 @@ function processBadgeDeletion() {
 
 function deleteBadge(id, name) {
   _deletedBadge = id;
-  confirmbox.start(
+  confirmbox(
     'Confirms Badge Deletion',
-    'Delete badge \'' + name + '\' ?',
-    processBadgeDeletion
-  );
+    'Delete badge \'' + name + '\' ?').then(processBadgeDeletion);
 
 }
 
@@ -221,8 +205,6 @@ function editBadge(data) {
 }
 
 function processNewBadge() {
-  confirmbox.close();
-
   var data = {
     'Id': document.getElementById('badge_id').value,
     'Name': document.getElementById('badge_name').value,
@@ -254,11 +236,9 @@ function processNewBadge() {
 function saveBadge() {
   var name = document.getElementById('badge_name').value;
   var evnt = document.getElementById('badge_event_name').value;
-  confirmbox.start(
+  confirmbox(
     'Confirm Event Badge',
-    'Save Badge ' + name + ' for event  ' + evnt + ' ?',
-    processNewBadge
-  );
+    'Save Badge ' + name + ' for event  ' + evnt + ' ?').then(processNewBadge);
 
 }
 
@@ -274,8 +254,6 @@ function editEvent(name, data) {
 }
 
 function processNewEvent() {
-  confirmbox.close();
-
   var data = {
     'Id': document.getElementById('event_id').value,
     'Name': document.getElementById('event_name').value,
@@ -314,11 +292,9 @@ function saveEvent() {
     alertbox('Event "Name" missing');
     return;
   }
-  confirmbox.start(
+  confirmbox(
     'Confirm Event',
-    'Save Event "' + name + '" ?',
-    processNewEvent
-  );
+    'Save Event "' + name + '" ?').then(processNewEvent);
 
 }
 
@@ -334,8 +310,6 @@ function newEvent() {
 var _deletedEvent = 0;
 
 function processEventDeletion() {
-  confirmbox.close();
-
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
@@ -355,11 +329,9 @@ function processEventDeletion() {
 
 function deleteEvent(id, name) {
   _deletedEvent = id;
-  confirmbox.start(
+  confirmbox(
     'Confirms Event Deletion',
-    'Delete event \'' + name + '\' ?',
-    processEventDeletion
-  );
+    'Delete event \'' + name + '\' ?').then(processEventDeletion);
 
 }
 
