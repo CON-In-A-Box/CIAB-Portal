@@ -4,7 +4,7 @@
 
 /* jshint browser: true */
 /* jshint -W097 */
-/* globals alertbox */
+/* globals alertbox, confirmbox */
 /* exported changePassword, resetPassword */
 
 'use strict';
@@ -25,31 +25,33 @@ function changePassword() {
     alertbox('New Password confirmation does not match');
     return;
   }
-  if (!window.confirm('Proceed in changing your password?')) {
+
+  confirmbox('Proceed in changing your password?').then(function() {
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        alertbox('Password Updated').then(
+          function() {
+            location.reload();
+          }
+        );
+      }
+      else if (this.status == 403) {
+        if (current.value) {
+          alertbox('Current Password Incorrect');
+        }
+        current.value = '';
+      }
+    };
+    xhttp.open('POST', 'index.php?Function=profile', true);
+    xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    xhttp.send('auth=' + current.value + '&password=' + newPassword.value);
+  },
+  function() {
     current.value = '';
     newPassword.value = '';
-    return;
-  }
-
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-      alertbox('Password Updated').then(
-        function() {
-          location.reload();
-        }
-      );
-    }
-    else if (this.status == 403) {
-      if (current.value) {
-        alertbox('Current Password Incorrect');
-      }
-      current.value = '';
-    }
-  };
-  xhttp.open('POST', 'index.php?Function=profile', true);
-  xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-  xhttp.send('auth=' + current.value + '&password=' + newPassword.value);
+    again.value = '';
+  });
 }
 
 function resetPassword() {

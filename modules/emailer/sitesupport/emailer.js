@@ -17,7 +17,6 @@
 var sidebarMainDiv = 'main_content';
 
 function doCancelEmail() {
-  confirmbox.close();
   document.getElementById('email_subject').value = '';
   document.getElementById('email_to').value = 'None';
   document.getElementById('to_count').innerHTML = '0';
@@ -25,13 +24,11 @@ function doCancelEmail() {
 }
 
 function cancelEmail() {
-  confirmbox.start('Confirm Clear Email',
-    'Cancel Email and clear all fields?', doCancelEmail);
+  confirmbox('Confirm Clear Email',
+    'Cancel Email and clear all fields?').then(doCancelEmail);
 }
 
 function doSendEmail() {
-  confirmbox.close();
-
   var data = {
     'from' : document.getElementById('email_from').value,
     'reply' : document.getElementById('email_reply').value,
@@ -76,8 +73,8 @@ function sendEmail() {
     return;
   }
 
-  confirmbox.start('Confirm Send Email',
-    'Send Email to all recipients?', doSendEmail);
+  confirmbox('Confirm Send Email',
+    'Send Email to all recipients?').then(doSendEmail);
 }
 
 var accessListData = null;
@@ -134,8 +131,8 @@ function doUpdateList() {
 function updateList() {
   if (quill.getLength() > 1)
   {
-    confirmbox.start('Draft will be lost',
-      'Updating this will result in the loss of your draft!<br>Continue?',
+    confirmbox('Draft will be lost',
+      'Updating this will result in the loss of your draft!<br>Continue?').then(
       doUpdateList);
   } else {
     doUpdateList();
