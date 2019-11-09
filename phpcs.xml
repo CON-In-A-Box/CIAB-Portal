@@ -60,7 +60,6 @@
  <exclude-pattern>*.css</exclude-pattern>
  <exclude-pattern>*/functions/neon.inc</exclude-pattern>
  <exclude-pattern>*/functions/externals/*neon*</exclude-pattern>
- <exclude-pattern>*/sitesupport/speller/**</exclude-pattern>
  <exclude-pattern>*/test/*neon*</exclude-pattern>
 
   <file>./</file>
