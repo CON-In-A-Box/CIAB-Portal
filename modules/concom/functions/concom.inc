@@ -85,7 +85,7 @@ function ConComListDisplay()
     foreach ($Divisions as $div) {
         $currentDivDirector = false;
         echo '<tr id="division" class="event-color-secondary"><th id="'.$div.'" class="UI-center" colspan=2>'.$div;
-        if ($div != 'Committees' && $div != 'Corporate Staff' && $div != 'Board Staff') {
+        if ($div != 'Committees' && $div != 'Corporate Staff') {
             echo ' Division';
         }
         echo '</th><th class="UI-center" colspan=3>';
@@ -102,7 +102,7 @@ function ConComListDisplay()
         echo '</th><th colspan=3>';
         echo implode('<br />', getDepartmentEmails($div));
         echo "</th></tr>\n";
-        if ($div != 'Board Staff' && $div != 'Corporate Staff' && $div != 'Committees') {
+        if ($div != 'Corporate Staff' && $div != 'Committees') {
             printTableHeader($div);
         }
         // Division Directors
