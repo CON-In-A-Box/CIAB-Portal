@@ -25,7 +25,7 @@ echo "</div>\n";
       </div>
 
       <div class="UI-small-disclaimer-panel UI-lime">
-        All parts of Con-In-A-Box&trade;, including but not limited to the Dual-X icon, CON-In-A-Box&trade; logo, name CON-In-A-Box&trade;, scripts, programs, coding, styles, data models, CGI, HTML, custom PHP, structure, feeds, or methods, except where otherwise protected (exceptions include but not limited to the Neon-php library maintained by z2systems, the Speller Pages Project from Sourceforge.net protected under the GNU Public License, or the PHP-Fortune script from Henrik Aasted Sorensen) are:
+        All parts of Con-In-A-Box&trade;, including but not limited to the Dual-X icon, CON-In-A-Box&trade; logo, name CON-In-A-Box&trade;, scripts, programs, coding, styles, data models, CGI, HTML, custom PHP, structure, feeds, or methods, except where otherwise protected (exceptions include but not limited to the Neon-php library maintained by z2systems) are:
         <div class="UI-large-center-container">
           &copy; Copyright 2005-<?php echo $year; ?> - Convergence Events, Inc.
         </div>
