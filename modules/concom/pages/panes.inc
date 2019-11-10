@@ -89,7 +89,7 @@ function meetings()
     echo "<tr><th class='UI-center event-color-primary' colspan=3>Official Meeting Attendance</th></tr>\n";
     $nowDate = date("Y-m-d");
 
-    $sql = "SELECT * from `OfficialMeetings`";
+    $sql = "SELECT * from `OfficialMeetings` WHERE Date >= DATE_SUB(NOW(),INTERVAL 1 YEAR);";
     $result = \DB::run($sql);
     $value = $result->fetch();
     while ($value !== false) {
