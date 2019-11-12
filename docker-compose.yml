@@ -12,6 +12,12 @@ services:
         DBPASS: ${DBPASS}
         DBUSER: ${DBUSER}
         DOCKER: 1
+  composer:
+    restart: 'no'
+    image: "composer"
+    command: install
+    volumes:
+      - .:/app
   apache:
     build: './docker/apache/'
     depends_on:
