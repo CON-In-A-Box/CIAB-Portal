@@ -188,10 +188,10 @@ for ($i = 0; $i < 60; $i += $hour_round_interval) {
       <span id="volunteername">a Volunteer</span>
     </p>
     <p>
-      <b>
+      <strong>
         Remember:<br />
         Do Not enter this time on a paper card!
-      </b>
+      </strong>
     </p>
   </div>
 </div>
@@ -245,9 +245,9 @@ for ($i = 0; $i < 60; $i += $hour_round_interval) {
       <div class="VOL-row">
         <p class="UI-margin UI-center">CSV file format:
         <code class="VOL-code-block">&lt;Account,ActualHours,AuthorizedBy,Department,EndDateTime,EnteredBy,Event,TimeModifier&gt;</code></p>
-        <p class="UI-margin UI-center"><b>Account fields</b> (Account, AuthorizedBy, EnteredBy)  can be badge number, name, or email. However it has to uniquly identify the user so badge number is always the safest.</p>
-        <p class="UI-margin UI-center"><b>Event</b> is optional. If left empty then the current upcoming event is used.</p>
-        <p class="UI-margin UI-center"><b>EndDateTime</b> should be quoted. The format is "YYYY-MM-DD HH:MM:SS".</p>
+        <p class="UI-margin UI-center"><strong>Account fields</strong> (Account, AuthorizedBy, EnteredBy)  can be badge number, name, or email. However it has to uniquly identify the user so badge number is always the safest.</p>
+        <p class="UI-margin UI-center"><strong>Event</strong> is optional. If left empty then the current upcoming event is used.</p>
+        <p class="UI-margin UI-center"><strong>EndDateTime</strong> should be quoted. The format is "YYYY-MM-DD HH:MM:SS".</p>
         <h2 class="VOL-enter-block UI-center">Example</h2>
         <table class="UI-stripedtable">
            <tr><td>Attendee Joe,1.000,Connie VonRobot,IT,"2018-06-04 08:15:00",Connie VonRobot,,1.0</tr></td>
