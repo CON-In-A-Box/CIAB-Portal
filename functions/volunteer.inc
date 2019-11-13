@@ -36,7 +36,7 @@ SQL;
                     FROM
                         VolunteerHours
                     WHERE
-                        DepartmentID = d.DepartmentID
+                        DepartmentID = d.DepartmentID AND EventID = $event
                 ) AS EntryCount,
                 (
                     SELECT
@@ -44,7 +44,7 @@ SQL;
                     FROM
                         VolunteerHours
                     WHERE
-                        DepartmentID = d.DepartmentID
+                        DepartmentID = d.DepartmentID AND EventID = $event
                 ) AS TotalHours,
                 (
                     SELECT
@@ -52,7 +52,7 @@ SQL;
                     FROM
                         VolunteerHours
                     WHERE
-                        DepartmentID = d.DepartmentID
+                        DepartmentID = d.DepartmentID AND EventID = $event
                 ) AS VolunteerCount,
                 (
                     SELECT
