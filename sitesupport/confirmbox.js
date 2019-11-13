@@ -3,9 +3,9 @@
  */
 
 /* jshint browser: true */
-/* exported confirmbox */
+/* exported confirmbox,alertbox */
 
-var confirmboxPromise = (function() {
+var dlgboxPromise = (function() {
   'use strict';
 
   return {
@@ -86,19 +86,30 @@ var confirmboxPromise = (function() {
           document.getElementById('confirm_box').style.display = 'none';
         };
 
-        if (params) {
-          if ('yesMsg' in params) {
+        if (params && 'yesMsg' in params) {
+          n = document.getElementById('confirm_yes_button');
+          n.innerHTML = params.yesMsg;
+        } else {
+          n = document.getElementById('confirm_yes_button');
+          n.innerHTML = 'Yes';
+        }
+        if (params && 'noMsg' in params) {
+          n = document.getElementById('confirm_no_button');
+          n.innerHTML = params.noMsg;
+        } else {
+          n = document.getElementById('confirm_no_button');
+          n.innerHTML = 'No';
+        }
+        if (params && 'alertBox' in params) {
+          n = document.getElementById('confirm_no_button');
+          n.style.display = 'none';
+          if (!('yesMsg' in params)) {
             n = document.getElementById('confirm_yes_button');
-            n.innerHTML = params.yesMsg;
-          } else {
-            n.innerHTML = 'Yes';
+            n.innerHTML = 'OK';
           }
-          if ('noMsg' in params) {
-            n = document.getElementById('confirm_no_button');
-            n.innerHTML = params.noMsg;
-          } else {
-            n.innerHTML = 'No';
-          }
+        } else {
+          n = document.getElementById('confirm_no_button');
+          n.style.display = 'inline';
         }
 
         dlg.style.display = 'block';
@@ -108,5 +119,14 @@ var confirmboxPromise = (function() {
 }) ();
 
 function confirmbox(title, message, params) {
-  return confirmboxPromise.promise(title, message, params);
+  return dlgboxPromise.promise(title, message, params);
+}
+
+function alertbox(title, message, params) {
+  var alertParams = params;
+  if (!alertParams) {
+    alertParams = Array();
+  }
+  alertParams.alertBox = true;
+  return dlgboxPromise.promise(title, message, alertParams);
 }
