@@ -74,15 +74,20 @@ function generate_kiosk_slider($type)
 ?>
   <div>
     <div class="UI-kiosk-slider">
-      <table class='switch-table'><tr><td>
-        Kiosk Mode
-        <label class=switch><input type="checkbox" class=toggle id=kiosk_slider <?php
-        if (is_kiosk($type)) {
-            echo "checked";
-        }
+      <div class='UI-table switch-table'>
+        <div class='UI-table-row'>
+          <div class='UI-table-cell'>
+            Kiosk Mode
+            <label class=switch><input type="checkbox" class=toggle id=kiosk_slider <?php
+            if (is_kiosk($type)) {
+                echo "checked";
+            }
 ?> onclick='toggleKioskMode("<?php echo $type;?>");'>
-          <div class=slider></div></label></td></tr>
-      </table>
+            <div class=slider></div>
+            </label>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 

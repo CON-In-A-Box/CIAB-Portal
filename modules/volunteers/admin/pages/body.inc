@@ -573,15 +573,20 @@ if (isset($_SESSION['IS_ADMIN']) || $_SESSION['IS_VOLUNTEERS']) {
 ?>
   <div>
     <div class="VOL-admin-switch">
-      <table class='switch-table'><tr><td>
-        Admin Mode
-        <label class=switch><input type="checkbox" class=toggle id=admin_slider <?php
-        if ($admin_mode) {
-            echo "checked";
-        }
+      <div class='UI-table switch-table'>
+        <div class='UI-table-row'>
+          <div class='UI-table-cell'>
+            Admin Mode
+            <label class=switch><input type="checkbox" class=toggle id=admin_slider <?php
+            if ($admin_mode) {
+                echo "checked";
+            }
 ?> onclick='toggleAdminMode();'>
-          <div class=slider></div></label></td></tr>
-      </table>
+              <div class=slider></div>
+            </label>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 <?php
