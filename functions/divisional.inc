@@ -72,7 +72,7 @@ SQL;
     asort($Divisions);
 
     // Push non-divisions to the end of the list (force order)
-    $endDivs = ['Board Staff', 'Committees', 'Corporate Staff'];
+    $endDivs = ['Board Departments', 'Committees', 'Corporate Staff'];
     $Divisions = array_diff($Divisions, $endDivs);
     $Divisions = array_merge($Divisions, $endDivs);
 }
