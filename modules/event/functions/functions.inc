@@ -135,6 +135,7 @@ SQL;
     $badge_data = load_table($sql, $values);
     $badge_keys = array_keys($values);
 
+    print "<table class='UI-stripedtable UI-padding'>\n";
     print "<tr><th>".implode('</th><th>', $event_keys)."</th></tr>\n";
     foreach ($event_data as $entry) {
         $plain_name = htmlspecialchars($entry['Name'], ENT_QUOTES);
@@ -218,6 +219,7 @@ SQL;
         print "</div></td>";
         print "</tr>";
     }
+    print "</table>";
 
 }
 
@@ -265,6 +267,7 @@ SQL;
     ];
     $data = load_table($sql, $values);
     $keys = array_keys($values);
+    print "<table class='UI-stripedtable'>\n";
     print "<tr><th>".implode('</th><th>', $keys)."</th><th></th><th></th></tr>\n";
     foreach ($data as $entry) {
         $json = json_encode($entry);
@@ -279,6 +282,7 @@ SQL;
         }
         print "</tr>\n";
     }
+    print "</table>\n";
 
 }
 
@@ -413,6 +417,7 @@ SQL;
     ];
     $data = load_table($sql, $values);
     $keys = array_keys($values);
+    print "<table class='UI-stripedtable UI-padding'>\n";
     print "<tr><th>".implode('</th><th>', $keys)."</th></tr>\n";
     $last_cycle = null;
     foreach ($data as $entry) {
@@ -421,6 +426,7 @@ SQL;
         }
         print "<tr><td>".implode('</td><td>', $entry)."</td></tr>\n";
     }
+    print "</table>\n";
 
 }
 
