@@ -4,7 +4,7 @@
 
 /* jshint browser: true */
 /* jshint -W097 */
-/* global confirmbox, showSpinner, showSidebar */
+/* global confirmbox, showSpinner, showSidebar, alertbox */
 /* exported sidebarMainDiv, refreshBadgeData, printBadge, showUpdateBadge,
             updateBadge, workstationChange */
 
@@ -19,10 +19,10 @@ function refreshBadgeData(badge) {
       location.reload();
     }
     else if (this.status == 404) {
-      window.alert('404!');
+      alertbox('404!');
     }
     else if (this.status == 409) {
-      window.alert('409!');
+      alertbox('409!');
     }
   };
   showSpinner();
@@ -33,11 +33,6 @@ function refreshBadgeData(badge) {
 
 var _badgeData = null;
 
-function doPrintBadge() {
-  confirmbox.close();
-  window.location = 'index.php?Function=registration&printBadge=' + _badgeData;
-}
-
 function printBadge(data) {
   var input = JSON.parse(atob(data));
   _badgeData = data;
@@ -47,9 +42,11 @@ function printBadge(data) {
   } else {
     msg =  'Print badge for \'';
   }
-  confirmbox.start('Confirm Print Badge',
-    msg + input['Badge Name'] + '\' ?',
-    doPrintBadge);
+  confirmbox('Confirm Print Badge',
+    msg + input['Badge Name'] + '\' ?').then(function() {
+    window.location = 'index.php?Function=registration&printBadge=' +
+                      _badgeData;
+  });
 }
 
 function showUpdateBadge(data) {
@@ -71,10 +68,10 @@ function updateBadge() {
       location.reload();
     }
     else if (this.status == 404) {
-      window.alert('404!');
+      alertbox('404!');
     }
     else if (this.status == 409) {
-      window.alert('409!');
+      alertbox('409!');
     }
   };
   showSpinner();

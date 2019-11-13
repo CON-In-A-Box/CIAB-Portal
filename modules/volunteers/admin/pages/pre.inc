@@ -6,7 +6,7 @@
 
 /* This should only be accessable from volunteer staff */
 if (!(isset($_SESSION['IS_ADMIN']) || $_SESSION['IS_VOLUNTEERS'])) {
-    if (!$_SESSION['customFields']['currConComPos']) {
+    if (empty($_SESSION['customFields']['currConComPos'])) {
         goSite();
     }
 }

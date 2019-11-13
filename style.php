@@ -5,14 +5,17 @@
 
 require_once __DIR__."/vendor/autoload.php";
 
+const RESOURCE_CACHE = 'resources/scss_cache';
+
 $scss = new scssc();
 $scss->addImportPath("scss");
 $scss->setFormatter("scss_formatter_compressed");
 
 $uri = explode("/", $_SERVER['REQUEST_URI']);
 
-if (!is_dir('resources/scss_cache')) {
-    @mkdir('resources/scss_cache', 0777, true);
+if (!is_dir(RESOURCE_CACHE)) {
+    @mkdir(RESOURCE_CACHE, 0777, true);
+    @chmod(RESOURCE_CACHE, 0777);
 }
 
 $MODULESDIR = "modules";

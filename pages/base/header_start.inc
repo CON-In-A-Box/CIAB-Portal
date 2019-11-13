@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en" xml:lang="en">
 <head>
 <title><?php echo $CONSITENAME; ?></title>
 <meta name="viewport" content="width=device-width, initial-scale=1">

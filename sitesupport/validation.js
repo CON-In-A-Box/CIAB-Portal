@@ -4,11 +4,12 @@
 
 /* jshint browser: true */
 /* jshint -W097 */
+/* global alertbox */
 /* exported validateRequired, validateSelect, validateEmail, validateDate  */
 
 function validateRequired(field,alerttxt) {
   if (field.value === null || field.value === '') {
-    alert(alerttxt);
+    alertbox(alerttxt);
     return false;
   } else {
     return true;
@@ -26,7 +27,7 @@ function validateRequired(field,alerttxt) {
 
 function validateSelect(field,alerttxt) {
   if (field.selectedIndex === null || field.selectedIndex == '0') {
-    alert(alerttxt);return false;
+    alertbox(alerttxt);return false;
   } else {
     return true;
   }
@@ -46,7 +47,7 @@ function validateEmail(field,alerttxt) {
   var apos = field.value.indexOf('@');
   var dotpos = field.value.lastIndexOf('.');
   if (apos < 1 || dotpos - apos < 2) {
-    alert(alerttxt);
+    alertbox(alerttxt);
     return false;
   } else {
     return true;
@@ -66,7 +67,7 @@ function validateEmail(field,alerttxt) {
 function validateDate(field,alerttxt) {
   var re = /^(\d{4})-(\d{2})-(\d{2})$/;
   if (field.value === null || !field.value.match(re)) {
-    alert(alerttxt);
+    alertbox(alerttxt);
     return false;
   } else {
     return true;

@@ -12,6 +12,9 @@ function display_volunteer_hours()
     $concom = null;
     if (class_exists('\\concom\\POSITION') && method_exists('\\concom\\POSITION', 'getConComPosition')) {
         $concom = \concom\POSITION::getConComPosition($_SESSION['accountId']);
+        if (empty($concom)) {
+            $concom = null;
+        }
     }
     $data = get_volunteer_hour_summary($_SESSION['accountId']);
     $spentdata = volunteer_prizes_for_user($_SESSION['accountId']);

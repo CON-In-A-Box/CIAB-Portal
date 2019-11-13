@@ -4,7 +4,7 @@
 
 /* jshint browser: true */
 /* jshint -W097 */
-/* globals confirmbox, showSidebar, hideSidebar, expandSection */
+/* globals confirmbox, showSidebar, hideSidebar, expandSection, alertbox */
 /* exported doImport, importConcom, deleteEvent, newEvent, saveEvent,
             editEvent, saveBadge, editBadge, newBadge, deleteBadge,
             expandEvent, saveCycle, newCycle, deleteMeeting,
@@ -45,8 +45,6 @@ function editMeeting(data) {
 }
 
 function processMeeting() {
-  confirmbox.close();
-
   var data = {
     'Id': document.getElementById('meet_id').value,
     'Name': document.getElementById('meet_name').value,
@@ -62,9 +60,9 @@ function processMeeting() {
       hideSidebar();
       location.reload();
     } else if (this.status == 404) {
-      window.alert('404!');
+      alertbox('404!');
     } else if (this.status == 409) {
-      window.alert('409!');
+      alertbox('409!');
     }
   };
   xhttp.open('POST', 'index.php?Function=event', true);
@@ -74,28 +72,24 @@ function processMeeting() {
 }
 
 function saveMeeting() {
-  confirmbox.start(
+  confirmbox(
     'Confirms Meeting Details',
-    'Are the meeting details correct?',
-    processMeeting
-  );
+    'Are the meeting details correct?').then(processMeeting);
 
 }
 
 var _deletedMeeting = 0;
 
 function processMeetingDeletion() {
-  confirmbox.close();
-
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
       hideSidebar();
       location.reload();
     } else if (this.status == 404) {
-      window.alert('404!');
+      alertbox('404!');
     } else if (this.status == 409) {
-      window.alert('409!');
+      alertbox('409!');
     }
   };
   xhttp.open('POST', 'index.php?Function=event', true);
@@ -106,11 +100,9 @@ function processMeetingDeletion() {
 
 function deleteMeeting(name, id) {
   _deletedMeeting = id;
-  confirmbox.start(
+  confirmbox(
     'Confirms Meeting Deletion',
-    'Delete meeting ' + name + '?',
-    processMeetingDeletion
-  );
+    'Delete meeting ' + name + '?').then(processMeetingDeletion);
 
 }
 
@@ -120,8 +112,6 @@ function newCycle() {
 }
 
 function processNewCycle() {
-  confirmbox.close();
-
   var data = {
     'From': document.getElementById('cycle_from').value,
     'To': document.getElementById('cycle_to').value,
@@ -134,9 +124,9 @@ function processNewCycle() {
       hideSidebar();
       location.reload();
     } else if (this.status == 404) {
-      window.alert('404!');
+      alertbox('404!');
     } else if (this.status == 409) {
-      window.alert('409!');
+      alertbox('409!');
     }
   };
   xhttp.open('POST', 'index.php?Function=event', true);
@@ -148,11 +138,9 @@ function processNewCycle() {
 function saveCycle() {
   var from = document.getElementById('cycle_from').value;
   var to = document.getElementById('cycle_to').value;
-  confirmbox.start(
+  confirmbox(
     'Confirm New Annual Cycle',
-    'Add Cycle [' + from + ' -> ' + to + '] ?',
-    processNewCycle
-  );
+    'Add Cycle [' + from + ' -> ' + to + '] ?').then(processNewCycle);
 
 }
 
@@ -164,17 +152,15 @@ function expandEvent(name) {
 var _deletedBadge = 0;
 
 function processBadgeDeletion() {
-  confirmbox.close();
-
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
       hideSidebar();
       location.reload();
     } else if (this.status == 404) {
-      window.alert('404!');
+      alertbox('404!');
     } else if (this.status == 409) {
-      window.alert('409!');
+      alertbox('409!');
     }
   };
   xhttp.open('POST', 'index.php?Function=event', true);
@@ -185,11 +171,9 @@ function processBadgeDeletion() {
 
 function deleteBadge(id, name) {
   _deletedBadge = id;
-  confirmbox.start(
+  confirmbox(
     'Confirms Badge Deletion',
-    'Delete badge \'' + name + '\' ?',
-    processBadgeDeletion
-  );
+    'Delete badge \'' + name + '\' ?').then(processBadgeDeletion);
 
 }
 
@@ -221,8 +205,6 @@ function editBadge(data) {
 }
 
 function processNewBadge() {
-  confirmbox.close();
-
   var data = {
     'Id': document.getElementById('badge_id').value,
     'Name': document.getElementById('badge_name').value,
@@ -240,9 +222,9 @@ function processNewBadge() {
       hideSidebar();
       location.reload();
     } else if (this.status == 404) {
-      window.alert('404!');
+      alertbox('404!');
     } else if (this.status == 409) {
-      window.alert('409!');
+      alertbox('409!');
     }
   };
   xhttp.open('POST', 'index.php?Function=event', true);
@@ -254,11 +236,9 @@ function processNewBadge() {
 function saveBadge() {
   var name = document.getElementById('badge_name').value;
   var evnt = document.getElementById('badge_event_name').value;
-  confirmbox.start(
+  confirmbox(
     'Confirm Event Badge',
-    'Save Badge ' + name + ' for event  ' + evnt + ' ?',
-    processNewBadge
-  );
+    'Save Badge ' + name + ' for event  ' + evnt + ' ?').then(processNewBadge);
 
 }
 
@@ -274,8 +254,6 @@ function editEvent(name, data) {
 }
 
 function processNewEvent() {
-  confirmbox.close();
-
   var data = {
     'Id': document.getElementById('event_id').value,
     'Name': document.getElementById('event_name').value,
@@ -290,7 +268,7 @@ function processNewEvent() {
       hideSidebar();
       location.reload();
     } else if (this.status == 404) {
-      window.alert('Event Failed to Save, Check if proper cycle exists.');
+      alertbox('Event Failed to Save, Check if proper cycle exists.');
       return;
     }
   };
@@ -305,20 +283,18 @@ function saveEvent() {
   var From = document.getElementById('event_from').value;
   var name = document.getElementById('event_name').value;
   if (From === '') {
-    window.alert('Event "From" date missing');
+    alertbox('Event "From" date missing');
     return;
   } else if (To === '') {
-    window.alert('Event "To" date missing');
+    alertbox('Event "To" date missing');
     return;
   } else if (name === '') {
-    window.alert('Event "Name" missing');
+    alertbox('Event "Name" missing');
     return;
   }
-  confirmbox.start(
+  confirmbox(
     'Confirm Event',
-    'Save Event "' + name + '" ?',
-    processNewEvent
-  );
+    'Save Event "' + name + '" ?').then(processNewEvent);
 
 }
 
@@ -334,17 +310,15 @@ function newEvent() {
 var _deletedEvent = 0;
 
 function processEventDeletion() {
-  confirmbox.close();
-
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
       hideSidebar();
       location.reload();
     } else if (this.status == 404) {
-      window.alert('404!');
+      alertbox('404!');
     } else if (this.status == 409) {
-      window.alert('409!');
+      alertbox('409!');
     }
   };
   xhttp.open('POST', 'index.php?Function=event', true);
@@ -355,11 +329,9 @@ function processEventDeletion() {
 
 function deleteEvent(id, name) {
   _deletedEvent = id;
-  confirmbox.start(
+  confirmbox(
     'Confirms Event Deletion',
-    'Delete event \'' + name + '\' ?',
-    processEventDeletion
-  );
+    'Delete event \'' + name + '\' ?').then(processEventDeletion);
 
 }
 
@@ -392,9 +364,9 @@ function doImport() {
       hideSidebar();
       location.reload();
     } else if (this.status == 404) {
-      window.alert('404!');
+      alertbox('404!');
     } else if (this.status == 409) {
-      window.alert('409!');
+      alertbox('409!');
     }
   };
   xhttp.open('POST', 'index.php?Function=event', true);

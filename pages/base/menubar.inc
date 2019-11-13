@@ -93,7 +93,7 @@ foreach ($base_menus as $menu) {
         }
     }
     echo " href=\"index.php?Function=".$menu['function']."\" title=\"".$menu['title']."\">";
-    echo "<i class=\"".$menu['i class']."\"></i>";
+    echo "<em class=\"".$menu['i class']."\"></em>";
     echo "        ".$menu['text'];
     echo "</a>\n";
 }
@@ -106,7 +106,7 @@ foreach ($admin_menus as $menu) {
 
     if (!$have_admin) {
         echo "<div class='UI-admin-menu-div'>";
-        echo "<button class='UI-admin-menu ".$resp_styles."'><i class='fa fa-key'></i> Administer</button>";
+        echo "<button class='UI-admin-menu ".$resp_styles."'><em  class='fa fa-key'></em> Administer</button>";
         echo "<div class='UI-admin-menu-end'>";
         $have_admin = true;
     }
@@ -125,7 +125,7 @@ foreach ($admin_menus as $menu) {
         }
     }
     echo " href=\"index.php?Function=".$menu['function']."\" title=\"".$menu['title']."\">";
-    echo "<i class=\"".$menu['i class']."\"></i>";
+    echo "<em class=\"".$menu['i class']."\"></em>";
     echo "        ".$menu['text'];
     echo "</a>\n";
 }
@@ -140,11 +140,11 @@ if ($kiosk === null) {
     <a class="UI-main-bar-pancake"
       href="javascript:void(0)"
       onclick="myMenuBar()">
-      <i class="fa fa-bars"></i>
+      <em class="fa fa-bars"></em>
     </a>
     <a class="UI-main-logout-bar-item"
       href="index.php?Function=public" title="Log out and Restart">
-      <i class="fa fa-sign-out"></i>
+      <em class="fa fa-sign-out"></em>
       Log Out
     </a>
 <?php } ?>
@@ -168,7 +168,7 @@ foreach ($base_menus as $menu) {
         continue;
     }
     echo " href=\"index.php?Function=".$menu['function']."\" title=\"".$menu['title']."\">";
-    echo "<i class=\"".$menu['i class']."\"></i>";
+    echo "<em class=\"".$menu['i class']."\"></em>";
     echo "        ".$menu['text'];
     echo "</a>\n";
 }
@@ -181,7 +181,7 @@ foreach ($admin_menus as $menu) {
 
     if (!$have_admin) {
         echo "<div class='UI-admin-menu-div'>";
-        echo "<button class='UI-admin-menu'><i class='fa fa-key'></i> Administer</button>";
+        echo "<button class='UI-admin-menu'><em class='fa fa-key'></em> Administer</button>";
         echo "<div class='UI-admin-menu-end'>";
         $have_admin = true;
     }
@@ -196,7 +196,7 @@ foreach ($admin_menus as $menu) {
         continue;
     }
     echo " href=\"index.php?Function=".$menu['function']."\" title=\"".$menu['title']."\">";
-    echo "<i class=\"".$menu['i class']."\"></i>";
+    echo "<em class=\"".$menu['i class']."\"></em>";
     echo "        ".$menu['text'];
     echo "</a>\n";
 }

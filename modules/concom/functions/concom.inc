@@ -136,7 +136,9 @@ function ConComListDisplay()
                         echo "</td>";
                         // System Admins can remove anyone
                         if (isset($_SESSION['IS_ADMIN'])) {
-                            echo '<td class="UI-red"><a href="index.php?Function=concom&Remove='.urlencode($tmp[2]).'&Department='.urlencode($div).'&Position=Head" onclick="return confirm(\'Are you sure you want to remove '.$kfName.' '.$klName.' from '.$div.'?\');">Remove</a></td>';
+                            echo '<td class="UI-red">';
+                            echo '<a href="#" onclick="confirmRemoval(\''.$kfName.'\', \''.$klName.'\', \''.$tmp[2].'\', \''.$div.'\', \'Head\');">Remove</a>';
+                            echo '</td>';
                         }
                         echo "</tr>\n";
                     }
@@ -166,7 +168,9 @@ function ConComListDisplay()
                         }
                         echo '</td>';
                         if (isset($_SESSION['IS_ADMIN']) || $currentDivDirector) {
-                            echo '<td class="UI-red"><a href="index.php?Function=concom&Remove='.urlencode($tmp[2]).'&Department='.urlencode($div).'&Position=Specialist" onclick="return confirm(\'Are you sure you want to remove '.$kfName.' '.$klName.' from '.$div.'?\');">Remove</a></td>';
+                            echo '<td class="UI-red">';
+                            echo '<a href="#" onclick="confirmRemoval(\''.$kfName.'\', \''.$klName.'\', \''.$tmp[2].'\', \''.$div.'\', \'Specialist\');">Remove</a>';
+                            echo '</td>';
                         }
                         echo "</tr>\n";
                     }
@@ -252,9 +256,10 @@ function ConComListDisplay()
                                     }
                                     echo '</td>';
                                     if (isset($_SESSION['IS_ADMIN']) || $currentDivDirector || ($currentDepHead && $pos != "Head")) {
-                                        echo '<td class="UI-red"><a href="index.php?Function=concom&Remove='.urlencode($tmp[2]).'&Department='.urlencode($kdep).'&Position='.$pos.'" onclick="return confirm(\'Are you sure you want to remove '.$kfName.' '.$klName.' from '.$kdep.'?\');">Remove</a></td>';
+                                        echo '<td class="UI-red">';
+                                        echo '<a href="#" onclick="confirmRemoval(\''.$kfName.'\', \''.$klName.'\', \''.$tmp[2].'\', \''.$kdep.'\', \''.$pos.'\');">Remove</a>';
+                                        echo '</td>';
                                     }
-
                                     echo "</tr>\n";
                                 }
                                 unset($tmp);
@@ -349,7 +354,7 @@ function AddConComPosition($accountid, $department, $position, $note, $notify = 
     if ($value !== false) {
         // if the department is already assigned to this user, wipe it and replace it with the new info
         $record = $value['ListRecordID'];
-        $sql = "UPDATE ConComList SET  PositionID = $positionid, Note = '$Note' WHERE ListRecordID = $record;";
+        $sql = "UPDATE ConComList SET  PositionID = $positionid, Note = '$note' WHERE ListRecordID = $record;";
     } else {
         $sql = "INSERT INTO ConComList (AccountID, DepartmentID, PositionID, EventID, Note) VALUES ($accountid, ".$Departments[$department]['id'].", $positionid, $event, '$note');";
     }
@@ -385,7 +390,7 @@ function RemoveConComPosition($accountid, $department, $position, $notify = true
     $sql = "DELETE FROM ConComList WHERE AccountID = $accountid AND DepartmentID = ".$Departments[$department]['id']." AND PositionID = $positionid";
     $result = DB::run($sql);
     if ($result) {
-        if ($nodify) {
+        if ($notify) {
             // Notify the Division Director, so they know
 
             $data = lookup_user_by_id($accountid);

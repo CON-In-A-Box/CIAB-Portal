@@ -41,7 +41,7 @@ function output_verification($account)
 {
     $user = lookup_user_by_id($account);
     $info = get_verification_info($account);
-    echo "<h3><b>Verify</b>:&nbsp; ";
+    echo "<h3><strong>Verify</strong>:&nbsp; ";
     echo $info['Name'];
     echo "&nbsp;&nbsp;:&nbsp; ";
     echo $user["users"][0]["Email"];
@@ -58,7 +58,7 @@ function badges($account)
 ?>
 <div class='UI-container event-color-secondary'>
     <div class='UI-secondary-sectionbar'>
-        <b style="margin-left: 100px;">Badges Purchased</b>
+        <strong style="margin-left: 100px;">Badges Purchased</strong>
         <div class='UI-right'>
             <input id='refresh' type='button' class='UI-orangebutton'
                    onclick='refreshBadgeData(<?php echo $account;?>)' value='refresh'>

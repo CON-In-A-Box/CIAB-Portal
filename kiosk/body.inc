@@ -58,7 +58,7 @@ if (!in_kiosk()) {
     function failKiosk(error) {
       document.getElementById('kiosk_slider').checked = true;
       if (error) {
-        window.alert('Login Failed (' + error + ')');
+        alertbox('Login Failed (' + error + ')');
       }
     }
 

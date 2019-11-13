@@ -6,7 +6,7 @@
 /* jshint -W097 */
 /* globals confirmbox, showSidebar, showSpinner, hideSidebar, hideSpinner,
            buildPositionList, buildDepartmentList, lists, quill,
-           urlsafeB64Encode */
+           urlsafeB64Encode, alertbox */
 /* exported removeAccess, changePosition, addAccess, changeDepartment,
             backFromAccess, toChanged, testList, newList, updateList,
             backFromEmail, editEmail, sendEmail, sidebarMainDiv,
@@ -17,7 +17,6 @@
 var sidebarMainDiv = 'main_content';
 
 function doCancelEmail() {
-  confirmbox.close();
   document.getElementById('email_subject').value = '';
   document.getElementById('email_to').value = 'None';
   document.getElementById('to_count').innerHTML = '0';
@@ -25,13 +24,11 @@ function doCancelEmail() {
 }
 
 function cancelEmail() {
-  confirmbox.start('Confirm Clear Email',
-    'Cancel Email and clear all fields?', doCancelEmail);
+  confirmbox('Confirm Clear Email',
+    'Cancel Email and clear all fields?').then(doCancelEmail);
 }
 
 function doSendEmail() {
-  confirmbox.close();
-
   var data = {
     'from' : document.getElementById('email_from').value,
     'reply' : document.getElementById('email_reply').value,
@@ -45,8 +42,9 @@ function doSendEmail() {
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
       hideSpinner();
-      window.alert('Email Sent!');
-      location.reload();
+      alertbox('Email Sent!').then(function() {
+        location.reload();
+      });
     }
   };
   xhttp.open('POST', 'index.php?Function=emailer', true);
@@ -59,24 +57,24 @@ function doSendEmail() {
 function sendEmail() {
   if (document.getElementById('email_to').value == 'None')
   {
-    window.alert('No \'To\' Addresses selected.');
+    alertbox('No \'To\' Addresses selected.');
     return;
   }
 
   if (document.getElementById('email_subject').value == '')
   {
-    window.alert('Email Subject Required.');
+    alertbox('Email Subject Required.');
     return;
   }
 
   if (quill.getLength() < 2)
   {
-    window.alert('Email Body Required.');
+    alertbox('Email Body Required.');
     return;
   }
 
-  confirmbox.start('Confirm Send Email',
-    'Send Email to all recipients?', doSendEmail);
+  confirmbox('Confirm Send Email',
+    'Send Email to all recipients?').then(doSendEmail);
 }
 
 var accessListData = null;
@@ -133,8 +131,8 @@ function doUpdateList() {
 function updateList() {
   if (quill.getLength() > 1)
   {
-    confirmbox.start('Draft will be lost',
-      'Updating this will result in the loss of your draft!<br>Continue?',
+    confirmbox('Draft will be lost',
+      'Updating this will result in the loss of your draft!<br>Continue?').then(
       doUpdateList);
   } else {
     doUpdateList();
@@ -172,7 +170,7 @@ function testList() {
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
       var d = this.responseText;
-      window.alert(d + ' addresses');
+      alertbox(d + ' addresses');
     }
   };
   xhttp.open('GET', 'index.php?Function=emailer&test=' + btoa(v), true);
@@ -239,7 +237,7 @@ function checkAccessDup() {
     accessListData.forEach(function(value, index) {
       if (index == i) {return;}
       if (ok && value.DepartmentID == d.value && value.PositionID == p.value) {
-        window.alert('Duplicate Access');
+        alertbox('Duplicate Access');
         ok = false;
       }
     });
@@ -283,7 +281,7 @@ function addAccess() {
   updateAccess();
   accessListData.forEach(function(value) {
     if (ok && value.DepartmentID == d.value && value.PositionID == p.value) {
-      window.alert('Duplicate Access');
+      alertbox('Duplicate Access');
       ok = false;
       return;
     }

@@ -71,7 +71,7 @@ function phone_number()
 {
     // If this person is on ConCom, but hasn't elected about their phone number, nudge them
     $cvgConComPhoneDisplay = search_definedFields('CVGConCom Publish Phone');
-    if (isset($_SESSION['customFields']['currConComPos']) && empty($_SESSION['customFields'][$cvgConComPhoneDisplay])) {
+    if (!empty($_SESSION['customFields']['currConComPos']) && empty($_SESSION['customFields'][$cvgConComPhoneDisplay])) {
         echo '<p class="UI-container UI-center">';
         echo "We've noticed you haven't decided about your phone number.<br />";
         echo 'Please <a href="index.php?Function=profile">Update Your Profile</a> to make that selection.';
@@ -89,7 +89,7 @@ function meetings()
     echo "<tr><th class='UI-center event-color-primary' colspan=3>Official Meeting Attendance</th></tr>\n";
     $nowDate = date("Y-m-d");
 
-    $sql = "SELECT * from `OfficialMeetings`";
+    $sql = "SELECT * from `OfficialMeetings` WHERE Date >= DATE_SUB(NOW(),INTERVAL 1 YEAR);";
     $result = \DB::run($sql);
     $value = $result->fetch();
     while ($value !== false) {
@@ -118,7 +118,7 @@ function meetings()
 }
 
 
-if (isset($_SESSION['customFields']['currConComPos'])) {
+if (!empty($_SESSION['customFields']['currConComPos'])) {
     $homepage_panes[] = 'concom\panes\phone_number';
     $homepage_panes[] = 'concom\panes\draw_status';
     $homepage_panes[] = 'concom\panes\meetings';

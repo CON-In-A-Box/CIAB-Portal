@@ -6,7 +6,7 @@
 /* jshint -W097 */
 /* globals confirmbox, userId, escapeHtml, userEmail, checkAuthentication,
            groupData, checkAuthentication, adminMode, unclaimed,
-           hoursRemain, userLookup, hideSidebar, showSidebar */
+           hoursRemain, userLookup, hideSidebar, showSidebar, alertbox */
 /* exported processReturn, showReturn, markDelete, generateDerivedCSVReport,
             generateDerivedCSV, generatCSVReport, generateCSV,
             departmentReport, generateDeptReport, minHourReport,
@@ -84,7 +84,6 @@ function fillReward() {
 }
 
 function applyReward() {
-  confirmbox.close();
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
@@ -92,10 +91,10 @@ function applyReward() {
       document.getElementById('success_dlg').style.display = 'block';
     }
     else if (this.status == 404) {
-      window.alert('404!');
+      alertbox('404!');
     }
     else if (this.status == 409) {
-      window.alert('409!');
+      alertbox('409!');
     }
   };
   xhttp.open('POST', 'index.php?Function=volunteers/admin', true);
@@ -104,8 +103,8 @@ function applyReward() {
 }
 
 function processCheckout() {
-  confirmbox.start('Confirm Distribute Gifts',
-    'Are the selected gifts correct?', applyReward);
+  confirmbox('Confirm Distribute Gifts',
+    'Are the selected gifts correct?').then(applyReward);
 }
 
 function clearCheckout() {
@@ -200,17 +199,17 @@ function addToCheckout(json) {
       return element.PrizeID == item.PrizeID;
     });
     if (found) {
-      window.alert('Promo item \'' + item.Name + '\' cannot be added twice');
+      alertbox('Promo item \'' + item.Name + '\' cannot be added twice');
       return;
     }
     cost = 0;
   }
   if (hoursRemain < hoursSpent + cost) {
-    window.alert('Volunteer does not have enough hours for the ' + item.Name);
+    alertbox('Volunteer does not have enough hours for the ' + item.Name);
     return;
   }
   if (groupsNow[item.RewardGroupID] + 1 > item.GroupLimit) {
-    window.alert('Too many items from limited group');
+    alertbox('Too many items from limited group');
     return;
   }
   var count = 0;
@@ -220,7 +219,7 @@ function addToCheckout(json) {
     }
   }
   if (count + 1 > item.Remaining) {
-    window.alert('Not enough items in inventory!');
+    alertbox('Not enough items in inventory!');
     return;
   }
 
@@ -262,7 +261,7 @@ function enterAdmin() {
 function failAdmin(error) {
   document.getElementById('admin_slider').checked = false;
   if (error) {
-    window.alert('Login Failed (' + error + ')');
+    alertbox('Login Failed (' + error + ')');
   }
 }
 
@@ -311,65 +310,59 @@ function showEditHours(data) {
 }
 
 function commitHours() {
-  if (!window.confirm('=============================\n' +
-                      'Please! double check entries!\n' +
-                      '=============================\n' +
-                      '\n' +
-                      'Proceed with Volunteer Hour Update?')) {
-    return;
-  }
+  confirmbox(
+    'Please! double check entries',
+    'Proceed with Volunteer Hour Update?').then(function() {
+    var data = document.getElementById('edit_data').value;
+    var item = JSON.parse(atob(data));
 
-  var data = document.getElementById('edit_data').value;
-  var item = JSON.parse(atob(data));
+    item['Actual Hours'] = parseFloat(
+      document.getElementById('edit_hours').value);
+    item['End Date Time'] = document.getElementById('edit_end').value;
+    var e = document.getElementById('edit_mod');
+    item['Time Modifier'] = e.options[e.selectedIndex].value;
+    item['Department Worked'] = document.getElementById('edit_dept').value;
+    item['Authorized By'] = document.getElementById('edit_auth').value;
 
-  item['Actual Hours'] = parseFloat(
-    document.getElementById('edit_hours').value);
-  item['End Date Time'] = document.getElementById('edit_end').value;
-  var e = document.getElementById('edit_mod');
-  item['Time Modifier'] = e.options[e.selectedIndex].value;
-  item['Department Worked'] = document.getElementById('edit_dept').value;
-  item['Authorized By'] = document.getElementById('edit_auth').value;
-
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-      location.reload();
-    }
-    else if (this.status == 404) {
-      window.alert('ERROR 404!');
-    }
-    else if (this.status == 409) {
-      window.alert('ERROR 409!');
-    }
-  };
-  xhttp.open('POST', 'index.php?Function=volunteers/admin', true);
-  xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-  xhttp.send('update_hour=' + JSON.stringify(item));
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        location.reload();
+      }
+      else if (this.status == 404) {
+        alertbox('ERROR 404!');
+      }
+      else if (this.status == 409) {
+        alertbox('ERROR 409!');
+      }
+    };
+    xhttp.open('POST', 'index.php?Function=volunteers/admin', true);
+    xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    xhttp.send('update_hour=' + JSON.stringify(item));
+  });
 }
 
 function deleteHours() {
-  if (!window.confirm('DELETE Volunteer Entry?')) {
-    return;
-  }
+  confirmbox('DELETE Volunteer Entry?').then(function() {
+    var data = document.getElementById('edit_data').value;
+    var item = JSON.parse(atob(data));
 
-  var data = document.getElementById('edit_data').value;
-  var item = JSON.parse(atob(data));
-
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-      location.reload();
-    }
-    else if (this.status == 404) {
-      window.alert('ERROR 404!');
-    }
-    else if (this.status == 409) {
-      window.alert('ERROR 409!');
-    }
-  };
-  xhttp.open('POST', 'index.php?Function=volunteers/admin', true);
-  xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-  xhttp.send('delete_hour=' + item.EntryID);
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        location.reload();
+      }
+      else if (this.status == 404) {
+        alertbox('ERROR 404!');
+      }
+      else if (this.status == 409) {
+        alertbox('ERROR 409!');
+      }
+    };
+    xhttp.open('POST', 'index.php?Function=volunteers/admin', true);
+    xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    xhttp.send('delete_hour=' + item.EntryID);
+  });
 }
 
 function showEditPrize(data) {
@@ -429,102 +422,92 @@ function showEditPrize(data) {
 }
 
 function deletePrize() {
-  if (!window.confirm('DELETE Gift Entry?\n\n' +
-                      'WARNING!!!  Only do this if NONE of this gift ' +
-                      'has been distributed. It will lead to corrupt ' +
-                      'reward records. To DELETE a gift that has been ' +
-                      'rewarded set inventory to \'0\'')) {
-    return;
-  }
+  confirmbox('DELETE Gift Entry?',
+    'WARNING!!!<br>  Only do this if NONE of this gift ' +
+    'has been distributed. <br>It will lead to corrupt ' +
+    'reward records. <br>To DELETE a gift that has been ' +
+    'rewarded set inventory to \'0\'').then(
+    function() {
+      var data = document.getElementById('prize_data').value;
+      var item = JSON.parse(atob(data));
 
-  var data = document.getElementById('prize_data').value;
-  var item = JSON.parse(atob(data));
-
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-      location.reload();
-    }
-    else if (this.status == 404) {
-      window.alert('ERROR 404!');
-    }
-    else if (this.status == 409) {
-      window.alert('ERROR 409!');
-    }
-  };
-  xhttp.open('POST', 'index.php?Function=volunteers/admin', true);
-  xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-  xhttp.send('delete_prize=' + item.PrizeID);
+      var xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+          location.reload();
+        }
+        else if (this.status == 404) {
+          alertbox('ERROR 404!');
+        }
+        else if (this.status == 409) {
+          alertbox('ERROR 409!');
+        }
+      };
+      xhttp.open('POST', 'index.php?Function=volunteers/admin', true);
+      xhttp.setRequestHeader('Content-type',
+        'application/x-www-form-urlencoded');
+      xhttp.send('delete_prize=' + item.PrizeID);
+    });
 }
 
 function commitPrize() {
   var data = document.getElementById('prize_data').value;
   var item = null;
+  var message = null;
 
   if (data) {
-    if (!window.confirm('=============================\n' +
-                        'Please! double check entries!\n' +
-                        '=============================\n' +
-                        '\n' +
-                        'Proceed with Volunteer Gift Update?')) {
-      return;
-    }
+    message = 'Proceed with Volunteer Gift Update?';
     item = JSON.parse(atob(data));
   } else {
-    if (!window.confirm('=============================\n' +
-                        'Please! double check entries!\n' +
-                        '=============================\n' +
-                        '\n' +
-                        'Proceed with Addition of new Volunteer Gift?')) {
-      return;
-    }
+    message = 'Proceed with Addition of new Volunteer Gift?';
     item = {Name:'', Value:0, RewardGroupID:null, GroupLimit:0,
       Promo:'no', TotalInventory:0, Remaining:0};
   }
-
-  item.Name = document.getElementById('edit_prize_name').value;
-  item.Value = parseFloat(document.getElementById('edit_prize_value').value);
-  var grp = document.getElementById('edit_prize_group').value;
-  if (grp === 'none') {
-    item.RewardGroupID = '';
-  } else {
-    item.RewardGroupID = grp;
-  }
-
-  item.GroupLimit = parseInt(
-    document.getElementById('edit_prize_group_count').value);
-
-  var e = document.getElementById('edit_prize_promo');
-  item.Promo = e.options[e.selectedIndex].value;
-
-  if (item.Remaining != document.getElementById('edit_prize_count').value) {
-    var amount = parseInt(item.Remaining) -
-        parseInt(document.getElementById('edit_prize_count').value);
-    if (amount !== 0) {
-      var newValue = parseInt(item.TotalInventory) - amount;
-      item.TotalInventory = newValue;
+  confirmbox('Please! double check entries!', message).then(function() {
+    item.Name = document.getElementById('edit_prize_name').value;
+    item.Value = parseFloat(document.getElementById('edit_prize_value').value);
+    var grp = document.getElementById('edit_prize_group').value;
+    if (grp === 'none') {
+      item.RewardGroupID = '';
+    } else {
+      item.RewardGroupID = grp;
     }
-  }
 
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-      location.reload();
+    item.GroupLimit = parseInt(
+      document.getElementById('edit_prize_group_count').value);
+
+    var e = document.getElementById('edit_prize_promo');
+    item.Promo = e.options[e.selectedIndex].value;
+
+    if (item.Remaining != document.getElementById('edit_prize_count').value) {
+      var amount = parseInt(item.Remaining) -
+            parseInt(document.getElementById('edit_prize_count').value);
+      if (amount !== 0) {
+        var newValue = parseInt(item.TotalInventory) - amount;
+        item.TotalInventory = newValue;
+      }
     }
-    else if (this.status == 404) {
-      window.alert('ERROR 404!');
+
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        location.reload();
+      }
+      else if (this.status == 404) {
+        alertbox('ERROR 404!');
+      }
+      else if (this.status == 409) {
+        alertbox('ERROR 409!');
+      }
+    };
+    xhttp.open('POST', 'index.php?Function=volunteers/admin', true);
+    xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    if (data) {
+      xhttp.send('update_prize=' + JSON.stringify(item));
+    } else {
+      xhttp.send('new_prize=' + JSON.stringify(item));
     }
-    else if (this.status == 409) {
-      window.alert('ERROR 409!');
-    }
-  };
-  xhttp.open('POST', 'index.php?Function=volunteers/admin', true);
-  xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-  if (data) {
-    xhttp.send('update_prize=' + JSON.stringify(item));
-  } else {
-    xhttp.send('new_prize=' + JSON.stringify(item));
-  }
+  });
 }
 
 function prizeGroupChange() {
@@ -680,7 +663,6 @@ function finishReturn() {
 }
 
 function doReturn() {
-  confirmbox.close();
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
@@ -688,10 +670,10 @@ function doReturn() {
       document.getElementById('return_success_dlg').style.display = 'block';
     }
     else if (this.status == 404) {
-      window.alert('404!');
+      alertbox('404!');
     }
     else if (this.status == 409) {
-      window.alert('409!');
+      alertbox('409!');
     }
   };
   xhttp.open('POST', 'index.php?Function=volunteers/admin', true);
@@ -707,6 +689,6 @@ function doReturn() {
 }
 
 function processReturn() {
-  confirmbox.start('Confirm Gift Return',
-    'Are the returned gifts correct?', doReturn);
+  confirmbox('Confirm Gift Return',
+    'Are the returned gifts correct?').then(doReturn);
 }

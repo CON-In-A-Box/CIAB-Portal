@@ -66,13 +66,19 @@ foreach ($Divisions as $division) {
                 </select>
             </div>
         </div>
-          <div
-          <table class='switch-table UI-padding UI-center' id='dept_slider_parent'><tr><td>
-            <span class='UI-padding'>Department</span>
-            <label class=switch><input type="checkbox" class=toggle
-                id=dept_slider onclick='toggleDept();'>
-              <div class=slider></div></label></td><td><span class='UI-padding'>Division</span></td></tr>
-          </table>
+        <div
+          <div class='UI-table switch-table UI-padding UI-center' id='dept_slider_parent'>
+            <div class='UI-table-row'>
+              <div class='UI-table-cell'>
+                <span class='UI-padding'>Department</span>
+                <label class=switch><input type="checkbox" class=toggle
+                    id=dept_slider onclick='toggleDept();'>
+                  <div class=slider></div>
+                </label>
+                <span class='UI-padding'>Division</span>
+              </div>
+            </div>
+          </div>
         </div>
 
        <div class='UI-center'>

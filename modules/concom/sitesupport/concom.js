@@ -5,33 +5,47 @@
 /* jshint browser: true */
 /* jshint -W097 */
 /* globals confirmbox, showSidebar, hideSidebar, showSpinner, hideSpinner,
-           PERMISSIONS */
+           PERMISSIONS, alertbox */
 /* exported drag, dragOverDivision, dragLeaveDivision, dragDropDivision,
             dragDropParent, toggleDept, savePosition, newEntry,
             deletePosition, changeEmail, editEmail, returnPosition,
             deleteEmail, saveEmail, deleteAC, newAC, savePermission,
-            returnRBAC */
+            returnRBAC, confirmRemoval */
+
+var basicReload = function() {
+  hideSidebar();
+  window.location = 'index.php?Function=concom/admin';
+};
+
+function basicConcomRequestAdmin(parameter, finish) {
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      finish();
+      if (finish != basicReload) {
+        hideSpinner();
+      }
+    } else if (this.status == 404) {
+      alertbox('404!');
+    } else if (this.status == 409) {
+      alertbox('409!');
+    }
+  };
+  showSpinner();
+  xhttp.open('POST', 'index.php?Function=concom/admin', true);
+  xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+  xhttp.send(parameter);
+
+}
 
 function setParent(id, newParent) {
   var data = {
     'Id': id,
     'newParent': newParent
   };
-  var param = JSON.stringify(data);
+  var param = btoa(JSON.stringify(data));
 
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-      window.location = 'index.php?Function=concom/admin';
-    } else if (this.status == 404) {
-      window.alert('404!');
-    } else if (this.status == 409) {
-      window.alert('409!');
-    }
-  };
-  xhttp.open('POST', 'index.php?Function=concom/admin', true);
-  xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-  xhttp.send('reparent=' + btoa(param));
+  basicConcomRequestAdmin('reparent=' + param, basicReload);
 
 }
 
@@ -112,8 +126,6 @@ function toggleDept() {
 }
 
 function processPosition() {
-  confirmbox.close();
-
   var data = {
     'Id': document.getElementById('dept_id').value,
     'Name': document.getElementById('dept_name').value,
@@ -125,31 +137,15 @@ function processPosition() {
     data.ParentDept = data.Id;
   }
 
-  var param = JSON.stringify(data);
-
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-      hideSidebar();
-      window.location = 'index.php?Function=concom/admin';
-    } else if (this.status == 404) {
-      window.alert('404!');
-    } else if (this.status == 409) {
-      window.alert('409!');
-    }
-  };
-  xhttp.open('POST', 'index.php?Function=concom/admin', true);
-  xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-  xhttp.send('modify=' + btoa(param));
+  var param = btoa(JSON.stringify(data));
+  basicConcomRequestAdmin('modify=' + param, basicReload);
 
 }
 
 function savePosition() {
-  confirmbox.start(
+  confirmbox(
     'Confirms Position Details',
-    'Are the position details correct?',
-    processPosition
-  );
+    'Are the position details correct?').then(processPosition);
 
 }
 
@@ -180,31 +176,16 @@ function newEntry(division) {
 }
 
 function deletePosition() {
-  confirmbox.start(
+  confirmbox(
     'Confirms Position Deletion',
-    'Really delete this position?',
-    processDeletion
-  );
+    'Really delete this position?').then(processDeletion);
 
 }
 
 function processDeletion() {
-  confirmbox.close();
   var id = document.getElementById('dept_id').value;
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-      hideSidebar();
-      window.location = 'index.php?Function=concom/admin';
-    } else if (this.status == 404) {
-      window.alert('404!');
-    } else if (this.status == 409) {
-      window.alert('409!');
-    }
-  };
-  xhttp.open('POST', 'index.php?Function=concom/admin', true);
-  xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-  xhttp.send('delete=' + id);
+
+  basicConcomRequestAdmin('delete=' + id, basicReload);
 
 }
 
@@ -308,45 +289,27 @@ function returnPosition() {
 
 function deleteEmail() {
   var email = document.getElementById('email_original').value;
-  confirmbox.start(
+  confirmbox(
     'Confirms Email Deletion',
-    'Really delete the e-mail address "' + email + '"?',
+    'Really delete the e-mail address "' + email + '"?').then(
     processDeleteEmail
   );
 }
 
 function processDeleteEmail() {
-  confirmbox.close();
-
   var id = document.getElementById('email_index').value;
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-      hideSidebar();
-      window.location = 'index.php?Function=concom/admin';
-    } else if (this.status == 404) {
-      window.alert('404!');
-    } else if (this.status == 409) {
-      window.alert('409!');
-    }
-  };
-  xhttp.open('POST', 'index.php?Function=concom/admin', true);
-  xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-  xhttp.send('deleteEmail=' + id);
+  basicConcomRequestAdmin('deleteEmail=' + id, basicReload);
+
 }
 
 function saveEmail() {
   var email = document.getElementById('email_email').value;
-  confirmbox.start(
+  confirmbox(
     'Confirms Save Email',
-    'Really save the e-mail address "' + email + '"?',
-    processSaveEmail
-  );
+    'Really save the e-mail address "' + email + '"?').then(processSaveEmail);
 }
 
 function processSaveEmail() {
-  confirmbox.close();
-
   var data = {
     'Id': document.getElementById('email_index').value,
     'Alias': document.getElementById('email_alias').value,
@@ -359,22 +322,8 @@ function processSaveEmail() {
     data.Alias = 'NULL';
   }
 
-  var param = JSON.stringify(data);
-
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-      hideSidebar();
-      window.location = 'index.php?Function=concom/admin';
-    } else if (this.status == 404) {
-      window.alert('404!');
-    } else if (this.status == 409) {
-      window.alert('409!');
-    }
-  };
-  xhttp.open('POST', 'index.php?Function=concom/admin', true);
-  xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-  xhttp.send('email=' + btoa(param));
+  var param = btoa(JSON.stringify(data));
+  basicConcomRequestAdmin('email=' + param, basicReload);
 
 }
 
@@ -423,10 +372,6 @@ function showRBAC(id) {
     if (this.readyState == 4 && this.status == 200) {
       hideSpinner();
       editRBAC(id, this.responseText);
-    } else if (this.status == 404) {
-      window.alert('404!');
-    } else if (this.status == 409) {
-      window.alert('409!');
     }
   };
   xhttp.open('GET', 'index.php?Function=concom/admin&permissions=' + id, true);
@@ -434,40 +379,19 @@ function showRBAC(id) {
   xhttp.send();
 }
 
-var _dep;
-var _pos;
-var _perm;
-
 function deleteAC(dep, pos, perm) {
-  _dep = dep;
-  _pos = pos;
-  _perm = perm;
-  confirmbox.start(
+  confirmbox(
     'Confirms Permission Deletion',
-    'Really delete "' + perm + '" permission?',
-    permissionDeletion
-  );
+    'Really delete "' + perm + '" permission?').then(function() {
+    basicConcomRequestAdmin('deleteAC=' + dep + '&position=' + pos +
+                              '&permission=' + perm, function() {
+      showRBAC(dep);
+    });
+  });
 
 }
 
-function permissionDeletion() {
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-      hideSpinner();
-      showRBAC(_dep);
-    } else if (this.status == 404) {
-      window.alert('404!');
-    } else if (this.status == 409) {
-      window.alert('409!');
-    }
-  };
-  confirmbox.close();
-  showSpinner();
-  xhttp.open('POST', 'index.php?Function=concom/admin', true);
-  xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-  xhttp.send('deleteAC=' + _dep + '&position=' + _pos + '&permission=' + _perm);
-}
+var _dep;
 
 function newAC(department, position) {
   _dep = department;
@@ -495,11 +419,9 @@ function returnRBAC() {
 
 function savePermission() {
   var perm =  document.getElementById('perm_perm').value;
-  confirmbox.start(
+  confirmbox(
     'Confirms Permission Addition',
-    'Really add permission \'' + perm + '\' ?',
-    permissionSave
-  );
+    'Really add permission \'' + perm + '\' ?').then(permissionSave);
 
 }
 
@@ -508,20 +430,20 @@ function permissionSave() {
   var pos = document.getElementById('perm_position').value;
   var perm =  document.getElementById('perm_perm').value;
 
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-      hideSpinner();
-      showRBAC(dep);
-    } else if (this.status == 404) {
-      window.alert('404!');
-    } else if (this.status == 409) {
-      window.alert('409!');
-    }
-  };
-  confirmbox.close();
-  showSpinner();
-  xhttp.open('POST', 'index.php?Function=concom/admin', true);
-  xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-  xhttp.send('addAC=' + dep + '&position=' + pos + '&permission=' + perm);
+  basicConcomRequestAdmin('addAC=' + dep + '&position=' + pos +
+                          '&permission=' + perm, function() {
+    showRBAC(dep);
+  });
+
+}
+
+function confirmRemoval(fname, lname, target, department, position) {
+  confirmbox(
+    'Are you sure you want to remove ' + fname + '&nbsp;' + lname +
+    ' from ' + position + ' in ' + department).then(function() {
+    window.location = 'index.php?Function=concom&Remove=' + encodeURI(target) +
+        '&Department=' + encodeURI(department) + '&Position=' +
+        encodeURI(position);
+  });
+
 }
