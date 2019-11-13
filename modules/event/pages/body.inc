@@ -14,9 +14,7 @@ require_once __DIR__.'/../functions/functions.inc'
                 <span>Meetings<span> <em id="meetings_arrow" class="fa fa-caret-up"></em>
             </button>
             <div id="meetings" class="UI-container UI-margin UI-hide UI-show">
-                <table class='UI-stripedtable'>
-    <?php list_meetings() ?>
-                </table>
+<?php list_meetings() ?>
                 <div class="UI-container UI-margin UI-center">
                     <button id='new' class='UI-eventbutton'
                         onclick='newMeeting()'>Add New Meeting</button>
@@ -33,9 +31,7 @@ require_once __DIR__.'/../functions/functions.inc'
                     <button id='new_cycle' class='UI-eventbutton'
                         onclick='newCycle()'>Add New Cycle</button>
                 </div>
-                <table class="UI-stripedtable UI-padding">
-    <?php list_cycles() ?>
-                </table>
+<?php list_cycles() ?>
             </div>
         </div>
 
@@ -49,9 +45,7 @@ require_once __DIR__.'/../functions/functions.inc'
                     onclick='newEvent()'>Add New Event</button>
              </div>
              <div>
-                <table class="UI-stripedtable UI-padding">
-    <?php list_events() ?>
-                </table>
+<?php list_events() ?>
              </div>
             </div>
         </div>
