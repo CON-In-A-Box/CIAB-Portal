@@ -149,9 +149,9 @@ function updateCheckout() {
   }
 
   table = document.getElementById('checkout_table');
-  for (index in output) {
+  for (var index2 in output) {
     var row = table.insertRow(-1);
-    item = output[index];
+    item = output[index2];
     row.setAttribute('data-prizeid', item.prize.PrizeID);
     row.classList.add('VOL-hover-red');
     row.setAttribute('onclick', 'removeFromCheckout(' + item.prize.PrizeID +
@@ -588,8 +588,8 @@ function markDelete(index, tableRow) {
   }
 
   var total = 0;
-  for (index in returnCart) {
-    var item = returnCart[index];
+  for (var index2 in returnCart) {
+    var item = returnCart[index2];
     if (item.Returned) {
       total += parseFloat(item.item.Value);
     }
