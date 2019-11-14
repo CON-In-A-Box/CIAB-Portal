@@ -66,6 +66,7 @@ function badges($account)
     </div>
 
     <table class='UI-stripedtable'>
+    <caption>Badges to the current event</caption>
 <?php
 $event = current_eventID();
 $badges = get_tickets($account, $event);
@@ -155,7 +156,7 @@ if (!empty($badges)) {
     echo "<tr><th class='REG-no-entries' colspan=9>No Entries...</th></tr>\n";
 }
 ?>
-    <tr class='event-color-secondary'><th colspan=5 class='UI-center'></th></tr>
+    <tr class='event-color-secondary'><th id="placeholder" colspan=5 class='UI-center'></th></tr>
     </table>
 </div>
 <?php
