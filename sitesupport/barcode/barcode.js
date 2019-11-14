@@ -129,15 +129,16 @@ var QuaggaApp = {
   setState: function(path, value) {
     var self = this;
 
+    var ourValue = value;
     if (typeof self._accessByPath(self.inputMapper, path) === 'function') {
-      value = self._accessByPath(self.inputMapper, path)(value);
+      ourValue = self._accessByPath(self.inputMapper, path)(ourValue);
     }
 
     if (path.startsWith('settings.')) {
       var setting = path.substring(9);
-      return self.applySetting(setting, value);
+      return self.applySetting(setting, ourValue);
     }
-    self._accessByPath(self.state, path, value);
+    self._accessByPath(self.state, path, ourValue);
 
     Quagga.stop();
     QuaggaApp.init(QuaggaApp.fieldid, QuaggaApp.callback);

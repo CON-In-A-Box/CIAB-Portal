@@ -278,6 +278,8 @@ for ($i = 0; $i < 60; $i += $hour_round_interval) {
         </div>
         <div>
             <table class='UI-stripedtable' id="import_report">
+            <caption>Report from the CSV Import</caption>
+            <th scope="col" id="ReportResult">Result</th>
             </table>
         </div>
         <div class="UI-center">
