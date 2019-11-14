@@ -10,7 +10,7 @@
 </script>
 <div class="UI-main-bar-div">
   <div id="main_nav" class="UI-main-bar">
-  <img class="UI-main-bar-icon">
+  <img class="UI-main-bar-icon" alt="Event Icon">
 
 <?php
 
