@@ -88,6 +88,9 @@ const FIELD = 'Field';
             <input type="submit" value="Set Password" class="UI-graybutton"/>
         </form>
         <hr>
+        <input type="submit" value="Manually Update Event Memberships (LONG)" class="UI-yellowbutton"
+               onclick="updateMemberships();"/>
+        <hr>
         <input type="submit" value="Reload without Admin Priv" class="UI-graybutton"
                onclick="removeAdmin();"/>
         <hr>

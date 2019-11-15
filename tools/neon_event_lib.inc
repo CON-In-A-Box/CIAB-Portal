@@ -3,6 +3,18 @@
 require_once(__DIR__."/../functions/database.inc");
 
 
+function maxQuery()
+{
+    if (!array_key_exists('MAX_PACKET', $GLOBALS)) {
+        $sql = "SHOW VARIABLES LIKE 'max_allowed_packet';";
+        $result = \DB::run($sql);
+        $value = $result->fetch();
+        $GLOBALS['MAX_PACKET'] = intval($value['Value']) / 160;
+    }
+
+}
+
+
 function _loadEventCustomFields()
 {
     global $Neon;
@@ -40,7 +52,7 @@ function _lookup_events_attendees($fields, $event, $page = 1, $output = null, $a
     'parameters' => [
     'eventId' => $event,
     'page.currentPage' => $page,
-    'page.pageSize' => 20,
+    'page.pageSize' => 50,
       ],
     ];
     $results = $Neon->go($search);
@@ -74,7 +86,7 @@ function _lookup_events_attendees($fields, $event, $page = 1, $output = null, $a
 }
 
 
-function _updateMember($person, $event, $add)
+function _updateMember($person, $event)
 {
     $key = $person['attendeeId'];
     $accountID = $person['attendeeAccountId'];
@@ -101,28 +113,13 @@ function _updateMember($person, $event, $add)
         $contact = 'NULL';
     }
 
-    if ($add) {
-        $sql = <<<SQL
-            INSERT INTO `Registrations` (RegistrationID, AccountID, EventID,
-                RegisteredByID, RegistrationDate, BadgesPickedUp, BadgeName, BadgeTypeID,
-                EmergencyContact)
-            VALUES ($key, $accountID, $eventID, $regByID, '$date', $pickup, $badge, $typeID, $contact);
+    $sql = <<<SQL
+        REPLACE INTO `Registrations` (RegistrationID, AccountID, EventID,
+            RegisteredByID, RegistrationDate, BadgesPickedUp, BadgeName, BadgeTypeID,
+            EmergencyContact)
+        VALUES ($key, $accountID, $eventID, $regByID, '$date', $pickup, $badge, $typeID, $contact);
 SQL;
-    } else {
-        $sql = <<<SQL
-            UPDATE `Registrations`
-            SET AccountID = $accountID,
-                EventID = $eventID,
-                RegisteredByID = $regByID,
-                RegistrationDate = '$date',
-                BadgesPickedUp = $pickup,
-                BadgeName = $badge,
-                BadgeTypeID = $typeID,
-                EmergencyContact = $contact
-            WHERE RegistrationID = $key;
-SQL;
-    }
-    DB::run($sql);
+    return $sql;
 
 }
 
@@ -131,29 +128,28 @@ function _import_page_of_people($event, $people, $page)
 {
     $total = 0;
     $eventID = $event['MySQLEventID'];
+    $command = "";
     foreach ($people['attendees'] as $person) {
-        $key = $person['attendeeId'];
-        $sql = <<<SQL
-            SELECT RegistrationID
-            FROM `Registrations`
-            WHERE EventID = $eventID AND RegistrationID = $key;
-SQL;
-        $result = DB::run($sql);
-        $value = $result->fetch();
-        if ($value !== false) {
-            _updateMember($person, $event, false);
-        } else {
-            _updateMember($person, $event, true);
-        }
-        $total ++;
-
+        $line = _updateMember($person, $event);
         $accountID = $person['attendeeAccountId'];
         $sql = <<<SQL
             INSERT IGNORE INTO `TempEventPage`
             SET  AccountID = $accountID,
                  PageFound = $page;
 SQL;
-        DB::run($sql);
+        $line .= $sql;
+
+        if (strlen($command) + strlen($line) > $GLOBALS['MAX_PACKET']) {
+            \DB::run($command);
+            $command = $line;
+        } else {
+            $command .= $line;
+        }
+
+        $total ++;
+    }
+    if (!empty($command)) {
+        \DB::run($command);
     }
     return $total;
 
