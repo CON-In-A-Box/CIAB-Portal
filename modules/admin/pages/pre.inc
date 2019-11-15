@@ -77,7 +77,11 @@ if (!empty($_REQUEST)) {
         $date = date("D M d, Y G:i");
         header('Content-Disposition: attachment; filename="DB_Activity_'.$date.'.csv"');
         header("Pragma: no-cache");
-        print dump_table_to_csv('ActivityLog');
+        print dump_table_to_csv(
+            'ActivityLog',
+            false,
+            "/(Authentication = ')(.*)(')/i"
+        );
         exit();
     }
 }
