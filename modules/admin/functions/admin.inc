@@ -5,7 +5,7 @@ require_once($FUNCTIONDIR."/database.inc");
 
 function filterLog($query)
 {
-    $pattern = "/(Authentication = ')(.*)(')/i";
+    $pattern = ["/(Authentication = ')(.*)(')/i", "/(OneTime = ')(.*)(')/i"];
     $replace = '\1&lt;REDACTED&gt;\3';
     return(preg_replace($pattern, $replace, $query));
 
