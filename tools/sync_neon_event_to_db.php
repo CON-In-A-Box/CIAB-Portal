@@ -108,6 +108,7 @@ function _Neon_events()
 
 function do_Neon_import()
 {
+    maxQuery();
     $fields = _loadEventCustomFields();
     $events = _Neon_events();
     $event = array_slice($events, -1)[0];

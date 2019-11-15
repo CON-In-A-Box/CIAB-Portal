@@ -1,6 +1,7 @@
 /* jshint browser: true */
 /* jshint -W097 */
-/* exported downloadLog, setField, addField, removeAdmin */
+/* globals confirmbox */
+/* exported downloadLog, setField, addField, removeAdmin, updateMemberships */
 
 function downloadLog() {
   window.location = 'index.php?Function=admin&downloadLog=db';
@@ -50,5 +51,17 @@ function removeAdmin() {
   xhttp.open('POST', 'index.php?Function=admin', true);
   xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
   xhttp.send('&removeAdmin=true');
+
+}
+
+function updateMemberships() {
+  confirmbox('Update Memberships?', 'This operations will run in the ' +
+    'background and can take several minutes to complete.' +
+    '<br><em>Run Command?</em>').then(function() {
+    var xhttp = new XMLHttpRequest();
+    xhttp.open('POST', 'index.php?Function=admin', true);
+    xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    xhttp.send('&updateMemberships=true');
+  });
 
 }

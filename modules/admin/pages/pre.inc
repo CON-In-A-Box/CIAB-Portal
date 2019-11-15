@@ -23,6 +23,7 @@ if (!empty($_REQUEST)) {
     'removeAdmin'  => FILTER_VALIDATE_BOOLEAN,
     'tmp_login'    => FILTER_SANITIZE_SPECIAL_CHARS,
     'tmp_passwd'   => FILTER_SANITIZE_SPECIAL_CHARS,
+    'updateMemberships' => FILTER_VALIDATE_BOOLEAN,
     ];
 
     $updateData = filter_input_array(INPUT_POST, $arguments);
@@ -59,6 +60,10 @@ if (!empty($_REQUEST)) {
         } else {
             goSite();
         }
+    }
+
+    if (isset($updateData['updateMemberships'])) {
+        require($BASEDIR.'/tools/sync_neon_event_to_db.php');
     }
 
     $arguments = [
