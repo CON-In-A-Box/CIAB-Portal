@@ -63,6 +63,7 @@ function badges()
         </div>
 
         <table class='UI-stripedtable'>
+        <caption>Badges to the events</caption>
 <?php
 foreach ($lines as $con => $names) {
     $colspan = count($names[0]);
@@ -81,7 +82,7 @@ foreach ($lines as $con => $names) {
     echo "</table>\n";
 }
 ?>
-        <tr class='event-color-secondary'><th colspan=5 class='UI-center'></th></tr>
+        <tr class='event-color-secondary'><th id="placeholder" colspan=5 class='UI-center'></th></tr>
         </table>
         </div>
 <?php

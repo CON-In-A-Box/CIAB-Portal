@@ -8,7 +8,7 @@ if ($_REQUEST['Function'] == "public") {
 ?>
     <div class="UI-footer-div">
     <div class='UI-footer'>
-    <img class='UI-footer-icon'>
+    <img class='UI-footer-icon' alt='Event Icon'>
     <button class='UI-footer-issues-bar-item' onclick='window.open("mailto: <?php echo getFeedbackEmail(); ?>?subject=Con-in-a-Box Feedback");'><i class="fa fa-comments" aria-hidden="true"></i>&nbsp;Feedback</button>
     </div>
     </div>

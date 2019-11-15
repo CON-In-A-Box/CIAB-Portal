@@ -366,7 +366,7 @@ function lookup_names(&$data, $column_name)
 }
 
 
-function dump_sql_to_csv($sql, $lookup_account = false)
+function dump_sql_to_csv($sql, $lookup_account = false, $filter = null)
 {
     $data = [];
     $data[] = array();
@@ -390,7 +390,12 @@ function dump_sql_to_csv($sql, $lookup_account = false)
     ob_start();
 
     foreach ($data as $line) {
-        fputcsv($fh, $line);
+        if ($filter !== null) {
+            $replace = '\1<REDACTED>\3';
+            fputcsv($fh, preg_replace($filter, $replace, $line));
+        } else {
+            fputcsv($fh, $line);
+        }
     }
     $text = ob_get_clean();
 
@@ -399,10 +404,10 @@ function dump_sql_to_csv($sql, $lookup_account = false)
 }
 
 
-function dump_table_to_csv($table, $condition = null)
+function dump_table_to_csv($table, $condition = null, $filter = null)
 {
     $sql = "SELECT * FROM `$table` $condition;";
-    return dump_sql_to_csv($sql);
+    return dump_sql_to_csv($sql, false, $filter);
 
 }
 

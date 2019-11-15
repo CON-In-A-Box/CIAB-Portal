@@ -217,7 +217,7 @@ if (strlen($failed_message)) {
 </div>
 
 <div class="UI-configure-panel">
-<i>Note: The Database and database user have to be created by hand before you begin the process. </i>
+<em>Note: The Database and database user have to be created by hand before you begin the process. </em>
 </div>
 
 <div class="UI-configure-info-panel">
