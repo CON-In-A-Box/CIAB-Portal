@@ -34,7 +34,7 @@ ErrorDocument 403 /sitesupport/index.php
 </IfModule>
 
 # Block 'hidden' files
-<FilesMatch "^\.(ht|svn|git)">
+<FilesMatch "^\.(env|ht|svn|git)">
   <IfModule !mod_access_compat.c>
     Require all denied
   </IfModule>
