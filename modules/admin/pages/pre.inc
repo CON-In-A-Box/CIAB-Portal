@@ -80,7 +80,7 @@ if (!empty($_REQUEST)) {
         print dump_table_to_csv(
             'ActivityLog',
             false,
-            "/(Authentication = ')(.*)(')/i"
+            ["/(Authentication = ')(.*)(')/i", "/(OneTime = ')(.*)(')/i"]
         );
         exit();
     }
