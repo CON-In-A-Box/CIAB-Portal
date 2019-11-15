@@ -3,6 +3,15 @@
 require_once($FUNCTIONDIR."/database.inc");
 
 
+function filterLog($query)
+{
+    $pattern = "/(Authentication = ')(.*)(')/i";
+    $replace = '\1&lt;REDACTED&gt;\3';
+    return(preg_replace($pattern, $replace, $query));
+
+}
+
+
 function dbPrintLog($lines)
 {
     $sql = "SELECT * FROM ";
@@ -36,7 +45,7 @@ function dbPrintLog($lines)
         echo $line['Function'];
         echo '</div>';
         echo '<div class="ADMIN-log-col-query">';
-        echo $line['Query'];
+        echo filterLog($line['Query']);
         echo '</div>';
         echo "</div>\n";
     }
