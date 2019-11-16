@@ -171,6 +171,8 @@ function newEntry(division) {
 
   dblClick(btoa(JSON.stringify(data)));
   document.getElementById('delete_btn').disabled = true;
+  document.getElementById('dept_rbac').disabled = true;
+  document.getElementById('dept_rbac').title = 'Edit RBAC after creation';
   showSidebar('edit_position');
 
 }
@@ -249,6 +251,8 @@ function dblClick(json) {
     document.getElementById('dept_slider_parent').classList.remove('UI-gray');
     document.getElementById('delete_btn').disabled = false;
   }
+  document.getElementById('dept_rbac').disabled = false;
+  document.getElementById('dept_rbac').title = '';
   showSidebar('edit_position');
 }
 
