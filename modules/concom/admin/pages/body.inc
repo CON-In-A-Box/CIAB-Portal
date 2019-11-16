@@ -66,7 +66,7 @@ foreach ($Divisions as $division) {
                 </select>
             </div>
         </div>
-        <div
+        <div>
           <div class='UI-table switch-table UI-padding UI-center' id='dept_slider_parent'>
             <div class='UI-table-row'>
               <div class='UI-table-cell'>
