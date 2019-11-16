@@ -225,7 +225,7 @@ function sendError($msg, $arrChunk = null)
     if (!empty($arrChunk)) {
         $message .= "\n\n".print_r($arrChunk, true);
     }
-    \ciab\Email::mail($to, 'noreply@convergence-con.org', $subject, $message, $headers);
+    \ciab\Email::mail($to, getNoReplyAddress(), $subject, $message, $headers);
     trigger_error($msg);
 
 }

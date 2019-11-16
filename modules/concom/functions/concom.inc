@@ -369,7 +369,7 @@ function AddConComPosition($accountid, $department, $position, $note, $notify = 
 
         $message = $_SESSION['fullName'].' has added '.$name." to ".$department.' as '.$position.'.';
 
-        \ciab\Email::mail($to, 'noreply@convergence-con.org', $subject, $message);
+        \ciab\Email::mail($to, getNoReplyAddress(), $subject, $message);
         return true;
     } elseif (!$result) {
         die("Failed Add comcon member to database!");
@@ -403,7 +403,7 @@ function RemoveConComPosition($accountid, $department, $position, $notify = true
             $subject = 'ConCom Division Removal to '.$department;
             $name = $user['First Name']." ".$user['Last Name'];
             $message = $_SESSION['fullName'].' has removed '.$name." from ".$department.'.';
-            \ciab\Email::mail($to, 'noreply@convergence-con.org', $subject, $message);
+            \ciab\Email::mail($to, getNoReplyAddress(), $subject, $message);
         }
         return true;
     } else {
