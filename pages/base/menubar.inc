@@ -32,7 +32,7 @@ if ($kiosk === null) {
              'selected style' => 'event-color-primary',
              'function' => 'main',
              'title' => 'Main Page',
-             'i class' => 'fa fa-home',
+             'i class' => 'fas fa-home',
              'text' => 'Main',
              'responsive' => false);
 
@@ -40,7 +40,7 @@ if ($kiosk === null) {
              'selected style' => 'event-color-primary',
              'function' => 'profile',
              'title' => 'Update Profile Information',
-             'i class' => 'fa fa-user',
+             'i class' => 'fas fa-user',
              'text' => 'Profile',
              'responsive' => true);
     }
@@ -106,7 +106,7 @@ foreach ($admin_menus as $menu) {
 
     if (!$have_admin) {
         echo "<div class='UI-admin-menu-div'>";
-        echo "<button class='UI-admin-menu ".$resp_styles."'><em  class='fa fa-key'></em> Administer</button>";
+        echo "<button class='UI-admin-menu ".$resp_styles."'><em  class='fas fa-key'></em> Administer</button>";
         echo "<div class='UI-admin-menu-end'>";
         $have_admin = true;
     }
@@ -140,11 +140,11 @@ if ($kiosk === null) {
     <a class="UI-main-bar-pancake"
       href="javascript:void(0)"
       onclick="myMenuBar()">
-      <em class="fa fa-bars"></em>
+      <em class="fas fa-bars"></em>
     </a>
     <a class="UI-main-logout-bar-item"
       href="index.php?Function=public" title="Log out and Restart">
-      <em class="fa fa-sign-out"></em>
+      <em class="fas fa-sign-out-alt"></em>
       Log Out
     </a>
 <?php } ?>
@@ -181,7 +181,7 @@ foreach ($admin_menus as $menu) {
 
     if (!$have_admin) {
         echo "<div class='UI-admin-menu-div'>";
-        echo "<button class='UI-admin-menu'><em class='fa fa-key'></em> Administer</button>";
+        echo "<button class='UI-admin-menu'><em class='fas fa-key'></em> Administer</button>";
         echo "<div class='UI-admin-menu-end'>";
         $have_admin = true;
     }

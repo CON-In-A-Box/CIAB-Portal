@@ -217,7 +217,7 @@ function dblClick(json) {
   div.innerHTML += '<button onclick=\'editEmail(null, -1, ' + input.Id +
                    ');\' ' +
                    'class="UI-roundbutton"> ' +
-                   '<i class=\'fa fa-plus-square\'></i></button>\n';
+                   '<i class=\'fas fa-plus-square\'></i></button>\n';
 
   div = document.getElementById('dept_rbac');
   if (div) {
@@ -352,13 +352,13 @@ function editRBAC(dep, input) {
       block += '<button onclick=\'deleteAC(' + dep + ',' + key + ',"' +
                 data.position[inh] + '");\'' +
                    ' class="UI-roundbutton">' +
-                   '<i class=\'fa fa-minus-square\'></i>&nbsp;' +
+                   '<i class=\'fas fa-minus-square\'></i>&nbsp;' +
                    data.position[inh] +
                    '</button>';
     }
     block += '<button onclick=\'newAC(' + dep + ',' + key + ');\' ' +
                'class="UI-roundbutton"> ' +
-               '<i class=\'fa fa-plus-square\'></i></button>\n';
+               '<i class=\'fas fa-plus-square\'></i></button>\n';
     block += '</span><br>';
   }
   div = document.getElementById('position');

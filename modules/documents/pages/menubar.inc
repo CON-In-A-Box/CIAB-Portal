@@ -12,7 +12,7 @@ if (!empty($_SESSION['customFields']['currConComPos']) ||
          'selected style' => 'event-color-primary',
          'function' => 'documents',
          'title' => 'ConCom Documents',
-         'i class' => 'fa fa-folder',
+         'i class' => 'fas fa-folder',
          'text' => 'Documents',
          'responsive' => true);
     } elseif (isset($_SESSION['IS_ADMIN'])) {
@@ -20,7 +20,7 @@ if (!empty($_SESSION['customFields']['currConComPos']) ||
          'selected style' => 'event-color-primary',
          'function' => 'documents',
          'title' => 'Configure Documents',
-         'i class' => 'fa fa-folder',
+         'i class' => 'fas fa-folder',
          'text' => 'Configure Documents',
          'responsive' => true);
     }

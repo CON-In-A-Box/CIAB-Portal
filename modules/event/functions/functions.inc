@@ -139,7 +139,7 @@ SQL;
     print "<tr><th>".implode('</th><th>', $event_keys)."</th></tr>\n";
     foreach ($event_data as $entry) {
         $plain_name = htmlspecialchars($entry['Name'], ENT_QUOTES);
-        $entry['Name'] .= " <i id='badges_".$entry['Id']."_arrow' class='fa fa-caret-down'>";
+        $entry['Name'] .= " <i id='badges_".$entry['Id']."_arrow' class='fas fa-caret-down'>";
         print "<tr class='event-hover-primary' ";
         print "onclick='expandEvent(\"badges_".$entry['Id']."\")'>";
         print "<td>".implode('</td><td>', $entry)."</td>";
