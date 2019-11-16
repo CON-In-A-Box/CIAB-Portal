@@ -5,7 +5,7 @@
 
 require_once(__DIR__."/../../functions/ATTENDANCE.inc");
 
-// Sign in this user for today's meeting
+// Request Past Attendance Credit form Divisional Directors
 
 if (!empty($_REQUEST['meeting'])) {
     $arguments = [
@@ -14,7 +14,7 @@ if (!empty($_REQUEST['meeting'])) {
 
     $updateData = filter_input_array(INPUT_GET, $arguments);
     if (isset($updateData['meeting'])) {
-        update_meeting_attendance($updateData['meeting'], $_SESSION['accountId']);
+        request_past_attendance($updateData['meeting']);
     }
 }
 
