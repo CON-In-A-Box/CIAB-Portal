@@ -7,7 +7,7 @@ if (!empty($_SESSION['customFields']['currConComPos'])) {
      'selected style' => 'event-color-primary',
      'function' => 'volunteers/enter',
      'title' => 'Track Volunteer\'s hours',
-     'i class' => 'fa fa-clock-o',
+     'i class' => 'far fa-clock',
      'text' => 'Enter Hours',
      'responsive' => true);
 }
@@ -24,7 +24,7 @@ if (!is_kiosk('volunteers')) {
          'selected style' => 'event-color-primary',
          'function' => 'volunteers/admin',
          'title' => 'Volunteer\'s',
-         'i class' => 'fa fa-users',
+         'i class' => 'fas fa-users',
          'text' => 'Volunteers',
          'responsive' => true);
     }
@@ -33,7 +33,7 @@ if (!is_kiosk('volunteers')) {
      'selected style' => 'event-color-primary',
      'function' => 'volunteers/admin',
      'title' => 'Volunteer\'s',
-     'i class' => 'fa fa-users',
+     'i class' => 'fas fa-users',
      'text' => 'Volunteers',
      'responsive' => true);
 }

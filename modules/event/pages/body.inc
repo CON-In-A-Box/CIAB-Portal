@@ -11,7 +11,7 @@ require_once __DIR__.'/../functions/functions.inc'
 
         <div id="meetings_content" class="EVENT-content">
             <button onclick="expandSection('meetings')" class="EVENT-section-bar">
-                <span>Meetings<span> <em id="meetings_arrow" class="fa fa-caret-up"></em>
+                <span>Meetings<span> <em id="meetings_arrow" class="fas fa-caret-up"></em>
             </button>
             <div id="meetings" class="UI-container UI-margin UI-hide UI-show">
 <?php list_meetings() ?>
@@ -24,7 +24,7 @@ require_once __DIR__.'/../functions/functions.inc'
 
         <div id="cycles_content" class="EVENT-content">
             <button onclick="expandSection('cycles')" class="EVENT-section-bar">
-                <span id="cycles_button">Annual Cycles<span> <em id="cycles_arrow" class="fa fa-caret-down"></em>
+                <span id="cycles_button">Annual Cycles<span> <em id="cycles_arrow" class="fas fa-caret-down"></em>
             </button>
             <div id="cycles" class="UI-container UI-margin UI-hide">
                 <div class="UI-container UI-margin UI-center">
@@ -37,7 +37,7 @@ require_once __DIR__.'/../functions/functions.inc'
 
         <div id="events_content" class="EVENT-content">
             <button onclick="expandSection('events')" class="EVENT-section-bar">
-                <span id="events_button">Events<span> <em id="events_arrow" class="fa fa-caret-down"></em>
+                <span id="events_button">Events<span> <em id="events_arrow" class="fas fa-caret-down"></em>
             </button>
             <div id="events" class="UI-container UI-margin UI-hide">
              <div class="UI-container UI-margin UI-center">
@@ -52,7 +52,7 @@ require_once __DIR__.'/../functions/functions.inc'
 
         <div id="neon_content" class="EVENT-content">
             <button onclick="expandSection('neon')" class="EVENT-section-bar">
-                <span id="neon_button">Neon<span> <em id="neon_arrow" class="fa fa-caret-up"></em>
+                <span id="neon_button">Neon<span> <em id="neon_arrow" class="fas fa-caret-up"></em>
             </button>
             <div id="neon" class="UI-container UI-margin UI-hide UI-show">
                 <div class="UI-container UI-margin UI-center">

@@ -21,10 +21,10 @@ function expandSection(id) {
   for (var i = 0; i < x.length; i++) {
     if (x[i].className.indexOf('UI-show') == -1) {
       x[i].className += ' UI-show';
-      y.className = 'fa fa-caret-up';
+      y.setAttribute('data-icon', 'caret-up');
     } else {
       x[i].className = x[i].className.replace(' UI-show', '');
-      y.className = 'fa fa-caret-down';
+      y.setAttribute('data-icon', 'caret-down');
     }
   }
 

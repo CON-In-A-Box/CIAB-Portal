@@ -33,7 +33,7 @@ function showSpinner() {
     content.style.width = '90px';
     content.style.backgroundColor = 'orange';
     var span = document.createElement('SPAN');
-    span.innerHTML = '<i class="fa fa-refresh UI-spin"></i>';
+    span.innerHTML = '<i class="fas fa-sync UI-spin"></i>';
     content.appendChild(span);
     document.body.appendChild(dlg);
   }

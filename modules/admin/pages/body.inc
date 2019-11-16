@@ -176,7 +176,7 @@ if (!empty($searchCriteria[ID])) {
 
 <div id="dbg_info_content" class="ADMIN-info-section">
     <button class="ADMIN-button" onclick="expandSection('dbg_info');"><span>Debug Session Information&nbsp;</span><em
-                id="dbg_info_arrow" class="fa fa-caret-down"></em></button>
+                id="dbg_info_arrow" class="fas fa-caret-down"></em></button>
 
     <div id="dbg_info" class="ADMIN-info-parent UI-hide">
         <div id="DebugInfo" class="ADMIN-DebugInfo">
@@ -189,7 +189,7 @@ if (!empty($searchCriteria[ID])) {
 <p></p>
 <div id="db_log_content" class="ADMIN-info-section">
     <button class="ADMIN-button" onclick="expandSection('db_log');"><span>DB Activity Log&nbsp;</span><em
-                id="db_log_arrow" class="fa fa-caret-down"></em></button>
+                id="db_log_arrow" class="fas fa-caret-down"></em></button>
 
     <div id="db_log" class="ADMIN-info-parent UI-hide">
         <div id="ActivityLog" class="ADMIN-ActivityLog">

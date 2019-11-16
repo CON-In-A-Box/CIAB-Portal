@@ -12,7 +12,7 @@ if (in_registration()) {
      'selected style' => 'event-color-primary',
      'function' => 'registration',
      'title' => 'Registration',
-     'i class' => 'fa fa-address-card-o',
+     'i class' => 'far fa-address-card',
      'text' => 'Member Registration',
      'responsive' => true);
 

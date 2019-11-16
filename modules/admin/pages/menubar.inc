@@ -7,7 +7,7 @@ if (\ciab\RBAC::havePermission("site.admin")) {
      'selected style' => 'event-color-primary',
      'function' => 'admin',
      'title' => 'Oh the administration',
-     'i class' => 'fa fa-database',
+     'i class' => 'fas fa-database',
      'text' => 'Database',
      'responsive' => true);
 }

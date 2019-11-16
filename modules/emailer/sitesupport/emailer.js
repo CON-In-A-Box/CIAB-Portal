@@ -382,7 +382,7 @@ function buildAccessList(list) {
     }
     output += '<div class=UI-table-cell><button onclick=\'removeAccess(' +
               idx + ')\' class=\'UI-roundbutton\'>' +
-              '<i class=\'fa fa-minus-square\'></i></button></div>';
+              '<i class=\'fas fa-minus-square\'></i></button></div>';
     output += '</div>\n';
     idx += 1;
   });
@@ -402,7 +402,7 @@ function buildAccessList(list) {
   output += '</div>';
   output += '<div class=UI-table-cell>' +
             '<button class=\'UI-roundbutton\' onclick=\'addAccess()\'>' +
-            '<i class=\'fa fa-plus-square\'></i></button></div>';
+            '<i class=\'fas fa-plus-square\'></i></button></div>';
   output += '</div>\n';
   document.getElementById('access_list_data').innerHTML = output;
   dept.forEach(function(value, index) {

@@ -86,11 +86,11 @@ function loadFiles(path) {
         var icon;
         if (element[3] == 'application/vnd.google-apps.folder') {
           row = folderTable.insertRow(-1);
-          icon = '<i class="fa fa-folder"></i> ';
+          icon = '<i class="fas fa-folder"></i> ';
           folderCount += 1;
         } else {
           row = fileTable.insertRow(-1);
-          icon = '<i class="fa fa-file"></i> ';
+          icon = '<i class="fas fa-file"></i> ';
           fileCount += 1;
         }
         var cell = row.insertCell(0);

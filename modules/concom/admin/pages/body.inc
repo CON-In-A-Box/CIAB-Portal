@@ -14,8 +14,8 @@ $deptCount = departmentDetails(current_eventID());
 
 <div id="admin" class="UI-maincontent UI-show">
 <div class="UI-container UI-padding UI-center">Basic Usage:
-<p>Use the <i class='fa fa-plus-square'></i> to add a new department</p>
-<p>Use the <span class='UI-yellow'>Add New Division<i class='fa fa-plus-square'></i></span> button to add a new Division</p>
+<p>Use the <i class='fas fa-plus-square'></i> to add a new department</p>
+<p>Use the <span class='UI-yellow'>Add New Division<i class='fas fa-plus-square'></i></span> button to add a new Division</p>
 <p>Drag departments around to change the division</p>
 <p>Double click on Divisions or Departments to change the properties</p>
 </div>
@@ -79,9 +79,7 @@ foreach ($Divisions as $division) {
               </div>
             </div>
           </div>
-        </div>
-
-       <div class='UI-center'>
+        <div class='UI-center'>
             <hr>
             <button class='UI-eventbutton'
                 onclick='savePosition();'>
@@ -96,6 +94,7 @@ foreach ($Divisions as $division) {
               Delete
             </button>
         </div>
+      </div>
     </div>
 
     <div class='UI-sidebar-hidden UI-fixed' id='edit_email'>
