@@ -631,3 +631,12 @@
     @extend .UI-red;
     @extend .UI-right;
 }
+
+.UI-footer-event {
+    @extend .UI-bar-item;
+    @extend .event-color-primary;
+    float: none;
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%);
+}
