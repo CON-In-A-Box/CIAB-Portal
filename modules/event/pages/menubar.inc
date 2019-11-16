@@ -4,7 +4,7 @@ if (isset($_SESSION['IS_ADMIN'])) {
      'selected style' => 'event-color-primary',
      'function' => 'event',
      'title' => 'Event Management',
-     'i class' => 'fa fa-calendar',
+     'i class' => 'far fa-calendar-alt',
      'text' => 'Events & Meetings',
      'responsive' => true);
 }

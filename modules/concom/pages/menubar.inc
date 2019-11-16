@@ -5,7 +5,7 @@ if (!empty($_SESSION['customFields']['currConComPos']) ||
          'selected style' => 'event-color-primary',
          'function' => 'concom',
          'title' => 'The Current ConCom List',
-         'i class' => 'fa fa-phone',
+         'i class' => 'fas fa-phone',
          'text' => 'ConCom List',
          'responsive' => true);
 }
@@ -15,7 +15,7 @@ if (\ciab\RBAC::havePermission("site.concom.structure")) {
          'selected style' => 'event-color-primary',
          'function' => 'concom/admin',
          'title' => 'ConCom Structure',
-         'i class' => 'fa fa-sitemap',
+         'i class' => 'fas fa-sitemap',
          'text' => 'ConCom Structure',
          'responsive' => true);
 }

@@ -7,7 +7,7 @@ if (email::allowed()) {
         'selected style' => 'event-color-primary',
         'function' => 'emailer',
         'title' => 'Send E-mail',
-        'i class' => 'fa fa-envelope',
+        'i class' => 'fas fa-envelope',
         'text' => 'Send E-mail',
         'responsive' => true);
 }

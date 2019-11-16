@@ -490,7 +490,7 @@ function _departments($division)
     echo "<button onclick='newEntry($did)' ";
     echo "class='CONCOM-new-department-button' ";
     echo "ondrop='dragDropParent(event, 2);'>";
-    echo "<i class='fa fa-plus-square' ";
+    echo "<i class='fas fa-plus-square' ";
     echo "ondrop='dragDropParent(event, 3);'></i></button>\n";
     echo "</div>\n";
 
@@ -502,7 +502,7 @@ function build_structure_sections()
     global $Divisions, $Departments, $deptCount;
 
     echo "<div id='division_new' class='UI-container UI-margin'>";
-    echo "<button onclick='newEntry(-1)' class='CONCOM-new-division-button'><span>Add New Division</span> <i class='fa fa-plus-square'></i></button>";
+    echo "<button onclick='newEntry(-1)' class='CONCOM-new-division-button'><span>Add New Division</span> <i class='fas fa-plus-square'></i></button>";
     echo "</div>\n";
 
     foreach ($Divisions as $div) {

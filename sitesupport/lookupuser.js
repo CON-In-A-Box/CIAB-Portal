@@ -134,7 +134,7 @@ var userLookup = (function(options) {
       if (id) {
         var xhttp = new XMLHttpRequest();
         document.getElementById('userLookup_spinner').innerHTML =
-              '<i class=\'fa fa-spinner UI-spin\'></i>';
+              '<i class=\'fas fa-spinner UI-spin\'></i>';
         document.getElementById('userLookup_message').innerHTML = '';
         xhttp.onreadystatechange = function() {
           var response = JSON.parse(this.responseText);
