@@ -105,7 +105,17 @@ function meetings()
                 if ($nowDate == $checkDate) {
                     echo "<td class='CONCOM-checkin-now'><a href='index.php?Function=concom/signin&meeting=".$value['MeetingID']."'>Sign In Now!</a>";
                 } else {
-                    echo "<td>Not Checked In";
+                    echo "<td>";
+                    $checkPending = check_meeting_pastrequest($value['MeetingID']);
+
+                    if ($checkPending) {
+                        echo "Not Checked In - Attendance request pending";
+                    } else {
+                        echo "<form action='index.php?Function=concom/pastcredit&meeting=".$value['MeetingID']."' method='post' name='butiwasthere' id='butiwasthere'>";
+                        echo "<input type='hidden' name='meeting' value='".$value['MeetingID']."'>";
+                        echo "Not Checked In - <button class='UI-orangebutton'>But I attended!</button>";
+                        echo "</form>";
+                    }
                 }
             }
             echo "</td></tr>\n";
