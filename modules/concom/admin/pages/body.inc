@@ -79,9 +79,7 @@ foreach ($Divisions as $division) {
               </div>
             </div>
           </div>
-        </div>
-
-       <div class='UI-center'>
+        <div class='UI-center'>
             <hr>
             <button class='UI-eventbutton'
                 onclick='savePosition();'>
@@ -96,6 +94,7 @@ foreach ($Divisions as $division) {
               Delete
             </button>
         </div>
+      </div>
     </div>
 
     <div class='UI-sidebar-hidden UI-fixed' id='edit_email'>
