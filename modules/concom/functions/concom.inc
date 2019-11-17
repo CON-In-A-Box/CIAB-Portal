@@ -724,6 +724,17 @@ function buildDonutData()
         $output .= "'dsize':1,";
         $output .= "},";
 
+        $output .= "'subData':[";
+        $output .= "{";
+        $output .= "'nodeData': {";
+        $output .= "'label': '\u{2193}',";
+        $output .= "'colorIndex':  $pid,";
+        $output .= "'strokeWidth': 2,";
+        $output .= "'dsize': 1,";
+        $output .= "'noRotate': 1,";
+        $output .= "'pieWidth': 10,";
+        $output .= "},";
+
         if (count($d) > 0) {
             $output .= "'subData':[";
             $ii = 0;
@@ -752,6 +763,8 @@ function buildDonutData()
             $output .= "},";
             $output .= "],";
         }
+        $output .= "},";
+        $output .= "],";
         $output .= "},";
         $pid++;
     }
