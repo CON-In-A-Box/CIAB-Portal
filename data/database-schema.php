@@ -65,6 +65,7 @@ class SCHEMA
             'DepartmentID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
             'Name' => 'VARCHAR(50) NOT NULL',
             'ParentDepartmentID' => 'INT UNSIGNED NOT NULL',
+            'FallbackID' => 'INT UNSIGNED UNIQUE',
         ],
         'ElegibleVoters' => [
             'VoterRecordID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
