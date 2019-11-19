@@ -175,24 +175,26 @@ function customer($account)
 
 <?php
 $event = current_eventID();
-$name = current_eventName();
-$badges = get_tickets($account, $event);
-$lines = [];
-$user = lookup_user_by_id($account);
-if (!empty($badges)) {
-    echo "<div class='UI-margin UI-center'>\n";
-    echo "<h2>'$name' badges associated with ";
-    echo "<span class='UI-red'>&nbsp;".$user["users"][0]["First Name"]." ";
-    echo $user["users"][0]["Last Name"]."&nbsp;</span>";
-    echo "</h2>";
-    echo "</div>\n";
-} else {
-    echo "<div class='UI-margin UI-center'>\n";
-    echo "<h2>NO '$name' badges associated with ";
-    echo "<span class='UI-red'>&nbsp;".$user["users"][0]["First Name"]." ";
-    echo $user["users"][0]["Last Name"]."&nbsp;</span>";
-    echo "</h2>";
-    echo "</div>\n";
+if ($event !== null) {
+    $name = current_eventName();
+    $badges = get_tickets($account, $event);
+    $lines = [];
+    $user = lookup_user_by_id($account);
+    if (!empty($badges)) {
+        echo "<div class='UI-margin UI-center'>\n";
+        echo "<h2>'$name' badges associated with ";
+        echo "<span class='UI-red'>&nbsp;".$user["users"][0]["First Name"]." ";
+        echo $user["users"][0]["Last Name"]."&nbsp;</span>";
+        echo "</h2>";
+        echo "</div>\n";
+    } else {
+        echo "<div class='UI-margin UI-center'>\n";
+        echo "<h2>NO '$name' badges associated with ";
+        echo "<span class='UI-red'>&nbsp;".$user["users"][0]["First Name"]." ";
+        echo $user["users"][0]["Last Name"]."&nbsp;</span>";
+        echo "</h2>";
+        echo "</div>\n";
+    }
 }
 ?>
         <div class='UI-rest event-color-secondary'></div>

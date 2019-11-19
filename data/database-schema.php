@@ -160,6 +160,37 @@ class SCHEMA
         'Position' => 'VARCHAR(100) NOT NULL',
         'Permission' => 'VARCHAR(100) NOT NULL',
         'Note' => 'TEXT'
+    ],
+
+    'Members' => [
+    'AccountID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
+    'FirstName' => 'VARCHAR(50)',
+    'MiddleName' => 'VARCHAR(50)',
+    'LastName' => 'VARCHAR(50)',
+    'Suffix' => 'VARCHAR(50)',
+    'Login' => 'VARCHAR(50) UNIQUE',
+    'Email' => 'VARCHAR(50)',
+    'Email2' => 'VARCHAR(50)',
+    'Email3' => 'VARCHAR(50)',
+    'Phone' => 'VARCHAR(50)',
+    'Phone2' => 'VARCHAR(50)',
+    'AddressLine1' => 'VARCHAR(200)',
+    'AddressLine2' => 'VARCHAR(200)',
+    'AddressCity' => 'VARCHAR(200)',
+    'AddressState' => 'VARCHAR(50)',
+    'AddressZipCode' => 'VARCHAR(20)',
+    'AddressZipCodeSuffix' => 'VARCHAR(20)',
+    'AddressCountry' => 'VARCHAR(50)',
+    'AddressProvince' => 'VARCHAR(50)',
+    'Deceased' => 'BOOLEAN',
+    'DoNotContact' => 'BOOLEAN',
+    'EmailOptOut' => 'BOOLEAN',
+    'Birthdate' => 'DATE',
+    'Gender' => 'VARCHAR(50)',
+    /* from custom fields */
+    'PreferredFirstName' => 'VARCHAR(50)',
+    'PreferredLastName' => 'VARCHAR(50)',
+    'DisplayPhone' => 'BOOLEAN',
     ]
   ];
 

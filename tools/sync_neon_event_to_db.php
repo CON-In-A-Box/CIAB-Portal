@@ -106,13 +106,20 @@ function _Neon_events()
 }
 
 
-function do_Neon_import()
+function do_event_Neon_import($history)
 {
     maxQuery();
     $fields = _loadEventCustomFields();
     $events = _Neon_events();
-    $event = array_slice($events, -1)[0];
-    _Neon_import_people($fields, $event);
+    if (!$history) {
+        $event = array_slice($events, -1)[0];
+        _Neon_import_people($fields, $event);
+    } else {
+        foreach ($events as $event) {
+            echo $event['Event Name']."\n";
+            _Neon_import_people($fields, $event);
+        }
+    }
 
 }
 
@@ -126,5 +133,12 @@ if (!empty($pids)) {
     }
 }
 
+$historical = false;
 
-do_Neon_import();
+for ($i = 0; $i < count($argv); ++$i) {
+    if ($argv[$i] === '--historical') {
+        $historical = true;
+    }
+}
+
+do_event_Neon_import($historical);

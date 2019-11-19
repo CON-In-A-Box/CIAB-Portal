@@ -2,7 +2,7 @@
 <script src="sitesupport/confirmbox.js"></script>
 <script src="sitesupport/validation.js"></script>
 <script type="text/javascript">
-function validate_form(thisform)
+function validateForm(thisform)
 {
   with (thisform)
   {

@@ -127,7 +127,12 @@ try {
     _config_from_Database();
 
     // Include NeonCRM for DB calls via API
-    require_once(__DIR__."/neon.inc");
+    if (array_key_exists('NEONID', $GLOBALS) &&
+        array_key_exists('NEONKEY', $GLOBALS) &&
+        !empty($GLOBALS['NEONID']) &&
+        !empty($GLOBALS['NEONKEY'])) {
+        require_once(__DIR__."/neon.inc");
+    }
 
     // Load the base of all active modules
     $modules = scandir($MODULESDIR);
@@ -319,5 +324,60 @@ function urlsafe_b64encode($string)
     $data = base64_encode($string);
     $data = str_replace(array('+','/','='), array('-','_',''), $data);
     return $data;
+
+}
+
+
+/*************************/
+/* Neon Helper Functions */
+/*************************/
+
+
+function loadDefinedFields()
+{
+    global $_SESSION, $ADMINACCOUNTS;
+    if (!array_key_exists('Neon', $GLOBALS)) {
+        return;
+    }
+
+    // Custom Field Data for Session - Parse it to an easy to use array
+    $request = [
+    'method' => 'common/listCustomFields',
+    'parameters' => [
+    'searchCriteria.component' => "Account",
+        ],
+        ];
+    $result = $GLOBALS['Neon']->go($request);
+    if (isset($result['operationResult']) && $result['operationResult'] == 'SUCCESS') {
+        $_SESSION['definedFields']['customField'] = $result['customFields']['customField'];
+        foreach ($result['customFields']['customField'] as $val) {
+            $_SESSION['definedFields'][$val['fieldId']] = $val['fieldName'];
+            if (isset($val['fieldOptions'])) {
+                foreach ($val['fieldOptions']['fieldOption'] as $fval) {
+                    $_SESSION['definedFields'][$fval['id']] = $fval['name'];
+                }
+                unset($fval);
+                if ($val['fieldName'] == "Lottery Status") {
+                    foreach ($val['fieldOptions']['fieldOption'] as $fval) {
+                        $_SESSION['definedFields']['Lottery Status'][$fval['id']] = $fval['name'];
+                    }
+                    unset($fval);
+                } elseif ($val['fieldName'] == "Bed Preference") {
+                    foreach ($val['fieldOptions']['fieldOption'] as $fval) {
+                        $_SESSION['definedFields']['Bed Preference'][$fval['id']] = $fval['name'];
+                    }
+                    unset($fval);
+                } elseif ($val['fieldName'] == "Hotel Qualifier") {
+                    foreach ($val['fieldOptions']['fieldOption'] as $fval) {
+                        $_SESSION['definedFields']['Hotel Qualifier'][$fval['id']] = $fval['name'];
+                    }
+                    unset($fval);
+                }
+            }
+        }
+        unset($val);
+    } else {
+        die("Impossible error during Defined Custom Fields Download");
+    }
 
 }

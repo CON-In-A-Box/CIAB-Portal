@@ -47,6 +47,7 @@ function _lookup_events_attendees($fields, $event, $page = 1, $output = null, $a
 {
     global $Neon;
 
+    echo '.';
     $search = [
     'method' => 'event/retrieveEventAttendees',
     'parameters' => [
@@ -78,6 +79,7 @@ function _lookup_events_attendees($fields, $event, $page = 1, $output = null, $a
             echo $page.'/'.$results['page']['totalPage']."\n";
             return _lookup_events_attendees($fields, $event, $page + 1, $output);
         } else {
+            echo '.';
             return $output;
         }
     }
@@ -86,40 +88,51 @@ function _lookup_events_attendees($fields, $event, $page = 1, $output = null, $a
 }
 
 
-function _updateMember($person, $event)
+function _updateRegistrations($people, $event)
 {
-    $key = $person['attendeeId'];
-    $accountID = $person['attendeeAccountId'];
-    $eventID = $event['MySQLEventID'];
-    $regByID = $person['registrantAccountId'];
-    $dt = new DateTime($person['registrationDate']);
-    $date = $dt->format("Y-m-d H:i:s");
-    if (array_key_exists('Number of Active Badges', $person)) {
-        $pickup = $person['Number of Active Badges'];
-    } else {
-        $pickup = 'NULL';
-    }
-    if (array_key_exists('Badge Name', $person)) {
-        $badge = MyPDO::quote(substr($person['Badge Name'], 0, 100));
-    } else {
-        $badge = 'NULL';
-    }
-    /* TODO: BadgeTypeID */
-    $typeID = 1;
-    /* TODO: BadgeDependentOnID */
-    if (array_key_exists('In Case Of Emergency (Name and Phone)', $person)) {
-        $contact = MyPDO::quote($person['In Case Of Emergency (Name and Phone)']);
-    } else {
-        $contact = 'NULL';
-    }
-
     $sql = <<<SQL
         REPLACE INTO `Registrations` (RegistrationID, AccountID, EventID,
             RegisteredByID, RegistrationDate, BadgesPickedUp, BadgeName, BadgeTypeID,
             EmergencyContact)
-        VALUES ($key, $accountID, $eventID, $regByID, '$date', $pickup, $badge, $typeID, $contact);
+        VALUES
 SQL;
-    return $sql;
+
+    $data = [];
+    foreach ($people as $person) {
+        $key = $person['attendeeId'];
+        if (array_key_exists('attendeeAccountId', $person)) {
+            $accountID = $person['registrantAccountId'];
+        } else {
+            $accountID = $person['attendeeId'];
+        }
+        $eventID = $event['MySQLEventID'];
+        $regByID = $person['registrantAccountId'];
+        $dt = new DateTime($person['registrationDate']);
+        $date = MyPDO::quote($dt->format("Y-m-d H:i:s"));
+        if (array_key_exists('Number of Active Badges', $person)) {
+            $pickup = $person['Number of Active Badges'];
+        } else {
+            $pickup = 'NULL';
+        }
+        if (array_key_exists('Badge Name', $person)) {
+            $badge = MyPDO::quote(substr($person['Badge Name'], 0, 100));
+        } else {
+            $badge = 'NULL';
+        }
+        /* TODO: BadgeTypeID */
+        $typeID = 1;
+        /* TODO: BadgeDependentOnID */
+        if (array_key_exists('In Case Of Emergency (Name and Phone)', $person)) {
+            $contact = MyPDO::quote($person['In Case Of Emergency (Name and Phone)']);
+        } else {
+            $contact = 'NULL';
+        }
+        $data[] = "($key, $accountID, $eventID, $regByID, $date, $pickup, $badge, $typeID, $contact)";
+    }
+    $sql .= implode(", ", $data);
+    $sql .= ';';
+
+    DB::run($sql);
 
 }
 
@@ -128,29 +141,10 @@ function _import_page_of_people($event, $people, $page)
 {
     $total = 0;
     $eventID = $event['MySQLEventID'];
-    $command = "";
-    foreach ($people['attendees'] as $person) {
-        $line = _updateMember($person, $event);
-        $accountID = $person['attendeeAccountId'];
-        $sql = <<<SQL
-            INSERT IGNORE INTO `TempEventPage`
-            SET  AccountID = $accountID,
-                 PageFound = $page;
-SQL;
-        $line .= $sql;
-
-        if (strlen($command) + strlen($line) > $GLOBALS['MAX_PACKET']) {
-            \DB::run($command);
-            $command = $line;
-        } else {
-            $command .= $line;
-        }
-
-        $total ++;
-    }
-    if (!empty($command)) {
-        \DB::run($command);
-    }
+    echo '.';
+    _updateRegistrations($people['attendees'], $event);
+    echo '.';
+    $total += count($people['attendees']);
     return $total;
 
 }

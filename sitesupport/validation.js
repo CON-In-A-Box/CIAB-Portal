@@ -5,7 +5,8 @@
 /* jshint browser: true */
 /* jshint -W097 */
 /* global alertbox */
-/* exported validateRequired, validateSelect, validateEmail, validateDate  */
+/* exported validateRequired, validateSelect, validateEmail, validateDate,
+            validateForm  */
 
 function validateRequired(field,alerttxt) {
   if (field.value === null || field.value === '') {
@@ -16,7 +17,7 @@ function validateRequired(field,alerttxt) {
   }
 }
 // example of required
-// function validate_form(thisform)
+// function validateForm(thisform)
 // {
 // with (thisform)
 // {
@@ -34,7 +35,7 @@ function validateSelect(field,alerttxt) {
 }
 // example of required
 // Note:  Will only validate that index isn't 0 (the first option)
-// function validate_form(thisform)
+// function validateForm(thisform)
 // {
 // with (thisform)
 // {
@@ -55,7 +56,7 @@ function validateEmail(field,alerttxt) {
 }
 
 // example of email
-// function validate_form(thisform)
+// function validateForm(thisform)
 // {
 // with (thisform)
 // {
@@ -72,4 +73,45 @@ function validateDate(field,alerttxt) {
   } else {
     return true;
   }
+}
+
+function validateForm(thisform) {
+  if (validateRequired(thisform.firstName,
+    'Please enter a legal first name') === false) {
+    thisform.firstName.focus();
+    return false;
+  }
+  if (validateRequired(thisform.lastName,
+    'Please enter a legal last name') === false) {
+    thisform.lastName.focus();
+    return false;
+  }
+  if (validateEmail(thisform.email1,
+    'Must have at least one valid Email address') === false) {
+    thisform.email1.focus();
+    return false;
+  }
+  if (validateRequired(thisform.phone1,
+    'Must have at least one phone number') === false) {
+    thisform.phone1.focus();
+    return false;
+  }
+  if (validateRequired(thisform.addressLine1,
+    'Address cannot be blank') === false) {
+    thisform.addressLine1.focus();
+    return false;
+  }
+  if (validateRequired(thisform.city,'City cannot be blank') === false) {
+    thisform.city.focus();
+    return false;
+  }
+  if (validateRequired(thisform.zipCode,'Zip Code cannot be blank') === false) {
+    thisform.zipCode.focus();
+    return false;
+  }
+  if (validateSelect(thisform.country,'Please select a country') === false) {
+    thisform.country.focus();
+    return false;
+  }
+  return true;
 }
