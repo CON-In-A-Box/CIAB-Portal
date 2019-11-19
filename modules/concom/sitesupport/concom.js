@@ -17,11 +17,11 @@ var basicReload = function() {
   window.location = 'index.php?Function=concom/admin';
 };
 
-function basicConcomRequestAdmin(parameter, finish) {
+function basicConcomRequestAdmin(method, parameter, finish) {
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
-      finish();
+      finish(this);
       if (finish != basicReload) {
         hideSpinner();
       }
@@ -32,9 +32,14 @@ function basicConcomRequestAdmin(parameter, finish) {
     }
   };
   showSpinner();
-  xhttp.open('POST', 'index.php?Function=concom/admin', true);
-  xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-  xhttp.send(parameter);
+  if (method == 'POST') {
+    xhttp.open(method, 'index.php?Function=concom/admin', true);
+    xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    xhttp.send(parameter);
+  } else {
+    xhttp.open('GET', 'index.php?Function=concom/admin&' + parameter, true);
+    xhttp.send();
+  }
 
 }
 
@@ -45,7 +50,7 @@ function setParent(id, newParent) {
   };
   var param = btoa(JSON.stringify(data));
 
-  basicConcomRequestAdmin('reparent=' + param, basicReload);
+  basicConcomRequestAdmin('POST', 'reparent=' + param, basicReload);
 
 }
 
@@ -103,9 +108,14 @@ function updateDeptSection(division) {
     if (!document.getElementById('parent').classList.contains('UI-hide')) {
       document.getElementById('parent').classList.add('UI-hide');
     }
+    document.getElementById('fallback_dept').classList.remove('UI-hide');
   } else {
     if (!document.getElementById('sub_dept').classList.contains('UI-hide')) {
       document.getElementById('sub_dept').classList.add('UI-hide');
+    }
+    if (!document.getElementById('fallback_dept').classList.contains(
+      'UI-hide')) {
+      document.getElementById('fallback_dept').classList.add('UI-hide');
     }
     document.getElementById('dept_slider').checked = false;
     document.getElementById('parent').classList.remove('UI-hide');
@@ -125,28 +135,25 @@ function toggleDept() {
 
 }
 
-function processPosition() {
-  var data = {
-    'Id': document.getElementById('dept_id').value,
-    'Name': document.getElementById('dept_name').value,
-    'ParentDept': document.getElementById('dept_parent').value,
-  };
-
-  var isDiv = document.getElementById('dept_slider').checked;
-  if (isDiv && data.Id != data.ParentDept) {
-    data.ParentDept = data.Id;
-  }
-
-  var param = btoa(JSON.stringify(data));
-  basicConcomRequestAdmin('modify=' + param, basicReload);
-
-}
-
 function savePosition() {
   confirmbox(
     'Confirms Position Details',
-    'Are the position details correct?').then(processPosition);
+    'Are the position details correct?').then(function() {
+    var data = {
+      'Id': document.getElementById('dept_id').value,
+      'Name': document.getElementById('dept_name').value,
+      'ParentDept': document.getElementById('dept_parent').value,
+      'FallbackID': document.getElementById('dept_fallback').value,
+    };
 
+    var isDiv = document.getElementById('dept_slider').checked;
+    if (isDiv && data.Id != data.ParentDept) {
+      data.ParentDept = data.Id;
+    }
+
+    var param = btoa(JSON.stringify(data));
+    basicConcomRequestAdmin('POST', 'modify=' + param, basicReload);
+  });
 }
 
 function newEntry(division) {
@@ -173,7 +180,11 @@ function newEntry(division) {
   document.getElementById('delete_btn').disabled = true;
   document.getElementById('dept_rbac').disabled = true;
   document.getElementById('dept_rbac').title = 'Edit RBAC after creation';
+
   showSidebar('edit_position');
+  if (isDiv) {
+    getFallbackOptions(-1, -1);
+  }
 
 }
 
@@ -187,7 +198,7 @@ function deletePosition() {
 function processDeletion() {
   var id = document.getElementById('dept_id').value;
 
-  basicConcomRequestAdmin('delete=' + id, basicReload);
+  basicConcomRequestAdmin('POST', 'delete=' + id, basicReload);
 
 }
 
@@ -254,6 +265,9 @@ function dblClick(json) {
   document.getElementById('dept_rbac').disabled = false;
   document.getElementById('dept_rbac').title = '';
   showSidebar('edit_position');
+  if (input.Id == input.Pid) {
+    getFallbackOptions(input.Id, input.Fallback);
+  }
 }
 
 function changeEmail() {
@@ -302,7 +316,7 @@ function deleteEmail() {
 
 function processDeleteEmail() {
   var id = document.getElementById('email_index').value;
-  basicConcomRequestAdmin('deleteEmail=' + id, basicReload);
+  basicConcomRequestAdmin('POST', 'deleteEmail=' + id, basicReload);
 
 }
 
@@ -327,7 +341,7 @@ function processSaveEmail() {
   }
 
   var param = btoa(JSON.stringify(data));
-  basicConcomRequestAdmin('email=' + param, basicReload);
+  basicConcomRequestAdmin('POST', 'email=' + param, basicReload);
 
 }
 
@@ -371,23 +385,17 @@ function editRBAC(dep, input) {
 }
 
 function showRBAC(id) {
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-      hideSpinner();
-      editRBAC(id, this.responseText);
-    }
-  };
-  xhttp.open('GET', 'index.php?Function=concom/admin&permissions=' + id, true);
-  showSpinner();
-  xhttp.send();
+  basicConcomRequestAdmin('GET', 'permissions=' + id, function(response) {
+    editRBAC(id, response.responseText);
+  });
+
 }
 
 function deleteAC(dep, pos, perm) {
   confirmbox(
     'Confirms Permission Deletion',
     'Really delete "' + perm + '" permission?').then(function() {
-    basicConcomRequestAdmin('deleteAC=' + dep + '&position=' + pos +
+    basicConcomRequestAdmin('POST', 'deleteAC=' + dep + '&position=' + pos +
                               '&permission=' + perm, function() {
       showRBAC(dep);
     });
@@ -434,7 +442,7 @@ function permissionSave() {
   var pos = document.getElementById('perm_position').value;
   var perm =  document.getElementById('perm_perm').value;
 
-  basicConcomRequestAdmin('addAC=' + dep + '&position=' + pos +
+  basicConcomRequestAdmin('POST', 'addAC=' + dep + '&position=' + pos +
                           '&permission=' + perm, function() {
     showRBAC(dep);
   });
@@ -450,4 +458,28 @@ function confirmRemoval(fname, lname, target, department, position) {
         encodeURI(position);
   });
 
+}
+
+function getFallbackOptions(id, fallback) {
+  var dropdown =  document.getElementById('dept_fallback');
+  dropdown.innerHTML = '';
+  var option = document.createElement('option');
+  option.text = '----';
+  option.value = -1;
+  dropdown.add(option);
+
+  basicConcomRequestAdmin('GET', 'fallbackList=' + id, function(response) {
+    var data = JSON.parse(response.responseText);
+    var i = 0;
+    data.forEach(function(element) {
+      var option = document.createElement('option');
+      option.text = element.Name;
+      option.value = element.DepartmentID;
+      dropdown.add(option);
+      if (element.Name == fallback) {
+        i = dropdown.length - 1;
+      }
+    });
+    dropdown.selectedIndex = i;
+  });
 }

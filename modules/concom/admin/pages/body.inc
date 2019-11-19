@@ -55,6 +55,11 @@ if (\ciab\RBAC::havePermission("site.concom.permissions")) {
                 <label class='UI-label' for='dept_sub'>Sub Departments:</label>
                 <input class="UI-input" readonly id="dept_sub" value=''>
             </div>
+            <div id="fallback_dept">
+                <label class='UI-label' for='dept_fallback'>Fallback For:</label>
+                <select class="UI-select" style="width:auto" name="Fallback" id="dept_fallback">
+                </select>
+            </div>
             <div id="parent">
                 <label class='UI-label' for='dept_parent'>Division:</label>
                 <select class="UI-select" style="width:auto" name="Parent" id="dept_parent">
@@ -66,6 +71,7 @@ foreach ($Divisions as $division) {
                 </select>
             </div>
         </div>
+        &nbsp;
         <div>
           <div class='UI-table switch-table UI-padding UI-center' id='dept_slider_parent'>
             <div class='UI-table-row'>

@@ -1,5 +1,9 @@
 <?php
 
+/*.
+    require_module 'standard';
+.*/
+
 require_once($FUNCTIONDIR.'/divisional.inc');
 require_once($FUNCTIONDIR."/database.inc");
 require_once($FUNCTIONDIR.'/users.inc');
@@ -467,7 +471,9 @@ function _departments($division)
             'Pid' => $DivId,
             'Children' => 0,
             'Count' => $deptCount[$id],
-            'Email' => $Departments[$name]['Email']
+            'Email' => $Departments[$name]['Email'],
+            'Fallback' => $Departments[$name]['Fallback'],
+            'FallbackID' => $Departments[$name]['FallbackID']
                     ];
             $data_enc = base64_encode(json_encode($data));
             echo "ondblclick='dblClick(\"".$data_enc."\");' ";
@@ -508,7 +514,9 @@ function build_structure_sections()
         'Pid' => $id,
         'Children' => $Departments[$div]['childCount'],
         'Count' => $deptCount[$id],
-        'Email' => null
+        'Email' => null,
+        'Fallback' => $Departments[$div]['Fallback'],
+        'FallbackID' => $Departments[$div]['FallbackID']
                 ];
         $data_enc = base64_encode(json_encode($data));
         echo "<div id='division_$id' class='UI-container UI-margin'>\n";
@@ -528,14 +536,19 @@ function save_position($data)
     if ($data->ParentDept >= 0) {
         $parent = $data->ParentDept;
     }
+    $fallback = $data->FallbackID;
+    if ($fallback == -1) {
+        $falback = "'NULL'";
+    }
     if ($data->Id != -1) {
         $sql = "UPDATE `Departments` SET ";
         $sql .= " `Name` = '".$data->Name."' ";
         $sql .= ", `ParentDepartmentID` = ".$parent;
+        $sql .= ", `FallbackID` = ".$fallback;
         $sql .= " WHERE `DepartmentID` = ".$data->Id;
         DB::run($sql);
     } else {
-        $sql = "INSERT INTO `Departments` (`DepartmentID`, `Name`, `ParentDepartmentID`) VALUES (NULL, '".$data->Name."', ".$parent.");";
+        $sql = "INSERT INTO `Departments` (`DepartmentID`, `Name`, `ParentDepartmentID`, `FallbackID`) VALUES (NULL, '".$data->Name."', ".$parent.", ".$fallback.");";
         DB::run($sql);
         if ($data->ParentDept < 0) {
             $sql = "SELECT `DepartmentID` FROM `Departments` ORDER BY `DepartmentID` DESC LIMIT 1";
@@ -693,13 +706,60 @@ function addDepartmentPermission($depId, $posId, $perm)
 }
 
 
+function find_fallback_parent($data, $head)
+{
+    $checked = [];
+    $index = $head;
+    $next = $head;
+
+    while ($next != null && !in_array($next, $checked) &&
+        in_array($next, $data)) {
+        $checked[] = $next;
+        foreach ($data as $i => $k) {
+            if ($k == $next) {
+                $index = $next;
+                $next = $i;
+                break;
+            }
+        }
+        if ($next == $head) {
+            break;
+        }
+    }
+
+    if ($next != null) {
+        return $next;
+    }
+    return $index;
+
+}
+
+
+function fallback_cmp($a, $b)
+{
+    if ($a == $b) {
+        return 0;
+    }
+    if ($a == null) {
+        return 1;
+    }
+    if ($b == null) {
+        return -1;
+    }
+    return 0;
+
+}
+
+
 function buildDonutData()
 {
     global $Departments;
     $data = [];
+    $fallback = [];
     foreach ($Departments as $dpt => $d) {
         if ($d['Division'] == $dpt) {
             $data[$dpt] = [];
+            $fallback[$dpt] = $d['Fallback'];
         }
     }
     ksort($data);
@@ -707,15 +767,45 @@ function buildDonutData()
         if ($d['Division'] == $dpt) {
             continue;
         }
-        $data[$d['Division']][] = $dpt;
+        $data[$d['Division']]['data'][] = $dpt;
     }
     foreach ($data as $dpt) {
         ksort($dpt);
     }
 
+    ksort($fallback);
+    uasort($fallback, fallback_cmp);
+
+    /* Order based on fallback */
+
+    $data2 = [];
+    while (!empty($fallback)) {
+        reset($fallback);
+        $key = find_fallback_parent($fallback, key($fallback));
+        $next = $fallback[$key];
+        $data2[$key] = $data[$key];
+        if ($next !== null) {
+            $data2[$key]['arrow'] = '\u{2193}';
+        } else {
+            $data2[$key]['arrow'] = '\u{233E}';
+        }
+        unset($fallback[$key]);
+        while ($next !== null && array_key_exists($next, $fallback)) {
+            $key = $next;
+            $next = $fallback[$next];
+            $data2[$key] = $data[$key];
+            if ($next !== null) {
+                $data2[$key]['arrow'] = '\u{2193}';
+            } else {
+                $data2[$key]['arrow'] = '\u{233E}';
+            }
+            unset($fallback[$key]);
+        }
+    }
+
     $output = "var data = [";
     $pid = 0;
-    foreach ($data as $i => $d) {
+    foreach ($data2 as $i => $d) {
         $output .= "{'nodeData':{";
         $output .= "'label':'$i',";
         $output .= "'colorIndex': $pid,";
@@ -727,7 +817,7 @@ function buildDonutData()
         $output .= "'subData':[";
         $output .= "{";
         $output .= "'nodeData': {";
-        $output .= "'label': '\u{2193}',";
+        $output .= "'label': '".$d['arrow']."',";
         $output .= "'colorIndex':  $pid,";
         $output .= "'strokeWidth': 2,";
         $output .= "'dsize': 1,";
@@ -735,10 +825,10 @@ function buildDonutData()
         $output .= "'pieWidth': 10,";
         $output .= "},";
 
-        if (count($d) > 0) {
+        if (count($d['data']) > 0) {
             $output .= "'subData':[";
             $ii = 0;
-            foreach ($d as $j) {
+            foreach ($d['data'] as $j) {
                 $z = $ii + $pid;
                 $output .= "{";
                 $output .= "'nodeData': {";
@@ -746,7 +836,7 @@ function buildDonutData()
                 $output .= "'colorIndex': $z,";
                 $output .= "'strokeWidth': 1,";
                 $output .= "'link': 'index.php?Function=concom#".$j."',";
-                $output .= "'dsize': ".strval(1 / count($d)).",";
+                $output .= "'dsize': ".strval(1 / count($d['data'])).",";
                 $output .= "},";
                 $output .= "},";
                 $ii++;
@@ -771,5 +861,52 @@ function buildDonutData()
     $output .= "];";
 
     return $output;
+
+}
+
+
+function buildBackupList($depId)
+{
+    $sql = <<<SQL
+        SELECT
+            *
+        FROM
+            `Departments` as d
+        WHERE
+            `ParentDepartmentID` = `DepartmentID`
+            AND NOT `DepartmentID` = $depId
+            AND `DepartmentID` NOT IN (
+                  SELECT
+                      `DepartmentID`
+                  FROM
+                      `Departments`
+                  WHERE
+                      Name = 'Historical Placeholder'
+                )
+            AND (`DepartmentID` NOT IN (
+                    SELECT
+                        `FallbackID`
+                    FROM
+                        `Departments` as dd
+                    WHERE
+                        dd.`FallbackID` IS NOT NULL
+                )
+                OR `DepartmentID` = (
+                    SELECT
+                        `FallbackID`
+                    FROM
+                        `Departments` as ddd
+                    WHERE
+                        ddd.`DepartmentID` = $depId)
+        )
+SQL;
+    $result = \DB::run($sql);
+    $value = $result->fetch();
+    $data = array();
+    while ($value !== false) {
+        $data[] = $value;
+        $value = $result->fetch();
+    }
+    return $data;
 
 }
