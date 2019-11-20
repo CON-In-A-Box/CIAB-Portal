@@ -9,6 +9,7 @@ require_once(__DIR__.'/VOLUNTEERS.inc');
 require_once(__DIR__.'/POSITION.inc');
 require_once(__DIR__.'/REGISTRATION.inc');
 require_once(__DIR__.'/LIST.inc');
+require_once(__DIR__.'/ATTENDANCE.inc');
 
 
 function getDivision($dep)
@@ -441,17 +442,6 @@ SQL;
         $value = $result->fetch();
     }
     return $years;
-
-}
-
-
-function check_meeting_attendance($meeting)
-{
-    $aid = $_SESSION['accountId'];
-    $sql = "SELECT * FROM `MeetingAttendance` WHERE AccountID = $aid AND MeetingID = $meeting;";
-    $result = \DB::run($sql);
-    $value = $result->fetch();
-    return ($value !== false);
 
 }
 

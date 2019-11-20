@@ -59,14 +59,15 @@ function buildSessionData($accountId)
 }
 
 
-// Support DeepLinks by testing
+// Support DeepLinks for function responses
 function validateDeepLink($deepLinkId)
 {
     if ($deepLinkId == $GLOBALS['DUMPSECURE']) {
         return(true);
     } else {
-    // Do search for DeepLink Info based on Function
-    // Search customfields where pending function equals DeepLinkId - Should never return more than one
+        $sql = "SELECT * from `DeepLinks` where LinkID = $deepLinkId";
+        $result = DB::run($sql);
+        return($result->fetch());
     }
 
 }
