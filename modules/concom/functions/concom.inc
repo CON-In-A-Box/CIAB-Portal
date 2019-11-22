@@ -785,9 +785,9 @@ function buildDonutData()
         $next = $fallback[$key];
         $data2[$key] = $data[$key];
         if ($next !== null) {
-            $data2[$key]['arrow'] = '\u{2193}';
+            $data2[$key]['arrow'] = "\u{2193}";
         } else {
-            $data2[$key]['arrow'] = '\u{233E}';
+            $data2[$key]['arrow'] = "\u{233E}";
         }
         unset($fallback[$key]);
         while ($next !== null && array_key_exists($next, $fallback)) {
@@ -795,72 +795,66 @@ function buildDonutData()
             $next = $fallback[$next];
             $data2[$key] = $data[$key];
             if ($next !== null) {
-                $data2[$key]['arrow'] = '\u{2193}';
+                $data2[$key]['arrow'] = "\u{2193}";
             } else {
-                $data2[$key]['arrow'] = '\u{233E}';
+                $data2[$key]['arrow'] = "\u{233E}";
             }
             unset($fallback[$key]);
         }
     }
 
-    $output = "var data = [";
+    unset($data);
+
     $pid = 0;
     foreach ($data2 as $i => $d) {
-        $output .= "{'nodeData':{";
-        $output .= "'label':'$i',";
-        $output .= "'colorIndex': $pid,";
-        $output .= "'strokeWidth': 3,";
-        $output .= "'link': 'index.php?Function=concom#".$i."',";
-        $output .= "'dsize':1,";
-        $output .= "},";
+        $nodeData = [
+        'label' => $i,
+        'colorIndex' => $pid,
+        'strokeWidth' => 3,
+        'link' => 'index.php?Function=concom#'.strval($i),
+        'dsize' => 1
+        ];
 
-        $output .= "'subData':[";
-        $output .= "{";
-        $output .= "'nodeData': {";
-        $output .= "'label': '".$d['arrow']."',";
-        $output .= "'colorIndex':  $pid,";
-        $output .= "'strokeWidth': 2,";
-        $output .= "'dsize': 1,";
-        $output .= "'noRotate': 1,";
-        $output .= "'pieWidth': 10,";
-        $output .= "},";
+        $subData = [];
+        $subData['nodeData'] = [
+        'label' => $d['arrow'],
+        'colorIndex' => $pid,
+        'strokeWidth' => 2,
+        'dsize' => 1,
+        'noRotate' => 1,
+        'pieWidth' => 10
+        ];
 
+        $subSubData = [];
         if (count($d['data']) > 0) {
-            $output .= "'subData':[";
             $ii = 0;
             foreach ($d['data'] as $j) {
                 $z = $ii + $pid;
-                $output .= "{";
-                $output .= "'nodeData': {";
-                $output .= "'label': '$j',";
-                $output .= "'colorIndex': $z,";
-                $output .= "'strokeWidth': 1,";
-                $output .= "'link': 'index.php?Function=concom#".$j."',";
-                $output .= "'dsize': ".strval(1 / count($d['data'])).",";
-                $output .= "},";
-                $output .= "},";
+                $subSubData[]['nodeData'] = [
+                'label' => $j,
+                'colorIndex' => $z,
+                'strokeWidth' => 1,
+                'link' => 'index.php?Function=concom#'.$j,
+                'dsize' => strval(1 / count($d['data']))
+                ];
                 $ii++;
             }
-            $output .= "],";
         } else {
-            $output .= "'subData':[";
-            $output .= "{";
-            $output .= "'nodeData': {";
-            $output .= "'colorIndex': 'rgba(255, 255, 255, .4)',";
-            $output .= "'strokeWidth': 0,";
-            $output .= "'dsize': 1,";
-            $output .= "},";
-            $output .= "},";
-            $output .= "],";
+            $subSubData[]['nodeData'] = [
+            'colorIndex' => 'rgba(255, 255, 255, .4)',
+            'strokeWidth' => 0,
+            'dsize' => 1
+            ];
         }
-        $output .= "},";
-        $output .= "],";
-        $output .= "},";
+        $subData['subData'] = $subSubData;
+        $data[] = [
+        'nodeData' => $nodeData,
+        'subData' => array($subData)
+        ];
         $pid++;
     }
-    $output .= "];";
 
-    return $output;
+    return $data;
 
 }
 
