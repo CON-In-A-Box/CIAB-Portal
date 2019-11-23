@@ -41,7 +41,12 @@ SQL;
     $result = DB::run($sql);
     $value = $result->fetch();
     while ($value !== false) {
-        $temp_dept[$value['DepartmentID']] = ['name' => $value['Name'], 'parent' => $value['ParentDepartmentID'], 'childCount' => 0];
+        $temp_dept[$value['DepartmentID']] = [
+        'name' => $value['Name'],
+        'parent' => $value['ParentDepartmentID'],
+        'childCount' => 0,
+        'FallbackID' => $value['FallbackID']
+        ];
         $value = $result->fetch();
     }
     foreach ($temp_dept as $id => $dept) {
@@ -55,6 +60,8 @@ SQL;
         $Departments[$dept['name']]['id'] = $id;
         $Departments[$dept['name']]['childCount'] = $dept['childCount'];
         $Departments[$dept['name']]['Email'] = [];
+        $Departments[$dept['name']]['FallbackID'] = $dept['FallbackID'];
+        $Departments[$dept['name']]['Fallback'] = $temp_dept[$dept['FallbackID']]['name'];
 
         if (in_array($Departments[$dept['name']]['Division'], $Divisions) == false) {
             array_push($Divisions, $Departments[$dept['name']]['Division']);

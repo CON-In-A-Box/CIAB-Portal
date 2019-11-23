@@ -22,7 +22,8 @@ if (isset($_REQUEST['AddDepartment'])) {
 } else {
 ?>
 <script>
-<?php print buildDonutData();?>
+var data = <?php print json_encode(buildDonutData());?>;
+
 drawDonutChart(window.innerWidth-50, window.innerHeight-50, data, '#donut');
 </script>
 <?php
