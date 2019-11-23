@@ -827,17 +827,14 @@ function buildDonutData()
 
         $subSubData = [];
         if (count($d['data']) > 0) {
-            $ii = 0;
             foreach ($d['data'] as $j) {
-                $z = $ii + $pid;
                 $subSubData[]['nodeData'] = [
                 'label' => $j,
-                'colorIndex' => $z,
+                'colorIndex' => $pid,
                 'strokeWidth' => 1,
                 'link' => 'index.php?Function=concom#'.$j,
                 'dsize' => strval(1 / count($d['data']))
                 ];
-                $ii++;
             }
         } else {
             $subSubData[]['nodeData'] = [
