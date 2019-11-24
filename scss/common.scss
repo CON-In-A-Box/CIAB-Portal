@@ -151,6 +151,17 @@
     @extend .w3-white;
 }
 
+.UI-tabletitle {
+    @extend .UI-center;
+    @extend .event-color-primary;
+    font-size:200%;
+}
+
+.UI-tablefooter {
+    @extend .UI-center;
+    @extend .event-color-primary;
+}
+
 .UI-disabled {
     @extend .w3-disabled;
 }

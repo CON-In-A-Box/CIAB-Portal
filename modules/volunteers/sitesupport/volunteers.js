@@ -530,7 +530,7 @@ function prizeGroupChange() {
 
 function generateHourReport() {
   var hours = document.getElementById('report_hour_min').value;
-  window.location = 'index.php?Function=volunteers/admin&min_hour=' + hours;
+  window.location = 'index.php?Function=volunteers/report&min_hour=' + hours;
 }
 
 function minHourReport() {
@@ -541,7 +541,7 @@ function minHourReport() {
 function generateDeptReport() {
   var name = document.getElementById('dept_data_name').value;
   var deptid = document.getElementById('dept_data').value;
-  window.location = 'index.php?Function=volunteers/admin&dept_report=' +
+  window.location = 'index.php?Function=volunteers/report&dept_report=' +
                     deptid + '&dept_name=' + name;
 }
 
@@ -558,7 +558,7 @@ function generateCSV() {
 
 function generatCSVReport() {
   var table = document.getElementById('csv_table').value;
-  window.location = 'index.php?Function=volunteers/admin&generateCSV=' + table;
+  window.location = 'index.php?Function=volunteers/report&generateCSV=' + table;
 }
 
 function generateDerivedCSV() {
@@ -567,10 +567,9 @@ function generateDerivedCSV() {
 
 function generateDerivedCSVReport() {
   var table = document.getElementById('der_csv_table');
-  var text = table.options[table.selectedIndex].text;
-  var sql = document.getElementById('der_csv_table').value;
-  var args = '&CSVfromSQL=' + sql + '&name=' + text;
-  window.location = 'index.php?Function=volunteers/admin' + args;
+  var report = table.options[table.selectedIndex].text;
+  var args = '&report=' + report;
+  window.location = 'index.php?Function=volunteers/report' + args;
 }
 
 function markDelete(index, tableRow) {
