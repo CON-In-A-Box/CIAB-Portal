@@ -21,3 +21,5 @@ The goal here is to try to get a development environment on a machine that may n
 1. When you are done and want to bring docker down you can use the command `./docker_instance.sh down`
 
 1. If you are a docker poweruser feel freee to add other `docker-compose` parameters to the `docker_instance.sh` commands and they should be passed through. 
+
+1. When using docker, mail will be delivered to an ephemeral service called `mailcatcher`. You can see what mailcatcher has caught at <http://localhost:1080>.

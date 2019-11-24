@@ -2,6 +2,8 @@ version: "3.2"
 services:
   php:
     build: './docker/php/'
+    depends_on:
+      - mailcatcher
     networks:
       - backend
     volumes:
@@ -24,6 +26,7 @@ services:
     depends_on:
       - php
       - mysql
+      - mailcatcher
     networks:
       - frontend
       - backend
@@ -40,6 +43,18 @@ services:
       MYSQL_DATABASE: ${DBNAME}
       MYSQL_PASSWORD: ${DBPASS}
       MYSQL_USER: ${DBUSER}
+    volumes:
+      - mysql:/var/lib/mysql
+  mailcatcher:
+    image: schickling/mailcatcher
+    networks:
+      - frontend
+      - backend
+    ports: 
+      - "1025:1025"
+      - "1080:1080"
 networks:
   frontend:
   backend:
+volumes:
+  mysql:
