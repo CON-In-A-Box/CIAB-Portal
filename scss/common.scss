@@ -257,19 +257,19 @@
     @extend .w3-dropdown-hover;
 }
 
-.UI-admin-menu-div {
+.UI-menu-div {
     @extend .UI-dropdown-hover;
+}
+
+.UI-menu-end {
+    @extend .UI-dropdown-content;
+    @extend .w3-bar-block;
+    @extend .w3-card-4;
 }
 
 .UI-admin-menu {
     @extend .UI-button;
     @extend .UI-yellow;
-}
-
-.UI-admin-menu-end {
-    @extend .UI-dropdown-content;
-    @extend .w3-bar-block;
-    @extend .w3-card-4;
 }
 
 .UI-bar {
