@@ -280,6 +280,17 @@ SQL;
 }
 
 
+function del_conf_value($field)
+{
+    $sql = <<<SQL
+        DELETE FROM `Configuration`
+        WHERE `Field`='$field';
+SQL;
+    DB::run($sql);
+
+}
+
+
 function csv_headers($filename)
 {
     header("Content-Type: application/CSV; charset=UTF-8");
@@ -379,5 +390,75 @@ function loadDefinedFields()
     } else {
         die("Impossible error during Defined Custom Fields Download");
     }
+
+}
+
+
+function _neon_create_webhook($url, $name, $type)
+{
+    if (!array_key_exists('Neon', $GLOBALS)) {
+        return;
+    }
+
+    // Custom Field Data for Session - Parse it to an easy to use array
+    $request = [
+    'method' => 'webhook/createWebhook',
+    'parameters' => [
+    'webhook.webhookName' => "${name}_${type}",
+    'webhook.notifyUrl' => "$url/neon_webhook.php",
+    'webhook.eventTrigger' => $type,
+    'webhook.contentType' => 'application/json'
+        ],
+        ];
+    $result = $GLOBALS['Neon']->go($request);
+    if (isset($result['operationResult']) && $result['operationResult'] == 'SUCCESS') {
+        add_conf_value("NEON_HOOK_ID_$type", $result['id']);
+        return null;
+    }
+    return $result;
+
+}
+
+
+function neon_registerWebhook($url, $name)
+{
+    _neon_create_webhook($url, $name, 'CREATE_ACCOUNT');
+    _neon_create_webhook($url, $name, 'UPDATE_ACCOUNT');
+    add_conf_value('NEON_HOOK_NAME', $name);
+    add_conf_value('NEON_HOOK_URL', $url);
+
+}
+
+
+function _neon_remove_webhook($type)
+{
+    if (!array_key_exists('Neon', $GLOBALS)) {
+        return;
+    }
+
+    $hookname = "NEON_HOOK_ID_$type";
+    // Custom Field Data for Session - Parse it to an easy to use array
+    $request = [
+    'method' => 'webhook/deleteWebhook',
+    'parameters' => [
+    'id' => "${GLOBALS[$hookname]}"
+        ],
+        ];
+    $result = $GLOBALS['Neon']->go($request);
+    if (isset($result['operationResult']) && $result['operationResult'] == 'SUCCESS') {
+        del_conf_value($hookname);
+        return null;
+    }
+    return $result;
+
+}
+
+
+function neon_removeWebhook($type)
+{
+    _neon_remove_webhook('CREATE_ACCOUNT');
+    _neon_remove_webhook('UPDATE_ACCOUNT');
+    del_conf_value('NEON_HOOK_NAME');
+    del_conf_value('NEON_HOOK_URL');
 
 }
