@@ -7,16 +7,39 @@
 // Currently, this database class is set for the MySQL PDO filter/backend. Future version will expand it to be agnostic
 
 require_once($BACKEND.'/'.$_ENV['DB_BACKEND']); // MyPDO Definition used
+require_once($BASEDIR.'/data/database-schema.php');
+require_once(__DIR__.'/locations.inc');
 
 class DB
 {
 
 
-    private static function getCurrentDBVersion()
+    private static function verifyDB()
     {
         /* check if we have a database at all */
+        $result = MyPDO::instance()->query(<<<sql
+            SELECT SCHEMA_NAME
+              FROM INFORMATION_SCHEMA.SCHEMATA
+             WHERE SCHEMA_NAME = '{$_ENV['DBNAME']}';
+sql
+        );
+        if ($result->fetch() === false) {
+            return false;
+        }
+
         $result = MyPDO::instance()->query("SHOW TABLES LIKE 'Configuration';");
-        if ($result === false) {
+        if ($result->fetch() === false) {
+            return false;
+        }
+
+        return true;
+
+    }
+
+
+    private static function getCurrentDBVersion()
+    {
+        if (!DB::verifyDB()) {
             return false;
         }
 
@@ -31,6 +54,28 @@ SQL;
             return false;
         } else {
             return $value['DBSchemaVersion'];
+        }
+
+    }
+
+
+    private static function getRecordedDBSchemaMD5()
+    {
+        if (!DB::verifyDB()) {
+            return false;
+        }
+
+        $sql = <<<SQL
+            SELECT Value AS MD5
+            FROM `Configuration`
+            WHERE Field = 'DBSchemaMD5';
+SQL;
+        $result = self::run($sql);
+        $value = $result->fetch();
+        if ($value === false) {
+            return false;
+        } else {
+            return $value['MD5'];
         }
 
     }
@@ -141,8 +186,19 @@ SQL;
 
     public function __construct()
     {
-        require_once($GLOBALS['BASEDIR'].'/data/database-schema.php');
-        DB::buildMissingTables();
+        $oldMD5 = DB::getRecordedDBSchemaMD5();
+        $currentMD5 = md5_file($GLOBALS['BASEDIR'].'/data/database-schema.php');
+        if ($oldMD5 != $currentMD5) {
+            DB::buildMissingTables();
+            $sql = <<<SQL
+                REPLACE INTO Configuration
+                    (`Value`, `Field`)
+                VALUES
+                    ('$currentMD5', 'DBSchemaMD5');
+SQL;
+            DB::run($sql);
+        }
+
         if (!empty($_REQUEST['Function']) && $_REQUEST['Function'] != 'update') {
             $upgrade = DB::getCurrentDBVersion();
             if ($upgrade != SCHEMA::$REQUIED_DB_SCHEMA) {
@@ -267,7 +323,7 @@ function current_cycleID()
             return $_currentCycle;
         }
 
-        die("Could not get Current Convention Cycle");
+        return null;
     }
     return $_currentCycle;
 
@@ -316,7 +372,7 @@ function current_eventID()
             return $_currentEvent;
         }
 
-        die("Could not get Current Convention Event");
+        return null;
     }
     return $_currentEvent;
 

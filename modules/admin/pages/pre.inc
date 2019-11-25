@@ -24,6 +24,9 @@ if (!empty($_REQUEST)) {
     'tmp_login'    => FILTER_SANITIZE_SPECIAL_CHARS,
     'tmp_passwd'   => FILTER_SANITIZE_SPECIAL_CHARS,
     'updateMemberships' => FILTER_VALIDATE_BOOLEAN,
+    'hook_action'  => FILTER_SANITIZE_SPECIAL_CHARS,
+    'hook_name'    => FILTER_SANITIZE_SPECIAL_CHARS,
+    'hook_url'     => FILTER_SANITIZE_SPECIAL_CHARS,
     ];
 
     $updateData = filter_input_array(INPUT_POST, $arguments);
@@ -64,6 +67,31 @@ if (!empty($_REQUEST)) {
 
     if (isset($updateData['updateMemberships'])) {
         require($BASEDIR.'/tools/sync_neon_event_to_db.php');
+    }
+
+    if (isset($updateData['hook_action'])) {
+        if ($updateData['hook_action'] == "install") {
+            $result = neon_registerWebhook(
+                $updateData['hook_url'],
+                $updateData['hook_name']
+            );
+            if ($result !== null) {
+                print "<pre>";
+                print (print_r($updateData, true));
+                print (print_r($result, true));
+                print "</pre>";
+                exit();
+            }
+        } else {
+            $result = neon_removeWebhook();
+            if ($result !== null) {
+                print "<pre>";
+                print (print_r($result, true));
+                exit();
+                print "</pre>";
+            }
+        }
+        goSite('/index.php?Function=admin');
     }
 
     $arguments = [

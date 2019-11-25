@@ -20,6 +20,15 @@ $deptCount = departmentDetails(current_eventID());
 <p>Double click on Divisions or Departments to change the properties</p>
 </div>
 
+<?php if (\ciab\RBAC::havePermission("site.concom.permissions")) {?>
+<div id='all_rbac' class='UI-container UI-margin UI-center'>
+    <button class='UI-redbutton UI-padding UI-margin' id='all_rbac'
+            onclick='showRBAC("all");'>
+         All ConCom Site Permissions (RBAC)
+    </button>
+</div>
+<?php }?>
+
 <?php
 build_structure_sections();
 ?>
@@ -55,6 +64,11 @@ if (\ciab\RBAC::havePermission("site.concom.permissions")) {
                 <label class='UI-label' for='dept_sub'>Sub Departments:</label>
                 <input class="UI-input" readonly id="dept_sub" value=''>
             </div>
+            <div id="fallback_dept">
+                <label class='UI-label' for='dept_fallback'>Fallback For:</label>
+                <select class="UI-select" style="width:auto" name="Fallback" id="dept_fallback">
+                </select>
+            </div>
             <div id="parent">
                 <label class='UI-label' for='dept_parent'>Division:</label>
                 <select class="UI-select" style="width:auto" name="Parent" id="dept_parent">
@@ -66,6 +80,7 @@ foreach ($Divisions as $division) {
                 </select>
             </div>
         </div>
+        &nbsp;
         <div>
           <div class='UI-table switch-table UI-padding UI-center' id='dept_slider_parent'>
             <div class='UI-table-row'>
@@ -130,7 +145,7 @@ foreach ($Divisions as $division) {
 
     <div class='UI-sidebar-hidden UI-fixed' id='edit_rbac'>
         <div class='UI-center'>
-            <h2 class='UI-red'>Position Permissions</h2>
+            <h2 class='UI-red' id='rbac_title'>Position Permissions</h2>
         </div>
         <div>
             <label class='UI-label' for='inherited'>Inherited Permissions:</label>

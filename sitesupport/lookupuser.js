@@ -137,11 +137,13 @@ var userLookup = (function(options) {
               '<i class=\'fas fa-spinner UI-spin\'></i>';
         document.getElementById('userLookup_message').innerHTML = '';
         xhttp.onreadystatechange = function() {
-          var response = JSON.parse(this.responseText);
+          var response;
           if (this.readyState == 4 && this.status == 200) {
+            response = JSON.parse(this.responseText);
             userLookup.clearFailure();
             settings.success(target, response);
           } else if (this.readyState == 4) {
+            response = JSON.parse(this.responseText);
             settings.fail(target, response, id, this.status);
           }
         };

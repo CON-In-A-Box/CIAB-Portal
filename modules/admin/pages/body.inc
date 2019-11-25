@@ -41,7 +41,7 @@ const FIELD = 'Field';
             $searchCriteria[FIRST_NAME],
             $searchCriteria[LAST_NAME],
             $searchCriteria[EMAIL],
-            ['City', 'State']
+            ['AddressCity', 'AddressState']
         );
         $message = 'No results match your search.';
     } else {
@@ -94,6 +94,41 @@ const FIELD = 'Field';
         <input type="submit" value="Reload without Admin Priv" class="UI-graybutton"
                onclick="removeAdmin();"/>
         <hr>
+<?php if (array_key_exists('Neon', $GLOBALS)) {
+?>
+<h2 class="UI-blue UI-center">Neon Web Hooks</h2>
+<?php
+if (isset($GLOBALS['NEON_HOOK_NAME'])) {
+?>
+    <form action="index.php?Function=admin" method="POST" class="form-inline">
+    Remove Neon Web Hooks:<br>
+    <input type="text" class="form-control" name="hook_url" value="
+<?php echo $GLOBALS['NEON_HOOK_URL'];?>"
+        autocomplete="off" readonly/>
+    <input type="text" class="form-control" name="hook_name" value=
+    "<?php echo $GLOBALS['NEON_HOOK_NAME'];?>" autocomplete="off" readonly/>
+    <input type="hidden" name="hook_action" value="remove">
+    <input type="submit" value="Remove Hooks" class="UI-graybutton" />
+    </form>
+<?php
+} else {
+?>
+    <form action="index.php?Function=admin" method="POST" class="form-inline">
+    Install Neon Web Hooks:<br>
+    <input type="text" class="form-control" name="hook_url" value="<?php
+    echo "http://".htmlspecialchars($_SERVER['HTTP_HOST']);?>"
+        autocomplete="off"/>
+    <input type="hidden" class="form-control" name="hook_name" value=
+    "<?php echo rppg();?>" />
+    <input type="hidden" name="hook_action" value="install">
+    <input type="submit" value="Install Hooks" class="UI-graybutton" />
+    </form>
+<?php
+}
+echo '<hr>';
+}
+?>
+
         <?php if ($result && !$result['code']) : ?>
             <table class="table table-striped">
                 <caption></caption>
@@ -112,7 +147,7 @@ const FIELD = 'Field';
                             </a>
                         </td>
                         <td><?php echo $r['Email']; ?></td>
-                        <td><?php echo $r['City']; ?><?php echo $r['State']; ?></td>
+                        <td><?php echo $r['AddressCity']; ?><?php echo $r['AddressState']; ?></td>
                     </tr>
                 <?php endforeach; ?>
             </table>

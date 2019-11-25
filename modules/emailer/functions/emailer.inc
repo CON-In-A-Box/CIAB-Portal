@@ -52,8 +52,11 @@ class Email
     public function __construct()
     {
         $this->user = $_SESSION['accountId'];
-        $this->event = current_eventName();
         $this->eventID = current_eventID();
+        if ($this->event === null) {
+            return;
+        }
+        $this->event = current_eventName();
         $this->departments = [];
         $depts = \concom\POSITION::getConComPosition($this->user);
         foreach ($depts as $dept) {

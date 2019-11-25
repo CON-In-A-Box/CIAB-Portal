@@ -77,6 +77,7 @@ if (\ciab\RBAC::havePermission("site.concom.permissions")) {
 
     $arguments = [
     'permissions' => FILTER_SANITIZE_STRING,
+    'fallbackList' => FILTER_SANITIZE_STRING,
     ];
 
     $updateData = filter_input_array(INPUT_GET, $arguments);
@@ -84,6 +85,12 @@ if (\ciab\RBAC::havePermission("site.concom.permissions")) {
     if (isset($updateData['permissions'])) {
         $perm = getDepartmentPermissions($updateData['permissions']);
         print json_encode($perm);
+        exit();
+    }
+
+    if (isset($updateData['fallbackList'])) {
+        $data = buildBackupList($updateData['fallbackList']);
+        print json_encode($data);
         exit();
     }
 }

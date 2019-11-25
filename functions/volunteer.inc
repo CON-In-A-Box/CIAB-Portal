@@ -13,6 +13,9 @@ function get_volunteer_hour_summary($id = null, $event = null)
 {
     if ($event === null) {
         $event = current_eventID();
+        if ($event === null) {
+            return array();
+        }
     }
 
     if ($id !== null) {
@@ -92,6 +95,13 @@ function get_volunteer_year_summery($event = null)
 {
     if ($event === null) {
         $event = current_eventID();
+        if ($event === null) {
+            return ([
+            'TotalHours' => 0,
+            'VolunteerCount' => 0,
+            'TotalHoursSpent' => 0,
+            ]);
+        }
     }
 
     $sql = <<<SQL
@@ -421,6 +431,9 @@ function volunteer_prizes_for_user($id, $event = null)
 
     if ($event === null) {
         $event = current_eventID();
+        if ($event === null) {
+            return $data;
+        }
     }
 
     $sql = <<<SQL
@@ -594,8 +607,7 @@ SQL;
         }
     }
 
-    $str = "('".implode("', '", $members)."')";
-    $users = lookup_users_by_ids($str);
+    $users = lookup_users_by_ids($members);
 
     $report = [];
     foreach ($users['users'] as $user) {
@@ -661,8 +673,7 @@ SQL;
         $value = $result->fetch();
     }
 
-    $str = "('".implode("', '", $members)."')";
-    $users = lookup_users_by_ids($str);
+    $users = lookup_users_by_ids($members);
 
     $report = [];
     foreach ($users['users'] as $user) {

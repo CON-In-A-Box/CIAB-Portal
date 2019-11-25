@@ -88,8 +88,8 @@ function drawPieChart(svg, _data, index, pieWidth) {
       return d.nodeData.dsize;
     });
   var arc = d3.arc()
-    .outerRadius((index + 1) * pieWidth - 1)
-    .innerRadius((index) * pieWidth);
+    .outerRadius(_data[0].nodeData.pieOuter)
+    .innerRadius(_data[0].nodeData.pieInner);
 
   var g = svg.selectAll('.arc' + index).data(pie(_data)).enter()
     .append('a').attr('xlink:href', function(d) {
@@ -116,13 +116,16 @@ function drawPieChart(svg, _data, index, pieWidth) {
   g.append('text').attr('transform', function(d) {
     var v = ((d.endAngle - d.startAngle) / 2) + d.startAngle;
     var r = (v * (180.0 / Math.PI)) + -90;
-    if (r >= 90) {r = r - 180;}
+    if (!Object.prototype.hasOwnProperty.call(d.data.nodeData, 'noRotate') &&
+       (r >= 90)) {
+      r = r - 180;
+    }
     return 'translate(' + arc.centroid(d) + ') rotate(' + r + ')';
   })
     .attr('dy', '.35em').style('text-anchor', 'middle')
     .attr('font-size', function(d) {
       if (Object.prototype.hasOwnProperty.call(d.data.nodeData, 'label')) {
-        var v = d.data.nodeData.label.length / (500 / (index * index * index));
+        var v = d.data.nodeData.label.length / (500 / (index * index));
         var s = pieWidth / 140;
         return ((1 - v) * s).toString() + 'em';
       }
@@ -135,10 +138,27 @@ function drawPieChart(svg, _data, index, pieWidth) {
       return '';
     })
     .call(wrap, pieWidth);
+
 }
 
 function drawDonutChart(width, height, data, target) {
-  var maxRadius = Math.min(width, height) / 2;
+
+  var fixedWidth = 0;
+  var floatWidth = 1;
+  var _cData;
+
+  /* Parse Data */
+  var multiLevelData = setMultiLevelData(data);
+  for (var i = 0; i < multiLevelData.length; i++) {
+    _cData = multiLevelData[i][0];
+    if (Object.prototype.hasOwnProperty.call(_cData.nodeData, 'pieWidth')) {
+      fixedWidth += _cData.nodeData.pieWidth;
+    } else {
+      floatWidth++;
+    }
+  }
+
+  var maxRadius = (Math.min(width, height) / 2) - fixedWidth;
   var svg = d3.select(target).append('svg')
     .attr('width', width)
     .attr('height', height)
@@ -146,12 +166,27 @@ function drawDonutChart(width, height, data, target) {
     .attr('transform',
       'translate(' + width / 2 + ',' + height / 2 + ')');
 
-  var multiLevelData = setMultiLevelData(data);
-  var pieWidth = parseInt((maxRadius / (multiLevelData.length + 1)) -
-      multiLevelData.length);
+  var pieWidth = parseInt((maxRadius / (floatWidth)) - floatWidth);
 
-  for (var i = 0; i < multiLevelData.length; i++) {
-    var _cData = multiLevelData[i];
+  /* Calculated Data */
+  var inner = pieWidth;
+  for (i = 0; i < multiLevelData.length; i++) {
+    _cData = multiLevelData[i][0];
+    var ringWidth = pieWidth;
+    if (Object.prototype.hasOwnProperty.call(_cData.nodeData, 'pieWidth')) {
+      ringWidth = _cData.nodeData.pieWidth;
+    }
+    for (var j = 0; j < multiLevelData[i].length; j++) {
+      _cData = multiLevelData[i][j];
+      _cData.nodeData.pieWidth = ringWidth;
+      _cData.nodeData.pieInner = inner;
+      _cData.nodeData.pieOuter = inner + ringWidth;
+    }
+    inner += ringWidth;
+  }
+
+  for (i = 0; i < multiLevelData.length; i++) {
+    _cData = multiLevelData[i];
     drawPieChart(svg, _cData, i + 1, pieWidth);
   }
 }

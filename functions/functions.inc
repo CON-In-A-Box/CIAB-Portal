@@ -127,7 +127,12 @@ try {
     _config_from_Database();
 
     // Include NeonCRM for DB calls via API
-    require_once(__DIR__."/neon.inc");
+    if (array_key_exists('NEONID', $GLOBALS) &&
+        array_key_exists('NEONKEY', $GLOBALS) &&
+        !empty($GLOBALS['NEONID']) &&
+        !empty($GLOBALS['NEONKEY'])) {
+        require_once(__DIR__."/neon.inc");
+    }
 
     // Load the base of all active modules
     $modules = scandir($MODULESDIR);
@@ -225,7 +230,7 @@ function sendError($msg, $arrChunk = null)
     if (!empty($arrChunk)) {
         $message .= "\n\n".print_r($arrChunk, true);
     }
-    \ciab\Email::mail($to, 'noreply@convergence-con.org', $subject, $message, $headers);
+    \ciab\Email::mail($to, getNoReplyAddress(), $subject, $message, $headers);
     trigger_error($msg);
 
 }
@@ -268,6 +273,17 @@ function set_conf_value($field, $value)
     $sql = <<<SQL
         UPDATE `Configuration`
         SET `Value`='$value'
+        WHERE `Field`='$field';
+SQL;
+    DB::run($sql);
+
+}
+
+
+function del_conf_value($field)
+{
+    $sql = <<<SQL
+        DELETE FROM `Configuration`
         WHERE `Field`='$field';
 SQL;
     DB::run($sql);
@@ -319,5 +335,130 @@ function urlsafe_b64encode($string)
     $data = base64_encode($string);
     $data = str_replace(array('+','/','='), array('-','_',''), $data);
     return $data;
+
+}
+
+
+/*************************/
+/* Neon Helper Functions */
+/*************************/
+
+
+function loadDefinedFields()
+{
+    global $_SESSION, $ADMINACCOUNTS;
+    if (!array_key_exists('Neon', $GLOBALS)) {
+        return;
+    }
+
+    // Custom Field Data for Session - Parse it to an easy to use array
+    $request = [
+    'method' => 'common/listCustomFields',
+    'parameters' => [
+    'searchCriteria.component' => "Account",
+        ],
+        ];
+    $result = $GLOBALS['Neon']->go($request);
+    if (isset($result['operationResult']) && $result['operationResult'] == 'SUCCESS') {
+        $_SESSION['definedFields']['customField'] = $result['customFields']['customField'];
+        foreach ($result['customFields']['customField'] as $val) {
+            $_SESSION['definedFields'][$val['fieldId']] = $val['fieldName'];
+            if (isset($val['fieldOptions'])) {
+                foreach ($val['fieldOptions']['fieldOption'] as $fval) {
+                    $_SESSION['definedFields'][$fval['id']] = $fval['name'];
+                }
+                unset($fval);
+                if ($val['fieldName'] == "Lottery Status") {
+                    foreach ($val['fieldOptions']['fieldOption'] as $fval) {
+                        $_SESSION['definedFields']['Lottery Status'][$fval['id']] = $fval['name'];
+                    }
+                    unset($fval);
+                } elseif ($val['fieldName'] == "Bed Preference") {
+                    foreach ($val['fieldOptions']['fieldOption'] as $fval) {
+                        $_SESSION['definedFields']['Bed Preference'][$fval['id']] = $fval['name'];
+                    }
+                    unset($fval);
+                } elseif ($val['fieldName'] == "Hotel Qualifier") {
+                    foreach ($val['fieldOptions']['fieldOption'] as $fval) {
+                        $_SESSION['definedFields']['Hotel Qualifier'][$fval['id']] = $fval['name'];
+                    }
+                    unset($fval);
+                }
+            }
+        }
+        unset($val);
+    } else {
+        die("Impossible error during Defined Custom Fields Download");
+    }
+
+}
+
+
+function _neon_create_webhook($url, $name, $type)
+{
+    if (!array_key_exists('Neon', $GLOBALS)) {
+        return;
+    }
+
+    // Custom Field Data for Session - Parse it to an easy to use array
+    $request = [
+    'method' => 'webhook/createWebhook',
+    'parameters' => [
+    'webhook.webhookName' => "${name}_${type}",
+    'webhook.notifyUrl' => "$url/neon_webhook.php",
+    'webhook.eventTrigger' => $type,
+    'webhook.contentType' => 'application/json'
+        ],
+        ];
+    $result = $GLOBALS['Neon']->go($request);
+    if (isset($result['operationResult']) && $result['operationResult'] == 'SUCCESS') {
+        add_conf_value("NEON_HOOK_ID_$type", $result['id']);
+        return null;
+    }
+    return $result;
+
+}
+
+
+function neon_registerWebhook($url, $name)
+{
+    _neon_create_webhook($url, $name, 'CREATE_ACCOUNT');
+    _neon_create_webhook($url, $name, 'UPDATE_ACCOUNT');
+    add_conf_value('NEON_HOOK_NAME', $name);
+    add_conf_value('NEON_HOOK_URL', $url);
+
+}
+
+
+function _neon_remove_webhook($type)
+{
+    if (!array_key_exists('Neon', $GLOBALS)) {
+        return;
+    }
+
+    $hookname = "NEON_HOOK_ID_$type";
+    // Custom Field Data for Session - Parse it to an easy to use array
+    $request = [
+    'method' => 'webhook/deleteWebhook',
+    'parameters' => [
+    'id' => "${GLOBALS[$hookname]}"
+        ],
+        ];
+    $result = $GLOBALS['Neon']->go($request);
+    if (isset($result['operationResult']) && $result['operationResult'] == 'SUCCESS') {
+        del_conf_value($hookname);
+        return null;
+    }
+    return $result;
+
+}
+
+
+function neon_removeWebhook($type)
+{
+    _neon_remove_webhook('CREATE_ACCOUNT');
+    _neon_remove_webhook('UPDATE_ACCOUNT');
+    del_conf_value('NEON_HOOK_NAME');
+    del_conf_value('NEON_HOOK_URL');
 
 }
