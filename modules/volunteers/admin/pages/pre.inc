@@ -15,63 +15,6 @@ if (!(isset($_SESSION['IS_ADMIN']) || $_SESSION['IS_VOLUNTEERS'])) {
 if (!empty($_REQUEST)) {
     // Retrieve and sanitize POST data
     $arguments = [
-    'min_hour'         => FILTER_SANITIZE_NUMBER_INT,
-    'dept_report'      => FILTER_SANITIZE_NUMBER_INT,
-    'dept_name'        => FILTER_SANITIZE_SPECIAL_CHARS,
-    'generateCSV'      => FILTER_SANITIZE_SPECIAL_CHARS,
-    'CSVfromSQL'       => FILTER_SANITIZE_SPECIAL_CHARS,
-    'name'             => FILTER_SANITIZE_SPECIAL_CHARS,
-    ];
-
-    require_once($FUNCTIONDIR."/volunteer.inc");
-    require_once($FUNCTIONDIR."/database.inc");
-
-    $updateData = filter_input_array(INPUT_GET, $arguments);
-
-    if (isset($updateData['min_hour'])) {
-        if (isset($_SESSION['IS_ADMIN']) || $_SESSION['IS_VOLUNTEERS']) {
-            $min = $updateData['min_hour'];
-            $report = volunteer_minimum_hour_report($min);
-            output_csv($report, "hour_report.csv");
-            exit();
-        } else {
-            header("HTTP/1.0 401");
-            exit();
-        }
-    }
-
-    if (isset($updateData['dept_report'])) {
-        if (isset($_SESSION['IS_ADMIN']) || $_SESSION['IS_VOLUNTEERS']) {
-            $dept = $updateData['dept_report'];
-            $name = $updateData['dept_name'];
-            $event = current_eventID();
-            $report = volunteers_in_dept(intval($dept), $event);
-            output_csv($report, "department_report_".$name."_".$event.".csv");
-            exit();
-        } else {
-            header("HTTP/1.0 401");
-            exit();
-        }
-    }
-
-    if (isset($updateData['generateCSV'])) {
-        if (isset($_SESSION['IS_ADMIN']) || $_SESSION['IS_VOLUNTEERS']) {
-            csv_headers($updateData['generateCSV'].'.csv');
-            print dump_table_to_csv($updateData['generateCSV']);
-            exit();
-        }
-    }
-
-    if (isset($updateData['CSVfromSQL'])) {
-        if (isset($_SESSION['IS_ADMIN']) || $_SESSION['IS_VOLUNTEERS']) {
-            csv_headers($updateData['name'].'.csv');
-            $sql = $updateData['CSVfromSQL'];
-            print dump_sql_to_csv($updateData['CSVfromSQL'], true);
-            exit();
-        }
-    }
-
-    $arguments = [
     'rewardId'         => FILTER_SANITIZE_SPECIAL_CHARS,
     'rewards'          => FILTER_UNSAFE_RAW,
     'validate_login'   => FILTER_SANITIZE_SPECIAL_CHARS,

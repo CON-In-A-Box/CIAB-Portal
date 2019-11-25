@@ -1,6 +1,7 @@
 <?php
 
-require_once $BASEDIR.'/kiosk/kiosk.inc';
+require_once($BASEDIR.'/kiosk/kiosk.inc');
+require_once($BACKEND."/RBAC.inc");
 
 if (!empty($_SESSION['customFields']['currConComPos'])) {
     $base_menus[] = array('base style' => '',
@@ -13,7 +14,7 @@ if (!empty($_SESSION['customFields']['currConComPos'])) {
 }
 
 if (!is_kiosk('volunteers')) {
-    if ($_SESSION['IS_VOLUNTEERS'] || $_SESSION['IS_ADMIN'] ||
+    if (\ciab\RBAC::havePermission("volunteers.admin") ||
         !empty($_SESSION['customFields']['currConComPos'])) {
         $basecolor = 'UI-yellow';
         if (array_key_exists('CIAB_VOLUNTEERADMIN', $_COOKIE) &&
@@ -23,6 +24,16 @@ if (!is_kiosk('volunteers')) {
         $admin_menus[] = array('base style' => $basecolor,
          'selected style' => 'event-color-primary',
          'function' => 'volunteers/admin',
+         'title' => 'Volunteer\'s',
+         'i class' => 'fas fa-users',
+         'text' => 'Volunteers',
+         'responsive' => true);
+    }
+    if (\ciab\RBAC::havePermission("volunteers.reports") ||
+        $_SESSION['IS_VOLUNTEERS']) {
+        $report_menus[] = array('base style' => 'UI-yellow',
+         'selected style' => 'event-color-primary',
+         'function' => 'volunteers/report',
          'title' => 'Volunteer\'s',
          'i class' => 'fas fa-users',
          'text' => 'Volunteers',

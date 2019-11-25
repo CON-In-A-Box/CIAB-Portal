@@ -51,6 +51,11 @@ if ($kiosk === null) {
         ];
     }
 
+    if (!isset($report_menus)) {
+        $report_menus = [
+        ];
+    }
+
     $modules = scandir($MODULESDIR);
     foreach ($modules as $key => $value) {
         if (!in_array($value, array(".", ".."))) {
@@ -69,6 +74,10 @@ if ($kiosk === null) {
     if (!isset($admin_menus)) {
         $admin_menus = array();
     }
+    if (!isset($report_menus)) {
+        $report_menus = array();
+    }
+
     if (is_dir($MODULESDIR.DIRECTORY_SEPARATOR.$kiosk)) {
         if (is_file($MODULESDIR.DIRECTORY_SEPARATOR.$kiosk.DIRECTORY_SEPARATOR.'pages/menubar.inc')) {
             require_once($MODULESDIR.DIRECTORY_SEPARATOR.$kiosk.DIRECTORY_SEPARATOR.'pages/menubar.inc');
@@ -81,6 +90,14 @@ $base_menus[] = array(
      'title' => 'Administrator Pages',
      'i class' => 'fas fa-key',
      'text' => 'Administer',
+     'responsive' => true);
+
+$base_menus[] = array(
+     'base style' => 'UI-admin-menu',
+     'function' => $report_menus,
+     'title' => 'Administrative Reports',
+     'i class' => 'fas fa-file-csv',
+     'text' => 'Reports',
      'responsive' => true);
 
 echo build_menus($base_menus, $base_styles, $resp_styles);
