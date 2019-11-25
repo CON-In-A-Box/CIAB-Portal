@@ -44,8 +44,14 @@ function dbPrintLog($lines)
         echo '<div class="ADMIN-log-col-function">';
         echo $line['Function'];
         echo '</div>';
-        echo '<div class="ADMIN-log-col-query">';
-        echo filterLog($line['Query']);
+        $query = $line['Query'];
+        echo '<div class="ADMIN-log-col-query" title="'.$query.'">';
+        if (strlen($query) > 100) {
+            echo "<p class='UI-tooltip'>".substr($query, 0, 100)." \u{2026}";
+            echo "<span class='UI-tooltip-text'>$query</span></p>";
+        } else {
+            echo $query;
+        }
         echo '</div>';
         echo "</div>\n";
     }
