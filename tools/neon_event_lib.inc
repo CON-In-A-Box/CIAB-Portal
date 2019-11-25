@@ -9,7 +9,7 @@ function maxQuery()
         $sql = "SHOW VARIABLES LIKE 'max_allowed_packet';";
         $result = \DB::run($sql);
         $value = $result->fetch();
-        $GLOBALS['MAX_PACKET'] = intval($value['Value']) / 160;
+        $GLOBALS['MAX_PACKET'] = intval($value['Value']) / 300;
     }
 
 }
