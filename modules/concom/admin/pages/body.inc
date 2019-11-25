@@ -20,6 +20,15 @@ $deptCount = departmentDetails(current_eventID());
 <p>Double click on Divisions or Departments to change the properties</p>
 </div>
 
+<?php if (\ciab\RBAC::havePermission("site.concom.permissions")) {?>
+<div id='all_rbac' class='UI-container UI-margin UI-center'>
+    <button class='UI-redbutton UI-padding UI-margin' id='all_rbac'
+            onclick='showRBAC("all");'>
+         All ConCom Site Permissions (RBAC)
+    </button>
+</div>
+<?php }?>
+
 <?php
 build_structure_sections();
 ?>
@@ -136,7 +145,7 @@ foreach ($Divisions as $division) {
 
     <div class='UI-sidebar-hidden UI-fixed' id='edit_rbac'>
         <div class='UI-center'>
-            <h2 class='UI-red'>Position Permissions</h2>
+            <h2 class='UI-red' id='rbac_title'>Position Permissions</h2>
         </div>
         <div>
             <label class='UI-label' for='inherited'>Inherited Permissions:</label>
