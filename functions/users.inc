@@ -88,7 +88,7 @@ function neon_importAccountListToDB($results)
         $sql = "SHOW VARIABLES LIKE 'max_allowed_packet';";
         $result = \DB::run($sql);
         $value = $result->fetch();
-        $GLOBALS['_MAX_SQL_LENGTH'] = intval($value['Value']) / 160;
+        $GLOBALS['_MAX_SQL_LENGTH'] = intval($value['Value']) / 300;
     }
 
     $sql = "";
