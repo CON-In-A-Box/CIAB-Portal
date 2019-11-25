@@ -577,7 +577,12 @@
 }
 
 .UI-tooltip {
-    @extend .w3-tooltop;
+    @extend .w3-tooltip;
+}
+
+.UI-tooltip-text {
+    @extend .w3-text;
+    @extend .w3-tag;
 }
 
 .UI-kiosk-slider {
