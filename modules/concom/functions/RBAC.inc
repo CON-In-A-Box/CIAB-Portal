@@ -38,6 +38,20 @@ class ConComRBAC
     }
 
 
+    private static function addToAll(
+        /*.Rbac.*/$rbac,
+        /*.Role.*/$staff,
+        /*.string.*/$new_role,
+        /*.string.*/$pos
+    ) {
+        $role = $rbac->rbac->getRole($new_role);
+        $staff->addParent($role);
+        $target = $rbac->rbac->getRole("all.$pos");
+        $target->addParent($role);
+
+    }
+
+
     public static function instance()
     {
         if (self::$instance === null) {
@@ -47,12 +61,19 @@ class ConComRBAC
             $root = new Role('admin');
             $rbac->rbac->addRole($root);
 
+            $staff = new Role('all.staff');
+            $rbac->rbac->addRole($staff, $root);
+
             $positions = [];
             $sql = "SELECT `PositionID` FROM `ConComPositions` ORDER BY `PositionID` ASC";
             $result = \DB::run($sql);
             $value = $result->fetch();
+            $parent = 'admin';
             while ($value !== false) {
                 $positions[] = $value['PositionID'];
+                $new = 'all.'.$value['PositionID'];
+                $rbac->rbac->addRole($new, $parent);
+                $parent = $new;
                 $value = $result->fetch();
             }
 
@@ -64,6 +85,7 @@ class ConComRBAC
                 foreach ($positions as $pos) {
                     $new = $value['DepartmentID'].'.'.$pos;
                     $rbac->rbac->addRole($new, $parent);
+                    self::addToAll($rbac, $staff, $new, $pos);
                     $parent = $new;
                 }
                 $value = $result->fetch();
@@ -77,6 +99,7 @@ class ConComRBAC
                 foreach ($positions as $pos) {
                     $new = $value['DepartmentID'].'.'.$pos;
                     $rbac->rbac->addRole($new, $parent);
+                    self::addToAll($rbac, $staff, $new, $pos);
                     $parent = $new;
                 }
                 $value = $result->fetch();
@@ -150,9 +173,10 @@ class ConComRBAC
         /*.bool.*/ $children = true
     ) {
         try {
-            return self::instance()->rbac->getRole(
+            $result = self::instance()->rbac->getRole(
                 strval($role)
             )->getPermissions($children);
+            return array_unique($result);
         } catch (Exception\InvalidArgumentException $e) {
             return null;
         }

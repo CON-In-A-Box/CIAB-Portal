@@ -689,7 +689,7 @@ function getDepartmentPermissions($depId)
 function deleteDepartmentPermission($depId, $posId, $perm)
 {
     $id = $depId.'.'.$posId;
-    $sql = "DELETE FROM `ConComPermissions` WHERE `Position` = $id AND `Permission` = '$perm';";
+    $sql = "DELETE FROM `ConComPermissions` WHERE `Position` = '$id' AND `Permission` = '$perm';";
     DB::run($sql);
     \ciab\RBAC::reload();
 

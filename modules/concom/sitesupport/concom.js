@@ -302,7 +302,11 @@ function  editEmail(data, index, deptId) {
 }
 
 function returnPosition() {
-  dblClick(_currentSection);
+  if (_currentSection == null) {
+    hideSidebar();
+  } else {
+    dblClick(_currentSection);
+  }
 }
 
 function deleteEmail() {
@@ -351,6 +355,13 @@ function editRBAC(dep, input) {
   var inh;
   var data;
   var key;
+
+  if (dep == 'all') {
+    document.getElementById('rbac_title').innerHTML = 'All Staff Permissions';
+  } else {
+    document.getElementById('rbac_title').innerHTML = 'Position Permissions';
+  }
+
   for (key in permissions) {
     data = permissions[key];
     block += '<span><b>' + data.name + '</b>:  ';
@@ -367,14 +378,14 @@ function editRBAC(dep, input) {
     data = permissions[key];
     block += '<span><b>' + data.name + '</b>:  ';
     for (inh in data.position) {
-      block += '<button onclick=\'deleteAC(' + dep + ',' + key + ',"' +
+      block += '<button onclick=\'deleteAC("' + dep + '",' + key + ',"' +
                 data.position[inh] + '");\'' +
                    ' class="UI-roundbutton">' +
                    '<i class=\'fas fa-minus-square\'></i>&nbsp;' +
                    data.position[inh] +
                    '</button>';
     }
-    block += '<button onclick=\'newAC(' + dep + ',' + key + ');\' ' +
+    block += '<button onclick=\'newAC("' + dep + '",' + key + ');\' ' +
                'class="UI-roundbutton"> ' +
                '<i class=\'fas fa-plus-square\'></i></button>\n';
     block += '</span><br>';
@@ -385,6 +396,9 @@ function editRBAC(dep, input) {
 }
 
 function showRBAC(id) {
+  if (id == 'all') {
+    _currentSection = null;
+  }
   basicConcomRequestAdmin('GET', 'permissions=' + id, function(response) {
     editRBAC(id, response.responseText);
   });
