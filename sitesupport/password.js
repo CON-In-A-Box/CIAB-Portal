@@ -4,7 +4,7 @@
 
 /* jshint browser: true */
 /* jshint -W097 */
-/* globals alertbox, confirmbox */
+/* globals alertbox, confirmbox, basicBackendRequest */
 /* exported changePassword, resetPassword */
 
 'use strict';
@@ -27,25 +27,23 @@ function changePassword() {
   }
 
   confirmbox('Proceed in changing your password?').then(function() {
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 200) {
+    basicBackendRequest('POST', 'profile',
+      'auth=' + current.value + '&password=' + newPassword.value,
+      function() {
         alertbox('Password Updated').then(
           function() {
             location.reload();
           }
         );
-      }
-      else if (this.status == 403) {
-        if (current.value) {
-          alertbox('Current Password Incorrect');
+      },
+      function(response) {
+        if (response.status == 403) {
+          if (current.value) {
+            alertbox('Current Password Incorrect');
+          }
+          current.value = '';
         }
-        current.value = '';
-      }
-    };
-    xhttp.open('POST', 'index.php?Function=profile', true);
-    xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-    xhttp.send('auth=' + current.value + '&password=' + newPassword.value);
+      });
   },
   function() {
     current.value = '';
@@ -63,21 +61,16 @@ function resetPassword() {
     return;
   }
 
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
+  basicBackendRequest('POST', 'recovery', 'password_reset=' + email.value,
+    function() {
       alertbox('Email Sent').then(function() {
         window.location = '/index.php?Function=public';
       });
-    }
-    else if (this.status == 404) {
+    },
+    function() {
       if (email.value) {
         alertbox('Account for ' + email.value + ' was not found.');
       }
       email.value = '';
-    }
-  };
-  xhttp.open('POST', 'index.php?Function=recovery', true);
-  xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-  xhttp.send('password_reset=' + email.value);
+    });
 }
