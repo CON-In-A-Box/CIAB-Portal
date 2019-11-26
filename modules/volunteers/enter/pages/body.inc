@@ -34,7 +34,8 @@ if (isset($updateComplete)) {
         handler: handleResult,
         fail: onFail,
         needForm: false,
-        lookupTarget: 'index.php?Function=volunteers/enter&volunteerId='
+        lookupTarget: 'volunteers/enter',
+        lookupParam: 'volunteerId'
         });
 </script>
 <form method="post" action="index.php?Function=volunteers/enter">

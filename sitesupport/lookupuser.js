@@ -3,7 +3,7 @@
  */
 
 /* jshint browser: true */
-/* globals escapeHtml */
+/* globals escapeHtml, basicBackendRequest */
 
 var userLookup = (function(options) {
   'use strict';
@@ -17,7 +17,8 @@ var userLookup = (function(options) {
       fail: _lookupFailed,
       handler: null,
       needForm: true,
-      lookupTarget: 'index.php?Function=functions&lookupId=',
+      lookupTarget: 'functions',
+      lookupParam: 'lookupId',
       badgeName: true,
       partialMatch: false,
     }, options);
@@ -132,30 +133,26 @@ var userLookup = (function(options) {
     lookupId: function(obj, target) {
       var id = obj.value;
       if (id) {
-        var xhttp = new XMLHttpRequest();
         document.getElementById('userLookup_spinner').innerHTML =
               '<i class=\'fas fa-spinner UI-spin\'></i>';
         document.getElementById('userLookup_message').innerHTML = '';
-        xhttp.onreadystatechange = function() {
-          var response;
-          if (this.readyState == 4 && this.status == 200) {
-            response = JSON.parse(this.responseText);
-            userLookup.clearFailure();
-            settings.success(target, response);
-          } else if (this.readyState == 4) {
-            response = JSON.parse(this.responseText);
-            settings.fail(target, response, id, this.status);
-          }
-        };
-        var url = settings.lookupTarget + id;
+        var parameters = settings.lookupParam + '=' + id;
         if (settings.badgeName) {
-          url += '&useBadgeName=1';
+          parameters += '&useBadgeName=1';
         }
         if (settings.partialMatch) {
-          url += '&partialMatch=1';
+          parameters += '&partialMatch=1';
         }
-        xhttp.open('GET', url, true);
-        xhttp.send();
+        basicBackendRequest('GET', settings.lookupTarget, parameters,
+          function(input) {
+            var response = JSON.parse(input.responseText);
+            userLookup.clearFailure();
+            settings.success(target, response);
+          },
+          function(input) {
+            var response = JSON.parse(input.responseText);
+            settings.fail(target, response, id, input.status);
+          });
       } else {
         if (target) {
           userLookup.gotoTarget(target.href, null);
