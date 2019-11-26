@@ -53,16 +53,20 @@ function urlsafeB64Decode(data) {
   return atob(data.replace(/-/g, '+').replace(/_/g, '/'));
 }
 
-function basicBackendRequest(method, target, parameter, finish) {
+function basicBackendRequest(method, target, parameter, success, failure) {
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
-      finish(this);
+      success(this);
       hideSpinner();
-    } else if (this.status == 404) {
-      alertbox('404!');
-    } else if (this.status == 409) {
-      alertbox('409!');
+    } else if (this.readyState == 4) {
+      if (typeof failure !== 'undefined') {
+        failure(this);
+        hideSpinner();
+      } else {
+        hideSpinner();
+        alertbox(this.status);
+      }
     }
   };
   showSpinner();
