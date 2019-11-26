@@ -127,6 +127,7 @@ function kiosk_body_data()
 function kiosk_head()
 {
     echo "<script src='kiosk/kiosk.js'></script>\n";
+    echo "<script src='sitesupport/common.js'></script>\n";
     echo "<script src='sitesupport/authentication.js'></script>\n";
     echo "<link rel='stylesheet' type='text/css' href='sitesupport/slider.css' />\n";
 
