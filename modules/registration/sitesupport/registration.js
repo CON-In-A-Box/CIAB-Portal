@@ -4,7 +4,7 @@
 
 /* jshint browser: true */
 /* jshint -W097 */
-/* global confirmbox, showSpinner, showSidebar, alertbox */
+/* global confirmbox, showSidebar, basicBackendRequest */
 /* exported sidebarMainDiv, refreshBadgeData, printBadge, showUpdateBadge,
             updateBadge, workstationChange */
 
@@ -12,23 +12,14 @@
 
 var sidebarMainDiv = 'main_content';
 
+function basicRegistrationRequest(parameter, finish) {
+  basicBackendRequest('POST', 'registration', parameter, finish);
+}
+
 function refreshBadgeData(badge) {
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-      location.reload();
-    }
-    else if (this.status == 404) {
-      alertbox('404!');
-    }
-    else if (this.status == 409) {
-      alertbox('409!');
-    }
-  };
-  showSpinner();
-  xhttp.open('POST', 'index.php?Function=registration', true);
-  xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-  xhttp.send('refreshData=' + badge);
+  basicRegistrationRequest('refreshData=' + badge, function() {
+    location.reload();
+  });
 }
 
 var _badgeData = null;
@@ -57,27 +48,12 @@ function showUpdateBadge(data) {
 }
 
 function updateBadge() {
-
   var data = JSON.parse(atob(_badgeData));
   data['Badge Name'] = document.getElementById('badge_name').value;
   var param = btoa(JSON.stringify(data));
-
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-      location.reload();
-    }
-    else if (this.status == 404) {
-      alertbox('404!');
-    }
-    else if (this.status == 409) {
-      alertbox('409!');
-    }
-  };
-  showSpinner();
-  xhttp.open('POST', 'index.php?Function=registration', true);
-  xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-  xhttp.send('updateBadge=' + param);
+  basicRegistrationRequest('updateBadge=' + param, function() {
+    location.reload();
+  });
 }
 
 function workstationChange() {
