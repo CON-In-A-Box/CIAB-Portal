@@ -4,15 +4,19 @@
 
 /* jshint browser: true */
 /* jshint -W097 */
-/* globals confirmbox, showSidebar, hideSidebar, expandSection, alertbox */
+/* globals confirmbox, showSidebar, hideSidebar, expandSection, alertbox,
+           basicBackendRequest */
 /* exported doImport, importConcom, deleteEvent, newEvent, saveEvent,
             editEvent, saveBadge, editBadge, newBadge, deleteBadge,
             expandEvent, saveCycle, newCycle, deleteMeeting,
             saveMeeting, editMeeting, newMeeting, reloadFromNeon */
 
+function basicEventRequest(parameter, finish) {
+  basicBackendRequest('POST', 'event', parameter, finish);
+}
+
 function reloadFromNeon() {
   window.location = 'index.php?Function=event&reloadFromNeon=1';
-
 }
 
 function newMeeting() {
@@ -31,7 +35,6 @@ function newMeeting() {
   document.getElementById('meet_date').value = yyyy + '-' + mm + '-' + dd;
   document.getElementById('meet_event').selectedIndex = '0';
   showSidebar('edit_meeting');
-
 }
 
 function editMeeting(data) {
@@ -41,97 +44,39 @@ function editMeeting(data) {
   document.getElementById('meet_event').value = meeting.EventID;
   document.getElementById('meet_date').value = meeting.Date;
   showSidebar('edit_meeting');
-
-}
-
-function processMeeting() {
-  var data = {
-    'Id': document.getElementById('meet_id').value,
-    'Name': document.getElementById('meet_name').value,
-    'EventID': document.getElementById('meet_event').value,
-    'Date': document.getElementById('meet_date').value,
-  };
-  var param = JSON.stringify(data);
-  console.log(param);
-
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-      hideSidebar();
-      location.reload();
-    } else if (this.status == 404) {
-      alertbox('404!');
-    } else if (this.status == 409) {
-      alertbox('409!');
-    }
-  };
-  xhttp.open('POST', 'index.php?Function=event', true);
-  xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-  xhttp.send('modify=' + btoa(param));
-
 }
 
 function saveMeeting() {
   confirmbox(
     'Confirms Meeting Details',
-    'Are the meeting details correct?').then(processMeeting);
-
-}
-
-var _deletedMeeting = 0;
-
-function processMeetingDeletion() {
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
+    'Are the meeting details correct?').then(function() {
+    var data = {
+      'Id': document.getElementById('meet_id').value,
+      'Name': document.getElementById('meet_name').value,
+      'EventID': document.getElementById('meet_event').value,
+      'Date': document.getElementById('meet_date').value,
+    };
+    var param = JSON.stringify(data);
+    basicEventRequest('modify=' + btoa(param), function() {
       hideSidebar();
       location.reload();
-    } else if (this.status == 404) {
-      alertbox('404!');
-    } else if (this.status == 409) {
-      alertbox('409!');
-    }
-  };
-  xhttp.open('POST', 'index.php?Function=event', true);
-  xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-  xhttp.send('delete=' + _deletedMeeting);
-
+    });
+  });
 }
 
 function deleteMeeting(name, id) {
-  _deletedMeeting = id;
   confirmbox(
     'Confirms Meeting Deletion',
-    'Delete meeting ' + name + '?').then(processMeetingDeletion);
-
+    'Delete meeting ' + name + '?').then(function() {
+    basicEventRequest('delete=' + id, function() {
+      hideSidebar();
+      location.reload();
+    });
+  });
 }
 
 function newCycle() {
   showSidebar('edit_cycle');
-
-}
-
-function processNewCycle() {
-  var data = {
-    'From': document.getElementById('cycle_from').value,
-    'To': document.getElementById('cycle_to').value,
-  };
-  var param = btoa(JSON.stringify(data));
-
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-      hideSidebar();
-      location.reload();
-    } else if (this.status == 404) {
-      alertbox('404!');
-    } else if (this.status == 409) {
-      alertbox('409!');
-    }
-  };
-  xhttp.open('POST', 'index.php?Function=event', true);
-  xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-  xhttp.send('cycle=' + param);
 
 }
 
@@ -140,8 +85,17 @@ function saveCycle() {
   var to = document.getElementById('cycle_to').value;
   confirmbox(
     'Confirm New Annual Cycle',
-    'Add Cycle [' + from + ' -> ' + to + '] ?').then(processNewCycle);
-
+    'Add Cycle [' + from + ' -> ' + to + '] ?').then(function() {
+    var data = {
+      'From': document.getElementById('cycle_from').value,
+      'To': document.getElementById('cycle_to').value,
+    };
+    var param = btoa(JSON.stringify(data));
+    basicEventRequest('cycle=' + param, function() {
+      hideSidebar();
+      location.reload();
+    });
+  });
 }
 
 function expandEvent(name) {
@@ -149,32 +103,15 @@ function expandEvent(name) {
 
 }
 
-var _deletedBadge = 0;
-
-function processBadgeDeletion() {
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-      hideSidebar();
-      location.reload();
-    } else if (this.status == 404) {
-      alertbox('404!');
-    } else if (this.status == 409) {
-      alertbox('409!');
-    }
-  };
-  xhttp.open('POST', 'index.php?Function=event', true);
-  xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-  xhttp.send('deleteBadge=' + _deletedBadge);
-
-}
-
 function deleteBadge(id, name) {
-  _deletedBadge = id;
   confirmbox(
     'Confirms Badge Deletion',
-    'Delete badge \'' + name + '\' ?').then(processBadgeDeletion);
-
+    'Delete badge \'' + name + '\' ?').then(function() {
+    basicEventRequest('deleteBadge=' + id, function() {
+      hideSidebar();
+      location.reload();
+    });
+  });
 }
 
 function newBadge(id,name) {
@@ -204,42 +141,27 @@ function editBadge(data) {
 
 }
 
-function processNewBadge() {
-  var data = {
-    'Id': document.getElementById('badge_id').value,
-    'Name': document.getElementById('badge_name').value,
-    'Event': document.getElementById('badge_event').value,
-    'Cost': document.getElementById('badge_cost').value,
-    'From': document.getElementById('badge_from').value,
-    'To': document.getElementById('badge_to').value,
-    'Image': document.getElementById('badge_image').value,
-  };
-  var param = btoa(JSON.stringify(data));
-
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-      hideSidebar();
-      location.reload();
-    } else if (this.status == 404) {
-      alertbox('404!');
-    } else if (this.status == 409) {
-      alertbox('409!');
-    }
-  };
-  xhttp.open('POST', 'index.php?Function=event', true);
-  xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-  xhttp.send('badge=' + param);
-
-}
-
 function saveBadge() {
   var name = document.getElementById('badge_name').value;
   var evnt = document.getElementById('badge_event_name').value;
   confirmbox(
     'Confirm Event Badge',
-    'Save Badge ' + name + ' for event  ' + evnt + ' ?').then(processNewBadge);
-
+    'Save Badge ' + name + ' for event  ' + evnt + ' ?').then(function() {
+    var data = {
+      'Id': document.getElementById('badge_id').value,
+      'Name': document.getElementById('badge_name').value,
+      'Event': document.getElementById('badge_event').value,
+      'Cost': document.getElementById('badge_cost').value,
+      'From': document.getElementById('badge_from').value,
+      'To': document.getElementById('badge_to').value,
+      'Image': document.getElementById('badge_image').value,
+    };
+    var param = btoa(JSON.stringify(data));
+    basicEventRequest('badge=' + param, function() {
+      hideSidebar();
+      location.reload();
+    });
+  });
 }
 
 function editEvent(name, data) {
@@ -250,31 +172,6 @@ function editEvent(name, data) {
   document.getElementById('event_to').value = evnt.To;
   document.getElementById('event_from').value = evnt.From;
   showSidebar('edit_event');
-
-}
-
-function processNewEvent() {
-  var data = {
-    'Id': document.getElementById('event_id').value,
-    'Name': document.getElementById('event_name').value,
-    'To': document.getElementById('event_to').value,
-    'From': document.getElementById('event_from').value,
-  };
-  var param = btoa(JSON.stringify(data));
-
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-      hideSidebar();
-      location.reload();
-    } else if (this.status == 404) {
-      alertbox('Event Failed to Save, Check if proper cycle exists.');
-      return;
-    }
-  };
-  xhttp.open('POST', 'index.php?Function=event', true);
-  xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-  xhttp.send('event=' + param);
 
 }
 
@@ -294,8 +191,19 @@ function saveEvent() {
   }
   confirmbox(
     'Confirm Event',
-    'Save Event "' + name + '" ?').then(processNewEvent);
-
+    'Save Event "' + name + '" ?').then(function() {
+    var data = {
+      'Id': document.getElementById('event_id').value,
+      'Name': document.getElementById('event_name').value,
+      'To': document.getElementById('event_to').value,
+      'From': document.getElementById('event_from').value,
+    };
+    var param = btoa(JSON.stringify(data));
+    basicEventRequest('event=' + param, function() {
+      hideSidebar();
+      location.reload();
+    });
+  });
 }
 
 function newEvent() {
@@ -307,32 +215,15 @@ function newEvent() {
 
 }
 
-var _deletedEvent = 0;
-
-function processEventDeletion() {
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-      hideSidebar();
-      location.reload();
-    } else if (this.status == 404) {
-      alertbox('404!');
-    } else if (this.status == 409) {
-      alertbox('409!');
-    }
-  };
-  xhttp.open('POST', 'index.php?Function=event', true);
-  xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-  xhttp.send('deleteEvent=' + _deletedEvent);
-
-}
-
 function deleteEvent(id, name) {
-  _deletedEvent = id;
   confirmbox(
     'Confirms Event Deletion',
-    'Delete event \'' + name + '\' ?').then(processEventDeletion);
-
+    'Delete event \'' + name + '\' ?').then(function() {
+    basicEventRequest('deleteEvent=' + id, function() {
+      hideSidebar();
+      location.reload();
+    });
+  });
 }
 
 function importConcom(event) {
@@ -350,26 +241,14 @@ function importConcom(event) {
     sel.selectedIndex++;
   }
   showSidebar('import_concom');
-
 }
 
 function doImport() {
   var to = document.getElementById('concom_event_id').value;
   var sel = document.getElementById('import_from');
   var from = sel.options[sel.selectedIndex].value;
-
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-      hideSidebar();
-      location.reload();
-    } else if (this.status == 404) {
-      alertbox('404!');
-    } else if (this.status == 409) {
-      alertbox('409!');
-    }
-  };
-  xhttp.open('POST', 'index.php?Function=event', true);
-  xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-  xhttp.send('duplicateConcom=' + to + '&from=' + from);
+  basicEventRequest('duplicateConcom=' + to + '&from=' + from, function() {
+    hideSidebar();
+    location.reload();
+  });
 }
