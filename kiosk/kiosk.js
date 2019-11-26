@@ -4,21 +4,17 @@
 
 /* jshint browser: true */
 /* jshint -W097 */
-/* globals kioskMode, checkAuthentication, userEmail, alertbox */
+/* globals kioskMode, checkAuthentication, userEmail, alertbox,
+           basicBackendRequest */
 /* exported toggleKioskMode */
 
 var kioskBase;
 
 function switchKiosk() {
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
+  basicBackendRequest('POST', kioskBase + '/kiosk', 'toggleKiosk=true',
+    function() {
       setTimeout(function() {location.reload() ;}, 1000);
-    }
-  };
-  xhttp.open('POST', 'index.php?Function=' + kioskBase + '/kiosk', true);
-  xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-  xhttp.send('&toggleKiosk=true');
+    });
 }
 
 function failKiosk(error) {
