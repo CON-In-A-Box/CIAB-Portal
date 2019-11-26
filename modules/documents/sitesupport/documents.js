@@ -4,51 +4,34 @@
 
 /* jshint browser: true */
 /* jshint -W097 */
-/* global confirmbox, hideSpinner, showSpinner */
+/* global confirmbox, basicBackendRequest */
 /* exported setSecret, authCode, setFolder, downloadFile, loadFiles */
 
 'use strict';
 
+function basicDocumentsRequest(method, parameter, finish) {
+  basicBackendRequest(method, 'documents', parameter, finish);
+}
+
 function setSecret() {
   var code = btoa(document.getElementById('secret').value.trim());
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-      location.reload();
-    }
-  };
-  xhttp.open('POST', 'index.php?Function=documents', true);
-  xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-  showSpinner();
-  xhttp.send('&setSecret=' + code);
+  basicDocumentsRequest('POST', 'setSecret=' + code, function() {
+    location.reload();
+  });
 }
 
 function authCode() {
   var code = document.getElementById('code').value;
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-      location.reload();
-    }
-  };
-  xhttp.open('POST', 'index.php?Function=documents', true);
-  xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-  showSpinner();
-  xhttp.send('&setCode=' + code);
+  basicDocumentsRequest('POST', 'setCode=' + code, function() {
+    location.reload();
+  });
 }
 
 function setFolder() {
   var folder = document.getElementById('folder').value.trim();
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-      location.reload();
-    }
-  };
-  xhttp.open('POST', 'index.php?Function=documents', true);
-  xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-  showSpinner();
-  xhttp.send('&setFolder=' + folder);
+  basicDocumentsRequest('POST', 'setFolder=' + folder, function() {
+    location.reload();
+  });
 }
 
 var _element;
@@ -67,58 +50,51 @@ function downloadFile(element, filename, mime) {
 }
 
 function loadFiles(path) {
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-      hideSpinner();
-      var fileTable = document.getElementById('file_table');
-      var folderTable = document.getElementById('folder_table');
-      var fileCount = 0;
-      var folderCount = 0;
-      var resp = JSON.parse(this.response);
-      if (resp.path) {
-        document.getElementById('root_path').innerHTML = resp.path;
-      } else {
-        document.getElementById('root_path').innerHTML = '';
-      }
-      resp.output.forEach(function(element) {
-        var row;
-        var icon;
-        if (element[3] == 'application/vnd.google-apps.folder') {
-          row = folderTable.insertRow(-1);
-          icon = '<i class="fas fa-folder"></i> ';
-          folderCount += 1;
-        } else {
-          row = fileTable.insertRow(-1);
-          icon = '<i class="fas fa-file"></i> ';
-          fileCount += 1;
-        }
-        var cell = row.insertCell(0);
-        cell.innerHTML = icon + '<span>' + element[0] + '</span>';
-        row.classList.add('event-hover-secondary');
-        if (element[3] == 'application/vnd.google-apps.folder') {
-          row.setAttribute('onclick', 'window.location="index.php?' +
-            'Function=documents&path=' + element[0] + '";');
-        } else {
-          row.setAttribute('onclick', 'downloadFile("' + element[2] + '", "' +
-                element[0] + '", "' + element[3] + '");');
-          cell = row.insertCell(1);
-          cell.innerHTML = element[1];
-        }
-      });
-      if (folderCount === 0) {
-        folderTable.classList.add('UI-hide');
-      } else {
-        folderTable.classList.remove('UI-hide');
-      }
-      if (fileCount === 0) {
-        fileTable.classList.add('UI-hide');
-      } else {
-        fileTable.classList.remove('UI-hide');
-      }
+  basicDocumentsRequest('GET', 'loadFiles=' + path, function(response) {
+    var fileTable = document.getElementById('file_table');
+    var folderTable = document.getElementById('folder_table');
+    var fileCount = 0;
+    var folderCount = 0;
+    var resp = JSON.parse(response.response);
+    if (resp.path) {
+      document.getElementById('root_path').innerHTML = resp.path;
+    } else {
+      document.getElementById('root_path').innerHTML = '';
     }
-  };
-  showSpinner();
-  xhttp.open('GET', 'index.php?Function=documents&loadFiles=' + path, true);
-  xhttp.send();
+    resp.output.forEach(function(element) {
+      var row;
+      var icon;
+      if (element[3] == 'application/vnd.google-apps.folder') {
+        row = folderTable.insertRow(-1);
+        icon = '<i class="fas fa-folder"></i> ';
+        folderCount += 1;
+      } else {
+        row = fileTable.insertRow(-1);
+        icon = '<i class="fas fa-file"></i> ';
+        fileCount += 1;
+      }
+      var cell = row.insertCell(0);
+      cell.innerHTML = icon + '<span>' + element[0] + '</span>';
+      row.classList.add('event-hover-secondary');
+      if (element[3] == 'application/vnd.google-apps.folder') {
+        row.setAttribute('onclick', 'window.location="index.php?' +
+          'Function=documents&path=' + element[0] + '";');
+      } else {
+        row.setAttribute('onclick', 'downloadFile("' + element[2] + '", "' +
+              element[0] + '", "' + element[3] + '");');
+        cell = row.insertCell(1);
+        cell.innerHTML = element[1];
+      }
+    });
+    if (folderCount === 0) {
+      folderTable.classList.add('UI-hide');
+    } else {
+      folderTable.classList.remove('UI-hide');
+    }
+    if (fileCount === 0) {
+      fileTable.classList.add('UI-hide');
+    } else {
+      fileTable.classList.remove('UI-hide');
+    }
+  });
 }
