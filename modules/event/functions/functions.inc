@@ -580,3 +580,67 @@ SQL;
     DB::run($sql);
 
 }
+
+
+function attendance_report($event = null)
+{
+    if ($event === null) {
+        $event = \current_eventID();
+    }
+
+    $sql = <<<SQL
+        SELECT
+            DISTINCT a.`AccountID`,
+            me.`Email`,
+            (
+                SELECT
+                    COUNT(`MeetingID`)
+                FROM
+                    MeetingAttendance AS b
+                WHERE
+                    b.AccountID = a.AccountID
+                    AND b.MeetingID IN (
+                        SELECT
+                            `MeetingID`
+                        FROM
+                            `OfficialMeetings`
+                        WHERE
+                            `EventID` = '$event'
+                    )
+            ) AS `Count`,
+            (
+                SELECT
+                    GROUP_CONCAT(
+                        DISTINCT (
+                            SELECT
+                                `Name`
+                            FROM
+                                OfficialMeetings AS n
+                            WHERE
+                                n.`MeetingID` = m.`MeetingID`
+                        ) SEPARATOR ', '
+                    )
+                FROM
+                    `MeetingAttendance` AS m
+                WHERE
+                    `EventID` = '$event'
+                    AND `AccountID` = a.`AccountID`
+            ) AS Attendance
+        FROM
+            `ConComList` AS a
+        INNER JOIN `Members` me USING(AccountID)
+        WHERE
+            `EventID` = '$event'
+            AND DepartmentID NOT IN (
+                SELECT
+                    `DepartmentID`
+                FROM
+                    `Departments`
+                WHERE
+                    `Name` = 'Historical Placeholder'
+            )
+       ORDER BY `Count` Desc
+SQL;
+    return $sql;
+
+}
