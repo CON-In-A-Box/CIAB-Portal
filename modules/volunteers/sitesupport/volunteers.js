@@ -9,7 +9,7 @@
            hoursRemain, userLookup, hideSidebar, showSidebar, alertbox,
            basicBackendRequest */
 /* exported processReturn, showReturn, markDelete, generateDerivedCSVReport,
-            generateDerivedCSV, generatCSVReport, generateCSV,
+            generateDerivedCSV, generatCSVReport,
             departmentReport, generateDeptReport, minHourReport,
             generateHourReport, commitPrize, deletePrize, showEditPrize,
             deleteHours, commitHours, showEditHours, toggleAdminMode,
@@ -499,16 +499,20 @@ function departmentReport(name, dept) {
   document.getElementById('dept_data_name').value = name;
 }
 
-function generateCSV() {
-  showSidebar('csv_export_div');
-}
-
-function generatCSVReport() {
-  var table = document.getElementById('csv_table').value;
-  window.location = 'index.php?Function=volunteers/report&generateCSV=' + table;
-}
-
 function generateDerivedCSV() {
+  var select = document.getElementById('der_csv_table');
+  if (select.options.length == 0) {
+    basicBackendRequest('GET', 'volunteers/report', 'availableReports=1',
+      function(response) {
+        var data = JSON.parse(response.response);
+        select.options.length = 0;
+        data.forEach(function(entry) {
+          var option = document.createElement('option');
+          option.text = entry;
+          select.add(option);
+        });
+      });
+  }
   showSidebar('csv_export_derived_div');
 }
 

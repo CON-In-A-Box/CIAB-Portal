@@ -63,8 +63,7 @@ function hour_table()
       <div class='VOL-admin'>
         <div id='volunteer_admin_bar' class='VOL-admin-bar'>
           <button id='min_hours' class='UI-eventbutton' onclick='minHourReport();'>Minimum Hour Report</button>
-          <button id='gen_der_csv' class='UI-eventbutton' onclick='generateDerivedCSV();'>Export Derived CSV</button>
-          <button id='gen_csv' class='UI-eventbutton' onclick='generateCSV();'>Export Raw CSV Table</button>
+          <button id='gen_der_csv' class='UI-eventbutton' onclick='generateDerivedCSV();'>Export CSV Report</button>
         </div>
       </div>
     </div>
@@ -107,43 +106,14 @@ function hour_table()
     </div>
   </div>
 
-  <div class='UI-sidebar-hidden UI-fixed' id='csv_export_div'>
-    <div class='UI-center'>
-      <h2 class='UI-red'>Export Raw CSV Data</h2>
-    </div>
-    <div class='UI-center'>
-      <label class='UI-label' for='csv_table'>
-      Table:</label>
-      <select class="UI-margin UI-select" style="width:auto" id="csv_table">
-        <option value=HourRedemptions>HourRedemptions</option>
-        <option value=VolunteerHours selected>VolunteerHours</option>
-        <option value=VolunteerRewards>VolunteerRewards</option>
-        <option value=RewardGroup>RewardGroup</option>
-      </select>
-    </div>
-    <div class='UI-center'>
-      <button id='generate_csv' class='UI-eventbutton'
-          onclick='generatCSVReport();'>
-         Generate CSV
-      </button>
-      <button class='UI-redbutton'
-          onclick='hideSidebar();'>
-        Close
-      </button>
-    </div>
-  </div>
-
   <div class='UI-sidebar-hidden UI-fixed' id='csv_export_derived_div'>
     <div class='UI-center'>
-      <h2 class='UI-red'>Export Derived CSV Data</h2>
+      <h2 class='UI-red'>Export CSV Data</h2>
     </div>
     <div class='UI-center'>
       <label class='UI-label' for='der_csv_table'>
       Table:</label>
       <select class="UI-margin UI-select" style="width:auto" id="der_csv_table">
-        <option>Volunteer Rewards</option>
-        <option>Volunteer Hours</option>
-        <option>Prize Redemption</option>
       </select>
     </div>
     <div class='UI-center'>
