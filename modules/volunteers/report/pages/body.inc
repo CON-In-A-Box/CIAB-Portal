@@ -51,6 +51,9 @@ function hour_table()
 ?>
 <script>
     var sidebarMainDiv = 'main_content';
+    reportGenerationSidebar.options({
+        target: 'volunteers/report'
+    });
 </script>
 
 <div id="page" class="UI-continer">
@@ -63,7 +66,7 @@ function hour_table()
       <div class='VOL-admin'>
         <div id='volunteer_admin_bar' class='VOL-admin-bar'>
           <button id='min_hours' class='UI-eventbutton' onclick='minHourReport();'>Minimum Hour Report</button>
-          <button id='gen_der_csv' class='UI-eventbutton' onclick='generateDerivedCSV();'>Export CSV Report</button>
+          <button id='gen_der_csv' class='UI-eventbutton' onclick='reportGenerationSidebar.open();'>Export CSV Report</button>
         </div>
       </div>
     </div>
@@ -98,28 +101,6 @@ function hour_table()
       <button id='generate_dept_report' class='UI-eventbutton'
           onclick='generateDeptReport();'>
          Generate Report &lt;CSV&gt;
-      </button>
-      <button class='UI-redbutton'
-          onclick='hideSidebar();'>
-        Close
-      </button>
-    </div>
-  </div>
-
-  <div class='UI-sidebar-hidden UI-fixed' id='csv_export_derived_div'>
-    <div class='UI-center'>
-      <h2 class='UI-red'>Export CSV Data</h2>
-    </div>
-    <div class='UI-center'>
-      <label class='UI-label' for='der_csv_table'>
-      Table:</label>
-      <select class="UI-margin UI-select" style="width:auto" id="der_csv_table">
-      </select>
-    </div>
-    <div class='UI-center'>
-      <button id='generate_csv' class='UI-eventbutton'
-          onclick='generateDerivedCSVReport();'>
-         Generate CSV
       </button>
       <button class='UI-redbutton'
           onclick='hideSidebar();'>
