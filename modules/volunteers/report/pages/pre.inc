@@ -17,8 +17,8 @@ require_once($FUNCTIONDIR."/reports.inc");
 
 $reports = [
 'Volunteer Rewards' => 'SELECT r.*, (SELECT COUNT(h.PrizeID) FROM HourRedemptions AS h WHERE h.PrizeID = r.PrizeID GROUP BY h.PrizeID) as Claimed FROM VolunteerRewards as r;',
-'Volunteer Hours' => 'SELECT v.*, (SELECT Name FROM `Departments` as d WHERE v.DepartmentID = d.DepartmentID) as DepartmentName FROM `VolunteerHours` as v;',
-'Prize Redemption' => 'SELECT *, (SELECT Name FROM VolunteerRewards WHERE VolunteerRewards.prizeid = HourRedemptions.PrizeID) AS PrizeName FROM `HourRedemptions` ORDER BY AccountID',
+'Volunteer Hours' => 'SELECT v.*, (SELECT Name FROM `Departments` as d WHERE v.DepartmentID = d.DepartmentID) as DepartmentName FROM `VolunteerHours` as v WHERE v.EventID = ( SELECT MAX(EventID) FROM Events );',
+'Prize Redemption' => 'SELECT *, (SELECT Name FROM VolunteerRewards WHERE VolunteerRewards.prizeid = HourRedemptions.PrizeID) AS PrizeName FROM `HourRedemptions` WHERE EventID = ( SELECT MAX(EventID) FROM Events ) ORDER BY AccountID',
 'Reward Group Table' => 'RewardGroup',
 'Hour Redemptions Table' => 'HourRedemptions',
 'Volunteer Hours Table' => 'VolunteerHours',
