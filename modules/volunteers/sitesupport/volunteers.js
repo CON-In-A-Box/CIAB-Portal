@@ -5,16 +5,15 @@
 /* jshint browser: true */
 /* jshint -W097 */
 /* globals confirmbox, userId, escapeHtml, userEmail,
-           groupData, checkAuthentication, adminMode, unclaimed,
-           hoursRemain, userLookup, hideSidebar, showSidebar, alertbox,
-           basicBackendRequest */
-/* exported processReturn, showReturn, markDelete, generateDerivedCSVReport,
-            generateDerivedCSV, generatCSVReport, generateCSV,
-            departmentReport, generateDeptReport, minHourReport,
-            generateHourReport, commitPrize, deletePrize, showEditPrize,
-            deleteHours, commitHours, showEditHours, toggleAdminMode,
-            addPromoToCheckout, removeFromCheckout, processCheckout,
-            showHideSoldOut, lookupFail, sidebarMainDiv */
+           groupData, checkAuthentication, adminMode, unclaimed, hoursRemain,
+           userLookup, hideSidebar, showSidebar, alertbox, basicBackendRequest
+           */
+/* exported processReturn, showReturn, markDelete,
+            generateDerivedCSV, departmentReport, generateDeptReport,
+            minHourReport, generateHourReport, commitPrize, deletePrize,
+            showEditPrize, deleteHours, commitHours, showEditHours,
+            toggleAdminMode, addPromoToCheckout, removeFromCheckout,
+            processCheckout, showHideSoldOut, lookupFail, sidebarMainDiv */
 
 'use strict';
 
@@ -497,26 +496,6 @@ function departmentReport(name, dept) {
   document.getElementById('dept_name').innerHTML = name;
   document.getElementById('dept_data').value = dept;
   document.getElementById('dept_data_name').value = name;
-}
-
-function generateCSV() {
-  showSidebar('csv_export_div');
-}
-
-function generatCSVReport() {
-  var table = document.getElementById('csv_table').value;
-  window.location = 'index.php?Function=volunteers/report&generateCSV=' + table;
-}
-
-function generateDerivedCSV() {
-  showSidebar('csv_export_derived_div');
-}
-
-function generateDerivedCSVReport() {
-  var table = document.getElementById('der_csv_table');
-  var report = table.options[table.selectedIndex].text;
-  var args = '&report=' + report;
-  window.location = 'index.php?Function=volunteers/report' + args;
 }
 
 function markDelete(index, tableRow) {

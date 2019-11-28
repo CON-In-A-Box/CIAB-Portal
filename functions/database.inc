@@ -406,8 +406,7 @@ function lookup_names(&$data, $column_name)
         $colmn = array_search($column_name, $data[0]);
         $ids = array_column($data, $colmn);
         array_shift($ids);
-        $str = "('".implode("', '", array_unique($ids))."')";
-        $users = lookup_users_by_ids($str);
+        $users = lookup_users_by_ids(array_unique($ids));
         $usr = [];
         foreach ($users['users'] as $user) {
             $usr[$user['Id']] = $user['First Name'].' '.$user['Last Name'];
