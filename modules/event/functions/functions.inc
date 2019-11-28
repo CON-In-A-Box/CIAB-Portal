@@ -588,13 +588,13 @@ function attendance_report($event = null)
         $event = \current_eventID();
     }
 
-    $sql = <<<SQL
+    return <<<SQL
         SELECT
             DISTINCT a.`AccountID`,
             me.`Email`,
             (
                 SELECT
-                    COUNT(`MeetingID`)
+                    COUNT(DISTINCT `MeetingID`)
                 FROM
                     MeetingAttendance AS b
                 WHERE
@@ -618,13 +618,13 @@ function attendance_report($event = null)
                                 OfficialMeetings AS n
                             WHERE
                                 n.`MeetingID` = m.`MeetingID`
+                                AND n.`EventID` = '$event'
                         ) SEPARATOR ', '
                     )
                 FROM
                     `MeetingAttendance` AS m
                 WHERE
-                    `EventID` = '$event'
-                    AND `AccountID` = a.`AccountID`
+                    `AccountID` = a.`AccountID`
             ) AS Attendance
         FROM
             `ConComList` AS a
@@ -639,8 +639,7 @@ function attendance_report($event = null)
                 WHERE
                     `Name` = 'Historical Placeholder'
             )
-       ORDER BY `Count` Desc
+       ORDER BY `Count` DESC
 SQL;
-    return $sql;
 
 }
