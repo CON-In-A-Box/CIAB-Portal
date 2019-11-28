@@ -4,8 +4,8 @@
 
 /* jshint browser: true */
 /* jshint -W097 */
-/* globals confirmbox, showSidebar, hideSidebar, showSpinner, hideSpinner,
-           PERMISSIONS, alertbox */
+/* globals confirmbox, showSidebar, hideSidebar,
+           PERMISSIONS, basicBackendRequest*/
 /* exported drag, dragOverDivision, dragLeaveDivision, dragDropDivision,
             dragDropParent, toggleDept, savePosition, newEntry,
             deletePosition, changeEmail, editEmail, returnPosition,
@@ -13,33 +13,11 @@
             returnRBAC, confirmRemoval */
 
 var basicReload = function() {
-  hideSidebar();
   window.location = 'index.php?Function=concom/admin';
 };
 
 function basicConcomRequestAdmin(method, parameter, finish) {
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-      finish(this);
-      if (finish != basicReload) {
-        hideSpinner();
-      }
-    } else if (this.status == 404) {
-      alertbox('404!');
-    } else if (this.status == 409) {
-      alertbox('409!');
-    }
-  };
-  showSpinner();
-  if (method == 'POST') {
-    xhttp.open(method, 'index.php?Function=concom/admin', true);
-    xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-    xhttp.send(parameter);
-  } else {
-    xhttp.open('GET', 'index.php?Function=concom/admin&' + parameter, true);
-    xhttp.send();
-  }
+  basicBackendRequest(method, 'concom/admin', parameter, finish);
 
 }
 

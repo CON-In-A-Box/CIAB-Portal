@@ -33,26 +33,21 @@ if (!in_kiosk()) {
 
 <script>
     function switchKiosk(uid) {
-      var xhttp = new XMLHttpRequest();
-      xhttp.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {
-          window.location = 'index.php?Function=<?php echo $kiosk_target;?>';
-        }
-      };
-
-      xhttp.open('POST', 'index.php?Function=<?php echo $kiosk_base;?>/kiosk', true);
-      xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
 <?php
 if (!in_kiosk()) {
 ?>
-        xhttp.send('toggleKiosk=true&kioskUser='+uid);
+        var param = 'toggleKiosk=true&kioskUser='+uid;
 <?php
 } else {
 ?>
-        xhttp.send('toggleKiosk=false&kioskUser='+uid);
+        var param = 'toggleKiosk=false&kioskUser='+uid;
 <?php
 }
 ?>
+      basicBackendRequest('POST', '<?php echo $kiosk_base;?>/kiosk', param,
+        function() {
+          window.location = 'index.php?Function=<?php echo $kiosk_target;?>';
+      });
     }
 
     function failKiosk(error) {

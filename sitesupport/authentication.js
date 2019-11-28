@@ -4,6 +4,7 @@
 
 /* jshint browser: true */
 /* jshint -W097 */
+/* global basicBackendRequest */
 /* exported checkAuthentication */
 
 'use strict';
@@ -28,29 +29,23 @@ function _checkKey(event) {
     _hideAuthentication();
     var pass = document.getElementById('password_input').value;
     var target = document.getElementById('target').value;
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 200) {
+    if (!target) {
+      target = 'functions';
+    }
+    basicBackendRequest('POST', target,
+      'validate_login=' + user + '&validate_passwd=' + encodeURI(pass),
+      function() {
         if (onSuccess) {
           onSuccess();
         }
         return;
-      }
-      else if (this.readyState == 4 && this.status != 200) {
+      },
+      function(response) {
         if (onFail) {
-          onFail(this.status);
+          onFail(response.status);
         }
         return;
-      }
-    };
-    if (!target) {
-      xhttp.open('POST', 'index.php?Function=functions', true);
-    } else {
-      xhttp.open('POST', 'index.php?Function=' + target, true);
-    }
-    xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-    xhttp.send('validate_login=' + user + '&validate_passwd=' +
-               encodeURI(pass));
+      });
   }
 }
 

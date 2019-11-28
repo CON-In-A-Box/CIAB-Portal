@@ -16,5 +16,13 @@ var PERMISSIONS = [
   {
     permission:'site.email_lists',
     description:'Allowed to change all email lists on system'
+  },
+  {
+    permission:'volunteers.admin',
+    description:'Allowed administrate volunteer data.'
+  },
+  {
+    permission:'volunteers.reports',
+    description:'Allowed generate reports from convention volunteer data.'
   }
 ];

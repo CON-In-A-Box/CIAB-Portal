@@ -4,16 +4,16 @@
 
 /* jshint browser: true */
 /* jshint -W097 */
-/* globals confirmbox, userId, escapeHtml, userEmail, checkAuthentication,
-           groupData, checkAuthentication, adminMode, unclaimed,
-           hoursRemain, userLookup, hideSidebar, showSidebar, alertbox */
-/* exported processReturn, showReturn, markDelete, generateDerivedCSVReport,
-            generateDerivedCSV, generatCSVReport, generateCSV,
-            departmentReport, generateDeptReport, minHourReport,
-            generateHourReport, commitPrize, deletePrize, showEditPrize,
-            deleteHours, commitHours, showEditHours, toggleAdminMode,
-            addPromoToCheckout, removeFromCheckout, processCheckout,
-            showHideSoldOut, lookupFail, sidebarMainDiv */
+/* globals confirmbox, userId, escapeHtml, userEmail,
+           groupData, checkAuthentication, adminMode, unclaimed, hoursRemain,
+           userLookup, hideSidebar, showSidebar, alertbox, basicBackendRequest
+           */
+/* exported processReturn, showReturn, markDelete,
+            generateDerivedCSV, departmentReport, generateDeptReport,
+            minHourReport, generateHourReport, commitPrize, deletePrize,
+            showEditPrize, deleteHours, commitHours, showEditHours,
+            toggleAdminMode, addPromoToCheckout, removeFromCheckout,
+            processCheckout, showHideSoldOut, lookupFail, sidebarMainDiv */
 
 'use strict';
 
@@ -22,6 +22,10 @@ var hoursSpent = 0;
 var groupsNow = [];
 var sidebarMainDiv = 'info_div';
 var returnCart = [];
+
+function basicVolunteersRequestAdmin(parameter, finish) {
+  basicBackendRequest('POST', 'volunteers/admin', parameter, finish);
+}
 
 function lookupFail(target, resp, name, code) {
   userLookup.markFailure();
@@ -83,28 +87,16 @@ function fillReward() {
   }
 }
 
-function applyReward() {
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-      fillReward();
-      document.getElementById('success_dlg').style.display = 'block';
-    }
-    else if (this.status == 404) {
-      alertbox('404!');
-    }
-    else if (this.status == 409) {
-      alertbox('409!');
-    }
-  };
-  xhttp.open('POST', 'index.php?Function=volunteers/admin', true);
-  xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-  xhttp.send('rewardId=' + userId + '&rewards=' + JSON.stringify(checkout));
-}
-
 function processCheckout() {
   confirmbox('Confirm Distribute Gifts',
-    'Are the selected gifts correct?').then(applyReward);
+    'Are the selected gifts correct?').then(function() {
+    var parameter = 'rewardId=' + userId + '&rewards=' +
+      JSON.stringify(checkout);
+    basicVolunteersRequestAdmin(parameter, function() {
+      fillReward();
+      document.getElementById('success_dlg').style.display = 'block';
+    });
+  });
 }
 
 function clearCheckout() {
@@ -324,21 +316,10 @@ function commitHours() {
     item['Department Worked'] = document.getElementById('edit_dept').value;
     item['Authorized By'] = document.getElementById('edit_auth').value;
 
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 200) {
-        location.reload();
-      }
-      else if (this.status == 404) {
-        alertbox('ERROR 404!');
-      }
-      else if (this.status == 409) {
-        alertbox('ERROR 409!');
-      }
-    };
-    xhttp.open('POST', 'index.php?Function=volunteers/admin', true);
-    xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-    xhttp.send('update_hour=' + JSON.stringify(item));
+    var parameter = 'update_hour=' + JSON.stringify(item);
+    basicVolunteersRequestAdmin(parameter, function() {
+      location.reload();
+    });
   });
 }
 
@@ -346,22 +327,10 @@ function deleteHours() {
   confirmbox('DELETE Volunteer Entry?').then(function() {
     var data = document.getElementById('edit_data').value;
     var item = JSON.parse(atob(data));
-
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 200) {
-        location.reload();
-      }
-      else if (this.status == 404) {
-        alertbox('ERROR 404!');
-      }
-      else if (this.status == 409) {
-        alertbox('ERROR 409!');
-      }
-    };
-    xhttp.open('POST', 'index.php?Function=volunteers/admin', true);
-    xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-    xhttp.send('delete_hour=' + item.EntryID);
+    var parameter = 'delete_hour=' + item.EntryID;
+    basicVolunteersRequestAdmin(parameter, function() {
+      location.reload();
+    });
   });
 }
 
@@ -430,23 +399,10 @@ function deletePrize() {
     function() {
       var data = document.getElementById('prize_data').value;
       var item = JSON.parse(atob(data));
-
-      var xhttp = new XMLHttpRequest();
-      xhttp.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {
-          location.reload();
-        }
-        else if (this.status == 404) {
-          alertbox('ERROR 404!');
-        }
-        else if (this.status == 409) {
-          alertbox('ERROR 409!');
-        }
-      };
-      xhttp.open('POST', 'index.php?Function=volunteers/admin', true);
-      xhttp.setRequestHeader('Content-type',
-        'application/x-www-form-urlencoded');
-      xhttp.send('delete_prize=' + item.PrizeID);
+      var parameter = 'delete_prize=' + item.PrizeID;
+      basicVolunteersRequestAdmin(parameter, function() {
+        location.reload();
+      });
     });
 }
 
@@ -487,26 +443,16 @@ function commitPrize() {
         item.TotalInventory = newValue;
       }
     }
-
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 200) {
-        location.reload();
-      }
-      else if (this.status == 404) {
-        alertbox('ERROR 404!');
-      }
-      else if (this.status == 409) {
-        alertbox('ERROR 409!');
-      }
-    };
-    xhttp.open('POST', 'index.php?Function=volunteers/admin', true);
-    xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    var parameter;
     if (data) {
-      xhttp.send('update_prize=' + JSON.stringify(item));
+      parameter = 'update_prize=' + JSON.stringify(item);
     } else {
-      xhttp.send('new_prize=' + JSON.stringify(item));
+      parameter = 'new_prize=' + JSON.stringify(item);
     }
+    basicVolunteersRequestAdmin(parameter, function() {
+      location.reload();
+    });
+
   });
 }
 
@@ -530,7 +476,7 @@ function prizeGroupChange() {
 
 function generateHourReport() {
   var hours = document.getElementById('report_hour_min').value;
-  window.location = 'index.php?Function=volunteers/admin&min_hour=' + hours;
+  window.location = 'index.php?Function=volunteers/report&min_hour=' + hours;
 }
 
 function minHourReport() {
@@ -541,7 +487,7 @@ function minHourReport() {
 function generateDeptReport() {
   var name = document.getElementById('dept_data_name').value;
   var deptid = document.getElementById('dept_data').value;
-  window.location = 'index.php?Function=volunteers/admin&dept_report=' +
+  window.location = 'index.php?Function=volunteers/report&dept_report=' +
                     deptid + '&dept_name=' + name;
 }
 
@@ -550,27 +496,6 @@ function departmentReport(name, dept) {
   document.getElementById('dept_name').innerHTML = name;
   document.getElementById('dept_data').value = dept;
   document.getElementById('dept_data_name').value = name;
-}
-
-function generateCSV() {
-  showSidebar('csv_export_div');
-}
-
-function generatCSVReport() {
-  var table = document.getElementById('csv_table').value;
-  window.location = 'index.php?Function=volunteers/admin&generateCSV=' + table;
-}
-
-function generateDerivedCSV() {
-  showSidebar('csv_export_derived_div');
-}
-
-function generateDerivedCSVReport() {
-  var table = document.getElementById('der_csv_table');
-  var text = table.options[table.selectedIndex].text;
-  var sql = document.getElementById('der_csv_table').value;
-  var args = '&CSVfromSQL=' + sql + '&name=' + text;
-  window.location = 'index.php?Function=volunteers/admin' + args;
 }
 
 function markDelete(index, tableRow) {
@@ -662,33 +587,20 @@ function finishReturn() {
   }
 }
 
-function doReturn() {
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-      finishReturn();
-      document.getElementById('return_success_dlg').style.display = 'block';
-    }
-    else if (this.status == 404) {
-      alertbox('404!');
-    }
-    else if (this.status == 409) {
-      alertbox('409!');
-    }
-  };
-  xhttp.open('POST', 'index.php?Function=volunteers/admin', true);
-  xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-  var data = [];
-  for (var index in returnCart) {
-    var item = returnCart[index];
-    if (item.Returned) {
-      data.push(item.item.PrizeID);
-    }
-  }
-  xhttp.send('refundId=' + userId + '&rewards=' + JSON.stringify(data));
-}
-
 function processReturn() {
   confirmbox('Confirm Gift Return',
-    'Are the returned gifts correct?').then(doReturn);
+    'Are the returned gifts correct?').then(function() {
+    var data = [];
+    for (var index in returnCart) {
+      var item = returnCart[index];
+      if (item.Returned) {
+        data.push(item.item.PrizeID);
+      }
+    }
+    var parameter = 'refundId=' + userId + '&rewards=' + JSON.stringify(data);
+    basicVolunteersRequestAdmin(parameter, function() {
+      finishReturn();
+      document.getElementById('return_success_dlg').style.display = 'block';
+    });
+  });
 }

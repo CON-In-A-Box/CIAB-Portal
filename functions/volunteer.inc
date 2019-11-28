@@ -568,9 +568,13 @@ SQL;
 }
 
 
-function volunteer_minimum_hour_report($required_hours)
+function volunteer_minimum_hour_report($required_hours, $event = null)
 {
     global $ConComHours;
+
+    if ($event === null) {
+        $event = current_eventID();
+    }
 
     $members = [];
     $hours = [];
@@ -580,6 +584,8 @@ function volunteer_minimum_hour_report($required_hours)
             SUM(ActualHours * TimeModifier) AS TotalHours
         FROM
             `VolunteerHours`
+        WHERE
+            EventID = $event
         Group by
             AccountID
         order BY

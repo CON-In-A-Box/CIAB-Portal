@@ -537,8 +537,8 @@ function save_position($data)
         $parent = $data->ParentDept;
     }
     $fallback = $data->FallbackID;
-    if ($fallback == -1) {
-        $falback = "'NULL'";
+    if ($fallback == -1 || empty($fallback)) {
+        $fallback = "NULL";
     }
     if ($data->Id != -1) {
         $sql = "UPDATE `Departments` SET ";

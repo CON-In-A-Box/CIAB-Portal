@@ -6,7 +6,7 @@
 /* jshint -W097 */
 /* globals confirmbox, showSidebar, showSpinner, hideSidebar, hideSpinner,
            buildPositionList, buildDepartmentList, lists, quill,
-           urlsafeB64Encode, alertbox */
+           urlsafeB64Encode, alertbox, basicBackendRequest */
 /* exported removeAccess, changePosition, addAccess, changeDepartment,
             backFromAccess, toChanged, testList, newList, updateList,
             backFromEmail, editEmail, sendEmail, sidebarMainDiv,
@@ -15,6 +15,10 @@
 'use strict';
 
 var sidebarMainDiv = 'main_content';
+
+function basicEmailerRequest(method, parameter, finish) {
+  basicBackendRequest(method, 'emailer', parameter, finish);
+}
 
 function doCancelEmail() {
   document.getElementById('email_subject').value = '';
@@ -115,17 +119,9 @@ function doUpdateList() {
     });
   }
   var param = btoa(JSON.stringify(data));
-
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-      hideSidebar();
-      location.reload();
-    }
-  };
-  xhttp.open('POST', 'index.php?Function=emailer', true);
-  xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-  xhttp.send('updateList=' + param);
+  basicEmailerRequest('POST', 'updateList=' + param, function() {
+    location.reload();
+  });
 }
 
 function updateList() {
@@ -166,30 +162,18 @@ function newList() {
 
 function testList() {
   var v = document.getElementById('email_code').value;
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-      var d = this.responseText;
-      alertbox(d + ' addresses');
-    }
-  };
-  xhttp.open('GET', 'index.php?Function=emailer&test=' + btoa(v), true);
-  xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-  xhttp.send();
+  basicEmailerRequest('GET', 'test=' + btoa(v), function(response) {
+    var d = response.responseText;
+    alertbox(d + ' addresses');
+  });
 }
 
 function toChanged() {
   var v = document.getElementById('email_to').value;
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-      var d = this.responseText;
-      document.getElementById('to_count').innerHTML = d;
-    }
-  };
-  xhttp.open('GET', 'index.php?Function=emailer&listCount=' + v, true);
-  xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-  xhttp.send();
+  basicEmailerRequest('GET', 'listCount=' + v, function(response) {
+    var d = response.responseText;
+    document.getElementById('to_count').innerHTML = d;
+  });
 }
 
 function backFromAccess() {
@@ -423,18 +407,12 @@ function accessList() {
   var n = document.getElementById('email_name').value;
   document.getElementById('edit_name').innerHTML = n;
   var v = document.getElementById('email_id').value;
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-      var data = JSON.parse(this.responseText);
-      buildAccessList(data);
-      if (data.length && data[0].Department !== null) {
-        accessListData = data;
-      }
-      showSidebar('edit_access');
+  basicEmailerRequest('GET', 'accessControl=' + v, function(response) {
+    var data = JSON.parse(response.responseText);
+    buildAccessList(data);
+    if (data.length && data[0].Department !== null) {
+      accessListData = data;
     }
-  };
-  xhttp.open('GET', 'index.php?Function=emailer&accessControl=' + v, true);
-  xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-  xhttp.send();
+    showSidebar('edit_access');
+  });
 }

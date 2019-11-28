@@ -4,8 +4,9 @@
 
 /* jshint browser: true */
 /* jshint -W097 */
+/* globals alertbox */
 /* exported escapeHtml, showSpinner, hideSpinner, urlsafeB64Encode,
-            urlsafeB64Decode */
+            urlsafeB64Decode, basicBackendRequest */
 
 'use strict';
 
@@ -50,4 +51,33 @@ function urlsafeB64Encode(data) {
 
 function urlsafeB64Decode(data) {
   return atob(data.replace(/-/g, '+').replace(/_/g, '/'));
+}
+
+function basicBackendRequest(method, target, parameter, success, failure) {
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      success(this);
+      hideSpinner();
+    } else if (this.readyState == 4) {
+      if (typeof failure !== 'undefined') {
+        failure(this);
+        hideSpinner();
+      } else {
+        hideSpinner();
+        alertbox(this.status);
+      }
+    }
+  };
+  showSpinner();
+  var url = 'index.php?Function=' + target;
+  if (method == 'POST') {
+    xhttp.open(method, url, true);
+    xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    xhttp.send(parameter);
+  } else {
+    xhttp.open('GET', url + '&' + parameter, true);
+    xhttp.send();
+  }
+
 }

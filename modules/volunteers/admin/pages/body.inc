@@ -223,10 +223,6 @@ function hour_table($uid)
                 $json = base64_encode($json);
                 echo 'onclick=\'showEditHours("'.$json;
                 echo '");\'>';
-            } elseif (!isset($uid) && $admin_mode) {
-                echo "<tr class='VOL-hover-red' ";
-                echo 'onclick=\'departmentReport("'.$record['Department Worked'].'", '.$record['Department ID'].');\'';
-                echo ">";
             } else {
                 echo "<tr>";
             }
@@ -537,12 +533,8 @@ function admin_bar($uid)
     echo "<div id='volunteer_admin_bar' class='VOL-admin-bar'>\n";
     echo "<button id='add_prize' class='UI-redbutton'";
     echo "onclick='showEditPrize(null)';>Add New Gift</button>\n";
-    echo "<button id='min_hours' class='UI-redbutton'";
-    echo "onclick='minHourReport()';>Minimum Hour Report</button>\n";
-    echo "<button id='gen_der_csv' class='UI-redbutton'";
-    echo "onclick='generateDerivedCSV()';>Export Derived CSV</button>\n";
     echo "<button id='gen_csv' class='UI-redbutton'";
-    echo "onclick='generateCSV()';>Export Raw CSV Table</button>\n";
+    echo "onclick='window.location.href=\"index.php?Function=volunteers/report\"';>Go To Reports</button>\n";
     echo "</div>\n";
     echo "</div>\n";
 
@@ -650,78 +642,6 @@ if (!isset($locked)) {
         <div class='UI-center'>
             <button id='generate_dept_report' class='UI-eventbutton'
                 onclick='generateDeptReport();'>
-               Generate Report &lt;CSV&gt;
-            </button>
-            <button class='UI-redbutton'
-                onclick='hideSidebar();'>
-              Close
-            </button>
-        </div>
-    </div>
-
-    <div class='UI-sidebar-hidden' id='csv_export_div'>
-        <div class='UI-center'>
-            <h2 class='UI-red'>Export Raw CSV Data</h2>
-        </div>
-        <div class='UI-center'>
-            <label class='UI-label' for='csv_table'>
-            Table:</label>
-            <select class="UI-margin UI-select" style="width:auto" id="csv_table">
-              <option value=HourRedemptions>HourRedemptions</option>
-              <option value=VolunteerHours selected>VolunteerHours</option>
-              <option value=VolunteerRewards>VolunteerRewards</option>
-              <option value=RewardGroup>RewardGroup</option>
-            </select>
-        </div>
-        <div class='UI-center'>
-            <button id='generate_csv' class='UI-eventbutton'
-                onclick='generatCSVReport();'>
-               Generate CSV
-            </button>
-            <button class='UI-redbutton'
-                onclick='hideSidebar();'>
-              Close
-            </button>
-        </div>
-    </div>
-
-    <div class='UI-sidebar-hidden' id='csv_export_derived_div'>
-        <div class='UI-center'>
-            <h2 class='UI-red'>Export Derived CSV Data</h2>
-        </div>
-        <div class='UI-center'>
-            <label class='UI-label' for='der_csv_table'>
-            Table:</label>
-            <select class="UI-margin UI-select" style="width:auto" id="der_csv_table">
-              <option value="SELECT r.*, (SELECT COUNT(h.PrizeID) FROM HourRedemptions AS h WHERE h.PrizeID = r.PrizeID GROUP BY h.PrizeID) as Claimed FROM VolunteerRewards as r;">Volunteer Rewards</option>
-              <option value="SELECT v.*, (SELECT Name FROM `Departments` as d WHERE v.DepartmentID = d.DepartmentID) as DepartmentName FROM `VolunteerHours` as v;">Volunteer Hours</option>
-              <option value="SELECT *, (SELECT Name FROM VolunteerRewards WHERE VolunteerRewards.prizeid = HourRedemptions.PrizeID) AS PrizeName FROM `HourRedemptions` ORDER BY AccountID">Prize Redemption</option>
-            </select>
-        </div>
-        <div class='UI-center'>
-            <button id='generate_csv' class='UI-eventbutton'
-                onclick='generateDerivedCSVReport();'>
-               Generate CSV
-            </button>
-            <button class='UI-redbutton'
-                onclick='hideSidebar();'>
-              Close
-            </button>
-        </div>
-    </div>
-
-    <div class='UI-sidebar-hidden' id='hour_report_div'>
-        <div class='UI-center'>
-            <h2 class='UI-red'>Report of all Volunteers with minimum hours or more</h2>
-        </div>
-        <div class='UI-center'>
-            <label class='UI-label' for='report_hour_min'>
-            Minimum hours:</label>
-            <input class="UI-input" id="report_hour_min">
-        </div>
-        <div class='UI-center'>
-            <button id='generate_report' class='UI-eventbutton'
-                onclick='generateHourReport();'>
                Generate Report &lt;CSV&gt;
             </button>
             <button class='UI-redbutton'

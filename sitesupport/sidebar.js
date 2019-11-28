@@ -16,6 +16,8 @@ function hideSidebar() {
     var section = document.getElementById(sidebarMainDiv);
     section.classList.add('UI-rest');
     section.classList.remove('UI-mainsection-sidebar-shown');
+    var hideEvent = new Event('sidebarHidden', {sidebar: currentSidebar});
+    currentSidebar.dispatchEvent(hideEvent);
     currentSidebar = null;
   }
 }
@@ -31,4 +33,6 @@ function showSidebar(Id) {
   var section = document.getElementById(sidebarMainDiv);
   section.classList.remove('UI-rest');
   section.classList.add('UI-mainsection-sidebar-shown');
+  var showEvent = new Event('sidebarShow', {sidebar: currentSidebar});
+  currentSidebar.dispatchEvent(showEvent);
 }
