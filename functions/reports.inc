@@ -101,9 +101,16 @@ function handle_report_request(
         }
 
         if (isset($updateData[$reportArg])) {
-            print_csv_report(
-                $updateData[$reportArg].'.csv',
-                $reports[$updateData[$reportArg]]
+            $arguments = [];
+            $arguments[] = $updateData[$reportArg].'.csv';
+            if (is_array($reports[$updateData[$reportArg]])) {
+                $arguments = array_merge($arguments, $reports[$updateData[$reportArg]]);
+            } else {
+                $arguments[] = $reports[$updateData[$reportArg]];
+            }
+            @call_user_func_array(
+                'print_csv_report',
+                $arguments
             );
             exit();
         }
