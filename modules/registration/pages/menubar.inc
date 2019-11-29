@@ -18,3 +18,13 @@ if (in_registration()) {
 
     generate_kiosk_menus('registration');
 }
+
+if (\ciab\RBAC::havePermission("registration.reports")) {
+    $report_menus[] = array('base style' => 'UI-yellow',
+     'selected style' => 'event-color-primary',
+     'function' => 'registration/report',
+     'title' => 'Registration Reports',
+     'i class' => 'far fa-address-card',
+     'text' => 'Registration Reports',
+     'responsive' => true);
+}
