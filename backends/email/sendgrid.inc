@@ -30,9 +30,9 @@ class Email
         $type = null
     ) {
         if ($from == null) {
-            $from = getenv('SENDGRID_MAIL_FROM');
+            $from = $GLOBALS['SENDGRID_MAIL_FROM'];
         }
-        $key = getenv('SENDGRID_API_KEY');
+        $key = $GLOBALS['SENDGRID_API_KEY'];
         if ($from == null || $key == null) {
             error_log("ERROR: Sendgrid e-mail not configured correctly! SENDGRID_MAIL_FROM and/or SENDGRID_API_KEY undefined "."in .env file");
             return false;
@@ -49,7 +49,7 @@ class Email
             $type = "text/plain";
         }
         $email->addContent($type, $message);
-        $sendgrid = new \SendGrid(getenv('SENDGRID_API_KEY'));
+        $sendgrid = new \SendGrid($GLOBALS['SENDGRID_API_KEY']);
         try {
             $response = $sendgrid->send($email);
             if ($response->statusCode() == 200 ||

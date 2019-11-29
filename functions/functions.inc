@@ -83,11 +83,21 @@ function goSite($Site = false)
 
 function _config_from_Database()
 {
+    foreach ($_ENV as $key => $entry) {
+        if (!array_key_exists($key, $GLOBALS)) {
+            $GLOBALS[$key] = $entry;
+        }
+    }
+
     $sql = "SELECT * FROM Configuration;";
     $result = DB::run($sql);
     $value = $result->fetch();
     while ($value !== false) {
-        $GLOBALS[$value['Field']] = $value['Value'];
+        if (array_key_exists($value['Field'], $_ENV)) {
+            $GLOBALS[$value['Field']] = $_ENV[$value['Field']];
+        } else {
+            $GLOBALS[$value['Field']] = $value['Value'];
+        }
         $value = $result->fetch();
     }
 

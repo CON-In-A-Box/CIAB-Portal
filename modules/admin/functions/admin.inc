@@ -64,6 +64,15 @@ function get_config()
     $output = [];
     $sql = "SELECT * FROM `Configuration`;";
     $results = DB::run($sql);
-    return $results;
+    foreach ($results as $line) {
+        $entry = $line;
+        $entry['Source'] = 'DB';
+        $output[$line['Field']]  = $entry;
+    }
+    foreach ($_ENV as $key => $entry) {
+        $output[$key] = ['Field' => $key, 'Source' => 'ENV'];
+    }
+    ksort($output);
+    return $output;
 
 }
