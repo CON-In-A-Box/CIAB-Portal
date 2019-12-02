@@ -48,13 +48,15 @@ At present the most extensively fleshed out module. The goal is to have a pair o
 
 This module will allow you to hook up a google drive folder and have the contents of that drive displayed to all the ConCom members. This is very helpful in sharing minutes or reports with the rest of the staff. 
 
-# Theming / SCSS
+# Assets / Theming / SCSS
 
 We know all events and Conventions do not look the same. So in order for this package to be useful across events there needs to be a way to theme the colors and images to match the convention. We have only begun here but the plans are to expand this as we have time and there is demand. 
 
 CIAB makes use of SCSS to help dynamically build style sheets to allow for skinning of the site.
 
 At present in `scss/event.scss` is where the even specific styles are generated. Values we expect to be changing from event to event should be imported there. Presently `_CONvergence.scss` is imported representing the colors and icons for CONvergence. Changing the values there should be reflected across the web pages. 
+
+There is a basic asset library engine included in CIAB to try to manage long-lasting but event or convention specific graphical assets. This asset manager is accessed in the `Administrator->Assets` menu option.
 
 # First Steps
 

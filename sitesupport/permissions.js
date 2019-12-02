@@ -2,6 +2,10 @@
 
 var PERMISSIONS = [
   {
+    permission:'asset.admin',
+    description:'Able to upload and change site graphical assets'
+  },
+  {
     permission:'site.admin',
     description:'Access to the main site administrator page(Superuser)'
   },
