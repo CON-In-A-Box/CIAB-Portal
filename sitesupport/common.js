@@ -73,7 +73,12 @@ function basicBackendRequest(method, target, parameter, success, failure) {
   var url = 'index.php?Function=' + target;
   if (method == 'POST') {
     xhttp.open(method, url, true);
-    xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    if (parameter instanceof FormData) {
+      xhttp.setRequestHeader('enctype', 'multipart/form-data');
+    } else {
+      xhttp.setRequestHeader('Content-type',
+        'application/x-www-form-urlencoded');
+    }
     xhttp.send(parameter);
   } else {
     xhttp.open('GET', url + '&' + parameter, true);

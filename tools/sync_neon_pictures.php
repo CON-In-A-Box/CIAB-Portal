@@ -5,12 +5,11 @@
 .*/
 
 require_once(__DIR__."/../functions/functions.inc");
+require_once(__DIR__."/../backends/asset.inc");
 
 
 function do_Neon_import()
 {
-    $IMAGEDIR = __DIR__."/../resources/images/members/";
-
     $sql = "SELECT AccountID FROM `Members` ORDER BY `AccountID` ASC;";
     $result = DB::run($sql);
     $value = $result->fetch();
@@ -21,7 +20,7 @@ function do_Neon_import()
                 $value = $result->fetch();
                 continue;
             }
-            file_put_contents($IMAGEDIR.$value['AccountID'].'.jpg', $content);
+            \ciab\Asset::save('profile_'.$value['AccountID'], $content);
         } catch (Exception $e) {
         }
         $value = $result->fetch();

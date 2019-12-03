@@ -1,3 +1,7 @@
+<?php
+require_once $BACKEND.'/asset.inc';
+?>
+
 <script>
   function myMenuBar() {
     var x = document.getElementById("main_nav_list");
@@ -10,7 +14,9 @@
 </script>
 <div class="UI-main-bar-div">
   <div id="main_nav" class="UI-main-bar">
-  <img class="UI-main-bar-icon" src='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7' alt="Event Icon">
+  <img class="UI-main-bar-icon" src='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
+    alt="Event Icon" style="background-image:url('<?php echo \ciab\Asset::load('org-icon');?>')"
+>
 
 <?php
 

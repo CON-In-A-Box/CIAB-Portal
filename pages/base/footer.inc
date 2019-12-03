@@ -5,10 +5,12 @@
 if ($_REQUEST['Function'] == "public") {
     require($PAGESDIR.'/base/disclaimer.inc');
 } else {
+    require_once($BACKEND.'/asset.inc');
 ?>
     <div class="UI-footer-div">
     <div class='UI-footer'>
-    <img class='UI-footer-icon' src='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7' alt='Event Icon'>
+    <img class='UI-footer-icon' src='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
+    alt='Event Icon' style="background-image:url('<?php echo \ciab\Asset::load('org-icon');?>')">
     <div class='UI-footer-event'>
 <em class="fas fa-angle-double-left"></em>&nbsp;
 <?php

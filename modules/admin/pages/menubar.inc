@@ -11,3 +11,13 @@ if (\ciab\RBAC::havePermission("site.admin")) {
      'text' => 'Database',
      'responsive' => true);
 }
+
+if (\ciab\RBAC::havePermission("asset.admin")) {
+    $admin_menus[] = array('base style' => 'UI-yellow',
+     'selected style' => 'event-color-primary',
+     'function' => 'admin/asset',
+     'title' => 'Page Asset Administraton',
+     'i class' => 'fas fa-images',
+     'text' => 'Assets',
+     'responsive' => true);
+}
