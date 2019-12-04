@@ -59,7 +59,7 @@ var reportGenerationSidebar = (function(options) {
     },
 
     build: function() {
-      var dom = document.getElementById('generated_report_div');
+      var dom = document.getElementById(settings.base);
       if (!dom) {
         var body = document.createElement('DIV');
         body.id = settings.base;
