@@ -6,6 +6,10 @@ var PERMISSIONS = [
     description:'Able to upload and change site graphical assets'
   },
   {
+    permission:'registration.reports',
+    description:'Allowed generate reports from convention registration data.'
+  },
+  {
     permission:'site.admin',
     description:'Access to the main site administrator page(Superuser)'
   },

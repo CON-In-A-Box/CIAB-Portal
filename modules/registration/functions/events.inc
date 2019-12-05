@@ -137,3 +137,87 @@ function in_registration()
     }
 
 }
+
+
+function registration_report($event = null, $clause = null)
+{
+    if ($event === null) {
+        $event = \current_eventID();
+    }
+
+    return <<<SQL
+        SELECT
+            bt.`Name` BadgeType,
+            COUNT(DISTINCT rt.`AccountID`) AS TotalSold,
+            (
+            SELECT
+                COUNT(`AccountID`)
+            FROM
+                `Registrations`
+            WHERE
+                `BadgesPickedUp` > 0 AND BadgeTypeId = bt.BadgeTypeID
+        ) AS TotalPickedUp
+        FROM
+            `BadgeTypes` bt
+        INNER JOIN `Registrations` rt USING(BadgeTypeID)
+        WHERE
+            rt.EventID = '$event'
+        GROUP BY
+            bt.Name
+
+SQL;
+
+}
+
+
+function report_memberships_sold($event = null)
+{
+    if ($event === null) {
+        $event = \current_eventID();
+    }
+
+    return <<<SQL
+        SELECT
+            rt.`AccountID` AccountID,
+            mt.`PreferredFirstName` PreferredFirstName,
+            mt.`PreferredLastName` PreferredLastName,
+            mt.`FirstName` FirstName,
+            mt.`LastName` LastName,
+            bt.`Name` BadgeType,
+            bt.`Cost` BadgeCost,
+            rt.`RegistrationDate` RegistrationDate
+        FROM
+            `Registrations` rt
+        INNER JOIN `BadgeTypes` bt USING(BadgeTypeID)
+        INNER JOIN `Members` mt USING(AccountID)
+        WHERE
+            rt.EventID = '$event'
+SQL;
+
+}
+
+
+function report_sold_summary($event = null)
+{
+    if ($event === null) {
+        $event = \current_eventID();
+    }
+
+    return <<<SQL
+        SELECT
+            bt.`Name` BadgeType,
+            bt.`Cost` BadgeCost,
+            COUNT(DISTINCT rt.`AccountID`) AS TotalSold,
+            (
+                bt.`Cost` * COUNT(DISTINCT rt.`AccountID`)
+            ) AS TotalRevenue
+        FROM
+            `BadgeTypes` bt
+        INNER JOIN `Registrations` rt USING(BadgeTypeID)
+        WHERE
+            rt.EventID = '$event'
+        GROUP BY
+            bt.Name
+SQL;
+
+}
