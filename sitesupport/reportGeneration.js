@@ -3,7 +3,7 @@
  */
 
 /* jshint browser: true */
-/* globals showSidebar, hideSidebar, basicBackendRequest */
+/* globals showSidebar, hideSidebar, basicBackendRequest, CSVReport */
 /* exported reportGenerationSidebar */
 
 var reportGenerationSidebar = (function(options) {
@@ -18,6 +18,7 @@ var reportGenerationSidebar = (function(options) {
       reportURI: 'report',
       closeFunction: hideSidebar,
       openFunction: null,
+      reportDisplay: null,
     }, options);
 
   return {
@@ -54,6 +55,17 @@ var reportGenerationSidebar = (function(options) {
       window.location = 'index.php?Function=' + settings.target + args;
     },
 
+    viewReport: function() {
+      var select = document.getElementById(settings.select);
+      var report = select.options[select.selectedIndex].text;
+      var args = settings.reportURI + '=' + report;
+      basicBackendRequest('GET', settings.target, args,
+        function(response) {
+          CSVReport.build(response.responseText,
+            { base: settings.reportDisplay});
+        });
+    },
+
     open: function() {
       showSidebar(settings.base);
     },
@@ -81,7 +93,7 @@ var reportGenerationSidebar = (function(options) {
         label.innerHTML = 'Report:';
         div.appendChild(label);
         var select = document.createElement('SELECT');
-        select.classList.add('UI-margin');
+        select.classList.add('UI-padding');
         select.classList.add('UI-select');
         select.id = settings.select;
         div.appendChild(select);
@@ -93,12 +105,23 @@ var reportGenerationSidebar = (function(options) {
         button.id = 'generate_csv';
         button.classList.add('UI-eventbutton');
         button.onclick = reportGenerationSidebar.generateReport;
-        button.innerHTML = 'Generate CSV';
+        button.innerHTML = 'Download .CSV';
         div.appendChild(button);
+        if (settings.reportDisplay != null) {
+          button = document.createElement('BUTTON');
+          button.classList.add('UI-eventbutton');
+          button.classList.add('UI-margin');
+          button.onclick = reportGenerationSidebar.viewReport;
+          button.innerHTML = 'View Report';
+          div.appendChild(button);
+        }
         button = document.createElement('BUTTON');
         button.classList.add('UI-redbutton');
+        if (settings.reportDisplay == null) {
+          button.classList.add('UI-margin');
+        }
         button.onclick = settings.closeFunction;
-        button.innerHTML = 'close';
+        button.innerHTML = 'Close';
         div.appendChild(button);
         body.appendChild(div);
 

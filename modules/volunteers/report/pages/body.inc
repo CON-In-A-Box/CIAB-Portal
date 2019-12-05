@@ -52,7 +52,8 @@ function hour_table()
 <script>
     var sidebarMainDiv = 'main_content';
     reportGenerationSidebar.options({
-        target: 'volunteers/report'
+        target: 'volunteers/report',
+        reportDisplay: '#report_display'
     });
 </script>
 
@@ -84,6 +85,16 @@ function hour_table()
       </table>
       <div class='UI-tablefooter'>&nbsp;</div>
     </div>
+     &nbsp;
+    <div class='UI-continer UI-padding'>
+      <div class='UI-event-sectionbar'>
+        <span>Report Data</span>
+        </div>
+      <div id='report_display'>
+      </div>
+       &nbsp;
+    </div>
+    &nbsp;
   </div>
 
   <div class='UI-sidebar-hidden UI-fixed' id='department_report_div'>
