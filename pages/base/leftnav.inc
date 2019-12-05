@@ -1,6 +1,10 @@
 <?php
 echo '<div id="left_nav" class="UI-cell UI-border UI-hide-small">';
-echo '<img src="/resources/images/members/'.$_SESSION['accountId'].'.jpg" onerror='."'this.classList.add(".'"event-default-user-icon")'."'>";
+if (\ciab\Asset::exists('profile_'.$_SESSION['accountId'])) {
+    echo '<img src="'.\ciab\Asset::load('profile_'.$_SESSION['accountId']).'" onerror='."'this.classList.add(".'"event-default-user-icon")'."'>";
+} else {
+    echo '<img class="event-default-user-icon">';
+}
 
 echo "<p style=\"font-weight:bold;\">".$_SESSION['preferredName']."</p>\n";
 

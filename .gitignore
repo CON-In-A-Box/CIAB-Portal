@@ -51,7 +51,3 @@ vendor
 # Configuration #
 #################
 .env
-
-# SCSS #
-########
-resources/scss_cache

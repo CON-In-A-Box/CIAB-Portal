@@ -177,9 +177,15 @@ if (!empty($searchCriteria[ID])) {
             <?php
             $table = get_config();
             foreach ($table as $line) {
-                echo "<tr><td>".$line[FIELD]."</td>\n";
-                echo "<td><input type='text' id=config_".$line[FIELD]." value=\"".$line['Value']."\" class='UI-input'></td>\n";
-                echo "<td><button class='UI-eventbutton' onclick='setField(\"".$line[FIELD]."\")';>Set</button></td></tr>\n";
+                if ($line['Source'] == 'DB') {
+                    echo "<tr><td>".$line[FIELD]."</td>\n";
+                    echo "<td><input type='text' id=config_".$line[FIELD]." value=\"".$line['Value']."\" class='UI-input'></td>\n";
+                    echo "<td><button class='UI-eventbutton' onclick='setField(\"".$line[FIELD]."\")';>Set</button></td></tr>\n";
+                } else {
+                    echo "<tr><td>".$line[FIELD]."</td>\n";
+                    echo "<td><input type='text' id=config_".$line[FIELD]." value=\"<ENVIRONMENT>\" class='UI-input UI-center' readonly></td>\n";
+                    echo "</tr>\n";
+                }
             }
             ?>
             <tr>
