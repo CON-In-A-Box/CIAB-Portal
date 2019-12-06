@@ -1,3 +1,4 @@
+<script src="sitesupport/sidebar.js"></script>
 <script src="modules/concom/sitesupport/concom.js"></script>
 <script src="sitesupport/barcode/quagga.min.js"></script>
 <script src="sitesupport/barcode/barcode.js"></script>

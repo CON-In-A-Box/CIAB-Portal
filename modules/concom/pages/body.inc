@@ -1,35 +1,54 @@
+<script>
+  var sidebarMainDiv = 'main_content';
+  userLookup.options({
+    handler: onLookup
+  });
+</script>
+
 <div id=page" class="UI-container">
-<div id="main_content" class="UI-maincontent">
-<div class="UI-event-sectionbar">ConCom</div>
-<div id="donut"></div>
-<div id="concom" class="UI-maincontent">
+  <div id="main_content" class="UI-maincontent">
+    <div class="UI-event-sectionbar">ConCom</div>
+    <div id="donut"></div>
+    <div id="concom" class="UI-maincontent">
 
 <?php
-
 require_once(__DIR__."/../functions/concom.inc");
-
-// if this is an update, but we don't have the right permissions, ignore it.
-if (isset($_REQUEST['AddDepartment'])) {
-    if (isset($_REQUEST['memberId'])) {
-        if (!isset($_REQUEST['Position'])) {
-            // We have someone, lets get their position
-            doConComAddAssign($_REQUEST['AddDepartment'], $_REQUEST['memberId']);
-        }
-    } else {
-        // begin search
-        doConComAddSearch($_REQUEST['AddDepartment']);
-    }
-} else {
 ?>
-<script>
-var data = <?php print json_encode(buildDonutData());?>;
-
-drawDonutChart(window.innerWidth-50, window.innerHeight-50, data, '#donut');
-</script>
+    <script>
+      var data = <?php print json_encode(buildDonutData());?>;
+      drawDonutChart(window.innerWidth-50, window.innerHeight-50, data, '#donut');
+    </script>
 <?php
 ConComListDisplay();
-}
 ?>
-</div>
-</div>
+    </div>
+  </div>
+
+  <div class='UI-sidebar-hidden UI-fixed' id='add_member_div'>
+      <div class='UI-center'>
+          <h2 class='UI-red'>Add to Department</h2>
+      </div>
+      <div class='UI-center'>
+          <input class="UI-hiddeninput" id="user_id">
+          <label class='UI-label' for='userLookup_div'>
+          <h2>Add someone to <span id='add_departemnt'></span></h2></label>
+          <fieldset><legend>Search the User Database</legend>
+          <div class='UI-rest UI-center' id='userLookup_div'> </div>
+          </fieldset>
+          <br>
+          <label class='UI-label' for='position'>Position:</label>
+          <select id="position">
+          </select>
+      </div>
+      <div class='UI-center UI-padding'>
+          <button id='add_button' class='UI-eventbutton'
+              onclick='onAdd();'>
+           OK
+          </button>
+          <button class='UI-redbutton'
+              onclick='hideSidebar();'>
+            Close
+          </button>
+      </div>
+  </div>
 </div><!--close main_content div-->

@@ -185,7 +185,8 @@ function ConComListDisplay()
             unset($pos);
         }
         if ($div != 'Committees' && $div != 'Corporate Staff' && (isset($_SESSION['IS_ADMIN']) || $currentDivDirector)) {
-            echo '<tr><td class="UI-center" colspan=8><a href="index.php?Function=concom&AddDepartment='.$div.'">Add someone to '.$div.'</a></td></tr>'."\n";
+            $positions = base64_encode(json_encode(['Division Director', null, 'Divisional Support']));
+            echo '<tr><td class="UI-center" colspan=8><input id="add_'.$div.'" type="button" class="UI-yellowbutton" onclick="addMember(\''.$div.'\', \''.$positions.'\');" value="Add someone to '.$div.'"></td></tr>'."\n";
         }
         // Departments
         if (!empty($printList[$div])) {
@@ -273,7 +274,8 @@ function ConComListDisplay()
                     }
                 }
                 if (($kdep != 'Division Director' && $kdep != 'Division Support') && (isset($_SESSION['IS_ADMIN']) || $currentDivDirector || ($currentDepHead && $pos != "Head"))) {
-                    echo '<tr><td class="UI-center" colspan=8><a href="index.php?Function=concom&AddDepartment='.urlencode($kdep).'">Add someone to '.$kdep.'</a></td></tr>'."\n";
+                    $positions = base64_encode(json_encode(array_values($GLOBALS['ConComPositions'])));
+                    echo '<tr><td class="UI-center" colspan=8><input id="add_'.$div.'" type="button" class="UI-yellowbutton" onclick="addMember(\''.$kdep.'\', \''.$positions.'\');" value="Add someone to '.$kdep.'"></td></tr>'."\n";
                 }
             }
         }
@@ -339,9 +341,14 @@ function AddConComPosition($accountid, $department, $position, $note, $notify = 
 {
     global $Departments;
 
-    $positionid = getPositionID($position);
+    if (is_numeric($position)) {
+        $positionid = intval($position);
+    } else {
+        $positionid = getPositionID($position);
+    }
     if ($positionid == null) {
-        die("Failed to find position: $position");
+        print("Failed to find position: $position");
+        return false;
     }
 
     /* Convention event... assume most recent one */
@@ -349,7 +356,8 @@ function AddConComPosition($accountid, $department, $position, $note, $notify = 
 
     $data = lookup_user_by_id($accountid);
     if ($data['code']) {
-        die("Failed to find user: $accountid");
+        print("Failed to find user: $accountid");
+        return false;
     }
     $user = $data['users'][0];
 
@@ -377,7 +385,9 @@ function AddConComPosition($accountid, $department, $position, $note, $notify = 
         \ciab\Email::mail($to, getNoReplyAddress(), $subject, $message);
         return true;
     } elseif (!$result) {
-        die("Failed Add comcon member to database!");
+        print("Failed Add comcon member to database!");
+        return false;
+        ;
     }
 
 }

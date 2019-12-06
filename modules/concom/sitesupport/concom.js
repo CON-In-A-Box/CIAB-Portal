@@ -5,12 +5,12 @@
 /* jshint browser: true */
 /* jshint -W097 */
 /* globals confirmbox, showSidebar, hideSidebar,
-           PERMISSIONS, basicBackendRequest*/
+           PERMISSIONS, basicBackendRequest, userLookup */
 /* exported drag, dragOverDivision, dragLeaveDivision, dragDropDivision,
             dragDropParent, toggleDept, savePosition, newEntry,
             deletePosition, changeEmail, editEmail, returnPosition,
             deleteEmail, saveEmail, deleteAC, newAC, savePermission,
-            returnRBAC, confirmRemoval */
+            returnRBAC, confirmRemoval, onAdd, onLookup, addMember */
 
 var basicReload = function() {
   window.location = 'index.php?Function=concom/admin';
@@ -474,4 +474,38 @@ function getFallbackOptions(id, fallback) {
     });
     dropdown.selectedIndex = i;
   });
+}
+
+function onAdd() {
+  var department = document.getElementById('add_departemnt').innerHTML;
+  var parameter = 'AddDepartment=' + department;
+  parameter += '&accountId=' + document.getElementById('user_id').value;
+  parameter += '&Position=' + document.getElementById('position').value;
+  basicBackendRequest('POST', 'concom', parameter, function() {
+    window.location.assign('index.php?Function=concom#' + department);
+    window.location.reload(true);
+  });
+}
+
+function onLookup(origin, item) {
+  document.getElementById('add_button').disabled = false;
+  document.getElementById('user_id').value = item.Id;
+}
+
+function addMember(department, posData) {
+  var positions = JSON.parse(atob(posData));
+  document.getElementById('add_departemnt').innerHTML = department;
+  var pos =  document.getElementById('position');
+  pos.innerHTML = '';
+  positions.forEach(function(d, i) {
+    if (d !== null) {
+      var option = document.createElement('option');
+      option.text = d;
+      option.value = i + 1;
+      pos.add(option);
+    }
+  });
+  document.getElementById('add_button').disabled = true;
+  userLookup.clear();
+  showSidebar('add_member_div');
 }
