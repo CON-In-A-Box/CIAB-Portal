@@ -49,238 +49,347 @@ function getPositionID($position)
 }
 
 
-function printTableHeader($section, $long = true)
+function conComRBAC($instance)
 {
-    echo "<tr id=\"table_head_$section\" class=\"CONCOM-table-head\">";
-    if ($long) {
-        echo '<th class="">Department</th>';
-        echo '<th class="">Division</th>';
-    } else {
-        echo '<th class="" colspan=2>Department</th>';
+    $positions = [];
+    $sql = "SELECT `PositionID`, `Name` FROM `ConComPositions` ORDER BY `PositionID` ASC";
+    $result = \DB::run($sql);
+    $value = $result->fetch();
+    while ($value !== false) {
+        $positions[intval($value['PositionID'])] = $value['Name'];
+        $value = $result->fetch();
     }
-    echo '<th class="">First Name</th>';
-    if ($long) {
-        echo '<th class="">Last Name</th>';
-        echo '<th class="">Position</th>';
-    } else {
-        echo '<th class="" colspan=2>Last Name</th>';
+
+    $sql = "SELECT `DepartmentID`, `ParentDepartmentID`, `Name` FROM `Departments`";
+    $result = \DB::run($sql);
+    $value = $result->fetch();
+    $retvalue = [];
+    while ($value !== false) {
+        $parent = $value['ParentDepartmentID'];
+        $department = $value['DepartmentID'];
+        $dept_name = $value['Name'];
+        $i = array_keys($positions)[0];
+        if ($parent != $department) {
+            $perm = "concom.modify.$dept_name.".$positions[$i];
+            $target = "$parent.".end(array_keys($positions));
+            try {
+                $role = $instance->getRole($target);
+                $role->addPermission($perm);
+            } catch (Exception\InvalidArgumentException $e) {
+                error_log($e);
+            }
+        }
+
+        $target = "$department.$i";
+        $perm = "concom.add.$dept_name";
+        try {
+            $role = $instance->getRole($target);
+            $role->addPermission($perm);
+        } catch (Exception\InvalidArgumentException $e) {
+            error_log($e);
+        }
+
+        foreach ($positions as $id => $position) {
+            $nid = intval($id) + 1;
+            if (array_key_exists($nid, $positions)) {
+                $target_pos = $positions[$nid];
+                $perm = "concom.modify.$dept_name.$target_pos";
+                $target = "$department.$i";
+                try {
+                    $role = $instance->getRole($target);
+                    $role->addPermission($perm);
+                } catch (Exception\InvalidArgumentException $e) {
+                    error_log($e);
+                }
+            }
+        }
+
+        $value = $result->fetch();
     }
-    echo '<th class="">Email</th>';
-    echo '<th class="" colspan=2>Note</th>';
-    echo "</tr>\n";
+
+}
+
+
+function buildConComRBAC()
+{
+    \ciab\RBAC::customizeRBAC('conComRBAC');
+
+}
+
+
+function printDepartmentHeader($section, $isDepartment, $priv = false)
+{
+    echo "<div id=\"table_head_$section\" class=\" UI-table-row CONCOM-table-head\">";
+    if ($isDepartment) {
+        echo '<div class="UI-table-cell">Department</div>';
+        echo '<div class="UI-table_cell">Division</div>';
+    } else {
+        echo '<div class="UI-table-cell">Division</div>';
+    }
+    echo '<div class="UI-table-cell">First Name</div>';
+    echo '<div class="UI-table-cell">Last Name</div>';
+    echo '<div class="UI-table-cell">Position</div>';
+    if ($isDepartment) {
+        echo '<div class="UI-table-cell">Email</div>';
+    }
+    echo '<div class="UI-table-cell">Note</div>';
+    if ($priv) {
+        echo '<div class="UI-table-cell"></div>';
+    }
+    echo "</div>\n";
+
+}
+
+
+function isSpecialDivision($div)
+{
+    return ($div == 'Committees' || $div == 'Corporate Staff' ||
+            $div == 'Board Departments');
+
+}
+
+
+function printDivisionHeader($div)
+{
+    global $Divisions;
+
+    echo '<div id="'.$div.'" class="UI-table UI-table-heading">';
+    echo '<div id="division" class="UI-table-row event-color-secondary">';
+    echo '<div class="UI-center UI-table-cell">'.$div;
+    if (!isSpecialDivision($div)) {
+        echo ' Division';
+    }
+    echo '</div>';
+    echo '<div class="UI-center UI-table-cell">';
+    echo '<div class="CONCOM-goto-dropdown">';
+    echo '  Go To Section';
+    echo '  <div class="CONCOM-goto-dropdown-content">';
+    echo '    <a href="#main_nav" class="UI-border">Top of Page</a><br />';
+    foreach ($Divisions as $menuDiv) {
+        // ##==## Likely need to add some translation here to blot out '&'
+        echo '    <a href="#'.$menuDiv.'" class="UI-border">'.$menuDiv.'</a><br />';
+    }
+    echo '  </div>';
+    echo '</div>';
+    echo '</div>';
+    echo '<div class="UI-table-cell">';
+    echo implode('<br />', getDepartmentEmails($div));
+    echo "</div></div>\n";
+    echo "</div>";
+
+}
+
+
+function printDivisionMember($pos, $div, $position, $rbacpos)
+{
+    foreach ($pos as $kfName => $fName) {
+        foreach ($fName as $klName => $lName) {
+            $tmp = explode('|', $lName);
+            echo '<div class="UI-table-row">';
+            echo '<div class="UI-table-cell">'.$div.'</div>';
+            echo '<div class="UI-table-cell">'.$kfName.'</div>';
+            echo '<div class="UI-table-cell">'.$klName.'</div>';
+            echo '<div class="UI-table-cell">'.$position.'</div>';
+            echo '<div class="UI-table-cell">';
+            echo $tmp[1];
+            if ($_SESSION['accountId'] == $tmp[2]) {
+                if (!empty($tmp[1])) {
+                    echo '<br />';
+                }
+                echo 'This is you!';
+            }
+            echo "</div>";
+            // System Admins can remove anyone
+
+            $perm = "concom.modify.$div.$rbacpos";
+            if (\ciab\RBAC::havePermission($perm)) {
+                echo '<div class="UI-red UI-table-cell">';
+                echo '<a href="#" onclick="confirmRemoval(\''.$kfName.'\', \''.$klName.'\', \''.$tmp[2].'\', \''.$div.'\', \'Head\');">Remove</a>';
+                echo '</div>';
+            }
+            echo "</div>\n";
+        }
+    }
+
+}
+
+
+function printDepartmentMember(
+    $div,
+    $kdep,
+    $dep,
+    $pos
+) {
+    foreach ($dep[$pos] as $kfName => $fName) {
+        foreach ($fName as $klName => $lName) {
+            $tmp = explode('|', $lName);
+            echo '<div class="UI-table-row">';
+            echo '<div class="UI-table-cell">'.$kdep.'</div>';
+            if (!isSpecialDivision($div)) {
+                echo '<div class="UI-table-cell">'.$div.'</div>';
+            }
+            echo '<div class="UI-table-cell">'.$kfName.'</div>';
+            echo '<div class="UI-table-cell">'.$klName.'</div>';
+            if (!isSpecialDivision($div)) {
+                echo '<div class="UI-table-cell">'.$pos.'</div>';
+            }
+            if ($div == 'Corporate Staff') {
+                echo '<div class="UI-table-cell">'.getDepartmentEmails($kdep)[0].'</div>';
+            } else {
+                echo '<div class="UI-table-cell">'.$tmp[0].'</div>';
+            }
+            echo '<div class="UI-table-cell">';
+            echo $tmp[1];
+
+            // Check to see if this is an entry for the logged in person
+            if ($_SESSION['accountId'] == $tmp[2]) {
+                if (!empty($tmp[1])) {
+                    echo '<br />';
+                }
+                echo 'This is you!';
+            }
+            echo '</div>';
+            $perm = "concom.modify.$kdep.$pos";
+            if (\ciab\RBAC::havePermission($perm)) {
+                echo '<div class="UI-red UI-table-cell">';
+                echo '<a href="#" onclick="confirmRemoval(\''.$kfName.'\', \''.$klName.'\', \''.$tmp[2].'\', \''.$kdep.'\', \''.$pos.'\');">Remove</a>';
+                echo '</div>';
+            }
+            echo "</div>\n";
+        }
+    }
+
+}
+
+
+function printDivisionTable($div, $printList)
+{
+    global $ConComPositions;
+
+    printDivisionHeader($div);
+
+    $priv = false;
+    foreach ($ConComPositions as $pos) {
+        $perm = "concom.modify.$div.$pos";
+        $priv |= \ciab\RBAC::havePermission($perm);
+    }
+
+    echo "<div class='UI-table-all'>\n";
+    if (!isSpecialDivision($div)) {
+        printDepartmentHeader($div, false, $priv);
+    }
+
+    // Division Directors
+    if (isset($printList[$div]['Division Director'])) {
+        foreach ($printList[$div]['Division Director'] as $pos) {
+            printDivisionMember($pos, $div, 'Director', 'Head');
+        }
+    }
+    //Division Support
+    if (isset($printList[$div]['Division Support'])) {
+        foreach ($printList[$div]['Division Support'] as $pos) {
+            printDivisionMember($pos, $div, 'Support', 'Sub-Head');
+        }
+    }
+    echo '</div>'; // End Table
+
+    $perm = "concom.add.$div";
+    if (!isSpecialDivision($div) && \ciab\RBAC::havePermission($perm)) {
+        $positions = base64_encode(json_encode(['Division Director', null, 'Divisional Support']));
+        echo '<div class="UI-center"><input id="add_'.$div.'" type="button" class="UI-yellowbutton" onclick="addMember(\''.$div.'\', \''.$positions.'\');" value="Add someone to '.$div.'"></div>'."\n";
+    }
+    echo '&nbsp;';
+
+}
+
+
+function printDepartmentTable($div, $kdep, $dep)
+{
+    global $ConComPositions;
+
+    echo '<div class="UI-table UI-table-heading">';
+    if ($div != 'Corporate Staff' && $kdep != 'Division Director' && $kdep != 'Division Support') {
+        echo '<div id="department" class="UI-table-row event-color-primary">';
+        if ($div == 'Committees') {
+            echo '<div class="UI-table-cell" id="'.$kdep.'">'.$kdep.'</div>';
+        } else {
+            echo '<div class="UI-table-cell" id="'.$kdep.'">'.$kdep.'</div>';
+            echo '<div class="UI-table-cell"><a href="#'.$div.'">'.$div.'</a></div>';
+        }
+        echo '<div class="UI-table-cell">';
+        echo implode('<br />', getDepartmentEmails($kdep));
+        echo "</div></div>\n";
+    }
+
+    $priv = false;
+    foreach ($ConComPositions as $pos) {
+        $perm = "concom.modify.$kdep.$pos";
+        $priv |= \ciab\RBAC::havePermission($perm);
+    }
+
+    if ($kdep != 'Division Director' && $kdep != 'Division Support') {
+        if ($div != 'Corporate Staff') {
+            if ($div != 'Committees') {
+                echo "</div>";
+                echo "<div class='UI-table-all UI-table-heading'>\n";
+                printDepartmentHeader($div, true, $priv);
+            } else {
+                echo "</div>";
+                echo "<div class='UI-table UI-table-heading'>\n";
+                printDepartmentHeader($div, false, $priv);
+            }
+        }
+        foreach ($ConComPositions as $pos) {
+            if (isset($dep[$pos])) {
+                printDepartmentMember($div, $kdep, $dep, $pos);
+            }
+        }
+    }
+    echo '</div>';  // End Table
+
+    $perm = "concom.add.$kdep";
+    if (($kdep != 'Division Director' && $kdep != 'Division Support') && \ciab\RBAC::havePermission($perm)) {
+        $positions = base64_encode(json_encode(array_values($GLOBALS['ConComPositions'])));
+        echo '<div class="UI-center"><input id="add_'.$div.'" type="button" class="UI-yellowbutton" onclick="addMember(\''.$kdep.'\', \''.$positions.'\');" value="Add someone to '.$kdep.'"></div>'."\n";
+    }
+    echo '&nbsp;';
 
 }
 
 
 function ConComListDisplay()
 {
-    global $Divisions, $ConComPositions;
+    global $Divisions;
 
-    $list = ConComListBuild();
+    $concomlist = ConComListBuild();
+    $printList = array();
     // Put each entry into a divisional/department mapped array
-    foreach ($list as $line) {
+    foreach ($concomlist as $line) {
         $printList[$line['Division']][$line['Department']][$line['Position']][$line['First Name']][$line['Last Name']] = $line['Email'].'|'.$line['Note'].'|'.$line['Account ID'];
     }
 
     // Sort everything so we don't have to later
     ksort_recursive($printList);
 
+    buildConComRBAC();
+
     // Start the crazy print routine!
-    echo "<table class='CONCOM-division-table'>\n";
     foreach ($Divisions as $div) {
-        $currentDivDirector = false;
-        echo '<tr id="division" class="event-color-secondary"><th id="'.$div.'" class="UI-center" colspan=2>'.$div;
-        if ($div != 'Committees' && $div != 'Corporate Staff') {
-            echo ' Division';
-        }
-        echo '</th><th class="UI-center" colspan=3>';
-        echo '<div class="CONCOM-goto-dropdown">';
-        echo '  Go To Section';
-        echo '  <div class="CONCOM-goto-dropdown-content">';
-        echo '    <a href="#main_nav" class="UI-border">Top of Page</a><br />';
-        foreach ($Divisions as $menuDiv) {
-            // ##==## Likely need to add some translation here to blot out '&'
-            echo '    <a href="#'.$menuDiv.'" class="UI-border">'.$menuDiv.'</a><br />';
-        }
-        echo '  </div>';
-        echo '</div>';
-        echo '</th><th colspan=3>';
-        echo implode('<br />', getDepartmentEmails($div));
-        echo "</th></tr>\n";
-        if ($div != 'Corporate Staff' && $div != 'Committees') {
-            printTableHeader($div);
-        }
-        // Division Directors
-        if (isset($printList[$div]['Division Director'])) {
-            foreach ($printList[$div]['Division Director'] as $pos) {
-                foreach ($pos as $kfName => $fName) {
-                    foreach ($fName as $klName => $lName) {
-                        $tmp = explode('|', $lName);
-                        echo '<tr><td>Division Director</td><td>'.$div.'</td>';
-                        echo '<td>'.$kfName.'</td><td>'.$klName.'</td><td>Director</td><td>'.getDepartmentEmails($div)[0].'</td>';
-                        if (isset($_SESSION['IS_ADMIN'])) {
-                            echo '<td>';
-                        } else {
-                            echo '<td colspan=2>';
-                        }
-                        echo $tmp[1];
-                        if ($_SESSION['accountId'] == $tmp[2]) {
-                            if (!empty($tmp[1])) {
-                                echo '<br />';
-                            }
-                            echo 'This is you!';
-                            $currentDivDirector = true;
-                            if (isset($_SESSION['DIR_OF'])) {
-                                if (!in_array($div, $_SESSION['DIR_OF'])) {
-                                    $_SESSION['DIR_OF'][] = $div;
-                                }
-                            } else {
-                                $_SESSION['DIR_OF'][] = $div;
-                            }
-                        }
-                        echo "</td>";
-                        // System Admins can remove anyone
-                        if (isset($_SESSION['IS_ADMIN'])) {
-                            echo '<td class="UI-red">';
-                            echo '<a href="#" onclick="confirmRemoval(\''.$kfName.'\', \''.$klName.'\', \''.$tmp[2].'\', \''.$div.'\', \'Head\');">Remove</a>';
-                            echo '</td>';
-                        }
-                        echo "</tr>\n";
-                    }
-                    unset($tmp);
-                }
-            }
-            unset($pos);
-        }
-        //Division Support
-        if (isset($printList[$div]['Division Support'])) {
-            foreach ($printList[$div]['Division Support'] as $pos) {
-                foreach ($pos as $kfName => $fName) {
-                    foreach ($fName as $klName => $lName) {
-                        $tmp = explode('|', $lName);
-                        echo '<tr><td>Division Support</td><td>'.$div.'</td><td>'.$kfName.'</td><td>'.$klName.'</td><td>Specialist</td><td>'.$tmp[0].'</td>';
-                        if (isset($_SESSION['IS_ADMIN']) || $currentDivDirector) {
-                            echo '<td>';
-                        } else {
-                            echo '<td colspan=2>';
-                        }
-                        echo $tmp[1];
-                        if ($_SESSION['accountId'] == $tmp[2]) {
-                            if (!empty($tmp[1])) {
-                                echo '<br />';
-                            }
-                            echo 'This is you!';
-                        }
-                        echo '</td>';
-                        if (isset($_SESSION['IS_ADMIN']) || $currentDivDirector) {
-                            echo '<td class="UI-red">';
-                            echo '<a href="#" onclick="confirmRemoval(\''.$kfName.'\', \''.$klName.'\', \''.$tmp[2].'\', \''.$div.'\', \'Specialist\');">Remove</a>';
-                            echo '</td>';
-                        }
-                        echo "</tr>\n";
-                    }
-                    unset($tmp);
-                }
-            }
-            unset($pos);
-        }
-        if ($div != 'Committees' && $div != 'Corporate Staff' && (isset($_SESSION['IS_ADMIN']) || $currentDivDirector)) {
-            $positions = base64_encode(json_encode(['Division Director', null, 'Divisional Support']));
-            echo '<tr><td class="UI-center" colspan=8><input id="add_'.$div.'" type="button" class="UI-yellowbutton" onclick="addMember(\''.$div.'\', \''.$positions.'\');" value="Add someone to '.$div.'"></td></tr>'."\n";
-        }
+        echo '<div class="UI-container UI-padding UI-border">';
+        printDivisionTable($div, $printList);
+
         // Departments
+        echo '<div class="UI-container UI-padding">';
         if (!empty($printList[$div])) {
             foreach ($printList[$div] as $kdep => $dep) {
-                $currentDepHead = false;
-                if ($div != 'Corporate Staff' && $kdep != 'Division Director' && $kdep != 'Division Support') {
-                    echo '<tr id="department" class="event-color-primary">';
-                    if ($div == 'Committees') {
-                        echo '<th id="'.$kdep.'" colspan=5>'.$kdep.'</th>';
-                    } else {
-                        echo '<th id="'.$kdep.'">'.$kdep.'</th><th colspan=4>'.$div.'</th>';
-                    }
-                    echo '<th colspan=3>';
-                    echo implode('<br />', getDepartmentEmails($kdep));
-                    echo "</th></tr>\n";
-                }
-                if ($kdep != 'Division Director' && $kdep != 'Division Support') {
-                    if ($div != 'Corporate Staff') {
-                        if ($div != 'Committees') {
-                            printTableHeader($div);
-                        } else {
-                            printTableHeader($div, false);
-                        }
-                    }
-                    foreach ($ConComPositions as $pos) {
-                        if (isset($dep[$pos])) {
-                            foreach ($dep[$pos] as $kfName => $fName) {
-                                foreach ($fName as $klName => $lName) {
-                                    $tmp = explode('|', $lName);
-                                    echo '<tr>';
-                                    if ($div == 'Committees' || $div == 'Corporate Staff') {
-                                        echo '<td colspan=2>'.$kdep.'</td>';
-                                    } else {
-                                        echo '<td>'.$kdep.'</td>';
-                                        echo '<td>'.$div.'</td>';
-                                    }
-                                    echo '<td>'.$kfName.'</td>';
-                                    if ($div == 'Corporate Staff' || $div == 'Committees') {
-                                        echo '<td colspan=2>'.$klName.'</td>';
-                                    } else {
-                                        echo '<td>'.$klName.'</td>';
-                                        echo '<td>'.$pos.'</td>';
-                                    }
-                                    if ($div == 'Corporate Staff') {
-                                        echo '<td>'.getDepartmentEmails($kdep)[0].'</td>';
-                                    } else {
-                                        echo '<td>'.$tmp[0].'</td>';
-                                    }
-                                    if (isset($_SESSION['IS_ADMIN']) || $currentDivDirector || ($currentDepHead && $pos != 'Head')) {
-                                        echo '<td>';
-                                    } else {
-                                        echo '<td colspan=2>';
-                                    }
-                                    echo $tmp[1];
-
-                                    // Check to see if this is an entry for the logged in person
-                                    if ($_SESSION['accountId'] == $tmp[2]) {
-                                        if (!empty($tmp[1])) {
-                                            echo '<br />';
-                                        }
-                                        echo 'This is you!';
-                                        // Check to see if this person is a head of a department
-                                        if ($pos == 'Head') {
-                                            $currentDepHead = true;
-                                            if (isset($_SESSION['HEAD_OF'])) {
-                                                if (!in_array($kdep, $_SESSION['HEAD_OF'])) {
-                                                    $_SESSION['HEAD_OF'][] = $kdep;
-                                                }
-                                            } else {
-                                                $_SESSION['HEAD_OF'][] = $kdep;
-                                            }
-                                        }
-                                    }
-                                    echo '</td>';
-                                    if (isset($_SESSION['IS_ADMIN']) || $currentDivDirector || ($currentDepHead && $pos != "Head")) {
-                                        echo '<td class="UI-red">';
-                                        echo '<a href="#" onclick="confirmRemoval(\''.$kfName.'\', \''.$klName.'\', \''.$tmp[2].'\', \''.$kdep.'\', \''.$pos.'\');">Remove</a>';
-                                        echo '</td>';
-                                    }
-                                    echo "</tr>\n";
-                                }
-                                unset($tmp);
-                            }
-                        }
-                    }
-                }
-                if (($kdep != 'Division Director' && $kdep != 'Division Support') && (isset($_SESSION['IS_ADMIN']) || $currentDivDirector || ($currentDepHead && $pos != "Head"))) {
-                    $positions = base64_encode(json_encode(array_values($GLOBALS['ConComPositions'])));
-                    echo '<tr><td class="UI-center" colspan=8><input id="add_'.$div.'" type="button" class="UI-yellowbutton" onclick="addMember(\''.$kdep.'\', \''.$positions.'\');" value="Add someone to '.$kdep.'"></td></tr>'."\n";
-                }
+                printDepartmentTable($div, $kdep, $dep);
             }
         }
+        echo '</div>';
+        echo '</div>';
+        echo '&nbsp;';
+        /* End Division */
     }
-    echo "</table>\n";
 
 }
 
@@ -784,7 +893,7 @@ function buildDonutData()
     }
 
     ksort($fallback);
-    uasort($fallback, fallback_cmp);
+    uasort($fallback, 'fallback_cmp');
 
     /* Order based on fallback */
 

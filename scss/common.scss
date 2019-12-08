@@ -229,6 +229,31 @@
     letter-spacing: -5px
 }
 
+.UI-table-hover .UI-table-row:not(:first-of-type):hover {
+    background-color:#ccc !important;
+}
+
+.UI-table-stripped .UI-table-row:nth-of-type(even):not(:first-of-type) {
+  background-color:#f1f1f1;
+}
+
+.UI-table-padded .UI-table-cell {
+    padding:8px 8px
+}
+
+.UI-table-heading .UI-table-row:first-of-type {
+    @extend .UI-bold !important;
+    font-size:125% !important;
+}
+
+.UI-table-all {
+    @extend .UI-table;
+    @extend .UI-table-hover;
+    @extend .UI-table-padded;
+    @extend .UI-table-stripped;
+    @extend .UI-table-heading;
+}
+
 .UI-error-header {
     @extend .UI-red;
     @extend .w3-bold;
