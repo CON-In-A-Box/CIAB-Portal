@@ -95,12 +95,15 @@ class ConComRBAC
             $result = \DB::run($sql);
             $value = $result->fetch();
             while ($value !== false) {
-                $parent = $value['ParentDepartmentID'].'.'.end($positions);
+                $firstparent = $value['ParentDepartmentID'].'.'.end($positions);
+                $parent = $firstparent;
                 foreach ($positions as $pos) {
                     $new = $value['DepartmentID'].'.'.$pos;
                     $rbac->rbac->addRole($new, $parent);
                     self::addToAll($rbac, $staff, $new, $pos);
-                    $parent = $new;
+                    if ($parent == $firstparent) {
+                        $parent = $new;
+                    }
                 }
                 $value = $result->fetch();
             }
