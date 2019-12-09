@@ -149,7 +149,7 @@ class ConComRBAC
         if ($_SESSION['IS_ADMIN']) {
             return true;
         }
-        $positions = POSITION::getConComPosition('accountId');
+        $positions = POSITION::getConComPosition($accountId);
         foreach ($positions as $pos) {
             $value = $pos['departmentId'].'.'.$pos['positionId'];
             if (self::positionHasPermission($value, $name)) {
