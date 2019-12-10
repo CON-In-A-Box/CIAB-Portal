@@ -163,7 +163,7 @@ function registration_report($event = null, $clause = null)
         WHERE
             rt.EventID = '$event'
         GROUP BY
-            bt.Name
+            bt.BadgeTypeID
 
 SQL;
 
@@ -217,7 +217,7 @@ function report_sold_summary($event = null)
         WHERE
             rt.EventID = '$event'
         GROUP BY
-            bt.Name
+            bt.BadgeTypeID
 SQL;
 
 }
