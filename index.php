@@ -20,7 +20,9 @@ try {
     if (isset($dotenv)) {
         $dotenv->required(['DBHOST', 'DBUSER', 'DBNAME', 'DBPASS', 'DB_BACKEND']);
     } else {
-        throw new RuntimeException();
+        if (!isset($_ENV['DOCKER'])) {
+            throw new RuntimeException();
+        }
     }
 } catch (RuntimeException $e) {
     if (file_exists(__DIR__."/.ht_meetingsignin_config.php")) {
