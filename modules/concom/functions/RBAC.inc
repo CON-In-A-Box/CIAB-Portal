@@ -187,5 +187,16 @@ class ConComRBAC
     }
 
 
+    public static function customizeRBAC($entry)
+    {
+        try {
+            @\call_user_func($entry, self::instance()->rbac);
+        } catch (\Exception $e) {
+            error_log($e);
+        }
+
+    }
+
+
     /* end RBAC */
 }

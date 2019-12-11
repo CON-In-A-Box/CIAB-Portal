@@ -70,5 +70,12 @@ class RBAC
     }
 
 
+    public static function customizeRBAC($entry)
+    {
+        return self::instance()->customizeRBAC($entry);
+
+    }
+
+
     /* end class */
 }

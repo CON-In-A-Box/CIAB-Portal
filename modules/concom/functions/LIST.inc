@@ -140,6 +140,7 @@ SQL;
                     foreach ($db_staff[$user['Id']] as $entry_key => $entry) {
                         $db_staff[$user['Id']][$entry_key]['First Name'] = $user['First Name'];
                         $db_staff[$user['Id']][$entry_key]['Last Name'] = $user['Last Name'];
+                        $db_staff[$user['Id']][$entry_key]['Full Name'] = $user['First Name'].'&nbsp;'.$user['Last Name'];
                         $db_staff[$user['Id']][$entry_key]['Email'] = $user['Email'];
                     }
                 }

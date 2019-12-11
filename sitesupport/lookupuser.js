@@ -121,6 +121,7 @@ var userLookup = (function(options) {
         'UI-red');
       document.getElementById('userLookup_spinner').innerHTML = '';
       document.getElementById('userLookup_member').value = '';
+      document.getElementById('userLookup_message').innerHTML = '';
     },
 
     changed: function(obj, target) {
