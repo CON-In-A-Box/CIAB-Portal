@@ -84,6 +84,38 @@ function _ConComListBuildSearch($page)
 }
 
 
+function new_cycle($cycle)
+{
+    $from = $cycle->From;
+    $to = $cycle->To;
+    $sql = "INSERT INTO `AnnualCycles` (`AnnualCycleID`, `DateFrom`, `DateTo`) VALUES (NULL, '$from', '$to')";
+    DB::run($sql);
+
+}
+
+
+function _advance_cycles()
+{
+    $sql = "SELECT * FROM `AnnualCycles` WHERE DateTo = (SELECT MAX(DateTo) FROM `AnnualCycles`);";
+    $result = \DB::run($sql);
+    $value = $result->fetch();
+    $last_end = $value['DateTo'];
+    $last_start = $value['DateFrom'];
+    $target = strtotime(' +365 day');
+    while (strtotime($last_end) < $target) {
+        print "Add new cycle\n";
+        $last_start = date('Y-m-d', strtotime($last_start." + 365 day"));
+        $last_end = date('Y-m-d', strtotime($last_end." + 365 day"));
+        $cycle = (object)[
+        'From' => $last_start,
+        'To' => $last_end
+        ];
+        new_cycle($cycle);
+    }
+
+}
+
+
 function _ConComListBuild()
 {
     $fullConComList[] = [];
@@ -298,6 +330,7 @@ function _Neon_import_events()
 
 function from_neon_to_152()
 {
+    _advance_cycles();
     _Neon_import_events();
     _build_ConComList();
 
