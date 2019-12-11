@@ -229,12 +229,17 @@
     letter-spacing: -5px
 }
 
+.UI-table-cell-no-border {
+    display: table-cell;
+    padding: 5px 15px;
+}
+
 .UI-table-hover .UI-table-row:not(:first-of-type):hover {
-    background-color:#ccc !important;
+    background-color:#bbb !important;
 }
 
 .UI-table-stripped .UI-table-row:nth-of-type(even):not(:first-of-type) {
-  background-color:#f1f1f1;
+  background-color:#e1e1e1;
 }
 
 .UI-table-padded .UI-table-cell {

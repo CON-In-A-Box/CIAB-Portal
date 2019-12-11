@@ -121,20 +121,19 @@ function printDepartmentHeader($section, $isDepartment, $priv = false)
 {
     echo "<div id=\"table_head_$section\" class=\" UI-table-row CONCOM-table-head\">";
     if ($isDepartment) {
-        echo '<div class="UI-table-cell">Department</div>';
+        echo '<div class="UI-table-cell-no-border">Department</div>';
         echo '<div class="UI-table_cell">Division</div>';
     } else {
-        echo '<div class="UI-table-cell">Division</div>';
+        echo '<div class="UI-table-cell-no-border">Division</div>';
     }
-    echo '<div class="UI-table-cell">First Name</div>';
-    echo '<div class="UI-table-cell">Last Name</div>';
-    echo '<div class="UI-table-cell">Position</div>';
+    echo '<div class="UI-table-cell-no-border">Name</div>';
+    echo '<div class="UI-table-cell-no-border">Position</div>';
     if ($isDepartment) {
-        echo '<div class="UI-table-cell">Email</div>';
+        echo '<div class="UI-table-cell-no-border">Email</div>';
     }
-    echo '<div class="UI-table-cell">Note</div>';
+    echo '<div class="UI-table-cell-no-border">Note</div>';
     if ($priv) {
-        echo '<div class="UI-table-cell"></div>';
+        echo '<div class="UI-table-cell-no-border"></div>';
     }
     echo "</div>\n";
 
@@ -155,12 +154,12 @@ function printDivisionHeader($div)
 
     echo '<div id="'.$div.'" class="UI-table UI-table-heading">';
     echo '<div id="division" class="UI-table-row event-color-secondary">';
-    echo '<div class="UI-center UI-table-cell">'.$div;
+    echo '<div class="UI-center UI-table-cell-no-border">'.$div;
     if (!isSpecialDivision($div)) {
         echo ' Division';
     }
     echo '</div>';
-    echo '<div class="UI-center UI-table-cell">';
+    echo '<div class="UI-center UI-table-cell-no-border">';
     echo '<div class="CONCOM-goto-dropdown">';
     echo '  Go To Section';
     echo '  <div class="CONCOM-goto-dropdown-content">';
@@ -172,7 +171,7 @@ function printDivisionHeader($div)
     echo '  </div>';
     echo '</div>';
     echo '</div>';
-    echo '<div class="UI-table-cell">';
+    echo '<div class="UI-table-cell-no-border">';
     echo implode('<br />', getDepartmentEmails($div));
     echo "</div></div>\n";
     echo "</div>";
@@ -182,33 +181,30 @@ function printDivisionHeader($div)
 
 function printDivisionMember($pos, $div, $position, $rbacpos)
 {
-    foreach ($pos as $kfName => $fName) {
-        foreach ($fName as $klName => $lName) {
-            $tmp = explode('|', $lName);
-            echo '<div class="UI-table-row">';
-            echo '<div class="UI-table-cell">'.$div.'</div>';
-            echo '<div class="UI-table-cell">'.$kfName.'</div>';
-            echo '<div class="UI-table-cell">'.$klName.'</div>';
-            echo '<div class="UI-table-cell">'.$position.'</div>';
-            echo '<div class="UI-table-cell">';
-            echo $tmp[1];
-            if ($_SESSION['accountId'] == $tmp[2]) {
-                if (!empty($tmp[1])) {
-                    echo '<br />';
-                }
-                echo 'This is you!';
+    foreach ($pos as $kName => $lName) {
+        $tmp = explode('|', $lName);
+        echo '<div class="UI-table-row">';
+        echo '<div class="UI-table-cell-no-border">'.$div.'</div>';
+        echo '<div class="UI-table-cell-no-border">'.$kName.'</div>';
+        echo '<div class="UI-table-cell-no-border">'.$position.'</div>';
+        echo '<div class="UI-table-cell-no-border">';
+        echo $tmp[1];
+        if ($_SESSION['accountId'] == $tmp[2]) {
+            if (!empty($tmp[1])) {
+                echo '<br />';
             }
-            echo "</div>";
+            echo 'This is you!';
+        }
+        echo "</div>";
             // System Admins can remove anyone
 
-            $perm = "concom.modify.$div.$rbacpos";
-            if (\ciab\RBAC::havePermission($perm)) {
-                echo '<div class="UI-red UI-table-cell">';
-                echo '<a href="#" onclick="confirmRemoval(\''.$kfName.'\', \''.$klName.'\', \''.$tmp[2].'\', \''.$div.'\', \'Head\');">Remove</a>';
-                echo '</div>';
-            }
-            echo "</div>\n";
+        $perm = "concom.modify.$div.$rbacpos";
+        if (\ciab\RBAC::havePermission($perm)) {
+            echo '<div class="UI-red UI-table-cell-no-border">';
+            echo '<a href="#" onclick="confirmRemoval(\''.$kName.'\', \''.$tmp[2].'\', \''.$div.'\', \'Head\');">Remove</a>';
+            echo '</div>';
         }
+        echo "</div>\n";
     }
 
 }
@@ -220,43 +216,40 @@ function printDepartmentMember(
     $dep,
     $pos
 ) {
-    foreach ($dep[$pos] as $kfName => $fName) {
-        foreach ($fName as $klName => $lName) {
-            $tmp = explode('|', $lName);
-            echo '<div class="UI-table-row">';
-            echo '<div class="UI-table-cell">'.$kdep.'</div>';
-            if (!isSpecialDivision($div)) {
-                echo '<div class="UI-table-cell">'.$div.'</div>';
-            }
-            echo '<div class="UI-table-cell">'.$kfName.'</div>';
-            echo '<div class="UI-table-cell">'.$klName.'</div>';
-            if (!isSpecialDivision($div)) {
-                echo '<div class="UI-table-cell">'.$pos.'</div>';
-            }
-            if ($div == 'Corporate Staff') {
-                echo '<div class="UI-table-cell">'.getDepartmentEmails($kdep)[0].'</div>';
-            } else {
-                echo '<div class="UI-table-cell">'.$tmp[0].'</div>';
-            }
-            echo '<div class="UI-table-cell">';
-            echo $tmp[1];
-
-            // Check to see if this is an entry for the logged in person
-            if ($_SESSION['accountId'] == $tmp[2]) {
-                if (!empty($tmp[1])) {
-                    echo '<br />';
-                }
-                echo 'This is you!';
-            }
-            echo '</div>';
-            $perm = "concom.modify.$kdep.$pos";
-            if (\ciab\RBAC::havePermission($perm)) {
-                echo '<div class="UI-red UI-table-cell">';
-                echo '<a href="#" onclick="confirmRemoval(\''.$kfName.'\', \''.$klName.'\', \''.$tmp[2].'\', \''.$kdep.'\', \''.$pos.'\');">Remove</a>';
-                echo '</div>';
-            }
-            echo "</div>\n";
+    foreach ($dep[$pos] as $kName => $lName) {
+        $tmp = explode('|', $lName);
+        echo '<div class="UI-table-row">';
+        echo '<div class="UI-table-cell-no-border">'.$kdep.'</div>';
+        if (!isSpecialDivision($div)) {
+            echo '<div class="UI-table-cell-no-border">'.$div.'</div>';
         }
+        echo '<div class="UI-table-cell-no-border">'.$kName.'</div>';
+        if (!isSpecialDivision($div)) {
+            echo '<div class="UI-table-cell-no-border">'.$pos.'</div>';
+        }
+        if ($div == 'Corporate Staff') {
+            echo '<div class="UI-table-cell-no-border">'.getDepartmentEmails($kdep)[0].'</div>';
+        } else {
+            echo '<div class="UI-table-cell-no-border">'.$tmp[0].'</div>';
+        }
+        echo '<div class="UI-table-cell-no-border">';
+        echo $tmp[1];
+
+        // Check to see if this is an entry for the logged in person
+        if ($_SESSION['accountId'] == $tmp[2]) {
+            if (!empty($tmp[1])) {
+                echo '<br />';
+            }
+            echo 'This is you!';
+        }
+        echo '</div>';
+        $perm = "concom.modify.$kdep.$pos";
+        if (\ciab\RBAC::havePermission($perm)) {
+            echo '<div class="UI-red UI-table-cell-no-border">';
+            echo '<a href="#" onclick="confirmRemoval(\''.$kName.'\', \''.$tmp[2].'\', \''.$kdep.'\', \''.$pos.'\');">Remove</a>';
+            echo '</div>';
+        }
+        echo "</div>\n";
     }
 
 }
@@ -311,12 +304,12 @@ function printDepartmentTable($div, $kdep, $dep)
     if ($div != 'Corporate Staff' && $kdep != 'Division Director' && $kdep != 'Division Support') {
         echo '<div id="department" class="UI-table-row event-color-primary">';
         if ($div == 'Committees') {
-            echo '<div class="UI-table-cell" id="'.$kdep.'">'.$kdep.'</div>';
+            echo '<div class="UI-table-cell-no-border" id="'.$kdep.'">'.$kdep.'</div>';
         } else {
-            echo '<div class="UI-table-cell" id="'.$kdep.'">'.$kdep.'</div>';
-            echo '<div class="UI-table-cell"><a href="#'.$div.'">'.$div.'</a></div>';
+            echo '<div class="UI-table-cell-no-border" id="'.$kdep.'">'.$kdep.'</div>';
+            echo '<div class="UI-table-cell-no-border"><a href="#'.$div.'">'.$div.'</a></div>';
         }
-        echo '<div class="UI-table-cell">';
+        echo '<div class="UI-table-cell-no-border">';
         echo implode('<br />', getDepartmentEmails($kdep));
         echo "</div></div>\n";
     }
@@ -365,7 +358,7 @@ function ConComListDisplay()
     $printList = array();
     // Put each entry into a divisional/department mapped array
     foreach ($concomlist as $line) {
-        $printList[$line['Division']][$line['Department']][$line['Position']][$line['First Name']][$line['Last Name']] = $line['Email'].'|'.$line['Note'].'|'.$line['Account ID'];
+        $printList[$line['Division']][$line['Department']][$line['Position']][$line['Full Name']] = $line['Email'].'|'.$line['Note'].'|'.$line['Account ID'];
     }
 
     // Sort everything so we don't have to later
@@ -406,6 +399,7 @@ function ConComListBuild()
             'Position' => 'Department',
             'First Name' => '',
             'Last Name' => '',
+            'Full Name' => '',
             'Email' => implode("<br />", $dep['Email']),
             'Note' => '',
             'Account ID' => '',
@@ -487,7 +481,7 @@ function AddConComPosition($accountid, $department, $position, $note, $notify = 
         $to = getDepartmentEmails(getDivision($department))[0];
         $subject = 'ConCom Division addition to '.$department;
 
-        $name = $user['First Name']." ".$user['Last Name'];
+        $name = $user['Full Name'];
 
         $message = $_SESSION['fullName'].' has added '.$name." to ".$department.' as '.$position.'.';
 
@@ -525,7 +519,7 @@ function RemoveConComPosition($accountid, $department, $position, $notify = true
 
             $to = getDepartmentEmails(getDivision($department))[0];
             $subject = 'ConCom Division Removal to '.$department;
-            $name = $user['First Name']." ".$user['Last Name'];
+            $name = $user['Full Name'];
             $message = $_SESSION['fullName'].' has removed '.$name." from ".$department.'.';
             \ciab\Email::mail($to, getNoReplyAddress(), $subject, $message);
         }

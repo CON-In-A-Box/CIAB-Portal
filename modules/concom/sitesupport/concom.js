@@ -441,9 +441,9 @@ function permissionSave() {
 
 }
 
-function confirmRemoval(fname, lname, target, department, position) {
+function confirmRemoval(name, target, department, position) {
   confirmbox(
-    'Are you sure you want to remove ' + fname + '&nbsp;' + lname +
+    'Are you sure you want to remove ' + name +
     ' from ' + position + ' in ' + department).then(function() {
     window.location = 'index.php?Function=concom&Remove=' + encodeURI(target) +
         '&Department=' + encodeURI(department) + '&Position=' +
