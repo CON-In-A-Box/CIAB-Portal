@@ -155,7 +155,9 @@ function registration_report($event = null, $clause = null)
             FROM
                 `Registrations`
             WHERE
-                `BadgesPickedUp` > 0 AND BadgeTypeId = bt.BadgeTypeID
+                `BadgesPickedUp` > 0
+                AND BadgeTypeId = bt.BadgeTypeID
+                AND EventID = '$event'
         ) AS TotalPickedUp
         FROM
             `BadgeTypes` bt
