@@ -82,17 +82,6 @@ function _lookup_members($fields, $page = 1, $output = null, $all = true)
 }
 
 
-function _quote($value)
-{
-    if ($value === null || $value === '') {
-        return 'NULL';
-    } else {
-        return MyPDO::quote($value);
-    }
-
-}
-
-
 function _updateMemberSql($person, $add)
 {
     if ($add) {
