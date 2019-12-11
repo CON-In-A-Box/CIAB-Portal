@@ -148,10 +148,10 @@ function registration_report($event = null, $clause = null)
     return <<<SQL
         SELECT
             bt.`Name` BadgeType,
-            COUNT(DISTINCT rt.`AccountID`) AS TotalSold,
+            COUNT(DISTINCT rt.`RegistrationID`) AS TotalSold,
             (
             SELECT
-                COUNT(`AccountID`)
+                COUNT(`RegistrationID`)
             FROM
                 `Registrations`
             WHERE
@@ -207,9 +207,9 @@ function report_sold_summary($event = null)
         SELECT
             bt.`Name` BadgeType,
             bt.`Cost` BadgeCost,
-            COUNT(DISTINCT rt.`AccountID`) AS TotalSold,
+            COUNT(DISTINCT rt.`RegistrationID`) AS TotalSold,
             (
-                bt.`Cost` * COUNT(DISTINCT rt.`AccountID`)
+                bt.`Cost` * COUNT(DISTINCT rt.`RegistrationID`)
             ) AS TotalRevenue
         FROM
             `BadgeTypes` bt
