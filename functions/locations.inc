@@ -6,7 +6,10 @@
 // Discover Self Location
 $FUNCTIONDIR    = dirname(__FILE__);
 $BASEDIR        = dirname($FUNCTIONDIR);
-$WEBSERVER      = $_SERVER['SERVER_NAME'];
+$WEBSERVER      = 'localhost';
+if (array_key_exists('SERVER_NAME', $_SERVER)) {
+    $WEBSERVER      = $_SERVER['SERVER_NAME'];
+}
 $PORT           = '';
 $PROTOCOL       = isset($_SERVER['HTTPS']) && !empty($_SERVER['HTTPS']) ? 'https' : 'http';
 if (array_key_exists('SERVER_PORT', $_SERVER) &&
