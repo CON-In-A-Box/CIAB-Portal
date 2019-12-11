@@ -95,12 +95,15 @@ class ConComRBAC
             $result = \DB::run($sql);
             $value = $result->fetch();
             while ($value !== false) {
-                $parent = $value['ParentDepartmentID'].'.'.end($positions);
+                $firstparent = $value['ParentDepartmentID'].'.'.end($positions);
+                $parent = $firstparent;
                 foreach ($positions as $pos) {
                     $new = $value['DepartmentID'].'.'.$pos;
                     $rbac->rbac->addRole($new, $parent);
                     self::addToAll($rbac, $staff, $new, $pos);
-                    $parent = $new;
+                    if ($parent == $firstparent) {
+                        $parent = $new;
+                    }
                 }
                 $value = $result->fetch();
             }
@@ -149,7 +152,7 @@ class ConComRBAC
         if ($_SESSION['IS_ADMIN']) {
             return true;
         }
-        $positions = POSITION::getConComPosition('accountId');
+        $positions = POSITION::getConComPosition($accountId);
         foreach ($positions as $pos) {
             $value = $pos['departmentId'].'.'.$pos['positionId'];
             if (self::positionHasPermission($value, $name)) {
@@ -179,6 +182,17 @@ class ConComRBAC
             return array_unique($result);
         } catch (Exception\InvalidArgumentException $e) {
             return null;
+        }
+
+    }
+
+
+    public static function customizeRBAC($entry)
+    {
+        try {
+            @\call_user_func($entry, self::instance()->rbac);
+        } catch (\Exception $e) {
+            error_log($e);
         }
 
     }
