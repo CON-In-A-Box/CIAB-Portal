@@ -34,8 +34,8 @@ if (isset($_REQUEST['Remove'])) {
 
 // if this is an update, but we don't have the right permissions, ignore it.
 if (isset($_REQUEST['AddDepartment'])) {
+    $perm = "concom.add.".$_REQUEST['AddDepartment'];
     if (\ciab\RBAC::havePermission($perm) && isset($_REQUEST['accountId']) && isset($_REQUEST['Position'])) {
-        $perm = "concom.add.".$_REQUEST['AddDepartment'];
         // apply change
         // Retrieve and sanitize POST data
         $arguments = [
@@ -60,4 +60,22 @@ if (isset($_REQUEST['AddDepartment'])) {
 if (!\ciab\RBAC::havePermission("concom.view") && empty($_SESSION['customFields']['currConComPos'])) {
     // This is for ConCom members only!  Silently return to main.
     goSite();
+}
+
+if (isset($_REQUEST['Modify'])) {
+    $perm = "concom.modify.".$_REQUEST['Department'].".".$_REQUEST['Position'];
+    if (\ciab\RBAC::havePermission($perm)) {
+        // Retrieve and sanitize POST data
+        $arguments = [
+        'Modify'      => FILTER_SANITIZE_NUMBER_INT,
+        'Department'  => FILTER_SANITIZE_SPECIAL_CHARS,
+        'Position'    => FILTER_SANITIZE_SPECIAL_CHARS,
+        'Note'        => FILTER_SANITIZE_SPECIAL_CHARS,
+        ];
+        $modifyData = filter_input_array(INPUT_POST, $arguments);
+        ModifyConComPosition($modifyData['Modify'], $modifyData['Department'], $modifyData['Position'], $modifyData['Note']);
+        goSite('index.php?Function=concom#'.$modifyData['Department']);
+    } else {
+        goSite('index.php?Function=concom');
+    }
 }

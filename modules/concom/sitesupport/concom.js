@@ -10,7 +10,8 @@
             dragDropParent, toggleDept, savePosition, newEntry,
             deletePosition, changeEmail, editEmail, returnPosition,
             deleteEmail, saveEmail, deleteAC, newAC, savePermission,
-            returnRBAC, confirmRemoval, onAdd, onLookup, addMember */
+            returnRBAC, onAdd, onLookup, addMember,
+            updateMember, deleteMember, editMember */
 
 var basicReload = function() {
   window.location = 'index.php?Function=concom/admin';
@@ -441,16 +442,6 @@ function permissionSave() {
 
 }
 
-function confirmRemoval(name, target, department, position) {
-  confirmbox(
-    'Are you sure you want to remove ' + name +
-    ' from ' + position + ' in ' + department).then(function() {
-    window.location = 'index.php?Function=concom&Remove=' + encodeURI(target) +
-        '&Department=' + encodeURI(department) + '&Position=' +
-        encodeURI(position);
-  });
-
-}
 
 function getFallbackOptions(id, fallback) {
   var dropdown =  document.getElementById('dept_fallback');
@@ -508,4 +499,62 @@ function addMember(department, posData) {
   document.getElementById('add_button').disabled = true;
   userLookup.clear();
   showSidebar('add_member_div');
+}
+
+function updateMember() {
+  var pos = document.getElementById('user_pos');
+  var userPos = pos.options[pos.options.selectedIndex].value;
+  var parameter = 'Modify=' + document.getElementById('user_id').value;
+  parameter += '&Department=' + document.getElementById('user_div').value;
+  parameter += '&Position=' + userPos;
+  parameter += '&Note=' + document.getElementById('user_notes').value;
+  basicBackendRequest('POST', 'concom', parameter, function() {
+    hideSidebar();
+    window.location.reload(true);
+  });
+}
+
+function deleteMember() {
+  var pos = document.getElementById('user_pos');
+  var target = document.getElementById('user_id').value;
+  var department = document.getElementById('user_div').value;
+  var position = pos.options[pos.options.selectedIndex].value;
+
+  confirmbox(
+    'Are you sure you want to remove ' +
+    document.getElementById('user_name').innerHTML +
+    ' from ' + pos.options[pos.options.selectedIndex].text + ' in ' +
+    document.getElementById('user_div').value).then(function() {
+    window.location = 'index.php?Function=concom&Remove=' + encodeURI(target) +
+        '&Department=' + encodeURI(department) + '&Position=' +
+        encodeURI(position);
+    hideSidebar();
+  });
+}
+
+function editMember(name, id, div, pos, notes, posData) {
+  document.getElementById('user_id').value = id;
+  document.getElementById('user_div').value = div;
+  document.getElementById('user_name').innerHTML = name;
+  document.getElementById('user_notes').value = notes;
+  document.getElementById('user_desc').innerHTML = pos + ' in ' + div;
+
+  var positions = JSON.parse(atob(posData));
+  var poss =  document.getElementById('user_pos');
+  poss.innerHTML = '';
+  var s = 0;
+  positions.forEach(function(d, i) {
+    if (d !== null) {
+      var option = document.createElement('option');
+      option.text = d;
+      option.value = i + 1;
+      poss.add(option);
+      if (d == pos) {
+        s = poss.length - 1;
+      }
+    }
+  });
+  poss.selectedIndex = s;
+
+  showSidebar('edit_member_div');
 }
