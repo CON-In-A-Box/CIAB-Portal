@@ -51,4 +51,38 @@ ConComListDisplay();
           </button>
       </div>
   </div>
+
+  <div class='UI-sidebar-hidden UI-fixed' id='edit_member_div'>
+      <div class='UI-center'>
+          <h2 class='UI-red'>Modify Membership</h2>
+      </div>
+      <div class='UI-center'>
+          <input class="UI-hiddeninput" id="user_id">
+          <input class="UI-hiddeninput" id="user_div">
+      </div>
+      <div>
+        <h3 id='user_name' class='UI-center'></h3>
+        <h4 id='user_desc' class='UI-center'></h4>
+        <label class='UI-label' for='user_notes'>Note</label>
+        <input class="UI-input" id="user_notes" value=''>
+        <br>
+        <label class='UI-label' for='user_new_pos'>Position:</label>
+        <select id="user_pos">
+        </select>
+      </div>
+      <div class='UI-center UI-padding'>
+          <button id='add_button' class='UI-eventbutton'
+              onclick='updateMember();'>
+          Update Member
+          </button>
+          <button class='UI-redbutton'
+              onclick='deleteMember();'>
+            Remove
+          </button>
+          <button class='UI-yellowbutton'
+              onclick='hideSidebar();'>
+            Close
+          </button>
+      </div>
+  </div>
 </div><!--close main_content div-->
