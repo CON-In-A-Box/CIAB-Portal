@@ -181,6 +181,7 @@ function printDivisionHeader($div)
 
 function printDivisionMember($pos, $div, $position, $rbacpos)
 {
+    $positions = base64_encode(json_encode(['Director', null, 'Support']));
     foreach ($pos as $kName => $lName) {
         $tmp = explode('|', $lName);
         echo '<div class="UI-table-row">';
@@ -200,8 +201,8 @@ function printDivisionMember($pos, $div, $position, $rbacpos)
 
         $perm = "concom.modify.$div.$rbacpos";
         if (\ciab\RBAC::havePermission($perm)) {
-            echo '<div class="UI-red UI-table-cell-no-border">';
-            echo '<a href="#" onclick="confirmRemoval(\''.$kName.'\', \''.$tmp[2].'\', \''.$div.'\', \'Head\');">Remove</a>';
+            echo '<div class="UI-table-cell-no-border">';
+            echo '<input type="button" class="UI-redbutton" onclick= "editMember(\''.$kName.'\', \''.$tmp[2].'\', \''.$div.'\', \'Head\', \''.$tmp[1].'\', \''.$positions.'\');" value="Edit">';
             echo '</div>';
         }
         echo "</div>\n";
@@ -216,6 +217,7 @@ function printDepartmentMember(
     $dep,
     $pos
 ) {
+    $positions = base64_encode(json_encode(array_values($GLOBALS['ConComPositions'])));
     foreach ($dep[$pos] as $kName => $lName) {
         $tmp = explode('|', $lName);
         echo '<div class="UI-table-row">';
@@ -245,8 +247,8 @@ function printDepartmentMember(
         echo '</div>';
         $perm = "concom.modify.$kdep.$pos";
         if (\ciab\RBAC::havePermission($perm)) {
-            echo '<div class="UI-red UI-table-cell-no-border">';
-            echo '<a href="#" onclick="confirmRemoval(\''.$kName.'\', \''.$tmp[2].'\', \''.$kdep.'\', \''.$pos.'\');">Remove</a>';
+            echo '<div class="UI-table-cell-no-border">';
+            echo '<input type="button" class="UI-redbutton" onclick= "editMember(\''.$kName.'\', \''.$tmp[2].'\', \''.$kdep.'\', \''.$pos.'\', \''.$tmp[1].'\', \''.$positions.'\');" value="Edit">';
             echo '</div>';
         }
         echo "</div>\n";
@@ -500,12 +502,25 @@ function RemoveConComPosition($accountid, $department, $position, $notify = true
 {
     global $Departments;
 
-    $positionid = getPositionID($position);
+    if (is_numeric($department)) {
+        $departmentid = intval($department);
+    } else {
+        $departmentid = $Departments[$department]['id'];
+    }
+    if ($departmentid == null) {
+        return;
+    }
+
+    if (is_numeric($position)) {
+        $positionid = intval($position);
+    } else {
+        $positionid = getPositionID($position);
+    }
     if ($positionid == null) {
         return;
     }
 
-    $sql = "DELETE FROM ConComList WHERE AccountID = $accountid AND DepartmentID = ".$Departments[$department]['id']." AND PositionID = $positionid";
+    $sql = "DELETE FROM ConComList WHERE AccountID = $accountid AND DepartmentID = $departmentid AND PositionID = $positionid";
     $result = DB::run($sql);
     if ($result) {
         if ($notify) {
@@ -1012,5 +1027,45 @@ SQL;
         $value = $result->fetch();
     }
     return $data;
+
+}
+
+
+function ModifyConComPosition($accountid, $department, $position, $note)
+{
+    global $Departments;
+
+    if (is_numeric($position)) {
+        $positionid = intval($position);
+    } else {
+        $positionid = getPositionID($position);
+    }
+    if ($positionid == null) {
+        return;
+    }
+
+    if (is_numeric($department)) {
+        $departmentid = intval($department);
+    } else {
+        $departmentid = $Departments[$department]['id'];
+    }
+    if ($departmentid == null) {
+        return;
+    }
+
+    $mynote = MyPDO::quote($note);
+
+    $sql = <<< SQL
+        UPDATE `ConComList`
+        SET
+            `PositionID` = $positionid,
+            `Note` = $mynote
+        WHERE
+            `AccountID` = $accountid
+             AND `DepartmentID` = $departmentid
+
+SQL;
+    $result = \DB::run($sql);
+    return $result;
 
 }
