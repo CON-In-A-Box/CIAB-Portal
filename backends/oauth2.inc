@@ -21,5 +21,8 @@ $server = new OAuth2\Server(
         new OAuth2\GrantType\ClientCredentials($storage),
         new OAuth2\GrantType\AuthorizationCode($storage),
         new OAuth2\GrantType\UserCredentials($storage),
+        new OAuth2\GrantType\RefreshToken($storage, array(
+            'always_issue_new_refresh_token' => true,
+        )),
     ]
 );

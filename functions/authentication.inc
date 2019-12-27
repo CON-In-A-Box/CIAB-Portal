@@ -126,6 +126,37 @@ const AUTH_LOCKED    = 0x3;
 const AUTH_DUPLICATE = 0x10;
 
 
+function verify_account($account)
+{
+    global $MAXLOGINFAIL;
+
+    $max_fail = 5;
+    if (isset($MAXLOGINFAIL) && !empty($MAXLOGINFAIL)) {
+        $max_fail = intval($MAXLOGINFAIL);
+    }
+
+    $sql = <<<SQL
+        SELECT * FROM `Authentication` WHERE AccountID = $account;
+SQL;
+    $result = \DB::run($sql);
+    $value = $result->fetch();
+    if ($value !== false) {
+        if ($value['FailedAttempts'] >= $max_fail) {
+            return AUTH_LOCKED;
+        }
+        $now = strtotime("now");
+        $expire = strtotime($value['Expires']);
+        if ($now > $expire) {
+            return AUTH_EXPIRED;
+        }
+        return AUTH_SUCCESS;
+    } else {
+        return AUTH_BAD;
+    }
+
+}
+
+
 function check_authentication($account, $password, $user)
 {
     global $MAXLOGINFAIL;
@@ -255,21 +286,6 @@ SQL;
         return $results[0];
     }
     return array("entry" => null, "result" => AUTH_DUPLICATE);
-
-}
-
-
-function LoginUser($user, $password)
-{
-    $result = doUserAndPasswordMatch($user, $password);
-    if ($result['entry'] !== null) {
-        $entry = $result['entry'];
-        // Log in the User - Session started in Functions
-        $_SESSION['username']  = $user; // Save the Username for easy forms
-        $_SESSION['fullName']  = $entry['First Name']; // Save the FullName for ease
-        $_SESSION['accountId'] = $entry['AccountID']; //Save the ID for updates
-    }
-    return ($result["result"]);
 
 }
 

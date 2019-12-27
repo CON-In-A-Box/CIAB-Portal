@@ -3,6 +3,8 @@
     require_module 'standard';
 .*/
 
+$app->get('/member/{name}/status', 'App\Controller\Member\GetStatus');
+
 $app->group(
     '/member',
     function () use ($app, $authMiddleware) {

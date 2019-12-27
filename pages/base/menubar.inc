@@ -116,7 +116,7 @@ if ($kiosk === null) {
       <em class="fas fa-bars"></em>
     </a>
     <a class="UI-main-logout-bar-item"
-      href="index.php?Function=public" title="Log out and Restart">
+      href="index.php?Function=public&signout=1" title="Log out and Restart">
       <em class="fas fa-sign-out-alt"></em>
       Log Out
     </a>
