@@ -85,7 +85,7 @@ abstract class BaseController
     }
 
 
-    protected function listResponse(Request $request, Response $response, $type, $data, $code = 200): Response
+    protected function listResponse(Request $request, Response $response, $output, $data, $code = 200): Response
     {
         $len = count($data);
         $index = intval($request->getQueryParam('pageToken', 0));
@@ -97,8 +97,9 @@ abstract class BaseController
             $count = intval($count);
         }
 
-        $output = array();
-        $output['type'] = $type;
+        if ($output === null) {
+            $output = array();
+        }
         $output['data'] = array_slice($data, $index, $count, true);
         if ($maxPage !== 'all' and $index + $count < $len) {
             $output['nextPageToken'] = $index + $count;
