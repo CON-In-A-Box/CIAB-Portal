@@ -85,5 +85,29 @@ abstract class BaseController
     }
 
 
+    protected function listResponse(Request $request, Response $response, $type, $data, $code = 200): Response
+    {
+        $len = count($data);
+        $index = intval($request->getQueryParam('pageToken', 0));
+        $maxPage = $request->getQueryParam('maxResults', 100);
+        $count = $maxPage;
+        if (is_string($count) && strtolower($count) === 'all') {
+            $count = $len;
+        } else {
+            $count = intval($count);
+        }
+
+        $output = array();
+        $output['type'] = $type;
+        $output['data'] = array_slice($data, $index, $count, true);
+        if ($maxPage !== 'all' and $index + $count < $len) {
+            $output['nextPageToken'] = $index + $count;
+        }
+
+        return $this->jsonResponse($request, $response, $output, $code);
+
+    }
+
+
     /* END BaseController */
 }
