@@ -10,6 +10,7 @@ use Slim\Http\Response;
 use Slim\Http\Request;
 
 require_once __DIR__.'/../../../backends/RBAC.inc';
+require_once __DIR__.'/../../../functions/divisional.inc';
 
 abstract class BaseController
 {
@@ -106,6 +107,48 @@ abstract class BaseController
         }
 
         return $this->jsonResponse($request, $response, $output, $code);
+
+    }
+
+
+    protected function arrayResponse(Request $request, Response $response, $data, $code = 200): Array
+    {
+        foreach ($this->chain as $child) {
+            $data = $child->handle($request, $response, $data, $code);
+        }
+        if (!empty($data) && !array_key_exists('type', $data)) {
+            $data['type'] = $this->api_type;
+        }
+        if (!empty($data) && !empty($this->hateoas) &&
+            !array_key_exists('links', $data)) {
+            $data['links'] = $this->hateoas;
+        }
+        $output = $this->filterOutput($request, $data, $code);
+        return $output;
+
+    }
+
+
+    public function getDepartment($id)
+    {
+        global $Departments;
+
+        $output = array();
+
+        if (array_key_exists($id, $Departments)) {
+            $output = array('Name' => $id);
+            $output = array_merge($output, $Departments[$id]);
+            return $output;
+        } else {
+            foreach ($Departments as $key => $dept) {
+                if ($dept['id'] == $id) {
+                    $output = array('Name' => $key);
+                    $output = array_merge($output, $dept);
+                    return $output;
+                }
+            }
+        }
+        return null;
 
     }
 

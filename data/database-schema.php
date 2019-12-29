@@ -198,6 +198,12 @@ class SCHEMA
             'Position' => 'VARCHAR(100) NOT NULL',
             'Permission' => 'VARCHAR(100) NOT NULL',
             'Note' => 'TEXT'
+        ],
+        'Deadlines' => [
+            'DeadlineID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
+            'DepartmentID' => 'INT UNSIGNED NOT NULL',
+            'Deadline' => 'DATE NOT NULL',
+            'Note' => 'TEXT NOT NULL'
         ]
 
     ];
@@ -247,6 +253,9 @@ class SCHEMA
         ],
         'VolunteerRewards' => [
             'RewardGroupID' => 'RewardGroup (RewardGroupID) ON DELETE RESTRICT ON UPDATE CASCADE',
+        ],
+        'Deadlines' => [
+            'DepartmentID' => 'Departments (DepartmentID) ON DELETE RESTRICT ON UPDATE CASCADE',
         ],
     ];
 

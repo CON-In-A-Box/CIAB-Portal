@@ -9,6 +9,9 @@ The following methods are available to Department resources:
 |---|---|---|---|
 |[list](Department.md#list)|GET /department/|Get a list of departments at the convention.|--|
 |[get](Department.md#get)|GET /department/{identifier}|Get details about a given Department.|--|
+|[deadlines](Department.md#deadlines)|GET /department/{identifier}/deadlines|Get a list of deadlines for a given Department.|api.get.deadline.{department}|
+
+
 <a name="list"></a>
 ## list
 Get a list of departments on the system.
@@ -173,6 +176,7 @@ The following HATEOAS methods are available as well:
 |HATEOAS Method|Request|Description|
 |---|---|---|
 |division|GET|Get the department resource for the departments parent division. Only present if the department has a parent.|
+|deadlines|GET|Get a list of deadlines for the department.|
 
 
 ### get Code Samples
@@ -213,6 +217,63 @@ Response Sample
     ]
 }
 ```
+
+<a name="deadlines"></a>
+## deadlines
+Get a list of deadlines for the department.
+
+### deadlines Request
+
+```GET /department/{identifier}/deadlines```
+
+### deadlines Parameters
+
+The following deadlines parameters are available:
+
+|Parameter|Meaning|Notes|
+|---|---|---|
+|identifier|Name or Id of the department||
+|page|Page token for the list.|Defaults to first page.|
+|maxResults|Maximum results in the list|Defaults to 100. The token "all" specifies the full remaining list.|
+
+### deadlines Request Body
+
+Do not supply a request body.
+
+### deadlines Response
+A [deadline_list](Deadline.md#common_objects) object resource.
+
+### deadlines Code Samples
+Request Sample
+
+```
+curl -X GET -H 'Authorization: Bearer e0438d90599b1c4762d12fd03db6311c9ca46729' \
+    http://localhost/api/department/7/deadlines?pretty=true
+```
+Response Sample
+
+```
+{
+    "type": "deadline_list",
+    "data": {
+        {
+            "type": "deadline_entry",
+            "id": "5",
+            "departmentID": "7",
+            "deadline": "2020-11-11",
+            "get": "http:\/\/localhost:8080\/api\/deadline\/5"
+        },
+        {
+            "type": "deadline_entry",
+            "id": "1",
+            "deadline": "2019-12-27",
+            "departmentID": "7",
+            "get": "http:\/\/localhost:8080\/api\/deadline\/1"
+        }
+    ]
+}
+```
+
 
 ---
 ##### [Return to Top](README.md)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Return to Resource List](README.md#resources)

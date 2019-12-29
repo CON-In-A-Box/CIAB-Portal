@@ -123,5 +123,6 @@ HATEOAS Method|Request|Description
 
 <a name="resources"></a>
 ## Resources
-* [Member](Member.md)
+* [Deadline](Deadline.md)
 * [Department](Department.md)
+* [Member](Member.md)

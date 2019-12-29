@@ -33,6 +33,7 @@ abstract class BaseMember extends BaseController
         if ($this->id !== 0) {
             $path = $request->getUri()->getBaseUrl();
             $this->addHateoasLink('self', $path.'/member/'.strval($this->id), 'GET');
+            $this->addHateoasLink('deadlines', $path.'/member/'.strval($this->id).'/deadlines', 'GET');
         }
 
     }

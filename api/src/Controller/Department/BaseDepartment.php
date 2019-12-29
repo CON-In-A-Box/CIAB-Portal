@@ -42,6 +42,7 @@ abstract class BaseDepartment extends BaseController
     {
         if ($this->id !== 0) {
             $this->addHateoasLink('self', $this->buildDepartmentGet($request, $this->id), 'GET');
+            $this->addHateoasLink('deadlines', $this->buildDepartmentGet($request, $this->id).'/deadlines', 'GET');
         }
         if ($this->division !== 0 && $this->id !== $this->division) {
             $this->addHateoasLink('division', $this->buildDepartmentGet($request, $this->division), 'GET');

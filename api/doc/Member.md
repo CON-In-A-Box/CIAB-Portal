@@ -9,6 +9,8 @@ The following methods are available to member resources:
 |---|---|---|---|
 |[status](Member.md#status)|GET /member/{id}/status|Returns a code based on the status of the user account specified by `id`|--|
 |[get](Member.md#get)|GET /member/{id}|Get details about a given member. To get information about the current authenticated user, leave the [id] blank.|--|
+|[deadlines](Member.md#deadlines)|GET /member/{id}/deadlines|Get deadlines for a given member.|--|
+
 
 <a name="status"></a>
 ## status
@@ -116,6 +118,12 @@ Member object resources have a number of available properties. These include:
 |type|string|Always `member`|
 |links[]|list| List of HATEOAS links for this member|
 
+The following HATEOAS methods are available as well:
+
+|HATEOAS Method|Request|Description|
+|---|---|---|
+|deadlines|GET|Get a list of deadlines for the member.|
+
 ### get Code Samples
 Request Sample
 
@@ -136,6 +144,62 @@ Response Sample
             "method": "self",
             "href": "http:\/\/localhost:8080\/api\/member\/1002",
             "request": "GET"
+        }
+    ]
+}
+```
+
+<a name="deadlines"></a>
+## deadlines
+Get a list of deadlines for a member.
+
+### deadlines Request
+
+```GET /member/{identifier}/deadlines```
+
+### deadlines Parameters
+
+The following deadlines parameters are available:
+
+|Parameter|Meaning|Notes|
+|---|---|---|
+|identifier|Name or Id of the member||
+|page|Page token for the list.|Defaults to first page.|
+|maxResults|Maximum results in the list|Defaults to 100. The token "all" specifies the full remaining list.|
+
+### deadlines Request Body
+
+Do not supply a request body.
+
+### deadlines Response
+A [deadline_list](Deadline.md#common_objects) object resource.
+
+### deadlines Code Samples
+Request Sample
+
+```
+curl -X GET -H 'Authorization: Bearer e0438d90599b1c4762d12fd03db6311c9ca46729' \
+    http://localhost/api/member/1001/deadlines?pretty=true
+```
+Response Sample
+
+```
+{
+    "type": "deadline_list",
+    "data": {
+        {
+            "type": "deadline_entry",
+            "id": "5",
+            "departmentID": "7",
+            "deadline": "2020-11-11",
+            "get": "http:\/\/localhost:8080\/api\/deadline\/5"
+        },
+        {
+            "type": "deadline_entry",
+            "id": "1",
+            "departmentID": "7",
+            "deadline": "2019-12-27",
+            "get": "http:\/\/localhost:8080\/api\/deadline\/1"
         }
     ]
 }
