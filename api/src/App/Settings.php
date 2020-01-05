@@ -12,5 +12,6 @@ return [
 'user' => $_ENV['DBUSER'],
 'pass' => $_ENV['DBPASS']
         ],
+'modules' => [],
     ],
 ];

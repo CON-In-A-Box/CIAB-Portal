@@ -121,6 +121,9 @@ HATEOAS Method|Request|Description
 |---|---|---|
 |self|GET|Get information about the object|
 
+## Modules
+A number of modules exist in the API. These modules, while enabled by default, can be explicitly disabled. When enabled a module may not only have additional resources to be used but can add additional properties and/or methods to the base resources.
+
 <a name="resources"></a>
 ## Resources
 * [Deadline](Deadline.md)

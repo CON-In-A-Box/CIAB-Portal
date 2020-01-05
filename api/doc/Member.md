@@ -5,12 +5,11 @@
 The following methods are available to member resources:
 
 
-|Resource Method|HTTP Request|Description|RBAC|
-|---|---|---|---|
-|[status](Member.md#status)|GET /member/{id}/status|Returns a code based on the status of the user account specified by `id`|--|
-|[get](Member.md#get)|GET /member/{id}|Get details about a given member. To get information about the current authenticated user, leave the [id] blank.|--|
-|[deadlines](Member.md#deadlines)|GET /member/{id}/deadlines|Get deadlines for a given member.|--|
-
+|Resource Method|HTTP Request|Description|Module|RBAC|
+|---|---|---|---|---|
+|[status](Member.md#status)|GET /member/{id}/status|Returns a code based on the status of the user account specified by `id`|core|--|
+|[get](Member.md#get)|GET /member/{id}|Get details about a given member. To get information about the current authenticated user, leave the [id] blank.|core|--|
+|[deadlines](Member.md#deadlines)|GET /member/{id}/deadlines|Get deadlines for a given member.|core|--|
 
 <a name="status"></a>
 ## status
@@ -71,7 +70,6 @@ Response Sample
     "status": 0
 }
 ```
-
 
 <a name="get"></a>
 ## get

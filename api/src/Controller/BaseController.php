@@ -30,17 +30,33 @@ abstract class BaseController
     */
     protected $hateoas;
 
+    /**
+     * @var array[]
+    */
+    protected $chain;
+
 
     protected function __construct(string $api_type, Container $container)
     {
         $this->api_type = $api_type;
         $this->container = $container;
-        $hateoas = [];
+        $this->hateoas = [];
+        $this->chain = [];
+
+        $modules = $container->get('settings')['modules'];
+        foreach ($modules as $module) {
+            if (class_exists($module)) {
+                $target = new $module($this);
+                if ($target->valid()) {
+                    $this->chain[] = $target;
+                }
+            }
+        }
 
     }
 
 
-    protected function addHateoasLink(string $method, string $href, string $request)
+    public function addHateoasLink(string $method, string $href, string $request)
     {
         $this->hateoas[] = [
         'method' => $method,
@@ -53,6 +69,10 @@ abstract class BaseController
 
     protected function jsonResponse(Request $request, Response $response, $data, $code = 200): Response
     {
+        foreach ($this->chain as $child) {
+            $data = $child->handle($request, $response, $data, $code);
+        }
+
         $parameters = null;
         $value = $request->getQueryParam('pretty', false);
         if ($value) {

@@ -5,11 +5,11 @@
 The following methods are available to Department resources:
 
 
-|Resource Method|HTTP Request|Description|RBAC|
-|---|---|---|---|
-|[list](Department.md#list)|GET /department/|Get a list of departments at the convention.|--|
-|[get](Department.md#get)|GET /department/{identifier}|Get details about a given Department.|--|
-|[deadlines](Department.md#deadlines)|GET /department/{identifier}/deadlines|Get a list of deadlines for a given Department.|api.get.deadline.{department}|
+|Resource Method|HTTP Request|Description|Module|RBAC|
+|---|---|---|---|---|
+|[list](Department.md#list)|GET /department/|Get a list of departments at the convention.|core|--|
+|[get](Department.md#get)|GET /department/{identifier}|Get details about a given Department.|core|--|
+|[deadlines](Department.md#deadlines)|GET /department/{identifier}/deadlines|Get a list of deadlines for a given Department.|core|api.get.deadline.{department}|
 
 
 <a name="list"></a>

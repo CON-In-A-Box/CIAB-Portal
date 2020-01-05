@@ -3,12 +3,12 @@
 # Deadline Resource
 The following methods are available to deadline resources:
 
-|Resource Method|HTTP Request|Description|RBAC|
-|---|---|---|---|
-|[add](Deadline.md#add)|PUT /deadline/{department}|Add a new deadline.|api.put.deadline.{department}|
-|[get](Deadline.md#get)|GET /deadline/{id}|Get details about a given deadline.|api.get.deadline.{department}|
-|[modify](Deadline.md#modify)|POST /deadline/{id}|Modify an existing deadline|api.post.deadline.{department}|
-|[delete](Deadline.md#delete)|DELETE /deadline/{id}|Delete a deadline|api.delete.deadline.{department}|
+|Resource Method|HTTP Request|Description|module|RBAC|
+|---|---|---|---|---|
+|[add](Deadline.md#add)|PUT /deadline/{department}|Add a new deadline.|core|api.put.deadline.{department}|
+|[get](Deadline.md#get)|GET /deadline/{id}|Get details about a given deadline.|core|api.get.deadline.{department}|
+|[modify](Deadline.md#modify)|POST /deadline/{id}|Modify an existing deadline|core|api.post.deadline.{department}|
+|[delete](Deadline.md#delete)|DELETE /deadline/{id}|Delete a deadline|core|api.delete.deadline.{department}|
 
 <a name="common_objects"></a>
 ## Common Objects
