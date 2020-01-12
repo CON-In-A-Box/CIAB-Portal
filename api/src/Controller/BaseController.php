@@ -22,7 +22,32 @@ abstract class BaseController
     /**
      * @var string
      */
-    protected static $api_type;
+    protected $api_type;
+
+    /**
+     * @var array[]
+    */
+    protected $hateoas;
+
+
+    protected function __construct(string $api_type, Container $container)
+    {
+        $this->api_type = $api_type;
+        $this->container = $container;
+        $hateoas = [];
+
+    }
+
+
+    protected function addHateoasLink(string $method, string $href, string $request)
+    {
+        $this->hateoas[] = [
+        'method' => $method,
+        'href' => $href,
+        'request' => $request
+        ];
+
+    }
 
 
     protected function jsonResponse(Request $request, Response $response, $data, $code = 200): Response
@@ -37,6 +62,10 @@ abstract class BaseController
         }
         if (!empty($data) && !array_key_exists('type', $data)) {
             $data['type'] = $this->api_type;
+        }
+        if (!empty($data) && !empty($this->hateoas) &&
+            !array_key_exists('links', $data)) {
+            $data['links'] = $this->hateoas;
         }
         return $response->withJson($data, $code, $parameters);
 

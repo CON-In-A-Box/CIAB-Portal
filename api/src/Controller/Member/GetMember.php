@@ -14,27 +14,19 @@ class GetMember extends BaseMember
 
     public function __invoke(Request $request, Response $response, $args)
     {
-        $user = $request->getAttribute('oauth2-token')['user_id'];
-        if (array_key_exists('name', $args)) {
-            $data = \lookup_users_by_key($args['name']);
-            if (empty($data['users'])) {
-                if (empty($data['error'])) {
-                    $error = 'No Members Found';
-                } else {
-                    $error = $data['error'];
-                }
-                return $this->errorResponse($request, $response, $error, 'Not Found', 404);
-            }
-            $data = $data['users'][0];
-            if ($data[0]['Id'] != $user &&
-                !\ciab\RBAC::havePermission('api.get.member')) {
-                return $this->errorResponse($request, $response, 'Permission Denied', 'Permission Denied', 403);
-            }
+        $data = $this->findMember($request, $response, $args, 'name');
+        if (gettype($data) === 'object') {
+            return $data;
         } else {
-            $data = \lookup_user_by_id($user);
-            $data = $data['users'][0];
+            $this->buildMemberHateoas($request);
+            $output = array(
+                'id' => $data['Id'],
+                'firstName' => $data['First Name'],
+                'lastName' => $data['Last Name'],
+                'email' => $data['Email']
+            );
+            return $this->jsonResponse($request, $response, $output);
         }
-        return $this->jsonResponse($request, $response, $data);
 
     }
 
