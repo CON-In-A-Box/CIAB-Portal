@@ -1,0 +1,218 @@
+##### [Return to Top](README.md)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Return to Resource List](README.md#resources)
+---
+# Department Resource
+
+The following methods are available to Department resources:
+
+
+|Resource Method|HTTP Request|Description|RBAC|
+|---|---|---|---|
+|[list](Department.md#list)|GET /department/|Get a list of departments at the convention.|--|
+|[get](Department.md#get)|GET /department/{identifier}|Get details about a given Department.|--|
+<a name="list"></a>
+## list
+Get a list of departments on the system.
+
+### list Request
+
+```GET /department/```
+
+### list Parameters
+
+The following list parameters are available:
+
+|Parameter|Meaning|Notes|
+|---|---|---|
+|page|Page token for the list.|Defaults to first page.|
+|maxResults|Maximum results in the list|Defaults to 100. The token "all" specifies the full remaining list.|
+
+### list Request Body
+
+Do not supply a request body.
+
+### list Response
+A department_entry object resource.
+
+#### department_entry object resource
+
+A department_entry object resource is used when listing departments. Use a department get method to retrieve the full department data.
+
+```
+{
+	"type":"department_entry",
+	"name":{string},
+	"id":{integer},
+	"division":{string},
+	"get":{HATEOAS link}
+}
+```
+
+department_entry object resources have the following available properties:
+
+|Object Property|Value|Description|
+|---|---|---|
+|type|string|Always `department_entry`|
+|name|string|Department Name|
+|id|integer|Department ID for this department|
+|division|string|Division Name|
+|get|HATEOAS link|A HATEOAS link for the get method on the department|
+
+
+### list Code Samples
+Request Sample
+
+```
+curl -X GET -H 'Authorization: Bearer e0438d90599b1c4762d12fd03db6311c9ca46729' \
+    http://localhost/api/department/?pretty=true
+```
+Response Sample
+
+```
+{
+    "type": "department_list",
+    "data": {
+        {
+            "type": "department_entry",
+            "name": "Accessibility and Inclusion",
+            "id": 100,
+            "division": "External Relations and Communications",
+            "get": "http:\/\/localhost\/api\/department\/100"
+        },
+        {
+            "type": "department_entry",
+            "name": "Activities",
+            "id": 1,
+            "division": "Activities",
+            "get": "http:\/\/localhost\/api\/department\/1"
+        },
+        {
+            "type": "department_entry",
+            "name": "Administration",
+            "id": 2,
+            "division": "Administration",
+            "get": "http:\/\/localhost\/api\/department\/2"
+        },
+        {
+            "type": "department_entry",
+            "name": "Allocations",
+            "id": 101,
+            "division": "Facilities",
+            "get": "http:\/\/localhost\/api\/department\/101"
+        },
+        {
+            "type": "department_entry",
+            "name": "Archives",
+            "id": 102,
+            "division": "Administration",
+            "get": "http:\/\/localhost\/api\/department\/102"
+        }
+    }
+]
+```
+
+<a name="get"></a>
+## get
+Get details about a department
+
+### get Request
+```GET /department/{identifier}```
+
+### get Parameters
+The following get parameters are available:
+
+|Parameter|Meaning|Notes|
+|---|---|---|
+|identifier|Name or Id of the department||
+
+### get Request Body
+Do not supply a request body.
+
+### get Response
+
+An email_entry resource.
+
+```
+{
+	"email": {string},
+	"isAlias": {boolean}
+}
+```
+
+|Object Property|Value|Description|
+|---|---|---|
+|email|string|The email address|
+|isAlias|boolean|if `true` then an alias|
+
+A department resource.
+
+```
+{
+    "type": "department",
+    "name": {string},
+    "division": {string},
+    "id": {integer},
+    "childCount": {integer},
+    "email": [email_entry]
+    "fallback": {integer},
+    "links": [{HATEOAS links}]
+}
+```
+|Object Property|Value|Description|
+|---|---|---|
+|type|string|Always "department"|
+|name|string|Name of the department|
+|division|string|Name of the division|
+|id|integer|Id of the department|
+|childCount|integer|Number of child departments|
+|email[]|list|List of email_entry resources|
+|fallback|integer|If set, the `id` of the fallback department. `null` if undefined.|
+|links[]|list|HATEOAS links|
+
+The following HATEOAS methods are available as well:
+
+|HATEOAS Method|Request|Description|
+|---|---|---|
+|division|GET|Get the department resource for the departments parent division. Only present if the department has a parent.|
+
+
+### get Code Samples
+Request Sample
+
+```
+curl -X GET -H 'Authorization: Bearer e0438d90599b1c4762d12fd03db6311c9ca46729' \
+   http://localhost:8080/api/department/127?pretty=true
+```
+
+Response Sample
+
+```
+{
+    "name": "IT",
+    "division": "Systems",
+    "id": 127,
+    "childCount": 0,
+    "email": [
+        {
+            "email": "it@convergence-con.org"
+            "isAlias": false,
+        }
+    ],
+    "fallback": null,
+    "type": "department",
+    "links": [
+        {
+            "method": "self",
+            "href": "http:\/\/localhost\/api\/department\/127",
+            "request": "GET"
+        },
+        {
+            "method": "division",
+            "href": "http:\/\/localhost\/api\/department\/7",
+            "request": "GET"
+        }
+    ]
+}
+```
+
+---
+##### [Return to Top](README.md)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Return to Resource List](README.md#resources)
