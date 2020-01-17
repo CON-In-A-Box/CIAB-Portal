@@ -10,6 +10,7 @@ The following methods are available to member resources:
 |[status](Member.md#status)|GET /member/{id}/status|Returns a code based on the status of the user account specified by `id`|core|--|
 |[get](Member.md#get)|GET /member/{id}|Get details about a given member. To get information about the current authenticated user, leave the [id] blank.|core|--|
 |[deadlines](Member.md#deadlines)|GET /member/{id}/deadlines|Get deadlines for a given member.|core|--|
+|[concom](Concom.md#member)|GET /member/{id}/concom|Get the list of concom positions the member fills, leave the `id` out specify the logged in Member|[concom](Concom.md)|api.get.concom|
 
 <a name="status"></a>
 ## status

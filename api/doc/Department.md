@@ -10,7 +10,8 @@ The following methods are available to Department resources:
 |[list](Department.md#list)|GET /department/|Get a list of departments at the convention.|core|--|
 |[get](Department.md#get)|GET /department/{identifier}|Get details about a given Department.|core|--|
 |[deadlines](Department.md#deadlines)|GET /department/{identifier}/deadlines|Get a list of deadlines for a given Department.|core|api.get.deadline.{department}|
-
+|[concom](Concom.md#department)|GET /department/{identifier}/concom|Get a list of the ConCom for the department.|[concom](Concom.md)|api.get.concom|
+|[concom list](Concom.md#list)|GET /department/concom/|Get a list of the whole ConCom.|[concom](Concom.md)|api.get.concom|
 
 <a name="list"></a>
 ## list
