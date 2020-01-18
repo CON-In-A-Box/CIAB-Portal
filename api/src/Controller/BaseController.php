@@ -67,6 +67,41 @@ abstract class BaseController
     }
 
 
+    protected function filterOutput(Request $request, $data, $code): array
+    {
+        if ($code == 200) {
+            $param = $request->getQueryParam('fields', null);
+            if ($param !== null) {
+                $fields = array_map('trim', explode(',', $param));
+                $fields[] = 'type';
+                $fields[] = 'data';
+                $result = array();
+                foreach ($data as $key => $value) {
+                    if (in_array($key, $fields)) {
+                        $result[$key] = $value;
+                    }
+                    if ($key === 'data') {
+                        $newdata = array();
+                        foreach ($result['data'] as $entry) {
+                            $newentry = array();
+                            foreach ($entry as $subkey => $subvalue) {
+                                if (in_array($subkey, $fields)) {
+                                    $newentry[$subkey] = $subvalue;
+                                }
+                            }
+                            $newdata[] = $newentry;
+                        }
+                        $result['data'] = $newdata;
+                    }
+                }
+                return $result;
+            }
+        }
+        return $data;
+
+    }
+
+
     protected function jsonResponse(Request $request, Response $response, $data, $code = 200): Response
     {
         foreach ($this->chain as $child) {
@@ -88,7 +123,8 @@ abstract class BaseController
             !array_key_exists('links', $data)) {
             $data['links'] = $this->hateoas;
         }
-        return $response->withJson($data, $code, $parameters);
+        $output = $this->filterOutput($request, $data, $code);
+        return $response->withJson($output, $code, $parameters);
 
     }
 

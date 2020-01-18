@@ -71,6 +71,7 @@ The following parameters are available on all requests using the API
 | Parameter  | Meaning | Notes |
 |---|---|---|
 | **pretty** | Returns response with indentations and line breaks | * Returns the response in a human-readable format if `true`. <br> * Default value: `false` |
+|**fields**| Selector specifying a subset of fields to include in the response.| * Use for better performance <br> * The field `type` will always be included|
 
 ## API Errors
 All API calls can potentially return an error response.
