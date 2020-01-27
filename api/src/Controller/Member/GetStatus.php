@@ -12,7 +12,7 @@ class GetStatus extends BaseMember
 {
 
 
-    public function __invoke(Request $request, Response $response, $args)
+    public function buildResource(Request $request, Response $response, $args): array
     {
         $data = \lookup_users_by_key($args['name']);
         if (empty($data['users'])) {
@@ -21,16 +21,22 @@ class GetStatus extends BaseMember
             } else {
                 $error = $data['error'];
             }
-            return $this->errorResponse($request, $response, $error, 'Not Found', 404);
+            return [
+            \App\Controller\BaseController::RESULT_TYPE,
+            $this->errorResponse($request, $response, $error, 'Not Found', 404)];
         }
         if (count($data['users']) > 1) {
             $error = 'Too many matches found';
-            return $this->errorResponse($request, $response, $error, 'Not Found', 404);
+            return [
+            \App\Controller\BaseController::RESULT_TYPE,
+            $this->errorResponse($request, $response, $error, 'Not Found', 404)];
         }
         $data = $data['users'][0];
         $valid = array('type' => 'member_status',
                        'status' => \verify_account($data['Id']));
-        return $this->jsonResponse($request, $response, $valid);
+        return [
+        \App\Controller\BaseController::RESOURCE_TYPE,
+        $valid];
 
     }
 

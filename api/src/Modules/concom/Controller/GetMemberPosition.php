@@ -14,7 +14,7 @@ class GetMemberPosition extends BaseConcom
 {
 
 
-    public function __invoke(Request $request, Response $response, $args)
+    public function buildResource(Request $request, Response $response, $args): array
     {
         $user = $request->getAttribute('oauth2-token')['user_id'];
         if (array_key_exists('id', $args)) {
@@ -25,11 +25,15 @@ class GetMemberPosition extends BaseConcom
                 } else {
                     $error = $data['error'];
                 }
-                return $this->errorResponse($request, $response, $error, 'Not Found', 404);
+                return [
+                \App\Controller\BaseController::RESULT_TYPE,
+                $this->errorResponse($request, $response, $error, 'Not Found', 404)];
             }
             if ($data[0]['Id'] != $user &&
                 !\ciab\RBAC::havePermission('api.get.concom')) {
-                return $this->errorResponse($request, $response, 'Permission Denied', 'Permission Denied', 403);
+                return [
+                \App\Controller\BaseController::RESULT_TYPE,
+                $this->errorResponse($request, $response, 'Permission Denied', 'Permission Denied', 403)];
             }
             $user = $data['users'][0]['Id'];
         }
@@ -39,12 +43,11 @@ class GetMemberPosition extends BaseConcom
         foreach ($concom as $entry) {
             $data[] = $this->buildEntry($request, $entry['departmentId'], $user, $entry['note'], $entry['position']);
         }
-        return $this->listResponse(
-            $request,
-            $response,
-            array('type' => 'concom_list'),
-            $data
-        );
+        return [
+        \App\Controller\BaseController::LIST_TYPE,
+        $data,
+        array('type' => 'concom_list')
+        ];
 
     }
 

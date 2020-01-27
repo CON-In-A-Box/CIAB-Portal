@@ -29,14 +29,14 @@ A deadline object resource is returned.
 
 Deadline object resources have a number of available properties. These include:
 
-|Object Property|Value|Description|
-|---|---|---|
-|type|string|Always `deadline`|
-|id|integer|Deadline ID|
-|departmentId|integer|Department ID for the deadline|
-|deadline|date|Due date for the deadline|
-|note|string|Note about the deadline|
-|links[]|list|List of HATEOAS links for this deadline|
+|Object Property|Value|Description| Includable|
+|---|---|---|---|
+|type|string|Always `deadline`|-|
+|id|integer|Deadline ID|-|
+|departmentId|integer|Department ID for the deadline|**yes** `department`|
+|deadline|date|Due date for the deadline|-|
+|note|string|Note about the deadline|-|
+|links[]|list|List of HATEOAS links for this deadline|-|
 
 The following HATEOAS methods are available as well:
 

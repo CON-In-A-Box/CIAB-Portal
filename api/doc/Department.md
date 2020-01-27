@@ -44,22 +44,18 @@ A department_entry object resource is used when listing departments. Use a depar
 ```
 {
 	"type":"department_entry",
-	"name":{string},
 	"id":{integer},
-	"division":{string},
 	"get":{HATEOAS link}
 }
 ```
 
 department_entry object resources have the following available properties:
 
-|Object Property|Value|Description|
-|---|---|---|
-|type|string|Always `department_entry`|
-|name|string|Department Name|
-|id|integer|Department ID for this department|
-|division|string|Division Name|
-|get|HATEOAS link|A HATEOAS link for the get method on the department|
+|Object Property|Value|Description|Includable|
+|---|---|---|---|
+|type|string|Always `department_entry`|-|
+|id|integer|Department ID for this department.|**yes** `department`|
+|get|HATEOAS link|A HATEOAS link for the get method on the department|-|
 
 
 ### list Code Samples
@@ -77,37 +73,27 @@ Response Sample
     "data": {
         {
             "type": "department_entry",
-            "name": "Accessibility and Inclusion",
             "id": 100,
-            "division": "External Relations and Communications",
             "get": "http:\/\/localhost\/api\/department\/100"
         },
         {
             "type": "department_entry",
-            "name": "Activities",
             "id": 1,
-            "division": "Activities",
             "get": "http:\/\/localhost\/api\/department\/1"
         },
         {
             "type": "department_entry",
-            "name": "Administration",
             "id": 2,
-            "division": "Administration",
             "get": "http:\/\/localhost\/api\/department\/2"
         },
         {
             "type": "department_entry",
-            "name": "Allocations",
             "id": 101,
-            "division": "Facilities",
             "get": "http:\/\/localhost\/api\/department\/101"
         },
         {
             "type": "department_entry",
-            "name": "Archives",
             "id": 102,
-            "division": "Administration",
             "get": "http:\/\/localhost\/api\/department\/102"
         }
     }
@@ -161,16 +147,16 @@ A department resource.
     "links": [{HATEOAS links}]
 }
 ```
-|Object Property|Value|Description|
-|---|---|---|
-|type|string|Always "department"|
-|name|string|Name of the department|
-|division|string|Name of the division|
-|id|integer|Id of the department|
-|childCount|integer|Number of child departments|
-|email[]|list|List of email_entry resources|
-|fallback|integer|If set, the `id` of the fallback department. `null` if undefined.|
-|links[]|list|HATEOAS links|
+|Object Property|Value|Description|Includable|
+|---|---|---|---|
+|type|string|Always "department"|-|
+|name|string|Name of the department|-|
+|division|string|Name of the division|**yes** `department`|
+|id|integer|Id of the department|-|
+|childCount|integer|Number of child departments|-|
+|email[]|list|List of email_entry resources|-|
+|fallback|integer|If set, the `id` of the fallback department. `null` if undefined.|**yes** `department`|
+|links[]|list|HATEOAS links|-|
 
 The following HATEOAS methods are available as well:
 

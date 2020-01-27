@@ -12,19 +12,23 @@ class DeleteDeadline extends BaseDeadline
 {
 
 
-    public function __invoke(Request $request, Response $response, $args)
+    public function buildResource(Request $request, Response $response, $args): array
     {
         $sth = $this->container->db->prepare("SELECT * FROM `Deadlines` WHERE `DeadlineID` = '".$args['id']."'");
         $sth->execute();
         $deadlines = $sth->fetchAll();
         if (empty($deadlines)) {
-            return $this->errorResponse($request, $response, 'Not Found', 'Deadline Not Found', 404);
+            return [
+            \App\Controller\BaseController::RESULT_TYPE,
+            $this->errorResponse($request, $response, 'Not Found', 'Deadline Not Found', 404)];
         }
         $target = $deadlines[0];
 
         $department = $target['DepartmentID'];
         if (!\ciab\RBAC::havePermission('api.delete.deadline.'.$department)) {
-            return $this->errorResponse($request, $response, 'Permission Denied', 'Permission Denied', 403);
+            return [
+            \App\Controller\BaseController::RESULT_TYPE,
+            $this->errorResponse($request, $response, 'Permission Denied', 'Permission Denied', 403)];
         }
 
         $sth = $this->container->db->prepare(<<<SQL
@@ -33,7 +37,7 @@ class DeleteDeadline extends BaseDeadline
 SQL
         );
         $sth->execute();
-        return null;
+        return [null];
 
     }
 

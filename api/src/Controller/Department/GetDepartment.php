@@ -12,7 +12,7 @@ class GetDepartment extends BaseDepartment
 {
 
 
-    public function __invoke(Request $request, Response $response, $args)
+    public function buildResource(Request $request, Response $response, $args): array
     {
         $output = $this->getDepartment($args['name']);
         if ($output) {
@@ -34,15 +34,45 @@ class GetDepartment extends BaseDepartment
             unset($output['Fallback']);
             unset($output['FallbackID']);
             $this->buildDepartmentHateoas($request);
-            return $this->jsonResponse($request, $response, $output);
+            return [
+            \App\Controller\BaseController::RESOURCE_TYPE,
+            $output];
         } else {
-            return $this->errorResponse(
+            return [
+            \App\Controller\BaseController::RESULT_TYPE,
+            $this->errorResponse(
                 $request,
                 $response,
                 'Not Found',
                 'Department \''.$args['name'].'\' Not Found',
                 404
-            );
+            )];
+        }
+
+    }
+
+
+    public function processIncludes(Request $request, Response $response, $args, $values, &$data)
+    {
+        if (in_array('division', $values)) {
+            $target = new GetDepartment($this->container);
+            $newargs = $args;
+            $newargs['name'] = $data['division'];
+            $newdata = $target->buildResource($request, $response, $newargs)[1];
+            if ($newdata['id'] != $data['id']) {
+                $target->processIncludes($request, $response, $args, $values, $newdata);
+                $data['division'] = $target->arrayResponse($request, $response, $newdata);
+            }
+        }
+        if (in_array('fallback', $values) &&
+            $data['fallback'] != $data['id'] &&
+            $data['fallback'] != null) {
+            $target = new GetDepartment($this->container);
+            $newargs = $args;
+            $newargs['name'] = $data['fallback'];
+            $newdata = $target->buildResource($request, $response, $newargs)[1];
+            $target->processIncludes($request, $response, $args, $values, $newdata);
+            $data['fallback'] = $target->arrayResponse($request, $response, $newdata);
         }
 
     }

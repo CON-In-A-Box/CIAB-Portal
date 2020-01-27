@@ -14,10 +14,12 @@ class ListConcom extends BaseConcom
 {
 
 
-    public function __invoke(Request $request, Response $response, $args)
+    public function buildResource(Request $request, Response $response, $args): array
     {
         if (!\ciab\RBAC::havePermission('api.get.concom')) {
-            return $this->errorResponse($request, $response, 'Permission Denied', 'Permission Denied', 403);
+            return [
+            \App\Controller\BaseController::RESULT_TYPE,
+            $this->errorResponse($request, $response, 'Permission Denied', 'Permission Denied', 403)];
         }
         $concom = \concom\ConcomList::listBuild();
         $data = array();
@@ -31,12 +33,11 @@ class ListConcom extends BaseConcom
             $data[] = $this->buildEntry($request, $id, $entry['Account ID'], $entry['Note'], $entry['Position']);
         }
         $event = \current_eventID();
-        return $this->listResponse(
-            $request,
-            $response,
-            array( 'type' => 'concom_list', 'event' => $event ),
-            $data
-        );
+        return [
+        \App\Controller\BaseController::LIST_TYPE,
+        $data,
+        array( 'type' => 'concom_list', 'event' => $event )
+        ];
 
     }
 

@@ -15,6 +15,10 @@ require_once __DIR__.'/../../../functions/divisional.inc';
 abstract class BaseController
 {
 
+    public const LIST_TYPE = 'list';
+    public const RESULT_TYPE = 'result';
+    public const RESOURCE_TYPE = 'resource';
+
     /**
      * @var Container
      */
@@ -51,6 +55,47 @@ abstract class BaseController
                     $this->chain[] = $target;
                 }
             }
+        }
+
+    }
+
+
+    abstract public function buildResource(Request $request, Response $response, $args): array;
+
+
+    public function processIncludes(Request $request, Response $response, $args, $includes, &$data)
+    {
+
+    }
+
+
+    public function __invoke(Request $request, Response $response, $args)
+    {
+        $result = $this->buildResource($request, $response, $args);
+        if ($result === null || $result[0] === null) {
+            return null;
+        }
+        $type = $result[0];
+        $data = $result[1];
+        if ($type == BaseController::LIST_TYPE) {
+            $includes = $request->getQueryParam('include', null);
+            $output = $result[2];
+            if ($includes) {
+                $values = array_map('trim', explode(',', $includes));
+                for ($i = 0; $i < count($data); $i++) {
+                    $this->processIncludes($request, $response, $args, $values, $data[$i]);
+                }
+            }
+            return $this->listResponse($request, $response, $output, $data);
+        } elseif ($type == BaseController::RESULT_TYPE) {
+            return $data;
+        } else {
+            $includes = $request->getQueryParam('include', null);
+            if ($includes) {
+                $values = array_map('trim', explode(',', $includes));
+                $this->processIncludes($request, $response, $args, $values, $data);
+            }
+            return $this->jsonResponse($request, $response, $data);
         }
 
     }

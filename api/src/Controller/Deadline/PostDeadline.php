@@ -12,19 +12,23 @@ class PostDeadline extends BaseDeadline
 {
 
 
-    public function __invoke(Request $request, Response $response, $args)
+    public function buildResource(Request $request, Response $response, $args): array
     {
         $sth = $this->container->db->prepare("SELECT * FROM `Deadlines` WHERE `DeadlineID` = '".$args['id']."'");
         $sth->execute();
         $deadlines = $sth->fetchAll();
         if (empty($deadlines)) {
-            return $this->errorResponse($request, $response, 'Not Found', 'Deadline Not Found', 404);
+            return [
+            \App\Controller\BaseController::RESULT_TYPE,
+            $this->errorResponse($request, $response, 'Not Found', 'Deadline Not Found', 404)];
         }
         $target = $deadlines[0];
 
         $department = $target['DepartmentID'];
         if (!\ciab\RBAC::havePermission('api.post.deadline.'.$department)) {
-            return $this->errorResponse($request, $response, 'Permission Denied', 'Permission Denied', 403);
+            return [
+            \App\Controller\BaseController::RESULT_TYPE,
+            $this->errorResponse($request, $response, 'Permission Denied', 'Permission Denied', 403)];
         }
 
         $body = $request->getParsedBody();
@@ -32,13 +36,15 @@ class PostDeadline extends BaseDeadline
         if (array_key_exists('Department', $body)) {
             $department = $this->getDepartment($body['Department']);
             if ($department === null) {
-                return $this->errorResponse(
+                return [
+                \App\Controller\BaseController::RESULT_TYPE,
+                $this->errorResponse(
                     $request,
                     $response,
                     'Not Found',
                     'Department \''.$body['Department'].'\' Not Found',
                     404
-                );
+                )];
             }
             $target['DepartmentID'] = $department['id'];
         }
@@ -46,10 +52,14 @@ class PostDeadline extends BaseDeadline
         if (array_key_exists('Deadline', $body)) {
             $date = strtotime($body['Deadline']);
             if ($date == false) {
-                return $this->errorResponse($request, $response, '\'Deadline\' parameter not valid \''.$body['Deadline'].'\'', 'Invalid Parameter', 400);
+                return [
+                \App\Controller\BaseController::RESULT_TYPE,
+                $this->errorResponse($request, $response, '\'Deadline\' parameter not valid \''.$body['Deadline'].'\'', 'Invalid Parameter', 400)];
             }
             if ($date < strtotime('now')) {
-                return $this->errorResponse($request, $response, '\'Deadline\' parameter in the past not valid \''.$body['Deadline'].'\'', 'Invalid Parameter', 400);
+                return [
+                \App\Controller\BaseController::RESULT_TYPE,
+                $this->errorResponse($request, $response, '\'Deadline\' parameter in the past not valid \''.$body['Deadline'].'\'', 'Invalid Parameter', 400)];
             }
             $target['Deadline'] = date("Y-m-d", $date);
         }
@@ -67,7 +77,7 @@ class PostDeadline extends BaseDeadline
 SQL
         );
         $sth->execute();
-        return null;
+        return [null];
 
     }
 

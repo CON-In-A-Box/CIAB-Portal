@@ -12,20 +12,24 @@ class GetDepartment extends BaseConcom
 {
 
 
-    public function __invoke(Request $request, Response $response, $args)
+    public function buildResource(Request $request, Response $response, $args) :array
     {
         if (!\ciab\RBAC::havePermission('api.get.concom')) {
-            return $this->errorResponse($request, $response, 'Permission Denied', 'Permission Denied', 403);
+            return [
+            \App\Controller\BaseController::RESULT_TYPE,
+            $this->errorResponse($request, $response, 'Permission Denied', 'Permission Denied', 403)];
         }
         $dept = $this->getDepartment($args['id']);
         if ($dept === null) {
-            return $this->errorResponse(
+            return [
+            \App\Controller\BaseController::RESULT_TYPE,
+            $this->errorResponse(
                 $request,
                 $response,
                 'Not Found',
                 'Department \''.$args['id'].'\' Not Found',
                 404
-            );
+            )];
         }
         $event = $request->getQueryParam('event');
         if ($event !== null) {
@@ -59,7 +63,10 @@ SQL;
         foreach ($data as $entry) {
             $output[] = $this->buildEntry($request, $dept['id'], $entry['member'], $entry['note'], $entry['position']);
         }
-        return $this->listResponse($request, $response, array('type' => 'concom_list', 'event' => $event), $output);
+        return [
+        \App\Controller\BaseController::LIST_TYPE,
+        $output,
+        array('type' => 'concom_list', 'event' => $event)];
 
     }
 

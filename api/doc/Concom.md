@@ -24,14 +24,14 @@ A concom\_entry object resource is used when listing concom members. Use a membe
 
 concom\_entry object resources have the following available properties:
 
-|Object Property|Value|Description|
-|---|---|---|
-|note|string|Note for the entry|
-|memberId|integer|Member ID for this entry|
-|position|string|Concom position|
-|type|string|Always `concom_entry`|
-|departmentId|integer|`id` of the department for this position|
-|links[]|[list]|HATEOAS links for the resource|
+|Object Property|Value|Description|Includable|
+|---|---|---|---|
+|note|string|Note for the entry|-|
+|memberId|integer|Member ID for this entry|**yes** `member`|
+|position|string|Concom position|-|
+|type|string|Always `concom_entry`|-|
+|departmentId|integer|`id` of the department for this position|**yes** `department`|
+|links[]|[list]|HATEOAS links for the resource|-|
 
 The following HATEOAS methods are available as well:
 

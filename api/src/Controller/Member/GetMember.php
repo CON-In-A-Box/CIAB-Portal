@@ -12,11 +12,13 @@ class GetMember extends BaseMember
 {
 
 
-    public function __invoke(Request $request, Response $response, $args)
+    public function buildResource(Request $request, Response $response, $args): array
     {
         $data = $this->findMember($request, $response, $args, 'name');
         if (gettype($data) === 'object') {
-            return $data;
+            return [
+            \App\Controller\BaseController::RESULT_TYPE,
+            $data];
         } else {
             $this->buildMemberHateoas($request);
             $output = array(
@@ -25,7 +27,9 @@ class GetMember extends BaseMember
                 'lastName' => $data['Last Name'],
                 'email' => $data['Email']
             );
-            return $this->jsonResponse($request, $response, $output);
+            return [
+            \App\Controller\BaseController::RESOURCE_TYPE,
+            $output];
         }
 
     }

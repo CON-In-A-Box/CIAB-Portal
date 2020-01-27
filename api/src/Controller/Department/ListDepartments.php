@@ -14,20 +14,35 @@ class ListDepartments extends BaseDepartment
 {
 
 
-    public function __invoke(Request $request, Response $response, $args)
+    public function buildResource(Request $request, Response $response, $args): array
     {
         global $Departments;
         $output = array();
         foreach ($Departments as $key => $data) {
             $output[] = [
             'type' => 'department_entry',
-            'name' => $key,
             'id' => $data['id'],
-            'division' => $data['Division'],
             'get' => $this->buildDepartmentGet($request, $data['id'])
             ];
         }
-        return $this->listResponse($request, $response, array('type' => 'department_list'), $output);
+        return [
+        \App\Controller\BaseController::LIST_TYPE,
+        $output,
+        array('type' => 'department_list')];
+
+    }
+
+
+    public function processIncludes(Request $request, Response $response, $args, $values, &$data)
+    {
+        if (in_array('id', $values)) {
+            $target = new GetDepartment($this->container);
+            $newargs = $args;
+            $newargs['name'] = $data['id'];
+            $newdata = $target->buildResource($request, $response, $newargs)[1];
+            $target->processIncludes($request, $response, $args, $values, $newdata);
+            $data['id'] = $target->arrayResponse($request, $response, $newdata);
+        }
 
     }
 

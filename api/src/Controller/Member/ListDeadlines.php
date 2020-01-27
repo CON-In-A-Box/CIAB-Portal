@@ -12,7 +12,7 @@ class ListDeadlines extends BaseMember
 {
 
 
-    public function __invoke(Request $request, Response $response, $args)
+    public function buildResource(Request $request, Response $response, $args): array
     {
         if (array_key_exists('name', $args)) {
             $data = $this->findMember($request, $response, $args, 'name');
@@ -64,7 +64,24 @@ SQL
             $result = $deadline->buildDeadline($request, $response, $entry['DeadlineID'], $entry['DepartmentID'], $entry['Deadline'], $entry['Note']);
             $data[] = $deadline->arrayResponse($request, $response, $result);
         }
-        return $this->listResponse($request, $response, $output, $data);
+        return [
+        \App\Controller\BaseController::LIST_TYPE,
+        $data,
+        $output];
+
+    }
+
+
+    public function processIncludes(Request $request, Response $response, $args, $values, &$data)
+    {
+        if (in_array('departmentId', $values)) {
+            $target = new \App\Controller\Department\GetDepartment($this->container);
+            $newargs = $args;
+            $newargs['name'] = $data['departmentId'];
+            $newdata = $target->buildResource($request, $response, $newargs)[1];
+            $target->processIncludes($request, $response, $args, $values, $newdata);
+            $data['departmentId'] = $target->arrayResponse($request, $response, $newdata);
+        }
 
     }
 
