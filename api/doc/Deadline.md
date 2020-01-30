@@ -10,6 +10,12 @@ The following methods are available to deadline resources:
 |[modify](Deadline.md#modify)|POST /deadline/{id}|Modify an existing deadline|core|api.post.deadline.{department}|
 |[delete](Deadline.md#delete)|DELETE /deadline/{id}|Delete a deadline|core|api.delete.deadline.{department}|
 
+## Permissions
+|Resource Method|HTTP Request|Description|module|RBAC|
+|---|---|---|---|---|
+|[resource](Permissions.md#resource_deadline)|GET /permissions/resource/deadline/{department}[/{method}]|Check permissions by deadline resource identifier and optionally method.|core|-|
+|[method](Permissions.md#method_deadline)|GET /permissions/method/deadline/[/{method}[/{department}]]|Check permissions by deadline resource and optionally method and parameter.|core|-|
+
 <a name="common_objects"></a>
 ## Common Objects
 

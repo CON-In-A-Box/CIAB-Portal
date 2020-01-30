@@ -40,3 +40,12 @@ $app->group(
         $app->delete('/{id}', 'App\Controller\Deadline\DeleteDeadline');
     }
 )->add(new App\Middleware\CiabMiddleware($app))->add($authMiddleware);
+
+
+$app->group(
+    '/permissions',
+    function () use ($app, $authMiddleware) {
+        $app->get('/resource/deadline/{department}[/{method}]', 'App\Controller\Permissions\DeadlineResource');
+        $app->get('/method/deadline[/{method}[/{department}]]', 'App\Controller\Permissions\DeadlineMethod');
+    }
+)->add(new App\Middleware\CiabMiddleware($app))->add($authMiddleware);

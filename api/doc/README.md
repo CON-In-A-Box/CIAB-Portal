@@ -134,3 +134,4 @@ A number of modules exist in the API. These modules, while enabled by default, c
 * [Deadline](Deadline.md)
 * [Department](Department.md)
 * [Member](Member.md)
+* [Permissions](Permissions.md)
