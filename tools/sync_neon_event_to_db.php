@@ -96,6 +96,10 @@ function _Neon_events()
                 unset($events['events'][$key]);
                 continue;
             }
+            if (strpos($evt['Event Name'], 'Artist') !== false) {
+                unset($events['events'][$key]);
+                continue;
+            }
 
             $events['events'][$key]['MySQLEventID'] = $evt['Event ID'];
         }
