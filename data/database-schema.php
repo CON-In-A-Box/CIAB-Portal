@@ -168,7 +168,7 @@ class SCHEMA
             'AddressState' => 'VARCHAR(50)',
             'AddressZipCode' => 'VARCHAR(20)',
             'AddressZipCodeSuffix' => 'VARCHAR(20)',
-            'AddressCountry' => 'VARCHAR(50)',
+            'AddressCountry' => 'VARCHAR(60)',
             'AddressProvince' => 'VARCHAR(50)',
             'Deceased' => 'BOOLEAN',
             'DoNotContact' => 'BOOLEAN',
