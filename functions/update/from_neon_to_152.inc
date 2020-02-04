@@ -84,7 +84,7 @@ function _ConComListBuildSearch($page)
 }
 
 
-function new_cycle($cycle)
+function _new_cycle($cycle)
 {
     $from = $cycle->From;
     $to = $cycle->To;
@@ -110,7 +110,7 @@ function _advance_cycles()
         'From' => $last_start,
         'To' => $last_end
         ];
-        new_cycle($cycle);
+        _new_cycle($cycle);
     }
 
 }
