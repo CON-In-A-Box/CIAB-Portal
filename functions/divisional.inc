@@ -61,7 +61,11 @@ SQL;
         $Departments[$dept['name']]['childCount'] = $dept['childCount'];
         $Departments[$dept['name']]['Email'] = [];
         $Departments[$dept['name']]['FallbackID'] = $dept['FallbackID'];
-        $Departments[$dept['name']]['Fallback'] = $temp_dept[$dept['FallbackID']]['name'];
+        if ($dept['FallbackID'] && array_key_exists($dept['FallbackID'], $temp_dept)) {
+            $Departments[$dept['name']]['Fallback'] = $temp_dept[$dept['FallbackID']]['name'];
+        } else {
+            $Departments[$dept['name']]['Fallback'] = null;
+        }
 
         if (in_array($Departments[$dept['name']]['Division'], $Divisions) == false) {
             array_push($Divisions, $Departments[$dept['name']]['Division']);
