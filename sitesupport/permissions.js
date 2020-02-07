@@ -2,6 +2,22 @@
 
 var PERMISSIONS = [
   {
+    permission:'api.get.deadline.all',
+    description:'Able to get deadlines from all departments.'
+  },
+  {
+    permission:'api.delete.deadline.all',
+    description:'Able to delete deadlines from all departments.'
+  },
+  {
+    permission:'api.post.deadline.all',
+    description:'Able to modify deadlines from all departments.'
+  },
+  {
+    permission:'api.put.deadline.all',
+    description:'Able to add deadlines to all departments.'
+  },
+  {
     permission:'asset.admin',
     description:'Able to upload and change site graphical assets'
   },

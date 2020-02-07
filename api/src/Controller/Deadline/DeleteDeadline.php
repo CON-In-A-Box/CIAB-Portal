@@ -25,7 +25,8 @@ class DeleteDeadline extends BaseDeadline
         $target = $deadlines[0];
 
         $department = $target['DepartmentID'];
-        if (!\ciab\RBAC::havePermission('api.delete.deadline.'.$department)) {
+        if (!\ciab\RBAC::havePermission('api.delete.deadline.'.$department) &&
+            !\ciab\RBAC::havePermission('api.delete.deadline.all')) {
             return [
             \App\Controller\BaseController::RESULT_TYPE,
             $this->errorResponse($request, $response, 'Permission Denied', 'Permission Denied', 403)];

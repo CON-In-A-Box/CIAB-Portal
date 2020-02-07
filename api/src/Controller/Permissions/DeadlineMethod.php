@@ -48,7 +48,9 @@ class DeadlineMethod extends DeadlinePermission
                     404
                 )];
             }
-            $allowed = \ciab\RBAC::havePermission('api.'.$methodArg.'.deadline.'.$data['id']);
+            $allowed = (\ciab\RBAC::havePermission('api.'.$methodArg.'.deadline.'.$data['id']) ||
+                        \ciab\RBAC::havePermission('api.'.$methodArg.'.deadline.all'));
+            ;
             $result = $this->buildDeptEntry(
                 $data['id'],
                 $allowed,
@@ -72,7 +74,9 @@ class DeadlineMethod extends DeadlinePermission
             }
             foreach ($methods as $method) {
                 foreach ($Departments as $key => $data) {
-                    $allowed = \ciab\RBAC::havePermission('api.'.$method.'.deadline.'.$data['id']);
+                    $allowed = (\ciab\RBAC::havePermission('api.'.$method.'.deadline.'.$data['id']) ||
+                                \ciab\RBAC::havePermission('api.'.$method.'.deadline.all'));
+                    ;
                     if ($allowed) {
                         $result = $this->buildDeptEntry(
                             $data['id'],

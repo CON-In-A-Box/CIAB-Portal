@@ -15,7 +15,9 @@ class DeadlineResource extends DeadlinePermission
     private function buildEntry($request, $id, $method): array
     {
         $path = $request->getUri()->getBaseUrl();
-        $allowed = \ciab\RBAC::havePermission('api.'.$method.'.deadline.'.$id);
+        $allowed = (\ciab\RBAC::havePermission('api.'.$method.'.deadline.'.$id) ||
+                    \ciab\RBAC::havePermission('api.'.$method.'.deadline.all'));
+        ;
         return $this->buildDeptEntry(
             $id,
             $allowed,

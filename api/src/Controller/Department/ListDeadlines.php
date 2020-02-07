@@ -26,7 +26,8 @@ class ListDeadlines extends \App\Controller\Deadline\BaseDeadline
                 404
             )];
         }
-        if (\ciab\RBAC::havePermission('api.get.deadline.'.$department['id'])) {
+        if (\ciab\RBAC::havePermission('api.get.deadline.'.$department['id']) ||
+            \ciab\RBAC::havePermission('api.get.deadline.all')) {
             $sth = $this->container->db->prepare(
                 "SELECT * FROM `Deadlines` WHERE DepartmentID = '".$department['id']."' ORDER BY `Deadline` ASC"
             );

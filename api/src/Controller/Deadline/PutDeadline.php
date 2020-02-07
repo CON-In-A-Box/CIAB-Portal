@@ -26,7 +26,8 @@ class PutDeadline extends BaseDeadline
                 404
             )];
         }
-        if (\ciab\RBAC::havePermission('api.put.deadline.'.$department['id'])) {
+        if (\ciab\RBAC::havePermission('api.put.deadline.'.$department['id']) ||
+            \ciab\RBAC::havePermission('api.put.deadline.all')) {
             $body = $request->getParsedBody();
             if (!array_key_exists('Deadline', $body)) {
                 return [

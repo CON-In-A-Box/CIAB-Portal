@@ -22,7 +22,8 @@ class GetDeadline extends BaseDeadline
             \App\Controller\BaseController::RESULT_TYPE,
             $this->errorResponse($request, $response, 'Not Found', 'Deadline Not Found', 404)];
         }
-        if (\ciab\RBAC::havePermission('api.get.deadline.'.$deadlines[0]['DepartmentID'])) {
+        if (\ciab\RBAC::havePermission('api.get.deadline.'.$deadlines[0]['DepartmentID']) ||
+            \ciab\RBAC::havePermission('api.get.deadline.all')) {
             return [
             \App\Controller\BaseController::RESOURCE_TYPE,
             $this->buildDeadline(
