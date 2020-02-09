@@ -69,15 +69,18 @@ class Asset
 
     public function load(/*.string.*/ $id)
     {
-        if ($GLOBALS['FILE_ASSET_DATA']) {
+        if (array_key_exists('FILE_ASSET_DATA', $GLOBALS) &&
+            $GLOBALS['FILE_ASSET_DATA']) {
             $data = @file_get_contents($GLOBALS['FILE_ASSET_PATH'].'/'.$id.'.png');
             $base64 = base64_encode($data);
             return ("data:image/png;base64,".$base64);
-        } else {
+        } elseif (array_key_exists('FILE_ASSET_PATH', $GLOBALS)) {
             return (
             $GLOBALS['FILE_ASSET_PATH'].'/'.$id.'.png?'.md5_file(
                 $GLOBALS['FILE_ASSET_PATH'].'/'.$id.'.png'
             ));
+        } else {
+            return "";
         }
 
     }
@@ -95,6 +98,9 @@ class Asset
 
     public function exists(/*.string.*/ $id)
     {
+        if (!array_key_exists('FILE_ASSET_PATH', $GLOBALS)) {
+            return false;
+        }
         $file = $GLOBALS['FILE_ASSET_PATH'].'/'.$id.'.png';
         return file_exists($file);
 
