@@ -26,7 +26,8 @@ function getDivision($dep)
 function getDepartmentEmails($dep)
 {
     $result = [];
-    if ($GLOBALS['Departments'][$dep]['Email']) {
+    if (array_key_exists($dep, $GLOBALS['Departments']) &&
+        $GLOBALS['Departments'][$dep]['Email']) {
         foreach ($GLOBALS['Departments'][$dep]['Email'] as $email) {
             array_push($result, $email['EMail']);
         }
@@ -402,7 +403,7 @@ function ConComListBuild()
             'First Name' => '',
             'Last Name' => '',
             'Full Name' => '',
-            'Email' => implode("<br />", $dep['Email']),
+            'Email' => implode('<br />', getDepartmentEmails($kdep)),
             'Note' => '',
             'Account ID' => '',
             ];

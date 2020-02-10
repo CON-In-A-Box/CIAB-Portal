@@ -266,7 +266,7 @@ function LoginUser($user, $password)
         $entry = $result['entry'];
         // Log in the User - Session started in Functions
         $_SESSION['username']  = $user; // Save the Username for easy forms
-        $_SESSION['fullName']  = $entry['FirstName']; // Save the FullName for ease
+        $_SESSION['fullName']  = $entry['First Name']; // Save the FullName for ease
         $_SESSION['accountId'] = $entry['AccountID']; //Save the ID for updates
     }
     return ($result["result"]);

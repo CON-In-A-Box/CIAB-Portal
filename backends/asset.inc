@@ -30,9 +30,11 @@ class Asset
     public static function instance()
     {
         if (self::$instance === null) {
-            $client = $GLOBALS['ASSET_BACKEND'];
-            if (!$client || empty($client)) {
+            if (!array_key_exists('ASSET_BACKEND', $GLOBALS) ||
+                empty($GLOBALS['ASSET_BACKEND'])) {
                 $client = 'file.inc';
+            } else {
+                $client = $GLOBALS['ASSET_BACKEND'];
             }
             $client = __DIR__."/asset/".$client;
             if (!file_exists($client)) {
@@ -53,9 +55,11 @@ class Asset
     public static function configuration()
     {
         $config = self::instance()->configuration();
-        $client = $GLOBALS['ASSET_BACKEND'];
-        if (!$client || empty($client)) {
+        if (!array_key_exists('ASSET_BACKEND', $GLOBALS) ||
+            empty($GLOBALS['ASSET_BACKEND'])) {
             $client = 'file.inc';
+        } else {
+            $client = $GLOBALS['ASSET_BACKEND'];
         }
         $backends = self::backends();
         $config['ASSET_BACKEND'] = [
