@@ -72,10 +72,10 @@ const FIELD = 'Field';
             </fieldset>
         </form>
         <hr>
-        <form action="index.php?Function=admin" method="POST" class="form-inline">
+        <form action="index.php?Function=admin" method="POST" class="form-inline" onsubmit="doSUDO();">
             SUDO:
             <input type="text" class="form-control" name="SUDO" value=""
-                   placeholder="<account id>"/>
+                   placeholder="<account id>" id="sudo_id"/>
             <input type="submit" value="Execute" class="UI-graybutton"/>
         </form>
         <hr>

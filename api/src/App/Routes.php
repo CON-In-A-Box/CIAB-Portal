@@ -49,3 +49,10 @@ $app->group(
         $app->get('/method/deadline[/{method}[/{department}]]', 'App\Controller\Permissions\DeadlineMethod');
     }
 )->add(new App\Middleware\CiabMiddleware($app))->add($authMiddleware);
+
+$app->group(
+    '/admin',
+    function () use ($app, $authMiddleware) {
+        $app->post('/SUDO/{name}', 'App\Controller\Member\SUDO');
+    }
+)->add(new App\Middleware\CiabMiddleware($app))->add($authMiddleware);

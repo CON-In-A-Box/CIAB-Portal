@@ -2,6 +2,10 @@
 
 var PERMISSIONS = [
   {
+    permission:'admin.sudo',
+    description:'Allowed to change login id to any other users login.'
+  },
+  {
     permission:'api.get.deadline.all',
     description:'Able to get deadlines from all departments.'
   },

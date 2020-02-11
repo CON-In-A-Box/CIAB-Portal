@@ -131,6 +131,7 @@ A number of modules exist in the API. These modules, while enabled by default, c
 
 <a name="resources"></a>
 ## Resources
+* [Admin](Admin.md)
 * [Deadline](Deadline.md)
 * [Department](Department.md)
 * [Member](Member.md)

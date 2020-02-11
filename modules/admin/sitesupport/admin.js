@@ -1,7 +1,8 @@
 /* jshint browser: true */
 /* jshint -W097 */
-/* globals confirmbox, basicBackendRequest */
-/* exported downloadLog, setField, addField, removeAdmin, updateMemberships */
+/* globals apiRequest, confirmbox, basicBackendRequest */
+/* exported downloadLog, setField, addField, removeAdmin, updateMemberships,
+            doSUDO  */
 
 function downloadLog() {
   window.location = 'index.php?Function=admin&downloadLog=db';
@@ -40,4 +41,9 @@ function updateMemberships() {
     '<br><em>Run Command?</em>').then(function() {
     basicAdminRequest('&updateMemberships=true', function() {});
   });
+}
+
+function doSUDO() {
+  var value = document.getElementById('sudo_id').value;
+  apiRequest('POST', 'admin/SUDO/' + value, '');
 }
