@@ -314,6 +314,7 @@ function _lookup_user($criteria, $single_result = false, $additional_fields = ar
 function lookup_users_by_ids($ids)
 {
     if (array_key_exists('Neon', $GLOBALS)) {
+        loadDefinedFields();
         $str = "('".implode("', '", $ids)."')";
         return _neon_lookup_user([['Account ID', 'IN_RANGE', $str]]);
     }
@@ -327,6 +328,7 @@ function lookup_user_by_id($id)
 {
     $id = trim($id);
     if (array_key_exists('Neon', $GLOBALS)) {
+        loadDefinedFields();
         return _neon_lookup_user([['Account ID', 'EQUAL', $id]], true);
     }
     return _lookup_user("AccountID = $id", true);
@@ -338,6 +340,7 @@ function lookup_users_by_email($email, $single = true, $substring = false)
 {
     $email = trim($email);
     if (array_key_exists('Neon', $GLOBALS)) {
+        loadDefinedFields();
         if ($substring) {
             $operator = 'CONTAIN';
         } else {
@@ -412,6 +415,7 @@ function lookup_users_by_name($name, $single = false, $substring = false)
 {
     $name = trim(preg_replace('/\s+/', ' ', $name));
     if (array_key_exists('Neon', $GLOBALS)) {
+        loadDefinedFields();
         if ($substring) {
             $names = explode(" ", $name);
             if (count($names) < 2) {
@@ -457,6 +461,7 @@ function lookup_users_by_pref_name($name, $single = false, $substring = false)
 {
     $name = trim(preg_replace('/\s+/', ' ', $name));
     if (array_key_exists('Neon', $GLOBALS)) {
+        loadDefinedFields();
         $preferredFirstName = search_definedFields('Preferred First Name');
         $preferredLastName = search_definedFields('Preferred Last Name');
         if ($substring) {
@@ -654,6 +659,7 @@ function lookup_users_by_name_email($first, $last, $email, $fields, $single_user
 {
     $criteria = array();
     if (array_key_exists('Neon', $GLOBALS)) {
+        loadDefinedFields();
         if ($first) {
             if ($substring) {
                 array_push($criteria, ['First Name', 'CONTAIN', $first]);
@@ -712,6 +718,7 @@ function lookup_user_by_login($user, $substring = false)
     $output = lookup_users_by_email($user, false);
     if (count($output['users']) == 0) {
         if (array_key_exists('Neon', $GLOBALS)) {
+            loadDefinedFields();
             if ($substring) {
                 $output = _neon_lookup_user([['Account Login Name', 'CONTAIN', $user]], false);
             } else {
@@ -974,6 +981,7 @@ function updateAccount($updateData)
     \DB::run($sql);
 
     if (array_key_exists('Neon', $GLOBALS)) {
+        loadDefinedFields();
         neon_updateAccount($updateData);
     }
 
