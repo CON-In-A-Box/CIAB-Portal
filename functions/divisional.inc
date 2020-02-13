@@ -86,4 +86,7 @@ SQL;
     $endDivs = ['Board Departments', 'Committees', 'Corporate Staff'];
     $Divisions = array_diff($Divisions, $endDivs);
     $Divisions = array_merge($Divisions, $endDivs);
+
+    $GLOBALS['Departments'] = $Departments;
+    $GLOBALS['Divisions'] = $Divisions;
 }

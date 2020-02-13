@@ -246,6 +246,10 @@
     padding:8px 8px
 }
 
+.UI-bold {
+    @extend .w3-bold;
+}
+
 .UI-table-heading .UI-table-row:first-of-type {
     @extend .UI-bold !important;
     font-size:125% !important;
@@ -689,4 +693,8 @@
     position: absolute;
     left: 50%;
     transform: translate(-50%);
+}
+
+.UI-white {
+    @extend .w3-white;
 }

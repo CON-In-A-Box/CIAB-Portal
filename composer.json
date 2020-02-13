@@ -32,6 +32,16 @@
         "bshaffer/oauth2-server-php": "^1.10",
         "vlucas/phpdotenv": "^3.6",
         "zendframework/zend-permissions-rbac": "^3.0",
-        "sendgrid/sendgrid": "^7.3"
+        "sendgrid/sendgrid": "^7.3",
+        "guzzlehttp/psr7": "^1.6",
+        "http-interop/http-factory-guzzle": "^1.0",
+        "slim/slim": "3.*",
+        "chadicus/slim-oauth2": "^3.1",
+        "slim/php-view": "^2.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "api/src/"
+        }
     }
 }
