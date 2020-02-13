@@ -13,7 +13,7 @@ if (array_key_exists('NEONID', $GLOBALS) &&
     array_key_exists('NEONKEY', $GLOBALS) &&
     !empty($GLOBALS['NEONID']) &&
     !empty($GLOBALS['NEONKEY'])) {
-    require_once($FUNCTIONDIR.'/neon.inc');
+    require_once(__DIR__.'/neon.inc');
 }
 
 
