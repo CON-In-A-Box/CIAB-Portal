@@ -47,6 +47,8 @@ abstract class BaseController
         $this->hateoas = [];
         $this->chain = [];
 
+        \loadDefinedFields();
+
         $modules = $container->get('settings')['modules'];
         foreach ($modules as $module) {
             if (class_exists($module)) {
