@@ -2,8 +2,6 @@
 
 namespace CIAB\OAuth2;
 
-require_once __DIR__."/../functions/functions.inc";
-require_once __DIR__."/../vendor/autoload.php";
 require_once __DIR__."/../functions/authentication.inc";
 require_once __DIR__."/../functions/users.inc";
 
@@ -152,7 +150,7 @@ class Pdo implements \OAuth2\OpenID\Storage\AuthorizationCodeInterface, \OAuth2\
             return false;
         }
         return array_merge(array(
-            'user_id' => $username
+            'user_id' => $value[0]['AccountID']
         ), [$value[0]['AccountID']]);
 
     }

@@ -6,7 +6,7 @@
 /* jshint -W097 */
 /* globals alertbox */
 /* exported escapeHtml, showSpinner, hideSpinner, urlsafeB64Encode,
-            urlsafeB64Decode, basicBackendRequest */
+            urlsafeB64Decode, basicBackendRequest, apiRequest, apiRefresh */
 
 'use strict';
 
@@ -85,4 +85,76 @@ function basicBackendRequest(method, target, parameter, success, failure) {
     xhttp.send();
   }
 
+}
+
+
+function apiRefresh() {
+  var apiAuthorization = localStorage.getItem('ciab_apiAuthorization');
+  if (apiAuthorization != null) {
+    var json = JSON.parse(apiAuthorization);
+    var token = json.refresh_token;
+    return apiRequest('POST', 'token',
+      'grant_type=refresh_token&refresh_token=' + token + '&client_id=ciab')
+      .then(function(result) {
+        localStorage.setItem('ciab_apiAuthorization', result.responseText);
+      });
+  } else {
+    return Promise.reject(null);
+  }
+}
+
+
+function apiRequest(method, target, inParameter) {
+  return new Promise(function(resolve, reject) {
+    var parameter = null;
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        resolve(this);
+      } else if (this.readyState == 4) {
+        if (this.status == 401) {
+          var json = JSON.parse(this.responseText);
+          if (json.error == 'invalid_token') {
+            var refresh = apiRefresh();
+            Promise.all([ refresh ]).then(function() {
+              apiRequest(method, target, inParameter)
+                .then(resolve)
+                .catch(reject);
+            });
+            return;
+          }
+        }
+        reject(this);
+      }
+    };
+    var url = 'api/' + target;
+    if (method == 'GET') {
+      if (inParameter !== null) {
+        if (url.indexOf('?') != -1) {
+          url += '&' + inParameter;
+        } else {
+          url += '?' + inParameter;
+        }
+      }
+      xhttp.open(method, url, true);
+      parameter = null;
+    } else {
+      xhttp.open(method, url, true);
+      if (inParameter instanceof FormData) {
+        xhttp.setRequestHeader('enctype', 'multipart/form-data');
+      } else {
+        xhttp.setRequestHeader('Content-type',
+          'application/x-www-form-urlencoded');
+      }
+      parameter = inParameter;
+    }
+    var apiAuthorization = localStorage.getItem('ciab_apiAuthorization');
+    if (apiAuthorization != null) {
+      var json = JSON.parse(apiAuthorization);
+      xhttp.setRequestHeader('Authorization',
+        json.token_type + ' ' + json.access_token);
+    }
+    xhttp.send(parameter);
+  }
+  );
 }

@@ -1,10 +1,7 @@
 <?php
-
 /*.
     require_module 'standard';
 .*/
-
-require_once($FUNCTIONDIR."/authentication.inc");
 ?>
 
 <header class="UI-page-title-bar">
@@ -12,64 +9,52 @@ require_once($FUNCTIONDIR."/authentication.inc");
   <div class="UI-page-title">
     <h2><?php echo $CONSITENAME; ?></h2>
   </div><!--close header text div-->
-<?php
-if (!empty($FAILURE) && $FAILURE == AUTH_EXPIRED) {
-    echo '<meta http-equiv="refresh" content="0; url=/index.php?Function=recovery&expired=1" />';
-}
-?>
 </header><!--close header div-->
 <div class="UI-maincontent">
   <div class="UI-login-main-div">
     <h2>Log In</h2>
-    <?php
-    if (!empty($FAILURE)) {
-        if ($FAILURE == AUTH_BAD) {
-            echo '<div class="UI-center UI-border UI-margin UI-padding UI-red">';
-            echo '<h2 class="UI-error-header">Login Incorrect<br>';
-            echo 'Please Try Again</h2>';
-            echo 'or contact <a href="mailto:'.getHelpEmail();
-            echo '?subject=Login Issues">';
-            echo getHelpEmail().'</a>';
-            echo '</div>';
-        } elseif ($FAILURE == AUTH_LOCKED) {
-            echo '<div class="UI-center UI-border UI-margin UI-padding UI-red">';
-            echo '<h2 class="UI-error-header">Account Locked</h2>';
-            echo '<span class="UI-error-header">';
-            echo 'Too many unsuccessful login attempts.</span><br>';
-            echo '<span class="UI-error-header">';
-            echo 'Reset the password gain entry.</span>';
-            echo 'or contact <a href="mailto:'.getHelpEmail();
-            echo '?subject=Locked out of account">';
-            echo getHelpEmail().'</a>';
-            echo "</div>\n";
-        } elseif ($FAILURE == AUTH_DUPLICATE) {
-            echo '<div class="UI-center UI-border UI-margin UI-padding UI-yellow">';
-            echo '<h2 class="UI-warning-header">Duplicate Accounts Present</h2>';
-            echo '<span class="UI-warning-header">';
-            echo 'This e-mail address has duplicate accounts present.</span><br>';
-            echo '</div>';
-            echo '<div class="UI-center UI-border UI-margin UI-padding UI-red">';
-            echo '<h2 class="UI-error-header">Login Incorrect<br>Please Try Again</h2></div>';
-        }
-    }
-    ?>
+      <div id="auth_bad" class="UI-center UI-border UI-margin UI-padding UI-red UI-hide">
+        <h2 class="UI-error-header">Login Incorrect<br>
+          Please Try Again</h2>
+        or contact <a href="mailto:<?php echo getHelpEmail(); ?>?subject=Login Issues">
+        <?php echo getHelpEmail(); ?></a>
+      </div>
 
-    <form action="index.php?Function=public" method="post" onsubmit="return validateForm(this)" name="Log In" id="login_form" class="UI-container">
-      <label class="UI-label">Email Address</label>
-      <input name="user" type="text" class="UI-input">
+      <div id="auth_locked" class="UI-center UI-border UI-margin UI-padding UI-red UI-hide">
+        <h2 class="UI-error-header">Account Locked</h2>
+        <span class="UI-error-header">Too many unsuccessful login attempts.</span><br>
+          <span class="UI-error-header"> Reset the password gain entry</span>
+        or contact <a href="mailto:<?php echo getHelpEmail(); ?>?subject=Locked out of account">
+            <?php echo getHelpEmail(); ?></a>
+      </div>
 
-      <p></p>
-      
-      <label class="UI-label">Password</label>
-      <input name="password" type="password" class="UI-input">
-      
-      <p>
-        <input type="submit" value="Log In" class="UI-eventbutton">
-      </p>
-      <p>
-        <a href='index.php?Function=recovery'>Forgot Password?</a>
-      </p>
-    </form>
+      <div id='auth_duplicate' class="UI-center UI-border UI-margin UI-padding UI-yellow UI-hide">
+        <h2 class="UI-warning-header">Duplicate Accounts Present</h2>
+        <div>
+          <span class="UI-warning-header">
+          This e-mail address has duplicate accounts present.</span><br>
+        </div>
+        <div class="UI-center UI-border UI-margin UI-padding UI-red">
+          <h2 class="UI-error-header">Login Incorrect<br>Please Try Again</h2>
+        </div>
+      </div>
+
+      <div class='UI-container'>
+          <label class="UI-label">Email Address</label>
+          <input id='login_user' name="user" type="text" class="UI-input">
+
+          <p></p>
+
+          <label class="UI-label">Password</label>
+          <input id='login_password' name="password" type="password" class="UI-input">
+
+          <p>
+            <input type="button" id='submit'  value="Log In" class="UI-eventbutton" onclick="loginUser('user', 'password');">
+          </p>
+          <p>
+            <a href='index.php?Function=recovery'>Forgot Password?</a>
+          </p>
+     </div>
   </div>
   <div class="UI-container UI-cell UI-twothird">
     <p>
@@ -80,3 +65,21 @@ if (!empty($FAILURE) && $FAILURE == AUTH_EXPIRED) {
     </p>
   </div>
 </div>
+
+<script>
+document.getElementById("login_password")
+  .addEventListener("keyup", function(event) {
+  event.preventDefault();
+  if (event.keyCode === 13) {
+      document.getElementById("submit").click();
+  }
+});
+
+document.getElementById("login_user")
+  .addEventListener("keyup", function(event) {
+  event.preventDefault();
+  if (event.keyCode === 13) {
+    document.getElementById("login_password").focus();
+  }
+});
+</script>

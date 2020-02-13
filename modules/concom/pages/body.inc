@@ -5,7 +5,7 @@
   });
 </script>
 
-<div id=page" class="UI-container">
+<div id="page" class="UI-container">
   <div id="main_content" class="UI-maincontent">
     <div class="UI-event-sectionbar">ConCom</div>
     <div id="donut"></div>
