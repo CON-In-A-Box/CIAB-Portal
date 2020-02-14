@@ -241,7 +241,9 @@ SQL;
 
     public static function run($sql, $args = [])
     {
-        DB::dbLogEntry($sql); // Capture all queries in the ActivityLog
+        if (!(array_key_exists('SILENCE_LOG', $GLOBALS) && $GLOBALS['SILENCE_LOG'])) {
+            DB::dbLogEntry($sql); // Capture all queries in the ActivityLog
+        }
         if (!$args) {
             return MyPDO::instance()->query($sql);
         }
