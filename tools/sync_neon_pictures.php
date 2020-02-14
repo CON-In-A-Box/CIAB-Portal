@@ -6,6 +6,9 @@
 
 require_once(__DIR__."/../functions/functions.inc");
 require_once(__DIR__."/../backends/asset.inc");
+require_once(__DIR__."/neon_sync_tools.inc");
+
+$SILENCE_LOG = true;
 
 
 function do_Neon_import()
@@ -29,14 +32,6 @@ function do_Neon_import()
 }
 
 
-$cmd = "pgrep -f ".basename(__FILE__);
-exec($cmd, $pids);
-if (!empty($pids)) {
-    if (count($pids) > 1 || (int)$pids[0] != getmypid()) {
-        print "Sync already in progress";
-        exit();
-    }
-}
-
+verify_single_process(basename(__FILE__));
 
 do_Neon_import();
