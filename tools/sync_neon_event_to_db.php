@@ -6,6 +6,9 @@
 
 require_once(__DIR__."/../functions/functions.inc");
 require_once(__DIR__."/neon_event_lib.inc");
+require_once(__DIR__."/neon_sync_tools.inc");
+
+$SILENCE_LOG = true;
 
 
 function _Neon_import_people($fields, $event)
@@ -128,14 +131,7 @@ function do_event_Neon_import($history)
 }
 
 
-$cmd = "pgrep -f ".basename(__FILE__);
-exec($cmd, $pids);
-if (!empty($pids)) {
-    if (count($pids) > 1 || $pids[0] != getmypid()) {
-        print "Sync already in progress";
-        exit();
-    }
-}
+verify_single_process(basename(__FILE__));
 
 $historical = false;
 
