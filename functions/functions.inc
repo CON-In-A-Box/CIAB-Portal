@@ -422,7 +422,8 @@ function _neon_create_webhook($url, $name, $type)
         ];
     $result = $GLOBALS['Neon']->go($request);
     if (isset($result['operationResult']) && $result['operationResult'] == 'SUCCESS') {
-        add_conf_value("NEON_HOOK_ID_$type", $result['id']);
+        $hookname = substr("NH_ID_$type", 0, 14);
+        add_conf_value($hookname, $result['id']);
         return null;
     }
     return $result;
@@ -446,7 +447,7 @@ function _neon_remove_webhook($type)
         return;
     }
 
-    $hookname = "NEON_HOOK_ID_$type";
+    $hookname = substr("NH_ID_$type", 0, 14);
     // Custom Field Data for Session - Parse it to an easy to use array
     $request = [
     'method' => 'webhook/deleteWebhook',
@@ -464,7 +465,7 @@ function _neon_remove_webhook($type)
 }
 
 
-function neon_removeWebhook($type)
+function neon_removeWebhook()
 {
     _neon_remove_webhook('CREATE_ACCOUNT');
     _neon_remove_webhook('UPDATE_ACCOUNT');
