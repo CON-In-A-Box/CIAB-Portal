@@ -256,7 +256,7 @@ abstract class BaseController
     }
 
 
-    public function findMember(Request $request, $args, $key)
+    public function findMember(Request $request, Response $response, $args, $key)
     {
         if ($args !== null && array_key_exists($key, $args)) {
             $data = \lookup_users_by_key($args[$key]);
