@@ -149,7 +149,7 @@ class ConComRBAC
         /*.mixed.*/$accountId,
         /*.string.*/$name
     ) {
-        if ($_SESSION['IS_ADMIN']) {
+        if (array_key_exists('IS_ADMIN', $_SESSION) && $_SESSION['IS_ADMIN']) {
             return true;
         }
         $positions = POSITION::getConComPosition($accountId);
