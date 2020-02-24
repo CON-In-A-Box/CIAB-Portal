@@ -39,23 +39,11 @@ abstract class BaseMember extends BaseController
     }
 
 
-    protected function findMember(Request $request, Response $response, $args, $key)
+    public function findMember(Request $request, Response $response, $args, $key)
     {
-        if (array_key_exists($key, $args)) {
-            $data = \lookup_users_by_key($args[$key]);
-            if (empty($data['users'])) {
-                if (empty($data['error'])) {
-                    $error = 'No Members Found';
-                } else {
-                    $error = $data['error'];
-                }
-                return $this->errorResponse($request, $response, $error, 'Not Found', 404);
-            }
-            $data = $data['users'][0];
-        } else {
-            $user = $request->getAttribute('oauth2-token')['user_id'];
-            $data = \lookup_user_by_id($user);
-            $data = $data['users'][0];
+        $data = parent::findMember($request, $args, $key);
+        if ($data === null) {
+            return $this->errorResponse($request, $response, $error, 'Not Found', 404);
         }
         $this->id = $data['Id'];
         return $data;

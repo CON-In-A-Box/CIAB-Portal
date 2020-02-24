@@ -256,5 +256,23 @@ abstract class BaseController
     }
 
 
+    public function findMember(Request $request, $args, $key)
+    {
+        if ($args !== null && array_key_exists($key, $args)) {
+            $data = \lookup_users_by_key($args[$key]);
+            if (empty($data['users'])) {
+                return null;
+            }
+            $data = $data['users'][0];
+        } else {
+            $user = $request->getAttribute('oauth2-token')['user_id'];
+            $data = \lookup_user_by_id($user);
+            $data = $data['users'][0];
+        }
+        return $data;
+
+    }
+
+
     /* END BaseController */
 }
