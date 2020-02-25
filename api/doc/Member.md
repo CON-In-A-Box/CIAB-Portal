@@ -10,6 +10,7 @@ The following methods are available to member resources:
 |[status](Member.md#status)|GET /member/{id}/status|Returns a code based on the status of the user account specified by `id`|core|--|
 |[get](Member.md#get)|GET /member/{id}|Get details about a given member. To get information about the current authenticated user, leave the [id] blank.|core|--|
 |[deadlines](Member.md#deadlines)|GET /member/{id}/deadlines|Get deadlines for a given member.|core|--|
+|[announcements](Member.md#announcements)|GET /member/{id}/announcements|Get a list of announcements for a given member.|core|-|
 |[concom](Concom.md#member)|GET /member/{id}/concom|Get the list of concom positions the member fills, leave the `id` out specify the logged in Member|[concom](Concom.md)|api.get.concom|
 
 <a name="status"></a>
@@ -198,6 +199,68 @@ Response Sample
             "id": "1",
             "departmentID": "7",
             "deadline": "2019-12-27",
+            "get": "http:\/\/localhost:8080\/api\/deadline\/1"
+        }
+    ]
+}
+```
+
+<a name="announcements"></a>
+## announcements
+Get a list of announcements for a member.
+
+### announcements Request
+
+```GET /member/{identifier}/announcements```
+
+### announcements Parameters
+
+The following announcements parameters are available:
+
+|Parameter|Meaning|Notes|
+|---|---|---|
+|identifier|Name or Id of the member||
+|page|Page token for the list.|Defaults to first page.|
+|maxResults|Maximum results in the list|Defaults to 100. The token "all" specifies the full remaining list.|
+
+### announcements Request Body
+
+Do not supply a request body.
+
+### announcements Response
+A [announcement_list](Announcement.md#common_objects) object resource.
+
+### announcements Code Samples
+Request Sample
+
+```
+curl -X GET -H 'Authorization: Bearer e0438d90599b1c4762d12fd03db6311c9ca46729' \
+    http://localhost/api/member/1001/announcements?pretty=true
+```
+Response Sample
+
+```
+{
+    "type": "announcement_list",
+    "data": {
+        {
+            "type": "announcement_entry",
+            "id": "5",
+            "departmentID": "7",
+            "postedOn": "2020-11-11",
+            "postedBy": 1000,
+            "scope": 0,
+            "text": "This is an important announcement",  
+            "get": "http:\/\/localhost:8080\/api\/deadline\/5"
+        },
+        {
+            "type": "deadline_entry",
+            "id": "1",
+            "departmentID": "7",
+            "postedOn": "2020-11-11",
+            "postedBy": 1000,
+            "scope": 0,
+            "text": "This is another very important announcement", 
             "get": "http:\/\/localhost:8080\/api\/deadline\/1"
         }
     ]
