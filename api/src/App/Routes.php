@@ -10,7 +10,9 @@ $app->group(
     function () use ($app, $authMiddleware) {
         $app->get('/[{name}]', 'App\Controller\Member\GetMember');
         $app->get('/{name}/deadlines', 'App\Controller\Member\ListDeadlines');
+        $app->get('/{name}/announcements', 'App\Controller\Announcement\ListMemberAnnouncements');
         $app->get('/deadlines/', 'App\Controller\Member\ListDeadlines');
+        $app->get('/announcements/', 'App\Controller\Announcement\ListMemberAnnouncements');
     }
 )->add(new App\Middleware\CiabMiddleware($app))->add($authMiddleware);
 
@@ -20,6 +22,7 @@ $app->group(
         $app->get('/', 'App\Controller\Department\ListDepartments');
         $app->get('/{name}', 'App\Controller\Department\GetDepartment');
         $app->get('/{name}/deadlines', 'App\Controller\Department\ListDeadlines');
+        $app->get('/{name}/announcements', 'App\Controller\Announcement\ListDepartmentAnnouncements');
     }
 )->add(new App\Middleware\CiabMiddleware($app))->add($authMiddleware);
 
@@ -47,6 +50,8 @@ $app->group(
     function () use ($app, $authMiddleware) {
         $app->get('/resource/deadline/{department}[/{method}]', 'App\Controller\Permissions\DeadlineResource');
         $app->get('/method/deadline[/{method}[/{department}]]', 'App\Controller\Permissions\DeadlineMethod');
+        $app->get('/resource/announcement/{department}[/{method}]', 'App\Controller\Permissions\AnnouncementResource');
+        $app->get('/method/announcement[/{method}[/{department}]]', 'App\Controller\Permissions\AnnouncementMethod');
     }
 )->add(new App\Middleware\CiabMiddleware($app))->add($authMiddleware);
 
@@ -54,5 +59,16 @@ $app->group(
     '/admin',
     function () use ($app, $authMiddleware) {
         $app->post('/SUDO/{name}', 'App\Controller\Member\SUDO');
+    }
+)->add(new App\Middleware\CiabMiddleware($app))->add($authMiddleware);
+
+
+$app->group(
+    '/announcement',
+    function () use ($app, $authMiddleware) {
+        $app->get('/{id}', 'App\Controller\Announcement\GetAnnouncement');
+        $app->put('/{dept}', 'App\Controller\Announcement\PutAnnouncement');
+        $app->post('/{id}', 'App\Controller\Announcement\PostAnnouncement');
+        $app->delete('/{id}', 'App\Controller\Announcement\DeleteAnnouncement');
     }
 )->add(new App\Middleware\CiabMiddleware($app))->add($authMiddleware);
