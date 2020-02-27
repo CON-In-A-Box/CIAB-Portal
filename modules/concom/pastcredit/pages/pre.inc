@@ -5,7 +5,7 @@
 
 require_once(__DIR__."/../../functions/ATTENDANCE.inc");
 
-// Request Past Attendance Credit form Divisional Directors
+// Request Past Attendance Credit from Divisional Directors
 
 if (!empty($_REQUEST['meeting'])) {
     $arguments = [
