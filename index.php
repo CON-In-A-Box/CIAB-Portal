@@ -72,16 +72,12 @@ if ($mode !== null) {
 
 if (!empty($_REQUEST['DeepLink'])) {
     require_once(dirname(__FILE__).'/functions/session.inc');
-    if (validateDeepLink($_REQUEST['DeepLink'])) {
-        // Allow only approved DeepLink Functions - Need to make this an array search
-        if ($_REQUEST['Function'] == 'dumplist') {
-            // Dump and Exit - Automation link
-            require($PAGESDIR.'/body/'.$_REQUEST['Function'].'.inc');
-            exit();
-        } else {
-            goSite('/index.php?Function=public');
-        }
+    if (validateDeepLink($_REQUEST['Function'], $_REQUEST['DeepLink'], $_REQUEST['Auth'])) {
+        // Approved deeplink and function - proceed
+        require($MODULESDIR.'/'.$_REQUEST['Function'].'/deeplink/process.inc');
+        exit();
     } else {
+        // Calling a deeplink without a valid linkid or auth (or function) - fail
         goSite('/index.php?Function=public');
     }
 } elseif ($_REQUEST['Function'] == "update") {

@@ -60,14 +60,26 @@ function buildSessionData($accountId)
 
 
 // Support DeepLinks for function responses
-function validateDeepLink($deepLinkId)
+function validateDeepLink($function, $deepLinkId, $auth)
 {
-    if ($deepLinkId == $GLOBALS['DUMPSECURE']) {
-        return(true);
+
+    // Allow only approved DeepLink Functions - Need to make this an array search
+    $implementedDeeplinks = ["concom/dumplist", "concom/pastcred"];
+    if (in_array($function, $implementedDeeplinks)) {
+        if ($deepLinkId == "NULL" && $auth == $GLOBALS['DUMPSECURE']) {
+            
+            // This is an approved automation and secure code
+            return true;
+        } else {
+            $sql = "SELECT * from `DeepLinks` where LinkID = $deepLinkId";
+            $result = DB::run($sql);
+            $value = $result->fetch();
+            if ($value !== false && $auth == $value['Auth']) {
+                return $value;
+            }
+        }
     } else {
-        $sql = "SELECT * from `DeepLinks` where LinkID = $deepLinkId";
-        $result = DB::run($sql);
-        return($result->fetch());
+        return false; // either unimplmented function or a Bad linkID or Authcode - Fail
     }
 
 }
