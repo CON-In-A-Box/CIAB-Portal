@@ -515,15 +515,14 @@ function updateMember() {
 }
 
 function deleteMember() {
-  var pos = document.getElementById('user_pos');
   var target = document.getElementById('user_id').value;
   var department = document.getElementById('user_div').value;
-  var position = pos.options[pos.options.selectedIndex].value;
+  var position = document.getElementById('user_oldpos').value;
 
   confirmbox(
     'Are you sure you want to remove ' +
     document.getElementById('user_name').innerHTML +
-    ' from ' + pos.options[pos.options.selectedIndex].text + ' in ' +
+    ' from ' +
     document.getElementById('user_div').value).then(function() {
     window.location = 'index.php?Function=concom&Remove=' + encodeURI(target) +
         '&Department=' + encodeURI(department) + '&Position=' +
@@ -550,6 +549,7 @@ function editMember(name, id, div, pos, notes, posData) {
       option.value = i + 1;
       poss.add(option);
       if (d == pos) {
+        document.getElementById('user_oldpos').value = option.value;
         s = poss.length - 1;
       }
     }
