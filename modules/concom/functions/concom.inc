@@ -203,7 +203,7 @@ function printDivisionMember($pos, $div, $position, $rbacpos)
         $perm = "concom.modify.$div.$rbacpos";
         if (\ciab\RBAC::havePermission($perm)) {
             echo '<div class="UI-table-cell-no-border">';
-            echo '<input type="button" class="UI-redbutton" onclick= "editMember(\''.$kName.'\', \''.$tmp[2].'\', \''.$div.'\', \'Head\', \''.$tmp[1].'\', \''.$positions.'\');" value="Edit">';
+            echo '<input type="button" class="UI-redbutton" onclick= "editMember(\''.$kName.'\', \''.$tmp[2].'\', \''.$div.'\', \''.$position.'\', \''.$tmp[1].'\', \''.$positions.'\');" value="Edit">';
             echo '</div>';
         }
         echo "</div>\n";
@@ -483,11 +483,8 @@ function AddConComPosition($accountid, $department, $position, $note, $notify = 
         /* Notify the Division Director, so they know */
         $to = getDepartmentEmails(getDivision($department))[0];
         $subject = 'ConCom Division addition to '.$department;
-
-        $name = $user['Full Name'];
-
-        $message = $_SESSION['fullName'].' has added '.$name." to ".$department.' as '.$position.'.';
-
+        $name = $user['First Name'].' '.$user['Last Name'];
+        $message = $_SESSION['fullName'].' has added '.$name." to ".$department.'.';
         \ciab\Email::mail($to, getNoReplyAddress(), $subject, $message);
         return true;
     } elseif (!$result) {
@@ -535,7 +532,7 @@ function RemoveConComPosition($accountid, $department, $position, $notify = true
 
             $to = getDepartmentEmails(getDivision($department))[0];
             $subject = 'ConCom Division Removal to '.$department;
-            $name = $user['Full Name'];
+            $name = $user['First Name'].' '.$user['Last Name'];
             $message = $_SESSION['fullName'].' has removed '.$name." from ".$department.'.';
             \ciab\Email::mail($to, getNoReplyAddress(), $subject, $message);
         }

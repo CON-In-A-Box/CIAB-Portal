@@ -59,6 +59,7 @@ ConComListDisplay();
       <div class='UI-center'>
           <input class="UI-hiddeninput" id="user_id">
           <input class="UI-hiddeninput" id="user_div">
+          <input class="UI-hiddeninput" id="user_oldpos">
       </div>
       <div>
         <h3 id='user_name' class='UI-center'></h3>
