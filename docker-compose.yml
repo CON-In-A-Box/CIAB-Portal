@@ -14,6 +14,7 @@ services:
         DBPASS: ${DBPASS}
         DBUSER: ${DBUSER}
         DB_BACKEND: ${DB_BACKEND}
+        API_SERVER: "http://apache"
         DOCKER: 1
   composer:
     restart: 'no'

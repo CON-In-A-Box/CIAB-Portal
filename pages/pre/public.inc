@@ -60,10 +60,18 @@ if (!empty($_REQUEST['signout'])) {
 
 $token = getBearerToken();
 if ($token === null) {
-    $token = $_SESSION['apiAuth'];
+    if (array_key_exists('apiAuth', $_SESSION)) {
+        $token = $_SESSION['apiAuth'];
+    }
 }
 if ($token !== null) {
-    $service_url = 'http://apache/api/member/';
+    if (array_key_exists('API_SERVER', $_ENV)) {
+        $service_url = $_ENV['API_SERVER'].'/api/member/';
+    } elseif (isset($WEBSERVER)) {
+        $service_url = $WEBSERVER.'/api/member/';
+    } else {
+        $service_url = 'http://localhost//api/member/';
+    }
     $client = new Client();
     try {
         $request = new Request('GET', $service_url, ['Authorization' => 'Bearer '.$token]);
