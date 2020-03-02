@@ -14,7 +14,7 @@ abstract class BaseModule
     protected $source;
 
 
-    public function __construct(object $source)
+    public function __construct($source)
     {
         $this->source = $source;
 
