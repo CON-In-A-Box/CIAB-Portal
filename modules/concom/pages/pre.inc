@@ -8,11 +8,51 @@ require_once($BACKEND."/RBAC.inc");
 require_once($FUNCTIONDIR.'/users.inc');
 require_once(__DIR__."/../functions/concom.inc");
 
+
+function getDepartmentName(/*.mixed.*/$id)
+{
+    global $Departments;
+
+    $output = array();
+
+    if (array_key_exists($id, $Departments)) {
+        return $id;
+    } else {
+        foreach ($Departments as $key => $dept) {
+            if ($dept['id'] == $id) {
+                return $key;
+            }
+        }
+    }
+    return null;
+
+}
+
+
+function getPositionName(/*.mixed.*/$id)
+{
+    $sql = "SELECT `Name` FROM `ConComPositions` WHERE PositionID = $id";
+    $result = \DB::run($sql);
+    $value = $result->fetch();
+    if ($value !== false) {
+        return $value['Name'];
+    }
+    return null;
+
+}
+
+
 buildConComRBAC();
 
 if (isset($_REQUEST['Remove'])) {
-    $perm = "concom.modify.".$_REQUEST['Department'].".".$_REQUEST['Position'];
-    if (\ciab\RBAC::havePermission($perm)) {
+    $department = getDepartmentName($_REQUEST['Department']);
+    $position = getPositionName($_REQUEST['Position']);
+    $perm = "concom.modify.$department.$position";
+    $perm2 = "concom.modify.$department.all";
+    $perm3 = "concom.modify.all";
+    if (\ciab\RBAC::havePermission($perm) ||
+        \ciab\RBAC::havePermission($perm2) ||
+        \ciab\RBAC::havePermission($perm3)) {
         // Retrieve and sanitize POST data
         $arguments = [
         'Remove'      => FILTER_SANITIZE_NUMBER_INT,
@@ -34,8 +74,12 @@ if (isset($_REQUEST['Remove'])) {
 
 // if this is an update, but we don't have the right permissions, ignore it.
 if (isset($_REQUEST['AddDepartment'])) {
-    $perm = "concom.add.".$_REQUEST['AddDepartment'];
-    if (\ciab\RBAC::havePermission($perm) && isset($_REQUEST['accountId']) && isset($_REQUEST['Position'])) {
+    $department = getDepartmentName($_REQUEST['AddDepartment']);
+    $perm = "concom.add.$department";
+    $perm2 = "concom.add.all";
+    if ((\ciab\RBAC::havePermission($perm) ||
+         \ciab\RBAC::havePermission($perm2)) &&
+        isset($_REQUEST['accountId']) && isset($_REQUEST['Position'])) {
         // apply change
         // Retrieve and sanitize POST data
         $arguments = [
@@ -63,8 +107,14 @@ if (!\ciab\RBAC::havePermission("concom.view") && empty($_SESSION['customFields'
 }
 
 if (isset($_REQUEST['Modify'])) {
-    $perm = "concom.modify.".$_REQUEST['Department'].".".$_REQUEST['Position'];
-    if (\ciab\RBAC::havePermission($perm)) {
+    $department = getDepartmentName($_REQUEST['Department']);
+    $position = getPositionName($_REQUEST['Position']);
+    $perm = "concom.modify.$department.$position";
+    $perm2 = "concom.modify.$department.all";
+    $perm3 = "concom.modify.all";
+    if (\ciab\RBAC::havePermission($perm) ||
+        \ciab\RBAC::havePermission($perm2) ||
+        \ciab\RBAC::havePermission($perm3)) {
         // Retrieve and sanitize POST data
         $arguments = [
         'Modify'      => FILTER_SANITIZE_NUMBER_INT,

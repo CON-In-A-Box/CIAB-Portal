@@ -30,6 +30,14 @@ var PERMISSIONS = [
     description:'View the ConCom list'
   },
   {
+    permission:'concom.modify.all',
+    description:'Remove/modify the concom membership in any department.'
+  },
+  {
+    permission:'concom.add.all',
+    description:'Add member to the concom of any department.'
+  },
+  {
     permission:'registration.reports',
     description:'Allowed generate reports from convention registration data.'
   },
