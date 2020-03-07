@@ -61,7 +61,7 @@ function _memberDBfromList($person)
     }
 
     $sql = <<<SQL
-        REPLACE INTO `Members` (AccountID, FirstName, MiddleName, LastName,
+        INSERT INTO `Members` (AccountID, FirstName, MiddleName, LastName,
             Suffix, Email, Email2, Email3, Phone, Phone2,
             AddressLine1, AddressLine2, AddressCity,
             AddressState, AddressZipCode, AddressZipCodeSuffix,
@@ -74,7 +74,17 @@ function _memberDBfromList($person)
                 $ast, $az, $azs,
                 $aco, $ap, $pfn,
                 $pln, $li, $dc, $dnc, $eoo,
-                $dob, $gn, $dph);
+               $dob, $gn, $dph)
+        ON DUPLICATE KEY UPDATE
+            FirstName=$fn, MiddleName=$mn, LastName=$ln, Suffix=$su,
+            Email=$em1, Email2=$em2, Email3=$em3, Phone=$ph1, Phone2=$ph2,
+            AddressLine1=$al1, AddressLine2=$al2, AddressCity=$ac,
+            AddressState=$ast, AddressZipCode=$az,
+            AddressZipCodeSuffix=$azs, AddressCountry=$aco,
+            AddressProvince=$ap, PreferredFirstName=$pfn,
+            PreferredLastName=$pln, Login=$li, Deceased=$dc,
+            DoNotContact=$dnc, EmailOptOut=$eoo,
+            Birthdate=$dob, Gender=$gn, DisplayPhone=$dph;
 
 SQL;
     return $sql;
@@ -103,9 +113,13 @@ function neon_importAccountListToDB($results)
             }
         }
     }
-
-    if (!empty($sql)) {
-        \DB::run($sql);
+    try {
+        if (!empty($sql)) {
+            \DB::run($sql);
+        }
+    } catch (exception $e) {
+        error_log($e->getMessage());
+        error_log($sql);
     }
 
 }
