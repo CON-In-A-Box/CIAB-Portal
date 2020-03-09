@@ -13,7 +13,7 @@ class ModuleConcom extends BaseModule
 {
 
 
-    public function __construct(object $source)
+    public function __construct($source)
     {
         parent::__construct($source);
 

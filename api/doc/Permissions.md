@@ -35,7 +35,7 @@ Permission object resources have a number of available properties. These include
 |subdata|{}|A resource with data based on subtype|-|
 
 
-#### pemrission_list object resource
+#### permission_list object resource
 
 A permission_list object resource is used when listing permissions.
 
@@ -228,8 +228,173 @@ Response Sample
     "subdata": {
         "departmentId": 104
     }
-}```
+}
+```
 
+
+<a name="announcement_common_objects"></a>
+## Announcement Common Objects
+
+Announcement Permission `announcement.subdata`
+
+```
+{
+	"departmentId": {integer}
+}
+```
+
+|Object Property|Value|Description|Includable|
+|---|---|---|---|
+|departmentId|integer|Id for the department described|**yes**`department` resource|
+
+
+Announcement `permission` resource
+
+```
+{
+    "type": "permissions_entry",
+    "subtype": "announcement_"{method},
+    "allowed": {boolean},
+    "action": {HATEOAS method},
+    "subdata": {announcement.subdata}
+}
+```
+
+|Object Property|Value|Description|Includable|
+|---|---|---|---|
+|type|string|Always `permissions_entry `|-|
+|subtype|string|Always `announcement_` with method|-|
+|allowed|boolean|Is the described resource permitted|-|
+|action|hateoas link|A HATEOAS link describing the action|-|
+|subdata|{`announcement.subdata`}|A `announcement.subdata` resource|-|
+
+
+<a name="resource_announcement"></a>
+## Announcement Resource
+Check permissions on a announcement resource.
+
+### announcement resource Request
+
+```GET /permissions/resource/announcement/{department}[/{method}]```
+
+### announcement resource Parameters
+The following parameters are available:
+
+|Parameter|Meaning|Notes|
+|---|---|---|
+|department|Department for which permissions is being retrieved.|`integer` id or `string` name|
+|method|Method on the department resource being checked.|Optional|
+
+
+### announcement resource Request Body
+Do not supply a request body.
+
+### announcement resource Response
+
+`permission_list` of [Announcement permissions](#announcement_common_objects) permissions or `permission_entry` if only 1 entry.
+
+### announcement resource Code Samples
+Request Sample
+
+```
+curl -X GET -H 'Authorization: Bearer e0438d90599b1c4762d12fd03db6311c9ca46729' http://localhost/api/permissions/resource/announcement/Art%20Show
+```
+Response Sample
+
+```
+{
+    "type": "permission_list",
+    "data": [
+        {
+            "type": "permission_entry",
+            "subtype": "announcement_put",
+            "allowed": true,
+            "action": {
+                "method": "put",
+                "href": "http:\/\/localhost\/api\/announcement\/104",
+                "request": "PUT"
+            },
+            "subdata": {
+                "departmentId": 104
+            }
+        },
+        {
+            "type": "permission_entry",
+            "subtype": "announcement_post",
+            "allowed": true,
+            "action": {
+                "method": "post",
+                "href": "http:\/\/localhost\/api\/announcement\/104",
+                "request": "POST"
+            },
+            "subdata": {
+                "departmentId": 104
+            }
+        },
+        {
+            "type": "permission_entry",
+            "subtype": "announcement_delete",
+            "allowed": true,
+            "action": {
+                "method": "delete",
+                "href": "http:\/\/localhost\/api\/announcement\/104",
+                "request": "DELETE"
+            },
+            "subdata": {
+                "departmentId": 104
+            }
+        }
+    ]
+}
+```
+
+<a name="method_announcement"></a>
+## Announcement Method
+Check permissions on a announcement methods.
+
+### announcement method Request
+
+```GET /permissions/method/announcement/[/{method}[/{department}]]```
+
+### announcement method Parameters
+The following parameters are available:
+
+|Parameter|Meaning|Notes|
+|---|---|---|
+|method|Method on the department resource being checked.|Optional|
+|department|Department for which permissions is being retrieved.|`integer` id or `string` name|
+
+
+### announcement method Request Body
+Do not supply a request body.
+
+### announcement method Response
+
+`permission_list` of [Announcement permissions](#announcement_common_objects) permissions or `permission_entry` if only 1 entry.
+
+### announcement method Code Samples
+Request Sample
+
+```
+curl -X GET -H 'Authorization: Bearer e0438d90599b1c4762d12fd03db6311c9ca46729' http://localhost/api/permissions/method/announcement/get/Art%20Show
+```
+Response Sample
+
+```
+{
+    "type": "permission_entry",
+    "subtype": "announcement_put",
+    "allowed": true,
+    "action": {
+        "method": "put",
+        "href": "http:\/\/localhost\/api\/announcement\/104",
+        "request": "PUT"
+    },
+    "subdata": {
+        "departmentId": 104
+    }
+}
+```
 
 ---
 ##### [Return to Top](README.md)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Return to Resource List](README.md#resources)

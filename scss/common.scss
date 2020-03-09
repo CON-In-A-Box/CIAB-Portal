@@ -698,3 +698,13 @@
 .UI-white {
     @extend .w3-white;
 }
+
+.UI-announcement{
+    @extend .w3-large;
+    @extend .UI-bold;
+}
+
+.UI-announcement-source{
+    @extend .w3-opacity;
+    @extend .UI-small;
+}

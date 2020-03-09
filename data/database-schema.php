@@ -204,6 +204,14 @@ class SCHEMA
             'DepartmentID' => 'INT UNSIGNED NOT NULL',
             'Deadline' => 'DATE NOT NULL',
             'Note' => 'TEXT NOT NULL'
+        ],
+        'Announcements' => [
+            'AnnouncementID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
+            'DepartmentID' => 'INT UNSIGNED NOT NULL',
+            'PostedBy' => 'INT UNSIGNED NOT NULL',
+            'PostedOn' => 'DATE NOT NULL',
+            'Scope' => 'INT UNSIGNED NOT NULL',
+            'Text' => 'TEXT NOT NULL'
         ]
 
     ];
@@ -256,6 +264,10 @@ class SCHEMA
         ],
         'Deadlines' => [
             'DepartmentID' => 'Departments (DepartmentID) ON DELETE RESTRICT ON UPDATE CASCADE',
+        ],
+        'Announcements' => [
+            'DepartmentID' => 'Departments (DepartmentID) ON DELETE RESTRICT ON UPDATE CASCADE',
+            'PostedBy' => 'Members (AccountID) ON DELETE RESTRICT ON UPDATE CASCADE',
         ],
     ];
 
