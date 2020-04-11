@@ -19,7 +19,7 @@ if (in_registration()) {
     generate_kiosk_menus('registration');
 }
 
-if (\ciab\RBAC::havePermission("registration.reports")) {
+if (!in_kiosk() && \ciab\RBAC::havePermission("registration.reports")) {
     $report_menus[] = array('base style' => 'UI-yellow',
      'selected style' => 'event-color-primary',
      'function' => 'registration/report',

@@ -107,7 +107,7 @@ function generate_kiosk_menus($type)
          'selected style' => 'event-color-primary UI-right',
          'function' => $type.'/kiosk',
          'title' => 'Change Kiosk User from '.kiosk_user(),
-         'i class' => 'fas exchange-alt',
+         'i class' => 'fas fa-exchange-alt',
          'text' => 'Change Kiosk User from '.kiosk_user(),
          'responsive' => true);
     }
