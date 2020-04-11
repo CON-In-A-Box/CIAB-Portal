@@ -661,20 +661,23 @@ function save_position($data)
     $parent = 0;
     if ($data->ParentDept >= 0) {
         $parent = $data->ParentDept;
+    } else {
+        $parent = "MIN(DepartmentID)";
     }
     $fallback = $data->FallbackID;
     if ($fallback == -1 || empty($fallback)) {
         $fallback = "NULL";
     }
+    $name = \MyPDO::quote($data->Name);
     if ($data->Id != -1) {
         $sql = "UPDATE `Departments` SET ";
-        $sql .= " `Name` = '".$data->Name."' ";
+        $sql .= " `Name` = ".$name;
         $sql .= ", `ParentDepartmentID` = ".$parent;
         $sql .= ", `FallbackID` = ".$fallback;
         $sql .= " WHERE `DepartmentID` = ".$data->Id;
         DB::run($sql);
     } else {
-        $sql = "INSERT INTO `Departments` (`DepartmentID`, `Name`, `ParentDepartmentID`, `FallbackID`) VALUES (NULL, '".$data->Name."', ".$parent.", ".$fallback.");";
+        $sql = "INSERT INTO `Departments`( `DepartmentID`, `Name`, `ParentDepartmentID`, `FallbackID`) SELECT NULL, $name, $parent, $fallback FROM `Departments`";
         DB::run($sql);
         if ($data->ParentDept < 0) {
             $sql = "SELECT `DepartmentID` FROM `Departments` ORDER BY `DepartmentID` DESC LIMIT 1";
@@ -762,6 +765,16 @@ function delete_position($id)
             )
         WHERE
             `DepartmentID` = $id;
+SQL;
+    DB::run($sql);
+
+    $sql = <<<SQL
+        UPDATE
+            `Departments`
+        SET
+            `FallbackID` = NULL
+        WHERE
+            `FallbackID` = $id;
 SQL;
     DB::run($sql);
 
