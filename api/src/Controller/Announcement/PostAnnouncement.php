@@ -54,7 +54,8 @@ class PostAnnouncement extends BaseAnnouncement
         }
 
         if (array_key_exists('Text', $body)) {
-            $changes[] = "`Text` = '{$body['Text']}' ";
+            $text = \MyPDO::quote($body['Text']);
+            $changes[] = "`Text` = $text ";
         }
 
         if (array_key_exists('Scope', $body)) {

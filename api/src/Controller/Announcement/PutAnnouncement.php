@@ -44,8 +44,9 @@ class PutAnnouncement extends BaseAnnouncement
 
             $user = $this->findMember($request, $response, null, null);
             $member = $user['Id'];
+            $text = \MyPDO::quote($body['Text']);
 
-            $sth = $this->container->db->prepare("INSERT INTO `Announcements` (DepartmentID, PostedBy, PostedOn, Scope, Text) VALUES ({$department['id']}, $member, now(), '{$body['Scope']}', '{$body['Text']}')");
+            $sth = $this->container->db->prepare("INSERT INTO `Announcements` (DepartmentID, PostedBy, PostedOn, Scope, Text) VALUES ({$department['id']}, $member, now(), '{$body['Scope']}', $text)");
             $sth->execute();
             return [null];
         } else {
