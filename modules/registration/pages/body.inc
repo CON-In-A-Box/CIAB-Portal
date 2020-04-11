@@ -87,7 +87,11 @@ if (!empty($badges)) {
         'BackgroundImage' => $badge['BackgroundImage']
         ];
         if ($access) {
-            $data['Print Count'] = $badge['BadgesPickedUp'];
+            if (is_null($badge['BadgesPickedUp'])) {
+                $data['Print Count'] = 0;
+            } else {
+                $data['Print Count'] = $badge['BadgesPickedUp'];
+            }
         } else {
             if ($badge['BadgesPickedUp'] > 0) {
                 $data['Picked Up'] = "Yes";
