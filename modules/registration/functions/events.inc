@@ -70,7 +70,7 @@ function increment_badge($data)
     UPDATE
         `Registrations`
     SET
-        `BadgesPickedUp` = `BadgesPickedUp` + 1
+        `BadgesPickedUp` = IF(BadgesPickedUp IS NULL, 1, `BadgesPickedUp` + 1)
     WHERE
         `RegistrationID` = $data->RegID
 SQL;
