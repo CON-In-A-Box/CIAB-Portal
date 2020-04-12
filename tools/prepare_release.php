@@ -4,7 +4,7 @@
     require_module 'standard';
 .*/
 
-require_once __DIR__."/../functions/functions.inc";
+require_once __DIR__."/../functions/locations.inc";
 
 $dry_run = true;
 
