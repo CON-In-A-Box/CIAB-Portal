@@ -383,7 +383,7 @@ function current_eventID()
 
 function current_eventName()
 {
-    global $_currentEventName;
+    global $_currentEventName, $CONHOST;
 
     if ($_currentEventName === null) {
         $event = current_eventID();
@@ -393,6 +393,8 @@ function current_eventName()
         if ($value) {
             $_currentEventName = $value['EventName'];
             return $_currentEventName;
+        } else {
+            return $CONHOST;
         }
     }
     return $_currentEventName;
