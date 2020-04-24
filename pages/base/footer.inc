@@ -4,6 +4,8 @@
 <?php
 if ($_REQUEST['Function'] == "public") {
     require($PAGESDIR.'/base/disclaimer.inc');
+} elseif (in_array($_REQUEST['Function'], ["public", "recovery", "create"])) {
+    /* No footer */
 } else {
     require_once($BACKEND.'/asset.inc');
 ?>

@@ -1080,3 +1080,69 @@ SQL;
     return $result;
 
 }
+
+
+function concom_report($event = null)
+{
+    if ($event === null) {
+        $event = \current_eventID();
+    }
+
+    return <<<SQL
+        SELECT
+            AccountID,
+            (
+            SELECT
+                `Name`
+            FROM
+                `Departments`
+            WHERE
+                `DepartmentID` = a.`DepartmentID`
+        ) AS Department,
+        (
+            SELECT
+                `Name`
+            FROM
+                `Departments`
+            WHERE
+                `DepartmentID` =(
+                SELECT
+                    `ParentDepartmentID`
+                FROM
+                    `Departments`
+                WHERE
+                    `DepartmentID` = a.`DepartmentID`
+            )
+        ) AS Division,
+        (
+            SELECT
+                `EventName`
+            FROM
+                `Events`
+            WHERE
+                `EventID` = a.`EventID`
+        ) AS EVENT,
+        (
+            SELECT
+                `Name`
+            FROM
+                `ConComPositions`
+            WHERE
+                `PositionID` = a.`PositionID`
+        ) AS POSITION,
+        (
+            SELECT
+                `Email`
+            FROM
+                `Members`
+            WHERE
+                `AccountID` = a.`AccountID`
+        ) AS Email,
+        Note
+        FROM
+            `ConComList` AS a
+        WHERE
+            `EventID` = '$event'
+SQL;
+
+}

@@ -19,3 +19,14 @@ if (\ciab\RBAC::havePermission("site.concom.structure")) {
          'text' => 'ConCom Structure',
          'responsive' => true);
 }
+
+
+if (\ciab\RBAC::havePermission("concom.reports")) {
+    $report_menus[] = array('base style' => 'UI-yellow',
+     'selected style' => 'event-color-primary',
+     'function' => 'concom/report',
+     'title' => 'ConCom Membership',
+     'i class' => 'fas fa-phone',
+     'text' => 'ConCom Membership',
+     'responsive' => true);
+}
