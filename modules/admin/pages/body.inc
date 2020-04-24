@@ -54,7 +54,11 @@ const FIELD = 'Field';
     <div id="left_bar" class="ADMIN-center-bar">
         <form action="index.php?Function=admin" method="POST" class="form-inline">
             <fieldset>
+<?php if (array_key_exists('Neon', $GLOBALS)) { ?>
                 <legend>Basic NeonCRM Account Search</legend>
+<?php } else {?>
+                <legend>Basic Account Search</legend>
+<?php } ?>
                 <p>
                     <label class='UI-label'>First Name</label>
                     <input type="text" class="form-control" name="firstName"
@@ -88,9 +92,11 @@ const FIELD = 'Field';
             <input type="submit" value="Set Password" class="UI-graybutton"/>
         </form>
         <hr>
+<?php if (array_key_exists('Neon', $GLOBALS)) { ?>
         <input type="submit" value="Manually Update Event Memberships (LONG)" class="UI-yellowbutton"
                onclick="updateMemberships();"/>
         <hr>
+<?php } ?>
         <input type="submit" value="Reload without Admin Priv" class="UI-graybutton"
                onclick="removeAdmin();"/>
         <hr>
@@ -184,7 +190,7 @@ if (!empty($searchCriteria[ID])) {
                 } else {
                     echo "<tr><td>".$line[FIELD]."</td>\n";
                     echo "<td><input type='text' id=config_".$line[FIELD]." value=\"<ENVIRONMENT>\" class='UI-input UI-center' readonly></td>\n";
-                    echo "</tr>\n";
+                    echo "<td></td></tr>\n";
                 }
             }
             ?>
