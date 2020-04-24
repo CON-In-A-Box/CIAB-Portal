@@ -58,10 +58,10 @@
   </div>
   <div class="UI-container UI-cell UI-twothird">
     <p>
-      Please sign in using the same email address and password you have used to register for CONvergence in the past.
+      Please sign in using the same email address and password you have used to register for <b><?php echo $CONHOST;?></b> in the past.
     </p>
     <p>
-      If you have NEVER registered for CONvergence using your email before, <a href='index.php?Function=create'>click here to create an account in the registration system</a>.  You do not need to register for the convention to create an account in the system.
+      If you have NEVER registered for <b><?php echo $CONHOST;?></b> using your email before, <a href='index.php?Function=create'>click here to create an account in the registration system</a>.  You do not need to register for the convention to create an account in the system.
     </p>
   </div>
 </div>
