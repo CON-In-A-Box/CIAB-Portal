@@ -388,12 +388,16 @@ function current_eventName()
     if ($_currentEventName === null) {
         $event = current_eventID();
         $sql = "SELECT `EventName` FROM Events WHERE EventID=$event;";
-        $result = DB::run($sql);
-        $value = $result->fetch();
-        if ($value) {
-            $_currentEventName = $value['EventName'];
-            return $_currentEventName;
-        } else {
+        try {
+            $result = DB::run($sql);
+            $value = $result->fetch();
+            if ($value) {
+                $_currentEventName = $value['EventName'];
+                return $_currentEventName;
+            } else {
+                return $CONHOST;
+            }
+        } catch (PDOException $e) {
             return $CONHOST;
         }
     }
