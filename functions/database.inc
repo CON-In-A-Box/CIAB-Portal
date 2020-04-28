@@ -6,9 +6,9 @@
 
 // Currently, this database class is set for the MySQL PDO filter/backend. Future version will expand it to be agnostic
 
+require_once(__DIR__.'/locations.inc');
 require_once($BACKEND.'/'.$_ENV['DB_BACKEND']); // MyPDO Definition used
 require_once($BASEDIR.'/data/database-schema.php');
-require_once(__DIR__.'/locations.inc');
 
 class DB
 {

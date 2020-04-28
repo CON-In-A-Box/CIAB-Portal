@@ -263,7 +263,7 @@ require(__DIR__.'/pages/base/body_begin.inc');
 
 <div id="page" class="UI-container">
     <div class="UI-maincontent">
-    <h2 class="UI-center UI-green"> First Run Setup </h2>
+    <h2 class="UI-center event-color-primary"> First Run Setup </h2>
 
     <?php
     if (strlen($failed_message)) {
