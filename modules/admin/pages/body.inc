@@ -134,6 +134,9 @@ if (isset($GLOBALS['NEON_HOOK_NAME'])) {
 echo '<hr>';
 }
 ?>
+<input type="submit" value="Rebuild SCSS Style Sheets" class="UI-graybutton"
+       onclick="rebuildSCSS();"/>
+<hr>
 
         <?php if ($result && !$result['code']) : ?>
             <table class="table table-striped">

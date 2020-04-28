@@ -24,6 +24,28 @@ const SQL_INSERT = "INSERT INTO `Configuration`(`Field`, `Value`)";
 const SQL_ON_DUP = "ON DUPLICATE KEY UPDATE `Value` = '";
 const VALUE_EQ = '" value="';
 const UI_PROBLEM = 'UI-red';
+const NEW_COLOR_PRIMARY = 'NEW_COLOR_PRIMARY';
+const NEW_COLOR_PRIM_BACK = 'NEW_COLOR_PRIM_BACK';
+const NEW_COLOR_SECONDARY = 'NEW_COLOR_SECONDARY';
+const NEW_COLOR_SECOND_BACK = 'NEW_COLOR_SECOND_BACK';
+
+
+function delete_files($target)
+{
+    if (is_dir($target)) {
+        $files = glob($target.'*', GLOB_MARK);
+
+        foreach ($files as $file) {
+            delete_files($file);
+        }
+
+        @rmdir($target);
+    } elseif (is_file($target)) {
+        @unlink($target);
+    }
+
+}
+
 
 require_once __DIR__."/functions/locations.inc";
 require __DIR__."/vendor/autoload.php";
@@ -59,6 +81,9 @@ $updateData = null;
 $failed_message = "";
 $tried = false;
 
+/* Clear scss */
+delete_files(@sys_get_temp_dir().'/scss_cache');
+
 /* Pre headers */
 if (!empty($_POST)) {
     $arguments = [
@@ -80,6 +105,11 @@ if (!empty($_POST)) {
     NEW_ADMINCRED      => FILTER_SANITIZE_SPECIAL_CHARS,
     NEW_CONHOST       => FILTER_SANITIZE_SPECIAL_CHARS,
     NEW_TIMEZONE      => FILTER_SANITIZE_SPECIAL_CHARS,
+
+    NEW_COLOR_PRIMARY => FILTER_SANITIZE_SPECIAL_CHARS,
+    NEW_COLOR_PRIM_BACK => FILTER_SANITIZE_SPECIAL_CHARS,
+    NEW_COLOR_SECONDARY => FILTER_SANITIZE_SPECIAL_CHARS,
+    NEW_COLOR_SECOND_BACK => FILTER_SANITIZE_SPECIAL_CHARS,
     ];
 
     $updateData = filter_input_array(INPUT_POST, $arguments);
@@ -101,6 +131,11 @@ if (!empty($_POST)) {
     $NEW_NOREPLY_EMAIL = $updateData[NEW_NOREPLY_EMAIL];
     $NEW_ADMINPASSWORD  = $updateData[NEW_ADMINCRED];
     $NEW_TIMEZONE = $updateData[NEW_TIMEZONE];
+
+    $NEW_COLOR_PRIMARY = $updateData[NEW_COLOR_PRIMARY];
+    $NEW_COLOR_PRIM_BACK = $updateData[NEW_COLOR_PRIM_BACK];
+    $NEW_COLOR_SECONDARY = $updateData[NEW_COLOR_SECONDARY];
+    $NEW_COLOR_SECOND_BACK = $updateData[NEW_COLOR_SECOND_BACK];
 
     if (strlen($DBHOST) > 0 &&
         strlen($DBUSER) > 0 &&
@@ -241,6 +276,34 @@ DONE
                 $sql = SQL_INSERT;
                 $sql .= " VALUES ('NOREPLY_EMAIL', '".$NEW_NOREPLY_EMAIL."') ";
                 $sql .= SQL_ON_DUP.$NEW_NOREPLY_EMAIL."';";
+                DB::run($sql);
+            }
+
+            if (!empty($NEW_COLOR_PRIMARY)) {
+                $sql = SQL_INSERT;
+                $sql .= " VALUES ('col.primary', '".$NEW_COLOR_PRIMARY."') ";
+                $sql .= SQL_ON_DUP.$NEW_COLOR_PRIMARY."';";
+                DB::run($sql);
+            }
+
+            if (!empty($NEW_COLOR_PRIM_BACK)) {
+                $sql = SQL_INSERT;
+                $sql .= " VALUES ('col.prim-back', '".$NEW_COLOR_PRIM_BACK."') ";
+                $sql .= SQL_ON_DUP.$NEW_COLOR_PRIM_BACK."';";
+                DB::run($sql);
+            }
+
+            if (!empty($NEW_COLOR_SECONDARY)) {
+                $sql = SQL_INSERT;
+                $sql .= " VALUES ('col.secondary', '".$NEW_COLOR_SECONDARY."') ";
+                $sql .= SQL_ON_DUP.$NEW_COLOR_SECONDARY."';";
+                DB::run($sql);
+            }
+
+            if (!empty($NEW_COLOR_SECOND_BACK)) {
+                $sql = SQL_INSERT;
+                $sql .= " VALUES ('col.second-back', '".$NEW_COLOR_SECOND_BACK."') ";
+                $sql .= SQL_ON_DUP.$NEW_COLOR_SECOND_BACK."';";
                 DB::run($sql);
             }
 
@@ -414,6 +477,48 @@ require(__DIR__.'/pages/base/body_begin.inc');
                 echo UI_PROBLEM;
             }
             ?>" placeholder="<example: America/Chicago>">
+        </div>
+        <div class="UI-pad-bottom">
+         <label for="NEW_COLOR_PRIMARY">Primary Banner Text Color:</label>
+         <input type="color" name="NEW_COLOR_PRIMARY<?php
+            if ($updateData != null && strlen($updateData[NEW_COLOR_PRIMARY])) {
+                echo VALUE_EQ.$updateData[NEW_COLOR_PRIMARY];
+            } else {
+                echo "\" value=\"#FFFFFF";
+            }
+            ?>">
+        </div>
+        <div class="UI-pad-bottom">
+         <label for="NEW_COLOR_PRIM_BACK">Primary Banner Color:</label>
+         <input type="color" name="NEW_COLOR_PRIM_BACK<?php
+            if ($updateData != null && strlen($updateData[NEW_COLOR_PRIM_BACK])) {
+                echo VALUE_EQ.$updateData[NEW_COLOR_PRIM_BACK];
+            } else {
+                echo "\" value=\"#4CAF50";
+            }
+            ?>">
+        </div>
+        <div class="UI-pad-bottom">
+         <label for="NEW_COLOR_SECONDARY">Secondary Banner Text Color:</label>
+         <input type="color" name="NEW_COLOR_SECONDARY<?php
+            if ($updateData != null && strlen($updateData[NEW_COLOR_SECONDARY])) {
+                echo VALUE_EQ.$updateData[NEW_COLOR_SECONDARY];
+            } else {
+                echo "\" value=\"#FFFFFF";
+            }
+            ?>">
+        </div>
+
+        <div class="UI-pad-bottom">
+         <label for="NEW_COLOR_SECOND_BACK">Secondary Banner Color:</label>
+         <input type="color" name="NEW_COLOR_SECOND_BACK<?php
+            if ($updateData != null && strlen($updateData[NEW_COLOR_SECOND_BACK])) {
+                echo VALUE_EQ.$updateData[NEW_COLOR_SECOND_BACK];
+            } else {
+                echo "\" value=\"#2196F3";
+            }
+            ?>">
+
         </div>
     </div>
 

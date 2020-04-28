@@ -2,7 +2,7 @@
 /* jshint -W097 */
 /* globals apiRequest, confirmbox, basicBackendRequest */
 /* exported downloadLog, setField, addField, removeAdmin, updateMemberships,
-            doSUDO  */
+            doSUDO, rebuildSCSS */
 
 function downloadLog() {
   window.location = 'index.php?Function=admin&downloadLog=db';
@@ -46,4 +46,10 @@ function updateMemberships() {
 function doSUDO() {
   var value = document.getElementById('sudo_id').value;
   apiRequest('POST', 'admin/SUDO/' + value, '');
+}
+
+function rebuildSCSS() {
+  basicAdminRequest('&rebuildSCSS=true', function() {
+    location.reload();
+  });
 }

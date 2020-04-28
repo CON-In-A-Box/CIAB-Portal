@@ -54,7 +54,7 @@ We know all events and Conventions do not look the same. So in order for this pa
 
 CIAB makes use of SCSS to help dynamically build style sheets to allow for skinning of the site.
 
-At present in `scss/event.scss` is where the even specific styles are generated. Values we expect to be changing from event to event should be imported there. Presently `_CONvergence.scss` is imported representing the colors and icons for CONvergence. Changing the values there should be reflected across the web pages. 
+At present in `scss/event.scss` is where the even specific styles are generated. Values we expect to be changing from event to event should be imported there. Main colors for the event are present in the configuration, and can be set on the configure_system page. 
 
 There is a basic asset library engine included in CIAB to try to manage long-lasting but event or convention specific graphical assets. This asset manager is accessed in the `Administrator->Assets` menu option.
 
