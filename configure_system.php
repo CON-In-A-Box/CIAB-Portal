@@ -1,5 +1,4 @@
 <?php
-
 /*.
     require_module 'standard';
 .*/
@@ -255,218 +254,246 @@ DONE
 
 $CONSITENAME = "First Run Setup";
 require(__DIR__.'/pages/base/header_start.inc');
-print "<link rel='stylesheet' href='style.php/styles.scss'/>";
+print "<link rel='stylesheet' href='style.php/styles.scss'/>\n";
+print "<script src='sitesupport/common.js'></script>\n";
+print "<script src='sitesupport/dropdownsection.js'></script>\n";
 require(__DIR__.'/pages/base/header_end.inc');
 require(__DIR__.'/pages/base/body_begin.inc');
 ?>
 
-<h2 class="UI-center UI-green"> First Run Setup </h2>
+<div id="page" class="UI-container">
+    <div class="UI-maincontent">
+    <h2 class="UI-center UI-green"> First Run Setup </h2>
 
-<?php
-if (strlen($failed_message)) {
-    echo '<div class="UI-configure-panel UI-red UI-center"><h2>'.$failed_message."</h2></div>\n";
-}
-?>
+    <?php
+    if (strlen($failed_message)) {
+        echo '<div class="UI-configure-panel UI-red UI-center"><h2>'.$failed_message."</h2></div>\n";
+    }
+    ?>
 
-<div class="UI-configure-panel">
-<p> Hello and welcome to Con-In-A-Box. This page will help to get your instance up and running. Please make sure all the information is correct before submitting. </p>
+    <div class="UI-configure-panel">
+    <p> Hello and welcome to Con-In-A-Box. This page will help to get your instance up and running. Please make sure all the information is correct before submitting. </p>
+    </div>
+
+    <div class="UI-configure-panel">
+    <em>Note: The Database and database user have to be created by hand before you begin the process. </em>
+    </div>
+
+    <div class="UI-configure-info-panel">
+    <p> In order to configure your site we need to know the following information. </p>
+    </div>
+
+    <form action="configure_system.php" method="POST" class="UI-container">
+
+    <div class="UI-event-sectionbar UI-margin">Database Configuration (Required)</div>
+    <div class="UI-margin UI-padding UI-border">
+        <div class="UI-pad-bottom">
+            <label>Database Host:</label>
+            <input type="text" name="DBHOST" class="UI-input <?php
+            if ($updateData != null && strlen($updateData[DB_HOST])) {
+                echo VALUE_EQ.$updateData[DB_HOST];
+            } elseif (isset($_ENV[DB_HOST])) {
+                echo VALUE_EQ.$_ENV[DB_HOST];
+            } elseif ($tried) {
+                echo UI_PROBLEM;
+            }
+            ?>">
+        </div>
+        <div class="UI-pad-bottom">
+            <label>Database Username:</label> <br>
+            <input type="text" name="DBUSER" class="UI-input <?php
+            if ($updateData != null && strlen($updateData[DB_USER])) {
+                echo VALUE_EQ.$updateData[DB_USER];
+            } elseif (isset($_ENV[DB_USER])) {
+                echo VALUE_EQ.$_ENV[DB_USER];
+            } elseif ($tried) {
+                echo UI_PROBLEM;
+            }
+            ?>">
+        </div>
+        <div class="UI-pad-bottom">
+            <label>Database Name:</label> <br>
+            <input type="text" name="DBNAME" class="UI-input <?php
+            if ($updateData != null && strlen($updateData[DB_NAME])) {
+                echo VALUE_EQ.$updateData[DB_NAME];
+            } elseif (isset($_ENV[DB_NAME])) {
+                echo VALUE_EQ.$_ENV[DB_NAME];
+            } elseif ($tried) {
+                echo UI_PROBLEM;
+            }
+            ?>">
+        </div>
+        <div class="UI-pad-bottom">
+            <label>Database Password:</label> <br>
+            <input type="text" name="DBPASS" class="UI-input <?php
+            if ($updateData != null && strlen($updateData[DB_PASS])) {
+                echo VALUE_EQ.$updateData[DB_PASS];
+            } elseif (isset($_ENV[DB_PASS])) {
+                echo VALUE_EQ.$_ENV[DB_PASS];
+            } elseif ($tried) {
+                echo UI_PROBLEM;
+            }
+            ?>">
+        </div>
+    </div>
+
+    <div id="neon_content" class="UI-margin">
+        <button type="button" class="UI-event-dropdown-bar" onclick="expandSection('neon')">
+            <span>Neon CRM Data (Optional)</span> <em id="neon_arrow" class="fas fa-caret-down"></em>
+        </button>
+
+        <div id="neon" class="UI-container UI-padding UI-adminborder UI-hide">
+            <div class="UI-orange UI-configure-info-panel">
+                Use of NEON is optional. Define BOTH keys if NEON is in use.
+            </div>
+
+            <div>
+                <label>Neon Key:</label> <br>
+                <input type="text" name="NEW_NEONKEY" class="UI-input <?php
+                if ($updateData != null && strlen($updateData[NEW_NEONKEY])) {
+                    echo VALUE_EQ.$updateData[NEW_NEONKEY];
+                } elseif ($tried) {
+                    echo UI_PROBLEM;
+                }
+                ?>" placeholder="<example: bbbbbccccdddfae12341aabbccddeeff>">
+                </br>
+
+                <label>Neon ID:</label> <br>
+                <input type="text" name="NEW_NEONID" class="UI-input <?php
+                if ($updateData != null && strlen($updateData[NEW_NEONID])) {
+                    echo VALUE_EQ.$updateData[NEW_NEONID];
+                } elseif ($tried) {
+                    echo UI_PROBLEM;
+                }
+                ?>" placeholder="<example: home>">
+                </br>
+
+                <label>Is Neon Trial Account:</label> <br>
+                <input type="checkbox" name="NEW_NEONBETA" class="UI-checkbox <?php
+                if ($updateData != null && $updateData[NEW_NEONBETA]) {
+                    echo '" checked';
+                } elseif ($tried) {
+                    echo UI_PROBLEM;
+                }
+                ?>">
+                </br>
+
+                <div class="w3-orange w3-panel w3-padding-16">
+                If you are importing from NEON put a comma seperated list of user IDs of the primary admins here. If we do not find an '@' in the entry we will just add the contents here as the admin Ids being imported.
+                </div>
+                <label>Admin User IDs (comma seperated):</label> <br>
+                <input type="text" name="NEW_ADMINACCOUNTS" class="UI-input <?php
+                if ($updateData != null && strlen($updateData[NEW_ADMINACCOUNTS])) {
+                    echo VALUE_EQ.$updateData[NEW_ADMINACCOUNTS];
+                } elseif ($tried) {
+                    echo UI_PROBLEM;
+                }
+                ?>" placeholder="<example: 1234,5678,901234>">
+            </div>
+        </div>
+    </div>
+
+    <div class="UI-event-sectionbar UI-margin">Event Configuration (Required)</div>
+    <div class="UI-margin UI-configure-panel UI-border">
+        <div class="UI-pad-bottom">
+            <label>Event Host:</label> <br>
+            <input type="text" name="NEW_CONHOST" class="UI-input <?php
+            if ($updateData != null && strlen($updateData[NEW_CONHOST])) {
+                echo VALUE_EQ.$updateData[NEW_CONHOST];
+            } elseif ($tried) {
+                echo UI_PROBLEM;
+            }
+            ?>" placeholder="<example: AwesomeaCon>">
+        </div>
+        <div class="UI-pad-bottom">
+            <label>Timezone:</label> <br>
+            <input type="text" name="NEW_TIMEZONE" class="UI-input <?php
+            if ($updateData != null && strlen($updateData[NEW_TIMEZONE])) {
+                echo VALUE_EQ.$updateData[NEW_TIMEZONE];
+            } elseif ($tried) {
+                echo UI_PROBLEM;
+            }
+            ?>" placeholder="<example: America/Chicago>">
+        </div>
+    </div>
+
+    <div class="UI-event-sectionbar UI-margin">Admin Configuration (Required)</div>
+    <div class="UI-configure-panel UI-border UI-margin">
+        <div class="UI-pad-bottom">
+            <label>Admin Email: <span class="UI-configure-note">If Neon is NOT used an Account will be created</span></label> <br>
+            <input type="text" name="NEW_ADMINEMAIL" class="UI-input<?php
+            if ($updateData != null && strlen($updateData[NEW_ADMINEMAIL])) {
+                echo VALUE_EQ.$updateData[NEW_ADMINEMAIL];
+            } elseif ($tried) {
+                echo UI_PROBLEM;
+            }
+            ?>" placeholder="<example: admin@host.con>">
+        </div>
+        <div class="UI-pad-bottom">
+            <label>Admin Password: <span class="UI-configure-note">Only used Neon is not being used and a new admin account is being created. If left empty a random password will be generated.</span></label> <br>
+            <input type="text" name="NEW_ADMINPASSWORD" class="UI-input<?php
+            if ($updateData != null && strlen($updateData[NEW_ADMINCRED])) {
+                echo VALUE_EQ.$updateData[NEW_ADMINCRED];
+            } elseif ($tried) {
+                echo UI_PROBLEM;
+            }
+            ?>" placeholder="<example: aabbccddee>">
+        </div>
+    </div>
+
+    <div class="UI-event-sectionbar UI-margin">Email Configuration (Required)</div>
+    <div class="UI-margin UI-configure-panel UI-border">
+        <div class="UI-pad-bottom">
+            <label>No-Reply Email:</label> <br>
+            <input type="text" name="NEW_NOREPLY_EMAIL" class="UI-input <?php
+            if ($updateData != null && strlen($updateData[NEW_NOREPLY_EMAIL])) {
+                echo VALUE_EQ.$updateData[NEW_NOREPLY_EMAIL];
+            } elseif ($tried) {
+                echo UI_PROBLEM;
+            }
+            ?>" placeholder="<example: noreply@host.con>">
+        </div>
+
+        <div class="UI-pad-bottom">
+            <label>Feedback Email: <span class='UI-configure-note'>Address for the feedback buttons and links. If unset, defaults to Admin Email address</span></label> <br>
+            <input type="text" name="NEW_FEEDBACK_EMAIL" class="UI-input <?php
+            if ($updateData != null && strlen($updateData[NEW_FEEDBACK_EMAIL])) {
+                echo VALUE_EQ.$updateData[NEW_FEEDBACK_EMAIL].'"';
+            } else {
+                echo '"';
+            }
+            ?> placeholder="<example: feedback@host.con>">
+        </div>
+
+        <div class="UI-pad-bottom">
+            <label>Security Email: <span class='UI-configure-note'>This email recieves all the forgotten password request and other security notices. If unset, defaults to Admin Email address</span></label> <br>
+            <input type="text" name="NEW_SECURITY_EMAIL" class="UI-input <?php
+            if ($updateData != null && strlen($updateData[NEW_SECURITY_EMAIL])) {
+                echo VALUE_EQ.$updateData[NEW_SECURITY_EMAIL].'"';
+            } else {
+                echo '"';
+            }
+            ?> placeholder="<example: security@host.con>">
+        </div>
+
+        <div class="UI-pad-bottom">
+            <label>Help Email: <span class='UI-configure-note'>Address for the help buttons and links. If unset, defaults to Admin Email address</span></label> <br>
+            <input type="text" name="NEW_HELP_EMAIL" class="UI-input <?php
+            if ($updateData != null && strlen($updateData[NEW_HELP_EMAIL])) {
+                echo VALUE_EQ.$updateData[NEW_HELP_EMAIL].'"';
+            } else {
+                echo '"';
+            }
+            ?> placeholder="<example: help@host.con>">
+        </div>
+    </div>
+
+    <div class='UI-center'>
+        <input type="submit" class="UI-eventbutton UI-center">
+    </div>
+    </form>
 </div>
 
-<div class="UI-configure-panel">
-<em>Note: The Database and database user have to be created by hand before you begin the process. </em>
-</div>
-
-<div class="UI-configure-info-panel">
-<p> In order to configure your site we need to know the following information. </p>
-</div>
-
-<hr>
-
-<form action="configure_system.php" method="POST" class="UI-container">
-    <label>Database Host:</label> <br>
-    <input type="text" name="DBHOST" class="UI-input <?php
-    if ($updateData != null && strlen($updateData[DB_HOST])) {
-        echo VALUE_EQ.$updateData[DB_HOST];
-    } elseif (isset($_ENV[DB_HOST])) {
-        echo VALUE_EQ.$_ENV[DB_HOST];
-    } elseif ($tried) {
-        echo UI_PROBLEM;
-    }
-    ?>">
-    </br>
-    <label>Database Username:</label> <br>
-    <input type="text" name="DBUSER" class="UI-input <?php
-    if ($updateData != null && strlen($updateData[DB_USER])) {
-        echo VALUE_EQ.$updateData[DB_USER];
-    } elseif (isset($_ENV[DB_USER])) {
-        echo VALUE_EQ.$_ENV[DB_USER];
-    } elseif ($tried) {
-        echo UI_PROBLEM;
-    }
-    ?>">
-    </br>
-    <label>Database Name:</label> <br>
-    <input type="text" name="DBNAME" class="UI-input <?php
-    if ($updateData != null && strlen($updateData[DB_NAME])) {
-        echo VALUE_EQ.$updateData[DB_NAME];
-    } elseif (isset($_ENV[DB_NAME])) {
-        echo VALUE_EQ.$_ENV[DB_NAME];
-    } elseif ($tried) {
-        echo UI_PROBLEM;
-    }
-    ?>">
-    </br>
-    <label>Database Password:</label> <br>
-    <input type="text" name="DBPASS" class="UI-input <?php
-    if ($updateData != null && strlen($updateData[DB_PASS])) {
-        echo VALUE_EQ.$updateData[DB_PASS];
-    } elseif (isset($_ENV[DB_PASS])) {
-        echo VALUE_EQ.$_ENV[DB_PASS];
-    } elseif ($tried) {
-        echo UI_PROBLEM;
-    }
-    ?>">
-    </br>
-    <hr>
-
-    <div class="UI-padding UI-border">
-    <div class="UI-orange UI-configure-info-panel">
-    Use of NEON is optional. Define BOTH keys if NEON is in use.
-    </div>
-
-    <label>Neon Key:</label> <br>
-    <input type="text" name="NEW_NEONKEY" class="UI-input <?php
-    if ($updateData != null && strlen($updateData[NEW_NEONKEY])) {
-        echo VALUE_EQ.$updateData[NEW_NEONKEY];
-    } elseif ($tried) {
-        echo UI_PROBLEM;
-    }
-    ?>" placeholder="<example: bbbbbccccdddfae12341aabbccddeeff>">
-    </br>
-
-    <label>Neon ID:</label> <br>
-    <input type="text" name="NEW_NEONID" class="UI-input <?php
-    if ($updateData != null && strlen($updateData[NEW_NEONID])) {
-        echo VALUE_EQ.$updateData[NEW_NEONID];
-    } elseif ($tried) {
-        echo UI_PROBLEM;
-    }
-    ?>" placeholder="<example: home>">
-    </br>
-
-    <label>Is Neon Trial Account:</label> <br>
-    <input type="checkbox" name="NEW_NEONBETA" class="UI-checkbox <?php
-    if ($updateData != null && $updateData[NEW_NEONBETA]) {
-        echo '" checked';
-    } elseif ($tried) {
-        echo UI_PROBLEM;
-    }
-    ?>">
-    </br>
-
-    <div class="w3-orange w3-panel w3-padding-16">
-    If you are importing from NEON put a comma seperated list of user IDs of the primary admins here. If we do not find an '@' in the entry we will just add the contents here as the admin Ids being imported.
-    </div>
-    <label>Admin User IDs (comma seperated):</label> <br>
-    <input type="text" name="NEW_ADMINACCOUNTS" class="UI-input <?php
-    if ($updateData != null && strlen($updateData[NEW_ADMINACCOUNTS])) {
-        echo VALUE_EQ.$updateData[NEW_ADMINACCOUNTS];
-    } elseif ($tried) {
-        echo UI_PROBLEM;
-    }
-    ?>" placeholder="<example: 1234,5678,901234>">
-    </br>
-    </div>
-
-    <hr>
-
-    <label>Event Host:</label> <br>
-    <input type="text" name="NEW_CONHOST" class="UI-input <?php
-    if ($updateData != null && strlen($updateData[NEW_CONHOST])) {
-        echo VALUE_EQ.$updateData[NEW_CONHOST];
-    } elseif ($tried) {
-        echo UI_PROBLEM;
-    }
-    ?>" placeholder="<example: AwesomeaCon>">
-    </br>
-
-    <div class="UI-configure-panel UI-border">
-
-    <div class="UI-configure-panel UI-border">
-    <label>Admin Email: <span class="UI-configure-note">If Neon is NOT used an Account will be created</span></label> <br>
-    <input type="text" name="NEW_ADMINEMAIL" class="UI-input<?php
-    if ($updateData != null && strlen($updateData[NEW_ADMINEMAIL])) {
-        echo VALUE_EQ.$updateData[NEW_ADMINEMAIL];
-    } elseif ($tried) {
-        echo UI_PROBLEM;
-    }
-    ?>" placeholder="<example: admin@host.con>">
-    </br>
-
-    <label>Admin Password: <span class="UI-configure-note">Only used Neon is not being used and a new admin account is being created. If left empty a random password will be generated.</span></label> <br>
-    <input type="text" name="NEW_ADMINPASSWORD" class="UI-input<?php
-    if ($updateData != null && strlen($updateData[NEW_ADMINCRED])) {
-        echo VALUE_EQ.$updateData[NEW_ADMINCRED];
-    } elseif ($tried) {
-        echo UI_PROBLEM;
-    }
-    ?>" placeholder="<example: aabbccddee>">
-    </br>
-    </div>
-
-    <label>No-Reply Email:</label> <br>
-    <input type="text" name="NEW_NOREPLY_EMAIL" class="UI-input <?php
-    if ($updateData != null && strlen($updateData[NEW_NOREPLY_EMAIL])) {
-        echo VALUE_EQ.$updateData[NEW_NOREPLY_EMAIL];
-    } elseif ($tried) {
-        echo UI_PROBLEM;
-    }
-    ?>" placeholder="<example: noreply@host.con>">
-    </br>
-
-    <label>Feedback Email: <span class='UI-configure-note'>Address for the feedback buttons and links. If unset, defaults to Admin Email address</span></label> <br>
-    <input type="text" name="NEW_FEEDBACK_EMAIL" class="UI-input <?php
-    if ($updateData != null && strlen($updateData[NEW_FEEDBACK_EMAIL])) {
-        echo VALUE_EQ.$updateData[NEW_FEEDBACK_EMAIL].'"';
-    } else {
-        echo '"';
-    }
-    ?> placeholder="<example: feedback@host.con>">
-    </br>
-
-    <label>Security Email: <span class='UI-configure-note'>This email recieves all the forgotten password request and other security notices. If unset, defaults to Admin Email address</span></label> <br>
-    <input type="text" name="NEW_SECURITY_EMAIL" class="UI-input <?php
-    if ($updateData != null && strlen($updateData[NEW_SECURITY_EMAIL])) {
-        echo VALUE_EQ.$updateData[NEW_SECURITY_EMAIL].'"';
-    } else {
-        echo '"';
-    }
-    ?> placeholder="<example: security@host.con>">
-    </br>
-
-    <label>Help Email: <span class='UI-configure-note'>Address for the help buttons and links. If unset, defaults to Admin Email address</span></label> <br>
-    <input type="text" name="NEW_HELP_EMAIL" class="UI-input <?php
-    if ($updateData != null && strlen($updateData[NEW_HELP_EMAIL])) {
-        echo VALUE_EQ.$updateData[NEW_HELP_EMAIL].'"';
-    } else {
-        echo '"';
-    }
-    ?> placeholder="<example: help@host.con>">
-    </br>
-    </div>
-
-    <label>Timezone:</label> <br>
-    <input type="text" name="NEW_TIMEZONE" class="UI-input <?php
-    if ($updateData != null && strlen($updateData[NEW_TIMEZONE])) {
-        echo VALUE_EQ.$updateData[NEW_TIMEZONE];
-    } elseif ($tried) {
-        echo UI_PROBLEM;
-    }
-    ?>" placeholder="<example: America/Chicago>">
-    </br>
-
-    <input type="submit" class="UI-eventbutton UI-center">
-</form>
 
 <?php
 require(__DIR__.'/pages/base/body_end.inc');
