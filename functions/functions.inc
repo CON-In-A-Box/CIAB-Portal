@@ -473,3 +473,36 @@ function neon_removeWebhook()
     del_conf_value('NEON_HOOK_URL');
 
 }
+
+
+function get_modules()
+{
+    global $BASEDIR;
+
+    if (array_key_exists('DISABLEDMODULES', $_ENV)) {
+        $env_disabled = explode(',', $_ENV['DISABLEDMODULES']);
+    } else {
+        $env_disabled = null;
+    }
+    $disabled = $GLOBALS['DISABLEDMODULES'];
+
+    $files = glob($BASEDIR.'/modules/*', GLOB_MARK);
+    $modules = array();
+    foreach ($files as $file) {
+        if (is_dir($file)) {
+            $module = basename($file);
+            if (in_array($module, $disabled)) {
+                if ($env_disabled && in_array($module, $env_disabled)) {
+                    $modules[basename($file)] = null;
+                } else {
+                    $modules[basename($file)] = false;
+                }
+            } else {
+                $modules[basename($file)] = true;
+                ;
+            }
+        }
+    }
+    return $modules;
+
+}
