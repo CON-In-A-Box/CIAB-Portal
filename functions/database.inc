@@ -2,6 +2,7 @@
 
 /*.
     require_module 'standard';
+    require_module 'json';
 .*/
 
 // Currently, this database class is set for the MySQL PDO filter/backend. Future version will expand it to be agnostic
@@ -10,8 +11,20 @@ require_once(__DIR__.'/locations.inc');
 require_once($BACKEND.'/'.$_ENV['DB_BACKEND']); // MyPDO Definition used
 require_once($BASEDIR.'/data/database-schema.php');
 
+
+$MODULE_TABLES = array();
+$MODULE_FOREIGNKEYS = array();
+$MODULE_PRIMARYKEYS = array();
+$MODULE_INDEX = array();
+
+
 class DB
 {
+
+    /**
+     * @var array
+     */
+    private $schema;
 
 
     private static function verifyDB()
@@ -81,7 +94,7 @@ SQL;
     }
 
 
-    private static function buildMissingTables()
+    private function buildMissingTables()
     {
         // This function cannot call the run function as we don't know if the activitylog table is created
         // Besides, this is maintenance, not user log tracking
@@ -96,7 +109,7 @@ SQL;
             }
         }
         // Verify every table we need exists, if not, create.
-        foreach (SCHEMA::$DB_tables as $table => $fields) {
+        foreach ($this->schema['tables'] as $table => $fields) {
             if (in_array($table, $arr)) {
                 // Table exists
                 // Capture a list of fields already in the table
@@ -134,7 +147,7 @@ SQL;
         }
 
         //Verify primary keys
-        foreach (SCHEMA::$DB_primaryKeys as $table => $keys) {
+        foreach ($this->schema['primaryKeys'] as $table => $keys) {
             $query = "SHOW KEYS FROM `$table` WHERE Key_name = 'PRIMARY';";
             $result = MyPDO::instance()->query($query);
             $value = $result->fetch();
@@ -153,7 +166,7 @@ SQL;
             $arr[] = $value['TABLE_NAME'].":".$value['COLUMN_NAME'];
         }
         // Verify every foreign key we need exists, if not, create.
-        foreach (SCHEMA::$DB_foreignKeys as $table => $fields) {
+        foreach ($this->schema['foreignKeys'] as $table => $fields) {
             foreach ($fields as $column => $referto) {
                 $lookfor = $table.":".$column;
                 if (!in_array($lookfor, $arr)) {
@@ -165,7 +178,7 @@ SQL;
         }
 
         //  Create index
-        foreach (SCHEMA::$DB_index as $table => $keys) {
+        foreach ($this->schema['index'] as $table => $keys) {
             $build = "SHOW INDEX FROM `".$table."`;";
             $result = mypdo::instance()->query($build);
             $arr = [];
@@ -184,12 +197,50 @@ SQL;
     }
 
 
+    public function loadModules()
+    {
+        global $MODULE_TABLES, $MODULESDIR;
+
+        if ($this->loaded) {
+            return;
+        }
+        try {
+            $modules = scandir($MODULESDIR);
+            foreach ($modules as $key => $value) {
+                if (!in_array($value, array(".", ".."))) {
+                    if (is_dir($MODULESDIR.DIRECTORY_SEPARATOR.$value)) {
+                        if (is_file($MODULESDIR.DIRECTORY_SEPARATOR.$value.DIRECTORY_SEPARATOR.'database-schema.inc')) {
+                            require_once($MODULESDIR.DIRECTORY_SEPARATOR.$value.DIRECTORY_SEPARATOR.'database-schema.inc');
+                        }
+                    }
+                }
+            }
+        } catch (RuntimeException $e) {
+            error_log("ERROR!!! Database Schema import failed: ".$e);
+        }
+
+        $this->schema['tables'] = array_merge($this->schema['tables'], $MODULE_TABLES);
+        $this->schema['foreignKeys'] = array_merge($this->schema['foreignKeys'], $MODULE_FOREIGNKEYS);
+        $this->schema['primaryKeys'] = array_merge($this->schema['primaryKeys'], $MODULE_PRIMARYKEYS);
+        $this->schema['index'] = array_merge($this->schema['index'], $MODULE_INDEX);
+        $this->loaded = true;
+
+    }
+
+
     public function __construct()
     {
+        $this->schema = array();
+        $this->schema['tables'] = SCHEMA::$DB_tables;
+        $this->schema['foreignKeys'] = SCHEMA::$DB_foreignKeys;
+        $this->schema['primaryKeys'] = SCHEMA::$DB_primaryKeys;
+        $this->schema['index'] = SCHEMA::$DB_index;
+        $this->loadModules();
         $oldMD5 = DB::getRecordedDBSchemaMD5();
-        $currentMD5 = md5_file($GLOBALS['BASEDIR'].'/data/database-schema.php');
+        $currentMD5 = md5(json_encode($this->schema));
+
         if ($oldMD5 != $currentMD5) {
-            DB::buildMissingTables();
+            $this->buildMissingTables();
             $sql = <<<SQL
                 REPLACE INTO Configuration
                     (`Value`, `Field`)
