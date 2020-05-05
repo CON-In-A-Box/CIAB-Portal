@@ -1,0 +1,13 @@
+<script src="modules/artshow/sitesupport/common.js"></script>
+<script src="modules/artshow/sitesupport/artTable.js"></script>
+<script src="modules/artshow/sitesupport/hungArtTable.js"></script>
+<script src="modules/artshow/sitesupport/printArtTable.js"></script>
+<script src="modules/artshow/sitesupport/piece.js"></script>
+<script src="modules/artshow/sitesupport/print.js"></script>
+<script src="modules/artshow/sitesupport/artshow.js"></script>
+<script src="modules/artshow/sitesupport/printArtEntryTable.js"></script>
+<script src="modules/artshow/sitesupport/hungArtEntryTable.js"></script>
+<script src="sitesupport/common.js"></script>
+<script src="sitesupport/dropdownsection.js"></script>
+<script src="sitesupport/sidebar.js"></script>
+<script src="sitesupport/confirmbox.js"></script>
