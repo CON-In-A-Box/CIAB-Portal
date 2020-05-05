@@ -4,7 +4,7 @@
 .*/
 
 require_once __DIR__."/vendor/autoload.php";
-require_once __DIR__."/functions/database.inc";
+require_once __DIR__."/functions/functions.inc";
 
 
 function from_db($input)
