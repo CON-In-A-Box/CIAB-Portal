@@ -10,6 +10,8 @@ Within the module there are a few files of special importance. None of these fil
 * `pages/panes.inc`: This is loaded when the main page is loaded. It describes all the panes to be added to the main screen. If your module displays panes on the main screen you will want to add the full function name to the `$homepage_panes` array. It is generally recommend you use name spacing. So something like `registration\panes\badges` for the function `badges` in the namespace `registration\panes`
 * `pages/menubar.inc`: This is the file loaded when the menubar is being constructed. Generally if you implement this you will be wanting to add something to `$admin_menus` as that is what is used to construct the menubar at the top of the pages. If you use this then you will also have to define the html templates that are loaded when this menu item is selected:
  * `pages/pre.inc, pages/head.inc, pages/body.inc`: These are the HTML templates to generate the page that is loaded when the menu item is selected from the menubar. They are not required though if the `body.inc` file is missing then the user will get a blank page when they select the menu bar item. 
+* `database-schema.inc`: This is a PHP file that is used to setup the database. It is combined with the core `/data/database-schema.inc` to ensure the database is up to date and correct. Changes here will be made to the database even if a module is disabled.
+* `DBSeed/*.php`: These are database seeds for tables created by this module. They are added to the base seeds found in `/data/DBSeed/` and should be named for each table. This data is only inserted into the database when the given table is created the first time. 
 
 # Theming / SCSS
 

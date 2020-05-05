@@ -46,7 +46,11 @@ $DB_foreignKeys = [
     ],
 'VolunteerRewards' => [
 'RewardGroupID' => 'RewardGroup (RewardGroupID) ON DELETE RESTRICT ON UPDATE CASCADE',
-    ]
+    ],
+'HourRedemptions' => [
+'EventID' => 'Events (EventID) ON DELETE RESTRICT ON UPDATE CASCADE',
+'PrizeID' => 'VolunteerRewards (PrizeID) ON DELETE RESTRICT ON UPDATE CASCADE',
+]
 
 ];
 
