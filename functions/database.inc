@@ -26,6 +26,11 @@ class DB
      */
     private $schema;
 
+    /**
+     * @var boolean
+     */
+    private $loaded = false;
+
 
     private static function verifyDB()
     {
@@ -199,7 +204,7 @@ SQL;
 
     public function loadModules()
     {
-        global $MODULE_TABLES, $MODULESDIR;
+        global $MODULE_TABLES, $MODULESDIR, $MODULE_FOREIGNKEYS, $MODULE_PRIMARYKEYS, $MODULE_INDEX;
 
         if ($this->loaded) {
             return;
