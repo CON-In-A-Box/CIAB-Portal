@@ -14,6 +14,24 @@ require_once($FUNCTIONDIR.'/session.inc');
 require_once($FUNCTIONDIR.'/database.inc');
 require_once($FUNCTIONDIR.'/authentication.inc');
 
+
+function delete_files($target)
+{
+    if (is_dir($target)) {
+        $files = glob($target.'*', GLOB_MARK);
+
+        foreach ($files as $file) {
+            delete_files($file);
+        }
+
+        @rmdir($target);
+    } elseif (is_file($target)) {
+        @unlink($target);
+    }
+
+}
+
+
 if (!empty($_REQUEST)) {
     $arguments = [
     'SUDO'         => FILTER_SANITIZE_NUMBER_INT,
@@ -27,6 +45,7 @@ if (!empty($_REQUEST)) {
     'hook_action'  => FILTER_SANITIZE_SPECIAL_CHARS,
     'hook_name'    => FILTER_SANITIZE_SPECIAL_CHARS,
     'hook_url'     => FILTER_SANITIZE_SPECIAL_CHARS,
+    'rebuildSCSS'  => FILTER_VALIDATE_BOOLEAN,
     ];
 
     $updateData = filter_input_array(INPUT_POST, $arguments);
@@ -92,6 +111,11 @@ if (!empty($_REQUEST)) {
             }
         }
         goSite('/index.php?Function=admin');
+    }
+
+    if (isset($updateData['rebuildSCSS'])) {
+        delete_files(@sys_get_temp_dir().'/scss_cache');
+        goSite();
     }
 
     $arguments = [

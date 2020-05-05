@@ -1,5 +1,6 @@
 <?php
 require_once $BACKEND.'/asset.inc';
+require_once($BACKEND.'/RBAC.inc');
 ?>
 
 <script>
@@ -53,8 +54,16 @@ if ($kiosk === null) {
     }
 
     if (!isset($admin_menus)) {
-        $admin_menus = [
-        ];
+        $admin_menus = array();
+        if (\ciab\RBAC::havePermission("site.admin")) {
+            $admin_menus[] = array('base style' => 'UI-yellow',
+                 'selected style' => 'event-color-primary',
+                 'function' => 'modules',
+                 'title' => 'Website Configuration',
+                 'i class' => 'fas fa-home',
+                 'text' => 'Website Configuration',
+                 'responsive' => true);
+        }
     }
 
     if (!isset($report_menus)) {

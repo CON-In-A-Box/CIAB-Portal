@@ -17,35 +17,9 @@ class SCHEMA
             'Query' => 'TEXT NOT NULL',
             'Date' => 'TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP',
         ],
-        'AnnualCycles' => [ // Bylaw defined "year", used for tracking
-            'AnnualCycleID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
-            'DateFrom' => 'DATE NOT NULL',
-            'DateTo' => 'DATE NOT NULL',
-        ],
-        'BadgeTypes' => [
-            'BadgeTypeID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
-            'AvailableFrom' => 'DATE NOT NULL',
-            'AvailableTo' => 'DATE NOT NULL',
-            'Cost' => 'DECIMAL(6,2) NOT NULL',
-            'EventID' => 'INT UNSIGNED NOT NULL',
-            'Name' => 'VARCHAR(50) NOT NULL',
-            'BackgroundImage' => 'VARCHAR(100)',
-        ],
         'Configuration' => [
             'Field' => 'VARCHAR(15) NOT NULL PRIMARY KEY',
             'Value' => 'TEXT NOT NULL',
-        ],
-        'ConComList' => [
-            'ListRecordID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
-            'AccountID' => 'INT UNSIGNED NOT NULL', // Taken from NeonCRM Currently
-            'DepartmentID' => 'INT UNSIGNED NOT NULL',
-            'EventID' => 'INT UNSIGNED NOT NULL',
-            'Note' => 'VARCHAR(100)',
-            'PositionID' => 'INT UNSIGNED NOT NULL',
-        ],
-        'ConComPositions' => [
-            'PositionID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
-            'Name' => 'VARCHAR(50) NOT NULL',
         ],
         'DBPullPage' => [ // Bandaid table to help Neon - To be removed post-neon
             'RegistrationID' => 'INT UNSIGNED NOT NULL PRIMARY KEY',  // 1:1 mapping of the Registrations Primary Key
@@ -81,65 +55,6 @@ class SCHEMA
         'TempEventPage' => [
             'AccountID' => 'INT UNSIGNED NOT NULL',
             'PageFound' => 'INT UNSIGNED NOT NULL',
-        ],
-        'Events' => [
-            'EventID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
-            'AnnualCycleID' => 'INT UNSIGNED NOT NULL',
-            'DateFrom' => 'DATE NOT NULL',
-            'DateTo' => 'DATE NOT NULL',
-            'EventName' => 'VARCHAR(50) NOT NULL',
-        ],
-        'HourRedemptions' => [
-            'ClaimID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
-            'AccountID' => 'INT UNSIGNED NOT NULL',
-            'EventID' => 'INT UNSIGNED NOT NULL',
-            'PrizeID' => 'INT UNSIGNED NOT NULL',
-        ],
-        'MeetingAttendance' => [
-            'AttendanceRecordID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
-            'AccountID' => 'INT UNSIGNED NOT NULL',
-            'MeetingID' => 'INT UNSIGNED NOT NULL',
-        ],
-        'OfficialMeetings' => [
-            'MeetingID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
-            'Date' => 'DATE NOT NULL',
-            'EventID' => 'INT UNSIGNED NOT NULL',
-            'Name' => 'VARCHAR(50) NOT NULL',
-        ],
-        'Registrations' => [
-            'RegistrationID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
-            'AccountID' => 'INT UNSIGNED NOT NULL',
-            'BadgeDependentOnID' => 'INT UNSIGNED',
-            'BadgeName' => 'VARCHAR(100)',
-            'BadgesPickedUp' => 'INT UNSIGNED',
-            'BadgeTypeID' => 'INT UNSIGNED NOT NULL',
-            'EmergencyContact' => 'VARCHAR(300)',
-            'EventID' => 'INT UNSIGNED NOT NULL',
-            'RegisteredByID' => 'INT UNSIGNED NOT NULL',
-            'RegistrationDate' => 'DATETIME NOT NULL',
-        ],
-        'RewardGroup' => [
-            'RewardGroupID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
-            'RedeemLimit' => 'INT UNSIGNED',
-        ],
-        'VolunteerHours' => [
-            'HourEntryID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
-            'AccountID' => 'INT UNSIGNED NOT NULL',
-            'ActualHours' => 'FLOAT(5,3) NOT NULL',
-            'AuthorizedByID' => 'INT UNSIGNED NOT NULL',
-            'DepartmentID' => 'INT UNSIGNED NOT NULL',
-            'EndDateTime' => 'DATETIME NOT NULL',
-            'EnteredByID' => 'INT UNSIGNED NOT NULL',
-            'EventID' => 'INT UNSIGNED NOT NULL',
-            'TimeModifier' => 'FLOAT(2,1) NOT NULL',
-        ],
-        'VolunteerRewards' => [
-            'PrizeID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
-            'Name' => 'VARCHAR(50) NOT NULL',
-            'Promo' => 'BOOLEAN',
-            'RewardGroupID' => 'INT UNSIGNED',
-            'TotalInventory' => 'INT NOT NULL',
-            'Value' => 'DECIMAL(5,2) NOT NULL',
         ],
         'Authentication' => [
             'AccountID' => 'INT UNSIGNED NOT NULL PRIMARY KEY',
@@ -179,52 +94,11 @@ class SCHEMA
             'PreferredFirstName' => 'VARCHAR(50)',
             'PreferredLastName' => 'VARCHAR(50)',
             'DisplayPhone' => 'BOOLEAN',
-        ],
-        'EmailLists' => [
-            'EmailListID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
-            'Name' => 'VARCHAR(100) NOT NULL',
-            'Description' => 'TEXT NOT NULL',
-            'Code' => 'TEXT',
-        ],
-        'EmailListAccess' => [
-            'DepartmentID' => 'INT UNSIGNED NOT NULL',
-            'PositionID' => 'INT UNSIGNED NOT NULL',
-            'EmailListID' => 'INT UNSIGNED NOT NULL',
-            'EditList' => 'BOOLEAN NOT NULL',
-            'ChangeAccess' => 'BOOLEAN NOT NULL',
-        ],
-        'ConComPermissions' => [
-            'PermissionID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
-            'Position' => 'VARCHAR(100) NOT NULL',
-            'Permission' => 'VARCHAR(100) NOT NULL',
-            'Note' => 'TEXT'
-        ],
-        'Deadlines' => [
-            'DeadlineID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
-            'DepartmentID' => 'INT UNSIGNED NOT NULL',
-            'Deadline' => 'DATE NOT NULL',
-            'Note' => 'TEXT NOT NULL'
-        ],
-        'Announcements' => [
-            'AnnouncementID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
-            'DepartmentID' => 'INT UNSIGNED NOT NULL',
-            'PostedBy' => 'INT UNSIGNED NOT NULL',
-            'PostedOn' => 'DATE NOT NULL',
-            'Scope' => 'INT UNSIGNED NOT NULL',
-            'Text' => 'TEXT NOT NULL'
         ]
 
     ];
 
     public static $DB_foreignKeys = [
-        'BadgeTypes' => [
-            'EventID' => 'Events (EventID) ON DELETE RESTRICT ON UPDATE CASCADE',
-        ],
-        'ConComList' => [
-            'DepartmentID' => 'Departments (DepartmentID) ON DELETE RESTRICT ON UPDATE CASCADE',
-            'EventID' => 'Events (EventID) ON DELETE RESTRICT ON UPDATE CASCADE',
-            'PositionID' => 'ConComPositions (PositionID) ON DELETE RESTRICT ON UPDATE CASCADE',
-        ],
         'DBPullPage' => [
             'RegistrationID' => 'Registrations (RegistrationID) ON DELETE RESTRICT ON UPDATE CASCADE',
         ],
@@ -237,46 +111,13 @@ class SCHEMA
         'EMails' => [
             'DepartmentID' => 'Departments (DepartmentID) ON DELETE RESTRICT ON UPDATE CASCADE',
         ],
-        'Events' => [
-            'AnnualCycleID' => 'AnnualCycles (AnnualCycleID) ON DELETE RESTRICT ON UPDATE CASCADE',
-        ],
-        'HourRedemptions' => [
-            'EventID' => 'Events (EventID) ON DELETE RESTRICT ON UPDATE CASCADE',
-            'PrizeID' => 'VolunteerRewards (PrizeID) ON DELETE RESTRICT ON UPDATE CASCADE',
-        ],
-        'MeetingAttendance' => [
-            'MeetingID' => 'OfficialMeetings (MeetingID) ON DELETE RESTRICT ON UPDATE CASCADE',
-        ],
-        'OfficialMeetings' => [
-            'EventID' => 'Events (EventID) ON DELETE RESTRICT ON UPDATE CASCADE',
-        ],
-        'Registrations' => [
-            'BadgeDependentOnID' => 'Registrations (RegistrationID) ON DELETE RESTRICT ON UPDATE CASCADE',
-            'BadgeTypeID' => 'BadgeTypes (BadgeTypeID) ON DELETE RESTRICT ON UPDATE CASCADE',
-            'EventID' => 'Events (EventID) ON DELETE RESTRICT ON UPDATE CASCADE',
-        ],
-        'VolunteerHours' => [
-            'DepartmentID' => 'Departments (DepartmentID) ON DELETE RESTRICT ON UPDATE CASCADE',
-            'EventID' => 'Events (EventID) ON DELETE RESTRICT ON UPDATE CASCADE',
-        ],
-        'VolunteerRewards' => [
-            'RewardGroupID' => 'RewardGroup (RewardGroupID) ON DELETE RESTRICT ON UPDATE CASCADE',
-        ],
-        'Deadlines' => [
-            'DepartmentID' => 'Departments (DepartmentID) ON DELETE RESTRICT ON UPDATE CASCADE',
-        ],
-        'Announcements' => [
-            'DepartmentID' => 'Departments (DepartmentID) ON DELETE RESTRICT ON UPDATE CASCADE',
-            'PostedBy' => 'Members (AccountID) ON DELETE RESTRICT ON UPDATE CASCADE',
-        ],
+
     ];
 
     public static $DB_primaryKeys = [
-        'TempEventPage' => ['AccountID', 'PageFound'],
-        'EmailListAccess' => ['DepartmentID', 'PositionID', 'EmailListID'],
+        'TempEventPage' => ['AccountID', 'PageFound']
+
     ];
 
-    public static $DB_index = [
-        'ConComPermissions' => ['Permission'],
-    ];
+    public static $DB_index = [];
 }

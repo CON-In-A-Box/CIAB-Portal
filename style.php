@@ -4,12 +4,42 @@
 .*/
 
 require_once __DIR__."/vendor/autoload.php";
+require_once __DIR__."/functions/database.inc";
+
+
+function from_db($input)
+{
+    $color = $input[0][2][0];
+    $sql = "SELECT `Value` FROM `Configuration` where `Field` = 'col.$color'";
+    $result = \DB::run($sql);
+    $value = $result->fetch();
+    if ($value !== false) {
+        return $value['Value'];
+    }
+
+    switch ($color) {
+        case 'primary':
+            return '#fff';
+        case 'prim-back':
+            return '#4CAF50';
+        case 'secondary':
+            return '#fff';
+        case 'second-back':
+            return '#2196F3';
+        default:
+            return '';
+    }
+
+}
+
 
 $resource_cache = @sys_get_temp_dir().'/scss_cache/';
 
 $scss = new scssc();
 $scss->addImportPath("scss");
 $scss->setFormatter("scss_formatter_compressed");
+
+$scss->registerFunction('db-color', 'from_db');
 
 $uri = explode("/", $_SERVER['REQUEST_URI']);
 

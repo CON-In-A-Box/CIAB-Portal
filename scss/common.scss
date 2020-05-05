@@ -708,3 +708,13 @@
     @extend .w3-opacity;
     @extend .UI-small;
 }
+
+.UI-event-dropdown-bar {
+    @extend .UI-event-sectionbar;
+    @extend .UI-button;
+    @extend .w3-block;
+}
+
+.UI-pad-bottom {
+    padding: 0px 0px 16px 0px;
+}
