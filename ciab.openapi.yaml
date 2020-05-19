@@ -1569,6 +1569,103 @@ paths:
       security:
         -
           ciab_auth: []
+  '/permissions/generic/{resource}/{method}':
+    get:
+      tags:
+        - permissions
+      summary: 'Gets a generic permission'
+      parameters:
+        -
+          name: resource
+          in: path
+          description: 'Resource being queried.'
+          required: true
+          schema:
+            type: string
+        -
+          name: method
+          in: path
+          description: 'Method being queried.'
+          required: true
+          schema:
+            type: string
+            enum:
+              - get
+              - put
+              - post
+              - delete
+        -
+          $ref: '#/components/parameters/short_response'
+        -
+          $ref: '#/components/parameters/max_results'
+        -
+          $ref: '#/components/parameters/page_token'
+      responses:
+        '200':
+          description: 'Permissions found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/permission_list'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/permission_not_found'
+      security:
+        -
+          ciab_auth: []
+  '/permissions/generic/{resource}/{method}/{detail}':
+    get:
+      tags:
+        - permissions
+      summary: 'Gets a generic permission'
+      parameters:
+        -
+          name: resource
+          in: path
+          description: 'Resource being queried.'
+          required: true
+          schema:
+            type: string
+        -
+          name: method
+          in: path
+          description: 'Method being queried.'
+          required: true
+          schema:
+            type: string
+            enum:
+              - get
+              - put
+              - post
+              - delete
+        -
+          name: detail
+          in: path
+          description: 'detail of the method.'
+          required: true
+          schema:
+            type: string
+        -
+          $ref: '#/components/parameters/short_response'
+        -
+          $ref: '#/components/parameters/max_results'
+        -
+          $ref: '#/components/parameters/page_token'
+      responses:
+        '200':
+          description: 'Permissions found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/permission_list'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/permission_not_found'
+      security:
+        -
+          ciab_auth: []
   '/stores/{id}':
     get:
       tags:
