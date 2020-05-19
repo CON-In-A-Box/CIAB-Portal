@@ -19,7 +19,7 @@ abstract class BasePermission extends BaseController
     protected /*. string .*/ $restype;
 
 
-    public function __construct(Container $container, string $restype, array $methods)
+    public function __construct(Container $container, string $restype, array $methods = ['get', 'put', 'post', 'delete'])
     {
         parent::__construct('permission', $container);
         $this->methods = $methods;
