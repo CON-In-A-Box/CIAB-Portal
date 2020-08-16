@@ -133,6 +133,7 @@ A number of modules exist in the API. These modules, while enabled by default, c
 ## Resources
 * [Admin](Admin.md)
 * [Announcement](Announcement.md)
+* [Annual Cycle](Cycle.md)
 * [Deadline](Deadline.md)
 * [Department](Department.md)
 * [Member](Member.md)

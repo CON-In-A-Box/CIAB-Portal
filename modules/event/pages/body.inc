@@ -31,7 +31,24 @@ require_once __DIR__.'/../functions/functions.inc'
                     <button id='new_cycle' class='UI-eventbutton'
                         onclick='newCycle()'>Add New Cycle</button>
                 </div>
-<?php list_cycles() ?>
+
+                <div id="cycle_list" class="UI-table-all">
+                  <div class="UI-table-header">
+                    <div class="UI-table-row">
+                      <div class="UI-table-cell">
+                            Id
+                      </div>
+                      <div class="UI-table-cell">
+                            From
+                      </div>
+                      <div class="UI-table-cell">
+                            To
+                      </div>
+                      <div class="UI-table-cell">
+                      </div>
+                    </div>
+                  </div>
+                </div>
             </div>
         </div>
 
@@ -104,7 +121,7 @@ foreach ($events as $event) {
 
     <div class='UI-sidebar-hidden UI-fixed' id='edit_cycle'>
         <div class='UI-center'>
-            <h2 class='UI-red'>New Cycle Details</h2>
+            <h2 class='UI-red'>Cycle Details</h2>
         </div>
         <div>
             <input class="UI-hiddeninput" id="cycle_id" value='-1' readonly>

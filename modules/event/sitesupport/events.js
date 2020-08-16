@@ -5,7 +5,7 @@
 /* jshint browser: true */
 /* jshint -W097 */
 /* globals confirmbox, showSidebar, hideSidebar, expandSection, alertbox,
-           basicBackendRequest */
+           basicBackendRequest, apiRequest, showSpinner, hideSpinner */
 /* exported doImport, importConcom, deleteEvent, newEvent, saveEvent,
             editEvent, saveBadge, editBadge, newBadge, deleteBadge,
             expandEvent, saveCycle, newCycle, deleteMeeting,
@@ -76,25 +76,34 @@ function deleteMeeting(name, id) {
 }
 
 function newCycle() {
+  document.getElementById('cycle_id').value = -1;
   showSidebar('edit_cycle');
-
 }
 
 function saveCycle() {
   var from = document.getElementById('cycle_from').value;
   var to = document.getElementById('cycle_to').value;
-  confirmbox(
-    'Confirm New Annual Cycle',
-    'Add Cycle [' + from + ' -> ' + to + '] ?').then(function() {
-    var data = {
-      'From': document.getElementById('cycle_from').value,
-      'To': document.getElementById('cycle_to').value,
-    };
-    var param = btoa(JSON.stringify(data));
-    basicEventRequest('cycle=' + param, function() {
-      hideSidebar();
+  var id = document.getElementById('cycle_id').value;
+  var title = 'Confirm New Annual Cycle';
+  var msg = 'Add Cycle [' + from + ' -> ' + to + '] ?';
+  var method = 'PUT';
+  var target = 'cycle';
+  if (id != -1) {
+    title = 'Confirm Modified Annual Cycle';
+    msg = 'Modify Cycle [' + from + ' -> ' + to + '] ?';
+    method = 'POST';
+    target += '/' + id;
+  }
+  confirmbox(title, msg).then(function() {
+    var data = 'From=' + document.getElementById('cycle_from').value + '&' +
+      'To=' + document.getElementById('cycle_to').value;
+    apiRequest(method, target, data).then(function() {
       location.reload();
-    });
+    })
+      .catch(function() {
+        alert('Add/Modify cycle Failed');
+        hideSidebar();
+      });
   });
 }
 
@@ -251,4 +260,78 @@ function doImport() {
     hideSidebar();
     location.reload();
   });
+}
+
+function editCycle(data) {
+  document.getElementById('cycle_id').value = data.id;
+  document.getElementById('cycle_from').value = data.DateFrom;
+  document.getElementById('cycle_to').value = data.DateTo;
+  showSidebar('edit_cycle');
+}
+
+function loadEvents() {
+  showSpinner();
+  apiRequest('GET', 'cycle', 'maxResults=all')
+    .then(function(response) {
+      hideSpinner();
+      var result = JSON.parse(response.responseText);
+      if (result.data.length > 0) {
+        var sorted = result.data.sort(function(a,b) {
+          return b.id - a.id;
+        });
+        var table = document.getElementById('cycle_list');
+        sorted.forEach(function(data) {
+          var line = document.createElement('DIV');
+          line.classList.add('UI-table-row');
+          var f = document.createElement('DIV');
+          f.classList.add('UI-table-cell');
+          f.appendChild(document.createTextNode(data.id));
+          line.appendChild(f);
+          f = document.createElement('DIV');
+          f.classList.add('UI-table-cell');
+          f.appendChild(document.createTextNode(data.DateFrom));
+          line.appendChild(f);
+          f = document.createElement('DIV');
+          f.classList.add('UI-table-cell');
+          f.appendChild(document.createTextNode(data.DateTo));
+          line.appendChild(f);
+
+          var to = new Date(data.DateTo);
+          var from  = new Date(data.DateFrom);
+          var today = new Date();
+          f = document.createElement('DIV');
+          f.classList.add('UI-table-cell');
+          var em = document.createElement('EM');
+          if (today > to) {
+            em.classList.add('fas');
+            em.classList.add('fa-lock');
+          } else if (today >= from && today <= to) {
+            em.classList.add('far');
+            em.classList.add('fa-star');
+            line.addEventListener('click', function() {
+              editCycle(data);
+            });
+          } else {
+            em.classList.add('fas');
+            em.classList.add('fa-arrow-right');
+            line.addEventListener('click', function() {
+              editCycle(data);
+            });
+          }
+          f.appendChild(em);
+          line.appendChild(f);
+
+          table.append(line);
+        });
+      }
+    })
+    .catch(function() {
+      hideSpinner();
+    });
+}
+
+if (window.addEventListener) {
+  window.addEventListener('load', loadEvents);
+} else {
+  window.attachEvent('onload', loadEvents);
 }

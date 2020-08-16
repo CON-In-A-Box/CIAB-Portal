@@ -401,50 +401,6 @@ function delete_meeting($id)
 }
 
 
-function list_cycles()
-{
-    global $last_cycle;
-
-    $sql = <<<SQL
-        SELECT
-            *
-        FROM
-            `AnnualCycles`
-        ORDER BY
-            `DateFrom` DESC
-SQL;
-
-    $values = [
-    'Id' => 'AnnualCycleID',
-    'From' => 'DateFrom',
-    'To' => 'DateTo',
-    ];
-    $data = load_table($sql, $values);
-    $keys = array_keys($values);
-    print "<table class='UI-stripedtable UI-padding'>\n";
-    print "<tr><th>".implode('</th><th>', $keys)."</th></tr>\n";
-    $last_cycle = null;
-    foreach ($data as $entry) {
-        if ($last_cycle === null) {
-            $last_cycle = $entry;
-        }
-        print "<tr><td>".implode('</td><td>', $entry)."</td></tr>\n";
-    }
-    print "</table>\n";
-
-}
-
-
-function new_cycle($cycle)
-{
-    $from = $cycle->From;
-    $to = $cycle->To;
-    $sql = "INSERT INTO `AnnualCycles` (`AnnualCycleID`, `DateFrom`, `DateTo`) VALUES (NULL, '$from', '$to')";
-    DB::run($sql);
-
-}
-
-
 function delete_badge($id)
 {
     $sql = "DELETE FROM `BadgeTypes` WHERE `BadgeTypeID` = $id;";
