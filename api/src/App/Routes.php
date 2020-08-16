@@ -72,3 +72,14 @@ $app->group(
         $app->delete('/{id}', 'App\Controller\Announcement\DeleteAnnouncement');
     }
 )->add(new App\Middleware\CiabMiddleware($app))->add($authMiddleware);
+
+$app->group(
+    '/cycle',
+    function () use ($app, $authMiddleware) {
+        $app->get('[/]', 'App\Controller\Cycle\ListCycles');
+        $app->get('/{id}', 'App\Controller\Cycle\GetCycle');
+        $app->put('[/]', 'App\Controller\Cycle\PutCycle');
+        $app->post('/{id}', 'App\Controller\Cycle\PostCycle');
+        $app->delete('/{id}', 'App\Controller\Cycle\DeleteCycle');
+    }
+)->add(new App\Middleware\CiabMiddleware($app))->add($authMiddleware);

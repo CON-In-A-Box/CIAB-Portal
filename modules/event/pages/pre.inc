@@ -53,12 +53,6 @@ if (!empty($_REQUEST)) {
         exit();
     }
 
-    if (isset($updateData['cycle'])) {
-        $data = json_decode(base64_decode($updateData['cycle']));
-        new_cycle($data);
-        exit();
-    }
-
     if (isset($updateData['deleteBadge'])) {
         delete_badge($updateData['deleteBadge']);
         exit();
