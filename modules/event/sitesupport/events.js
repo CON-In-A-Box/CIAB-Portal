@@ -5,7 +5,7 @@
 /* jshint browser: true */
 /* jshint -W097 */
 /* globals confirmbox, showSidebar, hideSidebar, expandSection, alertbox,
-           basicBackendRequest */
+           basicBackendRequest, apiRequest, showSpinner, hideSpinner */
 /* exported doImport, importConcom, deleteEvent, newEvent, saveEvent,
             editEvent, saveBadge, editBadge, newBadge, deleteBadge,
             expandEvent, saveCycle, newCycle, deleteMeeting,
@@ -86,15 +86,16 @@ function saveCycle() {
   confirmbox(
     'Confirm New Annual Cycle',
     'Add Cycle [' + from + ' -> ' + to + '] ?').then(function() {
-    var data = {
-      'From': document.getElementById('cycle_from').value,
-      'To': document.getElementById('cycle_to').value,
-    };
-    var param = btoa(JSON.stringify(data));
-    basicEventRequest('cycle=' + param, function() {
-      hideSidebar();
+
+    var data = 'From=' + document.getElementById('cycle_from').value + '&' +
+      'To=' + document.getElementById('cycle_to').value;
+    apiRequest('PUT', 'cycle', data).then(function() {
       location.reload();
-    });
+    })
+      .catch(function() {
+        alert('Adding cycle Failed');
+        hideSidebar();
+      });
   });
 }
 
@@ -251,4 +252,45 @@ function doImport() {
     hideSidebar();
     location.reload();
   });
+}
+
+function loadEvents() {
+  showSpinner();
+  apiRequest('GET', 'cycle', 'maxResults=all')
+    .then(function(response) {
+      hideSpinner();
+      var result = JSON.parse(response.responseText);
+      if (result.data.length > 0) {
+        var sorted = result.data.sort(function(a,b) {
+          return b.id - a.id;
+        });
+        var table = document.getElementById('cycle_list');
+        sorted.forEach(function(data) {
+          var line = document.createElement('DIV');
+          line.classList.add('UI-table-row');
+          var f = document.createElement('DIV');
+          f.classList.add('UI-table-cell');
+          f.appendChild(document.createTextNode(data.id));
+          line.appendChild(f);
+          f = document.createElement('DIV');
+          f.classList.add('UI-table-cell');
+          f.appendChild(document.createTextNode(data.DateFrom));
+          line.appendChild(f);
+          f = document.createElement('DIV');
+          f.classList.add('UI-table-cell');
+          f.appendChild(document.createTextNode(data.DateTo));
+          line.appendChild(f);
+          table.append(line);
+        });
+      }
+    })
+    .catch(function() {
+      hideSpinner();
+    });
+}
+
+if (window.addEventListener) {
+  window.addEventListener('load', loadEvents);
+} else {
+  window.attachEvent('onload', loadEvents);
 }
