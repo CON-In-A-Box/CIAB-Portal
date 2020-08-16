@@ -44,6 +44,8 @@ require_once __DIR__.'/../functions/functions.inc'
                       <div class="UI-table-cell">
                             To
                       </div>
+                      <div class="UI-table-cell">
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -119,7 +121,7 @@ foreach ($events as $event) {
 
     <div class='UI-sidebar-hidden UI-fixed' id='edit_cycle'>
         <div class='UI-center'>
-            <h2 class='UI-red'>New Cycle Details</h2>
+            <h2 class='UI-red'>Cycle Details</h2>
         </div>
         <div>
             <input class="UI-hiddeninput" id="cycle_id" value='-1' readonly>

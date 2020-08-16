@@ -76,24 +76,32 @@ function deleteMeeting(name, id) {
 }
 
 function newCycle() {
+  document.getElementById('cycle_id').value = -1;
   showSidebar('edit_cycle');
-
 }
 
 function saveCycle() {
   var from = document.getElementById('cycle_from').value;
   var to = document.getElementById('cycle_to').value;
-  confirmbox(
-    'Confirm New Annual Cycle',
-    'Add Cycle [' + from + ' -> ' + to + '] ?').then(function() {
-
+  var id = document.getElementById('cycle_id').value;
+  var title = 'Confirm New Annual Cycle';
+  var msg = 'Add Cycle [' + from + ' -> ' + to + '] ?';
+  var method = 'PUT';
+  var target = 'cycle';
+  if (id != -1) {
+    title = 'Confirm Modified Annual Cycle';
+    msg = 'Modify Cycle [' + from + ' -> ' + to + '] ?';
+    method = 'POST';
+    target += '/' + id;
+  }
+  confirmbox(title, msg).then(function() {
     var data = 'From=' + document.getElementById('cycle_from').value + '&' +
       'To=' + document.getElementById('cycle_to').value;
-    apiRequest('PUT', 'cycle', data).then(function() {
+    apiRequest(method, target, data).then(function() {
       location.reload();
     })
       .catch(function() {
-        alert('Adding cycle Failed');
+        alert('Add/Modify cycle Failed');
         hideSidebar();
       });
   });
@@ -254,6 +262,13 @@ function doImport() {
   });
 }
 
+function editCycle(data) {
+  document.getElementById('cycle_id').value = data.id;
+  document.getElementById('cycle_from').value = data.DateFrom;
+  document.getElementById('cycle_to').value = data.DateTo;
+  showSidebar('edit_cycle');
+}
+
 function loadEvents() {
   showSpinner();
   apiRequest('GET', 'cycle', 'maxResults=all')
@@ -280,6 +295,32 @@ function loadEvents() {
           f.classList.add('UI-table-cell');
           f.appendChild(document.createTextNode(data.DateTo));
           line.appendChild(f);
+
+          var to = new Date(data.DateTo);
+          var from  = new Date(data.DateFrom);
+          var today = new Date();
+          f = document.createElement('DIV');
+          f.classList.add('UI-table-cell');
+          var em = document.createElement('EM');
+          if (today > to) {
+            em.classList.add('fas');
+            em.classList.add('fa-lock');
+          } else if (today >= from && today <= to) {
+            em.classList.add('far');
+            em.classList.add('fa-star');
+            line.addEventListener('click', function() {
+              editCycle(data);
+            });
+          } else {
+            em.classList.add('fas');
+            em.classList.add('fa-arrow-right');
+            line.addEventListener('click', function() {
+              editCycle(data);
+            });
+          }
+          f.appendChild(em);
+          line.appendChild(f);
+
           table.append(line);
         });
       }
