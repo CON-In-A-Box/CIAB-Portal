@@ -85,13 +85,20 @@ function advance_cycles()
         print "Add new cycle\n";
         $last_start = date('Y-m-d', strtotime($last_start." + 365 day"));
         $last_end = date('Y-m-d', strtotime($last_end." + 365 day"));
-        $cycle = (object)[
-        'From' => $last_start,
-        'To' => $last_end
-        ];
-        new_cycle($cycle);
+        new_cycle($last_start, $last_end);
     }
 
+}
+
+function new_cycle($start, $end)
+{
+    print "$start - $end\n";
+    $sql = <<<SQL
+            INSERT INTO `AnnualCycles` 
+                        (`AnnualCycleID`, `DateFrom`, `DateTo`) 
+                        VALUES (NULL, "$start", "$end")
+SQL;
+    $result = \DB::run($sql);
 }
 
 
