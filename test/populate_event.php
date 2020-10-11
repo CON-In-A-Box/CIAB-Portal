@@ -99,7 +99,7 @@ function new_cycle($start, $end)
                         (`AnnualCycleID`, `DateFrom`, `DateTo`) 
                         VALUES (NULL, "$start", "$end")
 SQL;
-    $result = \DB::run($sql);
+    \DB::run($sql);
 
 }
 
