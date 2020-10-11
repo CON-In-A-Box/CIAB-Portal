@@ -90,6 +90,7 @@ function advance_cycles()
 
 }
 
+
 function new_cycle($start, $end)
 {
     print "$start - $end\n";
@@ -101,7 +102,6 @@ SQL;
     $result = \DB::run($sql);
 
 }
-
 
 
 function add_event()
