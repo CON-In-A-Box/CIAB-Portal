@@ -12,7 +12,7 @@
 
     a.  When prompted, you do want to install the components for
         integrating with WSL2
-        
+
     b.  The install does not require a reboot, but does require you to
         log out and log back in
 
@@ -20,15 +20,14 @@
 
     a.  On the task bar, over on the right side, click on the arrow that
         pops up hidden icons and select the Docker whale. A single click
-        should bring the Docker App up\
-        ![](media/media/image1.png){width="2.864983595800525in"
-        height="3.229617235345582in"}
+        should bring the Docker App up
+        ![](media/image1.png)
 
     b.  Select the Gear icon in the top right of the Docker window
 
     c.  Select Resources -\> WSL
-        INTEGRATION![](media/media/image2.png){width="6.5in"
-        height="4.105555555555555in"}
+        INTEGRATION
+        ![](media/image2.png)
 
     d.  Turn 'Ubuntu' on.
 
@@ -41,9 +40,8 @@
         the Start menu. I recommend starting a Windows Terminal session
         and typing `wsl`, personally.
 
-    b.  Run `docker ps`. It should look like this\
-        ![](media/media/image3.png){width="6.5in"
-        height="0.22430555555555556in"}
+    b.  Run `docker ps`. It should look like this
+        ![](media/image3.png)
 
 7.  Optional: Install Visual Studio Code. NOTE: If you're a Unixhead who likes vi, you can also just run vi in a WSL window. You do need to be in your WSL home directory, however, and not in a Windows-hosted directory, to check out and run code. VSCode offers nice tools for this, as you'll see in a minute.
 
@@ -52,9 +50,8 @@
         you need are probably installed.
 
     b.  In the bottom left corner, you should see a little green icon
-        that looks like this\
-        ![](media/media/image4.png){width="1.0939031058617672in"
-        height="0.7605227471566054in"}
+        that looks like this 
+        ![Green Icon](media/image4.png)
 
     c.  Click that, and select "Remote-WSL: New Window"
 
@@ -142,4 +139,4 @@
         <https://github.com/CON-In-A-Box/CIAB-Portal/blob/master/FirstSetup.md>
         and run through items 4-7 to populate seed data!
         Here's an example of configure_system.php filled out
-        ![](media/media/image5.png){width="6.5in" height="2.4472222222222224in"}
+        ![](media/image5.png)
