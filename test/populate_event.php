@@ -99,7 +99,9 @@ function new_cycle($start, $end)
                         VALUES (NULL, "$start", "$end")
 SQL;
     $result = \DB::run($sql);
+
 }
+
 
 
 function add_event()
