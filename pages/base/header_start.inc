@@ -6,5 +6,5 @@
 <link rel="icon" href="images/favicon.png">
 <link rel="shortcut icon" href="images/favicon.png">
 
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/all.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
 <script defer src="https://use.fontawesome.com/releases/v5.11.2/js/all.js"></script>

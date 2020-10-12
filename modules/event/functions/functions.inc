@@ -599,3 +599,64 @@ function attendance_report($event = null)
 SQL;
 
 }
+
+
+function cycle_attendance_report($cycle = null)
+{
+    $dateFrom = $cycle['DateFrom'];
+    $dateTo = $cycle['DateTo'];
+
+    return <<<SQL
+        SELECT
+            DISTINCT a.`AccountID`,
+            me.`Email`,
+            (
+                SELECT
+                    COUNT(DISTINCT `MeetingID`)
+                FROM
+                    MeetingAttendance AS b
+                WHERE
+                    b.AccountID = a.AccountID
+                    AND b.MeetingID IN (
+                        SELECT
+                            `MeetingID`
+                        FROM
+                            `OfficialMeetings`
+                        WHERE
+                            `Date` >= '$dateFrom' AND `Date` <= '$dateTo'
+                    )
+            ) AS `Count`,
+            (
+                SELECT
+                    GROUP_CONCAT(
+                        DISTINCT (
+                            SELECT
+                                `Name`
+                            FROM
+                                OfficialMeetings AS n
+                            WHERE
+                                n.`MeetingID` = m.`MeetingID`
+                                AND n.`Date` >= '$dateFrom' AND n.`Date` <= '$dateTo'
+                        ) SEPARATOR ', '
+                    )
+                FROM
+                    `MeetingAttendance` AS m
+                WHERE
+                    `AccountID` = a.`AccountID`
+            ) AS Attendance
+        FROM
+            `ConComList` AS a
+        INNER JOIN `Members` me USING(AccountID)
+        WHERE
+            DepartmentID NOT IN (
+                SELECT
+                    `DepartmentID`
+                FROM
+                    `Departments`
+                WHERE
+                    `Name` = 'Historical Placeholder'
+            )
+       ORDER BY `Count` DESC
+SQL;
+
+}
