@@ -6,6 +6,11 @@
 require_once __DIR__."/vendor/autoload.php";
 require_once __DIR__."/functions/functions.inc";
 
+use ScssPhp\ScssPhp\Compiler;
+use ScssPhp\Server\Server;
+
+/* Functions */
+
 
 function from_db($input)
 {
@@ -35,9 +40,9 @@ function from_db($input)
 
 $resource_cache = @sys_get_temp_dir().'/scss_cache/';
 
-$scss = new scssc();
+$scss = new Compiler();
 $scss->addImportPath("scss");
-$scss->setFormatter("scss_formatter_compressed");
+$scss->setFormatter("ScssPhp\ScssPhp\Formatter\Compressed");
 
 $scss->registerFunction('db-color', 'from_db');
 
@@ -68,7 +73,7 @@ if (count($uri) > 3) {
             }
         }
     }
-    $scss->setFormatter("scss_formatter_compressed");
+    $scss->setFormatter("ScssPhp\ScssPhp\Formatter\Compressed");
     header("Content-type: text/css");
     echo $scss->compile($source);
     exit;
@@ -77,5 +82,5 @@ if (count($uri) > 3) {
     $scss_dir = "scss";
 }
 
-$server = new scss_server($scss_dir, $scss_cache, $scss);
+$server = new Server($scss_dir, $scss_cache, $scss);
 $server->serve();
