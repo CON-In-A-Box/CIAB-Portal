@@ -47,7 +47,8 @@
         "stripe/stripe-php": "^7.67",
         "atlas/query": "~1.0",
         "atlas/info": "~1.0",
-        "joachim-n/case-converter": "^1.0"
+        "joachim-n/case-converter": "^1.0",
+        "tecnickcom/tcpdf": "^6.3"
     },
     "autoload": {
         "psr-4": {
