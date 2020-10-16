@@ -951,7 +951,7 @@ function _process_field(&$data, $updateData, $field, $target, $binary = false)
 }
 
 
-function updateAccount($updateData)
+function updateAccount($updateData, $accountId)
 {
     $countries = listCountries();
     foreach ($countries as $country) {
@@ -990,7 +990,7 @@ function updateAccount($updateData)
     _process_field($data, $updateData, 'conComDisplayPhone', 'DisplayPhone', true);
 
     $sql .= implode(", ", $data);
-    $sql .= " WHERE `AccountID` = ".$updateData['accountId'].";";
+    $sql .= " WHERE `AccountID` = $accountId;";
 
     \DB::run($sql);
 

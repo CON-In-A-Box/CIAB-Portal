@@ -4,7 +4,7 @@
 
 /* jshint browser: true */
 /* jshint -W097 */
-/* globals alertbox, confirmbox, basicBackendRequest, apiRequest,
+/* globals alertbox, confirmbox, apiRequest,
            showSpinner, hideSpinner */
 /* exported changePassword, resetPassword, loginUser */
 
@@ -14,6 +14,8 @@ function changePassword() {
   var current = document.getElementById('ciab_currentPassword');
   var newPassword = document.getElementById('ciab_newPassword');
   var again = document.getElementById('ciab_againPassword');
+  var accountID = document.getElementById('accountId').value;
+
   if (!current.value) {
     alertbox('Current Password not supplied');
     return;
@@ -28,16 +30,19 @@ function changePassword() {
   }
 
   confirmbox('Proceed in changing your password?').then(function() {
-    basicBackendRequest('POST', 'profile',
-      'auth=' + current.value + '&password=' + newPassword.value,
-      function() {
+    showSpinner();
+    apiRequest('PUT', 'member/' + accountID + '/password',
+      'NewPassword=' + newPassword.value + '&OldPassword=' + current.value)
+      .then(function() {
+        hideSpinner();
         alertbox('Password Updated').then(
           function() {
             location.reload();
           }
         );
-      },
-      function(response) {
+      })
+      .catch(function(response) {
+        hideSpinner();
         if (response.status == 403) {
           if (current.value) {
             alertbox('Current Password Incorrect');
@@ -62,15 +67,18 @@ function resetPassword() {
     return;
   }
 
-  basicBackendRequest('POST', 'recovery', 'password_reset=' + email.value,
-    function() {
+  showSpinner();
+  apiRequest('POST', 'member/' + email.value + '/password', '')
+    .then(function() {
+      hideSpinner();
       alertbox('Email Sent').then(function() {
         window.location = '/index.php?Function=public';
       });
-    },
-    function() {
+    })
+    .catch(function() {
+      hideSpinner();
       if (email.value) {
-        alertbox('Account for ' + email.value + ' was not found.');
+        alertbox('Password reset for ' + email.value + ' failed.');
       }
       email.value = '';
     });

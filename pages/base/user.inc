@@ -14,13 +14,18 @@ if (empty($_SESSION['state']) && empty($_SESSION['accountInfo']['province'])) {
 ?>
 <?php if ($active) { ?>
 <h3>Your current profile information</h3>
-<form action="index.php?Function=profile" method="post" onsubmit="return validateForm(this)" name="Profile" id="profile_update" class="UI-container">
+<form onsubmit="updateAccount(<?php echo $_SESSION['accountId']?>);" name="Profile" id="profile_update" class="UI-container">
 <?php } else { ?>
 <h3>New Account Information</h3>
 <form name="Profile" id="profile_update" class="UI-container">
 <?php } ?>
 
-  <input type="hidden" name="accountId" value="<?php echo $_SESSION['accountId']; ?>">
+  <input type="hidden" name="accountId" id="accountId" value="
+<?php
+if (isset($_SESSION['accountId'])) {
+    echo $_SESSION['accountId'];
+}
+?>">
   <div class="UI-profile-name-div">
     <div>
       Legal Name
@@ -31,21 +36,41 @@ if (empty($_SESSION['state']) && empty($_SESSION['accountInfo']['province'])) {
     <div class="UI-container">
       <div class="UI-half">
         <div class="UI-twothird">
-          <input type="text" name="firstName" value="<?php echo $_SESSION['firstName']; ?>" class="UI-input" placeholder="First (Required)">
+          <input type="text" name="firstName" value="
+<?php
+if (isset($_SESSION['firstName'])) {
+    echo $_SESSION['firstName'];
+}
+?>" class="UI-input" placeholder="First (Required)">
         </div>
 
         <div class="UI-third">
-          <input type="text" name="middleName" value="<?php echo $_SESSION['accountInfo']['MiddleName']; ?>" class="UI-input" placeholder="Middle">
+          <input type="text" name="middleName" value="
+<?php
+if (isset($_SESSION['accountInfo']['MiddleName'])) {
+    echo $_SESSION['accountInfo']['MiddleName'];
+}
+?>" class="UI-input" placeholder="Middle">
         </div>
       </div>
 
       <div class="UI-half">
         <div class="UI-threequarter">
-          <input type="text" name="lastName" value="<?php echo $_SESSION['lastName']; ?>" class="UI-input" placeholder="Last (Required)">
+          <input type="text" name="lastName" value="
+<?php
+if (isset($_SESSION['lastName'])) {
+    echo $_SESSION['lastName'];
+}
+?>" class="UI-input" placeholder="Last (Required)">
         </div>
 
         <div class="UI-quarter">
-          <input type="text" name="suffix" value="<?php echo $_SESSION['accountInfo']['Suffix']; ?>" class="UI-input" placeholder="Suffix">
+          <input type="text" name="suffix" value="
+<?php
+if (isset($_SESSION['accountId'])) {
+    echo $_SESSION['accountInfo']['Suffix'];
+}
+?>" class="UI-input" placeholder="Suffix">
         </div>
       </div>
     </div>
@@ -101,15 +126,21 @@ if (empty($_SESSION['state']) && empty($_SESSION['accountInfo']['province'])) {
     <div class="UI-container">
       <input type="text" name="email1" id="email1" value="
 <?php
-echo $_SESSION['email'];
+if (isset($_SESSION['email'])) {
+    echo $_SESSION['email'];
+}
     ?>" class="UI-input" placeholder="Primary Email and Login (Required)">
       <input type="text" name="email2" value="
 <?php
-echo $_SESSION['accountInfo']['Email2'];
+if (isset($_SESSION['accountInfo']['Email2'])) {
+    echo $_SESSION['accountInfo']['Email2'];
+}
     ?>" class="UI-input" placeholder="Secondary Email">
       <input type="text" name="email3" value="
 <?php
-echo $_SESSION['accountInfo']['Email3'];
+if (isset($_SESSION['accountInfo']['Email3'])) {
+    echo $_SESSION['accountInfo']['Email3'];
+}
     ?>" class="UI-input" placeholder="Other Email">
     </div>
   </div>
@@ -127,7 +158,7 @@ echo $_SESSION['accountInfo']['Email3'];
         if (isset($_SESSION['accountInfo']['Phone'])) {
             echo $_SESSION['accountInfo']['Phone'];
         }
-    ?>" class="UI-input UI-half" placeholder="Primary (Required)">
+    ?>" class="UI-input UI-half" placeholder="Primary">
       <input type="text" name="phone2" value="
 <?php
 if (isset($_SESSION['accountInfo']['Phone2'])) {
@@ -170,17 +201,23 @@ if (isset($_SESSION['accountInfo']['Phone2'])) {
     <div class="UI-container">
       <input type="text" name="addressLine1" value="
 <?php
-echo $_SESSION['addr1'];
-    ?>" class="UI-input" placeholder="Address (Required)">
+if (isset($_SESSION['addr1'])) {
+    echo $_SESSION['addr1'];
+}
+    ?>" class="UI-input" placeholder="Address">
       <input type="text" name="addressLine2" value="
 <?php
-echo $_SESSION['addr2'];
+if (isset($_SESSION['addr2'])) {
+    echo $_SESSION['addr2'];
+}
     ?>" class="UI-input">
 
       <input type="text" name="city" value="
 <?php
-echo $_SESSION['city'];
-    ?>" class="UI-input UI-half" placeholder="City (Required)">
+if (isset($_SESSION['city'])) {
+    echo $_SESSION['city'];
+}
+    ?>" class="UI-input UI-half" placeholder="City">
       <select name="state" onChange="ExpandOut(this.value, 'otherCountries')" class="UI-select UI-quarter">
         <option value=""<?php
         if (empty($_SESSION['state'])) {
@@ -204,8 +241,10 @@ echo $_SESSION['city'];
       <div class="UI-profile-zip-div">
         <input type="text" name="zipCode" value="
 <?php
-echo $_SESSION['zip'];
-    ?>" class="UI-profile-zip-field" placeholder="Zip Code (Required)">
+if (isset($_SESSION['zip'])) {
+    echo $_SESSION['zip'];
+}
+    ?>" class="UI-profile-zip-field" placeholder="Zip Code">
         <input type="text" name="zipPlus4" value="
 <?php
 if (isset($_SESSION['accountInfo']['AddressZipCodeSuffix'])) {
@@ -214,7 +253,7 @@ if (isset($_SESSION['accountInfo']['AddressZipCodeSuffix'])) {
     ?>" class="UI-profile-zip-4-field" placeholder="Zip+4">
       </div>
 
-      <select name="country" class="UI-select">
+      <select name="countryName" class="UI-select">
         <option value="">Select Country</option>
 <?php
 require_once($FUNCTIONDIR.'/users.inc');
@@ -245,7 +284,7 @@ if (isset($_SESSION['accountInfo']['AddressProvince'])) {
 <?php if ($active) {?>
   <button class="UI-profile-update-button-end">Update Profile</button>
 <?php } else { ?>
-  <button type="button" class="UI-profile-update-button-end" onclick="createAccount();">Create Account</button>
+  <button type="button" class="UI-profile-update-button-end" onclick="updateAccount(-1);">Create Account</button>
 <?php } ?>
 </form>
 
