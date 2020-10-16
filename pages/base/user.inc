@@ -118,7 +118,7 @@ if (isset($_SESSION['accountId'])) {
   <p></p>
   <div class="UI-profile-email-div">
     <div>
-      Emails
+      Email
 <?php if ($active) {?>
       <button class="UI-profile-update-button">Update Profile</button>
 <?php }?>
@@ -130,6 +130,25 @@ if (isset($_SESSION['email'])) {
     echo $_SESSION['email'];
 }
     ?>" class="UI-input" placeholder="Primary Email and Login (Required)">
+<?php if (!$active) {?>
+    </div>
+  </div>
+
+  <p></p>
+
+    <button type="button" onclick="expandSection('optional');" class="UI-event-dropdown-bar">
+        <span>Optional Information<span> <em id="optional_arrow" class="fas fa-caret-down"></em>
+    </button>
+
+  <div id="optional" class="UI-container UI-margin UI-hide">
+
+  <p></p>
+  <div class="UI-profile-email-div">
+    <div>
+      Other Emails
+    </div>
+    <div class="UI-container">
+<?php } ?>
       <input type="text" name="email2" value="
 <?php
 if (isset($_SESSION['accountInfo']['Email2'])) {
@@ -144,7 +163,6 @@ if (isset($_SESSION['accountInfo']['Email3'])) {
     ?>" class="UI-input" placeholder="Other Email">
     </div>
   </div>
-
   <p></p>
   <div class="UI-profile-phone-div">
     <div>
@@ -279,6 +297,10 @@ if (isset($_SESSION['accountInfo']['AddressProvince'])) {
       </div>
     </div>
   </div>
+<?php if (!$active) {?>
+</div>
+<?php } ?>
+
 
   <p></p>
 <?php if ($active) {?>
