@@ -90,25 +90,12 @@ if (!empty($_REQUEST)) {
 
     if (isset($updateData['hook_action'])) {
         if ($updateData['hook_action'] == "install") {
-            $result = neon_registerWebhook(
+            neon_registerWebhook(
                 $updateData['hook_url'],
                 $updateData['hook_name']
             );
-            if ($result !== null) {
-                print "<pre>";
-                print (print_r($updateData, true));
-                print (print_r($result, true));
-                print "</pre>";
-                exit();
-            }
         } else {
-            $result = neon_removeWebhook();
-            if ($result !== null) {
-                print "<pre>";
-                print (print_r($result, true));
-                exit();
-                print "</pre>";
-            }
+            neon_removeWebhook();
         }
         goSite('/index.php?Function=admin');
     }
