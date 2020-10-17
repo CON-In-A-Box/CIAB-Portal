@@ -4,11 +4,15 @@
 .*/
 
 $app->get('/member/{name}/status', 'App\Controller\Member\GetStatus');
+$app->post('/member[/]', 'App\Controller\Member\PostMember');
+$app->post('/member/{name}/password', 'App\Controller\Member\PostPassword');
 
 $app->group(
     '/member',
     function () use ($app, $authMiddleware) {
-        $app->get('/[{name}]', 'App\Controller\Member\GetMember');
+        $app->get('[/[{name}]]', 'App\Controller\Member\GetMember');
+        $app->put('/{name}', 'App\Controller\Member\PutMember');
+        $app->put('/{name}/password', 'App\Controller\Member\PutPassword');
         $app->get('/{name}/deadlines', 'App\Controller\Member\ListDeadlines');
         $app->get('/{name}/announcements', 'App\Controller\Announcement\ListMemberAnnouncements');
         $app->get('/deadlines/', 'App\Controller\Member\ListDeadlines');

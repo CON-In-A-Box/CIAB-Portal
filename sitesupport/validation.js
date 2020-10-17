@@ -91,27 +91,5 @@ function validateForm(thisform) {
     thisform.email1.focus();
     return false;
   }
-  if (validateRequired(thisform.phone1,
-    'Must have at least one phone number') === false) {
-    thisform.phone1.focus();
-    return false;
-  }
-  if (validateRequired(thisform.addressLine1,
-    'Address cannot be blank') === false) {
-    thisform.addressLine1.focus();
-    return false;
-  }
-  if (validateRequired(thisform.city,'City cannot be blank') === false) {
-    thisform.city.focus();
-    return false;
-  }
-  if (validateRequired(thisform.zipCode,'Zip Code cannot be blank') === false) {
-    thisform.zipCode.focus();
-    return false;
-  }
-  if (validateSelect(thisform.country,'Please select a country') === false) {
-    thisform.country.focus();
-    return false;
-  }
   return true;
 }

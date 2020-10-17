@@ -8,10 +8,49 @@ The following methods are available to member resources:
 |Resource Method|HTTP Request|Description|Module|RBAC|
 |---|---|---|---|---|
 |[status](Member.md#status)|GET /member/{id}/status|Returns a code based on the status of the user account specified by `id`|core|--|
+|[create](Member.md#create)|POST /member|Create a new Member|core|--|
+|[createPassword](Member.md#createPassword)|POST /member/{id}/password|Create a new temporary password for a member and email the account.|core|--|
 |[get](Member.md#get)|GET /member/{id}|Get details about a given member. To get information about the current authenticated user, leave the [id] blank.|core|--|
+|[update](Member.md#update)|PUT /member/{id}|Update details about a given member.|core|api.put.member|
+|[updatePassword](Member.md#updatePassword)|PUT /member/{id}/password|Update the password for a member.|core|api.put.member.password|
 |[deadlines](Member.md#deadlines)|GET /member/{id}/deadlines|Get deadlines for a given member.|core|--|
 |[announcements](Member.md#announcements)|GET /member/{id}/announcements|Get a list of announcements for a given member.|core|-|
 |[concom](Concom.md#member)|GET /member/{id}/concom|Get the list of concom positions the member fills, leave the `id` out specify the logged in Member|[concom](Concom.md)|api.get.concom|
+
+<a name="common_objects"></a>
+## Common Objects
+
+A member object resource is returned.
+
+```
+{
+    "id": {integer},
+    "firstName": {string},
+    "LastName": {string},
+    "email": {string},
+    "type": "member",
+    "links": [{HATEOAS link}]
+}
+```
+
+Member object resources have a number of available properties. These include:
+
+|Object Property|Value|Description|
+|---|---|---|
+|id|integer|ID of the member|
+|firstName|string|Members preferred first name|
+|lastName|string|Members preferred last name|
+|email|string|Members primary email|
+|type|string|Always `member`|
+|links[]|list| List of HATEOAS links for this member|
+
+The following HATEOAS methods are available as well:
+
+|HATEOAS Method|Request|Description|
+|---|---|---|
+|deadlines|GET|Get a list of deadlines for the member.|
+|update|PUT|Update the member data.|
+|updatePassword|PUT|Update the member's temporary password.|
 
 <a name="status"></a>
 ## status
@@ -58,7 +97,7 @@ Status object have a number of available properties. These include:
 * status 0x3 is account locked
 * status 0x10 is added if the account has multiple entries
 
-### get Code Samples
+### status Code Samples
 Request Sample
 
 ```
@@ -71,6 +110,123 @@ Response Sample
     "type": "member_status",
     "status": 0
 }
+```
+
+<a name="create"></a>
+## create
+
+Create a member in the system and generates a temporary password for the member and e-mails the password to the email for the newly created member.
+
+*Note*: Authentication is not required to use this entry point.
+
+### create Request
+
+```POST /member```
+
+### create Parameters
+
+There are no parameters available.
+
+### create Request Body
+
+|Parameter|Meaning|Notes|
+|---|---|---|
+|email1|Primary E-Mail address and login username|<b>Required</b>|
+|firstName|Members first name.|<b>Required</b>|
+|lastName|Members last name.|<b>Required</b>|
+|middleName|Member's middle name.|Optional|
+|suffix|Suffix for members name.|Optional|
+|email2|Member's second email.|Optional|
+|email3|Member's third email|Optional|
+|phone1|Member's primary phone|Optional|
+|phone2|Member's secondary phone|Optional|
+|addressLine1|Member's address line 1|Optional|
+|addressLine2|Member's address line 2|Optional|
+|city|Member's address city.|Optional|
+|state|Member's address state|Optional|
+|zipCode|Member's Address Zip code.|Optional|
+|zipPlus4|Member's Address Zip code suffix|Optional|
+|countryName|Member's Address country.|Optional|
+|province|Member's Address province.|Optional|
+|preferredFirstName|Member's Preferred First Name.|Optional|
+|preferredLastName|Member's Preferred Last Name.|Optional|
+|Deceased|Boolean: Is member deceased.|Optional|
+|DoNotContact|Boolean: Do not contact member.|Optional|
+|EmailOptOut|Boolean: Do not mass email member.|Optional|
+|Birthdate|Date: Member's birth date.|Optional|
+|Gender|Member's preffered gender string.|Optional|
+|conComDisplayPhone|Boolean: If Concom display phone on list.|Optional|
+...
+
+### create Response
+A member object resource is returned.
+
+###create Code Samples
+Request Sample
+
+```
+curl -X POST -H 'Authorization: Bearer e0438d90599b1c4762d12fd03db6311c9ca46729' http://localhost/api/member?pretty=true \
+-d { 'email1' : 'koaWebgou@email.net', \
+	 'firstName' : 'koaWebgou', \
+	 'lastName' : 'Zuimenmohnun'}
+```
+Response Sample
+
+```
+{
+    "id": "1002",
+    "firstName": "koaWebgou",
+    "lastName": "Zuimenmohnun",
+    "email": "koaWebgou@email.net",
+    "type": "member",
+    "links": [
+        {
+            "method": "self",
+            "href": "http:\/\/localhost:8080\/api\/member\/1002",
+            "request": "GET"
+        }
+    ]
+}
+```
+
+<a name="createPassword"></a>
+## createPassword
+
+Generate a new temporary password for a member.
+
+*Note*: Authentication is not required to use this entry point.
+
+### createPassword Request
+
+```POST /member/{id}/password```
+
+### createPassword Parameters
+
+The following parameters are available:
+
+|Parameter|Meaning|Notes|
+|---|---|---|
+|id|Member for which data is being retrieved.||
+
+
+### createPassword Request Body
+
+Do not supply a request body.
+
+### createPassword Response
+
+Empty if successful
+
+### createPassword Code Samples
+Request Sample
+
+```
+curl -X POST -H 'Authorization: Bearer e0438d90599b1c4762d12fd03db6311c9ca46729' http://localhost/api/member/1002/password?pretty=true \
+```
+Response Sample
+
+```
+{ }
 ```
 
 <a name="get"></a>
@@ -96,34 +252,6 @@ Do not supply a request body.
 ### get Response
 A member object resource is returned.
 
-```
-{
-    "id": {integer},
-    "firstName": {string},
-    "LastName": {string},
-    "email": {string},
-    "type": "member",
-    "links": [{HATEOAS link}]
-}
-```
-
-Member object resources have a number of available properties. These include:
-
-|Object Property|Value|Description|
-|---|---|---|
-|id|integer|ID of the member|
-|firstName|string|Members preferred first name|
-|lastName|string|Members preferred last name|
-|email|string|Members primary email|
-|type|string|Always `member`|
-|links[]|list| List of HATEOAS links for this member|
-
-The following HATEOAS methods are available as well:
-
-|HATEOAS Method|Request|Description|
-|---|---|---|
-|deadlines|GET|Get a list of deadlines for the member.|
-
 ### get Code Samples
 Request Sample
 
@@ -148,6 +276,124 @@ Response Sample
     ]
 }
 ```
+
+<a name="update"></a>
+## update
+
+Update a member information on the system.
+
+### update Request
+
+```PUT /member/{id}```
+
+### update Parameters
+
+There are no parameters available.
+
+### update Request Body
+
+|Parameter|Meaning|Notes|
+|---|---|---|
+|firstName|Members first name.|Optional|
+|lastName|Members last name.|Optional|
+|middleName|Member's middle name.|Optional|
+|suffix|Suffix for members name.|Optional|
+|email2|Member's second email.|Optional|
+|email3|Member's third email|Optional|
+|phone1|Member's primary phone|Optional|
+|phone2|Member's secondary phone|Optional|
+|addressLine1|Member's address line 1|Optional|
+|addressLine2|Member's address line 2|Optional|
+|city|Member's address city.|Optional|
+|state|Member's address state|Optional|
+|zipCode|Member's Address Zip code.|Optional|
+|zipPlus4|Member's Address Zip code suffix|Optional|
+|countryName|Member's Address country.|Optional|
+|province|Member's Address province.|Optional|
+|preferredFirstName|Member's Preferred First Name.|Optional|
+|preferredLastName|Member's Preferred Last Name.|Optional|
+|Deceased|Boolean: Is member deceased.|Optional|
+|DoNotContact|Boolean: Do not contact member.|Optional|
+|EmailOptOut|Boolean: Do not mass email member.|Optional|
+|Birthdate|Date: Member's birth date.|Optional|
+|Gender|Member's preffered gender string.|Optional|
+|conComDisplayPhone|Boolean: If Concom display phone on list.|Optional|
+...
+
+### update Response
+A member object resource is returned.
+
+###update Code Samples
+Request Sample
+
+```
+curl -X POST -H 'Authorization: Bearer e0438d90599b1c4762d12fd03db6311c9ca46729' http://localhost/api/member?pretty=true \
+-d { 'email1' : 'koaWebgou@email.net', \
+	 'firstName' : 'koaWebgou', \
+	 'lastName' : 'Zuimenmohnun'}
+```
+Response Sample
+
+```
+{
+    "id": "1002",
+    "firstName": "koaWebgou",
+    "lastName": "Zuimenmohnun",
+    "email": "koaWebgou@email.net",
+    "type": "member",
+    "links": [
+        {
+            "method": "self",
+            "href": "http:\/\/localhost:8080\/api\/member\/1002",
+            "request": "GET"
+        }
+    ]
+}
+```
+
+<a name="updatePassword"></a>
+## updatePassword
+
+Save a new temporary or primary password for a member. Unless the `api.put.member.password` RBAC is set a member can only update their own password.
+
+### updatePassword Request
+
+```PUT /member/{id}/password```
+
+### updatePassword Parameters
+
+The following parameters are available:
+
+|Parameter|Meaning|Notes|
+|---|---|---|
+|id|Member for which the password is being updated.||
+
+
+### updatePassword Request Body
+
+|Parameter|Meaning|Notes|
+|---|---|---|
+|NewPassword|The new password being set|*Required*|
+|OldPassword|The existing password|Required unless the `api.put.member.password` RBAC is set|
+|Temporary|Set the temporary password|Boolean, default `False`|
+
+### updatePassword Response
+
+Empty if successful
+
+### updatePassword Code Samples
+Request Sample
+
+```
+curl -X PUT -H 'Authorization: Bearer e0438d90599b1c4762d12fd03db6311c9ca46729' http://localhost/api/member/1002/password?pretty=true \
+-d {'OldPassword' : 'fishy', 'NewPassword' : 'sticks'}
+```
+Response Sample
+
+```
+{ }
+```
+
 
 <a name="deadlines"></a>
 ## deadlines
