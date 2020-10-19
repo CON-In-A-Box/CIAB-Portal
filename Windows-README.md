@@ -43,7 +43,7 @@
     b.  Run `docker ps`. It should look like this
         ![](media/image3.png)
 
-7.  Optional: Install Visual Studio Code. NOTE: If you're a Unixhead who likes vi, you can also just run vi in a WSL window. You do need to be in your WSL home directory, however, and not in a Windows-hosted directory, to check out and run code. VSCode offers nice tools for this, as you'll see in a minute.
+7.  Optional: Install [Visual Studio Code](https://code.visualstudio.com/). NOTE: If you're a Unixhead who likes vi, you can also just run vi in a WSL window. You do need to be in your WSL home directory, however, and not in a Windows-hosted directory, to check out and run code. VSCode offers nice tools for this, as you'll see in a minute.
 
     a.  Once installed, select the extensions icon from the left hand
         side, and search for "Remote -- WSL". All the other extensions
