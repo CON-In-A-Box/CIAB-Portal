@@ -19,7 +19,7 @@ class ListDeadlines extends BaseMember
             if (gettype($data) === 'object') {
                 return $data;
             }
-            $user = $data['Id'];
+            $user = $data['id'];
         } else {
             $user = $request->getAttribute('oauth2-token')['user_id'];
         }

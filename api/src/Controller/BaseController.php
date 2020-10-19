@@ -256,18 +256,60 @@ abstract class BaseController
     }
 
 
-    public function findMember(Request $request, Response $response, $args, $key)
+    private static function mapMemberData($input)
     {
+        $map = ['Id' => 'id', 'First Name' => 'firstName',
+        'Last Name' => 'lastName', 'Email' => 'email',
+        'FirstName' => 'legalFirstName', 'LastName' => 'legalLastName',
+        'MiddleName' => 'middleName', 'Suffix' => 'suffix',
+        'Email2' => 'email2', 'Email3' => 'email3', 'Phone' => 'phone1',
+        'Phone2' => 'phone2', 'AddressLine1' => 'addressLine1',
+        'AddressLine2' => 'addressLine2', 'AddressCity' => 'city',
+        'AddressState' => 'state', 'AddressZipCode' => 'zipCode',
+        'AddressZipCodeSuffix' => 'zipPlus4', 'AddressCountry' => 'countryName',
+        'AddressProvince' => 'province',
+        'PreferredFirstName' => 'preferredFirstName',
+        'PreferredLastName' => 'preferredLastName',
+        'Deceased' => 'Deceased', 'DoNotContact' => 'DoNotContact',
+        'EmailOptOut' => 'EmailOptOut', 'Birthdate' => 'Birthdate',
+        'Gender' => 'Gender', 'DisplayPhone' => 'conComDisplayPhone'];
+        $output = [];
+        foreach ($map as $inField => $outField) {
+            if (array_key_exists($inField, $input) && $input[$inField]) {
+                $output[$outField] = $input[$inField];
+            }
+        }
+        return $output;
+
+    }
+
+
+    public function findMember(
+        Request $request,
+        Response $response,
+        $args,
+        $key,
+        $fields = null
+    ) {
+        if ($fields === null) {
+            $fields = ['FirstName', 'MiddleName', 'LastName',
+            'Suffix', 'Email2', 'Email3', 'Phone', 'Phone2',
+            'AddressLine1', 'AddressLine2', 'AddressCity', 'AddressState',
+            'AddressZipCode', 'AddressZipCodeSuffix', 'AddressCountry',
+            'AddressProvince', 'PreferredFirstName', 'PreferredLastName',
+            'Deceased', 'DoNotContact', 'EmailOptOut', 'Birthdate',
+            'Gender', 'DisplayPhone'];
+        }
         if ($args !== null && array_key_exists($key, $args)) {
-            $data = \lookup_users_by_key($args[$key]);
+            $data = \lookup_users_by_key($args[$key], true, true, false, $fields);
             if (empty($data['users'])) {
                 return null;
             }
-            $data = $data['users'][0];
+            $data = BaseController::mapMemberData($data['users'][0]);
         } else {
             $user = $request->getAttribute('oauth2-token')['user_id'];
-            $data = \lookup_user_by_id($user);
-            $data = $data['users'][0];
+            $data = \lookup_user_by_id($user, $fields);
+            $data = BaseController::mapMemberData($data['users'][0]);
         }
         return $data;
 

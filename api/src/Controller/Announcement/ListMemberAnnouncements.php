@@ -19,7 +19,7 @@ class ListMemberAnnouncements extends BaseAnnouncement
             if ($user === null) {
                 return $this->errorResponse($request, $response, $error, 'User Not Found', 404);
             }
-            $user = $user['Id'];
+            $user = $user['id'];
         } else {
             $user = $request->getAttribute('oauth2-token')['user_id'];
         }

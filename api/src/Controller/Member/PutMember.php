@@ -42,7 +42,7 @@ class PutMember extends BaseMember
             \App\Controller\BaseController::RESULT_TYPE,
             $data];
         }
-        $accountID = $data['Id'];
+        $accountID = $data['id'];
 
         if (!$this->privilaged) {
             $user = $request->getAttribute('oauth2-token')['user_id'];

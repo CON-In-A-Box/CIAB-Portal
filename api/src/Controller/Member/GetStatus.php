@@ -33,7 +33,7 @@ class GetStatus extends BaseMember
         }
         $data = $data['users'][0];
         $valid = array('type' => 'member_status',
-                       'status' => \verify_account($data['Id']));
+                       'status' => \verify_account($data['id']));
         return [
         \App\Controller\BaseController::RESOURCE_TYPE,
         $valid];
