@@ -23,7 +23,7 @@ class PostPassword extends BaseMember
             $data];
         }
         $password = \rppg();
-        \reset_password($data['Email'], $password);
+        \reset_password($data['email'], $password);
         return [null];
 
     }

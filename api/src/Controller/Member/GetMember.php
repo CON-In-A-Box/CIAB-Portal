@@ -21,15 +21,9 @@ class GetMember extends BaseMember
             $data];
         } else {
             $this->buildMemberHateoas($request);
-            $output = array(
-                'id' => $data['Id'],
-                'firstName' => $data['First Name'],
-                'lastName' => $data['Last Name'],
-                'email' => $data['Email']
-            );
             return [
             \App\Controller\BaseController::RESOURCE_TYPE,
-            $output];
+            $data];
         }
 
     }

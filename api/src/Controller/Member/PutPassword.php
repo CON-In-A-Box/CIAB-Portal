@@ -22,7 +22,7 @@ class PutPassword extends BaseMember
             \App\Controller\BaseController::RESULT_TYPE,
             $data];
         }
-        $accountID = $data['Id'];
+        $accountID = $data['id'];
 
         $body = $request->getParsedBody();
         $password = $body['NewPassword'];
@@ -55,7 +55,7 @@ class PutPassword extends BaseMember
 
         if (array_key_exists('Temporary', $body) &&
             boolval($body['Temporary'])) {
-            \reset_password($data['Email'], $password);
+            \reset_password($data['email'], $password);
         } else {
             \set_password($accountID, $password);
         }

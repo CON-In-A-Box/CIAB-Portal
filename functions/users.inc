@@ -302,7 +302,7 @@ function _parse_user($result, $additional_fields)
 }
 
 
-function _lookup_user($criteria, $single_result = false, $additional_fields = array())
+function _lookup_user($criteria, $single_result = false, $fields = array())
 {
     $sql = "SELECT * FROM `Members` WHERE $criteria;";
 
@@ -316,7 +316,7 @@ function _lookup_user($criteria, $single_result = false, $additional_fields = ar
     }
     $output = ['code' => null, 'users' => array()];
     while ($value !== false) {
-        $user = _parse_user($value, $additional_fields);
+        $user = _parse_user($value, $fields);
         array_push($output['users'], $user);
         $value = $result->fetch();
     }
@@ -325,32 +325,32 @@ function _lookup_user($criteria, $single_result = false, $additional_fields = ar
 }
 
 
-function lookup_users_by_ids($ids)
+function lookup_users_by_ids($ids, $fields = array())
 {
     if (array_key_exists('Neon', $GLOBALS)) {
         loadDefinedFields();
         $str = "('".implode("', '", $ids)."')";
-        return _neon_lookup_user([['Account ID', 'IN_RANGE', $str]]);
+        return _neon_lookup_user([['Account ID', 'IN_RANGE', $str]], false, $fields);
     }
     $str = implode(", ", $ids);
-    return _lookup_user("AccountId IN ($str)");
+    return _lookup_user("AccountId IN ($str)", false, $fields);
 
 }
 
 
-function lookup_user_by_id($id)
+function lookup_user_by_id($id, $fields = array())
 {
     $id = trim($id);
     if (array_key_exists('Neon', $GLOBALS)) {
         loadDefinedFields();
-        return _neon_lookup_user([['Account ID', 'EQUAL', $id]], true);
+        return _neon_lookup_user([['Account ID', 'EQUAL', $id]], true, $fields);
     }
-    return _lookup_user("AccountID = $id", true);
+    return _lookup_user("AccountID = $id", true, $fields);
 
 }
 
 
-function lookup_users_by_email($email, $single = true, $substring = false)
+function lookup_users_by_email($email, $single = true, $substring = false, $fields = array())
 {
     $email = trim($email);
     if (array_key_exists('Neon', $GLOBALS)) {
@@ -360,12 +360,12 @@ function lookup_users_by_email($email, $single = true, $substring = false)
         } else {
             $operator = 'EQUAL';
         }
-        return _neon_lookup_user([['Email', $operator, $email]], $single);
+        return _neon_lookup_user([['Email', $operator, $email]], $single, $fields);
     }
     if ($substring) {
-        return _lookup_user("Email LIKE '%$email%'", $single);
+        return _lookup_user("Email LIKE '%$email%'", $single, $fields);
     } else {
-        return _lookup_user("Email = '$email'", $single);
+        return _lookup_user("Email = '$email'", $single, $fields);
     }
 
 }
@@ -425,7 +425,7 @@ function merge_results($result1, $result2)
 }
 
 
-function lookup_users_by_name($name, $single = false, $substring = false)
+function lookup_users_by_name($name, $single = false, $substring = false, $fields = array())
 {
     $name = trim(preg_replace('/\s+/', ' ', $name));
     if (array_key_exists('Neon', $GLOBALS)) {
@@ -433,14 +433,15 @@ function lookup_users_by_name($name, $single = false, $substring = false)
         if ($substring) {
             $names = explode(" ", $name);
             if (count($names) < 2) {
-                $result = _neon_lookup_user([['First Name', 'CONTAIN', $name]], $single);
-                $result2 = _neon_lookup_user([['Last Name', 'CONTAIN', $name]], $single);
+                $result = _neon_lookup_user([['First Name', 'CONTAIN', $name]], $single, $fields);
+                $result2 = _neon_lookup_user([['Last Name', 'CONTAIN', $name]], $single, $fields);
                 return merge_results($result, $result2);
             } else {
                 return _neon_lookup_user(
                     [['First Name', 'EQUAL', $names[0]],
                                      ['Last Name', 'CONTAIN', $names[1]]],
-                    $single
+                    $single,
+                    $fields
                 );
             }
         } else {
@@ -451,7 +452,8 @@ function lookup_users_by_name($name, $single = false, $substring = false)
             return _neon_lookup_user(
                 [['First Name', 'EQUAL', $names[0]],
                                  ['Last Name', 'EQUAL', $names[1]]],
-                $single
+                $single,
+                $fields
             );
         }
     }
@@ -466,12 +468,12 @@ function lookup_users_by_name($name, $single = false, $substring = false)
         $query = "FirstName = '$names[0]' AND LastName = '$names[1]'";
     }
 
-    return _lookup_user($query, $single);
+    return _lookup_user($query, $single, $fields);
 
 }
 
 
-function lookup_users_by_pref_name($name, $single = false, $substring = false)
+function lookup_users_by_pref_name($name, $single = false, $substring = false, $fields = array())
 {
     $name = trim(preg_replace('/\s+/', ' ', $name));
     if (array_key_exists('Neon', $GLOBALS)) {
@@ -481,35 +483,39 @@ function lookup_users_by_pref_name($name, $single = false, $substring = false)
         if ($substring) {
             $names = explode(" ", $name);
             if (count($names) < 2) {
-                $result = _neon_lookup_user([[$preferredFirstName, 'CONTAIN', $name]], $single);
-                $result2 = _neon_lookup_user([[$preferredLastName, 'CONTAIN', $name]], $single);
+                $result = _neon_lookup_user([[$preferredFirstName, 'CONTAIN', $name]], $single, $fields);
+                $result2 = _neon_lookup_user([[$preferredLastName, 'CONTAIN', $name]], $single, $fields);
                 return merge_results($result, $result2);
             } else {
                 $result = _neon_lookup_user(
                     [[$preferredFirstName, 'EQUAL', $names[0]],
                      [$preferredLastName, 'CONTAIN', $names[1]]
                     ],
-                    $single
+                    $single,
+                    $fields
                 );
                 $result2 = _neon_lookup_user(
                     [['First Name', 'EQUAL', $names[0]],
                      [$preferredLastName, 'CONTAIN', $names[1]]
                     ],
-                    $single
+                    $single,
+                    $fields
                 );
                 $result = merge_results($result, $result2);
                 $result2 = _neon_lookup_user(
                     [['First Name', 'EQUAL', $names[0]],
                      ['Last Name', 'CONTAIN', $names[1]]
                     ],
-                    $single
+                    $single,
+                    $fields
                 );
                 $result = merge_results($result, $result2);
                 $result2 = _neon_lookup_user(
                     [[$preferredFirstName, 'EQUAL', $names[0]],
                      ['Last Name', 'CONTAIN', $names[1]]
                     ],
-                    $single
+                    $single,
+                    $fields
                 );
                 $result = merge_results($result, $result2);
                 return $result;
@@ -524,7 +530,8 @@ function lookup_users_by_pref_name($name, $single = false, $substring = false)
             $output = _neon_lookup_user(
                 [[$preferredFirstName, 'EQUAL', $names[0]],
                  [$preferredLastName, 'EQUAL', $names[1]]],
-                $single
+                $single,
+                $fields
             );
             if (count($output['users']) != 0) {
                 return $output;
@@ -532,7 +539,8 @@ function lookup_users_by_pref_name($name, $single = false, $substring = false)
             $output = _neon_lookup_user(
                 [[$preferredFirstName, 'EQUAL', $names[0]],
                  ['Last Name', 'EQUAL', $names[1]]],
-                $single
+                $single,
+                $fields
             );
             if (count($output['users']) != 0) {
                 return $output;
@@ -540,7 +548,8 @@ function lookup_users_by_pref_name($name, $single = false, $substring = false)
             return _neon_lookup_user(
                 [['First Name', 'EQUAL', $names[0]],
                  [$preferredLastName, 'EQUAL', $names[1]]],
-                $single
+                $single,
+                $fields
             );
         }
     }
@@ -574,7 +583,7 @@ Q;
     (FirstName = '$names[0]' AND PreferredLastName = '$names[1]')
 Q;
     }
-    return _lookup_user($query, $single);
+    return _lookup_user($query, $single, $fields);
 
 }
 
@@ -582,7 +591,8 @@ Q;
 function lookup_users_by_badgename(
     $badge,
     $single_user = false,
-    $substring = false
+    $substring = false,
+    $fields = array()
 ) {
     $badge = trim($badge);
     if ($substring) {
@@ -611,7 +621,7 @@ SQL;
         if ($single_user && count($users) > 1) {
             return array('code' => '409 Conflict', 'users' => array());
         }
-        $users[] = lookup_user_by_id($value['AccountID'])['users'][0];
+        $users[] = lookup_user_by_id($value['AccountID'], $fields)['users'][0];
         $value = $result->fetch();
     }
 
@@ -620,7 +630,7 @@ SQL;
 }
 
 
-function lookup_users_by_key($key, $single = true, $badgename = true, $substring = false)
+function lookup_users_by_key($key, $single = true, $badgename = true, $substring = false, $fields = array())
 {
     $key = trim(preg_replace('/\s+/', ' ', $key));
     if ($substring) {
@@ -628,39 +638,39 @@ function lookup_users_by_key($key, $single = true, $badgename = true, $substring
         if (is_numeric($key) ||
             (strtoupper($key)[0] == 'A' && is_numeric(substr($key, 1)))) {
             if (strtoupper($key)[0] == 'A') {
-                $result = lookup_user_by_id(substr($key, 1));
+                $result = lookup_user_by_id(substr($key, 1), $fields);
                 $output = merge_results($output, $result);
             } else {
-                $result = lookup_user_by_id($key);
+                $result = lookup_user_by_id($key, $fields);
                 $output = merge_results($output, $result);
             }
         }
-        $result = lookup_users_by_email($key, $single, true);
+        $result = lookup_users_by_email($key, $single, true, $fields);
         $output = merge_results($output, $result);
-        $result = lookup_users_by_name($key, $single, true);
+        $result = lookup_users_by_name($key, $single, true, $fields);
         $output = merge_results($output, $result);
-        $result = lookup_users_by_pref_name($key, $single, true);
+        $result = lookup_users_by_pref_name($key, $single, true, $fields);
         $output = merge_results($output, $result);
-        $result = lookup_users_by_badgename($key, $single, true);
+        $result = lookup_users_by_badgename($key, $single, true, $fields);
         $output = merge_results($output, $result);
         return $output;
     } else {
         if (is_numeric($key) ||
             (strtoupper($key)[0] == 'A' && is_numeric(substr($key, 1)))) {
             if (strtoupper($key)[0] == 'A') {
-                return lookup_user_by_id(substr($key, 1));
+                return lookup_user_by_id(substr($key, 1), $fields);
             } else {
-                return lookup_user_by_id($key);
+                return lookup_user_by_id($key, $fields);
             }
         } elseif (strpos($key, '@') !== false) {
-            return lookup_users_by_email($key, $single);
+            return lookup_users_by_email($key, $single, $fields);
         } else {
-            $output = lookup_users_by_name($key, $single);
+            $output = lookup_users_by_name($key, $single, $fields);
             if (count($output['users']) == 0) {
-                $output = lookup_users_by_pref_name($key, $single);
+                $output = lookup_users_by_pref_name($key, $single, $fields);
             }
             if ($badgename && count($output['users']) == 0) {
-                $output = lookup_users_by_badgename($key, $single);
+                $output = lookup_users_by_badgename($key, $single, $fields);
             }
             return $output;
         }
@@ -727,22 +737,22 @@ function lookup_users_by_name_email($first, $last, $email, $fields, $single_user
 }
 
 
-function lookup_user_by_login($user, $substring = false)
+function lookup_user_by_login($user, $substring = false, $fields = array())
 {
-    $output = lookup_users_by_email($user, false);
+    $output = lookup_users_by_email($user, false, $fields);
     if (count($output['users']) == 0) {
         if (array_key_exists('Neon', $GLOBALS)) {
             loadDefinedFields();
             if ($substring) {
-                $output = _neon_lookup_user([['Account Login Name', 'CONTAIN', $user]], false);
+                $output = _neon_lookup_user([['Account Login Name', 'CONTAIN', $user]], false, $fields);
             } else {
-                $output = _neon_lookup_user([['Account Login Name', 'EQUAL', $user]], false);
+                $output = _neon_lookup_user([['Account Login Name', 'EQUAL', $user]], false, $fields);
             }
         } else {
             if ($substring) {
-                $output = _lookup_user("Login LIKE '%$user%'", false);
+                $output = _lookup_user("Login LIKE '%$user%'", false, $fields);
             } else {
-                $output = _lookup_user("Login = '$user'", false);
+                $output = _lookup_user("Login = '$user'", false, $fields);
             }
         }
     }
@@ -953,18 +963,24 @@ function _process_field(&$data, $updateData, $field, $target, $binary = false)
 
 function updateAccount($updateData, $accountId)
 {
-    $countries = listCountries();
-    foreach ($countries as $country) {
-        if ($country['id'] === $updateData['country']) {
-            $updateData['countryName'] = $country['name'];
-            break;
+    if (array_key_exists('country', $updateData)) {
+        $countries = listCountries();
+        foreach ($countries as $country) {
+            if ($country['id'] === $updateData['country']) {
+                $updateData['countryName'] = $country['name'];
+                break;
+            }
         }
     }
 
     $sql = "UPDATE `Members` SET ";
     $data = array();
-    array_push($data, "`FirstName` = '".$updateData['firstName']."'");
-    array_push($data, "`LastName` = '".$updateData['lastName']."'");
+    if (isset($updateData['firstName'])) {
+        array_push($data, "`FirstName` = '".$updateData['firstName']."'");
+    }
+    if (isset($updateData['lastName'])) {
+        array_push($data, "`LastName` = '".$updateData['lastName']."'");
+    }
     _process_field($data, $updateData, 'middleName', 'MiddleName');
     _process_field($data, $updateData, 'suffix', 'Suffix');
     _process_field($data, $updateData, 'email1', 'Email');

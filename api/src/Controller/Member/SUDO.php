@@ -26,7 +26,7 @@ class SUDO extends BaseMember
         } else {
             if (\ciab\RBAC::havePermission('admin.sudo')) {
                 $token = $request->getAttribute('oauth2-token');
-                $storage->setAccessToken($token['access_token'], $token['client_id'], $data['Id'], $token['expires']);
+                $storage->setAccessToken($token['access_token'], $token['client_id'], $data['id'], $token['expires']);
                 return [null];
             } else {
                 return [

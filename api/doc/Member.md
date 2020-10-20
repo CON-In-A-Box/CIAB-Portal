@@ -37,12 +37,38 @@ Member object resources have a number of available properties. These include:
 
 |Object Property|Value|Description|
 |---|---|---|
+|type|string|Always `member`|
 |id|integer|ID of the member|
 |firstName|string|Members preferred first name|
 |lastName|string|Members preferred last name|
 |email|string|Members primary email|
-|type|string|Always `member`|
+|legalFirstName|string|Members legal first name.|
+|legalLastName|string|Members legal last name.|
+|middleName|string|Member's middle name.|
+|suffix|string|Suffix for members name.|
+|email2|string|Member's second email.|
+|email3|string|Member's third email|
+|phone1|string|Member's primary phone|
+|phone2|string|Member's secondary phone|
+|addressLine1|string|Member's address line 1|
+|addressLine2|string|Member's address line 2|
+|city|string|Member's address city.|
+|state|string|Member's address state|
+|zipCode|string|Member's Address Zip code.|
+|zipPlus4|string|Member's Address Zip code suffix|
+|countryName|string|Member's Address country.|
+|province|string|Member's Address province.|
+|preferredFirstName|string|Member's Preferred First Name.|
+|preferredLastName|string|Member's Preferred Last Name.|
+|Deceased|Boolean|Is member deceased.|
+|DoNotContact|Boolean|Do not contact member.|
+|EmailOptOut|Boolean|Do not mass email member.|
+|Birthdate|Date|Member's birth date.|
+|Gender|string|Member's preferred gender string.|
+|conComDisplayPhone|Boolean|If Concom display phone on list.|
 |links[]|list| List of HATEOAS links for this member|
+
+If a property is unset on the object then it will not be returned. 
 
 The following HATEOAS methods are available as well:
 
@@ -132,8 +158,8 @@ There are no parameters available.
 |Parameter|Meaning|Notes|
 |---|---|---|
 |email1|Primary E-Mail address and login username|<b>Required</b>|
-|firstName|Members first name.|<b>Required</b>|
-|lastName|Members last name.|<b>Required</b>|
+|firstName|Members legal first name.|<b>Required</b>|
+|lastName|Members legal last name.|<b>Required</b>|
 |middleName|Member's middle name.|Optional|
 |suffix|Suffix for members name.|Optional|
 |email2|Member's second email.|Optional|
@@ -154,9 +180,9 @@ There are no parameters available.
 |DoNotContact|Boolean: Do not contact member.|Optional|
 |EmailOptOut|Boolean: Do not mass email member.|Optional|
 |Birthdate|Date: Member's birth date.|Optional|
-|Gender|Member's preffered gender string.|Optional|
+|Gender|Member's preferred gender string.|Optional|
 |conComDisplayPhone|Boolean: If Concom display phone on list.|Optional|
-...
+
 
 ### create Response
 A member object resource is returned.
