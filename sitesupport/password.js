@@ -4,59 +4,10 @@
 
 /* jshint browser: true */
 /* jshint -W097 */
-/* globals alertbox, confirmbox, apiRequest,
-           showSpinner, hideSpinner */
-/* exported changePassword, resetPassword, loginUser */
+/* globals alertbox, apiRequest, showSpinner, hideSpinner */
+/* exported resetPassword, loginUser */
 
 'use strict';
-
-function changePassword() {
-  var current = document.getElementById('ciab_currentPassword');
-  var newPassword = document.getElementById('ciab_newPassword');
-  var again = document.getElementById('ciab_againPassword');
-  var accountID = document.getElementById('accountId').value;
-
-  if (!current.value) {
-    alertbox('Current Password not supplied');
-    return;
-  }
-  if (!newPassword.value) {
-    alertbox('New Password not supplied');
-    return;
-  }
-  if (!again.value || again.value != newPassword.value) {
-    alertbox('New Password confirmation does not match');
-    return;
-  }
-
-  confirmbox('Proceed in changing your password?').then(function() {
-    showSpinner();
-    apiRequest('PUT', 'member/' + accountID + '/password',
-      'NewPassword=' + newPassword.value + '&OldPassword=' + current.value)
-      .then(function() {
-        hideSpinner();
-        alertbox('Password Updated').then(
-          function() {
-            location.reload();
-          }
-        );
-      })
-      .catch(function(response) {
-        hideSpinner();
-        if (response.status == 403) {
-          if (current.value) {
-            alertbox('Current Password Incorrect');
-          }
-          current.value = '';
-        }
-      });
-  },
-  function() {
-    current.value = '';
-    newPassword.value = '';
-    again.value = '';
-  });
-}
 
 function resetPassword() {
   var email = document.getElementById('email');
