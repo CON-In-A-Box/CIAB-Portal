@@ -15,6 +15,15 @@ class PostMember extends BaseMember
     public function buildResource(Request $request, Response $response, $args): array
     {
         $body = $request->getParsedBody();
+        if (array_key_exists('email', $body)) {
+            $body['email1'] = $body['email'];
+        }
+        if (array_key_exists('legalFirstName', $body)) {
+            $body['firstName'] = $body['legalFirstName'];
+        }
+        if (array_key_exists('legalFirstLast', $body)) {
+            $body['lastName'] = $body['legalLastName'];
+        }
         if (!$body || !array_key_exists('email1', $body)) {
             return [
             \App\Controller\BaseController::RESULT_TYPE,

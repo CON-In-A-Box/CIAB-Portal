@@ -55,7 +55,15 @@ class PutMember extends BaseMember
         }
 
         $body = $request->getParsedBody();
-
+        if (array_key_exists('email', $body)) {
+            $body['email1'] = $body['email'];
+        }
+        if (array_key_exists('legalFirstName', $body)) {
+            $body['firstName'] = $body['legalFirstName'];
+        }
+        if (array_key_exists('email', $body)) {
+            $body['lastName'] = $body['legalLastName'];
+        }
         PutMember::checkBoolParam($body, 'Deceased');
         PutMember::checkBoolParam($body, 'DoNotContact');
         PutMember::checkBoolParam($body, 'EmailOptOut');
