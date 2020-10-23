@@ -166,59 +166,68 @@ var userProfile = (function(options) {
     },
 
     updateAccount: function() {
-      if (!userProfile.validateForm()) {
-        return;
-      }
-      var data = userProfile.serializeUpdate();
-      if (data.length == 0) {
-        alertbox('Nothing updated.');
-        return;
-      }
-      showSpinner();
-      var method = 'POST';
-      var uri = 'member';
-      if (this.accountId > 0) {
-        method = 'PUT';
-        uri = 'member/' + this.accountId;
-      }
-      apiRequest(method, uri, data)
-        .then(function() {
-          if (method == 'POST') {
-            alertbox('Account Created, email sent').then(function() {
-              window.location = '/index.php?Function=public';
-            });
-          } else {
-            alertbox('Member data updated');
-            basicBackendRequest('POST', 'profile', 'reloadProfile=1',
-              function() {
-                hideSpinner();
-                location.reload();
-              },
-              function() {
-                hideSpinner();
-                location.reload();
+      var accountId = this.accountId;
+      return new Promise(function(resolve, reject) {
+        if (!userProfile.validateForm()) {
+          reject(this);
+          return;
+        }
+        var data = userProfile.serializeUpdate();
+        if (data.length == 0) {
+          alertbox('Nothing updated.');
+          reject(this);
+          return;
+        }
+        var method = 'POST';
+        var uri = 'member';
+        if (accountId > 0) {
+          method = 'PUT';
+          uri = 'member/' + accountId;
+        }
+        apiRequest(method, uri, data)
+          .then(function(response) {
+            if (method == 'POST') {
+              alertbox('Account Created, email sent').then(function() {
+                window.location = '/index.php?Function=public';
               });
-          }
-        })
+            } else {
+              alertbox('Member data updated');
+              basicBackendRequest('POST', 'profile', 'reloadProfile=1',
+                function() {}, function() {});
+            }
+            resolve(response);
+          })
+          .catch(function(response) {
+            if (response instanceof Error) { throw response; }
+            console.log(response);
+            var email = userProfile.getElementById('email1').value;
+            if (response.status == 409) {
+              if (email) {
+                alertbox('Account with the email \'' + email +
+                             '\' already exists!');
+              } else {
+                alertbox('Email for account invalid, please retry!');
+              }
+              userProfile.getElementById('email1').value = '';
+            }
+            else if (response.status != 200) {
+              if (email) {
+                alertbox('Account Update Failed.');
+              }
+            }
+            reject(response);
+          });
+      });
+    },
+
+    doUpdate: function() {
+      showSpinner();
+      userProfile.updateAccount()
         .catch(function(response) {
           if (response instanceof Error) { throw response; }
-          console.log(response);
+        })
+        .finally(function() {
           hideSpinner();
-          var email = userProfile.getElementById('email1').value;
-          if (response.status == 409) {
-            if (email) {
-              alertbox('Account with the email \'' + email +
-                         '\' already exists!');
-            } else {
-              alertbox('Email for account invalid, please retry!');
-            }
-            userProfile.getElementById('email1').value = '';
-          }
-          else if (response.status != 200) {
-            if (email) {
-              alertbox('Account Update Failed.');
-            }
-          }
         });
     },
 
@@ -290,7 +299,7 @@ var userProfile = (function(options) {
       if (settings.updateButtonText && settings.inlineUpdateButton) {
         updateButton = `
 <button class="UI-profile-update-button"
-    onclick="userProfile.updateAccount();">${settings.updateButtonText}</button>
+    onclick="userProfile.doUpdate();">${settings.updateButtonText}</button>
 `;
       }
 
@@ -522,7 +531,7 @@ var userProfile = (function(options) {
       if (settings.updateButtonText) {
         tailBlock += `
 <button class="UI-profile-update-button-end"
-    onclick="userProfile.updateAccount();">
+    onclick="userProfile.doUpdate();">
 ${settings.updateButtonText}</button>
 `;
       }
