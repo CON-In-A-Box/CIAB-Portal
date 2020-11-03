@@ -89,9 +89,13 @@ var userProfile = (function(options) {
           element['originalValue'] = '';
         }
       });
-      userProfile.getElementById('state').value = 'MN';
-      userProfile.getElementById('countryName').value =
-        'United States of America';
+      if (userProfile.getElementById('state')) {
+        userProfile.getElementById('state').value = 'MN';
+      }
+      if (userProfile.getElementById('countryName')) {
+        userProfile.getElementById('countryName').value =
+          'United States of America';
+      }
     },
 
     getMember: function() {
