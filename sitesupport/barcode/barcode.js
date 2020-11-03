@@ -9,10 +9,12 @@
 var QuaggaApp = {
   fieldid: null,
   callback: null,
-  init: function(field, cb) {
+  intOnly: null,
+  init: function(field, cb, intOnly = true) {
     var self = this;
     self.fieldid = field;
     self.callback = cb;
+    self.intOnly = intOnly;
 
     self.showOverlay(this.stop);
     var drawingCtx = Quagga.canvas.ctx.overlay;
@@ -253,9 +255,14 @@ Quagga.onProcessed(function(result) {
 });
 
 Quagga.onDetected(function(result) {
-  var code = parseInt(result.codeResult.code);
+  var code;
+  if (QuaggaApp.intOnly) {
+    code = parseInt(result.codeResult.code);
+  } else {
+    code = result.codeResult.code;
+  }
   var codeField = document.getElementById(QuaggaApp.fieldid);
   codeField.value = code;
-  QuaggaApp.callback(code);
+  QuaggaApp.callback(codeField, code);
   QuaggaApp.stop();
 });
