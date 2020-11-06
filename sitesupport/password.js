@@ -5,7 +5,7 @@
 /* jshint browser: true */
 /* jshint -W097 */
 /* globals alertbox, apiRequest, showSpinner, hideSpinner */
-/* exported resetPassword, loginUser */
+/* exported resetPassword, loginUser, newPassword */
 
 'use strict';
 
@@ -32,6 +32,42 @@ function resetPassword() {
         alertbox('Password reset for ' + email.value + ' failed.');
       }
       email.value = '';
+    });
+}
+
+
+function newPassword() {
+  var email = document.getElementById('email');
+  var code = document.getElementById('authorization');
+  var pass = document.getElementById('new_password');
+  var verify = document.getElementById('confirm_password');
+
+  if (!pass.value) {
+    alertbox('Please enter your new password.');
+    return;
+  }
+
+  if (pass.value !== verify.value) {
+    alertbox('Password and confirmation do not match.');
+    return;
+  }
+
+  showSpinner();
+  apiRequest('PUT', 'member/' + email.value + '/password/recovery',
+    'OneTimeCode=' + code.value + '&NewPassword=' + pass.value)
+    .then(function() {
+      hideSpinner();
+      alertbox('Password Reset.').then(function() {
+        window.location = '/index.php?Function=public';
+      });
+    })
+    .catch(function(response) {
+      hideSpinner();
+      if (response instanceof Error) { throw response; }
+      if (email.value) {
+        alertbox('Password reset for ' + email.value + ' failed:' +
+                 response.responseText);
+      }
     });
 }
 

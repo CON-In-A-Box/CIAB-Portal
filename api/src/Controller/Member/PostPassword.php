@@ -5,13 +5,98 @@
 
 namespace App\Controller\Member;
 
+require_once __DIR__.'/../../../../backends/email.inc';
+
 use Slim\Http\Request;
 use Slim\Http\Response;
+use Slim\Views;
 
 class PostPassword extends BaseMember
 {
 
-    public $privilaged = false;
+
+    private static function getId($valLength = 40)
+    {
+        $result = '';
+        $moduleLength = 40;
+        $steps = round(($valLength / $moduleLength) + 0.5);
+
+        for ($i = 0; $i < $steps; $i++) {
+            $result .= \sha1(uniqid().\md5(\rand().\uniqid()));
+        }
+
+        return substr($result, 0, $valLength);
+
+    }
+
+
+    private function resetPassword(Response $response, $data)
+    {
+        global $CONSITENAME, $PASSWORDRESET, $BASEURL;
+
+        if (isset($PASSWORDRESET) && !empty($PASSWORDRESET)) {
+            $duration = $PASSWORDRESET;
+        } else {
+            $duration = '+60 minutes';
+        }
+
+        $user = $data['id'];
+        $email = $data['email'];
+        $code = PostPassword::getId();
+        $oneexpired = date('Y-m-d H:i', strtotime($duration));
+        $newauth = $code;
+        $auth = 'NULL';
+        $last = 'NULL';
+        $realexpires = 'NULL';
+
+        $sql = "SELECT * FROM  `Authentication` WHERE AccountID = $user;";
+        $result = $this->container->db->prepare($sql);
+        $result->execute();
+        $value = $result->fetch();
+        if ($value !== false) {
+            if (!empty($value['Authentication'])) {
+                $auth = "'".$value['Authentication']."'";
+            }
+            if (!empty($value['LastLogin'])) {
+                $last = "'".$value['LastLogin']."'";
+            }
+            if (!empty($value['Expires'])) {
+                $realexpires = "'".$value['Expires']."'";
+            }
+        }
+
+        $sql = <<<SQL
+            REPLACE INTO `Authentication`
+            SET AccountID = $user,
+                OneTime = '$newauth',
+                OneTimeExpires= '$oneexpired',
+                Authentication = $auth,
+                LastLogin = $last,
+                Expires = $realexpires,
+                FailedAttempts = 0;
+SQL;
+        $this->container->db->prepare($sql)->execute();
+
+        $phpView = new Views\PhpRenderer(__DIR__.'/../../Templates', [
+            'name' => $data['firstName'],
+            'con' => $CONSITENAME,
+            'code' => urlencode($code),
+            'url' => $BASEURL.'?Function=recovery',
+            'expire' => $realexpires,
+            'email' => urlencode($email)
+        ]);
+        $subject = 'Password Reset Request';
+        $expire = date('h:i A D F jS Y', strtotime($duration));
+        $adminMessage = "A password reset has been requested for '$email' on the '$CONSITENAME' web site.\n";
+        $adminMessage .= "The new authorization code is '$code' \n";
+        $phpView->render($response, 'passwordReset.phtml');
+        $response->getBody()->rewind();
+        $message = $response->getBody()->getContents();
+        \ciab\Email::mail($email, \getNoReplyAddress(), $subject, $message);
+        \ciab\Email::mail(\getSecurityEmail(), \getNoReplyAddress(), $subject, $adminMessage);
+        error_log($adminMessage);
+
+    }
 
 
     public function buildResource(Request $request, Response $response, $args): array
@@ -22,8 +107,7 @@ class PostPassword extends BaseMember
             \App\Controller\BaseController::RESULT_TYPE,
             $data];
         }
-        $password = \rppg();
-        \reset_password($data['email'], $password);
+        $this->resetPassword($response, $data);
         return [null];
 
     }

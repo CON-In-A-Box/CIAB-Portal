@@ -60,19 +60,6 @@ function LogoutUser()
 }
 
 
-function clear_onetime($account)
-{
-    $sql = <<<SQL
-        UPDATE `Authentication`
-        SET OneTime = NULL,
-            OneTimeExpires = NULL
-        WHERE AccountID = $account;
-SQL;
-    DB::run($sql);
-
-}
-
-
 function increment_failed($account)
 {
     $sql = <<<SQL
@@ -177,7 +164,13 @@ SQL;
         }
         if (password_verify($password, $value['Authentication'])) {
             if ($value['OneTime']) {
-                clear_onetime($account);
+                $sql = <<<SQL
+                    UPDATE `Authentication`
+                    SET OneTime = NULL,
+                        OneTimeExpires = NULL
+                    WHERE AccountID = $account;
+SQL;
+                DB::run($sql);
             }
             $now = strtotime("now");
             $expire = strtotime($value['Expires']);
@@ -186,19 +179,6 @@ SQL;
             }
             reset_failed($account);
             return AUTH_SUCCESS;
-        }
-        if ($value['OneTime']) {
-            $expire = strtotime($value['OneTimeExpires']);
-            $now = strtotime("now");
-            if ($now > $expire) {
-                clear_onetime($account);
-                return AUTH_BAD;
-            }
-            if (password_verify($password, $value['OneTime'])) {
-                accept_onetime($account, $value['OneTime']);
-                reset_failed($account);
-                return AUTH_SUCCESS;
-            }
         }
         increment_failed($account);
         return AUTH_BAD;
@@ -286,116 +266,5 @@ SQL;
         return $results[0];
     }
     return array("entry" => null, "result" => AUTH_DUPLICATE);
-
-}
-
-
-function accept_onetime($account, $auth)
-{
-    set_password($account, $auth, false);
-
-}
-
-
-function rppg()
-{
-    $pw = '';
-    $c  = 'bcdfghjklmnprstvwz'; // consonants except hard to speak ones
-    $v  = 'aeiou';              // vowels
-    $a  = $c.$v;                // all
-
-  //use two syllables...
-    for ($i = 0; $i < 3; $i++) {
-        $sy = $c[rand(0, strlen($c) - 1)];
-        $sy .= $v[rand(0, strlen($v) - 1)];
-        $sy .= $a[rand(0, strlen($a) - 1)];
-        if (rand(0, 1) == 0) {
-            $sy = ucfirst($sy);
-        }
-        $pw .= $sy;
-    }
-  //... and add a nice number
-    $pw .= rand(10, 99);
-
-    return $pw;
-
-}
-
-
-function reset_password($id, $password = null)
-{
-    global $CONSITENAME, $PASSWORDRESET, $BASEURL;
-
-    if (isset($PASSWORDRESET) && !empty($PASSWORDRESET)) {
-        $duration = $PASSWORDRESET;
-    } else {
-        $duration = '+60 minutes';
-    }
-
-    loadDefinedFields();
-    $value = lookup_user_by_login($id);
-    if (count($value)) {
-        $user = $value[0]['AccountID'];
-        $email = $value[0]['Email'];
-        if (!$password) {
-            $password = rppg();
-        }
-        $oneexpired = date('Y-m-d H:i', strtotime($duration));
-        $newauth = password_hash($password, PASSWORD_DEFAULT);
-        $auth = 'NULL';
-        $last = 'NULL';
-        $realexpires = 'NULL';
-
-        $sql = "SELECT * FROM  `Authentication` WHERE AccountID = $user;";
-        $result = DB::run($sql);
-        $value = $result->fetch();
-        if ($value !== false) {
-            if (!empty($value['Authentication'])) {
-                $auth = "'".$value['Authentication']."'";
-            }
-            if (!empty($value['LastLogin'])) {
-                $last = "'".$value['LastLogin']."'";
-            }
-            if (!empty($value['Expires'])) {
-                $realexpires = "'".$value['Expires']."'";
-            }
-        }
-
-        $sql = <<<SQL
-            REPLACE INTO `Authentication`
-            SET AccountID = $user,
-                OneTime = '$newauth',
-                OneTimeExpires= '$oneexpired',
-                Authentication = $auth,
-                LastLogin = $last,
-                Expires = $realexpires,
-                FailedAttempts = 0;
-SQL;
-        DB::run($sql);
-        $subject = 'Password Reset Request';
-        $expire = date('h:i A D F jS Y', strtotime($duration));
-        $adminMessage = "A password reset has been requested for '$id' on the '$CONSITENAME' web site.\n";
-        $adminMessage .= "The new password is '$password' \n";
-        $message = <<<MSG
-A password reset has been requested for '$id' on the '$CONSITENAME' web site.
-
-If this is correct then please use this password '$password' to log in and
-change yor password to one you like.
-
-$BASEURL
-
-If you did not request this please log into your account as soon as possible
-to verify everything is still correct.
-
-This new password will expire at $expire;
-
-Thank you
-MSG;
-        \ciab\Email::mail($email, getNoReplyAddress(), $subject, $message);
-        \ciab\Email::mail(getSecurityEmail(), getNoReplyAddress(), $subject, $adminMessage);
-        error_log($adminMessage);
-        return true;
-    }
-    return false;
 
 }

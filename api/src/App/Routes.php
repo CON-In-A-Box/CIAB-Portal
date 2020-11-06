@@ -6,6 +6,7 @@
 $app->get('/member/{name}/status', 'App\Controller\Member\GetStatus');
 $app->post('/member[/]', 'App\Controller\Member\PostMember');
 $app->post('/member/{name}/password', 'App\Controller\Member\PostPassword');
+$app->put('/member/{name}/password/recovery', 'App\Controller\Member\PutPassword');
 
 $app->group(
     '/member',

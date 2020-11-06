@@ -14,25 +14,62 @@ class PutPassword extends BaseMember
     public $privilaged = false;
 
 
-    public function buildResource(Request $request, Response $response, $args): array
+    private function setPassword($user, $password)
     {
-        $data = $this->findMember($request, $response, $args, 'name');
-        if (gettype($data) === 'object') {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $data];
+        global $PASSWORDEXPIRE;
+
+        if (isset($PASSWORDEXPIRE) && !empty($PASSWORDEXPIRE)) {
+            $duration = $PASSWORDEXPIRE;
+        } else {
+            $duration = '+1 year';
         }
-        $accountID = $data['id'];
+        $expires = date('Y-m-d H:i', strtotime($duration));
+        $auth = \password_hash($password, PASSWORD_DEFAULT);
 
-        $body = $request->getParsedBody();
-        $password = $body['NewPassword'];
+        $last = 'NULL';
+        $sql = "SELECT * FROM  `Authentication` WHERE AccountID = $user;";
+        $result = $this->container->db->prepare($sql);
+        $result->execute();
+        $value = $result->fetch();
+        if ($value !== false && $value['LastLogin'] !== null) {
+            $last = "'".$value['LastLogin']."'";
+        }
 
+        $sql = <<<SQL
+            REPLACE INTO `Authentication`
+            SET AccountID = $user,
+                Authentication = '$auth',
+                LastLogin = $last,
+                Expires = '$expires',
+                OneTime = NULL,
+                OneTimeExpires = NULL;
+SQL;
+        $result = $this->container->db->prepare($sql);
+        $result->execute();
+
+    }
+
+
+    private function verifyAccess($request, $response, $body, &$accountID)
+    {
         if (!$this->privilaged) {
-            if (!\ciab\RBAC::havePermission("api.put.member.password")) {
+            if ($accountID === null || !\ciab\RBAC::havePermission("api.put.member.password")) {
                 $attribute = $request->getAttribute('oauth2-token');
                 if ($attribute) {
                     $user = $attribute['user_id'];
                 } else {
+                    if (array_key_exists('OneTimeCode', $body)) {
+                        $onetime = $body['OneTimeCode'];
+                        $now = date('Y-m-d H:i', strtotime("now"));
+                        $sql = "SELECT AccountID FROM Authentication WHERE "."OneTime = '$onetime' AND OneTimeExpires > "."'$now'";
+                        $sth = $this->container->db->prepare($sql);
+                        $sth->execute();
+                        $result = $sth->fetchAll();
+                        if (!empty($result) &&
+                            $accountID = $result[0]['AccountID']) {
+                            return null;
+                        }
+                    }
                     $user = -1;
                 }
                 if ($accountID != $user) {
@@ -52,13 +89,34 @@ class PutPassword extends BaseMember
                 }
             }
         }
+        return null;
 
-        if (array_key_exists('Temporary', $body) &&
-            boolval($body['Temporary'])) {
-            \reset_password($data['email'], $password);
+    }
+
+
+    public function buildResource(Request $request, Response $response, $args): array
+    {
+        $attribute = $request->getAttribute('oauth2-token');
+        if ($attribute) {
+            $data = $this->findMember($request, $response, $args, 'name');
+            if (gettype($data) === 'object') {
+                return [
+                \App\Controller\BaseController::RESULT_TYPE,
+                $data];
+            }
+            $accountID = $data['id'];
         } else {
-            \set_password($accountID, $password);
+            $accountID = null;
         }
+
+        $body = $request->getParsedBody();
+        $response = $this->verifyAccess($request, $response, $body, $accountID);
+        if ($response) {
+            return $response;
+        }
+
+        $password = $body['NewPassword'];
+        $this->setPassword($accountID, $password);
         return [null];
 
     }
