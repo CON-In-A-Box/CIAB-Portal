@@ -9,6 +9,14 @@ require_once(__DIR__.'/users.inc');
 require_once(__DIR__.'/session.inc');
 require_once(__DIR__."/../backends/email.inc");
 
+
+const AUTH_SUCCESS   = 0x0;
+const AUTH_BAD       = 0x1;
+const AUTH_EXPIRED   = 0x2;
+const AUTH_LOCKED    = 0x3;
+const AUTH_DUPLICATE = 0x10;
+
+
 if (array_key_exists('NEONID', $GLOBALS) &&
     array_key_exists('NEONKEY', $GLOBALS) &&
     !empty($GLOBALS['NEONID']) &&
@@ -102,44 +110,6 @@ function checkNeonForUserAndPasswordMatch($user, $password)
         }
     }
     return false;
-
-}
-
-
-const AUTH_SUCCESS   = 0x0;
-const AUTH_BAD       = 0x1;
-const AUTH_EXPIRED   = 0x2;
-const AUTH_LOCKED    = 0x3;
-const AUTH_DUPLICATE = 0x10;
-
-
-function verify_account($account)
-{
-    global $MAXLOGINFAIL;
-
-    $max_fail = 5;
-    if (isset($MAXLOGINFAIL) && !empty($MAXLOGINFAIL)) {
-        $max_fail = intval($MAXLOGINFAIL);
-    }
-
-    $sql = <<<SQL
-        SELECT * FROM `Authentication` WHERE AccountID = $account;
-SQL;
-    $result = \DB::run($sql);
-    $value = $result->fetch();
-    if ($value !== false) {
-        if ($value['FailedAttempts'] >= $max_fail) {
-            return AUTH_LOCKED;
-        }
-        $now = strtotime("now");
-        $expire = strtotime($value['Expires']);
-        if ($now > $expire) {
-            return AUTH_EXPIRED;
-        }
-        return AUTH_SUCCESS;
-    } else {
-        return AUTH_BAD;
-    }
 
 }
 
