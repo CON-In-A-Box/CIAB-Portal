@@ -14,6 +14,8 @@ $app->group(
         $app->put('/{name}', 'App\Controller\Member\PutMember');
         $app->put('/{name}/password', 'App\Controller\Member\PutPassword');
         $app->get('/{name}/deadlines', 'App\Controller\Member\ListDeadlines');
+        $app->get('/{name}/configuration[/{key}]', 'App\Controller\Member\GetConfiguration');
+        $app->put('/{name}/configuration', 'App\Controller\Member\PutConfiguration');
         $app->get('/{name}/announcements', 'App\Controller\Announcement\ListMemberAnnouncements');
         $app->get('/deadlines/', 'App\Controller\Member\ListDeadlines');
         $app->get('/announcements/', 'App\Controller\Announcement\ListMemberAnnouncements');
