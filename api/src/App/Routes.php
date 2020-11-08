@@ -17,6 +17,8 @@ $app->group(
         $app->put('/{id}/password', 'App\Controller\Member\PutPassword');
         $app->get('/{id}/deadlines', 'App\Controller\Member\ListDeadlines');
         $app->get('/{id}/announcements', 'App\Controller\Announcement\ListMemberAnnouncements');
+        $app->get('/{id}/configuration[/{key}]', 'App\Controller\Member\GetConfiguration');
+        $app->put('/{id}/configuration', 'App\Controller\Member\PutConfiguration');
     }
 )->add(new App\Middleware\CiabMiddleware($app))->add($authMiddleware);
 
