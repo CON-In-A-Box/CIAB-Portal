@@ -11,6 +11,7 @@ $app->put('/member/{name}/password/recovery', 'App\Controller\Member\PutPassword
 $app->group(
     '/member',
     function () use ($app, $authMiddleware) {
+        $app->get('/find', 'App\Controller\Member\FindMembers');
         $app->get('[/[{name}]]', 'App\Controller\Member\GetMember');
         $app->put('/{name}', 'App\Controller\Member\PutMember');
         $app->put('/{name}/password', 'App\Controller\Member\PutPassword');
