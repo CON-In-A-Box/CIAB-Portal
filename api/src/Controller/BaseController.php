@@ -316,5 +316,36 @@ abstract class BaseController
     }
 
 
+    public function findMemberId(
+        Request $request,
+        Response $response,
+        $args,
+        $key,
+        $fields = null
+    ) {
+        if ($fields === null) {
+            $fields = ['FirstName', 'MiddleName', 'LastName',
+            'Suffix', 'Email2', 'Email3', 'Phone', 'Phone2',
+            'AddressLine1', 'AddressLine2', 'AddressCity', 'AddressState',
+            'AddressZipCode', 'AddressZipCodeSuffix', 'AddressCountry',
+            'AddressProvince', 'PreferredFirstName', 'PreferredLastName',
+            'Deceased', 'DoNotContact', 'EmailOptOut', 'Birthdate',
+            'Gender', 'DisplayPhone'];
+        }
+        if ($args !== null && array_key_exists($key, $args) && $args[$key] !== 'current') {
+            $user = $args[$key];
+        } else {
+            $user = $request->getAttribute('oauth2-token')['user_id'];
+        }
+        $data = \lookup_user_by_id($user, $fields);
+        if (empty($data['users'])) {
+            return null;
+        }
+        $data = BaseController::mapMemberData($data['users'][0]);
+        return $data;
+
+    }
+
+
     /* END BaseController */
 }

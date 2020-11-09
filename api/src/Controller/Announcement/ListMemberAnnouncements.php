@@ -14,17 +14,13 @@ class ListMemberAnnouncements extends BaseAnnouncement
 
     public function buildResource(Request $request, Response $response, $args): array
     {
-        if (array_key_exists('name', $args)) {
-            $user = $this->findMember($request, $response, $args, 'name');
-            if (gettype($user) === 'object') {
-                return [
-                \App\Controller\BaseController::RESULT_TYPE,
-                $user];
-            }
-            $user = $user['id'];
-        } else {
-            $user = $request->getAttribute('oauth2-token')['user_id'];
+        $user = $this->findMemberId($request, $response, $args, 'id');
+        if (gettype($user) === 'object') {
+            return [
+            \App\Controller\BaseController::RESULT_TYPE,
+            $user];
         }
+        $user = $user['id'];
         $sth = $this->container->db->prepare(<<<SQL
             SELECT
                 *

@@ -274,7 +274,7 @@ var announcementPage = (function(options) {
     loadAnnouncements: function() {
       showSpinner();
       apiRequest('GET',
-        'member/announcements/',
+        'member/current/announcements',
         'maxResults=all&include=departmentId,postedBy')
         .then(function(response) {
           var result = JSON.parse(response.responseText);

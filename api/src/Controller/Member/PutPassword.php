@@ -98,7 +98,7 @@ SQL;
     {
         $attribute = $request->getAttribute('oauth2-token');
         if ($attribute) {
-            $data = $this->findMember($request, $response, $args, 'name');
+            $data = $this->findMember($request, $response, $args, 'email');
             if (gettype($data) === 'object') {
                 return [
                 \App\Controller\BaseController::RESULT_TYPE,
