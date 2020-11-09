@@ -3,7 +3,7 @@
 /* globals apiRequest, confirmbox, basicBackendRequest, showSpinner,
            hideSpinner, alertbox */
 /* exported downloadLog, setField, addField, removeAdmin, updateMemberships,
-            doSUDO, rebuildSCSS, tmpPassword */
+            doSUDO, rebuildSCSS, setPassword */
 
 function downloadLog() {
   window.location = 'index.php?Function=admin&downloadLog=db';
@@ -55,13 +55,13 @@ function rebuildSCSS() {
   });
 }
 
-function tmpPassword() {
+function setPassword() {
   var newPassword = document.getElementById('tmp_passwd').value;
   var account = document.getElementById('tmp_login').value;
 
   showSpinner();
   apiRequest('PUT', 'member/' + account + '/password' ,
-    'NewPassword=' + newPassword + '&Temporary=1')
+    'NewPassword=' + newPassword)
     .then(function() {
       hideSpinner();
       alertbox('Password Updated');

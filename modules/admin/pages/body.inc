@@ -84,12 +84,12 @@ const FIELD = 'Field';
         </form>
         <hr>
         <div>
-            Set Account Temporary Password:<br>
+            Set Account Password:<br>
             <input type="text" class="form-control" id="tmp_login" value=""
                    placeholder="<account login or id>" autocomplete="off"/>
             <input type="text" class="form-control" id="tmp_passwd" value=
             "<?php echo rppg(); ?>" autocomplete="off"/>
-            <input type="button" value="Set Password" class="UI-graybutton" onclick="tmpPassword();"/>
+            <input type="button" value="Set Password" class="UI-graybutton" onclick="setPassword();"/>
         </div>
         <hr>
 <?php if (array_key_exists('Neon', $GLOBALS)) { ?>

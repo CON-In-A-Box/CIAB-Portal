@@ -12,6 +12,38 @@ class GetStatus extends BaseMember
 {
 
 
+    private function verifyAccount($account)
+    {
+        global $MAXLOGINFAIL;
+
+        $max_fail = 5;
+        if (isset($MAXLOGINFAIL) && !empty($MAXLOGINFAIL)) {
+            $max_fail = intval($MAXLOGINFAIL);
+        }
+
+        $sql = <<<SQL
+            SELECT * FROM `Authentication` WHERE AccountID = $account;
+SQL;
+        $result = $this->container->db->prepare($sql);
+        $result->execute();
+        $value = $result->fetch();
+        if ($value !== false) {
+            if ($value['FailedAttempts'] >= $max_fail) {
+                return AUTH_LOCKED;
+            }
+            $now = strtotime("now");
+            $expire = strtotime($value['Expires']);
+            if ($now > $expire) {
+                return AUTH_EXPIRED;
+            }
+            return AUTH_SUCCESS;
+        } else {
+            return AUTH_BAD;
+        }
+
+    }
+
+
     public function buildResource(Request $request, Response $response, $args): array
     {
         $data = \lookup_users_by_key($args['name']);
@@ -33,7 +65,7 @@ class GetStatus extends BaseMember
         }
         $data = $data['users'][0];
         $valid = array('type' => 'member_status',
-                       'status' => \verify_account($data['id']));
+                       'status' => $this->verifyAccount($data['id']));
         return [
         \App\Controller\BaseController::RESOURCE_TYPE,
         $valid];

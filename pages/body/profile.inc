@@ -4,6 +4,8 @@
 <?php
 if (!empty($_SESSION['customFields']['currConComPos'])) {
     echo "panes: ['name', 'prefName', 'badge', 'emailAll', 'concomPhone', 'addr', 'password'],";
+} else {
+    echo "panes: ['name', 'prefName', 'badge', 'emailAll', 'phone', 'addr', 'password'],";
 }
 ?>
     });
