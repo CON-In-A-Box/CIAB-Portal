@@ -14,17 +14,13 @@ class ListDeadlines extends BaseMember
 
     public function buildResource(Request $request, Response $response, $args): array
     {
-        if (array_key_exists('id', $args)) {
-            $data = $this->findMemberId($request, $response, $args, 'id');
-            if (gettype($data) === 'object') {
-                return [
-                \App\Controller\BaseController::RESULT_TYPE,
-                $data];
-            }
-            $user = $data['id'];
-        } else {
-            $user = $request->getAttribute('oauth2-token')['user_id'];
+        $data = $this->findMemberId($request, $response, $args, 'id');
+        if (gettype($data) === 'object') {
+            return [
+            \App\Controller\BaseController::RESULT_TYPE,
+            $data];
         }
+        $user = $data['id'];
         $sth = $this->container->db->prepare(<<<SQL
             SELECT
                 *
