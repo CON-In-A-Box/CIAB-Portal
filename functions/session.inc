@@ -89,4 +89,26 @@ function loadAccount($accountId)
         $_SESSION['IS_ADMIN'] = true;
     }
 
+    $sql = <<<SQL
+            SELECT
+                cf.*,
+                a.Value as Value
+            FROM
+                `ConfigurationField` cf
+            LEFT JOIN `AccountConfiguration` a ON
+                a.Field = cf.Field AND a.AccountId = $accountId
+            WHERE
+                cf.TargetTable = 'AccountConfiguration'
+SQL;
+    $result = DB::run($sql);
+    $data = $result->fetchAll();
+    foreach ($data as $entry) {
+        if ($entry['Value'] === null) {
+            $value = $entry['InitialValue'];
+        } else {
+            $value = $entry['Value'];
+        }
+        $GLOBALS[$entry['Field']] = $value;
+    }
+
 }
