@@ -12,11 +12,11 @@ $app->group(
     '/member',
     function () use ($app, $authMiddleware) {
         $app->get('/find', 'App\Controller\Member\FindMembers');
-        $app->get('[/[{name}]]', 'App\Controller\Member\GetMember');
-        $app->put('/{name}', 'App\Controller\Member\PutMember');
-        $app->put('/{name}/password', 'App\Controller\Member\PutPassword');
-        $app->get('/{name}/deadlines', 'App\Controller\Member\ListDeadlines');
-        $app->get('/{name}/announcements', 'App\Controller\Announcement\ListMemberAnnouncements');
+        $app->get('[/[{id}]]', 'App\Controller\Member\GetMember');
+        $app->put('/{id}', 'App\Controller\Member\PutMember');
+        $app->put('/{id}/password', 'App\Controller\Member\PutPassword');
+        $app->get('/{id}/deadlines', 'App\Controller\Member\ListDeadlines');
+        $app->get('/{id}/announcements', 'App\Controller\Announcement\ListMemberAnnouncements');
         $app->get('/deadlines/', 'App\Controller\Member\ListDeadlines');
         $app->get('/announcements/', 'App\Controller\Announcement\ListMemberAnnouncements');
     }
