@@ -16,8 +16,10 @@ class ListMemberAnnouncements extends BaseAnnouncement
     {
         if (array_key_exists('name', $args)) {
             $user = $this->findMember($request, $response, $args, 'name');
-            if ($user === null) {
-                return $this->errorResponse($request, $response, $error, 'User Not Found', 404);
+            if (gettype($user) === 'object') {
+                return [
+                \App\Controller\BaseController::RESULT_TYPE,
+                $user];
             }
             $user = $user['id'];
         } else {

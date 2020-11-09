@@ -50,7 +50,7 @@ abstract class BaseMember extends BaseController
     ) {
         $data = parent::findMember($request, $response, $args, $key, $fields);
         if ($data === null) {
-            return $this->errorResponse($request, $response, $error, 'Not Found', 404);
+            return $this->errorResponse($request, $response, 'Member Not Found', 'Not Found', 404);
         }
         $this->id = $data['id'];
         return $data;

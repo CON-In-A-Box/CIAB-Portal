@@ -17,7 +17,9 @@ class ListDeadlines extends BaseMember
         if (array_key_exists('name', $args)) {
             $data = $this->findMember($request, $response, $args, 'name');
             if (gettype($data) === 'object') {
-                return $data;
+                return [
+                \App\Controller\BaseController::RESULT_TYPE,
+                $data];
             }
             $user = $data['id'];
         } else {
