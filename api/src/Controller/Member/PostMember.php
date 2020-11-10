@@ -15,14 +15,8 @@ class PostMember extends BaseMember
     public function buildResource(Request $request, Response $response, $args): array
     {
         $body = $request->getParsedBody();
-        if (array_key_exists('email', $body)) {
+        if ($body && array_key_exists('email', $body)) {
             $body['email1'] = $body['email'];
-        }
-        if (array_key_exists('legalFirstName', $body)) {
-            $body['firstName'] = $body['legalFirstName'];
-        }
-        if (array_key_exists('legalFirstLast', $body)) {
-            $body['lastName'] = $body['legalLastName'];
         }
         if (!$body || !array_key_exists('email1', $body)) {
             return [
@@ -36,6 +30,12 @@ class PostMember extends BaseMember
             \App\Controller\BaseController::RESULT_TYPE,
             $this->errorResponse($request, $response, "Account with Email Already Exists", 'Conflict', 409)
             ];
+        }
+        if (array_key_exists('legalFirstName', $body)) {
+            $body['firstName'] = $body['legalFirstName'];
+        }
+        if (array_key_exists('legalFirstLast', $body)) {
+            $body['lastName'] = $body['legalLastName'];
         }
         if (!array_key_exists('firstName', $body) &&
             !array_key_exists('lastName', $body)) {
@@ -63,12 +63,12 @@ class PostMember extends BaseMember
 
         $target = new \App\Controller\Member\PutMember($this->container);
         $target->privilaged = true;
-        $data = $target->buildResource($request, $response, ['name' => $accountID])[1];
+        $data = $target->buildResource($request, $response, ['id' => $accountID])[1];
         $result = $target->arrayResponse($request, $response, $data);
 
         $pwd = new \App\Controller\Member\PostPassword($this->container);
         $pwd->privilaged = true;
-        $pwd->buildResource($request, $response, ['name' => $accountID]);
+        $pwd->buildResource($request, $response, ['email' => $accountID]);
 
         return [
         \App\Controller\BaseController::RESOURCE_TYPE,
