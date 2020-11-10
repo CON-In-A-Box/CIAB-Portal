@@ -21,7 +21,7 @@ class PutConfiguration extends BaseMember
 
     protected static function checkInt($value)
     {
-        return (int) filter_var($value, FILTER_VALIDATE_INTEGER);
+        return (int) filter_var($value, FILTER_VALIDATE_INT);
 
     }
 
