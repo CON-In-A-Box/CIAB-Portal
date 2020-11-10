@@ -10,6 +10,11 @@ The project is still young and we hope to have the first parts of it in actual u
 
 Additionally the push to make the project generic enough for multiple convention usage is also a work in progress. However it informs the design decisions made. 
 
+# Pivotal Tracker
+
+The project has opted to make use of Pivotal Tracker to track stories and development. Come see the project there for insight into our development targets and process.
+https://www.pivotaltracker.com/n/projects/2469125
+
 # Overview
 
 CIAB is presently designed to run on a apache web server accessing a [mySQL](https://www.mysql.com/) and [Neon](https://www.neoncrm.com/) back ends.  The present road map is to move away from Neon and rely completely on mySQL for all data storage. However at this time Neon is used for member/attendee information.

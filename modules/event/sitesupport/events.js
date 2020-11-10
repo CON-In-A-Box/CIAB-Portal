@@ -86,12 +86,12 @@ function saveCycle() {
   var id = document.getElementById('cycle_id').value;
   var title = 'Confirm New Annual Cycle';
   var msg = 'Add Cycle [' + from + ' -> ' + to + '] ?';
-  var method = 'PUT';
+  var method = 'POST';
   var target = 'cycle';
   if (id != -1) {
     title = 'Confirm Modified Annual Cycle';
     msg = 'Modify Cycle [' + from + ' -> ' + to + '] ?';
-    method = 'POST';
+    method = 'PUT';
     target += '/' + id;
   }
   confirmbox(title, msg).then(function() {

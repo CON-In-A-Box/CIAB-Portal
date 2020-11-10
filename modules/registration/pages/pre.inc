@@ -49,7 +49,7 @@ SQL;
 
     if (isset($updateData['updateBadge'])) {
         $data = json_decode(base64_decode($updateData['updateBadge']));
-        print update_badge($data);
+        update_badge($data);
         exit();
     }
 }

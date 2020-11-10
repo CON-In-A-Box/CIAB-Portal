@@ -36,5 +36,21 @@ abstract class BaseCycle extends BaseController
     }
 
 
+    protected function getCycle(/*.array.*/&$cycles, $params)
+    {
+        $sth = $this->container->db->prepare("SELECT * FROM `AnnualCycles` WHERE `AnnualCycleID` = ".$params['id']);
+        $sth->execute();
+        $cycles = $sth->fetchAll();
+        if (empty($cycles)) {
+            return [
+            \App\Controller\BaseController::RESULT_TYPE,
+            $this->errorResponse($request, $response, 'Not Found', 'Cycle Not Found', 404)];
+        }
+
+        return null;
+
+    }
+
+
     /* End BaseCycle */
 }

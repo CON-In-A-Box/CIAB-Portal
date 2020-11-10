@@ -5,9 +5,9 @@ The following methods are available to cycle resources:
 
 |Resource Method|HTTP Request|Description|module|RBAC|
 |---|---|---|---|---|
-|[add](Cycle.md#add)|PUT /cycle/|Add a new cycle.|core|api.put.cycle|
+|[add](Cycle.md#add)|POST /cycle/|Add a new cycle.|core|api.post.cycle|
 |[get](Cycle.md#get)|GET /cycle/{id}|Get details about a given cycle.|core|-|
-|[modify](Cycle.md#modify)|POST /cycle/{id}|Modify an existing cycle|core|api.post.cycle|
+|[modify](Cycle.md#modify)|PUT /cycle/{id}|Modify an existing cycle|core|api.put.cycle|
 |[delete](Cycle.md#delete)|DELETE /cycle/{id}|Delete a cycle|core|api.delete.cycle|
 |[list](Cycle.md#list)|GET /cycle|Get a list of Cycles.|core|-|
 
@@ -66,7 +66,7 @@ Add a new cycle.
 
 ### add Request
 
-```PUT /cycle/{department}?Scope={integer}&Text={text}```
+```POST /cycle/{department}?Scope={integer}&Text={text}```
 
 ### add Parameters
 The following parameters are available:
@@ -88,7 +88,7 @@ A [cycle](#common_objects) resource.
 Request Sample
 
 ```
-curl -X PUT -H 'Authorization: Bearer e0438d90599b1c4762d12fd03db6311c9ca46729' http://localhost/api/cycle/?From=1/1/2020&To=1/1/2021
+curl -X POST -H 'Authorization: Bearer e0438d90599b1c4762d12fd03db6311c9ca46729' http://localhost/api/cycle/?From=1/1/2020&To=1/1/2021
 ```
 Response Sample
 
@@ -162,7 +162,7 @@ Modify an existing cycle.
 
 ### modify Request
 
-```POST /cycle/{id}?From={date}&To={date}```
+```PUT /cycle/{id}?From={date}&To={date}```
 
 ### modify Parameters
 The following parameters are available:
@@ -184,7 +184,7 @@ A [cycle](#common_objects) resource.
 Request Sample
 
 ```
-curl -X POST -H 'Authorization: Bearer e0438d90599b1c4762d12fd03db6311c9ca46729' http://localhost/api/cycle/46/To=01/01/2031
+curl -X PUT -H 'Authorization: Bearer e0438d90599b1c4762d12fd03db6311c9ca46729' http://localhost/api/cycle/46/To=01/01/2031
 ```
 Response Sample
 

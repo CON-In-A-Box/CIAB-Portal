@@ -4,15 +4,21 @@
 .*/
 
 $app->get('/member/{name}/status', 'App\Controller\Member\GetStatus');
+$app->post('/member[/]', 'App\Controller\Member\PostMember');
+$app->post('/member/{email}/password', 'App\Controller\Member\PostPassword');
+$app->put('/member/{email}/password/recovery', 'App\Controller\Member\PutPassword');
 
 $app->group(
     '/member',
     function () use ($app, $authMiddleware) {
-        $app->get('/[{name}]', 'App\Controller\Member\GetMember');
-        $app->get('/{name}/deadlines', 'App\Controller\Member\ListDeadlines');
-        $app->get('/{name}/announcements', 'App\Controller\Announcement\ListMemberAnnouncements');
-        $app->get('/deadlines/', 'App\Controller\Member\ListDeadlines');
-        $app->get('/announcements/', 'App\Controller\Announcement\ListMemberAnnouncements');
+        $app->get('/find', 'App\Controller\Member\FindMembers');
+        $app->get('[/[{id}]]', 'App\Controller\Member\GetMember');
+        $app->put('/{id}', 'App\Controller\Member\PutMember');
+        $app->put('/{id}/password', 'App\Controller\Member\PutPassword');
+        $app->get('/{id}/deadlines', 'App\Controller\Member\ListDeadlines');
+        $app->get('/{id}/announcements', 'App\Controller\Announcement\ListMemberAnnouncements');
+        $app->get('/{id}/configuration[/{key}]', 'App\Controller\Member\GetConfiguration');
+        $app->put('/{id}/configuration', 'App\Controller\Member\PutConfiguration');
     }
 )->add(new App\Middleware\CiabMiddleware($app))->add($authMiddleware);
 
@@ -78,8 +84,8 @@ $app->group(
     function () use ($app, $authMiddleware) {
         $app->get('[/]', 'App\Controller\Cycle\ListCycles');
         $app->get('/{id}', 'App\Controller\Cycle\GetCycle');
-        $app->put('[/]', 'App\Controller\Cycle\PutCycle');
-        $app->post('/{id}', 'App\Controller\Cycle\PostCycle');
+        $app->put('/{id}', 'App\Controller\Cycle\PutCycle');
+        $app->post('[/]', 'App\Controller\Cycle\PostCycle');
         $app->delete('/{id}', 'App\Controller\Cycle\DeleteCycle');
     }
 )->add(new App\Middleware\CiabMiddleware($app))->add($authMiddleware);

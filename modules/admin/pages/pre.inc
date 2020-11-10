@@ -39,8 +39,6 @@ if (!empty($_REQUEST)) {
     'newField'     => FILTER_SANITIZE_SPECIAL_CHARS,
     'value'        => FILTER_UNSAFE_RAW,
     'removeAdmin'  => FILTER_VALIDATE_BOOLEAN,
-    'tmp_login'    => FILTER_SANITIZE_SPECIAL_CHARS,
-    'tmp_passwd'   => FILTER_SANITIZE_SPECIAL_CHARS,
     'updateMemberships' => FILTER_VALIDATE_BOOLEAN,
     'hook_action'  => FILTER_SANITIZE_SPECIAL_CHARS,
     'hook_name'    => FILTER_SANITIZE_SPECIAL_CHARS,
@@ -74,41 +72,18 @@ if (!empty($_REQUEST)) {
         goSite();
     }
 
-    if (isset($updateData['tmp_login'])) {
-        if (!reset_password($updateData['tmp_login'], $updateData['tmp_passwd'])) {
-            echo "<b>Failed to find account login ".$updateData['tmp_login'];
-            echo " and so unable to set password!</b>";
-            exit();
-        } else {
-            goSite();
-        }
-    }
-
     if (isset($updateData['updateMemberships'])) {
         require($BASEDIR.'/tools/sync_neon_event_to_db.php');
     }
 
     if (isset($updateData['hook_action'])) {
         if ($updateData['hook_action'] == "install") {
-            $result = neon_registerWebhook(
+            neon_registerWebhook(
                 $updateData['hook_url'],
                 $updateData['hook_name']
             );
-            if ($result !== null) {
-                print "<pre>";
-                print (print_r($updateData, true));
-                print (print_r($result, true));
-                print "</pre>";
-                exit();
-            }
         } else {
-            $result = neon_removeWebhook();
-            if ($result !== null) {
-                print "<pre>";
-                print (print_r($result, true));
-                exit();
-                print "</pre>";
-            }
+            neon_removeWebhook();
         }
         goSite('/index.php?Function=admin');
     }

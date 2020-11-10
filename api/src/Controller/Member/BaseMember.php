@@ -33,19 +33,43 @@ abstract class BaseMember extends BaseController
         if ($this->id !== 0) {
             $path = $request->getUri()->getBaseUrl();
             $this->addHateoasLink('self', $path.'/member/'.strval($this->id), 'GET');
+            $this->addHateoasLink('update', $path.'/member/'.strval($this->id), 'PUT');
+            $this->addHateoasLink('updatePassword', $path.'/member/'.strval($this->id).'/password', 'PUT');
             $this->addHateoasLink('deadlines', $path.'/member/'.strval($this->id).'/deadlines', 'GET');
         }
 
     }
 
 
-    public function findMember(Request $request, Response $response, $args, $key)
-    {
-        $data = parent::findMember($request, $response, $args, $key);
+    public function findMember(
+        Request $request,
+        Response $response,
+        $args,
+        $key,
+        $fields = null
+    ) {
+        $data = parent::findMember($request, $response, $args, $key, $fields);
         if ($data === null) {
-            return $this->errorResponse($request, $response, $error, 'Not Found', 404);
+            return $this->errorResponse($request, $response, 'Member Not Found', 'Not Found', 404);
         }
-        $this->id = $data['Id'];
+        $this->id = $data['id'];
+        return $data;
+
+    }
+
+
+    public function findMemberId(
+        Request $request,
+        Response $response,
+        $args,
+        $key,
+        $fields = null
+    ) {
+        $data = parent::findMemberId($request, $response, $args, $key, $fields);
+        if ($data === null) {
+            return $this->errorResponse($request, $response, 'Member Not Found', 'Not Found', 404);
+        }
+        $this->id = $data['id'];
         return $data;
 
     }

@@ -139,7 +139,7 @@ var deadlinePane = (function(options) {
     load: function() {
       var frame = [ deadlinePane.emptyDeadlineBlock() ];
       apiRequest('GET',
-        'member/deadlines/',
+        'member/current/deadlines',
         'maxResults=all&include=departmentId')
         .then(function(response) {
           var result = JSON.parse(response.responseText);

@@ -17,6 +17,25 @@ class SCHEMA
             'Query' => 'TEXT NOT NULL',
             'Date' => 'TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP',
         ],
+        'ConfigurationOption' => [
+            'Field' => 'VARCHAR(100) NOT NULL',
+            'Name' => 'VARCHAR(100) NOT NULL'
+        ],
+        'ConfigurationTypes' => [
+            'Type' => 'VARCHAR(100) NOT NULL PRIMARY KEY'
+        ],
+        'ConfigurationField' => [
+            'Field' => 'VARCHAR(100) NOT NULL PRIMARY KEY',
+            'TargetTable' => 'VARCHAR(100) NOT NULL',
+            'Type' => 'VARCHAR(100) NOT NULL',
+            'InitialValue' => 'TEXT NOT NULL',
+            'Description' => 'TEXT NOT NULL'
+        ],
+        'AccountConfiguration' => [
+            'AccountID' => 'INT UNSIGNED NOT NULL',
+            'Field' => 'VARCHAR(100) NOT NULL',
+            'Value' => 'TEXT NOT NULL'
+        ],
         'Configuration' => [
             'Field' => 'VARCHAR(15) NOT NULL PRIMARY KEY',
             'Value' => 'TEXT NOT NULL',
@@ -111,11 +130,23 @@ class SCHEMA
         'EMails' => [
             'DepartmentID' => 'Departments (DepartmentID) ON DELETE RESTRICT ON UPDATE CASCADE',
         ],
+        'ConfigurationField' => [
+            'Type' => 'ConfigurationTypes (Type) ON DELETE RESTRICT ON UPDATE CASCADE',
+        ],
+        'AccountConfiguration' => [
+            'AccountID' => 'Members (AccountID) ON DELETE RESTRICT ON UPDATE CASCADE',
+            'Field' => 'ConfigurationField (Field) ON DELETE RESTRICT ON UPDATE CASCADE'
+        ],
+        'ConfigurationOption' => [
+            'Field' => 'ConfigurationField (Field) ON DELETE RESTRICT ON UPDATE CASCADE',
+        ],
 
     ];
 
     public static $DB_primaryKeys = [
-        'TempEventPage' => ['AccountID', 'PageFound']
+        'TempEventPage' => ['AccountID', 'PageFound'],
+        'AccountConfiguration' => [ 'AccountID', 'Field'],
+        'ConfigurationOption' => [ 'Field', 'Name']
 
     ];
 

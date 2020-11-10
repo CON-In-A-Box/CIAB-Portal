@@ -83,14 +83,14 @@ const FIELD = 'Field';
             <input type="submit" value="Execute" class="UI-graybutton"/>
         </form>
         <hr>
-        <form action="index.php?Function=admin" method="POST" class="form-inline">
-            Set Account Temporary Password:<br>
-            <input type="text" class="form-control" name="tmp_login" value=""
-                   placeholder="<account login>" autocomplete="off"/>
-            <input type="text" class="form-control" name="tmp_passwd" value=
+        <div>
+            Set Account Password:<br>
+            <input type="text" class="form-control" id="tmp_login" value=""
+                   placeholder="<account login or id>" autocomplete="off"/>
+            <input type="text" class="form-control" id="tmp_passwd" value=
             "<?php echo rppg(); ?>" autocomplete="off"/>
-            <input type="submit" value="Set Password" class="UI-graybutton"/>
-        </form>
+            <input type="button" value="Set Password" class="UI-graybutton" onclick="setPassword();"/>
+        </div>
         <hr>
 <?php if (array_key_exists('Neon', $GLOBALS)) { ?>
         <input type="submit" value="Manually Update Event Memberships (LONG)" class="UI-yellowbutton"

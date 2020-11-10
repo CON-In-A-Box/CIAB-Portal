@@ -1,8 +1,9 @@
 /* jshint browser: true */
 /* jshint -W097 */
-/* globals apiRequest, confirmbox, basicBackendRequest */
+/* globals apiRequest, confirmbox, basicBackendRequest, showSpinner,
+           hideSpinner, alertbox */
 /* exported downloadLog, setField, addField, removeAdmin, updateMemberships,
-            doSUDO, rebuildSCSS */
+            doSUDO, rebuildSCSS, setPassword */
 
 function downloadLog() {
   window.location = 'index.php?Function=admin&downloadLog=db';
@@ -52,4 +53,21 @@ function rebuildSCSS() {
   basicAdminRequest('&rebuildSCSS=true', function() {
     location.reload();
   });
+}
+
+function setPassword() {
+  var newPassword = document.getElementById('tmp_passwd').value;
+  var account = document.getElementById('tmp_login').value;
+
+  showSpinner();
+  apiRequest('PUT', 'member/' + account + '/password' ,
+    'NewPassword=' + newPassword)
+    .then(function() {
+      hideSpinner();
+      alertbox('Password Updated');
+    })
+    .catch(function(response) {
+      hideSpinner();
+      alertbox('Password Reset Failed: ' + response.responseText);
+    });
 }

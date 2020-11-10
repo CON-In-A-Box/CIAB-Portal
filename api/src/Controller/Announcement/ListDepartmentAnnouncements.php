@@ -58,7 +58,7 @@ class ListDepartmentAnnouncements extends BaseAnnouncement
 
     public function processIncludes(Request $request, Response $response, $args, $values, &$data)
     {
-        return $this->baseIncludes($request, $response, $args, $values, $data);
+        $this->baseIncludes($request, $response, $args, $values, $data);
 
     }
 
