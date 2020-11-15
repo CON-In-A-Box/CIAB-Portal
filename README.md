@@ -63,6 +63,8 @@ At present in `scss/event.scss` is where the even specific styles are generated.
 
 There is a basic asset library engine included in CIAB to try to manage long-lasting but event or convention specific graphical assets. This asset manager is accessed in the `Administrator->Assets` menu option.
 
+There are important templates for the back end located in `api/src/Templates`. These Templates are meant to be as generic as possible in order to be used across events. But it is very possible to modify the language and format of the template for a given event. 
+
 # First Steps
 
 For a step-by-step overview of process of getting a local instance of the project setup look at [FirstSetup.md](FirstSetup.md). 
