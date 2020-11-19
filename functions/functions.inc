@@ -266,24 +266,14 @@ function search_definedFields($key)
 }
 
 
-function add_conf_value($field, $value)
+function set_conf_value($field, $value)
 {
     $sql = <<<SQL
         INSERT INTO `Configuration`(`Field`, `Value`)
         VALUES
-            ('$field', '$value');
-SQL;
-    DB::run($sql);
-
-}
-
-
-function set_conf_value($field, $value)
-{
-    $sql = <<<SQL
-        UPDATE `Configuration`
-        SET `Value`='$value'
-        WHERE `Field`='$field';
+            ('$field', '$value')
+        ON DUPLICATE KEY UPDATE
+        `Value`='$value'
 SQL;
     DB::run($sql);
 
@@ -423,7 +413,7 @@ function _neon_create_webhook($url, $name, $type)
     $result = $GLOBALS['Neon']->go($request);
     if (isset($result['operationResult']) && $result['operationResult'] == 'SUCCESS') {
         $hookname = substr("NH_ID_$type", 0, 14);
-        add_conf_value($hookname, $result['id']);
+        set_conf_value($hookname, $result['id']);
         return null;
     }
     return $result;
@@ -435,8 +425,8 @@ function neon_registerWebhook($url, $name)
 {
     _neon_create_webhook($url, $name, 'CREATE_ACCOUNT');
     _neon_create_webhook($url, $name, 'UPDATE_ACCOUNT');
-    add_conf_value('NEON_HOOK_NAME', $name);
-    add_conf_value('NEON_HOOK_URL', $url);
+    set_conf_value('NEON_HOOK_NAME', $name);
+    set_conf_value('NEON_HOOK_URL', $url);
 
 }
 

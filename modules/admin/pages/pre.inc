@@ -63,7 +63,7 @@ if (!empty($_REQUEST)) {
 
     if (isset($updateData['newField'])) {
         $value = base64_decode($updateData['value']);
-        add_conf_value($updateData['newField'], $value);
+        set_conf_value($updateData['newField'], $value);
         exit();
     }
 
