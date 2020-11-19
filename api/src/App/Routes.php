@@ -65,6 +65,8 @@ $app->group(
     '/admin',
     function () use ($app, $authMiddleware) {
         $app->post('/SUDO/{name}', 'App\Controller\Member\SUDO');
+        $app->get('/configuration[/{key}]', 'App\Controller\System\GetConfiguration');
+        $app->put('/configuration', 'App\Controller\System\PutConfiguration');
     }
 )->add(new App\Middleware\CiabMiddleware($app))->add($authMiddleware);
 

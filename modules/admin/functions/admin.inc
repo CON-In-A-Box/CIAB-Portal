@@ -66,7 +66,36 @@ function dbPrintLog($lines)
 function get_config()
 {
     $output = [];
-    $sql = "SELECT * FROM `Configuration`;";
+    $sql = <<<SQL
+        SELECT
+            cf.Field,
+            (
+                CASE WHEN a.Value IS NULL THEN cf.InitialValue ELSE a.Value
+            END
+        ) AS Value
+        FROM
+            `ConfigurationField` cf
+        LEFT JOIN `Configuration` a ON
+            a.Field = cf.Field
+        WHERE
+            cf.TargetTable = 'Configuration'
+        UNION
+        SELECT
+            Field,
+            Value
+        FROM
+            `Configuration`
+        WHERE
+            Field NOT IN (
+            SELECT
+                Field
+            FROM
+                `ConfigurationField`
+            WHERE
+                TargetTable = 'Configuration'
+        )
+        ORDER BY Field;
+SQL;
     $results = DB::run($sql);
     foreach ($results as $line) {
         $entry = $line;

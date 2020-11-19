@@ -89,7 +89,39 @@ function _config_from_Database()
         }
     }
 
-    $sql = "SELECT * FROM Configuration;";
+    $sql = <<<SQL
+        SELECT
+            cf.*,
+            (
+                CASE WHEN a.Value IS NULL THEN cf.InitialValue ELSE a.Value
+            END
+        ) AS Value
+        FROM
+            `ConfigurationField` cf
+        LEFT JOIN `Configuration` a ON
+            a.Field = cf.Field
+        WHERE
+            cf.TargetTable = 'Configuration'
+        UNION
+        SELECT
+            Field,
+            'Configuration' as TargetTable,
+            null as Type,
+            null as InitialValue,
+            null as Description,
+            Value
+        FROM
+            `Configuration`
+        WHERE
+            Field NOT IN (
+            SELECT
+                Field
+            FROM
+                `ConfigurationField`
+            WHERE
+                TargetTable = 'Configuration'
+        )
+SQL;
     $result = DB::run($sql);
     $value = $result->fetch();
     while ($value !== false) {
