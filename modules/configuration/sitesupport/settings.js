@@ -102,7 +102,11 @@ var settingsPage = (function(options) {
         .then(function(response) {
           hideSpinner();
           var data = JSON.parse(response.responseText);
-          if (data.data.length > 0) {
+          if (data.type == 'configuration') {
+            document.getElementById('settings').innerHTML = '';
+            settingsPage.addHeader();
+            settingsPage.processSetting(data);
+          } else if (data.data.length > 0) {
             document.getElementById('settings').innerHTML = '';
             settingsPage.addHeader();
             data.data.forEach(settingsPage.processSetting);
