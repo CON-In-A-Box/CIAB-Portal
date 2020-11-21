@@ -18,4 +18,7 @@ INSERT INTO ConfigurationField (Field, TargetTable, Type, InitialValue, Descript
     ('col.primary', 'Configuration', 'text', '#FFF', 'HTML Color key for primary site color.'),
     ('col.prim-back', 'Configuration', 'text', '#4CAF50', 'HTML Color key for primary site background color.'),
     ('col.secondary', 'Configuration', 'text', '#FFF', 'HTML Color key for secondary site color.'),
-    ('col.second-back', 'Configuration', 'text', '#2196F3', 'HTML Color key for secondary site background color.')
+    ('col.second-back', 'Configuration', 'text', '#2196F3', 'HTML Color key for secondary site background color.'),
+    ('ASSET_BACKEND', 'Configuration', 'text', 'file.inc', 'Asset Library Backend.'),
+    ('FILE_ASSET_DATA', 'Configuration', 'boolean', 0, 'Asset path is not web accessable.'),
+    ('FILE_ASSET_PATH', 'Configuration', 'text', 'resources/images', 'Asset data path.')

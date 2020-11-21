@@ -35,7 +35,6 @@ function delete_files($target)
 if (!empty($_REQUEST)) {
     $arguments = [
     'SUDO'         => FILTER_SANITIZE_NUMBER_INT,
-    'setField'     => FILTER_SANITIZE_SPECIAL_CHARS,
     'newField'     => FILTER_SANITIZE_SPECIAL_CHARS,
     'value'        => FILTER_UNSAFE_RAW,
     'removeAdmin'  => FILTER_VALIDATE_BOOLEAN,
@@ -53,12 +52,6 @@ if (!empty($_REQUEST)) {
         unset($_SESSION['IS_ADMIN']);
         loadAccount($updateData['SUDO']);
         goSite();
-    }
-
-    if (isset($updateData['setField'])) {
-        $value = base64_decode($updateData['value']);
-        set_conf_value($updateData['setField'], $value);
-        exit();
     }
 
     if (isset($updateData['newField'])) {
