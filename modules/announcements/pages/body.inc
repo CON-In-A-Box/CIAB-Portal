@@ -34,6 +34,9 @@
             <label class="UI-label" for="announcement_text">Announcement: </label>
             <textarea class="UI-input UI-padding" rows=10 id="announcement_text">
             </textarea>
+            <br> &nbsp;
+            <label class="UI-label" for="announcement_email">Send announcement via Email:&nbsp;</label>
+            <input class="UI-checkbox" type="checkbox" id="announcement_email">
         </div>
         <div class="UI-center">
             <button class="UI-eventbutton UI-margin UI-hide" id="save_event_button"

@@ -82,7 +82,7 @@ Add a new announcement.
 
 ### add Request
 
-```PUT /announcement/{department}?Scope={integer}&Text={text}```
+```PUT /announcement/{department}?Scope={integer}&Text={text}[&Email={bool}]```
 
 ### add Parameters
 The following parameters are available:
@@ -92,6 +92,7 @@ The following parameters are available:
 |department|Department adding the announcement.|`integer` id or `string` name|
 |Scope|Scope of the announcement.|*required*|
 |Text|Text of the announcement.|*required*|
+|Email|Send announcment via email to all relevent members.|default `true`|
 
 
 ### add Request Body
