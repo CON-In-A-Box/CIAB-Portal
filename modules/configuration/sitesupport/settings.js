@@ -4,7 +4,7 @@
 
 /* jshint browser: true */
 /* jshint -W097 */
-/* globals apiRequest, showSpinner, hideSpinner */
+/* globals apiRequest, showSpinner, hideSpinner, configElement, configHeader */
 
 var settingsPage = (function(options) {
   'use strict';
@@ -18,64 +18,11 @@ var settingsPage = (function(options) {
       settings = Object.assign(settings, opts);
     },
 
-    addHeader: function() {
-      var table = document.getElementById('settings');
-      var row = document.createElement('DIV');
-      table.appendChild(row);
-      row.classList.add('UI-table-row');
-      var div = document.createElement('DIV');
-      row.appendChild(div);
-      div.classList.add('UI-table-cell');
-      div.innerHTML = 'Setting';
-    },
-
     processSetting: function(input) {
       var table = document.getElementById('settings');
-      var row = document.createElement('DIV');
+      var row = new configElement(
+        {'onChange' : settingsPage.onChange}).createElement(input);
       table.appendChild(row);
-      row.classList.add('UI-table-row');
-      var label = document.createElement('DIV');
-      row.appendChild(label);
-      label.classList.add('UI-table-cell');
-      label.innerHTML = input.description;
-      var val = document.createElement('INPUT');
-      switch (input.fieldType) {
-        case 'boolean':
-          var isSet = (input.value == 'true' || input.value == '1');
-          val.classList.add('UI-checkbox');
-          val.type = 'checkbox';
-          val.checked = isSet;
-          break;
-        case 'text':
-          val.classList.add('UI-input');
-          val.classList.add('UI-half');
-          val.type = 'text';
-          val.value = input.value;
-          break;
-        case 'integer':
-          val.classList.add('UI-input');
-          val.classList.add('UI-half');
-          val.type = 'number';
-          val.value = input.value;
-          break;
-        case 'select':
-          val = document.createElement('SELECT');
-          val.classList.add('UI-select');
-          val.classList.add('UI-half');
-          input.options.forEach(function(option) {
-            var opt = document.createElement('OPTION');
-            opt.text = option;
-            if (input.value == option) {
-              opt.selected = true;
-            }
-            val.add(opt);
-          });
-          break;
-      }
-      label.appendChild(val);
-      val.classList.add('UI-right');
-      val.id = input.field;
-      val.onchange = settingsPage.onChange;
     },
 
     onChange: function(e) {
@@ -102,13 +49,12 @@ var settingsPage = (function(options) {
         .then(function(response) {
           hideSpinner();
           var data = JSON.parse(response.responseText);
+          var table = document.getElementById('settings');
+          table.innerHTML = '';
+          table.appendChild(new configHeader().createElement())
           if (data.type == 'configuration') {
-            document.getElementById('settings').innerHTML = '';
-            settingsPage.addHeader();
             settingsPage.processSetting(data);
           } else if (data.data.length > 0) {
-            document.getElementById('settings').innerHTML = '';
-            settingsPage.addHeader();
             data.data.forEach(settingsPage.processSetting);
           }
         })
