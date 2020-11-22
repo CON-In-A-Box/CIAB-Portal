@@ -2,7 +2,7 @@
 /* jshint -W097 */
 /* globals apiRequest, confirmbox, basicBackendRequest, showSpinner,
            hideSpinner, alertbox */
-/* exported downloadLog, setField, addField, removeAdmin, updateMemberships,
+/* exported downloadLog, addField, removeAdmin, updateMemberships,
             doSUDO, rebuildSCSS, setPassword */
 
 function downloadLog() {
@@ -11,14 +11,6 @@ function downloadLog() {
 
 function basicAdminRequest(parameter, finish) {
   basicBackendRequest('POST', 'admin', parameter, finish);
-}
-
-function setField(field) {
-  var value = document.getElementById('config_' + field).value;
-  value = btoa(value);
-  basicAdminRequest('&setField=' + field + '&value=' + value, function() {
-    location.reload();
-  });
 }
 
 function addField() {

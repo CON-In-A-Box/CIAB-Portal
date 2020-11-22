@@ -63,25 +63,6 @@ function dbPrintLog($lines)
 }
 
 
-function get_config()
-{
-    $output = [];
-    $sql = "SELECT * FROM `Configuration`;";
-    $results = DB::run($sql);
-    foreach ($results as $line) {
-        $entry = $line;
-        $entry['Source'] = 'DB';
-        $output[$line['Field']]  = $entry;
-    }
-    foreach ($_ENV as $key => $entry) {
-        $output[$key] = ['Field' => $key, 'Source' => 'ENV'];
-    }
-    ksort($output);
-    return $output;
-
-}
-
-
 function rppg()
 {
     $pw = '';

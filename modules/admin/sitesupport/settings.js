@@ -1,5 +1,5 @@
 /*
- * Javacript for the Configuration page
+ * Javacript for the Site Configuration page
  */
 
 /* jshint browser: true */
@@ -31,7 +31,7 @@ var settingsPage = (function(options) {
         value = e.target.checked;
       }
       showSpinner();
-      apiRequest('PUT','member/current/configuration',
+      apiRequest('PUT','admin/configuration',
         'Field=' + e.target.id + '&Value=' + value)
         .then(function() {
           hideSpinner();
@@ -45,7 +45,7 @@ var settingsPage = (function(options) {
     load: function() {
       showSpinner();
       apiRequest('GET',
-        'member/current/configuration', 'maxResults=all')
+        'admin/configuration', 'maxResults=all')
         .then(function(response) {
           hideSpinner();
           var data = JSON.parse(response.responseText);

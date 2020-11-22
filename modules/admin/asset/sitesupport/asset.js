@@ -1,8 +1,8 @@
 /* jshint browser: true */
 /* jshint -W097 */
-/* globals  basicBackendRequest */
+/* globals  basicBackendRequest, apiRequest, showSpinner, hideSpinner */
 /* exported  uploadAsset, startAssetUpload, populateAssetConfiguration,
-             newAssetField */
+             setAssetField */
 
 'use strict';
 
@@ -22,12 +22,17 @@ function startAssetUpload(asset) {
   upload.click();
 }
 
-function newAssetField(field) {
+function setAssetField(field) {
   var value = document.getElementById('config_' + field).value;
-  value = btoa(value);
-  basicBackendRequest('POST','admin',
-    '&newField=' + field + '&value=' + value, function() {
-      location.reload();
+  showSpinner();
+  apiRequest('PUT','admin/configuration',
+    'Field=' + field + '&Value=' + value)
+    .then(function() {
+      hideSpinner();
+    })
+    .catch(function(response) {
+      hideSpinner();
+      if (response instanceof Error) { throw response; }
     });
 }
 
@@ -82,12 +87,7 @@ function populateAssetConfiguration() {
           value = createTableCell();
           var button = document.createElement('BUTTON');
           button.classList.add('UI-eventbutton');
-          if (output[property].source == 'DB') {
-            button.setAttribute('onclick', 'setField("' + property + '");');
-          } else {
-            button.setAttribute('onclick',
-              'newAssetField("' + property + '");');
-          }
+          button.setAttribute('onclick', 'setAssetField("' + property + '");');
           button.innerHTML = 'Set';
           value.appendChild(button);
           line.appendChild(value);

@@ -11,52 +11,7 @@ use Slim\Http\Response;
 class PutConfiguration extends BaseMember
 {
 
-
-    protected static function checkBool($value)
-    {
-        return (int) filter_var($value, FILTER_VALIDATE_BOOLEAN);
-
-    }
-
-
-    protected static function checkInt($value)
-    {
-        return (int) filter_var($value, FILTER_VALIDATE_INT);
-
-    }
-
-
-    protected function checkSelect($value, $field)
-    {
-        $sql = "SELECT * FROM `ConfigurationOption` WHERE Field = '$field' AND Name = '$value';";
-        $sth = $this->container->db->prepare($sql);
-        $sth->execute();
-        if ($sth->fetch() === false) {
-            return null;
-        }
-        return $value;
-
-    }
-
-
-    protected function verifyValue($value, $field)
-    {
-        $sql = "SELECT Type FROM `ConfigurationField` WHERE Field = '$field'";
-        $sth = $this->container->db->prepare($sql);
-        $sth->execute();
-        $data = $sth->fetchAll();
-        switch ($data[0]['Type']) {
-            case 'boolean':
-                return PutConfiguration::checkBool($value);
-            case 'integer':
-                return PutConfiguration::checkInt($value);
-            case 'select':
-                return $this->checkSelect($value, $field);
-            default:
-                return $value;
-        }
-
-    }
+    use \App\Controller\TraitConfiguration;
 
 
     public function buildResource(Request $request, Response $response, $args): array
@@ -78,32 +33,8 @@ class PutConfiguration extends BaseMember
         }
 
         $body = $request->getParsedBody();
-        $field = $body['Field'];
-        $value = $this->verifyValue($body['Value'], $field);
-
-        if ($field === null || $value === null) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, 'Value Not Found', 'Value Not Found', 404)];
-        }
-
-        $sql = <<<SQL
-            INSERT INTO `AccountConfiguration` (AccountID, Field, Value)
-            VALUES ($accountID, '$field', '$value')
-            ON DUPLICATE KEY UPDATE
-                Value = '$value';
-SQL;
-        $sth = $this->container->db->prepare($sql);
-        $sth->execute();
-
-        $target = new \App\Controller\Member\GetConfiguration($this->container);
-
-        $args['key'] = $field;
-        $data = $target->buildResource($request, $response, $args)[1];
-        return [
-        \App\Controller\BaseController::RESOURCE_TYPE,
-        $target->arrayResponse($request, $response, $data)
-        ];
+        $body['AccountID'] = $accountID;
+        return $this->putConfiguration($request, $response, $args, 'AccountConfiguration', $body);
 
     }
 
