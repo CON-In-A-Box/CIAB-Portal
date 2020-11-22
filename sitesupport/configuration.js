@@ -1,10 +1,10 @@
 /* jshint browser: true */
 /* jshint -W097 */
-/* exported configElement, configHeader */
-
-'use strict'
+/* globals apiRequest, showSpinner, hideSpinner */
+/* exported settingsTable */
 
 var configElement = function(options) {
+  'use strict';
 
   return {
     settings: options,
@@ -82,6 +82,7 @@ var configElement = function(options) {
 
 
 var configHeader = function(options) {
+  'use strict';
 
   return {
     settings: options,
@@ -109,6 +110,86 @@ var configHeader = function(options) {
       div.innerHTML = 'Setting';
       return row;
     },
+
+  };
+}
+
+
+var settingsTable = function(options) {
+  'use strict';
+
+  return {
+    settings: Object.assign({
+      api: undefined,
+      onChange: undefined,
+      element: 'settings'
+    }, options),
+
+    options: function(opts) {
+      this.settings = Object.assign(this.settings, opts);
+    },
+
+    debugmsg: function(message) {
+      if (this.settings.debugElement) {
+        var target = document.getElementById(this.settings.debugElement);
+        if (target) {
+          target.classList.add('UI-show');
+          target.innerHTML = message;
+        }
+      }
+    },
+
+    processSetting: function(input) {
+      var obj = this;
+      var onChange = obj.settings.onChange;
+      if (onChange === undefined) {
+        onChange = obj.onChange;
+      }
+      var table = document.getElementById(this.settings.element);
+      var row = new configElement(
+        {'onChange' : onChange.bind(obj)}).createElement(input);
+      table.appendChild(row);
+    },
+
+
+    onChange: function(e) {
+      var value = e.target.value;
+      if (e.target.type == 'checkbox') {
+        value = e.target.checked;
+      }
+      showSpinner();
+      apiRequest('PUT', this.settings.api,
+        'Field=' + e.target.id + '&Value=' + value)
+        .then(function() {
+          hideSpinner();
+        })
+        .catch(function(response) {
+          hideSpinner();
+          if (response instanceof Error) { throw response; }
+        });
+    },
+
+    createElement: function() {
+      var obj = this;
+      showSpinner();
+      apiRequest('GET', this.settings.api, 'maxResults=all')
+        .then(function(response) {
+          hideSpinner();
+          var data = JSON.parse(response.responseText);
+          var table = document.getElementById(obj.settings.element);
+          table.innerHTML = '';
+          table.appendChild(new configHeader().createElement())
+          if (data.type == 'configuration') {
+            obj.processSetting(data);
+          } else if (data.data.length > 0) {
+            data.data.forEach(function(item) {obj.processSetting(item)});
+          }
+        })
+        .catch(function(response) {
+          hideSpinner();
+          if (response instanceof Error) { throw response; }
+        })
+    }
 
   };
 }
