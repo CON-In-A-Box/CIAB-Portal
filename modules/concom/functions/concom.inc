@@ -430,7 +430,10 @@ function DumpConComList()
     }
 
     foreach ($Divisions as $div) {
-        array_push($email, getDepartmentEmails($div)[0]);
+        $divMail = getDepartmentEmails($div);
+        if (!empty($divMail)) {
+            array_push($email, $divMail[0]);
+        }
     }
 
     $email = array_unique($email);
