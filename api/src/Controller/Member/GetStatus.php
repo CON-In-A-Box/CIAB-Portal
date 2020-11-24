@@ -64,6 +64,11 @@ SQL;
             $this->errorResponse($request, $response, $error, 'Not Found', 404)];
         }
         $data = $data['users'][0];
+        if (!array_key_exists('id', $data)) {
+            return [
+            \App\Controller\BaseController::RESULT_TYPE,
+            $this->errorResponse($request, $response, $error, 'Not Found', 404)];
+        }
         $valid = array('type' => 'member_status',
                        'status' => $this->verifyAccount($data['id']));
         return [
