@@ -53,22 +53,24 @@ function menu_element($menu, $base_styles, $responsive = null)
 function build_sub_menu($menu, $base_styles, $resp_styles)
 {
     $menus_out = build_menus($menu['function'], $base_styles, $resp_styles);
-    if (strlen($menus_out) > 0) {
-        if ($resp_styles) {
-            $menu_class = $menu['base style'];
-            $output = "<div class='UI-menu-div'>";
-            $output .= "<button class='$menu_class ".$resp_styles."'";
-            $output .= "title='".$menu['title']."'>";
-            $output .= "<em class='".$menu['i class']."'></em> ";
-            $output .= $menu['text']."</button>";
-            $output .= "<div class='UI-menu-end'>";
-            $output .= $menus_out;
-            $output .= "</div>";
-            $output .= "</div>";
-            return $output;
-        } else {
-            return $menus_out;
+    if ($resp_styles) {
+        $menu_class = $menu['base style'];
+        $div_class = '';
+        if (strlen($menus_out) == 0) {
+            $div_class = 'UI-hide';
         }
+        $output = "<div class='UI-menu-div $div_class'>";
+        $output .= "<button class='$menu_class ".$resp_styles."'";
+        $output .= "title='".$menu['title']."'>";
+        $output .= "<em class='".$menu['i class']."'></em> ";
+        $output .= $menu['text']."</button>";
+        $output .= "<div class='UI-menu-end' id = '".$menu['text']."'>";
+        $output .= $menus_out;
+        $output .= "</div>";
+        $output .= "</div>";
+        return $output;
+    } else {
+        return $menus_out;
     }
     return "";
 
