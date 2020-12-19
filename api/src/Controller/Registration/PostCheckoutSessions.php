@@ -7,6 +7,7 @@ use Slim\Http\Request;
 use Slim\Http\Response;
 use Stripe\Stripe;
 use App\Controller\BaseController;
+
 require_once __DIR__.'/../../../..//functions/locations.inc';
 
 class PostCheckoutSessions extends BaseController
@@ -17,6 +18,7 @@ class PostCheckoutSessions extends BaseController
         parent::__construct('registration', $container);
 
     }
+
 
     public function buildResource(Request $request, Response $response, $args): array
     {
@@ -39,9 +41,12 @@ class PostCheckoutSessions extends BaseController
           ]);
         
         return [
-            \App\Controller\BaseController::RESOURCE_TYPE,
-            ['id' => $session->id ]
+        \App\Controller\BaseController::RESOURCE_TYPE,
+        ['id' => $session->id ]
         ];
+
     }
+
+
 }
 ?>

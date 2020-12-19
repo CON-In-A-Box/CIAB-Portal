@@ -94,7 +94,7 @@ $app->group(
 
 $app->group(
     '/registration',
-    function() use ($app, $authMiddleware) {
+    function () use ($app, $authMiddleware) {
         $app->add(function ($request, $response, $next) {
             \Stripe\Stripe::setApiKey($_ENV['STRIPE_PRIVATE_KEY']);
             return $next($request, $response);
