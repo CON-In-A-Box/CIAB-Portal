@@ -91,3 +91,19 @@ $app->group(
         $app->delete('/{id}', 'App\Controller\Cycle\DeleteCycle');
     }
 )->add(new App\Middleware\CiabMiddleware($app))->add($authMiddleware);
+
+$app->group(
+    '/registration',
+    function() use ($app, $authMiddleware) {
+        $app->add(function ($request, $response, $next) {
+            \Stripe\Stripe::setApiKey($_ENV['STRIPE_PRIVATE_KEY']);
+            return $next($request, $response);
+        });
+        $app->post('/checkout_sessions', 'App\Controller\Registration\PostCheckoutSessions');
+    }
+)->add(new App\Middleware\CiabMiddleware($app))->add($authMiddleware);
+
+$app->add(function ($request, $response, $next) {
+    \Stripe\Stripe::setApiKey($_ENV['STRIPE_PRIVATE_KEY']);
+    return $next($request, $response);
+})->post('/registration/stripe_webhook', 'App\Controller\Registration\PostStripeWebhook');
