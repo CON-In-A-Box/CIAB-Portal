@@ -13,6 +13,7 @@ require_once __DIR__.'/../../../..//functions/locations.inc';
 class PostCheckoutSessions extends BaseController
 {
     
+
     public function __construct(Container $container)
     {
         parent::__construct('registration', $container);
@@ -46,7 +47,4 @@ class PostCheckoutSessions extends BaseController
         ];
 
     }
-
-
 }
-?>

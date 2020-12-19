@@ -30,6 +30,4 @@ class PostStripeWebhook extends BaseController
         ];
 
     }
-
-
 }
