@@ -16,7 +16,7 @@
       // created in step 3.
 
       showSpinner();
-      apiRequest('POST', '/registration/checkout_sessions')
+      apiRequest('POST', '/payment/checkout', 'success=regstore/purchased&session_id={CHECKOUT_SESSION_ID}')
       .then(function(response) {
         return JSON.parse(response.responseText);
       })

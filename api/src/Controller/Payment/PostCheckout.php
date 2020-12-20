@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace App\Controller\Registration;
+namespace App\Controller\Payment;
 
 use Slim\Container;
 use Slim\Http\Request;
@@ -10,7 +10,7 @@ use App\Controller\BaseController;
 
 require_once __DIR__.'/../../../..//functions/locations.inc';
 
-class PostCheckoutSessions extends BaseController
+class PostCheckout extends BaseController
 {
     
 
@@ -24,6 +24,8 @@ class PostCheckoutSessions extends BaseController
     public function buildResource(Request $request, Response $response, $args): array
     {
         global $BASEURL;
+        $success_url = $request->getParsedBodyParam('success');
+        $session_id = $request->getParsedBodyParam('session_id');
         $session = \Stripe\Checkout\Session::create([
             'payment_method_types' => ['card'],
             'line_items' => [[
@@ -37,7 +39,7 @@ class PostCheckoutSessions extends BaseController
               'quantity' => 1,
             ]],
             'mode' => 'payment',
-            'success_url' => $BASEURL.'/index.php?Function=regstore/purchased&session_id={CHECKOUT_SESSION_ID}',
+            'success_url' => $BASEURL.'/index.php?Function='.$success_url.'&session_id='.$session_id,
             'cancel_url' => $BASEURL.'/cancel',
           ]);
         
