@@ -51,3 +51,7 @@ vendor
 # Configuration #
 #################
 .env
+
+# Log directory should be kept, files not #
+###########################################
+php-logs/*

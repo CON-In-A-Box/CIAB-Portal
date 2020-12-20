@@ -8,6 +8,7 @@ services:
       - backend
     volumes:
       - .:/var/www/html/
+      - ./php-logs:/tmp/php-logs # A place to put debugging logs
     environment:
         DBHOST: 'mysql'
         DBNAME: ${DBNAME}
