@@ -136,5 +136,6 @@ A number of modules exist in the API. These modules, while enabled by default, c
 * [Annual Cycle](Cycle.md)
 * [Deadline](Deadline.md)
 * [Department](Department.md)
+* [Event](Event.md)
 * [Member](Member.md)
 * [Permissions](Permissions.md)
