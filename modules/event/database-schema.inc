@@ -50,6 +50,14 @@ $DB_tables = [
 'EventID' => 'INT UNSIGNED NOT NULL',
 'RegisteredByID' => 'INT UNSIGNED NOT NULL',
 'RegistrationDate' => 'DATETIME NOT NULL',
+'BoardingPassGenerated' => 'DATETIME',
+'PrintRequested' => 'DATETIME',
+'LastPrintedDate' => 'DATETIME',
+'PrintRequestIp' => 'VARCHAR(46)',
+'Note' => 'TEXT',
+'VoidDate' => 'DATETIME',
+'VoidBy' => 'INT UNSIGNED',
+'VoidReason' => 'TEXT'
         ],
 
 
