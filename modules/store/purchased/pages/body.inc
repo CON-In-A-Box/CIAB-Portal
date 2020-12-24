@@ -1,5 +1,4 @@
 <?php
-  use Monolog\Logger;
   use Stripe\Stripe;
 
   if (!array_key_exists('session_id', $_REQUEST))

@@ -1,6 +1,6 @@
 <div id="page" class="UI-cell-row UI-padding UI-maincontent">
 
-  <script src="https://js.stripe.com/v3/"></script>
+  <script src="https://js.stripe.com/v3/" integrity="sha384-30e84fc25d476c60221e0370623e6563d223025e1855fe3d4159e724eae2b0d3e44893c58af7f77092a9e3775b3f54af"></script>
 
   <div id="main_content" class="UI-main-content-div">
     <div>Would you like to buy a snowman?</div>
@@ -16,7 +16,7 @@
       // created in step 3.
 
       showSpinner();
-      apiRequest('POST', '/payment/checkout', 'success=regstore/purchased&session_id={CHECKOUT_SESSION_ID}')
+      apiRequest('POST', '/payment/checkout', 'success=store/purchased&store_slug=reg&session_id={CHECKOUT_SESSION_ID}')
       .then(function(response) {
         return JSON.parse(response.responseText);
       })
