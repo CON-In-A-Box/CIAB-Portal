@@ -21,7 +21,7 @@ function load() {
       if (response instanceof Error) { throw response; }
     });
 
-  apiRequest('GET', 'registration/tickets', 'include=eventId')
+  apiRequest('GET', 'registration/ticket/list', 'include=event')
     .then(function(response) {
       var result = JSON.parse(response.responseText);
       var data = null;
@@ -31,7 +31,7 @@ function load() {
         data = Array(result);
       }
       if (data.length > 0) {
-        var eventName =  data[0].eventId.name;
+        var eventName =  data[0].event.name;
         var generated = 0
         data.forEach(function(ticket) {
           if (ticket.BoardingPassGenerated) {
