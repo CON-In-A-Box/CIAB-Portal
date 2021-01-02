@@ -79,52 +79,6 @@ SQL;
 }
 
 
-function print_badge($data)
-{
-    $csv = array();
-    $csv[] = ["Badge Type", "Badge File BackGround", "Badge Number",
-    "Badge Name", "Workstation ID", "Print Number"];
-    $csv[] = [$data->{'Badge Type'}, $data->BackgroundImage, $data->Id,
-    $data->{'Badge Name'}, $data->Workstation,
-    $data->{'Print Count'}];
-
-    increment_badge($data);
-
-    $id = $data->Id;
-    $now = time();
-    $workstation = $data->Workstation;
-    output_csv($csv, "badge_${id}_${now}_${workstation}.csv");
-
-}
-
-
-function update_badge($data)
-{
-    $name = MyPDO::quote($data->{'Badge Name'});
-    $sql = <<<SQL
-    UPDATE
-        `Registrations`
-    SET
-        `BadgeName` = $name
-    WHERE
-        `RegistrationID` = $data->RegID
-SQL;
-    DB::run($sql);
-
-}
-
-
-function get_verification_info($accountID)
-{
-    $info = pullIndividualAccount($accountID);
-    $result['AddressLine1'] = $info['AddressLine1'];
-    $result['Phone'] = $info['Phone'];
-    $result['Name'] = $info['FirstName'].'&nbsp;'.$info['LastName'];
-    return $result;
-
-}
-
-
 function in_registration()
 {
     if (isset($_SESSION['IS_ADMIN'])) {

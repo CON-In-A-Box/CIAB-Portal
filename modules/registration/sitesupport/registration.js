@@ -4,9 +4,11 @@
 
 /* jshint browser: true */
 /* jshint -W097 */
-/* global confirmbox, showSidebar, basicBackendRequest */
-/* exported sidebarMainDiv, refreshBadgeData, printBadge, showUpdateBadge,
-            updateBadge, workstationChange */
+/* global confirmbox, showSidebar, basicBackendRequest, showSpinner,
+          hideSpinner, apiRequest */
+/* exported sidebarMainDiv, refreshBadgeData, printBadge,
+            showUpdateBadge, updateBadge, workstationChange
+            */
 
 'use strict';
 
@@ -34,10 +36,18 @@ function printBadge(data) {
     msg =  'Print badge for \'';
   }
   confirmbox('Confirm Print Badge',
-    msg + input['Badge Name'] + '\' ?').then(function() {
-    window.location = 'index.php?Function=registration&printBadge=' +
-                      _badgeData;
-  });
+    msg + input['Badge Name'] + '\' ?')
+    .then(function() {
+      showSpinner();
+      apiRequest('PUT', 'registration/ticket/' + data['RegID'] + '/print', null)
+        .then(function() {
+          hideSpinner();
+        })
+        .catch(function(response) {
+          hideSpinner();
+          if (response instanceof Error) { throw response; }
+        });
+    });
 }
 
 function showUpdateBadge(data) {
@@ -49,11 +59,17 @@ function showUpdateBadge(data) {
 
 function updateBadge() {
   var data = JSON.parse(atob(_badgeData));
-  data['Badge Name'] = document.getElementById('badge_name').value;
-  var param = btoa(JSON.stringify(data));
-  basicRegistrationRequest('updateBadge=' + param, function() {
-    location.reload();
-  });
+  var name = document.getElementById('badge_name').value;
+  showSpinner();
+  apiRequest('PUT', 'registration/ticket/' +  data['RegID'],'badgeName=' + name)
+    .then(function() {
+      hideSpinner();
+      location.reload();
+    })
+    .catch(function(response) {
+      hideSpinner();
+      if (response instanceof Error) { throw response; }
+    })
 }
 
 function workstationChange() {
