@@ -8,7 +8,7 @@ use Slim\Http\Response;
 use Stripe\Stripe;
 use App\Controller\BaseController;
 
-require_once __DIR__.'/../../../..//functions/locations.inc';
+require_once __DIR__.'/../../../../functions/locations.inc';
 
 class PostCheckout extends BaseController
 {
@@ -24,8 +24,8 @@ class PostCheckout extends BaseController
     public function buildResource(Request $request, Response $response, $args): array
     {
         global $BASEURL;
-        $success_url = $request->getParsedBodyParam('success');
-        $session_id = $request->getParsedBodyParam('session_id');
+        $successFunction = $request->getParsedBodyParam('successFunction');
+        $storeSlug = $request->getParsedBodyParam('storeSlug');
         $session = \Stripe\Checkout\Session::create([
             'payment_method_types' => ['card'],
             'line_items' => [[
@@ -39,7 +39,7 @@ class PostCheckout extends BaseController
               'quantity' => 1,
             ]],
             'mode' => 'payment',
-            'success_url' => $BASEURL.'/index.php?Function='.$success_url.'&session_id='.$session_id,
+            'success_url' => $BASEURL.'/index.php?Function='.$successFunction.'&storeSlug='.$storeSlug.'&session_id={CHECKOUT_SESSION_ID}',
             'cancel_url' => $BASEURL.'/cancel',
           ]);
         

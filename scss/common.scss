@@ -342,6 +342,7 @@
 .UI-main-responsive-bar-item {
     @extend .w3-hide-small;
     @extend .w3-hide-medium;
+    @extend .w3-hide-large;
 }
 
 .UI-main-logout-bar-item {
@@ -359,13 +360,15 @@
     @extend .UI-main-bar-item;
     @extend .w3-block;
     @extend .UI-center;
-    @extend .w3-hide-large;
+    @extend .w3-hide-medium;
+    @extend .w3-hide-small;
 }
 
 .UI-main-bar-pancake-div {
     @extend .w3-bar-block;
     @extend .UI-hide;
-    @extend .w3-hide-large;
+    @extend .w3-hide-small;
+    @extend .w3-hide-medium;
 }
 
 .UI-icon-div {

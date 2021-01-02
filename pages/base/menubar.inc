@@ -73,6 +73,7 @@ if ($kiosk === null) {
 
     $modules = scandir($MODULESDIR);
     foreach ($modules as $key => $value) {
+        error_log($key.':'.$value);
         if (!in_array($value, array(".", ".."))) {
             if ($kiosk === null && in_array($value, $DISABLEDMODULES)) {
                 continue;

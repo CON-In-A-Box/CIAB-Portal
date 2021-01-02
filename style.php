@@ -48,7 +48,8 @@ $scss->registerFunction('db-color', 'from_db');
 
 $uri = explode("/", $_SERVER['REQUEST_URI']);
 
-if (!is_dir($resource_cache)) {
+if (!is_dir($resource_cache.'/scss')) {
+    error_log("SPLAH");
     @mkdir($resource_cache, 0777, true);
     @chmod($resource_cache, 0777);
 }

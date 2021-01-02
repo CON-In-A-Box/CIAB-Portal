@@ -68,5 +68,11 @@ var PERMISSIONS = [
   {
     permission:'volunteers.reports',
     description:'Allowed generate reports from convention volunteer data.'
+  },
+  {
+    permission: 'stores.admin',
+    description: 'Allowed to administer stores and products.'
   }
 ];
+
+function getPermissions()
