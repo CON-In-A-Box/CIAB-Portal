@@ -9,10 +9,10 @@ use App\Controller\BaseController;
 
 abstract class BaseStore extends BaseController
 {
-
     /**
      * @var int
      */
+
     protected $id = 0;
 
 
