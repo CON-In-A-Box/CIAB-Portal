@@ -1,3 +1,5 @@
+<?php /* There is no actual php in this file! Weird! */ ?>
+
 <script type="text/javascript">
     var sidebarMainDiv = 'main_content';
 </script>

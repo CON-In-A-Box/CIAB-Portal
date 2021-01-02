@@ -4,6 +4,7 @@
 
 /* jshint browser: true */
 /* jshint -W097 */
+/* jshint -W117 */
 /* globals alertbox */
 /* exported escapeHtml, showSpinner, hideSpinner, urlsafeB64Encode,
             urlsafeB64Decode, basicBackendRequest, apiRequest, apiRefresh */
