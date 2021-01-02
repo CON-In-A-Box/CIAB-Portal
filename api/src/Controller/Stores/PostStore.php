@@ -7,21 +7,22 @@ use Slim\Http\Response;
 
 class PostStore extends BaseStore
 {
+
+
     public function buildResource(Request $request, Response $response, $args): array
     {
         // TODO: RBAC more than just admin maybe
-        if (!$_SESSION['IS_ADMIN'])
-        {
+        if (!$_SESSION['IS_ADMIN']) {
             return [
-                \App\Controller\BaseController::RESULT_TYPE,
-                $this->errorResponse($request, $response, 'Permission Denied', 'Permission Denied', 403)];
+            \App\Controller\BaseController::RESULT_TYPE,
+            $this->errorResponse($request, $response, 'Permission Denied', 'Permission Denied', 403)];
         }
 
         $body = $request->getParsedBody();
         if (!array_key_exists('store_name', $body)) {
             return [
-                \App\Controller\BaseController::RESULT_TYPE,
-                $this->errorResponse($request, $response, 'Required \'store_name\' parameter not present', 'Missing Parameter', 400)
+            \App\Controller\BaseController::RESULT_TYPE,
+            $this->errorResponse($request, $response, 'Required \'store_name\' parameter not present', 'Missing Parameter', 400)
             ];
         }
         $sql = <<<SQL
@@ -33,12 +34,12 @@ SQL;
         
         // TODO: return the object
         return [
-            \App\Controller\BaseController::RESOURCE_TYPE,
-            [ 'data' => [] ]
+        \App\Controller\BaseController::RESOURCE_TYPE,
+        [ 'data' => [] ]
         ];
+
     }
 
 
-  
     /* end PostStore */
 }

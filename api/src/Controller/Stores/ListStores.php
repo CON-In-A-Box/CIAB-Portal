@@ -25,9 +25,10 @@ class ListStores extends BaseStore
             $data[] = $store;
         }
         return [
-            \App\Controller\BaseController::LIST_TYPE,
-            $data,
-            $output];
+        \App\Controller\BaseController::LIST_TYPE,
+        $data,
+        $output];
+        
     }
 
 

@@ -9,6 +9,7 @@ use App\Controller\BaseController;
 
 abstract class BaseStore extends BaseController
 {
+
     /**
      * @var int
      */
@@ -18,15 +19,17 @@ abstract class BaseStore extends BaseController
     public function __construct(Container $container)
     {
         parent::__construct('stores', $container);
+        
     }
 
 
     protected function buildStoresHateoas(Request $request)
     {
-        if ($this->id !==0) {
+        if ($this->id !== 0) {
             $path = $request->getUri()->getBaseUrl();
             $this->addHateoasLink('self', $path.'/stores/'.strval($this->id), 'GET');
         }
+
     }
 
 
@@ -37,11 +40,12 @@ abstract class BaseStore extends BaseController
         $stores = $sth->fetchAll();
         if (empty($stores)) {
             return [
-        \App\Controller\BaseController::RESULT_TYPE,
-        $this->errorResponse($request, $response, 'Not Found', 'Store Not Found', 404)];
+            \App\Controller\BaseController::RESULT_TYPE,
+            $this->errorResponse($request, $response, 'Not Found', 'Store Not Found', 404)];
         }
 
         return null;
+        
     }
 
 
