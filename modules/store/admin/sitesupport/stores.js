@@ -18,7 +18,7 @@ Vue.component('store-list-body', {
   props: { stores: Array },
   template: `
   <tbody>
-    <store-list-item v-for="store in stores" :store="store"></store-list-item>
+    <store-list-item v-for="store in stores" :key="store.id" :store="store"></store-list-item>
   </tbody>
   `
 });
@@ -59,7 +59,7 @@ Vue.component('store-form', {
       <label class="UI-label" for="store_description">Description</label>
       <textarea class="UI-input" v-model="store.description" name="store_description"/>
       <button class="UI-eventbutton" :onclick="action" type="submit">Save</button> <!-- colon before onclick means treat action as a variable -->
-      <button class="UI-redbutton" onclick="hideSidebar()">Close</button>
+      <button class="UI-redbutton" onclick="cleanupForm()">Close</button>
     </form>  
   </div>
   `
@@ -68,9 +68,11 @@ Vue.component('store-form', {
 var formApp = null;
 
 function newStore() {
+  console.log("Fung");
+  data = { store: { id: -1, name: 'New Store', slug: '', description: '' }, action: 'addStore()' };
   formApp = new Vue({
     el: '#edit_store',
-    data: { store: { id: -1, name: 'New Meeting', slug: '', description: '' }, action: 'addStore(this)' }
+    data: data
   });
   showSidebar('edit_store');
 }
@@ -78,10 +80,19 @@ function newStore() {
 function handleErrors(e) {
   hideSidebar();
   if (formApp) { 
-    formApp.$destroy();
+    formApp = null;
   }
   alert("Something went wrong");
   location.reload();
+}
+
+function cleanupForm() {
+  event.preventDefault();
+  hideSidebar();
+  if (formApp) {
+    formApp = null;
+  }
+ 
 }
 
 function addStore() {  
