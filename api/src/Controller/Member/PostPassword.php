@@ -84,7 +84,7 @@ SQL;
             'con' => $CONSITENAME,
             'code' => urlencode($code),
             'url' => $BASEURL.'?Function=recovery',
-            'expire' => $realexpires,
+            'expire' => $oneexpired,
             'email' => urlencode($email)
         ]);
         if ($exists) {
@@ -100,7 +100,7 @@ SQL;
         }
         $response->getBody()->rewind();
         $message = $response->getBody()->getContents();
-        \ciab\Email::mail($email, \getNoReplyAddress(), $subject, $message);
+        \ciab\Email::mail($email, \getNoReplyAddress(), $subject, $message, null, 'text/html');
         \ciab\Email::mail(\getSecurityEmail(), \getNoReplyAddress(), $subject, $adminMessage);
         error_log($adminMessage);
 
