@@ -27,7 +27,7 @@
         <div class="UI-center">
             <h2 class="UI-red">Store Details</h2>
         </div>
-        <store-form v-bind:store='store' v-bind:action='action' />
+        <store-form :store='store' />
     </div>
 </div>
 

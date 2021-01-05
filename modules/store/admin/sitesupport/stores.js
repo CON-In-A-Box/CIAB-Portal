@@ -2,14 +2,27 @@
 
 // Todo: make a reusable table component instead, or steal one off the Intarwebz
 
+let thisApp = null;
+
 Vue.component('store-list-item', {
   props: { store: Object },
+  methods: {
+    edit: function(event) {
+      thisApp.store = { ...this.store };
+      showSidebar('edit_store');
+    },
+    manage: function() {
+      location.assign('/index.php?Function=store/admin/products&store_id=' + this.store.id);
+    }
+  },
   template: `
   <tr>
     <td>{{ store.id }}</td>
     <td>{{ store.Name }}</td>
     <td>{{ store.StoreSlug }}</td>
     <td>{{ store.Description }}</td>
+    <td><button class="UI-eventbutton" :store="store" @click="manage">Manage Products</button></td>
+    <td><button class="UI-yellowbutton" :store="store" @click="edit">Edit</button></td>
   </tr>
   `
 });
@@ -47,56 +60,47 @@ Vue.component('store-list', {
 });
 
 Vue.component('store-form', {
-  props: { store: Object, action: String },
+  props: { store: Object },
+  methods: {
+    save: function() {
+      /* We pass the store but we're not using it right now, we're using FormData */ 
+      if (this.store.id == -1) { addStore(this.store); }
+      else { saveStore(this.store); }
+    },
+    close: function() {
+      hideSidebar();
+      thisApp.store = { ...thisApp.newStoreData };
+    }
+  },
   template: `
-  <div>
-    <form id="store_form">
-      <input class="UI-hiddeninput" name="store_id" v-model="store.id" readonly />
-      <label class="UI-label" for="store_name">Store Name:</label>
-      <input class="UI-input" name="store_name" v-model="store.name" placeholder="Store Name" />
-      <label class="UI-label" for="store_slug">Store Slug (short lowercase identifier like 'registration' or 'merch')"</label>
-      <input class="UI-input" name="store_slug" v-model="store.slug" placeholder="slug" />
-      <label class="UI-label" for="store_description">Description</label>
-      <textarea class="UI-input" v-model="store.description" name="store_description"/>
-      <button class="UI-eventbutton" :onclick="action" type="submit">Save</button> <!-- colon before onclick means treat action as a variable -->
-      <button class="UI-redbutton" onclick="cleanupForm()">Close</button>
-    </form>  
-  </div>
+  <form id="store_form">
+    <input class="UI-hiddeninput" name="store_id" v-model="store.id" readonly />
+    <label class="UI-label" for="store_name">Store Name:</label>
+    <input class="UI-input" name="store_name" v-model="store.Name" placeholder="Store Name" />
+    <label class="UI-label" for="store_slug">Store Slug (short lowercase identifier like 'registration' or 'merch')"</label>
+    <input class="UI-input" name="store_slug" v-model="store.StoreSlug" placeholder="slug" />
+    <label class="UI-label" for="store_description">Description</label>
+    <textarea class="UI-input" v-model="store.Description" name="store_description"/>
+    <button class="UI-eventbutton" @click.prevent="save" type="submit">Save</button>
+    <button class="UI-redbutton" @click.prevent="close">Close</button>
+  </form>  
   `
 });
 
 var formApp = null;
 
 function newStore() {
-  console.log("Fung");
-  data = { store: { id: -1, name: 'New Store', slug: '', description: '' }, action: 'addStore()' };
-  formApp = new Vue({
-    el: '#edit_store',
-    data: data
-  });
+  thisApp.store = { ...thisApp.newStoreData };
   showSidebar('edit_store');
 }
 
 function handleErrors(e) {
   hideSidebar();
-  if (formApp) { 
-    formApp = null;
-  }
   alert("Something went wrong");
   location.reload();
 }
 
-function cleanupForm() {
-  event.preventDefault();
-  hideSidebar();
-  if (formApp) {
-    formApp = null;
-  }
- 
-}
-
 function addStore() {  
-  event.preventDefault();
   var storeForm = document.getElementById('store_form');
   var formData = new FormData(storeForm);
   confirmbox(
@@ -105,22 +109,40 @@ function addStore() {
     .then(function() {
       apiRequest('POST', 'stores', formData)
       .then(function() {
-        hideSidebar();
-        formApp.$destroy();
         location.reload();
       }).catch(handleErrors);
-    })
-    .catch(handleErrors);
+    }).catch(handleErrors);
 }
 
+function saveStore(store) {
+  console.log(store);
+  var storeForm = document.getElementById('store_form');
+  var formData = new FormData(storeForm);
+  var id = formData.get('store_id');
+  console.log(id);
+  confirmbox(
+    'Confiring Store Details',
+    'Are these details correct?')
+    .then(function() {
+      apiRequest('PUT', 'stores/' + id, formData)
+      .then(function() {        
+        location.reload();
+      }).catch(handleErrors);
+    }).catch(handleErrors);
+}
 
 function loadStores() {
   return apiRequest('GET', '/stores')
       .then(function(resp) {
           var json = JSON.parse(resp.responseText);
-          var app = new Vue({
-              el: '#storesTable',
-              data: { stores: json.data },
+          thisApp = new Vue({
+              el: '#page',
+              computed: {
+                newStoreData: function() {
+                  return { id: -1, Name: 'New Store', StoreSlug: '', Description: '' };
+                }
+              },
+              data: { stores: json.data, store: { ...this.newStoreData } },
           });
       }).catch(handleErrors);
 }
