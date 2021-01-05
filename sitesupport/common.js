@@ -136,7 +136,7 @@ function apiRequest(method, target, inParameter) {
     var url = window.location.protocol + '//' + window.location.host + '/api/' +
               target;
     if (method == 'GET') {
-      if (inParameter !== null) {
+      if (inParameter) {
         if (url.indexOf('?') != -1) {
           url += '&' + inParameter;
         } else {
