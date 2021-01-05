@@ -654,7 +654,7 @@ function lookup_users_by_key($key, $single = true, $badgename = true, $substring
                 return lookup_user_by_id($key, $fields);
             }
         } elseif (strpos($key, '@') !== false) {
-            return lookup_users_by_email($key, $single, $fields);
+            return lookup_users_by_email($key, $single, false, $fields);
         } else {
             $output = lookup_users_by_name($key, $single, $fields);
             if (count($output['users']) == 0) {
@@ -730,7 +730,7 @@ function lookup_users_by_name_email($first, $last, $email, $fields, $single_user
 
 function lookup_user_by_login($user, $substring = false, $fields = array())
 {
-    $output = lookup_users_by_email($user, false, $fields);
+    $output = lookup_users_by_email($user, false, $substring, $fields);
     if (count($output['users']) == 0) {
         if (array_key_exists('Neon', $GLOBALS)) {
             loadDefinedFields();
