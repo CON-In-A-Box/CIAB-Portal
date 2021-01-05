@@ -75,10 +75,15 @@ class Asset
             $base64 = base64_encode($data);
             return ("data:image/png;base64,".$base64);
         } elseif (array_key_exists('FILE_ASSET_PATH', $GLOBALS)) {
-            return (
-            $GLOBALS['FILE_ASSET_PATH'].'/'.$id.'.png?'.md5_file(
-                $GLOBALS['FILE_ASSET_PATH'].'/'.$id.'.png'
-            ));
+            $filename = $GLOBALS['FILE_ASSET_PATH'].'/'.$id.'.png';
+            if (is_file($filename)) {
+                return (
+                $GLOBALS['FILE_ASSET_PATH'].'/'.$id.'.png?'.md5_file(
+                    $GLOBALS['FILE_ASSET_PATH'].'/'.$id.'.png'
+                ));
+            } else {
+                return "";
+            }
         } else {
             return "";
         }
