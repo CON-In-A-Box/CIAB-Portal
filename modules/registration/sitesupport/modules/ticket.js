@@ -54,4 +54,19 @@ export class RegTicket {
       })
   }
 
+  updateBadge() {
+    showSpinner();
+    apiRequest('PUT', 'registration/ticket/' + this.data.id,
+      'badgeName=' + this.data.badgeName +
+      '&contact=' + this.data.emergencyContact)
+      .then(function() {
+        hideSpinner();
+        location.reload();
+      })
+      .catch(function(response) {
+        hideSpinner();
+        if (response instanceof Error) { throw response; }
+      })
+  }
+
 }

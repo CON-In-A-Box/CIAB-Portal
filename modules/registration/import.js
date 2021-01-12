@@ -31,6 +31,16 @@ function load() {
         data = Array(result);
       }
       if (data.length > 0) {
+
+        new menubarElement({
+          'text': 'Manage Registrations',
+          'function': 'registration/manage',
+          'title': 'Manage Event Registrations',
+          'selectedStyle': 'event-color-primary',
+          'baseStyle': '',
+          'icon': 'far fa-address-card'
+        }).createElement();
+
         var eventName =  data[0].event.name;
         var generated = 0
         data.forEach(function(ticket) {
