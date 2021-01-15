@@ -91,3 +91,11 @@ $app->group(
         $app->delete('/{id}', 'App\Controller\Cycle\DeleteCycle');
     }
 )->add(new App\Middleware\CiabMiddleware($app))->add($authMiddleware);
+
+$app->group(
+    '/event',
+    function () use ($app, $authMiddleware) {
+        $app->get('[/]', 'App\Controller\Event\ListEvents');
+        $app->get('/{id}', 'App\Controller\Event\GetEvent');
+    }
+)->add(new App\Middleware\CiabMiddleware($app))->add($authMiddleware);

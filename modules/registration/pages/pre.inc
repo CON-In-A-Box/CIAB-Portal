@@ -19,7 +19,6 @@ if (!isset($_SESSION['IS_ADMIN']) && !$access) {
 if (!empty($_POST)) {
     $arguments = [
     'refreshData'  => FILTER_SANITIZE_SPECIAL_CHARS,
-    'updateBadge'  => FILTER_SANITIZE_SPECIAL_CHARS,
     ];
 
     $updateData = filter_input_array(INPUT_POST, $arguments);
@@ -44,28 +43,6 @@ SQL;
             _import_page_of_people($neonEvent, $people, $page);
             $value = $result->fetch();
         }
-        exit();
-    }
-
-    if (isset($updateData['updateBadge'])) {
-        $data = json_decode(base64_decode($updateData['updateBadge']));
-        update_badge($data);
-        exit();
-    }
-}
-
-if (!empty($_REQUEST)) {
-    $arguments = [
-    'printBadge'  => FILTER_SANITIZE_SPECIAL_CHARS,
-    ];
-
-    require_once($FUNCTIONDIR."/volunteer.inc");
-
-    $updateData = filter_input_array(INPUT_GET, $arguments);
-
-    if (isset($updateData['printBadge'])) {
-        $data = json_decode(base64_decode($updateData['printBadge']));
-        print_badge($data);
         exit();
     }
 }

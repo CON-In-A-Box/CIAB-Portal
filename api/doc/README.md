@@ -128,6 +128,7 @@ HATEOAS Method|Request|Description
 A number of modules exist in the API. These modules, while enabled by default, can be explicitly disabled. When enabled a module may not only have additional resources to be used but can add additional properties and/or methods to the base resources.
 
  * [Concom](Concom.md)
+ * [Registration](Registration.md)
 
 <a name="resources"></a>
 ## Resources
@@ -136,5 +137,6 @@ A number of modules exist in the API. These modules, while enabled by default, c
 * [Annual Cycle](Cycle.md)
 * [Deadline](Deadline.md)
 * [Department](Department.md)
+* [Event](Event.md)
 * [Member](Member.md)
 * [Permissions](Permissions.md)
