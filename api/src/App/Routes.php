@@ -75,8 +75,8 @@ $app->group(
     '/announcement',
     function () use ($app, $authMiddleware) {
         $app->get('/{id}', 'App\Controller\Announcement\GetAnnouncement');
-        $app->put('/{dept}', 'App\Controller\Announcement\PutAnnouncement');
-        $app->post('/{id}', 'App\Controller\Announcement\PostAnnouncement');
+        $app->put('/{id}', 'App\Controller\Announcement\PutAnnouncement');
+        $app->post('/{dept}', 'App\Controller\Announcement\PostAnnouncement');
         $app->delete('/{id}', 'App\Controller\Announcement\DeleteAnnouncement');
     }
 )->add(new App\Middleware\CiabMiddleware($app))->add($authMiddleware);
