@@ -38,12 +38,12 @@ $app->group(
         /* GET
             /deadline/{id} */
         $app->get('/{id}', 'App\Controller\Deadline\GetDeadline');
-        /* PUT
-            /deadline/{dept}?Deadline={date}&Note={text} */
-        $app->put('/{dept}', 'App\Controller\Deadline\PutDeadline');
         /* POST
+            /deadline/{dept}?Deadline={date}&Note={text} */
+        $app->post('/{dept}', 'App\Controller\Deadline\PostDeadline');
+        /* PUT
             /deadline/{id}?[Department={dept}]&[Deadline={date}]&[Note={text}]*/
-        $app->post('/{id}', 'App\Controller\Deadline\PostDeadline');
+        $app->put('/{id}', 'App\Controller\Deadline\PutDeadline');
         /* DELETE
             /deadline/{id} */
         $app->delete('/{id}', 'App\Controller\Deadline\DeleteDeadline');
