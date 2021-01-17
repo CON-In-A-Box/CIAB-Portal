@@ -5,9 +5,9 @@ The following methods are available to announcement resources:
 
 |Resource Method|HTTP Request|Description|module|RBAC|
 |---|---|---|---|---|
-|[add](Announcement.md#add)|PUT /announcement/{department}|Add a new announcement.|core|api.put.announcement.{department}|
+|[add](Announcement.md#add)|POST /announcement/{department}|Add a new announcement.|core|api.post.announcement.{department}|
 |[get](Announcement.md#get)|GET /announcement/{id}|Get details about a given announcement.|core|-|
-|[modify](Announcement.md#modify)|POST /announcement/{id}|Modify an existing announcement|core|api.post.announcement.{department}|
+|[modify](Announcement.md#modify)|PUT /announcement/{id}|Modify an existing announcement|core|api.put.announcement.{department}|
 |[delete](Announcement.md#delete)|DELETE /announcement/{id}|Delete a announcement|core|api.delete.announcement.{department}|
 
 ## Permissions
@@ -82,7 +82,7 @@ Add a new announcement.
 
 ### add Request
 
-```PUT /announcement/{department}?Scope={integer}&Text={text}[&Email={bool}]```
+```POST /announcement/{department}?Scope={integer}&Text={text}[&Email={bool}]```
 
 ### add Parameters
 The following parameters are available:
@@ -106,7 +106,7 @@ Does not return a response.
 Request Sample
 
 ```
-curl -X PUT -H 'Authorization: Bearer e0438d90599b1c4762d12fd03db6311c9ca46729' http://localhost/api/announcement/Art%20Show?Scope=0&Text=Testing
+curl -X POST -H 'Authorization: Bearer e0438d90599b1c4762d12fd03db6311c9ca46729' http://localhost/api/announcement/Art%20Show?Scope=0&Text=Testing
 ```
 Response Sample
 
@@ -184,7 +184,7 @@ Modify an existing announcement.
 
 ### modify Request
 
-```POST /announcement/{id}?Scope={integer}&Department={department}&Text={text}```
+```PUT /announcement/{id}?Scope={integer}&Department={department}&Text={text}```
 
 ### modify Parameters
 The following parameters are available:
@@ -208,7 +208,7 @@ Does not return a response.
 Request Sample
 
 ```
-curl -X POST -H 'Authorization: Bearer e0438d90599b1c4762d12fd03db6311c9ca46729' http://localhost/api/announcement/1/Department=Art%20Show?Scope=1&Text=Testing
+curl -X PUT -H 'Authorization: Bearer e0438d90599b1c4762d12fd03db6311c9ca46729' http://localhost/api/announcement/1/Department=Art%20Show?Scope=1&Text=Testing
 ```
 Response Sample
 

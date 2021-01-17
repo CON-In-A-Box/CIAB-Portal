@@ -31,7 +31,7 @@ var announcementPage = (function(options) {
         .value = dataset.ciabAnnouncementDepartment;
 
       var canEdit = Object.prototype.hasOwnProperty.call(permissions,
-        dataset.ciabAnnouncementDepartment + '_announcement_put');
+        dataset.ciabAnnouncementDepartment + '_announcement_post');
       var canDelete = Object.prototype.hasOwnProperty.call(permissions,
         dataset.ciabAnnouncementDepartment + '_announcement_delete');
 
@@ -106,9 +106,9 @@ var announcementPage = (function(options) {
         .then(
           function() {
             showSpinner();
-            var method = 'POST';
+            var method = 'PUT';
             if (id == -1) {
-              method = 'PUT';
+              method = 'POST';
               id = dept;
             }
             apiRequest(method, 'announcement/' + id,
@@ -295,7 +295,7 @@ var announcementPage = (function(options) {
     },
 
     filter: function(dept) {
-      var id = dept.id.id.toString() + '_announcement_put';
+      var id = dept.id.id.toString() + '_announcement_post';
       return Object.prototype.hasOwnProperty.call(permissions, id);
     },
 
@@ -318,14 +318,14 @@ var announcementPage = (function(options) {
             'maxResults=all')
             .then(function(response) {
               result = JSON.parse(response.responseText);
-              var havePut = false;
+              var havePost = false;
               permissions = {};
               if (result.data.length > 0) {
                 result.data.forEach(function(data) {
                   if (data.allowed) {
                     permissions[data.subdata.departmentId + '_' +
                                   data.subtype] = data;
-                    if (data.subtype == 'announcement_put') {
+                    if (data.subtype == 'announcement_post') {
                       var sect = 'announcement-block-' +
                                  data.subdata.departmentId;
                       var block = document.getElementById(sect);
@@ -335,8 +335,8 @@ var announcementPage = (function(options) {
                           button[0].classList.remove('UI-hide');
                         }
                       }
-                      if (!havePut) {
-                        havePut = true;
+                      if (!havePost) {
+                        havePost = true;
                         var add = document.getElementById(
                           'announcement-sectionbar-add');
                         add.classList.remove('UI-hide');
@@ -344,7 +344,7 @@ var announcementPage = (function(options) {
                       }
                     }
                     if (data.subtype == 'announcement_delete' ||
-                          data.subtype == 'announcement_post') {
+                          data.subtype == 'announcement_put') {
                       var line = 'announcement-table-modify-' +
                             data.subdata.departmentId;
                       var cells = document.getElementsByName(line);
