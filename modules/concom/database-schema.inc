@@ -39,7 +39,9 @@ $DB_foreignKeys = [
 ];
 
 $DB_index = [
-'ConComPermissions' => ['Permission'],
+    'ConComPermissions' => [
+        'Permission' => ['Permission']
+    ]
 ];
 
 $MODULE_TABLES = array_merge($MODULE_TABLES, $DB_tables);
