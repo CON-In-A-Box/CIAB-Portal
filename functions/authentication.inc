@@ -196,6 +196,7 @@ function set_password($user, $password, $require_hash = true)
             Authentication = '$auth',
             LastLogin = $last,
             Expires = '$expires',
+            FailedAttempts = 0,
             OneTime = NULL,
             OneTimeExpires = NULL;
 SQL;

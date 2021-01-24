@@ -176,39 +176,39 @@ if (!empty($searchCriteria[ID])) {
     </div> <!-- left_bar -->
     <div id="right_bar" class="UI-right UI-content UI-margin">
         <h2 class="UI-red UI-center">Site Configuration</h2>
-        <table class="UI-stripedtable">
-            <caption>Table for Site Configuration</caption>
-            <tr>
-                <th id="FieldHeader" class="UI-center">Field</th>
-                <th id="ValueHeader" class="UI-center">Value</th>
-                <th id="SetHeader"></th>
-            </tr>
-            <?php
-            $table = get_config();
-            foreach ($table as $line) {
-                if ($line['Source'] == 'DB') {
-                    echo "<tr><td>".$line[FIELD]."</td>\n";
-                    echo "<td><input type='text' id=config_".$line[FIELD]." value=\"".$line['Value']."\" class='UI-input'></td>\n";
-                    echo "<td><button class='UI-eventbutton' onclick='setField(\"".$line[FIELD]."\")';>Set</button></td></tr>\n";
-                } else {
-                    echo "<tr><td>".$line[FIELD]."</td>\n";
-                    echo "<td><input type='text' id=config_".$line[FIELD]." value=\"<ENVIRONMENT>\" class='UI-input UI-center' readonly></td>\n";
-                    echo "<td></td></tr>\n";
-                }
-            }
-            ?>
-            <tr>
-                <td>
+
+        <div id="settings" class="UI-table-all">
+            <div class="UI-table-row">
+                <div class="UI-table-cell UI-center">
+                </div>
+            </div>
+        </div>
+        <div class="UI-table-all">
+            <div class="UI-table-header">
+                <div class="UI-table-row">
+                  <div class="UI-table-cell">
+                    Field
+                  </div>
+                  <div class="UI-table-cell">
+                  Value
+                  </div>
+                  <div class="UI-table-cell" id="SetHeader">
+                   &nbsp;
+                  </div>
+                </div>
+            </div>
+            <div class="UI-table-row">
+                <div class="UI-table-cell">
                     <input type='text' id=new_Field value="" class='UI-input'>
-                </td>
-                <td>
+                </div>
+                <div class="UI-table-cell">
                     <input type='text' id=new_Value value="" class='UI-input'>
-                </td>
-                <td>
+                </div>
+                <div class="UI-table-cell">
                     <button class='UI-redbutton' onclick='addField()' ;>Add</button>
-                </td>
-            </tr>
-        </table>
+                </div>
+            </div>
+        </div>
     </div>
 </div><!--close main_content div-->
 

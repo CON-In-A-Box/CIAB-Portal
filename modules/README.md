@@ -12,6 +12,7 @@ Within the module there are a few files of special importance. None of these fil
  * `pages/pre.inc, pages/head.inc, pages/body.inc`: These are the HTML templates to generate the page that is loaded when the menu item is selected from the menubar. They are not required though if the `body.inc` file is missing then the user will get a blank page when they select the menu bar item. 
 * `database-schema.inc`: This is a PHP file that is used to setup the database. It is combined with the core `/data/database-schema.inc` to ensure the database is up to date and correct. Changes here will be made to the database even if a module is disabled.
 * `DBSeed/*.php`: These are database seeds for tables created by this module. They are added to the base seeds found in `/data/DBSeed/` and should be named for each table. This data is only inserted into the database when the given table is created the first time. 
+* `import.js`: This is a JavaScript module that will be auto-loaded on every page load. At this point primarily it is designed to be used to add dynamic JavaScript generated menus to the main menu using the `sitesupport/menubar.js` `menubarElement` object.
 
 # Theming / SCSS
 

@@ -17,8 +17,7 @@ if (!empty($_REQUEST)) {
     $updateData = filter_input_array(INPUT_GET, $arguments);
 
     if (isset($updateData['disabledModules'])) {
-        del_conf_value('DISABLEDMODULES');
-        add_conf_value('DISABLEDMODULES', $updateData['disabledModules']);
+        set_conf_value('DISABLEDMODULES', $updateData['disabledModules']);
         goSite();
     }
 }

@@ -48,6 +48,7 @@ class PostPassword extends BaseMember
         $auth = 'NULL';
         $last = 'NULL';
         $realexpires = 'NULL';
+        $exists = false;
 
         $sql = "SELECT * FROM  `Authentication` WHERE AccountID = $user;";
         $result = $this->container->db->prepare($sql);
@@ -63,6 +64,7 @@ class PostPassword extends BaseMember
             if (!empty($value['Expires'])) {
                 $realexpires = "'".$value['Expires']."'";
             }
+            $exists = true;
         }
 
         $sql = <<<SQL
@@ -82,17 +84,23 @@ SQL;
             'con' => $CONSITENAME,
             'code' => urlencode($code),
             'url' => $BASEURL.'?Function=recovery',
-            'expire' => $realexpires,
+            'expire' => $oneexpired,
             'email' => urlencode($email)
         ]);
-        $subject = 'Password Reset Request';
-        $expire = date('h:i A D F jS Y', strtotime($duration));
-        $adminMessage = "A password reset has been requested for '$email' on the '$CONSITENAME' web site.\n";
-        $adminMessage .= "The new authorization code is '$code' \n";
-        $phpView->render($response, 'passwordReset.phtml');
+        if ($exists) {
+            $subject = 'Password Reset Request';
+            $adminMessage = "A password reset has been requested for '$email' on the '$CONSITENAME' web site.\n";
+            $adminMessage .= "The new authorization code is '$code' \n";
+            $phpView->render($response, 'passwordReset.phtml');
+        } else {
+            $subject = "$CONSITENAME Create Password";
+            $adminMessage = "Password creation has been requested for '$email' on the '$CONSITENAME' web site.\n";
+            $adminMessage .= "The authorization code is '$code' \n";
+            $phpView->render($response, 'newPassword.phtml');
+        }
         $response->getBody()->rewind();
         $message = $response->getBody()->getContents();
-        \ciab\Email::mail($email, \getNoReplyAddress(), $subject, $message);
+        \ciab\Email::mail($email, \getNoReplyAddress(), $subject, $message, null, 'text/html');
         \ciab\Email::mail(\getSecurityEmail(), \getNoReplyAddress(), $subject, $adminMessage);
         error_log($adminMessage);
 

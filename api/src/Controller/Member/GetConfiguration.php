@@ -12,6 +12,9 @@ class GetConfiguration extends BaseMember
 {
 
 
+    use \App\Controller\TraitConfiguration;
+
+
     public function buildResource(Request $request, Response $response, $args): array
     {
         $data = $this->findMemberId($request, $response, $args, 'id');
@@ -27,70 +30,23 @@ class GetConfiguration extends BaseMember
             $this->errorResponse($request, $response, 'Permission Denied', 'Permission Denied', 403)];
         }
 
-        if (array_key_exists('key', $args)) {
-            $target = "AND cf.Field = '{$args['key']}'";
-        } else {
-            $target = '';
-        }
-        $sql = <<<SQL
-            SELECT
-                cf.*,
-                a.Value as Value
-            FROM
-                `ConfigurationField` cf
-            LEFT JOIN `AccountConfiguration` a ON
-                a.Field = cf.Field AND a.AccountId = {$data['id']}
-            WHERE
-                cf.TargetTable = 'AccountConfiguration'
-                $target
-SQL;
-        $sth = $this->container->db->prepare($sql);
-        $sth->execute();
-        $data = $sth->fetchAll();
-        $output = [];
-        $output['type'] = 'configuration_list';
-        $result = [];
-        foreach ($data as $entry) {
-            if ($entry['Value'] === null) {
-                $value = $entry['InitialValue'];
-            } else {
-                $value = $entry['Value'];
-            }
-            $options = null;
-            if ($entry['Type'] == 'select') {
-                $options = [];
-                $sql = "SELECT Name FROM `ConfigurationOption` WHERE Field = '{$entry['Field']}'";
-                $sth = $this->container->db->prepare($sql);
-                $sth->execute();
-                $opts = $sth->fetchAll();
-                foreach ($opts as $o) {
-                    $options[] = $o['Name'];
-                }
-            }
-            $result[] = [
-            'type' => 'configuration_entry',
-            'field' => $entry['Field'],
-            'fieldType' => $entry['Type'],
-            'value' => $value,
-            'description' => $entry['Description'],
-            'options' => $options
-            ];
-        }
+        $result = $this->getConfiguration($args, 'AccountConfiguration', "AND a.AccountId = {$data['id']}");
 
         if (count($result) > 1) {
+            $output = [];
+            $output['type'] = 'configuration_list';
             return [
             \App\Controller\BaseController::LIST_TYPE,
             $result,
             $output
             ];
-        } else {
-            $result[0]['account'] = $user;
-            $result[0]['type'] = 'configuration';
-            return [
-            \App\Controller\BaseController::RESOURCE_TYPE,
-            $result[0]
-            ];
         }
+        $result[0]['type'] = 'configuration';
+        $result[1]['account'] = $user;
+        return [
+        \App\Controller\BaseController::RESOURCE_TYPE,
+        $result[0]
+        ];
 
     }
 

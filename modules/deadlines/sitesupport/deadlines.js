@@ -34,7 +34,7 @@ var deadlinePage = (function(options) {
         .value = dataset.ciabDeadlineDepartment;
 
       var canEdit = Object.prototype.hasOwnProperty.call(permissions,
-        dataset.ciabDeadlineDepartment + '_deadline_put');
+        dataset.ciabDeadlineDepartment + '_deadline_post');
       var canDelete = Object.prototype.hasOwnProperty.call(permissions,
         dataset.ciabDeadlineDepartment + '_deadline_delete');
 
@@ -84,9 +84,9 @@ var deadlinePage = (function(options) {
       confirmbox('Update Deadline', 'Confirm update of this deadline').then(
         function() {
           showSpinner();
-          var method = 'POST';
+          var method = 'PUT';
           if (id == -1) {
-            method = 'PUT';
+            method = 'POST';
             id = dept;
           }
           apiRequest(method, 'deadline/' + id,
@@ -246,7 +246,7 @@ var deadlinePage = (function(options) {
     },
 
     filter: function(dept) {
-      var id = dept.id.id.toString() + '_deadline_put';
+      var id = dept.id.id.toString() + '_deadline_post';
       return Object.prototype.hasOwnProperty.call(permissions, id);
     },
 
@@ -269,14 +269,14 @@ var deadlinePage = (function(options) {
             'maxResults=all')
             .then(function(response) {
               result = JSON.parse(response.responseText);
-              var havePut = false;
+              var havePost = false;
               permissions = {};
               if (result.data.length > 0) {
                 result.data.forEach(function(data) {
                   if (data.allowed) {
                     permissions[data.subdata.departmentId + '_' +
                                   data.subtype] = data;
-                    if (data.subtype == 'deadline_put') {
+                    if (data.subtype == 'deadline_post') {
                       var sect = 'deadline-block-' + data.subdata.departmentId;
                       var block = document.getElementById(sect);
                       if (block !== null) {
@@ -285,8 +285,8 @@ var deadlinePage = (function(options) {
                           button[0].classList.remove('UI-hide');
                         }
                       }
-                      if (!havePut) {
-                        havePut = true;
+                      if (!havePost) {
+                        havePost = true;
                         var add = document.getElementById(
                           'deadline-sectionbar-add');
                         add.classList.remove('UI-hide');
@@ -294,7 +294,7 @@ var deadlinePage = (function(options) {
                       }
                     }
                     if (data.subtype == 'deadline_delete' ||
-                          data.subtype == 'deadline_post') {
+                          data.subtype == 'deadline_put') {
                       var line = 'deadline-table-modify-' +
                             data.subdata.departmentId;
                       var cells = document.getElementsByName(line);

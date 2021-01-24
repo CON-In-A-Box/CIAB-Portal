@@ -234,7 +234,7 @@ function random_member()
 
     $account = createUser($email);
     $updateData['accountId'] = $account;
-    updateAccount($updateData);
+    updateAccount($updateData, $account);
 
 }
 

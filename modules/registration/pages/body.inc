@@ -37,21 +37,6 @@ function _htmlsafeify($array)
 }
 
 
-function output_verification($account)
-{
-    $user = lookup_user_by_id($account);
-    $info = get_verification_info($account);
-    echo "<h3><strong>Verify</strong>:&nbsp; ";
-    echo $info['Name'];
-    echo "&nbsp;&nbsp;:&nbsp; ";
-    echo $user["users"][0]["Email"];
-    echo "&nbsp;&nbsp;:&nbsp; ";
-    echo $info['AddressLine1']."&nbsp;&nbsp;:&nbsp; ";
-    echo $info['Phone']."</h3>";
-
-}
-
-
 function badges($account)
 {
     global $access;
@@ -115,11 +100,12 @@ if (!empty($badges)) {
         $keys = array_keys($names[0]);
         unset($keys[0]);
         unset($keys[6]);
+        echo "<tr><th>";
+        echo implode(_htmlsafeify($keys), '</th><th>');
+        echo "</th>";
+        echo "<th></th><th></th>";
+        echo "</tr>\n";
         foreach ($names as $badge) {
-            echo "<tr><th>";
-            echo implode(_htmlsafeify($keys), '</th><th>');
-            echo "</th>";
-            echo "</tr>\n";
             $regid = $badge['RegID'];
             $image = $badge['BackgroundImage'];
             unset($badge['RegID']);
@@ -129,12 +115,6 @@ if (!empty($badges)) {
             echo "</td>";
             $badge['RegID'] = $regid;
             $badge['BackgroundImage'] = $image;
-            echo "</tr>\n";
-
-            $sublen = $len - 4;
-            echo "<tr><td></td><td colspan=$sublen>\n";
-            output_verification($badge['Id']);
-            echo "</td>\n";
             if ($access) {
                 if (isset($_COOKIE["CIAB_REGISTRATIONWORKSTATION"])) {
                     $badge['Workstation'] = $_COOKIE["CIAB_REGISTRATIONWORKSTATION"];

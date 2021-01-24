@@ -188,20 +188,25 @@ SQL;
             }
         }
 
-        //  Create index
-        foreach ($this->schema['index'] as $table => $keys) {
-            $build = "SHOW INDEX FROM `".$table."`;";
+        // Manage indexes
+        foreach ($this->schema['index'] as $table => $indexes) { 
+            $build = "SHOW INDEXES FROM `".$table."`;";
             $result = mypdo::instance()->query($build);
-            $arr = [];
+            $current_indexes = [];
             foreach ($result as $value) {
-                $arr[] = $value['Column_name'];
+                $current_indexes[] = $value['Key_name'];
             }
 
-            $keys  = array_diff($keys, $arr);
-            if (count($keys)) {
-                $build = "alter table ".$table;
-                $build .= " ADD INDEX (`".implode("`, `", $keys)."`);";
-                MyPDO::instance()->query($build);
+            $desired_indexes = array_keys($indexes);
+            $indexes_to_add = array_diff($desired_indexes, $current_indexes);
+            
+            foreach ($indexes_to_add as $index_to_add) {
+                $columns = $indexes[$index_to_add];
+                $sql = "CREATE INDEX ".$index_to_add." ON ".$table." (`".implode("`, `", $columns)."`);";
+                $result = MyPDO::instance()->query($sql);
+                if ($result->errorCode() != '00000') {
+                    error_log("Index update failed for ${table} ${index_to_add}: $result->errorCode()");
+                }
             }
         }
 

@@ -41,6 +41,7 @@ class PutPassword extends BaseMember
                 Authentication = '$auth',
                 LastLogin = $last,
                 Expires = '$expires',
+                FailedAttempts = 0,
                 OneTime = NULL,
                 OneTimeExpires = NULL;
 SQL;
@@ -96,19 +97,7 @@ SQL;
 
     public function buildResource(Request $request, Response $response, $args): array
     {
-        $attribute = $request->getAttribute('oauth2-token');
-        if ($attribute) {
-            $data = $this->findMember($request, $response, $args, 'email');
-            if (gettype($data) === 'object') {
-                return [
-                \App\Controller\BaseController::RESULT_TYPE,
-                $data];
-            }
-            $accountID = $data['id'];
-        } else {
-            $accountID = null;
-        }
-
+        $accountID = $args['id'];
         $body = $request->getParsedBody();
         $response = $this->verifyAccess($request, $response, $body, $accountID);
         if ($response) {
