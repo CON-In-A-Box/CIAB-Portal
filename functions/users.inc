@@ -21,6 +21,25 @@ function _quote($value)
 }
 
 
+function _duplicate_email($aid, $email)
+{
+    $sql = <<<SQL
+        SELECT *
+        FROM `Members`
+        WHERE `AccountID` != $aid AND
+              `Email` = '$email'
+        ORDER BY `AccountID` ASC
+SQL;
+    $result = \DB::run($sql);
+    $data = $result->fetchAll();
+    if (empty($data)) {
+        return null;
+    }
+    return $data[0]['AccountID'];
+
+}
+
+
 function _memberDBfromList($person)
 {
     $aid = $person['Account ID'];
@@ -28,7 +47,14 @@ function _memberDBfromList($person)
     $ln = _quote($person['Last Name']);
     $mn = _quote($person['Middle Name']);
     $su = _quote($person['Suffix']);
-    $em1 = _quote($person['Email 1']);
+    $existing = _duplicate_email($aid, $person['Email 1']);
+    if ($existing !== null) {
+        $em1 = 'NULL';
+        $dep = $existing;
+    } else {
+        $em1 = _quote($person['Email 1']);
+        $dep = 'NULL';
+    }
     $em2 = _quote($person['Email 2']);
     $em3 = _quote($person['Email 3']);
     $ph1 = _quote($person['Phone 1 Full Number (F)']);
@@ -67,17 +93,17 @@ function _memberDBfromList($person)
             AddressState, AddressZipCode, AddressZipCodeSuffix,
             AddressCountry, AddressProvince, PreferredFirstName,
             PreferredLastName, Login, Deceased, DoNotContact, EmailOptOut,
-            Birthdate, Gender, DisplayPhone)
+            Birthdate, Gender, DisplayPhone, dependentOnID)
         VALUES ($aid, $fn, $mn,$ln,
                 $su, $em1, $em2, $em3, $ph1, $ph2,
                 $al1, $al2, $ac,
                 $ast, $az, $azs,
                 $aco, $ap, $pfn,
                 $pln, $li, $dc, $dnc, $eoo,
-               $dob, $gn, $dph)
+               $dob, $gn, $dph, $dep)
         ON DUPLICATE KEY UPDATE
             FirstName=$fn, MiddleName=$mn, LastName=$ln, Suffix=$su,
-            Email=$em1, Email2=$em2, Email3=$em3, Phone=$ph1, Phone2=$ph2,
+            Email2=$em2, Email3=$em3, Phone=$ph1, Phone2=$ph2,
             AddressLine1=$al1, AddressLine2=$al2, AddressCity=$ac,
             AddressState=$ast, AddressZipCode=$az,
             AddressZipCodeSuffix=$azs, AddressCountry=$aco,
