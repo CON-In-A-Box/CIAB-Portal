@@ -32,11 +32,22 @@ $DB_tables = [
     ]
 ];
 
+// These are bad index names, but we were not creating well-named indexes before and we don't
+// want to break existing names
 $DB_index = [
-    'Stores' => ['StoreSlug'],
-    'Products' => ['ProductSlug', 'PaymentSystemRef'],
-    'Purchases' => ['PaymentSystemRef'],
-    'PurchaseLineItems' => ['PaymentSystemRef']
+    'Stores' => [
+        'StoreSlug' => ['StoreSlug']
+    ],
+    'Products' => [
+        'ProductSlug' => ['ProductSlug'],
+        'PaymentSystemRef' => ['PaymentSystemRef']
+    ],
+    'Purchases' => [
+        'PaymentSystemRef' => ['PaymentSystemRef']
+    ],
+    'PurchaseLineItems' => [
+        'PaymentSystemRef' => ['PaymentSystemRef']
+    ]
 ];
 
 $DB_foreignKeys = [

@@ -150,5 +150,11 @@ class SCHEMA
 
     ];
 
-    public static $DB_index = [];
+    public static $DB_index = [
+        'Members' => [
+            'idx_Email' => ['Email'],
+            'idx_FirstName' => ['FirstName'],
+            'idx_LastName' => ['LastName']
+        ]
+    ];
 }
