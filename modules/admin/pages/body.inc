@@ -238,7 +238,7 @@ if (!empty($searchCriteria[ID])) {
 <!-- Activity log - limited to last lines, in reverse order -->
 <p></p>
 <div id="db_log_content" class="ADMIN-info-section">
-    <button class="ADMIN-button" onclick="expandSection('db_log');"><span>DB Activity Log&nbsp;</span><em
+    <button class="ADMIN-button" onclick="expandSection('db_log');getLog(1000);"><span>DB Activity Log&nbsp;</span><em
                 id="db_log_arrow" class="fas fa-caret-down"></em></button>
 
     <div id="db_log" class="ADMIN-info-parent UI-hide">
@@ -246,7 +246,22 @@ if (!empty($searchCriteria[ID])) {
             <div>
                 <button class="ADMIN-download-button" onclick="downloadLog()">Download Full Activity Log (CSV)</button>
             </div>
-            <?php dbPrintLog(1000); ?>
+            <div class="ADMIN-log-row">
+                <div class="ADMIN-log-col-date">
+                    Date
+                </div>
+                <div class="ADMIN-log-col-id">
+                    AccountID
+                </div>
+                <div class="ADMIN-log-col-function">
+                    Function
+                </div>
+                <div class="ADMIN-log-col-query">
+                    Query
+                </div>
+            </div>
+            <div id="LogEntries">
+            </div>
         </div>
     </div>
 </div>
