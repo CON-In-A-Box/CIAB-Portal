@@ -3,7 +3,7 @@
 /* globals apiRequest, confirmbox, basicBackendRequest, showSpinner,
            hideSpinner, alertbox */
 /* exported downloadLog, addField, removeAdmin, updateMemberships,
-            doSUDO, rebuildSCSS, setPassword, getLog */
+            doSUDO, rebuildSCSS, setPassword, getLog, randomPass */
 
 function downloadLog() {
   window.location = 'index.php?Function=admin&downloadLog=db';
@@ -116,4 +116,39 @@ function getLog(size) {
       if (response instanceof Error) { throw response; }
       hideSpinner();
     });
+}
+
+function randomPass()
+{
+  var pw = '';
+  var c  = 'bcdfghjklmnprstvwz'; // consonants except hard to speak ones
+  var v  = 'aeiou';              // vowels
+  var a  = c + v;                // all
+
+  //use three syllables...
+  for (var i = 0; i < 3; i++) {
+    var sy = c[Math.floor(Math.random() * c.length)];
+    sy += v[Math.floor(Math.random() * v.length)];
+    sy += a[Math.floor(Math.random() * a.length)];
+    if (Math.round(Math.random()) == 0) {
+      sy = sy.charAt(0).toUpperCase() + sy.slice(1)
+    }
+    pw += sy;
+  }
+  //... and add a nice number
+  pw += Math.floor(Math.random() * 89) + 10;
+
+  return pw;
+}
+
+function load()
+{
+  document.getElementById('tmp_passwd').value = randomPass();
+  document.getElementsByName('hook_name')[0].value = randomPass();
+}
+
+if (window.addEventListener) {
+  window.addEventListener('load', load);
+} else {
+  window.attachEvent('onload', load);
 }

@@ -12,7 +12,7 @@ if (!\ciab\RBAC::havePermission("asset.admin")) {
     goSite();
 }
 
-require_once(__DIR__.'/../../functions/admin.inc');
+require_once($FUNCTIONDIR."/database.inc");
 require_once($BACKEND.'/asset.inc');
 
 if (!empty($_REQUEST)) {
