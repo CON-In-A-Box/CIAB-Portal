@@ -52,6 +52,12 @@ if (!is_dir($resource_cache)) {
     @mkdir($resource_cache, 0777, true);
     @chmod($resource_cache, 0777);
 }
+if (!is_dir($resource_cache.'scss')) {
+    @mkdir($resource_cache.'scss', 0777, true);
+}
+if (!is_dir($resource_cache.'modules')) {
+    @mkdir($resource_cache.'modules', 0777, true);
+}
 
 $MODULESDIR = "modules";
 if (count($uri) > 3) {
