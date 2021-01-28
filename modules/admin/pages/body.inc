@@ -5,7 +5,7 @@
 
 require_once $PAGESDIR.'/base/leftnav.inc';
 require_once $FUNCTIONDIR.'/authentication.inc';
-require_once __DIR__."/../functions/admin.inc";
+require_once $FUNCTIONDIR."/database.inc";
 require_once $FUNCTIONDIR.'/users.inc';
 
 const FIRST_NAME = 'firstName';
@@ -87,8 +87,7 @@ const FIELD = 'Field';
             Set Account Password:<br>
             <input type="text" class="form-control" id="tmp_login" value=""
                    placeholder="<account login or id>" autocomplete="off"/>
-            <input type="text" class="form-control" id="tmp_passwd" value=
-            "<?php echo rppg(); ?>" autocomplete="off"/>
+            <input type="text" class="form-control" id="tmp_passwd" value="" autocomplete="off"/>
             <input type="button" value="Set Password" class="UI-graybutton" onclick="setPassword();"/>
         </div>
         <hr>
@@ -124,8 +123,7 @@ if (isset($GLOBALS['NEON_HOOK_NAME'])) {
     <input type="text" class="form-control" name="hook_url" value="<?php
     echo "http://".htmlspecialchars($_SERVER['HTTP_HOST']);?>"
         autocomplete="off"/>
-    <input type="hidden" class="form-control" name="hook_name" value=
-    "<?php echo rppg();?>" />
+    <input type="hidden" class="form-control" name="hook_name" value="" />
     <input type="hidden" name="hook_action" value="install">
     <input type="submit" value="Install Hooks" class="UI-graybutton" />
     </form>

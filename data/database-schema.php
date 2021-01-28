@@ -113,6 +113,7 @@ class SCHEMA
             'PreferredFirstName' => 'VARCHAR(50)',
             'PreferredLastName' => 'VARCHAR(50)',
             'DisplayPhone' => 'BOOLEAN',
+            'dependentOnID' => 'INT UNSIGNED',
         ]
 
     ];
@@ -139,6 +140,9 @@ class SCHEMA
         ],
         'ConfigurationOption' => [
             'Field' => 'ConfigurationField (Field) ON DELETE RESTRICT ON UPDATE CASCADE',
+        ],
+        'Members' => [
+            'dependentOnID' => 'Members (AccountID) ON DELETE RESTRICT ON UPDATE CASCADE',
         ],
 
     ];
