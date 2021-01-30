@@ -147,10 +147,11 @@ SQL;
                 if (file_exists($DATADIR.'/DBSeed/'.$table.'.sql')) {
                     $sql_data = file_get_contents($DATADIR.'/DBSeed/'.$table.'.sql');
                     MyPDO::instance()->query($sql_data);
-                } else {
-                    $modules = glob($GLOBALS['MODULESDIR'].'/*/DBSeed/'.$table.'.sql');
-                    if (is_array($modules) && !empty($modules)) {
-                        $sql_data = @file_get_contents($modules[0]);
+                }
+                $modules = glob($GLOBALS['MODULESDIR'].'/*/DBSeed/'.$table.'.sql');
+                if (is_array($modules) && !empty($modules)) {
+                    foreach ($modules as $module) {
+                        $sql_data = @file_get_contents($module);
                         MyPDO::instance()->query($sql_data);
                     }
                 }
@@ -189,7 +190,7 @@ SQL;
         }
 
         // Manage indexes
-        foreach ($this->schema['index'] as $table => $indexes) { 
+        foreach ($this->schema['index'] as $table => $indexes) {
             $build = "SHOW INDEXES FROM `".$table."`;";
             $result = mypdo::instance()->query($build);
             $current_indexes = [];
