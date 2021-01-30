@@ -39,8 +39,8 @@ $DB_foreignKeys = [
 ];
 
 $DB_index = [
-    'ConComPermissions' => [
-        'Permission' => ['Permission']
+'ConComPermissions' => [
+'Permission' => ['Permission']
     ]
 ];
 
