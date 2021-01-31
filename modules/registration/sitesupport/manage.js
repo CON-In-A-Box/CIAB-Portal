@@ -48,6 +48,20 @@ class ManageTicket extends RegTicket {
     s.innerHTML = this.data.ticketType.Name;
     br = document.createElement('BR');
     n.append(br);
+
+    s = document.createElement('SPAN');
+    s.classList.add('UI-padding');
+    n.append(s);
+    s.innerHTML = 'Badge Picked Up&nbsp;';
+    var cb = document.createElement('INPUT');
+    cb.type = 'checkbox';
+    cb.classList.add('UI-checkbox');
+    cb.disabled = true;
+    cb.checked = (this.data.badgesPickedUp > 0);
+    s.append(cb);
+
+    br = document.createElement('BR');
+    n.append(br);
     br = document.createElement('BR');
     n.append(br);
 
