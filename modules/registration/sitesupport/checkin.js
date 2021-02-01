@@ -91,23 +91,25 @@ class CheckinTicket extends RegTicket {
     };
     br = document.createElement('BR');
     n.append(br);
+    b = document.createElement('BUTTON');
+    n.append(b);
+    b.classList.add('UI-eventbutton');
+    b.classList.add('UI-margin');
     if (isOpen) {
-      b = document.createElement('BUTTON');
-      n.append(b);
-      b.classList.add('UI-eventbutton');
-      b.classList.add('UI-margin');
       b.innerHTML = 'Badge Picked Up';
-      b.onclick = function() {
-        confirmbox(
-          'Do you physically have your badge in your hand?')
-          .then(function() {
-            obj.pickupBadge();
-          })
-          .catch(function(response) {
-            if (response instanceof Error) { throw response; }
-          });
-      };
+    } else {
+      b.innerHTML = 'Badge Already Picked Up';
     }
+    b.onclick = function() {
+      confirmbox(
+        'Do you physically have your badge in your hand?')
+        .then(function() {
+          obj.pickupBadge();
+        })
+        .catch(function(response) {
+          if (response instanceof Error) { throw response; }
+        });
+    };
     return e;
   }
 

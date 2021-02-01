@@ -6,6 +6,7 @@
 namespace App\Modules\registration\Controller\Ticket;
 
 require_once __DIR__.'/../../../../../../backends/email.inc';
+require_once __DIR__.'/../../../../../../functions/locations.inc';
 
 use Slim\Http\Request;
 use Slim\Http\Response;
@@ -20,6 +21,8 @@ class EmailTicket extends BaseTicket
 
     public function buildResource(Request $request, Response $response, $params): array
     {
+        global $BASEURL;
+
         $id = $params['id'];
         $aid = $this->getAccount($id, $request, $response, 'api.registration.ticket.email');
         if (is_array($aid)) {
@@ -41,6 +44,9 @@ class EmailTicket extends BaseTicket
         $target->processIncludes($request, $response, $params, ['member', 'event', 'ticketType'], $newdata);
         $data = $target->arrayResponse($request, $response, $newdata);
 
+        $checkin = $request->getUri()->getBaseUrl();
+        $checkin = $BASEURL."index.php?Function=registration/checkin&highlight=".$data['id'];
+
         $subject = $data['event']['name'].' Boarding Pass';
         $phpView = new Views\PhpRenderer(__DIR__.'/../../Templates', [
             'name' => $data['member']['firstName'],
@@ -49,6 +55,7 @@ class EmailTicket extends BaseTicket
             'badgeType' => $data['ticketType']['Name'],
             'fullName' => $data['member']['legalFirstName'].' '.$data['member']['legalLastName'],
             'instructions' => $config['passInstructions'],
+            'checkin' => $checkin,
         ]);
         $phpView->render($response, 'emailBoardingPass.phtml');
         $response->getBody()->rewind();
