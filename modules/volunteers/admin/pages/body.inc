@@ -7,9 +7,9 @@
 
 require_once $FUNCTIONDIR.'/volunteer.inc';
 require_once $FUNCTIONDIR.'/users.inc';
-require_once $BASEDIR.'/kiosk/kiosk.inc';
+require_once $BASEDIR.'/console/console.inc';
 
-kiosk_body_data();
+console_body_data();
 
 $totalHours = 0;
 $prizeData = null;
@@ -34,7 +34,7 @@ if (isset($_SESSION['IS_ADMIN']) || $_SESSION['IS_VOLUNTEERS']) {
     }
 }
 
-if ($admin_mode && in_kiosk()) {
+if ($admin_mode && in_console()) {
     if (array_key_exists('VOL_ADMINKIOSK', $GLOBALS)) {
         $admin_mode = ($GLOBALS['VOL_ADMINKIOSK'] == '1');
     } else {
@@ -559,7 +559,7 @@ echo "</div>\n"
 <div class="UI-rest UI-center">
 <?php
 if (isset($_SESSION['IS_ADMIN']) || $_SESSION['IS_VOLUNTEERS']) {
-    if (!in_kiosk() || (
+    if (!in_console() || (
             array_key_exists('VOL_ADMINKIOSK', $GLOBALS) &&
             $GLOBALS['VOL_ADMINKIOSK'])) {
 ?>
@@ -584,7 +584,7 @@ if (isset($_SESSION['IS_ADMIN']) || $_SESSION['IS_VOLUNTEERS']) {
 <?php
     }
 
-    generate_kiosk_slider('volunteers');
+    generate_console_slider('volunteers');
 }
 ?>
 

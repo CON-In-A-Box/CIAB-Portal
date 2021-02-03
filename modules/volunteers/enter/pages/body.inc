@@ -5,7 +5,7 @@
     require_module 'standard';
 .*/
 
-require_once $BASEDIR.'/kiosk/kiosk.inc';
+require_once $BASEDIR.'/console/console.inc';
 
 $hour_round_interval = 15;
 
@@ -157,7 +157,7 @@ for ($i = 0; $i < 60; $i += $hour_round_interval) {
                 break;
             }
         }
-        if ($isVolunteers || isset($_SESSION['IS_ADMIN']) || kiosk_user()) {
+        if ($isVolunteers || isset($_SESSION['IS_ADMIN']) || console_user()) {
             require_once($FUNCTIONDIR."/divisional.inc");
             foreach ($Departments as $dep => $set) {
                 echo '<option value="'.$dep.'"';
@@ -201,15 +201,15 @@ for ($i = 0; $i < 60; $i += $hour_round_interval) {
   <div class="UI-bar-item">
     <?php
     if (($_SESSION['IS_VOLUNTEERS'] || isset($_SESSION['IS_ADMIN'])) &&
-        !kiosk_user()) {
+        !console_user()) {
         echo '<label class="VOL-authorized-label">Hours Authorized By</label>';
         echo '<input class="UI-input" type=text';
     } else {
         echo '<input type=hidden';
     }
-    if (kiosk_user()) {
-        echo ' name="AuthorizedBy" value="'.kiosk_user().'" required>';
-        echo '<input type=hidden name="EnteredBy" value="'.kiosk_user().'" required>';
+    if (console_user()) {
+        echo ' name="AuthorizedBy" value="'.console_user().'" required>';
+        echo '<input type=hidden name="EnteredBy" value="'.console_user().'" required>';
     } else {
         echo ' name="AuthorizedBy" value="'.$_SESSION['accountId'].'" required>';
         echo '<input type=hidden name="EnteredBy" value="'.$_SESSION['accountId'].'" required>';

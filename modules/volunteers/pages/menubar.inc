@@ -1,6 +1,6 @@
 <?php
 
-require_once($BASEDIR.'/kiosk/kiosk.inc');
+require_once($BASEDIR.'/console/console.inc');
 require_once($BACKEND."/RBAC.inc");
 
 if (!empty($_SESSION['customFields']['currConComPos'])) {
@@ -13,7 +13,7 @@ if (!empty($_SESSION['customFields']['currConComPos'])) {
      'responsive' => true);
 }
 
-if (!is_kiosk('volunteers')) {
+if (!is_console('volunteers')) {
     if (\ciab\RBAC::havePermission("volunteers.admin") ||
         !empty($_SESSION['customFields']['currConComPos'])) {
         $basecolor = 'UI-yellow';
@@ -49,4 +49,4 @@ if (!is_kiosk('volunteers')) {
      'responsive' => true);
 }
 
-generate_kiosk_menus('volunteers');
+generate_console_menus('volunteers');
