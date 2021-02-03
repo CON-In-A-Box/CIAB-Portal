@@ -4,18 +4,18 @@
     require_module 'standard';
 .*/
 
-require_once $BASEDIR.'/kiosk/kiosk.inc';
+require_once $BASEDIR.'/console/console.inc';
 
 
 function menu_disabled($menu)
 {
     global $DISABLEDMODULES;
-    static $kiosk = null;
+    static $console = null;
 
-    if ($kiosk === null) {
-        $kiosk = in_kiosk();
+    if ($console === null) {
+        $console = in_console();
     }
-    return (!$kiosk && in_array($menu['function'], $DISABLEDMODULES));
+    return (!$console && in_array($menu['function'], $DISABLEDMODULES));
 
 }
 

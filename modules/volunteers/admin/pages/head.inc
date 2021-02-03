@@ -16,5 +16,5 @@
 
 </style>
 <?php
-require_once $BASEDIR.'/kiosk/kiosk.inc';
-kiosk_head();
+require_once $BASEDIR.'/console/console.inc';
+console_head();

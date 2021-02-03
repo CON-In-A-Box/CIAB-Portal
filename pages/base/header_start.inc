@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
 <script defer src="https://use.fontawesome.com/releases/v5.11.2/js/all.js"></script>
 <?php
-if (!function_exists('get_kiosk') || get_kiosk() === null) {
+if (!function_exists('get_console') || get_console() === null) {
     echo "<script src=\"sitesupport/common.js\"></script>\n";
     echo "<script src=\"sitesupport/menubar.js\"></script>\n";
     $base = basename($MODULESDIR);

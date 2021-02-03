@@ -49,7 +49,7 @@ try {
 
 // Load in basic functions
 require_once __DIR__.'/functions/functions.inc';
-require_once __DIR__.'/kiosk/kiosk.inc';
+require_once __DIR__.'/console/console.inc';
 
 // Divert to public page if we are not under function control
 if (empty($_REQUEST['Function'])) {
@@ -62,8 +62,8 @@ if (in_array($arr[0], $DISABLEDMODULES)) {
     goSite('/index.php?Function=public');
 }
 
-// Force kiosk mode to the proper module
-$mode = get_kiosk();
+// Force console mode to the proper module
+$mode = get_console();
 if ($mode !== null) {
     if ($_REQUEST['Function'] != 'functions' && !strstr($_REQUEST['Function'], $mode)) {
         goSite('/index.php?Function='.$mode);
