@@ -1003,3 +1003,30 @@ function createUser($newemail, $min_accountid = null)
     }
 
 }
+
+
+function createPassword(/*.string.*/$id, /*.string.*/$password): string
+{
+    global $PASSWORDEXPIRE;
+    if (isset($PASSWORDEXPIRE) && !empty($PASSWORDEXPIRE)) {
+        $duration = $PASSWORDEXPIRE;
+    } else {
+        $duration = '+1 year';
+    }
+
+    $value = lookup_user_by_login($id);
+    if (count($value)) {
+        $user = $value[0]['AccountID'];
+        $expires = _quote(date('Y-m-d H:i', strtotime($duration)));
+        $auth = _quote(password_hash($password, PASSWORD_DEFAULT));
+
+        $sql = <<<SQL
+            INSERT INTO `Authentication` (AccountID, Authentication, Expires)
+            VALUES ($user, $auth, $expires)
+SQL;
+        DB::run($sql);
+        return true;
+    }
+    return false;
+
+}
