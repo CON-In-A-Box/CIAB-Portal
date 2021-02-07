@@ -6,7 +6,7 @@
 
 namespace event;
 
-$DB_tables = [
+$event_DB_tables = [
 'AnnualCycles' => [ // Bylaw defined "year", used for tracking
 'AnnualCycleID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
 'DateFrom' => 'DATE NOT NULL',
@@ -63,7 +63,7 @@ $DB_tables = [
 
 ];
 
-$DB_foreignKeys = [
+$event_DB_foreignKeys = [
 'BadgeTypes' => [
 'EventID' => 'Events (EventID) ON DELETE RESTRICT ON UPDATE CASCADE',
         ],
@@ -84,5 +84,5 @@ $DB_foreignKeys = [
 
 ];
 
-$MODULE_TABLES = array_merge($MODULE_TABLES, $DB_tables);
-$MODULE_FOREIGNKEYS = array_merge($MODULE_FOREIGNKEYS, $DB_foreignKeys);
+$MODULE_TABLES = array_merge($MODULE_TABLES, $event_DB_tables);
+$MODULE_FOREIGNKEYS = array_merge($MODULE_FOREIGNKEYS, $event_DB_foreignKeys);
