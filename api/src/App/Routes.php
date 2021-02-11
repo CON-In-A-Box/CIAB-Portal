@@ -94,6 +94,22 @@ $app->group(
 )->add(new App\Middleware\CiabMiddleware($app))->add($authMiddleware);
 
 $app->group(
+    '/stores',
+    function () use ($app, $authMiddleware) {
+        $app->get('[/]', 'App\Controller\Stores\ListStores');
+        $app->get('/{id}', 'App\Controller\Stores\GetStore');
+        $app->post('[/]', 'App\Controller\Stores\PostStore');
+        $app->put('/{id}', 'App\Controller\Stores\PutStore');
+        $app->delete('/{id}', 'App\Controller\Stores\DeleteStore');
+        $app->get('/{store_id}/products', 'App\Controller\Stores\ListProducts');
+        $app->post('/{store_id}/products', 'App\Controller\Stores\PostProduct');
+        $app->get('/{store_id}/products/{id}', 'App\Controller\Stores\GetProduct');
+        $app->put('/{store_id}/products/{id}', 'App\Controller\Stores\PutProduct');
+        $app->delete('/{store_id}/products/{id}', 'App\Controller\Stores\DeleteProduct');
+    }
+)->add(new App\Middleware\CiabMiddleware($app))->add($authMiddleware);
+
+$app->group(
     '/event',
     function () use ($app, $authMiddleware) {
         $app->get('[/]', 'App\Controller\Event\ListEvents');

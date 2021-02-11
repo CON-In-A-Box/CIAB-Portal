@@ -5,6 +5,8 @@
 
 namespace App\Controller;
 
+use ArrayObject;
+
 use Slim\Container;
 use Slim\Http\Response;
 use Slim\Http\Request;
@@ -92,12 +94,17 @@ abstract class BaseController
         } elseif ($type == BaseController::RESULT_TYPE) {
             return $data;
         } else {
+            if (count($result) == 3) {
+                $code = $result[2];
+            } else {
+                $code = 200;
+            }
             $includes = $request->getQueryParam('include', null);
             if ($includes) {
                 $values = array_map('trim', explode(',', $includes));
                 $this->processIncludes($request, $response, $args, $values, $data);
             }
-            return $this->jsonResponse($request, $response, $data);
+            return $this->jsonResponse($request, $response, $data, $code);
         }
 
     }
@@ -145,6 +152,19 @@ abstract class BaseController
             }
         }
         return $data;
+
+    }
+
+
+    protected function filterBodyParams(array $permitted_keys, array $body): array
+    {
+        $ret = (new ArrayObject($body))->getArrayCopy();
+        $diff = array_diff(array_keys($body), $permitted_keys);
+        foreach ($diff as $key) {
+            unset($ret[$key]);
+        }
+
+        return $ret;
 
     }
 
@@ -343,6 +363,23 @@ abstract class BaseController
         }
         $data = BaseController::mapMemberData($data['users'][0]);
         return $data;
+
+    }
+
+    
+    public function notFoundResponse(
+        Request $request,
+        Response $response,
+        String $type,
+        string $key
+    ): Response {
+        return $this->errorResponse(
+            $request,
+            $response,
+            "Could not find $type ID $key",
+            'Not Found',
+            404
+        );
 
     }
 

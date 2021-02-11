@@ -51,3 +51,4 @@ vendor
 # Configuration #
 #################
 .env
+.vscode
