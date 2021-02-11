@@ -65,6 +65,7 @@ SQL;
         }
         $data = $data['users'][0];
         if (!array_key_exists('id', $data)) {
+            $error = 'User ID not found';
             return [
             \App\Controller\BaseController::RESULT_TYPE,
             $this->errorResponse($request, $response, $error, 'Not Found', 404)];
