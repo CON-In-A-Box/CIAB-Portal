@@ -141,7 +141,11 @@ SQL;
             if (!array_key_exists('Email', $body) || boolval($body['Email'])) {
                 $this->sendEmail($department, intval($body['Scope']), $text);
             }
-            return [null];
+            return [
+            \App\Controller\BaseController::RESULT_TYPE,
+            [null],
+            201
+            ];
         } else {
             return [
             \App\Controller\BaseController::RESULT_TYPE,

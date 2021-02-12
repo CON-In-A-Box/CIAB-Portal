@@ -37,7 +37,11 @@ class DeleteAnnouncement extends BaseAnnouncement
 SQL
         );
         $sth->execute();
-        return [null];
+        return [
+        \App\Controller\BaseController::RESULT_TYPE,
+        [null],
+        204
+        ];
 
     }
 
