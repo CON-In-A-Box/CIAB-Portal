@@ -7,7 +7,9 @@ use Atlas\Query\Select;
 use Slim\Container;
 use Slim\Http\Request;
 use Slim\Http\Response;
+
 use App\Controller\BaseController;
+use App\Controller\NotFoundException;
 
 abstract class BaseProduct extends BaseController
 {
@@ -43,12 +45,7 @@ abstract class BaseProduct extends BaseController
         $product = $select->fetchOne();
 
         if (empty($product)) {
-            $error = [
-            BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, "Could not find Product with ID ${params['id']}", 'Not found', 404)
-            ];
-            
-            return null;
+            throw new NotFoundException("Could not find Product with ID ${params['id']}");
         }
 
         return $product;

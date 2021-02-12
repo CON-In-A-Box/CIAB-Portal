@@ -39,10 +39,6 @@ class PostStore extends BaseStore
 
         $store = $this->getStore(array('id' => $id), $request, $response, $error);
 
-        if (empty($store)) {
-            return $error;
-        }
-
         $output = array(
             'type' => 'store',
             'data' => $store

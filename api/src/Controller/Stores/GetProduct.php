@@ -21,11 +21,7 @@ class GetProduct extends BaseProduct
         }
 
         $product = $this->getProduct($params, $request, $response, $error);
-
-        if (empty($product)) {
-            return $error;
-        }
-
+        
         return [
         BaseController::RESOURCE_TYPE,
         $product

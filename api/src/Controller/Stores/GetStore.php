@@ -13,10 +13,6 @@ class GetStore extends BaseStore
     {
         $store = $this->getStore($params, $request, $response, $error);
 
-        if (empty($store)) {
-            return $error;
-        }
-
         return [
         \App\Controller\BaseController::RESOURCE_TYPE,
         $store

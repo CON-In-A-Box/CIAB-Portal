@@ -7,7 +7,9 @@ use Atlas\Query\Select;
 use Slim\Container;
 use Slim\Http\Request;
 use Slim\Http\Response;
+
 use App\Controller\BaseController;
+use App\Controller\NotFoundException;
 
 abstract class BaseStore extends BaseController
 {
@@ -41,11 +43,7 @@ abstract class BaseStore extends BaseController
         $store = $select->columns('StoreID as id', 'Name', 'StoreSlug', 'Description')->from('Stores')->whereEquals(['StoreID' => $params['id']])->fetchOne();
 
         if (empty($store)) {
-            $error = [
-            BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, "Could not find Store ID ${params['id']}", 'Not found', 404)
-            ];
-            return null;
+            throw new NotFoundException("Could not find Store ID ${params['id']}");
         }
 
         return $store;
