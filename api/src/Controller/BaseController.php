@@ -96,15 +96,9 @@ abstract class BaseController
         $type = $result[0];
         $data = $result[1];
         if ($type == BaseController::LIST_TYPE) {
-            $includes = $request->getQueryParam('include', null);
             $output = $result[2];
-            if ($includes) {
-                $values = array_map('trim', explode(',', $includes));
-                for ($i = 0; $i < count($data); $i++) {
-                    $this->processIncludes($request, $response, $args, $values, $data[$i]);
-                }
-            }
-            return $this->listResponse($request, $response, $output, $data);
+
+            return $this->handleListType($request, $response, $output, $data);
         } elseif ($type == BaseController::RESULT_TYPE) {
             return $data;
         } else {
@@ -113,13 +107,35 @@ abstract class BaseController
             } else {
                 $code = 200;
             }
-            $includes = $request->getQueryParam('include', null);
-            if ($includes) {
-                $values = array_map('trim', explode(',', $includes));
-                $this->processIncludes($request, $response, $args, $values, $data);
-            }
-            return $this->jsonResponse($request, $response, $data, $code);
+            
+            return $this->handleResourceType($request, $response, $data, $code);
         }
+
+    }
+
+
+    public function handleListType(Request $request, Response $response, array $output, array $data)
+    {
+        $includes = $request->getQueryParam('include', null);
+        if ($includes) {
+            $values = array_map('trim', explode(',', $includes));
+            for ($i = 0; $i < count($data); $i++) {
+                $this->processIncludes($request, $response, $args, $values, $data[$i]);
+            }
+        }
+        return $this->listResponse($request, $response, $output, $data);
+
+    }
+
+
+    public function handleResourceType(Request $request, Response $response, $data, $code = 200)
+    {
+        $includes = $request->getQueryParam('include', null);
+        if ($includes) {
+            $values = array_map('trim', explode(',', $includes));
+            $this->processIncludes($request, $response, $args, $values, $data);
+        }
+        return $this->jsonResponse($request, $response, $data, $code);
 
     }
 
