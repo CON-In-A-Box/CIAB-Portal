@@ -8,6 +8,8 @@ namespace App\Modules\registration\Controller\Ticket;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
+use App\Controller\PermissionDeniedException;
+
 class ListTickets extends BaseTicket
 {
 
@@ -25,9 +27,7 @@ class ListTickets extends BaseTicket
         $user = $request->getAttribute('oauth2-token')['user_id'];
         if ($user != $aid &&
             !\ciab\RBAC::havePermission('api.registration.ticket.list')) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, 'Permission Denied', 'Permission Denied', 403)];
+            throw new PermissionDeniedException();
         }
 
         $sql = "SELECT * FROM `Registrations` WHERE ( `RegisteredByID` = $aid OR `AccountID` = $aid)";

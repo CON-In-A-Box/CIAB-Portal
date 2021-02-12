@@ -21,14 +21,10 @@ abstract class BaseRegistration extends BaseController
     }
 
 
-    protected function checkPutPermission($request, $response)
+    protected function checkPutPermission()
     {
-        if (!\ciab\RBAC::havePermission('api.set.registration.configuration')) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, 'Permission Denied', 'Permission Denied', 403)];
-        }
-        return null;
+        $permissions = ['api.set.registration.configuration'];
+        $this->checkPermissions($permissions);
 
     }
 

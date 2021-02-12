@@ -14,11 +14,8 @@ class PostTicket extends BaseTicket
 
     public function buildResource(Request $request, Response $response, $params): array
     {
-        if (!\ciab\RBAC::havePermission('api.registration.ticket.post')) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, 'Permission Denied', 'Permission Denied', 403)];
-        }
+        $permissions = ['api.registration.ticket.post'];
+        $this->checkPermissions($permissions);
 
         $body = $request->getParsedBody();
         if ($body && array_key_exists('member', $body)) {

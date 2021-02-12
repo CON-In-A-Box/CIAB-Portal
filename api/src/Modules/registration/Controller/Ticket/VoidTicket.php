@@ -14,11 +14,9 @@ class VoidTicket extends BaseTicket
 
     public function buildResource(Request $request, Response $response, $params): array
     {
-        if (!\ciab\RBAC::havePermission('api.registration.ticket.void')) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, 'Permission Denied', 'Permission Denied', 403)];
-        }
+        $permissions = ['api.registration.ticket.void'];
+        $this->checkPermissions($permissions);
+
         $id = $params['id'];
         $body = $request->getParsedBody();
         if (empty($body) || !array_key_exists('reason', $body)) {

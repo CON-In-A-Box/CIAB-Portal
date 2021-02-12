@@ -14,11 +14,7 @@ class IsAdmin extends BaseRegistration
 
     public function buildResource(Request $request, Response $response, $args): array
     {
-        $check = $this->checkPutPermission($request, $response);
-        if ($check != null) {
-            return $check;
-        }
-
+        $this->checkPutPermission();
         return [
         \App\Controller\BaseController::RESOURCE_TYPE,
         ['admin' => true]];
