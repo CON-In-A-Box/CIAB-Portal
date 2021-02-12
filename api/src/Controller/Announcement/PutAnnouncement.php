@@ -7,6 +7,7 @@ namespace App\Controller\Announcement;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
+use App\Controller\NotFoundException;
 
 class PutAnnouncement extends BaseAnnouncement
 {
@@ -18,9 +19,7 @@ class PutAnnouncement extends BaseAnnouncement
         $sth->execute();
         $announce = $sth->fetchAll();
         if (empty($announce)) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, 'Not Found', 'Announcement Not Found', 404)];
+            throw new NotFoundException('Announcement Not Found');
         }
         $target = $announce[0];
 
@@ -40,15 +39,7 @@ class PutAnnouncement extends BaseAnnouncement
         if (array_key_exists('Department', $body)) {
             $department = $this->getDepartment($body['Department']);
             if ($department === null) {
-                return [
-                \App\Controller\BaseController::RESULT_TYPE,
-                $this->errorResponse(
-                    $request,
-                    $response,
-                    'Not Found',
-                    'Department \''.$body['Department'].'\' Not Found',
-                    404
-                )];
+                throw new NotFoundException("Department '${body['Department']}' Not Found");
             }
             $changes[] = "`DepartmentID` = '{$department['id']}' ";
         }

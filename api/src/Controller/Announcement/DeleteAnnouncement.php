@@ -7,6 +7,7 @@ namespace App\Controller\Announcement;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
+use App\Controller\NotFoundException;
 
 class DeleteAnnouncement extends BaseAnnouncement
 {
@@ -18,9 +19,7 @@ class DeleteAnnouncement extends BaseAnnouncement
         $sth->execute();
         $announce = $sth->fetchAll();
         if (empty($announce)) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, 'Not Found', 'Announcement Not Found', 404)];
+            throw new NotFoundException('Announcement Not Found');
         }
         $target = $announce[0];
 
