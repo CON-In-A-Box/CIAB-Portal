@@ -3,6 +3,7 @@
 namespace App\Controller\Stores;
 
 use App\Controller\BaseController;
+use App\Controller\PermissionDeniedException;
 
 use Atlas\Query\Delete;
 
@@ -16,9 +17,7 @@ class DeleteProduct extends BaseProduct
     public function buildResource(Request $request, Response $response, $params): array
     {
         if (!$_SESSION['IS_ADMIN']) {
-            return [
-            BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, 'Permission Denied', 'Permission Denied', 403)];
+            throw new PermissionDeniedException();
         }
 
         $delete = Delete::new($this->container->db);

@@ -7,6 +7,7 @@ use Atlas\Query\Select;
 use Slim\Http\Request;
 use Slim\Http\Response;
 use App\Controller\BaseController;
+use App\Controller\PermissionDeniedException;
 
 class PostProduct extends BaseProduct
 {
@@ -16,9 +17,7 @@ class PostProduct extends BaseProduct
     {
         // TODO: RBAC more than just admin maybe
         if (!$_SESSION['IS_ADMIN']) {
-            return [
-            BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, 'Permission Denied', 'Permission Denied', 403)];
+            throw new PermissionDeniedException();
         }
 
         $body = $request->getParsedBody();
