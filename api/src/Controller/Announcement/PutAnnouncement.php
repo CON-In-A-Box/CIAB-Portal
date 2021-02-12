@@ -15,14 +15,7 @@ class PutAnnouncement extends BaseAnnouncement
 
     public function buildResource(Request $request, Response $response, $args): array
     {
-        $sth = $this->container->db->prepare("SELECT * FROM `Announcements` WHERE `AnnouncementID` = ".$args['id']);
-        $sth->execute();
-        $announce = $sth->fetchAll();
-        if (empty($announce)) {
-            throw new NotFoundException('Announcement Not Found');
-        }
-        $target = $announce[0];
-
+        $target = $this->getAnnouncement($args['id']);
         $department = $target['DepartmentID'];
         if (!\ciab\RBAC::havePermission('api.put.announcement.'.$department) &&
             !\ciab\RBAC::havePermission('api.put.announcement.all')) {

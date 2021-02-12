@@ -22,6 +22,19 @@ abstract class BaseAnnouncement extends BaseController
     }
 
 
+    public function getAnnouncement($id)
+    {
+        $sth = $this->container->db->prepare("SELECT * FROM `Announcements` WHERE `AnnouncementID` = $id");
+        $sth->execute();
+        $announce = $sth->fetchAll();
+        if (empty($announce)) {
+            throw new NotFoundException('Announcement Not Found');
+        }
+        return $announce[0];
+
+    }
+
+
     public function buildAnnouncement(Request $request, Response $response, $id, $dept, $posted, $poster, $scope, $text)
     {
         $this->buildAnnouncementHateoas($request, intval($id), intval($dept));
