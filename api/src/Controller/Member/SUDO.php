@@ -24,15 +24,11 @@ class SUDO extends BaseMember
             \App\Controller\BaseController::RESULT_TYPE,
             $data];
         } else {
-            if (\ciab\RBAC::havePermission('admin.sudo')) {
-                $token = $request->getAttribute('oauth2-token');
-                $storage->setAccessToken($token['access_token'], $token['client_id'], $data['id'], $token['expires']);
-                return [null];
-            } else {
-                return [
-                \App\Controller\BaseController::RESULT_TYPE,
-                $this->errorResponse($request, $response, 'Permission Denied', 'Permission Denied', 403)];
-            }
+            $permissions = ['admin.sudo'];
+            $this->checkPermissions($permissions);
+            $token = $request->getAttribute('oauth2-token');
+            $storage->setAccessToken($token['access_token'], $token['client_id'], $data['id'], $token['expires']);
+            return [null];
         }
 
     }
