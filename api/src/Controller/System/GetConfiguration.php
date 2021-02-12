@@ -17,11 +17,9 @@ class GetConfiguration extends BaseSystem
 
     public function buildResource(Request $request, Response $response, $args): array
     {
-        if (!\ciab\RBAC::havePermission("api.get.configuration")) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, 'Permission Denied', 'Permission Denied', 403)];
-        }
+        $permissions = ['api.get.configuration'];
+        $this->checkPermissions($permissions);
+
         $user = $request->getAttribute('oauth2-token')['user_id'];
 
         $sql = <<<SQL
