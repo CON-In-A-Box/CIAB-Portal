@@ -6,6 +6,7 @@
 namespace App\Controller;
 
 use ArrayObject;
+use Exception;
 
 use Slim\Container;
 use Slim\Http\Response;
@@ -13,6 +14,11 @@ use Slim\Http\Request;
 
 require_once __DIR__.'/../../../backends/RBAC.inc';
 require_once __DIR__.'/../../../functions/divisional.inc';
+
+class NotFoundException extends Exception
+{
+
+}
 
 abstract class BaseController
 {
@@ -75,7 +81,15 @@ abstract class BaseController
 
     public function __invoke(Request $request, Response $response, $args)
     {
-        $result = $this->buildResource($request, $response, $args);
+        try {
+            $result = $this->buildResource($request, $response, $args);
+        } catch (NotFoundException $e) {
+            $result = [
+            BaseController::RESULT_TYPE,
+            $this->errorResponse($request, $response, $e->getMessage(), 'Not Found', 404)
+            ];
+        }
+
         if ($result === null || $result[0] === null) {
             return null;
         }

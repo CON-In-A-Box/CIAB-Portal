@@ -64,10 +64,6 @@ class PostProduct extends BaseProduct
         $id = $insert->getLastInsertId();
 
         $product = $this->getProduct(array('id' => $id), $request, $response, $error);
-
-        if (empty($product)) {
-            return $error;
-        }
         
         $output = array(
             'type' => 'product',

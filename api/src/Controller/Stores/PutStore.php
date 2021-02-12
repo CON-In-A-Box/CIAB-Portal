@@ -6,7 +6,9 @@ use Atlas\Query\Select;
 use Atlas\Query\Update;
 use Slim\Http\Request;
 use Slim\Http\Response;
+
 use App\Controller\BaseController;
+use App\Controller\NotFoundException;
 
 class PutStore extends BaseStore
 {
@@ -21,12 +23,6 @@ class PutStore extends BaseStore
             $this->errorResponse($request, $response, 'Permission Denied', 'Permission Denied', 403)];
         }
         
-        $store = $this->getStore($params, $request, $response, $error);
-
-        if (empty($store)) {
-            return $error;
-        }
-
         $body = $request->getParsedBody();
         
         # Filter for keys we accept. TODO: extract as a base clas function?
@@ -36,13 +32,13 @@ class PutStore extends BaseStore
         $update = Update::new($this->container->db);
         $update->table('Stores')->columns($body);
         $update->whereEquals(['StoreID' => $params['id']]);
-        $update->perform();
+        $result = $update->perform();
+        
+        if ($result->rowCount() == 0) {
+            throw new NotFoundException("Store ID ${params['id']} does not exist");
+        }
         
         $store = $this->getStore($params, $request, $response, $error);
-
-        if (empty($store)) {
-            return $error;
-        }
         
         return [
         BaseController::RESOURCE_TYPE,

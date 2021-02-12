@@ -6,7 +6,9 @@ use Atlas\Query\Select;
 use Atlas\Query\Update;
 use Slim\Http\Request;
 use Slim\Http\Response;
+
 use App\Controller\BaseController;
+use App\Controller\NotFoundException;
 
 class PutProduct extends BaseProduct
 {
@@ -21,12 +23,6 @@ class PutProduct extends BaseProduct
             $this->errorResponse($request, $response, 'Permission Denied', 'Permission Denied', 403)];
         }
 
-        $product = $this->getProduct($params, $request, $response, $error);
-
-        if (empty($product)) {
-            return $error;
-        }
-
         $body = $request->getParsedBody();
 
         $permitted_keys = ['Name', 'StoreSlug', 'Description', 'UnitPriceCents'];
@@ -35,13 +31,13 @@ class PutProduct extends BaseProduct
         $update = Update::new($this->container->db);
         $update->table('Products')->columns($body);
         $update->whereEquals(['ProductID' => $params['id']]);
-        $update->perform();
+        $result = $update->perform();
+
+        if ($result->rowCount() == 0) {
+            throw new NotFoundException("Product ID ${params['id']} does not exist");
+        }
 
         $product = $this->getProduct($params, $request, $response, $error);
-
-        if (empty($product)) {
-            return $error;
-        }
 
         return [
         BaseController::RESOURCE_TYPE,
