@@ -7,6 +7,7 @@ namespace App\Controller\Announcement;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
+use App\Controller\NotFoundException;
 
 class ListDepartmentAnnouncements extends BaseAnnouncement
 {
@@ -16,15 +17,7 @@ class ListDepartmentAnnouncements extends BaseAnnouncement
     {
         $department = $this->getDepartment($args['name']);
         if ($department === null) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse(
-                $request,
-                $response,
-                'Not Found',
-                'Department \''.$args['name'].'\' Not Found',
-                404
-            )];
+            throw new NotFoundException("Department '${args['name']}' Not Found");
         }
         $sth = $this->container->db->prepare(
             "SELECT * FROM `Announcements` WHERE DepartmentID = '".$department['id']."' ORDER BY `PostedOn` ASC"

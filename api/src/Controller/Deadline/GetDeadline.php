@@ -7,6 +7,7 @@ namespace App\Controller\Deadline;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
+use App\Controller\NotFoundException;
 
 class GetDeadline extends BaseDeadline
 {
@@ -18,9 +19,7 @@ class GetDeadline extends BaseDeadline
         $sth->execute();
         $deadlines = $sth->fetchAll();
         if (empty($deadlines)) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, 'Not Found', 'Deadline Not Found', 404)];
+            throw new NotFoundException('Deadline Not Found');
         }
         if (\ciab\RBAC::havePermission('api.get.deadline.'.$deadlines[0]['DepartmentID']) ||
             \ciab\RBAC::havePermission('api.get.deadline.all')) {

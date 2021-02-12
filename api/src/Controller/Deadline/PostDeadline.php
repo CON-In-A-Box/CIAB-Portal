@@ -7,24 +7,17 @@ namespace App\Controller\Deadline;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
+use App\Controller\NotFoundException;
 
 class PostDeadline extends BaseDeadline
 {
 
 
-    public function buildResource(Request $request, Response $response, $args): array
+    public function buildResource(Request $request, Response $response, $params): array
     {
-        $department = $this->getDepartment($args['dept']);
+        $department = $this->getDepartment($params['dept']);
         if ($department === null) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse(
-                $request,
-                $response,
-                'Not Found',
-                'Department \''.$args['dept'].'\' Not Found',
-                404
-            )];
+            throw new NotFoundException("Department '${params['dept']}' Not Found");
         }
         if (\ciab\RBAC::havePermission('api.post.deadline.'.$department['id']) ||
             \ciab\RBAC::havePermission('api.post.deadline.all')) {
@@ -53,7 +46,11 @@ class PostDeadline extends BaseDeadline
             $sql_date = date("Y-m-d", $date);
             $sth = $this->container->db->prepare("INSERT INTO `Deadlines` (DepartmentID, Deadline, Note) VALUES ({$department['id']}, '$sql_date', '{$body['Note']}')");
             $sth->execute();
-            return [null];
+            return [
+            \App\Controller\BaseController::RESOURCE_TYPE,
+            [null],
+            201
+            ];
         } else {
             return [
             \App\Controller\BaseController::RESULT_TYPE,

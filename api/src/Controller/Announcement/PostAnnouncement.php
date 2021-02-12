@@ -10,6 +10,7 @@ require_once __DIR__.'/../../../../backends/email.inc';
 use Slim\Http\Request;
 use Slim\Http\Response;
 use Slim\Views;
+use App\Controller\NotFoundException;
 
 require_once __DIR__.'/../../../../functions/users.inc';
 
@@ -114,15 +115,7 @@ SQL;
     {
         $department = $this->getDepartment($args['dept']);
         if ($department === null) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse(
-                $request,
-                $response,
-                'Not Found',
-                'Department \''.$args['dept'].'\' Not Found',
-                404
-            )];
+            throw new NotFoundException("Department '${args['dept']}' Not Found");
         }
         if (\ciab\RBAC::havePermission('api.post.announcement.'.$department['id']) ||
             \ciab\RBAC::havePermission('api.post.announcement.all')) {
@@ -148,7 +141,11 @@ SQL;
             if (!array_key_exists('Email', $body) || boolval($body['Email'])) {
                 $this->sendEmail($department, intval($body['Scope']), $text);
             }
-            return [null];
+            return [
+            \App\Controller\BaseController::RESULT_TYPE,
+            [null],
+            201
+            ];
         } else {
             return [
             \App\Controller\BaseController::RESULT_TYPE,

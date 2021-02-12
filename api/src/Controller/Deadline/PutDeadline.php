@@ -7,20 +7,19 @@ namespace App\Controller\Deadline;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
+use App\Controller\NotFoundException;
 
 class PutDeadline extends BaseDeadline
 {
 
 
-    public function buildResource(Request $request, Response $response, $args): array
+    public function buildResource(Request $request, Response $response, $params): array
     {
-        $sth = $this->container->db->prepare("SELECT * FROM `Deadlines` WHERE `DeadlineID` = '".$args['id']."'");
+        $sth = $this->container->db->prepare("SELECT * FROM `Deadlines` WHERE `DeadlineID` = '".$params['id']."'");
         $sth->execute();
         $deadlines = $sth->fetchAll();
         if (empty($deadlines)) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, 'Not Found', 'Deadline Not Found', 404)];
+            throw new NotFoundException('Deadline Not Found');
         }
         $target = $deadlines[0];
 
@@ -37,15 +36,7 @@ class PutDeadline extends BaseDeadline
         if (array_key_exists('Department', $body)) {
             $department = $this->getDepartment($body['Department']);
             if ($department === null) {
-                return [
-                \App\Controller\BaseController::RESULT_TYPE,
-                $this->errorResponse(
-                    $request,
-                    $response,
-                    'Not Found',
-                    'Department \''.$body['Department'].'\' Not Found',
-                    404
-                )];
+                throw new NotFoundException("Department '${body['Department']}' Not Found");
             }
             $target['DepartmentID'] = $department['id'];
         }
@@ -74,7 +65,7 @@ class PutDeadline extends BaseDeadline
                 `DepartmentID` = {$target['DepartmentID']},
                 `Deadline` = '{$target['Deadline']}',
                 `Note` = '{$target['Note']}'
-            WHERE `DeadlineID` = '{$args['id']}';
+            WHERE `DeadlineID` = '{$params['id']}';
 SQL
         );
         $sth->execute();
