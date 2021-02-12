@@ -37,7 +37,11 @@ class DeleteDeadline extends BaseDeadline
 SQL
         );
         $sth->execute();
-        return [null];
+        return [
+        \App\Controller\BaseController::RESOURCE_TYPE,
+        [null],
+        204
+        ];
 
     }
 

@@ -46,7 +46,11 @@ class PostDeadline extends BaseDeadline
             $sql_date = date("Y-m-d", $date);
             $sth = $this->container->db->prepare("INSERT INTO `Deadlines` (DepartmentID, Deadline, Note) VALUES ({$department['id']}, '$sql_date', '{$body['Note']}')");
             $sth->execute();
-            return [null];
+            return [
+            \App\Controller\BaseController::RESOURCE_TYPE,
+            [null],
+            201
+            ];
         } else {
             return [
             \App\Controller\BaseController::RESULT_TYPE,
