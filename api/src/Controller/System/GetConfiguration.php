@@ -47,8 +47,8 @@ class GetConfiguration extends BaseSystem
 SQL;
 
         $result = $this->getConfiguration($args, 'Configuration', null, $sql);
-        foreach ($result as $index->$entry) {
-            if (array_key_exists($entry['Field'], $_ENV)) {
+        foreach ($result as $index => $entry) {
+            if (array_key_exists($entry['field'], $_ENV)) {
                 unset($result[$index]);
             }
         }
