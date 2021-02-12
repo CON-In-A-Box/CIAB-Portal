@@ -6,7 +6,7 @@
 
 namespace volunteers;
 
-$DB_tables = [
+$vol_DB_tables = [
 'HourRedemptions' => [
 'ClaimID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
 'AccountID' => 'INT UNSIGNED NOT NULL',
@@ -39,7 +39,7 @@ $DB_tables = [
 
 ];
 
-$DB_foreignKeys = [
+$vol_DB_foreignKeys = [
 'VolunteerHours' => [
 'DepartmentID' => 'Departments (DepartmentID) ON DELETE RESTRICT ON UPDATE CASCADE',
 'EventID' => 'Events (EventID) ON DELETE RESTRICT ON UPDATE CASCADE',
@@ -54,5 +54,5 @@ $DB_foreignKeys = [
 
 ];
 
-$MODULE_TABLES = array_merge($MODULE_TABLES, $DB_tables);
-$MODULE_FOREIGNKEYS = array_merge($MODULE_FOREIGNKEYS, $DB_foreignKeys);
+$MODULE_TABLES = array_merge($MODULE_TABLES, $vol_DB_tables);
+$MODULE_FOREIGNKEYS = array_merge($MODULE_FOREIGNKEYS, $vol_DB_foreignKeys);

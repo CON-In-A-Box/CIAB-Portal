@@ -6,7 +6,7 @@
 
 namespace concom;
 
-$DB_tables = [
+$concom_DB_tables = [
 'ConComList' => [
 'ListRecordID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
 'AccountID' => 'INT UNSIGNED NOT NULL', // Taken from NeonCRM Currently
@@ -29,7 +29,7 @@ $DB_tables = [
 
 ];
 
-$DB_foreignKeys = [
+$concom_DB_foreignKeys = [
 'ConComList' => [
 'DepartmentID' => 'Departments (DepartmentID) ON DELETE RESTRICT ON UPDATE CASCADE',
 'EventID' => 'Events (EventID) ON DELETE RESTRICT ON UPDATE CASCADE',
@@ -38,12 +38,12 @@ $DB_foreignKeys = [
 
 ];
 
-$DB_index = [
+$concom_DB_index = [
 'ConComPermissions' => [
 'Permission' => ['Permission']
     ]
 ];
 
-$MODULE_TABLES = array_merge($MODULE_TABLES, $DB_tables);
-$MODULE_FOREIGNKEYS = array_merge($MODULE_FOREIGNKEYS, $DB_foreignKeys);
-$MODULE_INDEX = array_merge($MODULE_INDEX, $DB_index);
+$MODULE_TABLES = array_merge($MODULE_TABLES, $concom_DB_tables);
+$MODULE_FOREIGNKEYS = array_merge($MODULE_FOREIGNKEYS, $concom_DB_foreignKeys);
+$MODULE_INDEX = array_merge($MODULE_INDEX, $concom_DB_index);

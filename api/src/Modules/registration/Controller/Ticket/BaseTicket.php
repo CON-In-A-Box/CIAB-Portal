@@ -80,7 +80,7 @@ abstract class BaseTicket extends BaseRegistration
         }
         $aid = $data[0]['AccountID'];
 
-        if ($user != $aid &&
+        if ($user != $aid && $permission &&
             !\ciab\RBAC::havePermission($permission)) {
             return [
             \App\Controller\BaseController::RESULT_TYPE,
@@ -147,6 +147,63 @@ abstract class BaseTicket extends BaseRegistration
         $sql = "UPDATE `Registrations` SET `PrintRequested` = NOW(), `PrintRequestIp` = $ip  WHERE `RegistrationID` = $id AND `VoidDate` IS NULL";
         $sth = $this->container->db->prepare($sql);
         $sth->execute();
+
+    }
+
+
+    protected function updateTicket($request, $response, $params, $rbac, $sql, $error, $getResult = true)
+    {
+        if ($rbac && !\ciab\RBAC::havePermission($rbac)) {
+            return [
+            \App\Controller\BaseController::RESULT_TYPE,
+            $this->errorResponse($request, $response, 'Permission Denied', 'Permission Denied', 403)];
+        }
+        $sth = $this->container->db->prepare($sql);
+        $sth->execute();
+        if ($sth->rowCount() == 0) {
+            return [
+            \App\Controller\BaseController::RESULT_TYPE,
+            $this->errorResponse($request, $response, 'Conflict', $error, 409)];
+        }
+
+        if ($getResult) {
+            $target = new GetTicket($this->container);
+            $newdata = $target->buildResource($request, $response, $params)[1];
+            $data = $target->arrayResponse($request, $response, $newdata);
+
+            return [
+            \App\Controller\BaseController::RESOURCE_TYPE,
+            $data
+            ];
+        }
+
+        return null;
+
+    }
+
+
+    protected function updateAndPrintTicket($request, $response, $params, $id, $rbac, $sql, $error)
+    {
+        $aid = $this->getAccount($id, $request, $response, $rbac);
+        if (is_array($aid)) {
+            return $aid;
+        }
+
+        $rc = $this->updateTicket(
+            $request,
+            $response,
+            $params,
+            null,
+            $sql,
+            $error,
+            false
+        );
+
+        if ($rc == null) {
+            $this->printBadge($request, $id);
+            return [null];
+        }
+        return $rc;
 
     }
 
