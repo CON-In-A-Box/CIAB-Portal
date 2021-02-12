@@ -20,6 +20,12 @@ class NotFoundException extends Exception
 
 }
 
+
+class PermissionDeniedException extends Exception
+{
+
+}
+
 abstract class BaseController
 {
 
@@ -88,6 +94,11 @@ abstract class BaseController
             BaseController::RESULT_TYPE,
             $this->errorResponse($request, $response, $e->getMessage(), 'Not Found', 404)
             ];
+        } catch (PermissionDeniedException $e) {
+            $result = [
+            BaseController::RESULT_TYPE,
+            $this->errorResponse($request, $response, $e->getMessage(), 'Permission Denied', 403)
+            ];
         }
 
         if ($result === null || $result[0] === null) {
@@ -107,7 +118,7 @@ abstract class BaseController
             } else {
                 $code = 200;
             }
-            
+
             return $this->handleResourceType($request, $response, $data, $code);
         }
 
@@ -396,7 +407,7 @@ abstract class BaseController
 
     }
 
-    
+
     public function notFoundResponse(
         Request $request,
         Response $response,
@@ -410,6 +421,23 @@ abstract class BaseController
             'Not Found',
             404
         );
+
+    }
+
+
+    public function checkPermissions(
+        array $permissions,
+        string $message = 'Permission Denied'
+    ) {
+        $valid = false;
+        foreach ($permissions as $perm) {
+            if (!$valid && \ciab\RBAC::havePermission($perm)) {
+                $valid = true;
+            }
+        }
+        if (!$valid) {
+            throw new PermissionDeniedException($message);
+        }
 
     }
 
