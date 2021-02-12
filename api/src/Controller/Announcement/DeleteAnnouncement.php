@@ -16,13 +16,9 @@ class DeleteAnnouncement extends BaseAnnouncement
     public function buildResource(Request $request, Response $response, $args): array
     {
         $target = $this->getAnnouncement($args['id']);
-        $department = $target['DepartmentID'];
-        if (!\ciab\RBAC::havePermission('api.delete.announcement.'.$department) &&
-            !\ciab\RBAC::havePermission('api.delete.announcement.all')) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, 'Permission Denied', 'Permission Denied', 403)];
-        }
+        $permissions = ['api.delete.announcement.all',
+        'api.delete.announcement.'.$target['DepartmentID']];
+        $this->checkPermissions($permissions);
 
         $sth = $this->container->db->prepare(<<<SQL
             DELETE FROM `Announcements`

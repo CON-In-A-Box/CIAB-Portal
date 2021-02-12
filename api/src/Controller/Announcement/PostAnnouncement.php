@@ -117,40 +117,38 @@ SQL;
         if ($department === null) {
             throw new NotFoundException("Department '${args['dept']}' Not Found");
         }
-        if (\ciab\RBAC::havePermission('api.post.announcement.'.$department['id']) ||
-            \ciab\RBAC::havePermission('api.post.announcement.all')) {
-            $body = $request->getParsedBody();
-            if (!array_key_exists('Scope', $body)) {
-                return [
-                \App\Controller\BaseController::RESULT_TYPE,
-                $this->errorResponse($request, $response, 'Required \'Scope\' parameter not present', 'Missing Parameter', 400)];
-            }
-            if (!array_key_exists('Text', $body)) {
-                return [
-                \App\Controller\BaseController::RESULT_TYPE,
-                $this->errorResponse($request, $response, 'Required \'Text\' parameter not present', 'Missing Parameter', 400)];
-            }
 
-            $user = $this->findMember($request, $response, null, null);
-            $member = $user['id'];
-            $text = \MyPDO::quote($body['Text']);
+        $permissions = ['api.post.announcement.all',
+        'api.post.announcement.'.$department['id']];
+        $this->checkPermissions($permissions);
 
-            $sth = $this->container->db->prepare("INSERT INTO `Announcements` (DepartmentID, PostedBy, PostedOn, Scope, Text) VALUES ({$department['id']}, $member, now(), '{$body['Scope']}', $text)");
-            $sth->execute();
-
-            if (!array_key_exists('Email', $body) || boolval($body['Email'])) {
-                $this->sendEmail($department, intval($body['Scope']), $text);
-            }
+        $body = $request->getParsedBody();
+        if (!array_key_exists('Scope', $body)) {
             return [
             \App\Controller\BaseController::RESULT_TYPE,
-            [null],
-            201
-            ];
-        } else {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, 'Permission Denied', 'Permission Denied', 403)];
+            $this->errorResponse($request, $response, 'Required \'Scope\' parameter not present', 'Missing Parameter', 400)];
         }
+        if (!array_key_exists('Text', $body)) {
+            return [
+            \App\Controller\BaseController::RESULT_TYPE,
+            $this->errorResponse($request, $response, 'Required \'Text\' parameter not present', 'Missing Parameter', 400)];
+        }
+
+        $user = $this->findMember($request, $response, null, null);
+        $member = $user['id'];
+        $text = \MyPDO::quote($body['Text']);
+
+        $sth = $this->container->db->prepare("INSERT INTO `Announcements` (DepartmentID, PostedBy, PostedOn, Scope, Text) VALUES ({$department['id']}, $member, now(), '{$body['Scope']}', $text)");
+        $sth->execute();
+
+        if (!array_key_exists('Email', $body) || boolval($body['Email'])) {
+            $this->sendEmail($department, intval($body['Scope']), $text);
+        }
+        return [
+        \App\Controller\BaseController::RESULT_TYPE,
+        [null],
+        201
+        ];
 
     }
 
