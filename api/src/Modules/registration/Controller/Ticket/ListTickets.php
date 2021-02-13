@@ -9,6 +9,7 @@ use Slim\Http\Request;
 use Slim\Http\Response;
 
 use App\Controller\PermissionDeniedException;
+use App\Controller\NotFoundException;
 
 class ListTickets extends BaseTicket
 {
@@ -38,9 +39,7 @@ class ListTickets extends BaseTicket
         $sth->execute();
         $data = $sth->fetchAll();
         if (empty($data)) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, 'Not Found', 'Ticket Not Found', 404)];
+            throw new NotFoundException('Ticket Not Found');
         }
         $tickets = [];
         foreach ($data as $index => $ticket) {
