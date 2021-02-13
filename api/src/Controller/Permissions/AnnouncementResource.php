@@ -8,6 +8,8 @@ namespace App\Controller\Permissions;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
+use App\Controller\NotFoundException;
+
 class AnnouncementResource extends AnnouncementPermission
 {
 
@@ -41,28 +43,12 @@ class AnnouncementResource extends AnnouncementPermission
         $result = array();
         $data = $this->getDepartment($args['department']);
         if ($data === null) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse(
-                $request,
-                $response,
-                'Not Found',
-                'Department \''.$args['department'].'\' Invalid',
-                404
-            )];
+            throw new NotFoundException('Department \''.$args['department'].'\' Invalid');
         }
         $id = $data['id'];
         $method = $args['method'];
         if ($method !== null && !in_array($method, AnnouncementPermission::ALL_METHODS)) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse(
-                $request,
-                $response,
-                'Not Found',
-                'Method \'announcement.'.$method.'\' Invalid',
-                404
-            )];
+            throw new NotFoundException('Method \'announcement.'.$method.'\' Invalid');
         }
         if ($method !== null) {
             $result[] = $this->buildEntry($request, $id, $method);
