@@ -18,12 +18,9 @@ class PutCycle extends BaseCycle
         if ($error) {
             return $error;
         }
-        if (!\ciab\RBAC::havePermission('api.put.cycle')) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, 'Permission Denied', 'Permission Denied', 403)];
-        }
 
+        $permissions = ['api.put.cycle'];
+        $this->checkPermissions($permissions);
 
         $sql = "UPDATE `AnnualCycles` SET ";
 

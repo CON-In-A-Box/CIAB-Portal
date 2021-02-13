@@ -17,12 +17,10 @@ class PutAnnouncement extends BaseAnnouncement
     {
         $target = $this->getAnnouncement($args['id']);
         $department = $target['DepartmentID'];
-        if (!\ciab\RBAC::havePermission('api.put.announcement.'.$department) &&
-            !\ciab\RBAC::havePermission('api.put.announcement.all')) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, 'Permission Denied', 'Permission Denied', 403)];
-        }
+
+        $permissions = ['api.put.announcement.all',
+        'api.put.announcement.'.$department];
+        $this->checkPermissions($permissions);
 
         $sql = "UPDATE `Announcements` SET ";
         $changes = [];

@@ -24,12 +24,9 @@ class PutDeadline extends BaseDeadline
         $target = $deadlines[0];
 
         $department = $target['DepartmentID'];
-        if (!\ciab\RBAC::havePermission('api.put.deadline.'.$department) &&
-            !\ciab\RBAC::havePermission('api.put.deadline.all')) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, 'Permission Denied', 'Permission Denied', 403)];
-        }
+        $permissions = ['api.put.deadline.'.$department,
+        'api.put.deadline.all'];
+        $this->checkPermissions($permissions);
 
         $body = $request->getParsedBody();
 

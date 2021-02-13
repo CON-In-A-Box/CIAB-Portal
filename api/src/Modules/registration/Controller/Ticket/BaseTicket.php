@@ -9,6 +9,7 @@ use Slim\Container;
 use Slim\Http\Request;
 use Slim\Http\Response;
 use App\Modules\registration\Controller\BaseRegistration;
+use App\Controller\PermissionDeniedException;
 
 abstract class BaseTicket extends BaseRegistration
 {
@@ -82,9 +83,7 @@ abstract class BaseTicket extends BaseRegistration
 
         if ($user != $aid && $permission &&
             !\ciab\RBAC::havePermission($permission)) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, 'Permission Denied', 'Permission Denied', 403)];
+            throw new PermissionDeniedException();
         }
 
         return $aid;
@@ -153,10 +152,8 @@ abstract class BaseTicket extends BaseRegistration
 
     protected function updateTicket($request, $response, $params, $rbac, $sql, $error, $getResult = true)
     {
-        if ($rbac && !\ciab\RBAC::havePermission($rbac)) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, 'Permission Denied', 'Permission Denied', 403)];
+        if ($rbac) {
+            $this->checkPermissions([$rbac]);
         }
         $sth = $this->container->db->prepare($sql);
         $sth->execute();

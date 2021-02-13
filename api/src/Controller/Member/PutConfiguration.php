@@ -8,6 +8,8 @@ namespace App\Controller\Member;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
+use App\Controller\PermissionDeniedException;
+
 class PutConfiguration extends BaseMember
 {
 
@@ -27,9 +29,7 @@ class PutConfiguration extends BaseMember
         $user = $request->getAttribute('oauth2-token')['user_id'];
         if ($accountID != $user &&
             !\ciab\RBAC::havePermission("api.put.member")) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, 'Permission Denied', 'Permission Denied', 403)];
+            throw new PermissionDeniedException();
         }
 
         $body = $request->getParsedBody();

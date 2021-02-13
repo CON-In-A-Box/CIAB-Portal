@@ -19,43 +19,40 @@ class PostDeadline extends BaseDeadline
         if ($department === null) {
             throw new NotFoundException("Department '${params['dept']}' Not Found");
         }
-        if (\ciab\RBAC::havePermission('api.post.deadline.'.$department['id']) ||
-            \ciab\RBAC::havePermission('api.post.deadline.all')) {
-            $body = $request->getParsedBody();
-            if (!array_key_exists('Deadline', $body)) {
-                return [
-                \App\Controller\BaseController::RESULT_TYPE,
-                $this->errorResponse($request, $response, 'Required \'Deadline\' parameter not present', 'Missing Parameter', 400)];
-            }
-            if (!array_key_exists('Note', $body)) {
-                return [
-                \App\Controller\BaseController::RESULT_TYPE,
-                $this->errorResponse($request, $response, 'Required \'Note\' parameter not present', 'Missing Parameter', 400)];
-            }
-            $date = strtotime($body['Deadline']);
-            if ($date == false) {
-                return [
-                \App\Controller\BaseController::RESULT_TYPE,
-                $this->errorResponse($request, $response, '\'Deadline\' parameter not valid \''.$body['Deadline'].'\'', 'Invalid Parameter', 400)];
-            }
-            if ($date < strtotime('now')) {
-                return [
-                \App\Controller\BaseController::RESULT_TYPE,
-                $this->errorResponse($request, $response, '\'Deadline\' parameter in the past not valid \''.$body['Deadline'].'\'', 'Invalid Parameter', 400)];
-            }
-            $sql_date = date("Y-m-d", $date);
-            $sth = $this->container->db->prepare("INSERT INTO `Deadlines` (DepartmentID, Deadline, Note) VALUES ({$department['id']}, '$sql_date', '{$body['Note']}')");
-            $sth->execute();
-            return [
-            \App\Controller\BaseController::RESOURCE_TYPE,
-            [null],
-            201
-            ];
-        } else {
+        $permissions = ['api.post.deadline.'.$department['id'],
+        'api.post.deadline.all'];
+        $this->checkPermissions($permissions);
+
+        $body = $request->getParsedBody();
+        if (!array_key_exists('Deadline', $body)) {
             return [
             \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, 'Permission Denied', 'Permission Denied', 403)];
+            $this->errorResponse($request, $response, 'Required \'Deadline\' parameter not present', 'Missing Parameter', 400)];
         }
+        if (!array_key_exists('Note', $body)) {
+            return [
+            \App\Controller\BaseController::RESULT_TYPE,
+            $this->errorResponse($request, $response, 'Required \'Note\' parameter not present', 'Missing Parameter', 400)];
+        }
+        $date = strtotime($body['Deadline']);
+        if ($date == false) {
+            return [
+            \App\Controller\BaseController::RESULT_TYPE,
+            $this->errorResponse($request, $response, '\'Deadline\' parameter not valid \''.$body['Deadline'].'\'', 'Invalid Parameter', 400)];
+        }
+        if ($date < strtotime('now')) {
+            return [
+            \App\Controller\BaseController::RESULT_TYPE,
+            $this->errorResponse($request, $response, '\'Deadline\' parameter in the past not valid \''.$body['Deadline'].'\'', 'Invalid Parameter', 400)];
+        }
+        $sql_date = date("Y-m-d", $date);
+        $sth = $this->container->db->prepare("INSERT INTO `Deadlines` (DepartmentID, Deadline, Note) VALUES ({$department['id']}, '$sql_date', '{$body['Note']}')");
+        $sth->execute();
+        return [
+        \App\Controller\BaseController::RESOURCE_TYPE,
+        [null],
+        201
+        ];
 
     }
 

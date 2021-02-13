@@ -16,10 +16,7 @@ class PutConfiguration extends BaseRegistration
 
     public function buildResource(Request $request, Response $response, $params): array
     {
-        $check = $this->checkPutPermission($request, $response);
-        if ($check != null) {
-            return $check;
-        }
+        $this->checkPutPermission();
         $body = $request->getParsedBody();
         return $this->putConfiguration($request, $response, $params, 'Registration_Configuration', $body);
 

@@ -26,30 +26,28 @@ class ListDeadlines extends \App\Controller\Deadline\BaseDeadline
                 404
             )];
         }
-        if (\ciab\RBAC::havePermission('api.get.deadline.'.$department['id']) ||
-            \ciab\RBAC::havePermission('api.get.deadline.all')) {
-            $sth = $this->container->db->prepare(
-                "SELECT * FROM `Deadlines` WHERE DepartmentID = '".$department['id']."' ORDER BY `Deadline` ASC"
-            );
-            $sth->execute();
-            $todos = $sth->fetchAll();
-            $output = array();
-            $output['type'] = 'deadline_list';
-            $data = array();
-            foreach ($todos as $entry) {
-                $deadline = new \App\Controller\Deadline\GetDeadline($this->container);
-                $result = $deadline->buildDeadline($request, $response, $entry['DeadlineID'], $entry['DepartmentID'], $entry['Deadline'], $entry['Note']);
-                $data[] = $deadline->arrayResponse($request, $response, $result);
-            }
-            return [
-            \App\Controller\BaseController::LIST_TYPE,
-            $data,
-            $output];
-        } else {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, 'Permission Denied', 'Permission Denied', 403)];
+
+        $permissions = ['api.get.deadline.all',
+        'api.get.deadline.'.$department['id']];
+        $this->checkPermissions($permissions);
+
+        $sth = $this->container->db->prepare(
+            "SELECT * FROM `Deadlines` WHERE DepartmentID = '".$department['id']."' ORDER BY `Deadline` ASC"
+        );
+        $sth->execute();
+        $todos = $sth->fetchAll();
+        $output = array();
+        $output['type'] = 'deadline_list';
+        $data = array();
+        foreach ($todos as $entry) {
+            $deadline = new \App\Controller\Deadline\GetDeadline($this->container);
+            $result = $deadline->buildDeadline($request, $response, $entry['DeadlineID'], $entry['DepartmentID'], $entry['Deadline'], $entry['Note']);
+            $data[] = $deadline->arrayResponse($request, $response, $result);
         }
+        return [
+        \App\Controller\BaseController::LIST_TYPE,
+        $data,
+        $output];
 
     }
 

@@ -18,11 +18,8 @@ class DeleteCycle extends BaseCycle
         if ($error) {
             return $error;
         }
-        if (!\ciab\RBAC::havePermission('api.delete.cycle')) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, 'Permission Denied', 'Permission Denied', 403)];
-        }
+        $permissions = ['api.delete.cycle'];
+        $this->checkPermissions($permissions);
 
         $sth = $this->container->db->prepare("DELETE FROM `AnnualCycles` WHERE `AnnualCycleID` = ".$params['id'].";");
         $sth->execute();

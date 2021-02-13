@@ -7,6 +7,7 @@ namespace App\Modules\concom\Controller;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
+use App\Controller\PermissionDeniedException;
 
 require_once __DIR__.'/../../../../../modules/concom/functions/POSITION.inc';
 
@@ -31,9 +32,7 @@ class GetMemberPosition extends BaseConcom
             }
             if ($data[0]['Id'] != $user &&
                 !\ciab\RBAC::havePermission('api.get.concom')) {
-                return [
-                \App\Controller\BaseController::RESULT_TYPE,
-                $this->errorResponse($request, $response, 'Permission Denied', 'Permission Denied', 403)];
+                throw new PermissionDeniedException();
             }
             $user = $data['users'][0]['Id'];
         }

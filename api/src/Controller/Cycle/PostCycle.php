@@ -14,11 +14,9 @@ class PostCycle extends BaseCycle
 
     public function buildResource(Request $request, Response $response, $args): array
     {
-        if (!\ciab\RBAC::havePermission('api.post.cycle')) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, 'Permission Denied', 'Permission Denied', 403)];
-        }
+        $permissions = ['api.post.cycle'];
+        $this->checkPermissions($permissions);
+
         $body = $request->getParsedBody();
         if (!array_key_exists('From', $body)) {
             return [

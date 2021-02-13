@@ -23,13 +23,10 @@ class GetLog extends BaseSystem
 
     public function buildResource(Request $request, Response $response, $params): array
     {
-        $this->api_type = 'log';
-        if (!\ciab\RBAC::havePermission("api.get.log")) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, 'Permission Denied', 'Permission Denied', 403)];
-        }
+        $permissions = ['api.get.log'];
+        $this->checkPermissions($permissions);
 
+        $this->api_type = 'log';
         $sql = "SELECT MAX(LogEntryID) as mid FROM ActivityLog;";
         $sth = $this->container->db->prepare($sql);
         $sth->execute();

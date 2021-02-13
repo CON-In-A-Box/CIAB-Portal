@@ -16,12 +16,8 @@ class PutConfiguration extends BaseSystem
 
     public function buildResource(Request $request, Response $response, $args): array
     {
-        if (!\ciab\RBAC::havePermission("api.put.configuration")) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, 'Permission Denied', 'Permission Denied', 403)];
-        }
-
+        $permissions = ['api.put.configuration'];
+        $this->checkPermissions($permissions);
         $body = $request->getParsedBody();
         return $this->putConfiguration($request, $response, $args, 'Configuration', $body);
 
