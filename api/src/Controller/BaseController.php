@@ -364,7 +364,7 @@ abstract class BaseController
         if ($args !== null && array_key_exists($key, $args)) {
             $data = \lookup_users_by_key($args[$key], true, true, false, $fields);
             if (empty($data['users'])) {
-                return null;
+                throw new NotFoundException('Member Not Found');
             }
             $data = BaseController::mapMemberData($data['users'][0]);
         } else {
@@ -400,7 +400,7 @@ abstract class BaseController
         }
         $data = \lookup_user_by_id($user, $fields);
         if (empty($data['users'])) {
-            return null;
+            throw new NotFoundException('Member Not Found');
         }
         $data = BaseController::mapMemberData($data['users'][0]);
         return $data;

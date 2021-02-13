@@ -15,16 +15,10 @@ class GetMember extends BaseMember
     public function buildResource(Request $request, Response $response, $args): array
     {
         $data = $this->findMemberId($request, $response, $args, 'id');
-        if (gettype($data) === 'object') {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $data];
-        } else {
-            $this->buildMemberHateoas($request);
-            return [
-            \App\Controller\BaseController::RESOURCE_TYPE,
-            $data];
-        }
+        $this->buildMemberHateoas($request);
+        return [
+        \App\Controller\BaseController::RESOURCE_TYPE,
+        $data];
 
     }
 

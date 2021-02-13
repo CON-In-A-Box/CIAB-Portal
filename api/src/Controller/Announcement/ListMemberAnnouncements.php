@@ -15,11 +15,6 @@ class ListMemberAnnouncements extends BaseAnnouncement
     public function buildResource(Request $request, Response $response, $args): array
     {
         $user = $this->findMemberId($request, $response, $args, 'id');
-        if (gettype($user) === 'object') {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $user];
-        }
         $user = $user['id'];
         $sth = $this->container->db->prepare(<<<SQL
             SELECT

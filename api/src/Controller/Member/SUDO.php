@@ -19,17 +19,11 @@ class SUDO extends BaseMember
         global $storage;
 
         $data = $this->findMember($request, $response, $args, 'name');
-        if (gettype($data) === 'object') {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $data];
-        } else {
-            $permissions = ['admin.sudo'];
-            $this->checkPermissions($permissions);
-            $token = $request->getAttribute('oauth2-token');
-            $storage->setAccessToken($token['access_token'], $token['client_id'], $data['id'], $token['expires']);
-            return [null];
-        }
+        $permissions = ['admin.sudo'];
+        $this->checkPermissions($permissions);
+        $token = $request->getAttribute('oauth2-token');
+        $storage->setAccessToken($token['access_token'], $token['client_id'], $data['id'], $token['expires']);
+        return [null];
 
     }
 

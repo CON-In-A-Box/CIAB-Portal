@@ -17,11 +17,6 @@ class ListTickets extends BaseTicket
     public function buildResource(Request $request, Response $response, $params): array
     {
         $data = $this->findMemberId($request, $response, $params, 'member');
-        if (gettype($data) === 'object') {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $data];
-        }
         $aid = $data['id'];
 
         $user = $request->getAttribute('oauth2-token')['user_id'];
