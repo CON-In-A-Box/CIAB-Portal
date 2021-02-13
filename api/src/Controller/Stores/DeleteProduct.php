@@ -4,6 +4,7 @@ namespace App\Controller\Stores;
 
 use App\Controller\BaseController;
 use App\Controller\PermissionDeniedException;
+use App\Controller\NotFoundException;
 
 use Atlas\Query\Delete;
 
@@ -24,10 +25,7 @@ class DeleteProduct extends BaseProduct
         $result = $delete->from('Products')->whereEquals(['ProductID' => $params['id']])->perform();
 
         if ($result->rowCount() == 0) {
-            return [
-            BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, 'Already deleted', 'Not found', 404)
-            ];
+            throw new NotFoundException('Already deleted');
         }
 
         return [
