@@ -8,6 +8,8 @@ namespace App\Controller;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
+use App\Controller\NotFoundException;
+
 trait TraitConfiguration
 {
 
@@ -120,9 +122,7 @@ SQL;
     private function putConfiguration(Request $request, Response $response, $args, $table, $data): array
     {
         if (!array_key_exists('Value', $data) || !array_key_exists('Field', $data)) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, 'Value Not Found', 'Value Not Found', 404)];
+            throw new NotFoundException('Value Not Found');
         }
 
         $field = $data['Field'];
