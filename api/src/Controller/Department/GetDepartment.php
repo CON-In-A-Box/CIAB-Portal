@@ -7,14 +7,15 @@ namespace App\Controller\Department;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
+use App\Controller\NotFoundException;
 
 class GetDepartment extends BaseDepartment
 {
 
 
-    public function buildResource(Request $request, Response $response, $args): array
+    public function buildResource(Request $request, Response $response, $params): array
     {
-        $output = $this->getDepartment($args['name']);
+        $output = $this->getDepartment($params['name']);
         if ($output) {
             $email = [];
             foreach ($output['Email'] as $entry) {
@@ -38,29 +39,21 @@ class GetDepartment extends BaseDepartment
             \App\Controller\BaseController::RESOURCE_TYPE,
             $output];
         } else {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse(
-                $request,
-                $response,
-                'Not Found',
-                'Department \''.$args['name'].'\' Not Found',
-                404
-            )];
+            throw new NotFoundException('Department \''.$params['name'].'\' Not Found');
         }
 
     }
 
 
-    public function processIncludes(Request $request, Response $response, $args, $values, &$data)
+    public function processIncludes(Request $request, Response $response, $params, $values, &$data)
     {
         if (in_array('division', $values)) {
             $target = new GetDepartment($this->container);
-            $newargs = $args;
+            $newargs = $params;
             $newargs['name'] = $data['division'];
             $newdata = $target->buildResource($request, $response, $newargs)[1];
             if ($newdata['id'] != $data['id']) {
-                $target->processIncludes($request, $response, $args, $values, $newdata);
+                $target->processIncludes($request, $response, $params, $values, $newdata);
                 $data['division'] = $target->arrayResponse($request, $response, $newdata);
             }
         }
@@ -68,10 +61,10 @@ class GetDepartment extends BaseDepartment
             $data['fallback'] != $data['id'] &&
             $data['fallback'] != null) {
             $target = new GetDepartment($this->container);
-            $newargs = $args;
+            $newargs = $params;
             $newargs['name'] = $data['fallback'];
             $newdata = $target->buildResource($request, $response, $newargs)[1];
-            $target->processIncludes($request, $response, $args, $values, $newdata);
+            $target->processIncludes($request, $response, $params, $values, $newdata);
             $data['fallback'] = $target->arrayResponse($request, $response, $newdata);
         }
 
