@@ -8,6 +8,8 @@ namespace App\Modules\registration\Controller\Ticket;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
+use App\Controller\NotFoundException;
+
 class VoidTicket extends BaseTicket
 {
 
@@ -30,9 +32,7 @@ class VoidTicket extends BaseTicket
         $sth = $this->container->db->prepare($sql);
         $sth->execute();
         if ($sth->rowCount() == 0) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, 'Not Found', 'Ticket Not Found', 404)];
+            throw new NotFoundException('Ticket Not Found');
         }
 
         return [null];

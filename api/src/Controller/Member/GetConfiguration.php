@@ -20,11 +20,6 @@ class GetConfiguration extends BaseMember
     public function buildResource(Request $request, Response $response, $args): array
     {
         $data = $this->findMemberId($request, $response, $args, 'id');
-        if (gettype($data) === 'object') {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $data];
-        }
         $user = $request->getAttribute('oauth2-token')['user_id'];
         if ($user != $data['id'] && !\ciab\RBAC::havePermission("api.get.configuration")) {
             throw new PermissionDeniedException();

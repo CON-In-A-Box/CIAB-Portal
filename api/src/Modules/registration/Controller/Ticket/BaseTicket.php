@@ -10,6 +10,7 @@ use Slim\Http\Request;
 use Slim\Http\Response;
 use App\Modules\registration\Controller\BaseRegistration;
 use App\Controller\PermissionDeniedException;
+use App\Controller\NotFoundException;
 
 abstract class BaseTicket extends BaseRegistration
 {
@@ -75,9 +76,7 @@ abstract class BaseTicket extends BaseRegistration
         $sth->execute();
         $data = $sth->fetchAll();
         if (!$data) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, 'Not Found', 'Registration Not Found', 404)];
+            throw new NotFoundException('Registration Not Found');
         }
         $aid = $data[0]['AccountID'];
 

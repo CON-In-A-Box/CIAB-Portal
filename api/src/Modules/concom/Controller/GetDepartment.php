@@ -8,6 +8,8 @@ namespace App\Modules\concom\Controller;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
+use App\Controller\NotFoundException;
+
 class GetDepartment extends BaseConcom
 {
 
@@ -18,15 +20,7 @@ class GetDepartment extends BaseConcom
         $this->checkPermissions($permissions);
         $dept = $this->getDepartment($args['id']);
         if ($dept === null) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse(
-                $request,
-                $response,
-                'Not Found',
-                'Department \''.$args['id'].'\' Not Found',
-                404
-            )];
+            throw new NotFoundException('Department \''.$args['id'].'\' Not Found');
         }
         $event = $request->getQueryParam('event');
         if ($event !== null) {

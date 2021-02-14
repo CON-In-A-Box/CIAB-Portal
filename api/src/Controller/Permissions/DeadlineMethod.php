@@ -8,6 +8,8 @@ namespace App\Controller\Permissions;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
+use App\Controller\NotFoundException;
+
 class DeadlineMethod extends DeadlinePermission
 {
 
@@ -23,30 +25,14 @@ class DeadlineMethod extends DeadlinePermission
         }
         if ($methodArg !== null) {
             if (!in_array($methodArg, DeadlinePermission::ALL_METHODS)) {
-                return [
-                \App\Controller\BaseController::RESULT_TYPE,
-                $this->errorResponse(
-                    $request,
-                    $response,
-                    'Not Found',
-                    'Method \'deadline.'.$methodArg.'\' Invalid',
-                    404
-                )];
+                throw new NotFoundException('Method \'deadline.'.$methodArg.'\' Invalid');
             }
         }
         $path = $request->getUri()->getBaseUrl();
         if (array_key_exists('department', $args)) {
             $data = $this->getDepartment($args['department']);
             if ($data === null) {
-                return [
-                \App\Controller\BaseController::RESULT_TYPE,
-                $this->errorResponse(
-                    $request,
-                    $response,
-                    'Not Found',
-                    'Department \''.$args['department'].'\' Invalid',
-                    404
-                )];
+                throw new NotFoundException('Department \''.$args['department'].'\' Invalid');
             }
             $allowed = (\ciab\RBAC::havePermission('api.'.$methodArg.'.deadline.'.$data['id']) ||
                         \ciab\RBAC::havePermission('api.'.$methodArg.'.deadline.all'));

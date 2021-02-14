@@ -8,6 +8,8 @@ namespace App\Modules\registration\Controller\Ticket;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
+use App\Controller\NotFoundException;
+
 class GetTicketTypes extends BaseTicket
 {
 
@@ -30,9 +32,7 @@ class GetTicketTypes extends BaseTicket
         $sth->execute();
         $data = $sth->fetchAll();
         if (empty($data)) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, 'Not Found', 'Badge Type Not Found', 404)];
+            throw new NotFoundException('Badge Type Not Found');
         }
         $badges = [];
         foreach ($data as $entry) {

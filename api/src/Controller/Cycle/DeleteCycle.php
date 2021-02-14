@@ -14,10 +14,7 @@ class DeleteCycle extends BaseCycle
 
     public function buildResource(Request $request, Response $response, $params): array
     {
-        $error = $this->getCycle($cycles, $params);
-        if ($error) {
-            return $error;
-        }
+        $this->getCycle($params);
         $permissions = ['api.delete.cycle'];
         $this->checkPermissions($permissions);
 

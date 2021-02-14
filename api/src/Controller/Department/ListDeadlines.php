@@ -7,24 +7,17 @@ namespace App\Controller\Department;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
+use App\Controller\NotFoundException;
 
 class ListDeadlines extends \App\Controller\Deadline\BaseDeadline
 {
 
 
-    public function buildResource(Request $request, Response $response, $args): array
+    public function buildResource(Request $request, Response $response, $params): array
     {
-        $department = $this->getDepartment($args['name']);
+        $department = $this->getDepartment($params['name']);
         if ($department === null) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse(
-                $request,
-                $response,
-                'Not Found',
-                'Department \''.$args['name'].'\' Not Found',
-                404
-            )];
+            throw new NotFoundException('Department \''.$params['name'].'\' Not Found');
         }
 
         $permissions = ['api.get.deadline.all',
@@ -52,14 +45,14 @@ class ListDeadlines extends \App\Controller\Deadline\BaseDeadline
     }
 
 
-    public function processIncludes(Request $request, Response $response, $args, $values, &$data)
+    public function processIncludes(Request $request, Response $response, $params, $values, &$data)
     {
         if (in_array('departmentId', $values)) {
             $target = new \App\Controller\Department\GetDepartment($this->container);
-            $newargs = $args;
+            $newargs = $params;
             $newargs['name'] = $data['departmentId'];
             $newdata = $target->buildResource($request, $response, $newargs)[1];
-            $target->processIncludes($request, $response, $args, $values, $newdata);
+            $target->processIncludes($request, $response, $params, $values, $newdata);
             $data['departmentId'] = $target->arrayResponse($request, $response, $newdata);
         }
 

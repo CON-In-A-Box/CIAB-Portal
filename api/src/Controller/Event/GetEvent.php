@@ -8,6 +8,8 @@ namespace App\Controller\Event;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
+use App\Controller\NotFoundException;
+
 class GetEvent extends BaseEvent
 {
 
@@ -18,9 +20,7 @@ class GetEvent extends BaseEvent
         $sth->execute();
         $data = $sth->fetchAll();
         if (empty($data)) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, 'Not Found', 'Event Not Found', 404)];
+            throw new NotFoundException('Event Not Found');
         }
 
         $events = [];
