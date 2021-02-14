@@ -36,7 +36,8 @@ class PostCycle extends BaseCycle
         $data = $target->buildResource($request, $response, ['id' => $this->container->db->lastInsertId()])[1];
         return [
         \App\Controller\BaseController::RESOURCE_TYPE,
-        $target->arrayResponse($request, $response, $data)
+        $target->arrayResponse($request, $response, $data),
+        201
         ];
 
     }
