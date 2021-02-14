@@ -26,7 +26,11 @@ class DeleteTicket extends BaseTicket
             throw new NotFoundException('Ticket Not Found');
         }
 
-        return [null];
+        return [
+        \App\Controller\BaseController::RESOURCE_TYPE,
+        [null],
+        204
+        ];
 
     }
 
