@@ -11,6 +11,7 @@ use Slim\Http\Response;
 use App\Modules\registration\Controller\BaseRegistration;
 use App\Controller\PermissionDeniedException;
 use App\Controller\NotFoundException;
+use App\Controller\ConflictException;
 
 abstract class BaseTicket extends BaseRegistration
 {
@@ -157,9 +158,7 @@ abstract class BaseTicket extends BaseRegistration
         $sth = $this->container->db->prepare($sql);
         $sth->execute();
         if ($sth->rowCount() == 0) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, 'Conflict', $error, 409)];
+            throw new ConflictException($error);
         }
 
         if ($getResult) {

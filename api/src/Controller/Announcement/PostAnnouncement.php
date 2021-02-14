@@ -11,6 +11,7 @@ use Slim\Http\Request;
 use Slim\Http\Response;
 use Slim\Views;
 use App\Controller\NotFoundException;
+use App\Controller\InvalidParameterException;
 
 require_once __DIR__.'/../../../../functions/users.inc';
 
@@ -124,14 +125,10 @@ SQL;
 
         $body = $request->getParsedBody();
         if (!array_key_exists('Scope', $body)) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, 'Required \'Scope\' parameter not present', 'Missing Parameter', 400)];
+            throw new InvalidParameterException('Required \'Scope\' parameter not present');
         }
         if (!array_key_exists('Text', $body)) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, 'Required \'Text\' parameter not present', 'Missing Parameter', 400)];
+            throw new InvalidParameterException('Required \'Text\' parameter not present');
         }
 
         $user = $this->findMember($request, $response, null, null);

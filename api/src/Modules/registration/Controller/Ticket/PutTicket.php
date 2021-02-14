@@ -8,6 +8,8 @@ namespace App\Modules\registration\Controller\Ticket;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
+use App\Controller\ConflictException;
+
 class PutTicket extends BaseTicket
 {
 
@@ -47,9 +49,7 @@ class PutTicket extends BaseTicket
         $sth = $this->container->db->prepare($sql);
         $sth->execute();
         if ($sth->rowCount() == 0) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, 'Conflict', 'Could not update', 409)];
+            throw new ConflictException('Could not update');
         }
 
         $target = new GetTicket($this->container);

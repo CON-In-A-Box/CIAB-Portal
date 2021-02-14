@@ -9,6 +9,7 @@ use Slim\Http\Request;
 use Slim\Http\Response;
 
 use App\Controller\NotFoundException;
+use App\Controller\InvalidParameterException;
 
 class VoidTicket extends BaseTicket
 {
@@ -22,9 +23,7 @@ class VoidTicket extends BaseTicket
         $id = $params['id'];
         $body = $request->getParsedBody();
         if (empty($body) || !array_key_exists('reason', $body)) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, 'Required \'reason\' parameter not present', 'Missing Parameter', 400)];
+            throw new InvalidParameterException('Required \'reason\' parameter not present');
         }
         $reason = \MyPDO::quote($body['reason']);
         $user = $request->getAttribute('oauth2-token')['user_id'];

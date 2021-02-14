@@ -8,6 +8,8 @@ namespace App\Controller\Cycle;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
+use App\Controller\InvalidParameterException;
+
 class PostCycle extends BaseCycle
 {
 
@@ -19,14 +21,10 @@ class PostCycle extends BaseCycle
 
         $body = $request->getParsedBody();
         if (!array_key_exists('From', $body)) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, 'Required \'From\' parameter not present', 'Missing Parameter', 400)];
+            throw new InvalidParameterException('Required \'From\' parameter not present');
         }
         if (!array_key_exists('To', $body)) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, 'Required \'To\' parameter not present', 'Missing Parameter', 400)];
+            throw new InvalidParameterException('Required \'To\' parameter not present');
         }
         $from = date_format(new \DateTime($body['From']), 'Y-m-d');
         $to = date_format(new \DateTime($body['To']), 'Y-m-d');

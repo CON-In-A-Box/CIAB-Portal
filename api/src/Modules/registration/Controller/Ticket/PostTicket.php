@@ -8,6 +8,9 @@ namespace App\Modules\registration\Controller\Ticket;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
+use App\Controller\InvalidParameterException;
+use App\Controller\ConflictException;
+
 class PostTicket extends BaseTicket
 {
 
@@ -21,16 +24,12 @@ class PostTicket extends BaseTicket
         if ($body && array_key_exists('member', $body)) {
             $member = $body['member'];
         } else {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, 'Required \'member\' parameter not present', 'Missing Parameter', 400)];
+            throw new InvalidParameterException('Required \'member\' parameter not present');
         }
         if (array_key_exists('ticketType', $body)) {
             $type = $body['ticketType'];
         } else {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, 'Required \'ticketType\' parameter not present', 'Missing Parameter', 400)];
+            throw new InvalidParameterException('Required \'ticketType\' parameter not present');
         }
 
         if (array_key_exists('event', $body)) {
@@ -67,9 +66,7 @@ class PostTicket extends BaseTicket
         $sth = $this->container->db->prepare($sql);
         $sth->execute();
         if ($sth->rowCount() == 0) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, 'Conflict', 'Could not update', 409)];
+            throw new ConflictException('Could not update');
         }
 
         $target = new GetTicket($this->container);

@@ -6,6 +6,7 @@ use Atlas\Query\Insert;
 use Slim\Http\Request;
 use Slim\Http\Response;
 use App\Controller\PermissionDeniedException;
+use App\Controller\InvalidParameterException;
 
 class PostStore extends BaseStore
 {
@@ -20,10 +21,7 @@ class PostStore extends BaseStore
 
         $body = $request->getParsedBody();
         if (!array_key_exists('Name', $body)) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, 'Required \'Name\' parameter not present', 'Missing Parameter', 400)
-            ];
+            throw new InvalidParameterException('Required \'Name\' parameter not present');
         }
 
         $body['StoreID'] = null;

@@ -8,6 +8,7 @@ use Slim\Http\Request;
 use Slim\Http\Response;
 use App\Controller\BaseController;
 use App\Controller\PermissionDeniedException;
+use App\Controller\InvalidParameterException;
 
 class PostProduct extends BaseProduct
 {
@@ -36,16 +37,10 @@ class PostProduct extends BaseProduct
             $required = ['Name', 'ProductSlug', 'Description', 'UnitPriceCents'];
             $diff = array_diff($required, array_keys($body));
             if (count($diff)) {
-                return [
-                BaseController::RESULT_TYPE,
-                $this->errorResponse($request, $response, "Missing required parameters: ".implode(', ', $diff), 'Bad parameters', 400)
-                ];
+                throw new InvalidParameterException("Missing required parameters: ".implode(', ', $diff));
             }
         } else {
-            return [
-            BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, 'No data provided', 'Bad parameters', 400)
-            ];
+            throw new InvalidParameterException('No data provided');
         }
 
         $body['StoreID'] = $store_id;
