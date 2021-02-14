@@ -13,40 +13,10 @@ abstract class DeadlinePermission extends BasePermission
 {
 
 
-    const ALL_METHODS = ['get', 'put', 'post', 'delete'];
-
-
     public function __construct(Container $container)
     {
-        parent::__construct($container);
+        parent::__construct($container, 'deadline', ['get', 'put', 'post', 'delete']);
         \ciab\RBAC::customizeRBAC(array($this, 'customizeDeadlineRBAC'));
-
-    }
-
-
-    public function processIncludes(Request $request, Response $response, $args, $values, &$data)
-    {
-        if (in_array('departmentId', $values)) {
-            $target = new \App\Controller\Department\GetDepartment($this->container);
-            $newargs = $args;
-            $newargs['name'] = $data['subdata']['departmentId'];
-            $newdata = $target->buildResource($request, $response, $newargs)[1];
-            if ($newdata['id'] != $data['id']) {
-                $target->processIncludes($request, $response, $args, $values, $newdata);
-                $data['subdata']['departmentId'] = $target->arrayResponse($request, $response, $newdata);
-            }
-        }
-
-    }
-
-
-    protected function buildDeptEntry($id, $allowed, $subtype, $method, $hateoas)
-    {
-        $entry = $this->buildBaseEntry($allowed, $subtype, $method, $hateoas);
-        $entry['subdata'] = [
-        'departmentId' => $id
-        ];
-        return $entry;
 
     }
 
