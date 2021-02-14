@@ -26,6 +26,18 @@ class PermissionDeniedException extends Exception
 
 }
 
+
+class InvalidParameterException extends Exception
+{
+
+}
+
+
+class ConflictException extends Exception
+{
+
+}
+
 abstract class BaseController
 {
 
@@ -98,6 +110,16 @@ abstract class BaseController
             $result = [
             BaseController::RESULT_TYPE,
             $this->errorResponse($request, $response, $e->getMessage(), 'Permission Denied', 403)
+            ];
+        } catch (InvalidParameterException $e) {
+            $result = [
+            BaseController::RESULT_TYPE,
+            $this->errorResponse($request, $response, $e->getMessage(), 'Invalid Parameter', 400)
+            ];
+        } catch (ConflictException $e) {
+            $result = [
+            BaseController::RESULT_TYPE,
+            $this->errorResponse($request, $response, $e->getMessage(), 'Conflict', 409)
             ];
         }
 

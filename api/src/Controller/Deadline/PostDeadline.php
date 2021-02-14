@@ -8,6 +8,7 @@ namespace App\Controller\Deadline;
 use Slim\Http\Request;
 use Slim\Http\Response;
 use App\Controller\NotFoundException;
+use App\Controller\InvalidParameterException;
 
 class PostDeadline extends BaseDeadline
 {
@@ -25,25 +26,17 @@ class PostDeadline extends BaseDeadline
 
         $body = $request->getParsedBody();
         if (!array_key_exists('Deadline', $body)) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, 'Required \'Deadline\' parameter not present', 'Missing Parameter', 400)];
+            throw new InvalidParameterException('Required \'Deadline\' parameter not present');
         }
         if (!array_key_exists('Note', $body)) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, 'Required \'Note\' parameter not present', 'Missing Parameter', 400)];
+            throw new InvalidParameterException('Required \'Note\' parameter not present');
         }
         $date = strtotime($body['Deadline']);
         if ($date == false) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, '\'Deadline\' parameter not valid \''.$body['Deadline'].'\'', 'Invalid Parameter', 400)];
+            throw new InvalidParameterException('\'Deadline\' parameter not valid \''.$body['Deadline'].'\'');
         }
         if ($date < strtotime('now')) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, '\'Deadline\' parameter in the past not valid \''.$body['Deadline'].'\'', 'Invalid Parameter', 400)];
+            throw new InvalidParameterException('\'Deadline\' parameter in the past not valid \''.$body['Deadline'].'\'');
         }
         $sql_date = date("Y-m-d", $date);
         $sth = $this->container->db->prepare("INSERT INTO `Deadlines` (DepartmentID, Deadline, Note) VALUES ({$department['id']}, '$sql_date', '{$body['Note']}')");

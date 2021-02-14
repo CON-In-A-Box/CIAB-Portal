@@ -8,6 +8,7 @@ namespace App\Controller\Deadline;
 use Slim\Http\Request;
 use Slim\Http\Response;
 use App\Controller\NotFoundException;
+use App\Controller\InvalidParameterException;
 
 class PutDeadline extends BaseDeadline
 {
@@ -41,14 +42,10 @@ class PutDeadline extends BaseDeadline
         if (array_key_exists('Deadline', $body)) {
             $date = strtotime($body['Deadline']);
             if ($date == false) {
-                return [
-                \App\Controller\BaseController::RESULT_TYPE,
-                $this->errorResponse($request, $response, '\'Deadline\' parameter not valid \''.$body['Deadline'].'\'', 'Invalid Parameter', 400)];
+                throw new InvalidParameterException('\'Deadline\' parameter not valid \''.$body['Deadline'].'\'');
             }
             if ($date < strtotime('now')) {
-                return [
-                \App\Controller\BaseController::RESULT_TYPE,
-                $this->errorResponse($request, $response, '\'Deadline\' parameter in the past not valid \''.$body['Deadline'].'\'', 'Invalid Parameter', 400)];
+                throw new InvalidParameterException('\'Deadline\' parameter in the past not valid \''.$body['Deadline'].'\'');
             }
             $target['Deadline'] = date("Y-m-d", $date);
         }
