@@ -109,7 +109,7 @@ abstract class BaseController
         if ($type == BaseController::LIST_TYPE) {
             $output = $result[2];
 
-            return $this->handleListType($request, $response, $output, $data);
+            return $this->handleListType($request, $response, $output, $data, $args);
         } elseif ($type == BaseController::RESULT_TYPE) {
             return $data;
         } else {
@@ -125,7 +125,7 @@ abstract class BaseController
     }
 
 
-    public function handleListType(Request $request, Response $response, array $output, array $data)
+    public function handleListType(Request $request, Response $response, array $output, array $data, array $args)
     {
         $includes = $request->getQueryParam('include', null);
         if ($includes) {
