@@ -63,7 +63,8 @@ class PostMember extends BaseMember
 
         return [
         \App\Controller\BaseController::RESOURCE_TYPE,
-        $result
+        $result,
+        201
         ];
 
     }

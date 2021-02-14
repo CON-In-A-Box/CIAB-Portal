@@ -111,7 +111,11 @@ SQL;
     {
         $data = $this->findMember($request, $response, $args, 'email');
         $this->resetPassword($response, $data);
-        return [null];
+        return [
+        \App\Controller\BaseController::RESOURCE_TYPE,
+        [null],
+        201
+        ];
 
     }
 
