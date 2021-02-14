@@ -20,7 +20,11 @@ class DeleteCycle extends BaseCycle
 
         $sth = $this->container->db->prepare("DELETE FROM `AnnualCycles` WHERE `AnnualCycleID` = ".$params['id'].";");
         $sth->execute();
-        return [null];
+        return [
+        \App\Controller\BaseController::RESOURCE_TYPE,
+        [null],
+        204
+        ];
 
     }
 
