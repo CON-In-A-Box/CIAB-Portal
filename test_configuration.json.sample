@@ -1,0 +1,7 @@
+{
+    "admin_email": "<admin account>",
+    "admin_password": "<adming account password>",
+    "server": "localhost:8080",
+    "base_email": "<unprivilaged account>",
+    "base_password": "<unprivilaged account password>"
+}

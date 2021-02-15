@@ -52,3 +52,9 @@ vendor
 #################
 .env
 .vscode
+
+# Testing #
+###########
+test_configuration.json
+.pytest.*
+__pycache__
