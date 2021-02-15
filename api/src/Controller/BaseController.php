@@ -130,24 +130,33 @@ abstract class BaseController
         $data = $result[1];
         if ($type == BaseController::LIST_TYPE) {
             $output = $result[2];
-
-            return $this->handleListType($request, $response, $output, $data, $args);
-        } elseif ($type == BaseController::RESULT_TYPE) {
-            return $data;
-        } else {
-            if (count($result) == 3) {
-                $code = $result[2];
+            if (count($result) == 4) {
+                $code = $result[3];
             } else {
                 $code = 200;
             }
 
+            return $this->handleListType($request, $response, $output, $data, $args, $code);
+        }
+        if (count($result) == 3) {
+            $code = $result[2];
+        } else {
+            $code = 200;
+        }
+        if ($type == BaseController::RESULT_TYPE) {
+            if (is_a($data, 'Slim\Http\Response')) {
+                return $data;
+            } else {
+                return $this->jsonResponse($request, $response, $data, $code);
+            }
+        } else {
             return $this->handleResourceType($request, $response, $data, $code);
         }
 
     }
 
 
-    public function handleListType(Request $request, Response $response, array $output, array $data, array $args)
+    public function handleListType(Request $request, Response $response, array $output, array $data, array $args, int $code = 200)
     {
         $includes = $request->getQueryParam('include', null);
         if ($includes) {
@@ -156,7 +165,7 @@ abstract class BaseController
                 $this->processIncludes($request, $response, $args, $values, $data[$i]);
             }
         }
-        return $this->listResponse($request, $response, $output, $data);
+        return $this->listResponse($request, $response, $output, $data, $code);
 
     }
 
