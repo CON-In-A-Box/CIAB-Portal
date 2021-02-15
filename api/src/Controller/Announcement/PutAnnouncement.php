@@ -8,6 +8,7 @@ namespace App\Controller\Announcement;
 use Slim\Http\Request;
 use Slim\Http\Response;
 use App\Controller\NotFoundException;
+use App\Controller\InvalidParameterException;
 
 class PutAnnouncement extends BaseAnnouncement
 {
@@ -27,10 +28,14 @@ class PutAnnouncement extends BaseAnnouncement
 
         $body = $request->getParsedBody();
 
+        if (empty($body)) {
+            throw new InvalidParameterException('No update parameter present');
+        }
+
         if (array_key_exists('Department', $body)) {
             $department = $this->getDepartment($body['Department']);
             if ($department === null) {
-                throw new NotFoundException("Department '${body['Department']}' Not Found");
+                throw new InvalidParameterException("Department '${body['Department']}' Not Found");
             }
             $changes[] = "`DepartmentID` = '{$department['id']}' ";
         }
