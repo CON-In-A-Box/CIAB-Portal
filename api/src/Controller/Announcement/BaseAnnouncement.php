@@ -9,6 +9,7 @@ use Slim\Container;
 use Slim\Http\Request;
 use Slim\Http\Response;
 use App\Controller\BaseController;
+use App\Controller\NotFoundException;
 
 abstract class BaseAnnouncement extends BaseController
 {
