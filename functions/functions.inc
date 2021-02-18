@@ -2,6 +2,7 @@
 
 /*.
     require_module 'standard';
+    require_module 'array';
 .*/
 
 require_once(__DIR__."/../backends/email.inc");
@@ -526,5 +527,41 @@ function get_modules()
         }
     }
     return $modules;
+
+}
+
+
+function scan_page_dir($target)
+{
+    global $PAGESDIR;
+    $pagelist = @scandir($PAGESDIR.'/'.$target);
+    $result = [];
+    foreach ($pagelist as $path) {
+        if ($path[0] == '.') {
+            continue;
+        }
+        $result[] = explode('.', $path)[0];
+    }
+    return $result;
+
+}
+
+
+function core_pages()
+{
+    global $MODULESDIR;
+    $valid = ['main'];
+    $valid = array_unique(array_merge($valid, scan_page_dir('pre')), SORT_STRING);
+    $valid = array_unique(array_merge($valid, scan_page_dir('head')), SORT_STRING);
+    $valid = array_unique(array_merge($valid, scan_page_dir('body')), SORT_STRING);
+
+    $result = [];
+    foreach (glob($MODULESDIR.'/*', GLOB_ONLYDIR) as $path) {
+        $result[] = basename($path);
+    }
+
+    $valid = array_unique(array_merge($valid, $result), SORT_STRING);
+
+    return $valid;
 
 }
