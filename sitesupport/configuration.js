@@ -115,7 +115,7 @@ var configHeader = function(options) {
 }
 
 
-var settingsTable = function(options) {
+export var settingsTable = function(options) {
   'use strict';
 
   return {

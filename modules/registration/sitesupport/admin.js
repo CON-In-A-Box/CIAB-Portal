@@ -3,8 +3,11 @@
  */
 
 /* jshint browser: true */
+/* jshint esversion: 9 */
 /* jshint -W097 */
 /* globals apiRequest, settingsTable */
+
+import { settingsTable } from 'configuration.js';
 
 var registrationAdminPage = (function(options) {
   'use strict';

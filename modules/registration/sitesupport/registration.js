@@ -3,6 +3,7 @@
  */
 
 /* jshint browser: true */
+/* jshint esversion: 9 */
 /* jshint -W097 */
 /* global confirmbox, showSidebar, basicBackendRequest, showSpinner,
           hideSpinner, apiRequest */
@@ -15,7 +16,7 @@
 var sidebarMainDiv = 'main_content';
 
 function basicRegistrationRequest(parameter, finish) {
-  basicBackendRequest('POST', 'registration', parameter, finish);
+  basicBackendRequest('GET', 'registration', parameter, finish);
 }
 
 function refreshBadgeData(badge) {

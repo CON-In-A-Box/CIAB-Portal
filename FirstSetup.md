@@ -3,6 +3,7 @@
 1. Make sure you have this on your box with a web server and you have a database server setup. Ideally this project should be at the document root for the web server. You of course need PHP enabled on your web server.
     1. Note: the apache server needs the headers and php7 modules
     1. Note: php needs the libcurl integration (php7-curl)
+    1. If you're not running out of Docker, you will need to configure Apache to proxy to Webpack. Really, but really? Use Docker. See [the Docker readme](Docker.md)
 
 1. On your MySQL server make a user, such as `con_concomsi-dev`, and a database, such as `con_concomsi`. Give the user full access to the database.  If you want to take a shortcut there is a script `tools/create_database.sh` that take your database root password and sets up a base database and generates a base .env file.
 

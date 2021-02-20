@@ -22,6 +22,16 @@ services:
     command: install
     volumes:
       - .:/app
+  webpack:
+    build:
+      context: .
+      dockerfile: ./docker/webpack/Dockerfile
+    networks:
+      - backend
+    ports:
+      - "8081:8081"
+    volumes:
+      - .:/home/node/app
   apache:
     build: './docker/apache/'
     depends_on:

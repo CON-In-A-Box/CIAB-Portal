@@ -3,13 +3,14 @@
  */
 
 /* jshint browser: true */
+/* jshint esversion: 9 */
 /* jshint -W097 */
 /* globals apiRequest, showSpinner, hideSpinner, confirmbox, showSidebar */
 
+'use strict';
+
 import { RegConfiguration } from './modules/configuration.js';
 import { RegTicket } from './modules/ticket.js';
-
-'use strict';
 
 class ManageTicket extends RegTicket {
   constructor(data) {
@@ -199,7 +200,7 @@ class ManagePage {
       }
     });
     if (active) {
-      document.getElementById('checkinbutton').classList.remove('UI-disabled')
+      document.getElementById('checkinbutton').classList.remove('UI-disabled');
     } else {
       document.getElementById('checkinbutton').classList.add('UI-disabled');
     }

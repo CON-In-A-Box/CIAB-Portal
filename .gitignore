@@ -52,3 +52,4 @@ vendor
 #################
 .env
 .vscode
+node_modules

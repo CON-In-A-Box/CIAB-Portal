@@ -21,7 +21,8 @@ if (!function_exists('get_console') || get_console() === null) {
             }
             if (is_dir($MODULESDIR.DIRECTORY_SEPARATOR.$value) &&
                 is_file($MODULESDIR.DIRECTORY_SEPARATOR.$value.DIRECTORY_SEPARATOR.'import.js')) {
-                echo "<script src=\"$base/$value/import.js\"></script>\n";
+                # New magic: Add entries in webpack.common.js
+                echo "<script type=\"module\" src=\"js/$base/$value.js\"></script>\n";
             }
         }
     }
