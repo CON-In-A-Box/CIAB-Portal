@@ -1,5 +1,6 @@
 /* jshint esversion: 9 */
 
+/* globals module, require, __dirname */
 const path = require('path');
 const glob = require('glob');
 
@@ -11,11 +12,11 @@ var registrationEntries = {
   'registration': {
     import: './modules/registration/import.js',
     filename: 'modules/registration.js'
-  },  
- };
+  },
+};
 
-mods = glob.sync('./modules/registration/sitesupport/*js');
- 
+const mods = glob.sync('./modules/registration/sitesupport/*js');
+
 mods.forEach((mod) => {
   const basename = path.basename(mod, '.js');
   // the actual registration.js file is currently not a module
@@ -28,16 +29,17 @@ mods.forEach((mod) => {
 });
 
 module.exports = {
-entry: registrationEntries,
-    /*
-    These are out of the spike and are kept as reminders/future examples and will go away as we implment things more.
-    announcements: './modules/announcements/sitesupport/announcements.js',
-    common: './sitesupport/common.js', // We should get rid of this as soon as everything is a module
-    deadlines: './modules/deadlines/sitesupport/deadlines.js',
-    main: './sitesupport/main.js',
-    password: './sitesupport/password.js',
-    stores: './modules/store/admin/sitesupport/stores.js'
-    */
+  entry: registrationEntries,
+  /*
+  These are out of the spike and are kept as reminders/future examples
+  and will go away as we implment things more.
+  announcements: './modules/announcements/sitesupport/announcements.js',
+  common: './sitesupport/common.js',
+  deadlines: './modules/deadlines/sitesupport/deadlines.js',
+  main: './sitesupport/main.js',
+  password: './sitesupport/password.js',
+  stores: './modules/store/admin/sitesupport/stores.js'
+  */
   module: {
     rules: [
       {
@@ -47,14 +49,14 @@ entry: registrationEntries,
           loader: 'babel-loader',
           options: {
             presets: [
-              ['@babel/preset-env', { targets: "defaults" }]
+              ['@babel/preset-env', { targets: 'defaults' }]
             ]
           }
         }
       },
       {
         test: /\.vue$/,
-        loader: "vue-loader",
+        loader: 'vue-loader',
       },
     ]
   },
@@ -67,9 +69,11 @@ entry: registrationEntries,
   ],
   resolve: {
     extensions: ['*', '.js', '.vue', '.json'],
-    modules: ['./sitesupport',
-              './modules/sitesupport',              
-              'node_modules'],
+    modules: [
+      './sitesupport',
+      './modules/sitesupport',
+      'node_modules'
+    ],
     alias: {
       'vue$': 'vue/dist/vue.esm.js'
     }
