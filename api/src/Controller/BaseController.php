@@ -73,7 +73,9 @@ abstract class BaseController
         $this->hateoas = [];
         $this->chain = [];
 
-        \loadDefinedFields();
+        if (array_key_exists('Neon', $GLOBALS)) {
+            \loadDefinedFields();
+        }
 
         $modules = $container->get('settings')['modules'];
         foreach ($modules as $module) {
