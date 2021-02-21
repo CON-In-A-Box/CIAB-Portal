@@ -52,3 +52,8 @@ vendor
 #################
 .env
 .vscode
+
+# PHPUnit #
+###########
+build/coverage/*
+.phpunit.result.cache
