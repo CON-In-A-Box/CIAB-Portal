@@ -124,6 +124,9 @@ SQL;
         $this->checkPermissions($permissions);
 
         $body = $request->getParsedBody();
+        if ($body == null) {
+            throw new InvalidParameterException('Required parameters not present');
+        }
         if (!array_key_exists('Scope', $body)) {
             throw new InvalidParameterException('Required \'Scope\' parameter not present');
         }

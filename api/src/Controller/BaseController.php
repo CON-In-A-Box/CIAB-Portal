@@ -150,7 +150,7 @@ abstract class BaseController
                 return $this->jsonResponse($request, $response, $data, $code);
             }
         } else {
-            return $this->handleResourceType($request, $response, $data, $code);
+            return $this->handleResourceType($request, $response, $data, $args, $code);
         }
 
     }
@@ -170,7 +170,7 @@ abstract class BaseController
     }
 
 
-    public function handleResourceType(Request $request, Response $response, $data, $code = 200)
+    public function handleResourceType(Request $request, Response $response, $data, array $args, $code = 200)
     {
         $includes = $request->getQueryParam('include', null);
         if ($includes) {

@@ -112,7 +112,7 @@ abstract class BaseAnnouncement extends BaseController
         if (in_array('postedBy', $values)) {
             $target = new \App\Controller\Member\GetMember($this->container);
             $newargs = $args;
-            $newargs['name'] = $data['postedBy'];
+            $newargs['id'] = $data['postedBy'];
             $newdata = $target->buildResource($request, $response, $newargs)[1];
             $target->processIncludes($request, $response, $args, $values, $newdata);
             $data['postedBy'] = $target->arrayResponse($request, $response, $newdata);
