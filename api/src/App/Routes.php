@@ -34,7 +34,7 @@ function setupAPIRoutes(App $app, $authMiddleware)
     $app->group(
         '/department',
         function () use ($app, $authMiddleware) {
-            $app->get('/', 'App\Controller\Department\ListDepartments');
+            $app->get('[/]', 'App\Controller\Department\ListDepartments');
             $app->get('/{name}', 'App\Controller\Department\GetDepartment');
             $app->get('/{name}/deadlines', 'App\Controller\Department\ListDeadlines');
             $app->get('/{name}/announcements', 'App\Controller\Announcement\ListDepartmentAnnouncements');
