@@ -8,6 +8,8 @@ namespace App\Controller\System;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
+use App\Controller\InvalidParameterException;
+
 class PutConfiguration extends BaseSystem
 {
 
@@ -19,7 +21,18 @@ class PutConfiguration extends BaseSystem
         $permissions = ['api.put.configuration'];
         $this->checkPermissions($permissions);
         $body = $request->getParsedBody();
-        return $this->putConfiguration($request, $response, $args, 'Configuration', $body);
+        if (empty($body)) {
+            throw new InvalidParameterException('No update parameter present');
+        }
+        $this->putConfiguration($request, $response, $args, 'Configuration', $body);
+
+        $target = new GetConfiguration($this->container);
+        $args['key'] = $body['Field'];
+        $data = $target->buildResource($request, $response, $args)[1];
+        return [
+        \App\Controller\BaseController::RESOURCE_TYPE,
+        $target->arrayResponse($request, $response, $data)
+        ];
 
     }
 

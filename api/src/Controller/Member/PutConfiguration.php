@@ -29,7 +29,15 @@ class PutConfiguration extends BaseMember
 
         $body = $request->getParsedBody();
         $body['AccountID'] = $accountID;
-        return $this->putConfiguration($request, $response, $args, 'AccountConfiguration', $body);
+        $this->putConfiguration($request, $response, $args, 'AccountConfiguration', $body);
+
+        $target = new GetConfiguration($this->container);
+        $args['key'] = $body['Field'];
+        $data = $target->buildResource($request, $response, $args)[1];
+        return [
+        \App\Controller\BaseController::RESOURCE_TYPE,
+        $target->arrayResponse($request, $response, $data)
+        ];
 
     }
 

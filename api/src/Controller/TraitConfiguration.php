@@ -8,15 +8,35 @@ namespace App\Controller;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
+use App\Controller\InvalidParameterException;
 use App\Controller\NotFoundException;
+use App\Controller\ConflictException;
 
 trait TraitConfiguration
 {
 
 
+    private function checkConfigValue($table, $field): bool
+    {
+        $sql = <<<SQL
+SELECT
+    (SELECT COUNT(*) FROM `$table` WHERE `Field` = '$field') AS f1,
+    (SELECT COUNT(*) FROM `ConfigurationField` WHERE `TargetTable` = '$table' AND `Field` = '$field') AS f2
+SQL;
+        $sth = $this->container->db->prepare($sql);
+        $sth->execute();
+        $data = $sth->fetch();
+        return intval($data['f1']) || intval($data['f2']);
+
+    }
+
+
     private function getConfiguration($args, $table, $extendCondition = '', $extendSQL = ''): array
     {
         if (array_key_exists('key', $args)) {
+            if (!$this->checkConfigValue($table, $args['key'])) {
+                throw new NotFoundException("Field '${args['key']}' not present in '$table'");
+            }
             $target = "AND cf.Field = '{$args['key']}'";
         } else {
             $target = '';
@@ -27,7 +47,7 @@ trait TraitConfiguration
                 (
                     CASE WHEN a.Value IS NULL THEN cf.InitialValue ELSE a.Value
                     END
-                ) AS Value
+                ) AS `Value`
             FROM
                 `ConfigurationField` cf
             LEFT JOIN `$table` a ON
@@ -36,7 +56,7 @@ trait TraitConfiguration
                 cf.TargetTable = '$table'
                 $target
             $extendSQL
-            ORDER BY Field;
+            ORDER BY `Field`;
 SQL;
         $sth = $this->container->db->prepare($sql);
         $sth->execute();
@@ -102,7 +122,7 @@ SQL;
         $sth = $this->container->db->prepare($sql);
         $sth->execute();
         $data = $sth->fetchAll();
-        if ($data === false) {
+        if ($data === false || empty($data)) {
             return $value;
         }
         switch ($data[0]['Type']) {
@@ -119,13 +139,15 @@ SQL;
     }
 
 
-    private function putConfiguration(Request $request, Response $response, $args, $table, $data): array
+    private function putConfiguration(Request $request, Response $response, $args, $table, $data)
     {
-        if (!array_key_exists('Value', $data) || !array_key_exists('Field', $data)) {
-            throw new NotFoundException('Value Not Found');
+        if (!array_key_exists('Value', $data)) {
+            throw new InvalidParameterException('No \'Value\' parameter present');
+        }
+        if (!array_key_exists('Field', $data)) {
+            throw new InvalidParameterException('No \'Field\' parameter present');
         }
 
-        $field = $data['Field'];
         $data['Value'] = $this->verifyValue($data['Value'], $data['Field']);
 
         $columns = implode(',', array_keys($data));
@@ -139,16 +161,11 @@ SQL;
                 Value = '$value';
 SQL;
         $sth = $this->container->db->prepare($sql);
-        $sth->execute();
-
-        $target = new \App\Controller\Member\GetConfiguration($this->container);
-
-        $args['key'] = $data['Field'];
-        $data = $target->buildResource($request, $response, $args)[1];
-        return [
-        \App\Controller\BaseController::RESOURCE_TYPE,
-        $target->arrayResponse($request, $response, $data)
-        ];
+        try {
+            $sth->execute();
+        } catch (\Exception $e) {
+            throw new ConflictException('Failed to update configuration.');
+        }
 
     }
 
