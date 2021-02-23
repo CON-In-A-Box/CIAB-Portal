@@ -20,14 +20,25 @@ class PostCycle extends BaseCycle
         $this->checkPermissions($permissions);
 
         $body = $request->getParsedBody();
+        if (empty($body)) {
+            throw new InvalidParameterException('Required body not present');
+        }
         if (!array_key_exists('From', $body)) {
             throw new InvalidParameterException('Required \'From\' parameter not present');
         }
         if (!array_key_exists('To', $body)) {
             throw new InvalidParameterException('Required \'To\' parameter not present');
         }
-        $from = date_format(new \DateTime($body['From']), 'Y-m-d');
-        $to = date_format(new \DateTime($body['To']), 'Y-m-d');
+        try {
+            $from = date_format(new \DateTime($body['From']), 'Y-m-d');
+        } catch (\Exception $e) {
+            throw new InvalidParameterException('Required \'From\' parameter not valid');
+        }
+        try {
+            $to = date_format(new \DateTime($body['To']), 'Y-m-d');
+        } catch (\Exception $e) {
+            throw new InvalidParameterException('Required \'To\' parameter not valid');
+        }
         $sql = "INSERT INTO `AnnualCycles` (`AnnualCycleID`, `DateFrom`, `DateTo`) VALUES (NULL, '$from', '$to')";
         $sth = $this->container->db->prepare($sql);
         $sth->execute();

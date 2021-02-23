@@ -7,6 +7,7 @@ namespace App\Controller\Cycle;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
+use App\Controller\InvalidParameterException;
 
 class PutCycle extends BaseCycle
 {
@@ -21,6 +22,9 @@ class PutCycle extends BaseCycle
         $sql = "UPDATE `AnnualCycles` SET ";
 
         $body = $request->getParsedBody();
+        if (empty($body)) {
+            throw new InvalidParameterException('Required body not present');
+        }
         $changes = array();
 
         if (array_key_exists('From', $body)) {
