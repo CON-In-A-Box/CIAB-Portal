@@ -8,6 +8,8 @@ namespace App\Controller\Cycle;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
+use App\Controller\InvalidParameterException;
+
 class ListCycles extends BaseCycle
 {
 
@@ -19,11 +21,16 @@ class ListCycles extends BaseCycle
 
         if ($begin !== null) {
             $begin = strtotime($begin);
+            if (!$begin) {
+                throw new InvalidParameterException('\'begin\' parameter not valid');
+            }
         }
         if ($end !== null) {
             $end = strtotime($end);
+            if (!$end) {
+                throw new InvalidParameterException('\'end\' parameter not valid');
+            }
         }
-
 
         $sql = "SELECT * FROM `AnnualCycles`";
         if ($begin !== null) {
