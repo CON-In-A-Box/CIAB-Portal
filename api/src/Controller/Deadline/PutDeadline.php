@@ -30,6 +30,9 @@ class PutDeadline extends BaseDeadline
         $this->checkPermissions($permissions);
 
         $body = $request->getParsedBody();
+        if (!$body) {
+            throw new InvalidParameterException("Body required");
+        }
 
         if (array_key_exists('Department', $body)) {
             $department = $this->getDepartment($body['Department']);

@@ -25,6 +25,9 @@ class PostDeadline extends BaseDeadline
         $this->checkPermissions($permissions);
 
         $body = $request->getParsedBody();
+        if (!$body) {
+            throw new InvalidParameterException("Body required");
+        }
         if (!array_key_exists('Deadline', $body)) {
             throw new InvalidParameterException('Required \'Deadline\' parameter not present');
         }
