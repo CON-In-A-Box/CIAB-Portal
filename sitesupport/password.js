@@ -100,7 +100,9 @@ function loginUser(userEntry, passwordEntry)
         auth.token_type + ' ' + auth.access_token);
       myxhttp.send();
     })
-    .catch(function() {
+    .catch(function(response) {
+      if (response instanceof Error) { throw response; }
+      localStorage.clear();
       apiRequest('GET', 'member/' + username + '/status' , null)
         .then(function(result) {
           var failure = JSON.parse(result.responseText);

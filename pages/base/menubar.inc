@@ -12,6 +12,12 @@ require_once($BACKEND.'/RBAC.inc');
       x.className = x.className.replace(" UI-show", "");
     }
   }
+
+  function logoutUser()
+  {
+    localStorage.clear();
+    window.location = 'index.php?Function=public&signout=1';
+  }
 </script>
 <div class="UI-main-bar-div">
   <div id="main_nav" class="UI-main-bar">
@@ -125,7 +131,7 @@ if ($console === null) {
       <em class="fas fa-bars"></em>
     </a>
     <a class="UI-main-logout-bar-item"
-      href="index.php?Function=public&signout=1" title="Log out and Restart">
+      onclick="logoutUser();" title="Log out and Restart">
       <em class="fas fa-sign-out-alt"></em>
       Log Out
     </a>
