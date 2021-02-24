@@ -250,24 +250,25 @@ SQL;
 
     public function loadModules()
     {
-        global $MODULESDIR;
-
         if ($this->loaded) {
             return;
         }
-        try {
-            $modules = scandir($MODULESDIR);
-            foreach ($modules as $key => $value) {
-                if (!in_array($value, array(".", ".."))) {
-                    if (is_dir($MODULESDIR.DIRECTORY_SEPARATOR.$value)) {
-                        if (is_file($MODULESDIR.DIRECTORY_SEPARATOR.$value.DIRECTORY_SEPARATOR.'database-schema.inc')) {
-                            require_once($MODULESDIR.DIRECTORY_SEPARATOR.$value.DIRECTORY_SEPARATOR.'database-schema.inc');
+        if (array_key_exists('MODULESDIR', $GLOBALS) &&
+            !empty($GLOBALS['MODULESDIR'])) {
+            try {
+                $modules = scandir($GLOBALS['MODULESDIR']);
+                foreach ($modules as $key => $value) {
+                    if (!in_array($value, array(".", ".."))) {
+                        if (is_dir($GLOBALS['MODULESDIR'].DIRECTORY_SEPARATOR.$value)) {
+                            if (is_file($GLOBALS['MODULESDIR'].DIRECTORY_SEPARATOR.$value.DIRECTORY_SEPARATOR.'database-schema.inc')) {
+                                require_once($GLOBALS['MODULESDIR'].DIRECTORY_SEPARATOR.$value.DIRECTORY_SEPARATOR.'database-schema.inc');
+                            }
                         }
                     }
                 }
+            } catch (RuntimeException $e) {
+                error_log("ERROR!!! Database Schema import failed: ".$e);
             }
-        } catch (RuntimeException $e) {
-            error_log("ERROR!!! Database Schema import failed: ".$e);
         }
 
         $this->schema['tables'] = array_merge($this->schema['tables'], self::$MODULE_TABLES);
