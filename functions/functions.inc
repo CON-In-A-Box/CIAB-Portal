@@ -152,7 +152,10 @@ SQL;
 
     if (array_key_exists('CONHOST', $GLOBALS) &&
         !array_key_exists('CONSITENAME', $GLOBALS)) {
-        $GLOBALS['CONSITENAME'] = $GLOBALS['CONHOST']." ".$GLOBALS['MODULENAME'];
+        $GLOBALS['CONSITENAME'] = $GLOBALS['CONHOST'];
+        if (array_key_exists('MODULENAME', $GLOBALS)) {
+            $GLOBALS['CONSITENAME'] .= " ".$GLOBALS['MODULENAME'];
+        }
     }
 
 }
@@ -181,7 +184,8 @@ try {
     $modules = scandir($MODULESDIR);
     foreach ($modules as $key => $value) {
         if (!in_array($value, array(".", ".."))) {
-            if (in_array($value, $DISABLEDMODULES)) {
+            if (array_key_exists('DISABLEDMODULES', $GLOBALS) &&
+                in_array($value, $GLOBALS['DISABLEDMODULES'])) {
                 continue;
             }
             if (is_dir($MODULESDIR.DIRECTORY_SEPARATOR.$value)) {
