@@ -28,5 +28,5 @@ $DB_primaryKeys = [
 
 ];
 
-$MODULE_TABLES = array_merge($MODULE_TABLES, $DB_tables);
-$MODULE_PRIMARYKEYS = array_merge($MODULE_PRIMARYKEYS, $DB_primaryKeys);
+\DB::addTables($DB_tables);
+\DB::addPrimaryKeys($DB_primaryKeys);

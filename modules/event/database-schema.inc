@@ -84,5 +84,5 @@ $event_DB_foreignKeys = [
 
 ];
 
-$MODULE_TABLES = array_merge($MODULE_TABLES, $event_DB_tables);
-$MODULE_FOREIGNKEYS = array_merge($MODULE_FOREIGNKEYS, $event_DB_foreignKeys);
+\DB::addTables($event_DB_tables);
+\DB::addForeignKeys($event_DB_foreignKeys);

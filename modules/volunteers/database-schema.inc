@@ -54,5 +54,5 @@ $vol_DB_foreignKeys = [
 
 ];
 
-$MODULE_TABLES = array_merge($MODULE_TABLES, $vol_DB_tables);
-$MODULE_FOREIGNKEYS = array_merge($MODULE_FOREIGNKEYS, $vol_DB_foreignKeys);
+\DB::addTables($vol_DB_tables);
+\DB::addForeignKeys($vol_DB_foreignKeys);
