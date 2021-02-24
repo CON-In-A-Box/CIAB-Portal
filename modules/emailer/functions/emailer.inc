@@ -436,7 +436,7 @@ SQL;
         $result = \DB::run($sql);
         $value = $result->fetch();
         if ($value === false) {
-            $sql = "SELECT `COLUMN_NAME` FROM `INFORMATION_SCHEMA`.`COLUMNS` WHERE `TABLE_SCHEMA`='".$GLOBALS['DBNAME']."' AND `TABLE_NAME`='EmailListAccess';";
+            $sql = "SELECT `COLUMN_NAME` FROM `INFORMATION_SCHEMA`.`COLUMNS` WHERE `TABLE_SCHEMA`='".$_ENV['DBNAME']."' AND `TABLE_NAME`='EmailListAccess';";
             $result = \DB::run($sql);
             $data = ['Department' => null,
             'Position' => null];

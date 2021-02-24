@@ -44,6 +44,6 @@ $concom_DB_index = [
     ]
 ];
 
-$MODULE_TABLES = array_merge($MODULE_TABLES, $concom_DB_tables);
-$MODULE_FOREIGNKEYS = array_merge($MODULE_FOREIGNKEYS, $concom_DB_foreignKeys);
-$MODULE_INDEX = array_merge($MODULE_INDEX, $concom_DB_index);
+\DB::addTables($concom_DB_tables);
+\DB::addForeignKeys($concom_DB_foreignKeys);
+\DB::addIndexes($concom_DB_index);
