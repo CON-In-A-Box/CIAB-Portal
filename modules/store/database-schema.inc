@@ -61,6 +61,6 @@ $DB_foreignKeys = [
     ]
 ];
 
-$MODULE_TABLES = array_merge($MODULE_TABLES, $DB_tables);
-$MODULE_FOREIGNKEYS = array_merge($MODULE_FOREIGNKEYS, $DB_foreignKeys);
-$MODULE_INDEX = array_merge($MODULE_INDEX, $DB_index);
+\DB::addTables($DB_tables);
+\DB::addForeignKeys($DB_foreignKeys);
+\DB::addIndexes($DB_index);

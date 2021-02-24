@@ -15,4 +15,4 @@ $DB_tables = [
 
 ];
 
-$MODULE_TABLES = array_merge($MODULE_TABLES, $DB_tables);
+\DB::addTables($DB_tables);

@@ -23,5 +23,5 @@ $DB_foreignKeys = [
 
 ];
 
-$MODULE_TABLES = array_merge($MODULE_TABLES, $DB_tables);
-$MODULE_FOREIGNKEYS = array_merge($MODULE_FOREIGNKEYS, $DB_foreignKeys);
+\DB::addTables($DB_tables);
+\DB::addForeignKeys($DB_foreignKeys);
