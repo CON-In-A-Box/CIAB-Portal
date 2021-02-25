@@ -31,7 +31,7 @@ class PostMember extends BaseMember
         if (array_key_exists('legalFirstName', $body)) {
             $body['firstName'] = $body['legalFirstName'];
         }
-        if (array_key_exists('legalFirstLast', $body)) {
+        if (array_key_exists('legalLastLast', $body)) {
             $body['lastName'] = $body['legalLastName'];
         }
         if (!array_key_exists('firstName', $body) &&

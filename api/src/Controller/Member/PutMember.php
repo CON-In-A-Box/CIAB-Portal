@@ -9,6 +9,8 @@ use Slim\Http\Request;
 use Slim\Http\Response;
 
 use App\Controller\PermissionDeniedException;
+use App\Controller\NotFoundException;
+use App\Controller\InvalidParameterException;
 
 class PutMember extends BaseMember
 {
@@ -19,8 +21,11 @@ class PutMember extends BaseMember
     protected static function checkBoolParam(&$body, $param)
     {
         if (array_key_exists($param, $body)) {
-            $value = (int) filter_var($body[$param], FILTER_VALIDATE_BOOLEAN);
-            $body[$param] = $value;
+            $value = filter_var($body[$param], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+            if ($value === null) {
+                throw new InvalidParameterException("'$param' parameter not valid boolean.");
+            }
+            $body[$param] = (int) $value;
         }
 
     }
@@ -29,7 +34,11 @@ class PutMember extends BaseMember
     protected static function checkDateParam(&$body, $param)
     {
         if (array_key_exists($param, $body)) {
-            $value = date("Y-m-d", strtotime($body[$param]));
+            $date = strtotime($body[$param]);
+            if (!$date) {
+                throw new InvalidParameterException("'$param' parameter not valid date.");
+            }
+            $value = date("Y-m-d", $date);
             $body[$param] = "$value";
         }
 
@@ -50,13 +59,17 @@ class PutMember extends BaseMember
         }
 
         $body = $request->getParsedBody();
+        if (empty($body)) {
+            throw new NotFoundException('No update parameter present');
+        }
+
         if (array_key_exists('email', $body)) {
             $body['email1'] = $body['email'];
         }
         if (array_key_exists('legalFirstName', $body)) {
             $body['firstName'] = $body['legalFirstName'];
         }
-        if (array_key_exists('email', $body)) {
+        if (array_key_exists('legalLastName', $body)) {
             $body['lastName'] = $body['legalLastName'];
         }
         PutMember::checkBoolParam($body, 'Deceased');
