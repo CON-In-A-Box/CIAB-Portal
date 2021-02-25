@@ -23,7 +23,7 @@ class DeadlineTest extends CiabTestCase
         $when = date('Y-m-d', strtotime('+1 month'));
         $this->runRequest(
             'POST',
-            '/deadline/1',
+            '/department/1/deadline',
             null,
             ['Deadline' => $when,
              'Note' => 'testing'],
@@ -138,12 +138,12 @@ class DeadlineTest extends CiabTestCase
             400
         );
 
-        $this->runRequest('POST', '/deadline/1', null, null, 400);
+        $this->runRequest('POST', '/department/1/deadline', null, null, 400);
 
         $when = date('Y-m-d', strtotime('+1 year'));
         $this->runRequest(
             'POST',
-            '/deadline/-1',
+            '/department/-1/deadline',
             null,
             ['Deadline' => $when, 'Note' => 'testing'],
             404
@@ -151,7 +151,7 @@ class DeadlineTest extends CiabTestCase
 
         $this->runRequest(
             'POST',
-            '/deadline/1',
+            '/department/1/deadline',
             null,
             ['Note' => 'testing'],
             400
@@ -159,7 +159,7 @@ class DeadlineTest extends CiabTestCase
 
         $this->runRequest(
             'POST',
-            '/deadline/1',
+            '/department/1/deadline',
             null,
             ['Deadline' => "$when"],
             400
@@ -167,7 +167,7 @@ class DeadlineTest extends CiabTestCase
 
         $this->runRequest(
             'POST',
-            '/deadline/1',
+            '/department/1/deadline',
             null,
             ['Deadline' => "not-a-date", 'Note' => 'testing'],
             400
@@ -176,7 +176,7 @@ class DeadlineTest extends CiabTestCase
         $when = date('Y-m-d', strtotime('-1 day'));
         $this->runRequest(
             'POST',
-            '/deadline/1',
+            '/department/1/deadline',
             null,
             ['Deadline' => "$when", 'Note' => 'testing'],
             400

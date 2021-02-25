@@ -85,11 +85,12 @@ var deadlinePage = (function(options) {
         function() {
           showSpinner();
           var method = 'PUT';
+          var path = 'deadline/' + id;
           if (id == -1) {
             method = 'POST';
-            id = dept;
+            path = 'department/' + dept + '/deadline';
           }
-          apiRequest(method, 'deadline/' + id,
+          apiRequest(method, path,
             'Deadline=' + date + '&Note=' + encodeURI(note) + '&Department=' +
             dept)
             .then(function() {

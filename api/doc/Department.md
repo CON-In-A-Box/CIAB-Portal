@@ -10,7 +10,9 @@ The following methods are available to Department resources:
 |[list](Department.md#list)|GET /department/|Get a list of departments at the convention.|core|--|
 |[get](Department.md#get)|GET /department/{identifier}|Get details about a given Department.|core|--|
 |[deadlines](Department.md#deadlines)|GET /department/{identifier}/deadlines|Get a list of deadlines for a given Department.|core|api.get.deadline.{department}|
+|[add_deadline](Department.md#add_deadline)|POST /department/{identifier}/deadline|Add a new deadline.|core|api.post.deadline.{department}|
 |[announcements](Department.md#announcements)|GET /department/{identifier}/announcments|Get a list of announcements for a given Department.|core|-|
+|[add_announcement](Department.md#add_announcement)|POST /department/{identifier}/announcement|Add a new announcement.|core|api.post.announcement.{department}|
 |[concom](Concom.md#department)|GET /department/{identifier}/concom|Get a list of the ConCom for the department.|[concom](Concom.md)|api.get.concom|
 |[concom list](Concom.md#list)|GET /department/concom/|Get a list of the whole ConCom.|[concom](Concom.md)|api.get.concom|
 
@@ -261,6 +263,44 @@ Response Sample
     ]
 }
 ```
+<a name="add_deadline"></a>
+## add_deadline
+Add a new deadline.
+
+### add_deadline Request
+
+```POST /department/{identifier}/deadline?Deadline={date}&Note={note}```
+
+### add_deadline Parameters
+The following parameters are available:
+
+|Parameter|Meaning|Notes|
+|---|---|---|
+|identifier|Department for which data is being retrieved.|`integer` id or `string` name|
+|date|Date of the deadline.|*required*|
+|note|Note specifying the deadline.|*required*|
+
+
+### add_deadline Request Body
+Do not supply a request body.
+
+### add_deadline Response
+
+Does not return a response.
+
+### add_deadline Code Samples
+Request Sample
+
+```
+curl -X POST -H 'Authorization: Bearer e0438d90599b1c4762d12fd03db6311c9ca46729' http://localhost/api/department/Art%20Show/deadline?Deadline=2019-12-27&Note=Testing
+```
+Response Sample
+
+```
+[]
+```
+
+
 <a name="announcements"></a>
 ## announcements
 Get a list of announcements for a department.
@@ -322,6 +362,46 @@ Response Sample
     ]
 }
 ```
+
+<a name="add_announcement"></a>
+## add_announcement
+Add a new announcement.
+
+### add_announcement Request
+
+```POST /department/{identifier}/announcement?Scope={integer}&Text={text}[&Email={bool}]```
+
+### add_announcement Parameters
+The following parameters are available:
+
+|Parameter|Meaning|Notes|
+|---|---|---|
+|identifier|Department adding the announcement.|`integer` id or `string` name|
+|Scope|Scope of the announcement.|*required*|
+|Text|Text of the announcement.|*required*|
+|Email|Send announcement via email to all relevant members.|default `true`|
+
+
+### add_announcement Request Body
+Do not supply a request body.
+
+### add_announcement Response
+
+Does not return a response.
+
+### add_announcement Code Samples
+Request Sample
+
+```
+curl -X POST -H 'Authorization: Bearer e0438d90599b1c4762d12fd03db6311c9ca46729' http://localhost/api/department/Art%20Show/announcement?Scope=0&Text=Testing
+```
+Response Sample
+
+```
+[]
+```
+
+
 
 ---
 ##### [Return to Top](README.md)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Return to Resource List](README.md#resources)
