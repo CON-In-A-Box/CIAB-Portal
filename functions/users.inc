@@ -488,8 +488,10 @@ function lookup_users_by_name($name, $single = false, $substring = false, $field
     }
     if ($substring) {
         $query = "FirstName LIKE '%".$names[0]."%' OR LastName LIKE '%".$names[$i2]."%'";
-    } else {
+    } elseif ($i2 > 0) {
         $query = "FirstName = '$names[0]' AND LastName = '$names[1]'";
+    } else {
+        return array('code' => '404 Not Found', 'users' => array());
     }
 
     return _lookup_user($query, $single, $fields);
@@ -593,12 +595,14 @@ Q;
     (FirstName LIKE '%$names[0]%' AND PreferredLastName = '$names[1]')
 Q;
         }
-    } else {
+    } elseif ($i2 > 0) {
         $query = <<<Q
     (PreferredFirstName = '$names[0]' AND PreferredLastName = '$names[1]') OR
     (PreferredFirstName = '$names[0]' AND LastName = '$names[1]') OR
     (FirstName = '$names[0]' AND PreferredLastName = '$names[1]')
 Q;
+    } else {
+        return array('code' => '404 Not Found', 'users' => array());
     }
     return _lookup_user($query, $single, $fields);
 
