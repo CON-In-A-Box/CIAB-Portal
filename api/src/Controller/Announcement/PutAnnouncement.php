@@ -7,6 +7,8 @@ namespace App\Controller\Announcement;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
+use App\Controller\NotFoundException;
+use App\Controller\InvalidParameterException;
 
 class PutAnnouncement extends BaseAnnouncement
 {
@@ -14,41 +16,26 @@ class PutAnnouncement extends BaseAnnouncement
 
     public function buildResource(Request $request, Response $response, $args): array
     {
-        $sth = $this->container->db->prepare("SELECT * FROM `Announcements` WHERE `AnnouncementID` = ".$args['id']);
-        $sth->execute();
-        $announce = $sth->fetchAll();
-        if (empty($announce)) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, 'Not Found', 'Announcement Not Found', 404)];
-        }
-        $target = $announce[0];
-
+        $target = $this->getAnnouncement($args['id']);
         $department = $target['DepartmentID'];
-        if (!\ciab\RBAC::havePermission('api.put.announcement.'.$department) &&
-            !\ciab\RBAC::havePermission('api.put.announcement.all')) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, 'Permission Denied', 'Permission Denied', 403)];
-        }
+
+        $permissions = ['api.put.announcement.all',
+        'api.put.announcement.'.$department];
+        $this->checkPermissions($permissions);
 
         $sql = "UPDATE `Announcements` SET ";
         $changes = [];
 
         $body = $request->getParsedBody();
 
+        if (empty($body)) {
+            throw new InvalidParameterException('No update parameter present');
+        }
+
         if (array_key_exists('Department', $body)) {
             $department = $this->getDepartment($body['Department']);
             if ($department === null) {
-                return [
-                \App\Controller\BaseController::RESULT_TYPE,
-                $this->errorResponse(
-                    $request,
-                    $response,
-                    'Not Found',
-                    'Department \''.$body['Department'].'\' Not Found',
-                    404
-                )];
+                throw new InvalidParameterException("Department '${body['Department']}' Not Found");
             }
             $changes[] = "`DepartmentID` = '{$department['id']}' ";
         }

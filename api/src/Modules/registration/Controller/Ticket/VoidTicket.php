@@ -8,23 +8,22 @@ namespace App\Modules\registration\Controller\Ticket;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
+use App\Controller\NotFoundException;
+use App\Controller\InvalidParameterException;
+
 class VoidTicket extends BaseTicket
 {
 
 
     public function buildResource(Request $request, Response $response, $params): array
     {
-        if (!\ciab\RBAC::havePermission('api.registration.ticket.void')) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, 'Permission Denied', 'Permission Denied', 403)];
-        }
+        $permissions = ['api.registration.ticket.void'];
+        $this->checkPermissions($permissions);
+
         $id = $params['id'];
         $body = $request->getParsedBody();
         if (empty($body) || !array_key_exists('reason', $body)) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, 'Required \'reason\' parameter not present', 'Missing Parameter', 400)];
+            throw new InvalidParameterException('Required \'reason\' parameter not present');
         }
         $reason = \MyPDO::quote($body['reason']);
         $user = $request->getAttribute('oauth2-token')['user_id'];
@@ -32,9 +31,7 @@ class VoidTicket extends BaseTicket
         $sth = $this->container->db->prepare($sql);
         $sth->execute();
         if ($sth->rowCount() == 0) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, 'Not Found', 'Ticket Not Found', 404)];
+            throw new NotFoundException('Ticket Not Found');
         }
 
         return [null];

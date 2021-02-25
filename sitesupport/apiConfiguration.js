@@ -13,9 +13,11 @@ export class apiConfiguration {
     apiRequest('GET', resource, 'maxResults=all')
       .then(function(response) {
         var v = JSON.parse(response.responseText).data;
-        v.forEach(function(e) {
-          obj[e.field] = e;
-        });
+        if (v) {
+          v.forEach(function(e) {
+            obj[e.field] = e;
+          });
+        }
         if (resolve) {
           resolve(response);
         }

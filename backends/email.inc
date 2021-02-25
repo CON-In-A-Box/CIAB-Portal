@@ -28,7 +28,10 @@ class Email
     public static function instance()
     {
         if (self::$instance === null) {
-            $client = $GLOBALS['EMAIL_BACKEND'];
+            $client = null;
+            if (array_key_exists('EMAIL_BACKEND', $GLOBALS)) {
+                $client = $GLOBALS['EMAIL_BACKEND'];
+            }
             if (!$client || empty($client)) {
                 $client = 'mail.inc';
             }

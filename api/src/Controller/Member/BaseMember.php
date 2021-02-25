@@ -9,6 +9,7 @@ use Slim\Container;
 use Slim\Http\Request;
 use Slim\Http\Response;
 use App\Controller\BaseController;
+use App\Controller\NotFoundException;
 
 require_once __DIR__.'/../../../../functions/users.inc';
 
@@ -49,9 +50,6 @@ abstract class BaseMember extends BaseController
         $fields = null
     ) {
         $data = parent::findMember($request, $response, $args, $key, $fields);
-        if ($data === null) {
-            return $this->errorResponse($request, $response, 'Member Not Found', 'Not Found', 404);
-        }
         $this->id = $data['id'];
         return $data;
 
@@ -66,9 +64,6 @@ abstract class BaseMember extends BaseController
         $fields = null
     ) {
         $data = parent::findMemberId($request, $response, $args, $key, $fields);
-        if ($data === null) {
-            return $this->errorResponse($request, $response, 'Member Not Found', 'Not Found', 404);
-        }
         $this->id = $data['id'];
         return $data;
 

@@ -7,6 +7,7 @@ namespace App\Controller\Cycle;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
+use App\Controller\InvalidParameterException;
 
 class PutCycle extends BaseCycle
 {
@@ -14,20 +15,16 @@ class PutCycle extends BaseCycle
 
     public function buildResource(Request $request, Response $response, $params): array
     {
-        $error = $this->getCycle($cycles, $params);
-        if ($error) {
-            return $error;
-        }
-        if (!\ciab\RBAC::havePermission('api.put.cycle')) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, 'Permission Denied', 'Permission Denied', 403)];
-        }
-
+        $this->getCycle($params);
+        $permissions = ['api.put.cycle'];
+        $this->checkPermissions($permissions);
 
         $sql = "UPDATE `AnnualCycles` SET ";
 
         $body = $request->getParsedBody();
+        if (empty($body)) {
+            throw new InvalidParameterException('Required body not present');
+        }
         $changes = array();
 
         if (array_key_exists('From', $body)) {

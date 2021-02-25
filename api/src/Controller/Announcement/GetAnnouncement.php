@@ -7,40 +7,34 @@ namespace App\Controller\Announcement;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
+use App\Controller\NotFoundException;
 
 class GetAnnouncement extends BaseAnnouncement
 {
 
 
-    public function buildResource(Request $request, Response $response, $args): array
+    public function buildResource(Request $request, Response $response, $params): array
     {
-        $sth = $this->container->db->prepare("SELECT * FROM `Announcements` WHERE `AnnouncementID` = '".$args['id']."'");
-        $sth->execute();
-        $announce = $sth->fetchAll();
-        if (empty($announce)) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, 'Not Found', 'Announcement Not Found', 404)];
-        }
+        $target = $this->getAnnouncement($params['id']);
         return [
         \App\Controller\BaseController::RESOURCE_TYPE,
         $this->buildAnnouncement(
             $request,
             $response,
-            $announce[0]['AnnouncementID'],
-            $announce[0]['DepartmentID'],
-            $announce[0]['PostedOn'],
-            $announce[0]['PostedBy'],
-            $announce[0]['Scope'],
-            $announce[0]['Text']
+            $target['AnnouncementID'],
+            $target['DepartmentID'],
+            $target['PostedOn'],
+            $target['PostedBy'],
+            $target['Scope'],
+            $target['Text']
         )];
 
     }
 
 
-    public function processIncludes(Request $request, Response $response, $args, $values, &$data)
+    public function processIncludes(Request $request, Response $response, $params, $values, &$data)
     {
-        $this->baseIncludes($request, $response, $args, $values, $data);
+        $this->baseIncludes($request, $response, $params, $values, $data);
 
     }
 

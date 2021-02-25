@@ -8,6 +8,9 @@ namespace App\Modules\registration\Controller\Ticket;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
+use App\Controller\PermissionDeniedException;
+use App\Controller\NotFoundException;
+
 class ListTickets extends BaseTicket
 {
 
@@ -15,19 +18,12 @@ class ListTickets extends BaseTicket
     public function buildResource(Request $request, Response $response, $params): array
     {
         $data = $this->findMemberId($request, $response, $params, 'member');
-        if (gettype($data) === 'object') {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $data];
-        }
         $aid = $data['id'];
 
         $user = $request->getAttribute('oauth2-token')['user_id'];
         if ($user != $aid &&
             !\ciab\RBAC::havePermission('api.registration.ticket.list')) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, 'Permission Denied', 'Permission Denied', 403)];
+            throw new PermissionDeniedException();
         }
 
         $sql = "SELECT * FROM `Registrations` WHERE ( `RegisteredByID` = $aid OR `AccountID` = $aid)";
@@ -43,9 +39,7 @@ class ListTickets extends BaseTicket
         $sth->execute();
         $data = $sth->fetchAll();
         if (empty($data)) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, 'Not Found', 'Ticket Not Found', 404)];
+            throw new NotFoundException('Ticket Not Found');
         }
         $tickets = [];
         foreach ($data as $index => $ticket) {

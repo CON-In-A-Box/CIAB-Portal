@@ -8,5 +8,5 @@ if (!(isset($_SESSION['IS_ADMIN']) || $_SESSION['IS_VOLUNTEERS'])) {
     goSite();
 }
 
-$kiosk_type = 'volunteers';
-require_once $BASEDIR.'/kiosk/pre.inc';
+$console_type = 'volunteers';
+require_once $BASEDIR.'/console/pre.inc';

@@ -21,15 +21,20 @@ class PickupTicket extends BaseTicket
         }
 
         $sql = "UPDATE `Registrations` SET `BadgesPickedUp` = 1 WHERE `RegistrationID` = $id AND `VoidDate` IS NULL;";
-        $sth = $this->container->db->prepare($sql);
-        $sth->execute();
-        if ($sth->rowCount() == 0) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, 'Conflict', 'Pickup Ticket report Failed.', 409)];
-        }
 
-        return [null];
+        $rc = $this->updateTicket(
+            $request,
+            $response,
+            $params,
+            null,
+            $sql,
+            'Pickup Ticket report Failed.',
+            false
+        );
+        if ($rc == null) {
+            return [null];
+        }
+        return $rc;
 
     }
 

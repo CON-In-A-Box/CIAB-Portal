@@ -7,6 +7,7 @@ namespace App\Controller\Cycle;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
+use App\Controller\NotFoundException;
 
 class GetCycle extends BaseCycle
 {
@@ -18,9 +19,7 @@ class GetCycle extends BaseCycle
         $sth->execute();
         $cycles = $sth->fetchAll();
         if (empty($cycles)) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, 'Not Found', 'Cycle Not Found', 404)];
+            throw new NotFoundException('Cycle Not Found');
         }
         $this->id = $args['id'];
         $this->buildCycleHateoas($request);

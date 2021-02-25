@@ -8,6 +8,9 @@ namespace App\Controller\Member;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
+use App\Controller\PermissionDeniedException;
+use App\Controller\ConflictException;
+
 class PutPassword extends BaseMember
 {
 
@@ -74,9 +77,7 @@ SQL;
                     $user = -1;
                 }
                 if ($accountID != $user) {
-                    return [
-                    \App\Controller\BaseController::RESULT_TYPE,
-                    $this->errorResponse($request, $response, 'Permission Denied', 'Permission Denied', 403)];
+                    throw new PermissionDeniedException();
                 }
                 if (!array_key_exists('OldPassword', $body) ||
                     \check_authentication(
@@ -84,9 +85,7 @@ SQL;
                         $body['OldPassword'],
                         false
                     ) != 0) {
-                    return [
-                    \App\Controller\BaseController::RESULT_TYPE,
-                    $this->errorResponse($request, $response, 'Invalid Existing Password', 'Permission Denied', 403)];
+                    throw new ConflictException('Invalid Existing Password');
                 }
             }
         }

@@ -8,6 +8,8 @@ namespace App\Controller\Member;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
+use App\Controller\PermissionDeniedException;
+
 class PutConfiguration extends BaseMember
 {
 
@@ -17,24 +19,25 @@ class PutConfiguration extends BaseMember
     public function buildResource(Request $request, Response $response, $args): array
     {
         $data = $this->findMemberId($request, $response, $args, 'id');
-        if (gettype($data) === 'object') {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $data];
-        }
         $accountID = $data['id'];
 
         $user = $request->getAttribute('oauth2-token')['user_id'];
         if ($accountID != $user &&
             !\ciab\RBAC::havePermission("api.put.member")) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, 'Permission Denied', 'Permission Denied', 403)];
+            throw new PermissionDeniedException();
         }
 
         $body = $request->getParsedBody();
         $body['AccountID'] = $accountID;
-        return $this->putConfiguration($request, $response, $args, 'AccountConfiguration', $body);
+        $this->putConfiguration($request, $response, $args, 'AccountConfiguration', $body);
+
+        $target = new GetConfiguration($this->container);
+        $args['key'] = $body['Field'];
+        $data = $target->buildResource($request, $response, $args)[1];
+        return [
+        \App\Controller\BaseController::RESOURCE_TYPE,
+        $target->arrayResponse($request, $response, $data)
+        ];
 
     }
 

@@ -8,6 +8,9 @@ namespace App\Controller\Member;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
+use App\Controller\InvalidParameterException;
+use App\Controller\ConflictException;
+
 class PostMember extends BaseMember
 {
 
@@ -19,17 +22,11 @@ class PostMember extends BaseMember
             $body['email1'] = $body['email'];
         }
         if (!$body || !array_key_exists('email1', $body)) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, "Required 'email1' parameter not present", 'Missing Parameter', 400)
-            ];
+            throw new InvalidParameterException("Required 'email1' parameter not present");
         }
         $user = \lookup_users_by_email($body['email1']);
         if (count($user['users']) > 0) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, "Account with Email Already Exists", 'Conflict', 409)
-            ];
+            throw new ConflictException("Account with Email Already Exists");
         }
         if (array_key_exists('legalFirstName', $body)) {
             $body['firstName'] = $body['legalFirstName'];
@@ -39,10 +36,7 @@ class PostMember extends BaseMember
         }
         if (!array_key_exists('firstName', $body) &&
             !array_key_exists('lastName', $body)) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, "Required 'firstName' and/or 'lastName' parameter not present", 'Missing Parameter', 400)
-            ];
+            throw new InvalidParameterException("Required 'firstName' and/or 'lastName' parameter not present");
         }
 
         if (array_key_exists('Neon', $GLOBALS)) {
@@ -55,10 +49,7 @@ class PostMember extends BaseMember
             $accountID = \createUser($body['email1'], 1000);
         }
         if (!$accountID) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, "Account Creation Failed", 'Conflict', 409)
-            ];
+            throw new ConflictException("Account Creation Failed");
         }
 
         $target = new \App\Controller\Member\PutMember($this->container);
@@ -72,7 +63,8 @@ class PostMember extends BaseMember
 
         return [
         \App\Controller\BaseController::RESOURCE_TYPE,
-        $result
+        $result,
+        201
         ];
 
     }

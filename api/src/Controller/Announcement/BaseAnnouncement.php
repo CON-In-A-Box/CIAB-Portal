@@ -9,6 +9,7 @@ use Slim\Container;
 use Slim\Http\Request;
 use Slim\Http\Response;
 use App\Controller\BaseController;
+use App\Controller\NotFoundException;
 
 abstract class BaseAnnouncement extends BaseController
 {
@@ -18,6 +19,19 @@ abstract class BaseAnnouncement extends BaseController
     {
         parent::__construct('deadline', $container);
         \ciab\RBAC::customizeRBAC(array($this, 'customizeAnnouncementRBAC'));
+
+    }
+
+
+    public function getAnnouncement($id)
+    {
+        $sth = $this->container->db->prepare("SELECT * FROM `Announcements` WHERE `AnnouncementID` = $id");
+        $sth->execute();
+        $announce = $sth->fetchAll();
+        if (empty($announce)) {
+            throw new NotFoundException('Announcement Not Found');
+        }
+        return $announce[0];
 
     }
 
@@ -98,7 +112,7 @@ abstract class BaseAnnouncement extends BaseController
         if (in_array('postedBy', $values)) {
             $target = new \App\Controller\Member\GetMember($this->container);
             $newargs = $args;
-            $newargs['name'] = $data['postedBy'];
+            $newargs['id'] = $data['postedBy'];
             $newdata = $target->buildResource($request, $response, $newargs)[1];
             $target->processIncludes($request, $response, $args, $values, $newdata);
             $data['postedBy'] = $target->arrayResponse($request, $response, $newdata);

@@ -7,7 +7,7 @@
 class SCHEMA
 {
 
-    public static $REQUIED_DB_SCHEMA = 2019121600; // Current DB Version - YYYYMMDDvv format (vv=daily counter form 00)
+    public static $REQUIED_DB_SCHEMA = 2021020601; // Current DB Version - YYYYMMDDvv format (vv=daily counter form 00)
 
     public static $DB_tables = [
         'ActivityLog' => [

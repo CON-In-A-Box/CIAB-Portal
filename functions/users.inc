@@ -488,8 +488,10 @@ function lookup_users_by_name($name, $single = false, $substring = false, $field
     }
     if ($substring) {
         $query = "FirstName LIKE '%".$names[0]."%' OR LastName LIKE '%".$names[$i2]."%'";
-    } else {
+    } elseif ($i2 > 0) {
         $query = "FirstName = '$names[0]' AND LastName = '$names[1]'";
+    } else {
+        return array('code' => '404 Not Found', 'users' => array());
     }
 
     return _lookup_user($query, $single, $fields);
@@ -593,12 +595,14 @@ Q;
     (FirstName LIKE '%$names[0]%' AND PreferredLastName = '$names[1]')
 Q;
         }
-    } else {
+    } elseif ($i2 > 0) {
         $query = <<<Q
     (PreferredFirstName = '$names[0]' AND PreferredLastName = '$names[1]') OR
     (PreferredFirstName = '$names[0]' AND LastName = '$names[1]') OR
     (FirstName = '$names[0]' AND PreferredLastName = '$names[1]')
 Q;
+    } else {
+        return array('code' => '404 Not Found', 'users' => array());
     }
     return _lookup_user($query, $single, $fields);
 
@@ -1001,5 +1005,32 @@ function createUser($newemail, $min_accountid = null)
     } else {
         return $value['AccountID'];
     }
+
+}
+
+
+function createPassword(/*.string.*/$id, /*.string.*/$password): string
+{
+    global $PASSWORDEXPIRE;
+    if (isset($PASSWORDEXPIRE) && !empty($PASSWORDEXPIRE)) {
+        $duration = $PASSWORDEXPIRE;
+    } else {
+        $duration = '+1 year';
+    }
+
+    $value = lookup_user_by_login($id);
+    if (count($value)) {
+        $user = $value[0]['AccountID'];
+        $expires = _quote(date('Y-m-d H:i', strtotime($duration)));
+        $auth = _quote(password_hash($password, PASSWORD_DEFAULT));
+
+        $sql = <<<SQL
+            INSERT INTO `Authentication` (AccountID, Authentication, Expires)
+            VALUES ($user, $auth, $expires)
+SQL;
+        DB::run($sql);
+        return true;
+    }
+    return false;
 
 }

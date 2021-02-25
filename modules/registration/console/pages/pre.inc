@@ -15,5 +15,5 @@ if (!isset($_SESSION['IS_ADMIN']) && !$in_registration) {
     goSite();
 }
 
-$kiosk_type = 'registration';
-require_once $BASEDIR.'/kiosk/pre.inc';
+$console_type = 'registration';
+require_once $BASEDIR.'/console/pre.inc';

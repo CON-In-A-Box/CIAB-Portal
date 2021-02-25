@@ -7,19 +7,21 @@
 
 // Currently, this database class is set for the MySQL PDO filter/backend. Future version will expand it to be agnostic
 
+require_once(__DIR__.'/functions.inc');
 require_once(__DIR__.'/locations.inc');
 require_once($BACKEND.'/'.$_ENV['DB_BACKEND']); // MyPDO Definition used
 require_once($BASEDIR.'/data/database-schema.php');
 
-
-$MODULE_TABLES = array();
-$MODULE_FOREIGNKEYS = array();
-$MODULE_PRIMARYKEYS = array();
-$MODULE_INDEX = array();
-
-
 class DB
 {
+
+    private static $MODULE_TABLES = array();
+
+    private static $MODULE_FOREIGNKEYS = array();
+
+    private static $MODULE_PRIMARYKEYS = array();
+
+    private static $MODULE_INDEX = array();
 
     /**
      * @var array
@@ -30,6 +32,38 @@ class DB
      * @var boolean
      */
     private $loaded = false;
+
+
+    public static function addTables(array $tables): array
+    {
+        self::$MODULE_TABLES = array_merge(self::$MODULE_TABLES, $tables);
+        return self::$MODULE_TABLES;
+
+    }
+
+
+    public static function addForeignKeys(array $fks): array
+    {
+        self::$MODULE_FOREIGNKEYS = array_merge(self::$MODULE_FOREIGNKEYS, $fks);
+        return self::$MODULE_FOREIGNKEYS;
+
+    }
+
+
+    public static function addPrimaryKeys(array $pks): array
+    {
+        self::$MODULE_PRIMARYKEYS = array_merge(self::$MODULE_PRIMARYKEYS, $pks);
+        return self::$MODULE_PRIMARYKEYS;
+
+    }
+
+
+    public static function addIndexes(array $indexes): array
+    {
+        self::$MODULE_INDEX = array_merge(self::$MODULE_INDEX, $indexes);
+        return self::$MODULE_INDEX;
+
+    }
 
 
     private static function verifyDB()
@@ -147,10 +181,11 @@ SQL;
                 if (file_exists($DATADIR.'/DBSeed/'.$table.'.sql')) {
                     $sql_data = file_get_contents($DATADIR.'/DBSeed/'.$table.'.sql');
                     MyPDO::instance()->query($sql_data);
-                } else {
-                    $modules = glob($GLOBALS['MODULESDIR'].'/*/DBSeed/'.$table.'.sql');
-                    if (is_array($modules) && !empty($modules)) {
-                        $sql_data = @file_get_contents($modules[0]);
+                }
+                $modules = glob($GLOBALS['MODULESDIR'].'/*/DBSeed/'.$table.'.sql');
+                if (is_array($modules) && !empty($modules)) {
+                    foreach ($modules as $module) {
+                        $sql_data = @file_get_contents($module);
                         MyPDO::instance()->query($sql_data);
                     }
                 }
@@ -170,7 +205,7 @@ SQL;
 
         // Capture a list of all Constraints (Foreign Keys)
         $build = "SELECT TABLE_NAME, COLUMN_NAME FROM information_schema.KEY_COLUMN_USAGE";
-        $build .= " WHERE TABLE_SCHEMA = '".$GLOBALS['DBNAME']."' AND CONSTRAINT_NAME <> 'PRIMARY';";
+        $build .= " WHERE TABLE_SCHEMA = '".$_ENV['DBNAME']."' AND CONSTRAINT_NAME <> 'PRIMARY';";
         $result = MyPDO::instance()->query($build);
         $arr = [];
         foreach ($result as $value) {
@@ -189,7 +224,7 @@ SQL;
         }
 
         // Manage indexes
-        foreach ($this->schema['index'] as $table => $indexes) { 
+        foreach ($this->schema['index'] as $table => $indexes) {
             $build = "SHOW INDEXES FROM `".$table."`;";
             $result = mypdo::instance()->query($build);
             $current_indexes = [];
@@ -199,7 +234,7 @@ SQL;
 
             $desired_indexes = array_keys($indexes);
             $indexes_to_add = array_diff($desired_indexes, $current_indexes);
-            
+
             foreach ($indexes_to_add as $index_to_add) {
                 $columns = $indexes[$index_to_add];
                 $sql = "CREATE INDEX ".$index_to_add." ON ".$table." (`".implode("`, `", $columns)."`);";
@@ -215,30 +250,31 @@ SQL;
 
     public function loadModules()
     {
-        global $MODULE_TABLES, $MODULESDIR, $MODULE_FOREIGNKEYS, $MODULE_PRIMARYKEYS, $MODULE_INDEX;
-
         if ($this->loaded) {
             return;
         }
-        try {
-            $modules = scandir($MODULESDIR);
-            foreach ($modules as $key => $value) {
-                if (!in_array($value, array(".", ".."))) {
-                    if (is_dir($MODULESDIR.DIRECTORY_SEPARATOR.$value)) {
-                        if (is_file($MODULESDIR.DIRECTORY_SEPARATOR.$value.DIRECTORY_SEPARATOR.'database-schema.inc')) {
-                            require_once($MODULESDIR.DIRECTORY_SEPARATOR.$value.DIRECTORY_SEPARATOR.'database-schema.inc');
+        if (array_key_exists('MODULESDIR', $GLOBALS) &&
+            !empty($GLOBALS['MODULESDIR'])) {
+            try {
+                $modules = scandir($GLOBALS['MODULESDIR']);
+                foreach ($modules as $key => $value) {
+                    if (!in_array($value, array(".", ".."))) {
+                        if (is_dir($GLOBALS['MODULESDIR'].DIRECTORY_SEPARATOR.$value)) {
+                            if (is_file($GLOBALS['MODULESDIR'].DIRECTORY_SEPARATOR.$value.DIRECTORY_SEPARATOR.'database-schema.inc')) {
+                                require_once($GLOBALS['MODULESDIR'].DIRECTORY_SEPARATOR.$value.DIRECTORY_SEPARATOR.'database-schema.inc');
+                            }
                         }
                     }
                 }
+            } catch (RuntimeException $e) {
+                error_log("ERROR!!! Database Schema import failed: ".$e);
             }
-        } catch (RuntimeException $e) {
-            error_log("ERROR!!! Database Schema import failed: ".$e);
         }
 
-        $this->schema['tables'] = array_merge($this->schema['tables'], $MODULE_TABLES);
-        $this->schema['foreignKeys'] = array_merge($this->schema['foreignKeys'], $MODULE_FOREIGNKEYS);
-        $this->schema['primaryKeys'] = array_merge($this->schema['primaryKeys'], $MODULE_PRIMARYKEYS);
-        $this->schema['index'] = array_merge($this->schema['index'], $MODULE_INDEX);
+        $this->schema['tables'] = array_merge($this->schema['tables'], self::$MODULE_TABLES);
+        $this->schema['foreignKeys'] = array_merge($this->schema['foreignKeys'], self::$MODULE_FOREIGNKEYS);
+        $this->schema['primaryKeys'] = array_merge($this->schema['primaryKeys'], self::$MODULE_PRIMARYKEYS);
+        $this->schema['index'] = array_merge($this->schema['index'], self::$MODULE_INDEX);
         $this->loaded = true;
 
     }
@@ -282,7 +318,7 @@ SQL;
         if (substr(ltrim($sql), 0, 6) !== "SELECT") {
             // Prepare a log entry for this query
             $logMessage = MyPDO::instance()->prepare('INSERT INTO ActivityLog (AccountID, Function, Query) VALUES (:account, :function, :query);');
-        
+
             if (empty($_SESSION['accountId'])) {
                 $account = 0;
             } else {

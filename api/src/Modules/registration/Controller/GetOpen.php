@@ -8,6 +8,8 @@ namespace App\Modules\registration\Controller;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
+use App\Controller\NotFoundException;
+
 class GetOpen extends BaseRegistration
 {
 
@@ -23,9 +25,7 @@ class GetOpen extends BaseRegistration
         }
 
         if (!$event) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, $error, 'Not Found', 404)];
+            throw new NotFoundException('Event not found');
         }
 
         $sql = "SELECT * FROM `Events` WHERE NOW() BETWEEN `dateFrom` AND `dateTo` AND `EventID` = $event";

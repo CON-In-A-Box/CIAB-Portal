@@ -15,11 +15,6 @@ class ListDeadlines extends BaseMember
     public function buildResource(Request $request, Response $response, $args): array
     {
         $data = $this->findMemberId($request, $response, $args, 'id');
-        if (gettype($data) === 'object') {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $data];
-        }
         $user = $data['id'];
         $sth = $this->container->db->prepare(<<<SQL
             SELECT

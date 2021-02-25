@@ -14,29 +14,17 @@ class PrintQueueClaim extends BaseTicket
 
     public function buildResource(Request $request, Response $response, $params): array
     {
-        if (!\ciab\RBAC::havePermission('api.registration.ticket.print')) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, 'Permission Denied', 'Permission Denied', 403)];
-        }
-
         $id = $params['id'];
         $sql = "UPDATE `Registrations` SET `PrintRequested` = NULL, `LastPrintedDate` = NOW() WHERE `RegistrationID` = $id AND `PrintRequested` IS NOT NULL";
-        $sth = $this->container->db->prepare($sql);
-        $sth->execute();
-        if ($sth->rowCount() == 0) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, 'Conflict', 'Not in Print Queue.', 409)];
-        }
 
-        $target = new GetTicket($this->container);
-        $newdata = $target->buildResource($request, $response, $params)[1];
-        $ticket = $target->arrayResponse($request, $response, $newdata);
-        return [
-        \App\Controller\BaseController::RESOURCE_TYPE,
-        $ticket
-        ];
+        return $this->updateTicket(
+            $request,
+            $response,
+            $params,
+            'api.registration.ticket.print',
+            $sql,
+            'Not in Print Queue.'
+        );
 
     }
 

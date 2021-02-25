@@ -16,11 +16,8 @@ class ListConcom extends BaseConcom
 
     public function buildResource(Request $request, Response $response, $args): array
     {
-        if (!\ciab\RBAC::havePermission('api.get.concom')) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, 'Permission Denied', 'Permission Denied', 403)];
-        }
+        $permissions = ['api.get.concom'];
+        $this->checkPermissions($permissions);
         $concom = \concom\ConcomList::listBuild();
         $data = array();
         foreach ($concom as $entry) {

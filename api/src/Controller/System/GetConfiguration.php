@@ -17,17 +17,15 @@ class GetConfiguration extends BaseSystem
 
     public function buildResource(Request $request, Response $response, $args): array
     {
-        if (!\ciab\RBAC::havePermission("api.get.configuration")) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, 'Permission Denied', 'Permission Denied', 403)];
-        }
+        $permissions = ['api.get.configuration'];
+        $this->checkPermissions($permissions);
+
         $user = $request->getAttribute('oauth2-token')['user_id'];
 
         $sql = <<<SQL
             UNION
             SELECT
-                Field,
+                `Field`,
                 'Configuration' as TargetTable,
                 null as Type,
                 null as InitialValue,
@@ -36,19 +34,22 @@ class GetConfiguration extends BaseSystem
             FROM
                 `Configuration`
             WHERE
-                Field NOT IN (
+                `Field` NOT IN (
                 SELECT
-                    Field
+                    `Field`
                 FROM
                     `ConfigurationField`
                 WHERE
                     TargetTable = 'Configuration'
             )
 SQL;
+        if (array_key_exists('key', $args)) {
+            $sql .= " AND `Field` = '{$args['key']}'";
+        }
 
         $result = $this->getConfiguration($args, 'Configuration', null, $sql);
-        foreach ($result as $index->$entry) {
-            if (array_key_exists($entry['Field'], $_ENV)) {
+        foreach ($result as $index => $entry) {
+            if (array_key_exists($entry['field'], $_ENV)) {
                 unset($result[$index]);
             }
         }

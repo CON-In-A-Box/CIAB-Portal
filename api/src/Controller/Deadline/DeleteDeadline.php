@@ -7,6 +7,7 @@ namespace App\Controller\Deadline;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
+use App\Controller\NotFoundException;
 
 class DeleteDeadline extends BaseDeadline
 {
@@ -18,19 +19,13 @@ class DeleteDeadline extends BaseDeadline
         $sth->execute();
         $deadlines = $sth->fetchAll();
         if (empty($deadlines)) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, 'Not Found', 'Deadline Not Found', 404)];
+            throw new NotFoundException('Deadline Not Found');
         }
         $target = $deadlines[0];
 
-        $department = $target['DepartmentID'];
-        if (!\ciab\RBAC::havePermission('api.delete.deadline.'.$department) &&
-            !\ciab\RBAC::havePermission('api.delete.deadline.all')) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, 'Permission Denied', 'Permission Denied', 403)];
-        }
+        $permissions = ['api.delete.deadline.all',
+        'api.delete.deadline.'.$target['DepartmentID']];
+        $this->checkPermissions($permissions);
 
         $sth = $this->container->db->prepare(<<<SQL
             DELETE FROM `Deadlines`
@@ -38,7 +33,11 @@ class DeleteDeadline extends BaseDeadline
 SQL
         );
         $sth->execute();
-        return [null];
+        return [
+        \App\Controller\BaseController::RESOURCE_TYPE,
+        [null],
+        204
+        ];
 
     }
 

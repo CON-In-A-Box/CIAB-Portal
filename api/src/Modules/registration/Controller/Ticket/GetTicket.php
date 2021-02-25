@@ -8,6 +8,8 @@ namespace App\Modules\registration\Controller\Ticket;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
+use App\Controller\NotFoundException;
+
 class GetTicket extends BaseTicket
 {
 
@@ -30,9 +32,7 @@ class GetTicket extends BaseTicket
         $sth->execute();
         $data = $sth->fetchAll();
         if (empty($data)) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, 'Not Found', 'Ticket Not Found', 404)];
+            throw new NotFoundException('Ticket Not Found');
         }
 
         $ticket = $this->buildTicket($data[0], $data[0]);

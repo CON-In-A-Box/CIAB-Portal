@@ -80,7 +80,7 @@ function workstationChange() {
   var expires = ';expires=' + d.toUTCString();
   document.cookie = 'CIAB_REGISTRATIONWORKSTATION=' + value + expires +
                     ';path=/';
-  var element = document.getElementById('kiosk_mode');
+  var element = document.getElementById('console_mode');
   var disabled = element.classList.contains('UI-disabled');
   var state = (value === '');
   if (state !== disabled) {

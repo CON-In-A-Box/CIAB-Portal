@@ -8,6 +8,8 @@ namespace App\Controller\Member;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
+use App\Controller\NotFoundException;
+
 class GetStatus extends BaseMember
 {
 
@@ -53,21 +55,16 @@ SQL;
             } else {
                 $error = $data['error'];
             }
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, $error, 'Not Found', 404)];
+            throw new NotFoundException($error);
         }
         if (count($data['users']) > 1) {
             $error = 'Too many matches found';
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, $error, 'Not Found', 404)];
+            throw new NotFoundException($error);
         }
         $data = $data['users'][0];
         if (!array_key_exists('id', $data)) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, $error, 'Not Found', 404)];
+            $error = 'User ID not found';
+            throw new NotFoundException($error);
         }
         $valid = array('type' => 'member_status',
                        'status' => $this->verifyAccount($data['id']));

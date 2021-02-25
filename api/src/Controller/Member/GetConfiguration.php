@@ -8,6 +8,8 @@ namespace App\Controller\Member;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
+use App\Controller\PermissionDeniedException;
+
 class GetConfiguration extends BaseMember
 {
 
@@ -18,16 +20,9 @@ class GetConfiguration extends BaseMember
     public function buildResource(Request $request, Response $response, $args): array
     {
         $data = $this->findMemberId($request, $response, $args, 'id');
-        if (gettype($data) === 'object') {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $data];
-        }
         $user = $request->getAttribute('oauth2-token')['user_id'];
         if ($user != $data['id'] && !\ciab\RBAC::havePermission("api.get.configuration")) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, 'Permission Denied', 'Permission Denied', 403)];
+            throw new PermissionDeniedException();
         }
 
         $result = $this->getConfiguration($args, 'AccountConfiguration', "AND a.AccountId = {$data['id']}");

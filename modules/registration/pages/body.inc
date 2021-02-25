@@ -5,12 +5,12 @@
 .*/
 
 require_once __DIR__.'/../functions/events.inc';
-require_once $BASEDIR.'/kiosk/kiosk.inc';
+require_once $BASEDIR.'/console/console.inc';
 
 /* Parts of his should only be accessable from registration staff */
 $access = in_registration();
 
-kiosk_body_data();
+console_body_data();
 
 $uid = null;
 
@@ -204,9 +204,9 @@ if (isset($_COOKIE["CIAB_REGISTRATIONWORKSTATION"]) &&
     !empty($_COOKIE["CIAB_REGISTRATIONWORKSTATION"])) {
     $id = $_COOKIE["CIAB_REGISTRATIONWORKSTATION"];
 } else {
-    $id = kiosk_user();
+    $id = console_user();
 }
-if (kiosk_user()) {
+if (console_user()) {
     echo " Workstation ".htmlspecialchars($id);
 }
 ?>
@@ -216,24 +216,24 @@ if (kiosk_user()) {
 <div class="UI-rest UI-center">
 <?php
 if ($access) {
-    echo '<div id="kiosk_mode"';
+    echo '<div id="console_mode"';
     if (empty($id)) {
         echo ' class="UI-disabled"';
     }
     echo '>';
-    generate_kiosk_slider("registration");
+    generate_console_slider("registration");
     echo '</div>';
 
 ?>
     <div class="REG-id-div">
         <label class='UI-label UI-half' for='workstation_id'>
         Workstation ID:</label>
-        <input class="UI-input UI-half" id="workstation_id" placeholder="Required for Kiosk"
+        <input class="UI-input UI-half" id="workstation_id" placeholder="Required for Console"
 <?php
 if (isset($_COOKIE["CIAB_REGISTRATIONWORKSTATION"])) {
     echo " value='".htmlspecialchars($_COOKIE['CIAB_REGISTRATIONWORKSTATION'])."'";
 }
-if (in_kiosk()) {
+if (in_console()) {
     echo " readonly";
 }
 ?> onchange="workstationChange()">

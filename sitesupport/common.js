@@ -56,7 +56,7 @@ function urlsafeB64Decode(data) {
 function basicBackendRequest(method, target, parameter, success, failure) {
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
+    if (this.readyState == 4 && [200, 201, 204].includes(this.status)) {
       success(this);
       hideSpinner();
     } else if (this.readyState == 4) {
@@ -109,7 +109,7 @@ function apiRequest(method, target, inParameter) {
     var parameter = null;
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 200) {
+      if (this.readyState == 4 && [200, 201, 204].includes(this.status)) {
         resolve(this);
       } else if (this.readyState == 4) {
         if (this.status == 401) {

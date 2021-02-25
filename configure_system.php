@@ -144,7 +144,8 @@ if (!empty($_POST)) {
         strlen($NEW_CONHOST) > 0 &&
         strlen($NEW_ADMINEMAIL) > 0 &&
         strlen($NEW_NOREPLY_EMAIL) > 0 &&
-        strlen($NEW_TIMEZONE) > 0) {
+        strlen($NEW_TIMEZONE) > 0 &&
+        (strlen($NEW_NEONKEY) || strlen($NEW_ADMINPASSWORD))) {
         if (!isset($_ENV['DOCKER'])) {
             if (file_exists(ENV_FILE)) {
                 chmod(ENV_FILE, 0600);
@@ -185,13 +186,9 @@ DONE
                 require_once(__DIR__."/functions/authentication.inc");
 
                 if (empty($NEW_NEONID) && empty($NEW_NEONKEY)) {
-                    $aid = createUser($NEW_ADMINEMAIL, 1000);
+                    $aid = \createUser($NEW_ADMINEMAIL, 1000);
                     if ($aid !== null) {
-                        if (!empty($NEW_ADMINPASSWORD)) {
-                            reset_password($NEW_ADMINEMAIL, $NEW_ADMINPASSWORD);
-                        } else {
-                            reset_password($NEW_ADMINEMAIL);
-                        }
+                        \createPassword($NEW_ADMINEMAIL, $NEW_ADMINPASSWORD);
                         if (!empty($NEW_ADMINACCOUNTS)) {
                             $NEW_ADMINACCOUNTS = implode(',', [$NEW_ADMINACCOUNTS, $aid]);
                         } else {
@@ -522,24 +519,24 @@ require(__DIR__.'/pages/base/body_begin.inc');
         </div>
     </div>
 
-    <div class="UI-event-sectionbar UI-margin">Admin Configuration (Required)</div>
+    <div class="UI-event-sectionbar UI-margin">Admin Configuration (Required, If not using Neon)</div>
     <div class="UI-configure-panel UI-border UI-margin">
         <div class="UI-pad-bottom">
-            <label>Admin Email: <span class="UI-configure-note">If Neon is NOT used an Account will be created</span></label> <br>
-            <input type="text" name="NEW_ADMINEMAIL" class="UI-input<?php
+            <label>Admin Email: <span class="UI-configure-note">Account will be created</span></label> <br>
+            <input type="text" name="NEW_ADMINEMAIL" class="UI-input <?php
             if ($updateData != null && strlen($updateData[NEW_ADMINEMAIL])) {
                 echo VALUE_EQ.$updateData[NEW_ADMINEMAIL];
-            } elseif ($tried) {
+            } elseif ($tried && empty($NEW_NEONKEY)) {
                 echo UI_PROBLEM;
             }
             ?>" placeholder="<example: admin@host.con>">
         </div>
         <div class="UI-pad-bottom">
-            <label>Admin Password: <span class="UI-configure-note">Only used Neon is not being used and a new admin account is being created. If left empty a random password will be generated.</span></label> <br>
-            <input type="text" name="NEW_ADMINPASSWORD" class="UI-input<?php
+            <label>Admin Password: <span class="UI-configure-note">Required.</span></label> <br>
+            <input type="text" name="NEW_ADMINPASSWORD" class="UI-input <?php
             if ($updateData != null && strlen($updateData[NEW_ADMINCRED])) {
                 echo VALUE_EQ.$updateData[NEW_ADMINCRED];
-            } elseif ($tried) {
+            } elseif ($tried && empty($NEW_NEONKEY)) {
                 echo UI_PROBLEM;
             }
             ?>" placeholder="<example: aabbccddee>">

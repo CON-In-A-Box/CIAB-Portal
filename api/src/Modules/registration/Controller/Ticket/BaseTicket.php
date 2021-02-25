@@ -9,6 +9,9 @@ use Slim\Container;
 use Slim\Http\Request;
 use Slim\Http\Response;
 use App\Modules\registration\Controller\BaseRegistration;
+use App\Controller\PermissionDeniedException;
+use App\Controller\NotFoundException;
+use App\Controller\ConflictException;
 
 abstract class BaseTicket extends BaseRegistration
 {
@@ -74,17 +77,13 @@ abstract class BaseTicket extends BaseRegistration
         $sth->execute();
         $data = $sth->fetchAll();
         if (!$data) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, 'Not Found', 'Registration Not Found', 404)];
+            throw new NotFoundException('Registration Not Found');
         }
         $aid = $data[0]['AccountID'];
 
-        if ($user != $aid &&
+        if ($user != $aid && $permission &&
             !\ciab\RBAC::havePermission($permission)) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, 'Permission Denied', 'Permission Denied', 403)];
+            throw new PermissionDeniedException();
         }
 
         return $aid;
@@ -147,6 +146,59 @@ abstract class BaseTicket extends BaseRegistration
         $sql = "UPDATE `Registrations` SET `PrintRequested` = NOW(), `PrintRequestIp` = $ip  WHERE `RegistrationID` = $id AND `VoidDate` IS NULL";
         $sth = $this->container->db->prepare($sql);
         $sth->execute();
+
+    }
+
+
+    protected function updateTicket($request, $response, $params, $rbac, $sql, $error, $getResult = true)
+    {
+        if ($rbac) {
+            $this->checkPermissions([$rbac]);
+        }
+        $sth = $this->container->db->prepare($sql);
+        $sth->execute();
+        if ($sth->rowCount() == 0) {
+            throw new ConflictException($error);
+        }
+
+        if ($getResult) {
+            $target = new GetTicket($this->container);
+            $newdata = $target->buildResource($request, $response, $params)[1];
+            $data = $target->arrayResponse($request, $response, $newdata);
+
+            return [
+            \App\Controller\BaseController::RESOURCE_TYPE,
+            $data
+            ];
+        }
+
+        return null;
+
+    }
+
+
+    protected function updateAndPrintTicket($request, $response, $params, $id, $rbac, $sql, $error)
+    {
+        $aid = $this->getAccount($id, $request, $response, $rbac);
+        if (is_array($aid)) {
+            return $aid;
+        }
+
+        $rc = $this->updateTicket(
+            $request,
+            $response,
+            $params,
+            null,
+            $sql,
+            $error,
+            false
+        );
+
+        if ($rc == null) {
+            $this->printBadge($request, $id);
+            return [null];
+        }
+        return $rc;
 
     }
 

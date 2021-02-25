@@ -2,6 +2,7 @@
 
 /*.
     require_module 'standard';
+    require_module 'array';
 .*/
 
 require_once(__DIR__."/../backends/email.inc");
@@ -151,7 +152,10 @@ SQL;
 
     if (array_key_exists('CONHOST', $GLOBALS) &&
         !array_key_exists('CONSITENAME', $GLOBALS)) {
-        $GLOBALS['CONSITENAME'] = $GLOBALS['CONHOST']." ".$GLOBALS['MODULENAME'];
+        $GLOBALS['CONSITENAME'] = $GLOBALS['CONHOST'];
+        if (array_key_exists('MODULENAME', $GLOBALS)) {
+            $GLOBALS['CONSITENAME'] .= " ".$GLOBALS['MODULENAME'];
+        }
     }
 
 }
@@ -180,7 +184,8 @@ try {
     $modules = scandir($MODULESDIR);
     foreach ($modules as $key => $value) {
         if (!in_array($value, array(".", ".."))) {
-            if (in_array($value, $DISABLEDMODULES)) {
+            if (array_key_exists('DISABLEDMODULES', $GLOBALS) &&
+                in_array($value, $GLOBALS['DISABLEDMODULES'])) {
                 continue;
             }
             if (is_dir($MODULESDIR.DIRECTORY_SEPARATOR.$value)) {
@@ -526,5 +531,41 @@ function get_modules()
         }
     }
     return $modules;
+
+}
+
+
+function scan_page_dir($target)
+{
+    global $PAGESDIR;
+    $pagelist = @scandir($PAGESDIR.'/'.$target);
+    $result = [];
+    foreach ($pagelist as $path) {
+        if ($path[0] == '.') {
+            continue;
+        }
+        $result[] = explode('.', $path)[0];
+    }
+    return $result;
+
+}
+
+
+function core_pages()
+{
+    global $MODULESDIR;
+    $valid = ['main'];
+    $valid = array_unique(array_merge($valid, scan_page_dir('pre')), SORT_STRING);
+    $valid = array_unique(array_merge($valid, scan_page_dir('head')), SORT_STRING);
+    $valid = array_unique(array_merge($valid, scan_page_dir('body')), SORT_STRING);
+
+    $result = [];
+    foreach (glob($MODULESDIR.'/*', GLOB_ONLYDIR) as $path) {
+        $result[] = basename($path);
+    }
+
+    $valid = array_unique(array_merge($valid, $result), SORT_STRING);
+
+    return $valid;
 
 }

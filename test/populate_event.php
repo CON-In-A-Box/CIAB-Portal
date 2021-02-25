@@ -255,16 +255,24 @@ function populate_members()
 }
 
 
-function rand_member()
+function rand_member($count = 1)
 {
     $sql = <<<SQL
         SELECT AccountID FROM `Members`
         ORDER BY RAND()
-        LIMIT 1
+        LIMIT $count
 SQL;
     $result = DB::run($sql);
-    $value = $result->fetch();
-    return (int)($value['AccountID']);
+    if ($count == 1) {
+        $value = $result->fetch();
+        return (int)($value['AccountID']);
+    }
+    $values = $result->fetchAll();
+    $result = [];
+    foreach ($values as $v) {
+        $result[] = $v['AccountID'];
+    }
+    return $result;
 
 }
 
@@ -319,7 +327,7 @@ SQL;
 }
 
 
-function add_registration($aid, $event)
+function add_registration($aid, $bid, $event)
 {
     $accountID  = $aid;
     $type = random_badge($event);
@@ -334,7 +342,7 @@ function add_registration($aid, $event)
         )
         VALUES
             (
-                NULL, $accountID, $event, $accountID,
+                NULL, $accountID, $event, $bid,
                 NOW(), 0, $badge, $type, NULL
             );
 SQL;
@@ -352,20 +360,24 @@ function populate_registrations($event)
         return;
     }
 
-
     print "Populate Registrations\n";
 
-    $sql = "SELECT `AccountID` FROM  `ConComList`;";
+    $sql = "SELECT COUNT( DISTINCT `AccountID`) AS count FROM  `ConComList`;";
+    $result = \DB::run($sql);
+    $value = $result->fetch();
+    $count = intval($value['count']) * 2;
+    $members = rand_member($count);
+    $i = 0;
+
+    $sql = "SELECT DISTINCT `AccountID` FROM  `ConComList`;";
     $result = \DB::run($sql);
     $value = $result->fetch();
     while ($value !== false) {
-        add_registration($value['AccountID'], $event);
+        add_registration($members[$i], $value['AccountID'], $event);
+        $i++;
+        add_registration($members[$i], $value['AccountID'], $event);
+        $i++;
         $value = $result->fetch();
-    }
-
-    for ($i = 0; $i < 100; $i++) {
-        $accountID  = rand_member();
-        add_registration($accountID, $event);
     }
 
 }

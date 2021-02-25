@@ -8,30 +8,37 @@ namespace App\Controller\Cycle;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
+use App\Controller\InvalidParameterException;
+
 class PostCycle extends BaseCycle
 {
 
 
     public function buildResource(Request $request, Response $response, $args): array
     {
-        if (!\ciab\RBAC::havePermission('api.post.cycle')) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, 'Permission Denied', 'Permission Denied', 403)];
-        }
+        $permissions = ['api.post.cycle'];
+        $this->checkPermissions($permissions);
+
         $body = $request->getParsedBody();
+        if (empty($body)) {
+            throw new InvalidParameterException('Required body not present');
+        }
         if (!array_key_exists('From', $body)) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, 'Required \'From\' parameter not present', 'Missing Parameter', 400)];
+            throw new InvalidParameterException('Required \'From\' parameter not present');
         }
         if (!array_key_exists('To', $body)) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, 'Required \'To\' parameter not present', 'Missing Parameter', 400)];
+            throw new InvalidParameterException('Required \'To\' parameter not present');
         }
-        $from = date_format(new \DateTime($body['From']), 'Y-m-d');
-        $to = date_format(new \DateTime($body['To']), 'Y-m-d');
+        try {
+            $from = date_format(new \DateTime($body['From']), 'Y-m-d');
+        } catch (\Exception $e) {
+            throw new InvalidParameterException('Required \'From\' parameter not valid');
+        }
+        try {
+            $to = date_format(new \DateTime($body['To']), 'Y-m-d');
+        } catch (\Exception $e) {
+            throw new InvalidParameterException('Required \'To\' parameter not valid');
+        }
         $sql = "INSERT INTO `AnnualCycles` (`AnnualCycleID`, `DateFrom`, `DateTo`) VALUES (NULL, '$from', '$to')";
         $sth = $this->container->db->prepare($sql);
         $sth->execute();
@@ -40,7 +47,8 @@ class PostCycle extends BaseCycle
         $data = $target->buildResource($request, $response, ['id' => $this->container->db->lastInsertId()])[1];
         return [
         \App\Controller\BaseController::RESOURCE_TYPE,
-        $target->arrayResponse($request, $response, $data)
+        $target->arrayResponse($request, $response, $data),
+        201
         ];
 
     }

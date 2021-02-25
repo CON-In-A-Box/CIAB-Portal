@@ -5,12 +5,38 @@
 
 namespace App\Controller;
 
+use ArrayObject;
+use Exception;
+
 use Slim\Container;
 use Slim\Http\Response;
 use Slim\Http\Request;
 
 require_once __DIR__.'/../../../backends/RBAC.inc';
 require_once __DIR__.'/../../../functions/divisional.inc';
+
+class NotFoundException extends Exception
+{
+
+}
+
+
+class PermissionDeniedException extends Exception
+{
+
+}
+
+
+class InvalidParameterException extends Exception
+{
+
+}
+
+
+class ConflictException extends Exception
+{
+
+}
 
 abstract class BaseController
 {
@@ -47,7 +73,9 @@ abstract class BaseController
         $this->hateoas = [];
         $this->chain = [];
 
-        \loadDefinedFields();
+        if (array_key_exists('Neon', $GLOBALS)) {
+            \loadDefinedFields();
+        }
 
         $modules = $container->get('settings')['modules'];
         foreach ($modules as $module) {
@@ -73,32 +101,85 @@ abstract class BaseController
 
     public function __invoke(Request $request, Response $response, $args)
     {
-        $result = $this->buildResource($request, $response, $args);
+        try {
+            $result = $this->buildResource($request, $response, $args);
+        } catch (NotFoundException $e) {
+            $result = [
+            BaseController::RESULT_TYPE,
+            $this->errorResponse($request, $response, $e->getMessage(), 'Not Found', 404)
+            ];
+        } catch (PermissionDeniedException $e) {
+            $result = [
+            BaseController::RESULT_TYPE,
+            $this->errorResponse($request, $response, $e->getMessage(), 'Permission Denied', 403)
+            ];
+        } catch (InvalidParameterException $e) {
+            $result = [
+            BaseController::RESULT_TYPE,
+            $this->errorResponse($request, $response, $e->getMessage(), 'Invalid Parameter', 400)
+            ];
+        } catch (ConflictException $e) {
+            $result = [
+            BaseController::RESULT_TYPE,
+            $this->errorResponse($request, $response, $e->getMessage(), 'Conflict', 409)
+            ];
+        }
+
         if ($result === null || $result[0] === null) {
             return null;
         }
         $type = $result[0];
         $data = $result[1];
         if ($type == BaseController::LIST_TYPE) {
-            $includes = $request->getQueryParam('include', null);
             $output = $result[2];
-            if ($includes) {
-                $values = array_map('trim', explode(',', $includes));
-                for ($i = 0; $i < count($data); $i++) {
-                    $this->processIncludes($request, $response, $args, $values, $data[$i]);
-                }
+            if (count($result) == 4) {
+                $code = $result[3];
+            } else {
+                $code = 200;
             }
-            return $this->listResponse($request, $response, $output, $data);
-        } elseif ($type == BaseController::RESULT_TYPE) {
-            return $data;
-        } else {
-            $includes = $request->getQueryParam('include', null);
-            if ($includes) {
-                $values = array_map('trim', explode(',', $includes));
-                $this->processIncludes($request, $response, $args, $values, $data);
-            }
-            return $this->jsonResponse($request, $response, $data);
+
+            return $this->handleListType($request, $response, $output, $data, $args, $code);
         }
+        if (count($result) == 3) {
+            $code = $result[2];
+        } else {
+            $code = 200;
+        }
+        if ($type == BaseController::RESULT_TYPE) {
+            if (is_a($data, 'Slim\Http\Response')) {
+                return $data;
+            } else {
+                return $this->jsonResponse($request, $response, $data, $code);
+            }
+        } else {
+            return $this->handleResourceType($request, $response, $data, $args, $code);
+        }
+
+    }
+
+
+    public function handleListType(Request $request, Response $response, array $output, array $data, array $args, int $code = 200)
+    {
+        $includes = $request->getQueryParam('include', null);
+        if ($includes) {
+            $values = array_map('trim', explode(',', $includes));
+            for ($i = 0; $i < count($data); $i++) {
+                $this->processIncludes($request, $response, $args, $values, $data[$i]);
+            }
+        }
+        return $this->listResponse($request, $response, $output, $data, $code);
+
+    }
+
+
+    public function handleResourceType(Request $request, Response $response, $data, array $args, $code = 200)
+    {
+        $includes = $request->getQueryParam('include', null);
+        if ($includes) {
+            $values = array_map('trim', explode(',', $includes));
+            $this->processIncludes($request, $response, $args, $values, $data);
+        }
+        return $this->jsonResponse($request, $response, $data, $code);
 
     }
 
@@ -145,6 +226,19 @@ abstract class BaseController
             }
         }
         return $data;
+
+    }
+
+
+    protected function filterBodyParams(array $permitted_keys, array $body): array
+    {
+        $ret = (new ArrayObject($body))->getArrayCopy();
+        $diff = array_diff(array_keys($body), $permitted_keys);
+        foreach ($diff as $key) {
+            unset($ret[$key]);
+        }
+
+        return $ret;
 
     }
 
@@ -303,7 +397,7 @@ abstract class BaseController
         if ($args !== null && array_key_exists($key, $args)) {
             $data = \lookup_users_by_key($args[$key], true, true, false, $fields);
             if (empty($data['users'])) {
-                return null;
+                throw new NotFoundException('Member Not Found');
             }
             $data = BaseController::mapMemberData($data['users'][0]);
         } else {
@@ -339,10 +433,44 @@ abstract class BaseController
         }
         $data = \lookup_user_by_id($user, $fields);
         if (empty($data['users'])) {
-            return null;
+            throw new NotFoundException('Member Not Found');
         }
         $data = BaseController::mapMemberData($data['users'][0]);
         return $data;
+
+    }
+
+
+    public function notFoundResponse(
+        Request $request,
+        Response $response,
+        String $type,
+        string $key
+    ): Response {
+        return $this->errorResponse(
+            $request,
+            $response,
+            "Could not find $type ID $key",
+            'Not Found',
+            404
+        );
+
+    }
+
+
+    public function checkPermissions(
+        array $permissions,
+        string $message = 'Permission Denied'
+    ) {
+        $valid = false;
+        foreach ($permissions as $perm) {
+            if (!$valid && \ciab\RBAC::havePermission($perm)) {
+                $valid = true;
+            }
+        }
+        if (!$valid) {
+            throw new PermissionDeniedException($message);
+        }
 
     }
 
