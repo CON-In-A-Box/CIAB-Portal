@@ -140,7 +140,12 @@ abstract class CiabTestCase extends TestCase
         $this->container['request'] = $request;
         $response = $this->app->run(true);
         if ($code !== null) {
-            $this->assertSame($response->getStatusCode(), $code);
+            try {
+                $this->assertSame($response->getStatusCode(), $code);
+            } catch (\Exception $e) {
+                error_log((string)$response->getBody());
+                throw($e);
+            }
         }
         return $response;
 
