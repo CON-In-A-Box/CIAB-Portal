@@ -7,6 +7,34 @@ use App\Tests\Base\CiabTestCase;
 class CycleTest extends CiabTestCase
 {
 
+    private $cycle = null;
+
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $when = date('Y-m-d', strtotime('+1999 years'));
+        $to = date('Y-m-d', strtotime('+2001 years'));
+        $this->cycle = $this->runSuccessJsonRequest(
+            'POST',
+            '/cycle',
+            null,
+            ['From' => $when, 'To' => $to],
+            201
+        );
+        unset($this->cycle->links);
+
+    }
+
+
+    protected function tearDown(): void
+    {
+        if ($this->cycle != null) {
+            $this->runRequest('DELETE', '/cycle/'.$this->cycle->id, null, null, 204);
+        }
+
+    }
+
 
     protected function addCycle(): string
     {
@@ -75,6 +103,21 @@ class CycleTest extends CiabTestCase
         );
 
         $this->runRequest('DELETE', '/cycle/'.$target, null, null, 204);
+
+    }
+
+
+    public function testIncludesDate(): void
+    {
+        $target = date('Y-m-d', strtotime('+3000 years'));
+        $data = $this->runSuccessJsonRequest('GET', '/cycle', ['includesDate' => $target]);
+        $this->assertTrue(empty($data->data));
+        $target = date('Y-m-d', strtotime('+2000 years'));
+        $data = $this->runSuccessJsonRequest('GET', '/cycle', ['includesDate' => $target]);
+        $this->assertTrue(!empty($data->data));
+        $this->assertEquals(count($data->data), 1);
+        unset($data->data[0]->links);
+        $this->assertEquals($data->data[0], $this->cycle);
 
     }
 
