@@ -7,6 +7,9 @@ The following methods are available to Event resources:
 |---|---|---|---|---|
 |[get](Event.md#get)|GET /event/{id}|Get details about a given event.|core|-|
 |[list](Event.md#list)|GET /event|Get a list of events.|core|-|
+|[create](Event.md#create)|POST /event|Create a new event.|core|api.post.event|
+|[delete](Event.md#delete)|DELETE /event/{id}|Delete an event.|core|api.delete.event|
+
 
 
 <a name="common_objects"></a>
@@ -160,6 +163,93 @@ Response Sample
 }
 ```
 
+<a name="create"></a>
+## create
+
+Create a new event in the system.
+
+### create Request
+
+```POST /event```
+
+### create Parameters
+
+There are no parameters available.
+
+### create Request Body
+
+|Parameter|Meaning|Notes|
+|---|---|---|
+|From|Date of event start.|<b>Required</b>|
+|To|Date of event end.|<b>Required</b>|
+|Name|Name of the event.|<b>Required</b>|
+
+### create Response
+A [Event](#common_objects) resource.
+
+###create Code Samples
+Request Sample
+
+```
+curl -X POST -H 'Authorization: Bearer e0438d90599b1c4762d12fd03db6311c9ca46729' http://localhost/api/event?pretty=true \
+-d { 'From' : '2020-01-01', \
+	 'To' : '2020-01-02', \
+	 'Name' : 'Awesome Con'}
+```
+Response Sample
+
+```
+{
+   "type":"event",
+	"id": 47,
+	"cycle": 4,
+	"DateFrom":"2020-01-01",
+	"DateTo":"2020-01-02",
+	"name": "Awesome Con"
+	"links":
+	[
+		{
+		 "method":"self",
+		 "href":"http:\/\/localhost:8080\/api\/event\47",
+		 "request":"GET"
+		 }
+	]
+}
+```
+
+<a name="delete"></a>
+## delete
+Delete an existing event.
+
+### delete Request
+
+```DELETE /event/{id}```
+
+### delete Parameters
+The following parameters are available:
+
+|Parameter|Meaning|Notes|
+|---|---|---|
+|id|The ID of the event being modified|*required*|
+
+### delete Request Body
+Do not supply a request body.
+
+### delete Response
+
+Does not return a response.
+
+### delete Code Samples
+Request Sample
+
+```
+curl -X DELETE -H 'Authorization: Bearer e0438d90599b1c4762d12fd03db6311c9ca46729' http://localhost/api/event/1
+```
+Response Sample
+
+```
+[]
+```
 
 ---
 ##### [Return to Top](README.md)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Return to Resource List](README.md#resources)
