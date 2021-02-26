@@ -4,6 +4,7 @@ services:
     build: './docker/php/'
     depends_on:
       - mailcatcher
+      - mysql
     networks:
       - backend
     volumes:
@@ -53,7 +54,7 @@ services:
     networks:
       - frontend
       - backend
-    ports: 
+    ports:
       - "1025:1025"
       - "1080:1080"
 networks:
