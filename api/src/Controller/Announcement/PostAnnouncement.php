@@ -114,9 +114,9 @@ SQL;
 
     public function buildResource(Request $request, Response $response, $args): array
     {
-        $department = $this->getDepartment($args['dept']);
+        $department = $this->getDepartment($args['name']);
         if ($department === null) {
-            throw new NotFoundException("Department '${args['dept']}' Not Found");
+            throw new NotFoundException("Department '${args['name']}' Not Found");
         }
 
         $permissions = ['api.post.announcement.all',

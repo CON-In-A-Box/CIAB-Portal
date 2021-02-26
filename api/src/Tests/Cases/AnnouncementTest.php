@@ -20,7 +20,7 @@ class AnnouncementTest extends CiabTestCase
 
         $this->runSuccessRequest(
             'POST',
-            '/announcement/1',
+            '/department/1/announcement',
             null,
             ['Scope' => $scope,
              'Text' => 'testing',
@@ -143,11 +143,11 @@ class AnnouncementTest extends CiabTestCase
             400
         );
 
-        $this->runRequest('POST', '/announcement/1', null, null, 400);
+        $this->runRequest('POST', '/department/1/announcement', null, null, 400);
 
         $this->runRequest(
             'POST',
-            '/announcement/-1',
+            '/department/-1/announcement',
             null,
             ['Scope' => 2,
              'Text' => 'testing',
@@ -157,7 +157,7 @@ class AnnouncementTest extends CiabTestCase
 
         $this->runRequest(
             'POST',
-            '/announcement/1',
+            '/department/1/announcement',
             null,
             ['Text' => 'testing',
              'Email' => 0],
@@ -166,7 +166,7 @@ class AnnouncementTest extends CiabTestCase
 
         $this->runRequest(
             'POST',
-            '/announcement/1',
+            '/department/1/announcement',
             null,
             ['Scope' => 2,
              'Email' => 0],

@@ -16,9 +16,9 @@ class PostDeadline extends BaseDeadline
 
     public function buildResource(Request $request, Response $response, $params): array
     {
-        $department = $this->getDepartment($params['dept']);
+        $department = $this->getDepartment($params['name']);
         if ($department === null) {
-            throw new NotFoundException("Department '${params['dept']}' Not Found");
+            throw new NotFoundException("Department '${params['name']}' Not Found");
         }
         $permissions = ['api.post.deadline.'.$department['id'],
         'api.post.deadline.all'];

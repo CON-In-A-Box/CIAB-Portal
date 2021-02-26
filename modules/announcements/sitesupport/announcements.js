@@ -107,11 +107,12 @@ var announcementPage = (function(options) {
           function() {
             showSpinner();
             var method = 'PUT';
+            var path = 'announcement/' + id;
             if (id == -1) {
               method = 'POST';
-              id = dept;
+              path = 'department/' + dept + '/announcement';
             }
-            apiRequest(method, 'announcement/' + id,
+            apiRequest(method, path,
               'Scope=' + scope + '&Text=' + encodeURI(text) + '&Department=' +
               dept + '&Email=' + email)
               .then(function() {
