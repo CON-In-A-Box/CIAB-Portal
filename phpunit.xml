@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="vendor/autoload.php"
+    colors="true"
+    backupGlobals="false"
+    backupStaticAttributes="false">
+    <php>
+        <env name="XDEBUG_MODE" value="coverage" />
+    </php>
+    <testsuites>
+        <testsuite name="Tests">
+            <directory suffix="Test.php">tests</directory>
+        </testsuite>
+    </testsuites>
+    <filter>
+        <whitelist processUncoveredFilesFromWhitelist="false">
+            <directory suffix=".php">api/src</directory>
+            <exclude>
+                <directory>vendor</directory>
+                <directory>build</directory>
+            </exclude>
+        </whitelist>
+    </filter>
+</phpunit>
