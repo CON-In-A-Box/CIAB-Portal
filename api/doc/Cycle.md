@@ -254,6 +254,7 @@ The following parameters are available:
 |---|---|---|
 |begin|Beginning date for cycles that are being retrieved.|optional|
 |end|Ending date for cycles that are being retrieved.|optional|
+|includesDate|A date that is included in any cycles that are being retrieved.|optional|
 
 
 ### list Request Body
