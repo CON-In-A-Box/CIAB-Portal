@@ -52,3 +52,12 @@ vendor
 #################
 .env
 .vscode
+
+# PHPUnit #
+###########
+build/
+.phpunit.result.cache
+
+# Javascript/Node stuff #
+#########################
+node_modules/
