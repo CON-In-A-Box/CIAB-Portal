@@ -121,6 +121,8 @@ function setupAPIRoutes(App $app, $authMiddleware)
         function () use ($app, $authMiddleware) {
             $app->get('[/]', 'App\Controller\Event\ListEvents');
             $app->get('/{id}', 'App\Controller\Event\GetEvent');
+            $app->post('[/]', 'App\Controller\Event\PostEvent');
+            $app->delete('/{id}', 'App\Controller\Event\DeleteEvent');
         }
     )->add(new \App\Middleware\CiabMiddleware($app))->add($authMiddleware);
 
