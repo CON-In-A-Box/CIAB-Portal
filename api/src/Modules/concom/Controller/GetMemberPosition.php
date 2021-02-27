@@ -10,8 +10,6 @@ use Slim\Http\Response;
 use App\Controller\PermissionDeniedException;
 use App\Controller\NotFoundException;
 
-require_once __DIR__.'/../../../../../modules/concom/functions/POSITION.inc';
-
 class GetMemberPosition extends BaseConcom
 {
 
@@ -29,17 +27,17 @@ class GetMemberPosition extends BaseConcom
                 }
                 throw new NotFoundException($error);
             }
-            if ($data[0]['Id'] != $user &&
+            if ($data['users'][0]['Id'] != $user &&
                 !\ciab\RBAC::havePermission('api.get.concom')) {
                 throw new PermissionDeniedException();
             }
             $user = $data['users'][0]['Id'];
         }
-        $concom = \concom\POSITION::getConComPosition($user);
+        $concom = $this->getConComPosition($user);
         $data = [];
         $path = $request->getUri()->getBaseUrl();
         foreach ($concom as $entry) {
-            $data[] = $this->buildEntry($request, $entry['ListRecordID'], $entry['departmentId'], $user, $entry['note'], $entry['position']);
+            $data[] = $this->buildEntry($request, $entry['ListRecordID'], $entry['DepartmentID'], $user, $entry['Note'], $entry['Position']);
         }
         return [
         \App\Controller\BaseController::LIST_TYPE,

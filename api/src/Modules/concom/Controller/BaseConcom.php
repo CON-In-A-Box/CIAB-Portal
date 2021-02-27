@@ -21,6 +21,69 @@ abstract class BaseConcom extends BaseController
     }
 
 
+    protected function getConComPosition($account, $event = null)
+    {
+        if ($event == null) {
+            $event = \current_eventID();
+            if ($event === null) {
+                return array();
+            }
+        }
+        $sql = <<<SQL
+            SELECT
+                *,
+                (
+                    SELECT
+                        Name
+                    FROM
+                        Departments
+                    WHERE
+                        DepartmentID = c.DepartmentID
+                ) as Department,
+                (
+                    SELECT
+                        Name
+                    FROM
+                        ConComPositions
+                    WHERE
+                        PositionID = c.PositionID
+                ) as Position
+            FROM
+                ConComList as c
+            WHERE
+                AccountID = $account
+                AND EventID = $event
+                AND DepartmentID NOT IN (
+                    SELECT
+                        `DepartmentID`
+                    FROM
+                        `Departments`
+                    WHERE
+                        Name = 'Historical Placeholder'
+                )
+                AND DepartmentID NOT IN (
+                    SELECT
+                        `DepartmentID`
+                    FROM
+                        `Departments`
+                    WHERE
+                        ParentDepartmentID IN (
+                            SELECT
+                                `DepartmentID`
+                            FROM
+                                `Departments`
+                            WHERE
+                                Name = 'Historical Placeholder'
+                        )
+                )
+SQL;
+        $sth = $this->container->db->prepare($sql);
+        $sth->execute();
+        return $sth->fetchAll();
+
+    }
+
+
     protected function buildEntry(Request $request, $id, $dept, $member, $note, $position)
     {
         $path = $request->getUri()->getBaseUrl();
