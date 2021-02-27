@@ -21,11 +21,12 @@ abstract class BaseConcom extends BaseController
     }
 
 
-    protected function buildEntry(Request $request, $dept, $member, $note, $position)
+    protected function buildEntry(Request $request, $id, $dept, $member, $note, $position)
     {
         $path = $request->getUri()->getBaseUrl();
         return ([
                 'type' => 'concom_entry',
+                'id' => $id,
                 'memberId' => $member,
                 'note' => $note,
                 'position' => $position,

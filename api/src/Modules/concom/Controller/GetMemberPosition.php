@@ -39,7 +39,7 @@ class GetMemberPosition extends BaseConcom
         $data = [];
         $path = $request->getUri()->getBaseUrl();
         foreach ($concom as $entry) {
-            $data[] = $this->buildEntry($request, $entry['departmentId'], $user, $entry['note'], $entry['position']);
+            $data[] = $this->buildEntry($request, $entry['ListRecordID'], $entry['departmentId'], $user, $entry['note'], $entry['position']);
         }
         return [
         \App\Controller\BaseController::LIST_TYPE,
