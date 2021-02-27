@@ -13,4 +13,6 @@ set_error_handler(function ($severity, $message, $file, $line) {
     }
 });
 
+_config_from_Database();
+
 $app->run();

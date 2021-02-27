@@ -165,8 +165,8 @@ function new_cycle($start, $end)
 {
     print "$start - $end\n";
     $sql = <<<SQL
-            INSERT INTO `AnnualCycles` 
-                        (`AnnualCycleID`, `DateFrom`, `DateTo`) 
+            INSERT INTO `AnnualCycles`
+                        (`AnnualCycleID`, `DateFrom`, `DateTo`)
                         VALUES (NULL, "$start", "$end")
 SQL;
     \DB::run($sql);
@@ -382,7 +382,7 @@ function populate_registrations($event)
 
 }
 
-
+_config_from_Database();
 print "<pre>";
 if (array_key_exists('NEONID', $GLOBALS) &&
     array_key_exists('NEONKEY', $GLOBALS) &&
