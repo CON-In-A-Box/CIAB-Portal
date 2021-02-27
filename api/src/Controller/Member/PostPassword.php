@@ -79,8 +79,15 @@ class PostPassword extends BaseMember
 SQL;
         $this->container->db->prepare($sql)->execute();
 
+        $name = 'Member';
+        if (array_key_exists('firstName', $data)) {
+            $name = $data['firstName'];
+        } elseif (array_key_exists('lastName', $data)) {
+            $name = $data['lastName'];
+        }
+
         $phpView = new Views\PhpRenderer(__DIR__.'/../../Templates', [
-            'name' => $data['firstName'],
+            'name' => $name,
             'con' => $CONSITENAME,
             'code' => urlencode($code),
             'url' => $BASEURL.'?Function=recovery',

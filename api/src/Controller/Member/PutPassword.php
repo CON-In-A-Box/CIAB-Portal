@@ -10,6 +10,7 @@ use Slim\Http\Response;
 
 use App\Controller\PermissionDeniedException;
 use App\Controller\ConflictException;
+use App\Controller\InvalidParameterException;
 
 class PutPassword extends BaseMember
 {
@@ -30,7 +31,7 @@ class PutPassword extends BaseMember
         $auth = \password_hash($password, PASSWORD_DEFAULT);
 
         $last = 'NULL';
-        $sql = "SELECT * FROM  `Authentication` WHERE AccountID = $user;";
+        $sql = "SELECT * FROM  `Authentication` WHERE AccountID = '$user';";
         $result = $this->container->db->prepare($sql);
         $result->execute();
         $value = $result->fetch();
@@ -56,24 +57,25 @@ SQL;
 
     private function verifyAccess($request, $response, $body, &$accountID)
     {
+        if (array_key_exists('OneTimeCode', $body)) {
+            $onetime = $body['OneTimeCode'];
+            $now = date('Y-m-d H:i', strtotime("now"));
+            $sql = "SELECT AccountID FROM Authentication WHERE OneTime = '$onetime' AND OneTimeExpires > '$now'";
+            $sth = $this->container->db->prepare($sql);
+            $sth->execute();
+            $result = $sth->fetchAll();
+            if (empty($result) || $accountID != $result[0]['AccountID']) {
+                throw new PermissionDeniedException();
+            }
+            return;
+        }
+
         if (!$this->privilaged) {
-            if ($accountID === null || !\ciab\RBAC::havePermission("api.put.member.password")) {
+            if (!\ciab\RBAC::havePermission("api.put.member.password")) {
                 $attribute = $request->getAttribute('oauth2-token');
                 if ($attribute) {
                     $user = $attribute['user_id'];
                 } else {
-                    if (array_key_exists('OneTimeCode', $body)) {
-                        $onetime = $body['OneTimeCode'];
-                        $now = date('Y-m-d H:i', strtotime("now"));
-                        $sql = "SELECT AccountID FROM Authentication WHERE "."OneTime = '$onetime' AND OneTimeExpires > "."'$now'";
-                        $sth = $this->container->db->prepare($sql);
-                        $sth->execute();
-                        $result = $sth->fetchAll();
-                        if (!empty($result) &&
-                            $accountID = $result[0]['AccountID']) {
-                            return null;
-                        }
-                    }
                     $user = -1;
                 }
                 if ($accountID != $user) {
@@ -89,22 +91,29 @@ SQL;
                 }
             }
         }
-        return null;
 
     }
 
 
     public function buildResource(Request $request, Response $response, $args): array
     {
-        $accountID = $args['id'];
-        $body = $request->getParsedBody();
-        $response = $this->verifyAccess($request, $response, $body, $accountID);
-        if ($response) {
-            return $response;
+        if (array_key_exists('email', $args)) {
+            $index = 'email';
+        } else {
+            $index = 'id';
         }
+        $data = $this->findMember($request, $response, $args, $index);
+        $accountID = $data['id'];
+        $body = $request->getParsedBody();
+        $this->verifyAccess($request, $response, $body, $accountID);
 
-        $password = $body['NewPassword'];
-        $this->setPassword($accountID, $password);
+        if ($body) {
+            if (!array_key_exists('NewPassword', $body)) {
+                throw new InvalidParameterException("'NewPassword' not supplied");
+            }
+            $password = $body['NewPassword'];
+            $this->setPassword($accountID, $password);
+        }
         return [null];
 
     }
