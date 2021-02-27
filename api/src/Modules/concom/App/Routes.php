@@ -18,6 +18,7 @@ function setupConComAPI($app, $authMiddleware)
         '/staff_membership',
         function () use ($app, $authMiddleware) {
             $app->get('/{id}', 'App\Modules\concom\Controller\GetStaffMembership');
+            $app->delete('/{id}', 'App\Modules\concom\Controller\DeleteStaffMembership');
         }
     )->add(new App\Middleware\CiabMiddleware($app))->add($authMiddleware);
 
