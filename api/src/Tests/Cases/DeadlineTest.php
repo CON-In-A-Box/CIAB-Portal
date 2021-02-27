@@ -9,6 +9,12 @@ class DeadlineTest extends CiabTestCase
 
     private $target;
 
+    private $position;
+
+    private $cycle;
+
+    private $event;
+
 
     protected function setUp(): void
     {
@@ -59,12 +65,25 @@ class DeadlineTest extends CiabTestCase
 
         $this->target = $target;
 
+        $when = date('Y-m-d', strtotime('+1998 years'));
+        $to = date('Y-m-d', strtotime('+2002 years'));
+        $this->cycle = $this->runSuccessJsonRequest('POST', '/cycle', null, ['From' => $when, 'To' => $to], 201);
+        $when = date('Y-m-d', strtotime('+1999 years'));
+        $to = date('Y-m-d', strtotime('+1999 years'));
+        $this->event = $this->runSuccessJsonRequest('POST', '/event', null, ['From' => $when, 'To' => $to, 'Name' => 'PHPTest-a-con'], 201);
+        $this->position = $this->runSuccessJsonRequest('POST', '/member/1000/staff_membership', null, ['Department' => '1', 'Position' => '1', 'Note' => 'PHPUnit Testing', 'Event' => $this->event->id], 201);
+
     }
 
 
     protected function tearDown(): void
     {
         $this->runRequest('DELETE', '/deadline/'.$this->target, null, null, 204);
+        $this->runRequest('DELETE', '/staff_membership/'.$this->position->id, null, null, 204);
+        $this->runRequest('DELETE', '/event/'.$this->event->id, null, null, 204);
+        $this->runRequest('DELETE', '/cycle/'.$this->cycle->id, null, null, 204);
+
+        parent::tearDown();
 
     }
 
