@@ -15,6 +15,13 @@ function setupConComAPI($app, $authMiddleware)
     )->add(new App\Middleware\CiabMiddleware($app))->add($authMiddleware);
 
     $app->group(
+        '/staff_membership',
+        function () use ($app, $authMiddleware) {
+            $app->get('/{id}', 'App\Modules\concom\Controller\GetStaffMembership');
+        }
+    )->add(new App\Middleware\CiabMiddleware($app))->add($authMiddleware);
+
+    $app->group(
         '/department',
         function () use ($app, $authMiddleware) {
             $app->get('/concom/', 'App\Modules\concom\Controller\ListConcom');
