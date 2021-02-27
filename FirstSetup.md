@@ -1,5 +1,7 @@
 # How to get setup for your very first install and run.
 
+**IMPORTANT** If you are using Docker, read [Docker.md](Docker.md) instead!
+
 1. Make sure you have this on your box with a web server and you have a database server setup. Ideally this project should be at the document root for the web server. You of course need PHP enabled on your web server.
     1. Note: the apache server needs the headers and php7 modules
     1. Note: php needs the libcurl integration (php7-curl)
@@ -24,4 +26,4 @@ The goal is to import NEON data, that we cannot random access read, in a regular
 To your crontab add this line
 `*/5 * * * * php <full path to package>/tools/sync_neon_event_to_db.php 1>/dev/null`
 
-That will then sync the Neon data every 5 minutes. Note that sync_neon_event_to_db.php will not run if it is already running. So you will not have to worry about overwhelming the system resources. But it does mean that worst case is that there is a 5 minute delay between the updates, if an update takes several minutes that will determine what your out-of-date factor will be. 
+That will then sync the Neon data every 5 minutes. Note that sync_neon_event_to_db.php will not run if it is already running. So you will not have to worry about overwhelming the system resources. But it does mean that worst case is that there is a 5 minute delay between the updates, if an update takes several minutes that will determine what your out-of-date factor will be.

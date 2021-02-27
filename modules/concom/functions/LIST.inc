@@ -6,6 +6,8 @@
 
 namespace concom;
 
+global $FUNCTIONDIR;
+
 require_once($FUNCTIONDIR.'/users.inc');
 require_once($FUNCTIONDIR.'/database.inc');
 

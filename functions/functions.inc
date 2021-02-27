@@ -8,6 +8,7 @@
 require_once(__DIR__."/../backends/email.inc");
 require __DIR__."/../vendor/autoload.php";
 require_once(__DIR__."/locations.inc");
+require_once(__DIR__."/database.inc");
 
 // Main setup function
 $MODULENAME  = "Member Portal";
@@ -161,59 +162,64 @@ SQL;
 }
 
 
-// Load Site Specific info
-try {
-    if (isset($dotenv)) {
-        $dotenv->required(['DBHOST', 'DBUSER', 'DBNAME', 'DBPASS', 'DB_BACKEND']);
-    }
+function initializeApplication()
+{
+    // Load Site Specific info
+    try {
+        if (isset($dotenv)) {
+            $dotenv->required(['DBHOST', 'DBUSER', 'DBNAME', 'DBPASS', 'DB_BACKEND']);
+        }
 
-    // Include the Master Database
-    require_once(__DIR__."/database.inc");
-    $db = new DB;
-    _config_from_Database();
+        // Include the Master Database
+        $db = new DB;
+        _config_from_Database();
 
-    // Include NeonCRM for DB calls via API
-    if (array_key_exists('NEONID', $GLOBALS) &&
-        array_key_exists('NEONKEY', $GLOBALS) &&
-        !empty($GLOBALS['NEONID']) &&
-        !empty($GLOBALS['NEONKEY'])) {
-        require_once(__DIR__."/neon.inc");
-    }
+        // Include NeonCRM for DB calls via API
+        if (array_key_exists('NEONID', $GLOBALS) &&
+            array_key_exists('NEONKEY', $GLOBALS) &&
+            !empty($GLOBALS['NEONID']) &&
+            !empty($GLOBALS['NEONKEY'])) {
+            require_once(__DIR__."/neon.inc");
+        }
 
-    // Load the base of all active modules
-    $modules = scandir($MODULESDIR);
-    foreach ($modules as $key => $value) {
-        if (!in_array($value, array(".", ".."))) {
-            if (array_key_exists('DISABLEDMODULES', $GLOBALS) &&
-                in_array($value, $GLOBALS['DISABLEDMODULES'])) {
-                continue;
-            }
-            if (is_dir($MODULESDIR.DIRECTORY_SEPARATOR.$value)) {
-                if (is_file($MODULESDIR.DIRECTORY_SEPARATOR.$value.DIRECTORY_SEPARATOR.'init.inc')) {
-                    require_once($MODULESDIR.DIRECTORY_SEPARATOR.$value.DIRECTORY_SEPARATOR.'init.inc');
+        global $MODULESDIR; // TODO: Deglobalize this
+
+        // Load the base of all active modules
+        $modules = scandir($MODULESDIR);
+        foreach ($modules as $key => $value) {
+            if (!in_array($value, array(".", ".."))) {
+                if (array_key_exists('DISABLEDMODULES', $GLOBALS) &&
+                    in_array($value, $GLOBALS['DISABLEDMODULES'])) {
+                    continue;
+                }
+                if (is_dir($MODULESDIR.DIRECTORY_SEPARATOR.$value)) {
+                    if (is_file($MODULESDIR.DIRECTORY_SEPARATOR.$value.DIRECTORY_SEPARATOR.'init.inc')) {
+                        require_once($MODULESDIR.DIRECTORY_SEPARATOR.$value.DIRECTORY_SEPARATOR.'init.inc');
+                    }
                 }
             }
         }
+    } catch (RuntimeException $e) {
+        // Give a default config file
+        echo '
+        <html>
+        <head>CON-In-A-Box Site Config ('.$MODULENAME.' module)</head>
+        <body>
+        <pre>
+            SITE CONFIGURATION ERROR -- Database Environment missing or incorrect.';
+        print "\n";
+        if (array_key_exists('DBPASS', $_ENV)) {
+            $_ENV['DBPASS'] = "&lt;&lt;hidden&gt;&gt;";
+        }
+        print_r($_ENV, false);
+        print_r($e, false);
+        echo '
+        </pre>
+        </body>
+    </html>';
+        die();
     }
-} catch (RuntimeException $e) {
-    // Give a default config file
-    echo '
-    <html>
-      <head>CON-In-A-Box Site Config ('.$MODULENAME.' module)</head>
-    <body>
-      <pre>
-        SITE CONFIGURATION ERROR -- Database Environment missing or incorrect.';
-    print "\n";
-    if (array_key_exists('DBPASS', $_ENV)) {
-        $_ENV['DBPASS'] = "&lt;&lt;hidden&gt;&gt;";
-    }
-    print_r($_ENV, false);
-    print_r($e, false);
-    echo '
-      </pre>
-    </body>
-  </html>';
-    die();
+
 }
 
 
