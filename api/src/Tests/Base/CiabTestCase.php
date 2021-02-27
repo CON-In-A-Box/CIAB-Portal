@@ -62,6 +62,9 @@ abstract class CiabTestCase extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+
+        _config_from_Database();
+
         $settings = require __DIR__.'/../../App/Settings.php';
         $this->app = new \Slim\App($settings);
         $this->middleware = new BlankMiddleWare();
