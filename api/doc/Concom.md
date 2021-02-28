@@ -14,6 +14,7 @@ A concom\_entry object resource is used when listing concom members. Use a membe
 ```
 {
 	"type":"concom_entry",
+	"id": {integer},
 	"memberId":{integer},
 	"note":{string},
 	"position":{string},
@@ -27,6 +28,7 @@ concom\_entry object resources have the following available properties:
 |Object Property|Value|Description|Includable|
 |---|---|---|---|
 |note|string|Note for the entry|-|
+|id|integer|Resource ID for this record|-|
 |memberId|integer|Member ID for this entry|**yes** `member`|
 |position|string|Concom position|-|
 |type|string|Always `concom_entry`|-|
@@ -103,6 +105,7 @@ Response Sample
     "data": [
         {
             "type": "concom_entry",
+            "id": "45",
             "memberId": "1405",
             "note": "",
             "position": "Head",
@@ -122,6 +125,7 @@ Response Sample
         },
         {
             "type": "concom_entry",
+            "id": "46",
             "memberId": "1458",
             "note": "",
             "position": "Sub-Head",
@@ -141,6 +145,7 @@ Response Sample
         },
         {
             "type": "concom_entry",
+            "id": "47",
             "memberId": "1228",
             "note": "",
             "position": "Specialist",
@@ -203,6 +208,7 @@ Response Sample
     "data": [
         {
             "type": "concom_entry",
+            "id": "45",
             "memberId": "1000",
             "note": "",
             "position": "Head",
@@ -222,6 +228,7 @@ Response Sample
         },
         {
             "type": "concom_entry",
+            "id": "46",
             "memberId": "1000",
             "note": "",
             "position": "Head",
@@ -286,6 +293,7 @@ Response Sample
     "data": [
         {
             "type": "concom_entry",
+            "id": "45",
             "note": "",
             "memberId": "1002",
             "position": "Sub-Head",
