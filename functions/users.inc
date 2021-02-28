@@ -623,7 +623,7 @@ function lookup_users_by_badgename(
             FROM
                 `Registrations`
             WHERE
-                BadgeName LIKE '%{$badge}%';
+                BadgeName LIKE '%{$badge}%'
 SQL;
     } else {
         $sql = <<<SQL
@@ -632,21 +632,10 @@ SQL;
             FROM
                 `Registrations`
             WHERE
-                BadgeName = '$badge';
+                BadgeName = '$badge'
 SQL;
     }
-    $result = DB::run($sql);
-    $value = $result->fetch();
-    $users = [];
-    while ($value !== false) {
-        if ($single_user && count($users) > 1) {
-            return array('code' => '409 Conflict', 'users' => array());
-        }
-        $users[] = lookup_user_by_id($value['AccountID'], $fields)['users'][0];
-        $value = $result->fetch();
-    }
-
-    return array('code' => null, 'users' => $users);
+    return _lookup_user("AccountID IN ($sql)", $single_user, $fields);
 
 }
 
