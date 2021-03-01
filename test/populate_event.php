@@ -382,6 +382,7 @@ function populate_registrations($event)
 
 }
 
+
 _config_from_Database();
 print "<pre>";
 if (array_key_exists('NEONID', $GLOBALS) &&
