@@ -14,7 +14,10 @@ use Atlas\Query\Update;
 $db = MyPDO::instance();
 
 $delete = Delete::new($db);
+$delete->from('Authentication')->perform();
 $delete->from('ConComList')->perform();
+$delete->from('Registrations')->perform();
+$delete->from('BadgeTypes')->perform();
 $delete->from('Events')->perform();
 $delete->from('AnnualCycles')->perform();
 $delete->from('Members')->perform();
@@ -45,12 +48,34 @@ $insert->into('Events')->columns([
 $eventId = $insert->getLastInsertId();
 
 $insert = Insert::new($db);
+$insert->into('BadgeTypes')->columns([
+    'AvailableFrom' => date('Y-m-d', strtotime('3 July 2021')),
+    'AvailableTo' => date('Y-m-d', strtotime('8 July 2021')),
+    'Cost' => 0,
+    'Name' => 'A Badge',
+    'EventID' => $eventId
+])->perform();
+
+$insert = Insert::new($db);
 $insert->into('Members')->columns([
     'AccountID' => 1000,
     'FirstName' => 'Odin',
     'LastName' => 'Allfather',
     'Email' => 'allfather@oneeye.com',
     'Gender' => 'Allfather'
+])->perform();
+
+$auth = \password_hash('Sleipnir', PASSWORD_DEFAULT);
+
+$insert = Insert::new($db);
+$insert->into('Authentication')->columns([
+    'AccountID' => 1000,
+    'Authentication' => $auth,
+    'LastLogin' => null,
+    'Expires' => date('Y-m-d', strtotime('+1 year')),
+    'FailedAttempts' => 0,
+    'OneTime' => null,
+    'OneTimeExpires' => null
 ])->perform();
 
 $select = Select::new($db);
