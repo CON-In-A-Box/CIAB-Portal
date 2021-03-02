@@ -105,6 +105,9 @@ SQL;
         $data = $this->findMember($request, $response, $args, $index);
         $accountID = $data['id'];
         $body = $request->getParsedBody();
+        if (empty($body)) {
+            throw new InvalidParameterException('No body present');
+        }
         $this->verifyAccess($request, $response, $body, $accountID);
 
         if ($body) {

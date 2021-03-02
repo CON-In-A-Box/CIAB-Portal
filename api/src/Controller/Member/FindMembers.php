@@ -22,7 +22,7 @@ class FindMembers extends BaseMember
             foreach ($data['users'] as $user) {
                 $hateoas[] = [
                 'method' => 'self',
-                'href' => $request->getUri()->getBaseUrl().'/member/'.$user['id'],
+                'href' => $request->getUri()->getBaseUrl().'/member/'.$user['Id'],
                 'request' => 'GET'
                 ];
                 $result[] = ['id' => $user['Id'],

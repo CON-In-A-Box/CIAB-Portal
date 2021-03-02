@@ -10,6 +10,8 @@ use Slim\Http\Response;
 
 use App\Controller\NotFoundException;
 
+require_once(__DIR__.'/../../../../functions/authentication.inc');
+
 class GetStatus extends BaseMember
 {
 
@@ -62,12 +64,12 @@ SQL;
             throw new NotFoundException($error);
         }
         $data = $data['users'][0];
-        if (!array_key_exists('id', $data)) {
+        if (!array_key_exists('Id', $data)) {
             $error = 'User ID not found';
             throw new NotFoundException($error);
         }
         $valid = array('type' => 'member_status',
-                       'status' => $this->verifyAccount($data['id']));
+                       'status' => $this->verifyAccount($data['Id']));
         return [
         \App\Controller\BaseController::RESOURCE_TYPE,
         $valid];
