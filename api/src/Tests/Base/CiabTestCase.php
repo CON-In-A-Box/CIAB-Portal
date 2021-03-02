@@ -8,14 +8,32 @@ use Slim\App;
 use Slim\Http\Request;
 use Slim\Http\Environment;
 use App\Tests\Base\BlankMiddleWare;
+use Chadicus\Slim\OAuth2\Middleware;
 
 require __DIR__.'/../../App/Routes.php';
 require __DIR__.'/../../App/Dependencies.php';
+require __DIR__.'/../../App/OAuth2.php';
 
 require __DIR__.'/../../../../functions/functions.inc';
+require_once __DIR__.'/../../../../backends/oauth2.inc';
 
 abstract class CiabTestCase extends TestCase
 {
+
+    /**
+     * @var string
+     */
+    static protected $login = 'allfather@oneeye.com';
+
+    /**
+     * @var string
+     */
+    static protected $password = 'asdfasdf';
+
+    /**
+     * @var string
+     */
+    static protected $client = 'ciab';
 
     /**
      * @var Container
@@ -27,9 +45,30 @@ abstract class CiabTestCase extends TestCase
      */
     protected $app;
 
+    /**
+     * @var object
+     */
+    protected $middleware;
+
+    /**
+     * @var bool
+     */
+    protected $setupToken = true;
+
+    /**
+     * @var bool
+     */
+    protected $useOAuth2 = true;
+
+    /**
+     * @var object
+     */
+    protected $token;
+
 
     public static function setUpBeforeClass(): void
     {
+        parent::setUpBeforeClass();
         $already_loaded = array_key_exists('init', $GLOBALS);
         $GLOBALS['init'] = true;
 
@@ -67,9 +106,7 @@ abstract class CiabTestCase extends TestCase
 
         $settings = require __DIR__.'/../../App/Settings.php';
         $this->app = new \Slim\App($settings);
-        $this->middleware = new BlankMiddleWare();
         setupAPIDependencies($this->app, $settings);
-        setupAPIRoutes($this->app, $this->middleware);
 
         $container = $this->app->getContainer();
         if ($container === null) {
@@ -77,6 +114,15 @@ abstract class CiabTestCase extends TestCase
         }
 
         $this->container = $container;
+
+        if ($this->useOAuth2) {
+            $data = setupOAUTH2();
+            setupAPIOAuth2($this->app, $data[0]);
+            $this->middleware = new Middleware\Authorization($data[0], $this->container);
+        } else {
+            $this->middleware = new BlankMiddleWare();
+        }
+        setupAPIRoutes($this->app, $this->middleware);
 
         $modules = scandir(__DIR__.'/../../Modules');
         foreach ($modules as $key => $value) {
@@ -102,6 +148,10 @@ abstract class CiabTestCase extends TestCase
             }
         }
 
+        if ($this->setupToken && $this->useOAuth2) {
+            $this->token = $this->runSuccessJsonRequest('POST', '/token', null, ['grant_type' => 'password', 'username' => self::$login, 'password' => self::$password, 'client_id' => self::$client]);
+        }
+
     }
 
 
@@ -116,7 +166,9 @@ abstract class CiabTestCase extends TestCase
             'QUERY_STRING'   => $serverParams
             ]);
         $request = Request::createFromEnvironment($env);
-        $request = $request->withAttribute('oauth2-token', ['user_id' => 1000]);
+        if ($this->token) {
+            $request = $request->withHeader('Authorization', 'Bearer '.$this->token->access_token);
+        }
         return $request;
 
     }

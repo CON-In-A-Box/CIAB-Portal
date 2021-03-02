@@ -7,6 +7,7 @@ use Chadicus\Slim\OAuth2\Middleware;
 
 require __DIR__.'/../../../vendor/autoload.php';
 require __DIR__.'/../../../functions/functions.inc';
+require_once __DIR__.'/../../../backends/oauth2.inc';
 require __DIR__.'/Dependencies.php';
 require __DIR__.'/Routes.php';
 require __DIR__.'/OAuth2.php';
@@ -16,13 +17,13 @@ if (is_file(__DIR__.'/../../../.env')) {
     $dotenv->load();
 }
 
-/* Defines $server as the OAuth2 server */
-require_once __DIR__.'/../../../backends/oauth2.inc';
-
 $settings = require __DIR__.'/Settings.php';
 $app = new \Slim\App($settings);
 $container = $app->getContainer();
 setupAPIDependencies($app, $settings);
+$oauth = setupOAUTH2();
+$server = $oauth[0];
+$storage = $oauth[1];
 setupAPIOAuth2($app, $server);
 $authMiddleware = new Middleware\Authorization($server, $container);
 setupAPIRoutes($app, $authMiddleware);
