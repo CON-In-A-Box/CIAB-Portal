@@ -28,7 +28,7 @@ abstract class CiabTestCase extends TestCase
     /**
      * @var string
      */
-    static protected $password = 'asdfasdf';
+    static protected $password = 'Sleipnir';
 
     /**
      * @var string
