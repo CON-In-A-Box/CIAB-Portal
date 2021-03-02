@@ -11,7 +11,7 @@ use Slim\Http\Response;
 use App\Controller\ConflictException;
 use App\Controller\InvalidParameterException;
 
-class PutTicket extends BaseTicket
+class PutTicket extends BaseTicketInclude
 {
 
 
@@ -59,13 +59,6 @@ class PutTicket extends BaseTicket
         \App\Controller\BaseController::RESOURCE_TYPE,
         $data
         ];
-
-    }
-
-
-    public function processIncludes(Request $request, Response $response, $args, $values, &$data)
-    {
-        $this->ticketIncludes($request, $response, $args, $values, $data);
 
     }
 

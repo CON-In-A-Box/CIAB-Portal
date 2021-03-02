@@ -11,7 +11,7 @@ use Slim\Http\Response;
 use App\Controller\PermissionDeniedException;
 use App\Controller\NotFoundException;
 
-class ListTickets extends BaseTicket
+class ListTickets extends BaseTicketInclude
 {
 
 
@@ -59,13 +59,6 @@ class ListTickets extends BaseTicket
             $tickets[0]
             ];
         }
-
-    }
-
-
-    public function processIncludes(Request $request, Response $response, $args, $values, &$data)
-    {
-        $this->ticketIncludes($request, $response, $args, $values, $data);
 
     }
 

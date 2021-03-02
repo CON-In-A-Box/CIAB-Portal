@@ -11,7 +11,7 @@ use Slim\Http\Response;
 use App\Controller\InvalidParameterException;
 use App\Controller\ConflictException;
 
-class PostTicket extends BaseTicket
+class PostTicket extends BaseTicketInclude
 {
 
 
@@ -86,13 +86,6 @@ class PostTicket extends BaseTicket
         $target->arrayResponse($request, $response, $data),
         201
         ];
-
-    }
-
-
-    public function processIncludes(Request $request, Response $response, $args, $values, &$data)
-    {
-        $this->ticketIncludes($request, $response, $args, $values, $data);
 
     }
 
