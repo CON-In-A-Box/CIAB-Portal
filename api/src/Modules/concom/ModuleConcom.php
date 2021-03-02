@@ -9,6 +9,8 @@ use App\Modules\BaseModule;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
+require_once __DIR__.'/../../../../modules/concom/functions/POSITION.inc';
+
 class ModuleConcom extends BaseModule
 {
 

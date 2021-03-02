@@ -27,6 +27,8 @@ setupAPIOAuth2($app, $server);
 $authMiddleware = new Middleware\Authorization($server, $container);
 setupAPIRoutes($app, $authMiddleware);
 
+global $DISABLEDMODULES;
+
 $modules = scandir(__DIR__.'/../Modules');
 foreach ($modules as $key => $value) {
     if (!in_array($value, array(',', '..'))) {
