@@ -9,6 +9,7 @@ use Slim\Http\Request;
 use Slim\Http\Response;
 
 use App\Controller\ConflictException;
+use App\Controller\InvalidParameterException;
 
 class PutTicket extends BaseTicket
 {
@@ -18,11 +19,11 @@ class PutTicket extends BaseTicket
     {
         $id = $params['id'];
         $aid = $this->getAccount($id, $request, $response, 'api.registration.ticket.put');
-        if (is_array($aid)) {
-            return $aid;
-        }
 
         $body = $request->getParsedBody();
+        if (empty($body)) {
+            throw new InvalidParameterException('Body not present');
+        }
         $set = [];
 
         if (array_key_exists('badgeName', $body)) {
@@ -37,9 +38,7 @@ class PutTicket extends BaseTicket
         }
 
         if (empty($set)) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, 'Unprocessable Entity', 'Understood Parameter missing.', 422)];
+            throw new InvalidParameterException('Understood Parameter missing.');
         }
 
         $setStr = implode(', ', $set);

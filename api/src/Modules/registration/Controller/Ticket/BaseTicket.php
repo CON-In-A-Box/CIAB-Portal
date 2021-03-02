@@ -179,11 +179,11 @@ abstract class BaseTicket extends BaseRegistration
 
     protected function updateAndPrintTicket($request, $response, $params, $id, $rbac, $sql, $error)
     {
-        $aid = $this->getAccount($id, $request, $response, $rbac);
-        if (is_array($aid)) {
-            return $aid;
-        }
+        $this->getAccount($id, $request, $response, $rbac);
 
+        if (!array_key_exists('id', $params)) {
+            $params['id'] = $id;
+        }
         $rc = $this->updateTicket(
             $request,
             $response,
@@ -199,6 +199,20 @@ abstract class BaseTicket extends BaseRegistration
             return [null];
         }
         return $rc;
+
+    }
+
+
+    protected function verifyTicket($id)
+    {
+        $sql = "SELECT * FROM `Registrations` WHERE `RegistrationID` = $id AND `VoidDate` IS NULL";
+        $sth = $this->container->db->prepare($sql);
+        $sth->execute();
+        $data = $sth->fetch();
+        if (!$data) {
+            throw new NotFoundException('Registration Not Found');
+        }
+        return $data;
 
     }
 

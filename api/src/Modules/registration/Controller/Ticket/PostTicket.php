@@ -26,20 +26,29 @@ class PostTicket extends BaseTicket
         } else {
             throw new InvalidParameterException('Required \'member\' parameter not present');
         }
-        if (array_key_exists('ticketType', $body)) {
-            $type = $body['ticketType'];
-        } else {
-            throw new InvalidParameterException('Required \'ticketType\' parameter not present');
-        }
+        $data = $this->findMember($request, $response, $body, 'member');
+        $member = $data['id'];
 
         if (array_key_exists('event', $body)) {
             $event = $body['event'];
         } else {
             $event = \current_eventID();
         }
+        $target = new \App\Controller\Event\GetEvent($this->container);
+        $target->buildResource($request, $response, ['id' => $event])[1];
+
+
+        if (array_key_exists('ticketType', $body)) {
+            $type = $body['ticketType'];
+        } else {
+            throw new InvalidParameterException('Required \'ticketType\' parameter not present');
+        }
+        $target = new GetTicketTypes($this->container);
+        $target->buildResource($request, $response, ['id' => $type])[1];
 
         if (array_key_exists('dependOn', $body)) {
-            $depend = $body['dependOn'];
+            $data = $this->findMember($request, $response, $body, 'dependOn');
+            $depend = $data['id'];
         } else {
             $depend = 'NULL';
         }
@@ -57,9 +66,10 @@ class PostTicket extends BaseTicket
         }
 
         if (array_key_exists('registeredBy', $body)) {
-            $regBy = $body['registeredBy'];
+            $data = $this->findMember($request, $response, $body, 'registeredBy');
+            $regBy = $data['id'];
         } else {
-            $regBy = $body['member'];
+            $regBy = $member;
         }
 
         $sql = "INSERT INTO Registrations(AccountId, BadgeDependentOnID, BadgeName, BadgeTypeID, EmergencyContact, EventID, RegisteredByID, RegistrationDate) VALUES ($member, $depend, $badgeName, $type, $contact, $event, $regBy, NOW())";

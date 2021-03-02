@@ -141,6 +141,9 @@ SQL;
 
     private function putConfiguration(Request $request, Response $response, $args, $table, $data)
     {
+        if (empty($data)) {
+            throw new InvalidParameterException('No update parameter present');
+        }
         if (!array_key_exists('Value', $data)) {
             throw new InvalidParameterException('No \'Value\' parameter present');
         }
