@@ -3,25 +3,25 @@
     require_module 'standard';
 .*/
 
-namespace App\Modules\concom\Controller;
+namespace App\Modules\staff\Controller;
 
 use Slim\Container;
 use Slim\Http\Request;
 use Slim\Http\Response;
 use App\Controller\BaseController;
 
-abstract class BaseConcom extends BaseController
+abstract class BaseStaff extends BaseController
 {
 
 
     public function __construct(Container $container)
     {
-        parent::__construct('concom', $container);
+        parent::__construct('staff', $container);
 
     }
 
 
-    protected function getConComPosition($account, $event = null)
+    protected function getStaffPosition($account, $event = null)
     {
         if ($event == null) {
             $event = \current_eventID();
@@ -88,7 +88,7 @@ SQL;
     {
         $path = $request->getUri()->getBaseUrl();
         return ([
-                'type' => 'concom_entry',
+                'type' => 'staff_entry',
                 'id' => $id,
                 'memberId' => $member,
                 'note' => $note,
@@ -138,5 +138,5 @@ SQL;
     }
 
 
-    /* End BaseConcom */
+    /* End BaseStaff */
 }

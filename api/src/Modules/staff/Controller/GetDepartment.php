@@ -3,20 +3,20 @@
     require_module 'standard';
 .*/
 
-namespace App\Modules\concom\Controller;
+namespace App\Modules\staff\Controller;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
 
 use App\Controller\NotFoundException;
 
-class GetDepartment extends BaseConcom
+class GetDepartment extends BaseStaff
 {
 
 
     public function buildResource(Request $request, Response $response, $args) :array
     {
-        $permissions = ['api.get.concom'];
+        $permissions = ['api.get.staff'];
         $this->checkPermissions($permissions);
         $dept = $this->getDepartment($args['id']);
         if ($dept === null) {
@@ -30,6 +30,7 @@ class GetDepartment extends BaseConcom
         }
         $sql = <<<SQL
     SELECT
+        l.ListRecordID AS record,
         l.AccountID AS member,
         COALESCE(l.Note, "") AS note,
         (
@@ -52,12 +53,12 @@ SQL;
         $path = $request->getUri()->getBaseUrl();
         $output = [];
         foreach ($data as $entry) {
-            $output[] = $this->buildEntry($request, $dept['id'], $entry['member'], $entry['note'], $entry['position']);
+            $output[] = $this->buildEntry($request, $entry['record'], $dept['id'], $entry['member'], $entry['note'], $entry['position']);
         }
         return [
         \App\Controller\BaseController::LIST_TYPE,
         $output,
-        array('type' => 'concom_list', 'event' => $event)];
+        array('type' => 'staff_list', 'event' => $event)];
 
     }
 

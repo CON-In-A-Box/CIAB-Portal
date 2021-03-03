@@ -3,14 +3,14 @@
     require_module 'standard';
 .*/
 
-namespace App\Modules\concom\Controller;
+namespace App\Modules\staff\Controller;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
 use App\Controller\PermissionDeniedException;
 use App\Controller\NotFoundException;
 
-class GetMemberPosition extends BaseConcom
+class GetMemberPosition extends BaseStaff
 {
 
 
@@ -28,21 +28,21 @@ class GetMemberPosition extends BaseConcom
                 throw new NotFoundException($error);
             }
             if ($data['users'][0]['Id'] != $user &&
-                !\ciab\RBAC::havePermission('api.get.concom')) {
+                !\ciab\RBAC::havePermission('api.get.staff')) {
                 throw new PermissionDeniedException();
             }
             $user = $data['users'][0]['Id'];
         }
-        $concom = $this->getConComPosition($user);
+        $staff = $this->getStaffPosition($user);
         $data = [];
         $path = $request->getUri()->getBaseUrl();
-        foreach ($concom as $entry) {
+        foreach ($staff as $entry) {
             $data[] = $this->buildEntry($request, $entry['ListRecordID'], $entry['DepartmentID'], $user, $entry['Note'], $entry['Position']);
         }
         return [
         \App\Controller\BaseController::LIST_TYPE,
         $data,
-        array('type' => 'concom_list')
+        array('type' => 'staff_list')
         ];
 
     }

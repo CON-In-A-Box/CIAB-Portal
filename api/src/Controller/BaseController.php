@@ -246,7 +246,7 @@ abstract class BaseController
     protected function jsonResponse(Request $request, Response $response, $data, $code = 200): Response
     {
         foreach ($this->chain as $child) {
-            $data = $child->handle($request, $response, $data, $code);
+            $data = $child->handle($request, $response, $data, $code, $this->container);
         }
 
         $parameters = null;
@@ -311,7 +311,7 @@ abstract class BaseController
     protected function arrayResponse(Request $request, Response $response, $data, $code = 200): Array
     {
         foreach ($this->chain as $child) {
-            $data = $child->handle($request, $response, $data, $code);
+            $data = $child->handle($request, $response, $data, $code, $this->container);
         }
         if (!empty($data) && !array_key_exists('type', $data)) {
             $data['type'] = $this->api_type;

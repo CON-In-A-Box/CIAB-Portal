@@ -3,14 +3,14 @@
     require_module 'standard';
 .*/
 
-namespace App\Modules\concom\Controller;
+namespace App\Modules\staff\Controller;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
 use App\Controller\NotFoundException;
 use App\Controller\InvalidParameterException;
 
-class PostStaffMembership extends BaseConcom
+class PostStaffMembership extends BaseStaff
 {
 
 

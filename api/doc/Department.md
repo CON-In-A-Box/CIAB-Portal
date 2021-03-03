@@ -13,8 +13,8 @@ The following methods are available to Department resources:
 |[add_deadline](Department.md#add_deadline)|POST /department/{identifier}/deadline|Add a new deadline.|core|api.post.deadline.{department}|
 |[announcements](Department.md#announcements)|GET /department/{identifier}/announcments|Get a list of announcements for a given Department.|core|-|
 |[add_announcement](Department.md#add_announcement)|POST /department/{identifier}/announcement|Add a new announcement.|core|api.post.announcement.{department}|
-|[concom](Concom.md#department)|GET /department/{identifier}/concom|Get a list of the ConCom for the department.|[concom](Concom.md)|api.get.concom|
-|[concom list](Concom.md#list)|GET /department/concom/|Get a list of the whole ConCom.|[concom](Concom.md)|api.get.concom|
+|[staff](Staff.md#department)|GET /department/{identifier}/staff|Get a list of the Staff for the department.|[staff](Staff.md)|api.get.staff|
+|[staff list](Staff.md#list)|GET /department/staff/|Get a list of the whole Staff.|[staff](Staff.md)|api.get.staff|
 
 <a name="list"></a>
 ## list
