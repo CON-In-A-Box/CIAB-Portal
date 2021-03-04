@@ -8,7 +8,7 @@ namespace App\Modules\registration\Controller\Ticket;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
-class PrintQueueClaim extends BaseTicket
+class PrintQueueClaim extends BaseTicketInclude
 {
 
 
@@ -25,13 +25,6 @@ class PrintQueueClaim extends BaseTicket
             $sql,
             'Not in Print Queue.'
         );
-
-    }
-
-
-    public function processIncludes(Request $request, Response $response, $args, $values, &$data)
-    {
-        $this->ticketIncludes($request, $response, $args, $values, $data);
 
     }
 

@@ -10,7 +10,7 @@ use Slim\Http\Response;
 
 use App\Controller\NotFoundException;
 
-class GetTicket extends BaseTicket
+class GetTicket extends BaseTicketInclude
 {
 
 
@@ -42,13 +42,6 @@ class GetTicket extends BaseTicket
         \App\Controller\BaseController::RESOURCE_TYPE,
         $ticket
         ];
-
-    }
-
-
-    public function processIncludes(Request $request, Response $response, $args, $values, &$data)
-    {
-        $this->ticketIncludes($request, $response, $args, $values, $data);
 
     }
 

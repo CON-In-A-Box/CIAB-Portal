@@ -28,11 +28,19 @@ class GetOpen extends BaseRegistration
             throw new NotFoundException('Event not found');
         }
 
-        $sql = "SELECT * FROM `Events` WHERE NOW() BETWEEN `dateFrom` AND `dateTo` AND `EventID` = $event";
+        $sql = "SELECT * FROM `Events` WHERE `EventID` = $event";
         $sth = $this->container->db->prepare($sql);
         $sth->execute();
-        $data = $sth->fetchAll();
-        $open = ($data != false);
+        $data = $sth->fetch();
+        if (empty($data)) {
+            throw new NotFoundException('Event not found');
+        }
+
+        $now = strtotime('now');
+        $opentime = strtotime($data['DateFrom']);
+        $closetime = strtotime($data['DateTo']);
+
+        $open = (($opentime <= $now) && ($now <= $closetime));
         if ($open != false) {
             $data = $this->getConfiguration([], 'Registration_Configuration');
             $config = [];

@@ -21,6 +21,7 @@ class PrintBadge extends BaseTicket
         $this->checkPermissions($permissions);
 
         $id = $params['id'];
+        $this->verifyTicket($id);
         $this->printBadge($request, $id);
 
         return [null];

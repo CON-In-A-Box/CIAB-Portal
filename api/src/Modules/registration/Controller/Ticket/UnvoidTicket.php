@@ -8,7 +8,7 @@ namespace App\Modules\registration\Controller\Ticket;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
-class UnvoidTicket extends BaseTicket
+class UnvoidTicket extends BaseTicketInclude
 {
 
 
@@ -25,13 +25,6 @@ class UnvoidTicket extends BaseTicket
             $sql,
             'Could not update.'
         );
-
-    }
-
-
-    public function processIncludes(Request $request, Response $response, $args, $values, &$data)
-    {
-        $this->ticketIncludes($request, $response, $args, $values, $data);
 
     }
 

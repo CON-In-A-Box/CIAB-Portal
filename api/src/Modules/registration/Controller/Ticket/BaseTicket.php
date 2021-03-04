@@ -91,55 +91,6 @@ abstract class BaseTicket extends BaseRegistration
     }
 
 
-    public function ticketIncludes(Request $request, Response $response, $args, $values, &$data)
-    {
-        if (empty($values)) {
-            return;
-        }
-        if (in_array('ticketType', $values)) {
-            $target = new GetTicketTypes($this->container);
-            $newargs = $args;
-            $newargs['id'] = $data['ticketType'];
-            $newdata = $target->buildResource($request, $response, $newargs)[1];
-            $target->processIncludes($request, $response, $args, $values, $newdata);
-            $data['ticketType'] = $target->arrayResponse($request, $response, $newdata);
-        }
-        if (in_array('member', $values)) {
-            $target = new \App\Controller\Member\GetMember($this->container);
-            $newargs = $args;
-            $newargs['id'] = $data['member'];
-            $newdata = $target->buildResource($request, $response, $newargs)[1];
-            $target->processIncludes($request, $response, $args, $values, $newdata);
-            $data['member'] = $target->arrayResponse($request, $response, $newdata);
-        }
-        if (in_array('registeredBy', $values)) {
-            $target = new \App\Controller\Member\GetMember($this->container);
-            $newargs = $args;
-            $newargs['id'] = $data['registeredBy'];
-            $newdata = $target->buildResource($request, $response, $newargs)[1];
-            $target->processIncludes($request, $response, $args, $values, $newdata);
-            $data['registeredBy'] = $target->arrayResponse($request, $response, $newdata);
-        }
-        if (in_array('badgeDependentOn', $values)) {
-            $target = new \App\Controller\Member\GetMember($this->container);
-            $newargs = $args;
-            $newargs['id'] = $data['badgeDependentOn'];
-            $newdata = $target->buildResource($request, $response, $newargs)[1];
-            $target->processIncludes($request, $response, $args, $values, $newdata);
-            $data['badgeDependentOn'] = $target->arrayResponse($request, $response, $newdata);
-        }
-        if (in_array('event', $values)) {
-            $target = new \App\Controller\Event\GetEvent($this->container);
-            $newargs = $args;
-            $newargs['id'] = $data['event'];
-            $newdata = $target->buildResource($request, $response, $newargs)[1];
-            $target->processIncludes($request, $response, $args, $values, $newdata);
-            $data['event'] = $target->arrayResponse($request, $response, $newdata);
-        }
-
-    }
-
-
     public function printBadge($request, $id)
     {
         $ip = \MyPDO::quote($_SERVER['REMOTE_ADDR']);
@@ -179,11 +130,11 @@ abstract class BaseTicket extends BaseRegistration
 
     protected function updateAndPrintTicket($request, $response, $params, $id, $rbac, $sql, $error)
     {
-        $aid = $this->getAccount($id, $request, $response, $rbac);
-        if (is_array($aid)) {
-            return $aid;
-        }
+        $this->getAccount($id, $request, $response, $rbac);
 
+        if (!array_key_exists('id', $params)) {
+            $params['id'] = $id;
+        }
         $rc = $this->updateTicket(
             $request,
             $response,
@@ -199,6 +150,20 @@ abstract class BaseTicket extends BaseRegistration
             return [null];
         }
         return $rc;
+
+    }
+
+
+    protected function verifyTicket($id)
+    {
+        $sql = "SELECT * FROM `Registrations` WHERE `RegistrationID` = $id AND `VoidDate` IS NULL";
+        $sth = $this->container->db->prepare($sql);
+        $sth->execute();
+        $data = $sth->fetch();
+        if (!$data) {
+            throw new NotFoundException('Registration Not Found');
+        }
+        return $data;
 
     }
 
