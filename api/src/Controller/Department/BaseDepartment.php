@@ -2,6 +2,60 @@
 /*.
     require_module 'standard';
 .*/
+/**
+ *  @OA\Tag(
+ *      name="departments",
+ *      description="Features around staffing departments for events"
+ *  )
+ *
+ *  @OA\Schema(
+ *      schema="department",
+ *      @OA\Property(
+ *          property="type",
+ *          type="string",
+ *          enum={"department"}
+ *      ),
+ *      @OA\Property(
+ *          property="id",
+ *          type="integer",
+ *          description="department Id"
+ *      ),
+ *      @OA\Property(
+ *          property="name",
+ *          type="string",
+ *          description="department name"
+ *      ),
+ *      @OA\Property(
+ *          property="division",
+ *          type="integer",
+ *          description="Division containing this department."
+ *      ),
+ *      @OA\Property(
+ *          property="childCount",
+ *          type="integer",
+ *          description="Number of child departments"
+ *      ),
+ *      @OA\Property(
+ *          property="fallback",
+ *          type="integer",
+ *          description="Department that is this departments fallback."
+ *      ),
+ *      @OA\Property(
+ *          property="email",
+ *          type="array",
+ *          description="Department's email addresses.",
+ *              @OA\Items(type="string")
+ *      )
+ *  )
+ *
+ *   @OA\Response(
+ *      response="department_not_found",
+ *      description="Department not found in the system.",
+ *      @OA\JsonContent(
+ *          ref="#/components/schemas/error"
+ *      )
+ *   )
+ */
 
 namespace App\Controller\Department;
 

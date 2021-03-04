@@ -2,6 +2,35 @@
 /*.
     require_module 'standard';
 .*/
+/**
+ *  @OA\Delete(
+ *      tags={"announcements"},
+ *      path="/announcement/{id}",
+ *      summary="Deletes an announcement",
+ *      @OA\Parameter(
+ *          description="Id of the announcement",
+ *          in="path",
+ *          name="id",
+ *          required=true,
+ *          @OA\Schema(type="integer")
+ *      ),
+ *      @OA\Response(
+ *          response=204,
+ *          description="OK"
+ *      ),
+ *      @OA\Response(
+ *          response=401,
+ *          ref="#/components/responses/401"
+ *      ),
+ *      @OA\Response(
+ *          response=404,
+ *          ref="#/components/responses/announce_not_found"
+ *      ),
+ *      security={
+ *          {"ciab_auth": {}}
+ *       }
+ *  )
+ **/
 
 namespace App\Controller\Announcement;
 

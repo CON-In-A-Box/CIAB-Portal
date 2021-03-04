@@ -2,6 +2,93 @@
 /*.
     require_module 'standard';
 .*/
+/**
+ *  @OA\Tag(
+ *      name="announcements",
+ *      description="Features around text announcements to event and event staff"
+ *  )
+ *
+ *  @OA\Schema(
+ *      schema="announcement",
+ *      @OA\Property(
+ *          property="type",
+ *          type="string",
+ *          enum={"announcement"}
+ *      ),
+ *      @OA\Property(
+ *          property="id",
+ *          type="integer",
+ *          description="announcement ID"
+ *      ),
+ *      @OA\Property(
+ *          property="postedOn",
+ *          type="string",
+ *          format="date",
+ *          description="Date the announcement was first posted"
+ *      ),
+ *      @OA\Property(
+ *          property="departmentId",
+ *          description="Department for the announcement",
+ *          oneOf={
+ *              @OA\Schema(
+ *                  type="integer",
+ *                  description="Department Id"
+ *              ),
+ *              @OA\Schema(
+ *                  ref="#/components/schemas/department"
+ *              )
+ *          }
+ *      ),
+ *      @OA\Property(
+ *          property="postedBy",
+ *          description="The member who created the announcement",
+ *          oneOf={
+ *              @OA\Schema(
+ *                  type="integer",
+ *                  description="Member Id"
+ *              ),
+ *              @OA\Schema(
+ *                  ref="#/components/schemas/member"
+ *              )
+ *          }
+ *      ),
+ *      @OA\Property(
+ *          property="scope",
+ *          type="integer",
+ *          description="The scope of the announcement"
+ *      ),
+ *      @OA\Property(
+ *          property="text",
+ *          type="string",
+ *          description="Text of the announcement"
+ *      )
+ *  )
+ *
+ *  @OA\Schema(
+ *      schema="announcement_list",
+ *      @OA\Property(
+ *          property="type",
+ *          type="string",
+ *          enum={"announcement_list"}
+ *      ),
+ *      @OA\Property(
+ *          property="data",
+ *          type="array",
+ *          description="List of announcements",
+ *          @OA\Items(
+ *              ref="#/components/schemas/announcement"
+ *          ),
+ *      )
+ *  )
+ *
+ *   @OA\Response(
+ *      response="announce_not_found",
+ *      description="Announcement not found in the system.",
+ *      @OA\JsonContent(
+ *          ref="#/components/schemas/error"
+ *      )
+ *   )
+ **/
 
 namespace App\Controller\Announcement;
 

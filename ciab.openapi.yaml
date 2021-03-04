@@ -1,0 +1,479 @@
+openapi: 3.0.0
+info:
+  title: 'CIAB backend API'
+  description: 'The CIAB RESTful Web API is designed to allow access to the Con In A Box functionality from a variety of web clients as well as more cleanly divide the front end and back ends of the main CIAB web site.'
+  license:
+    name: 'Apache 2.0'
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+  version: '0.1'
+servers:
+  -
+    url: 'http://localhost:8080/api'
+    description: Sign-in
+paths:
+  '/announcement/{id}':
+    get:
+      tags:
+        - announcements
+      summary: 'Gets an announcement'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Id of the announcement'
+          required: true
+          schema:
+            type: integer
+        -
+          name: include
+          in: query
+          description: 'Include the resource instead of the ID.'
+          required: false
+          style: form
+          explode: false
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - departmentId
+                - postedBy
+      responses:
+        '200':
+          description: 'Announcement found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/announcement'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/announce_not_found'
+      security:
+        -
+          ciab_auth: []
+    put:
+      tags:
+        - announcements
+      summary: 'Updates a announcement'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Id of the announcement'
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                Department:
+                  type: integer
+                  nullable: true
+                Text:
+                  type: string
+                  nullable: true
+                Scope:
+                  type: integer
+                  nullable: true
+              type: object
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/department_not_found'
+      security:
+        -
+          ciab_auth: []
+    delete:
+      tags:
+        - announcements
+      summary: 'Deletes an announcement'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Id of the announcement'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: OK
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/announce_not_found'
+      security:
+        -
+          ciab_auth: []
+  '/department/{id}/announcements':
+    get:
+      tags:
+        - departments
+      summary: 'Lists announcements for a given department'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'The id or name of the department'
+          required: true
+          schema:
+            oneOf:
+              -
+                description: 'Department name'
+                type: integer
+              -
+                description: 'Department id'
+                type: string
+        -
+          name: include
+          in: query
+          description: 'Include the resource instead of the ID.'
+          required: false
+          style: form
+          explode: false
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - departmentId
+                - postedBy
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/announcement_list'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/department_not_found'
+      security:
+        -
+          ciab_auth: []
+  '/member/{id}/announcements':
+    get:
+      tags:
+        - members
+      summary: 'Lists announcements for a given member'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'The id or login of the member'
+          required: true
+          schema:
+            oneOf:
+              -
+                description: 'Member login'
+                type: string
+              -
+                description: 'Member id'
+                type: integer
+        -
+          name: include
+          in: query
+          description: 'Include the resource instead of the ID.'
+          required: false
+          style: form
+          explode: false
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - departmentId
+                - postedBy
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/announcement_list'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/member_not_found'
+      security:
+        -
+          ciab_auth: []
+  '/department/{id}/announcement':
+    post:
+      tags:
+        - departments
+      summary: 'Adds a new announcement'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'The id or name of the department'
+          required: true
+          schema:
+            oneOf:
+              -
+                description: 'Department name'
+                type: integer
+              -
+                description: 'Department id'
+                type: string
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                Text:
+                  type: string
+                Scope:
+                  type: integer
+              type: object
+      responses:
+        '201':
+          description: OK
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          description: 'Department or Member not found in the system'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+      security:
+        -
+          ciab_auth: []
+components:
+  schemas:
+    announcement:
+      properties:
+        type:
+          type: string
+          enum:
+            - announcement
+        id:
+          description: 'announcement ID'
+          type: integer
+        postedOn:
+          description: 'Date the announcement was first posted'
+          type: string
+          format: date
+        departmentId:
+          description: 'Department for the announcement'
+          oneOf:
+            -
+              description: 'Department Id'
+              type: integer
+            -
+              $ref: '#/components/schemas/department'
+        postedBy:
+          description: 'The member who created the announcement'
+          oneOf:
+            -
+              description: 'Member Id'
+              type: integer
+            -
+              $ref: '#/components/schemas/member'
+        scope:
+          description: 'The scope of the announcement'
+          type: integer
+        text:
+          description: 'Text of the announcement'
+          type: string
+      type: object
+    announcement_list:
+      properties:
+        type:
+          type: string
+          enum:
+            - announcement_list
+        data:
+          description: 'List of announcements'
+          type: array
+          items:
+            $ref: '#/components/schemas/announcement'
+      type: object
+    error:
+      properties:
+        type:
+          type: string
+          enum:
+            - error
+        code:
+          description: 'announcement ID'
+          type: integer
+        status:
+          description: 'Error Status'
+          type: string
+        message:
+          description: 'Error Message'
+          type: string
+      type: object
+    department:
+      properties:
+        type:
+          type: string
+          enum:
+            - department
+        id:
+          description: 'department Id'
+          type: integer
+        name:
+          description: 'department name'
+          type: string
+        division:
+          description: 'Division containing this department.'
+          type: integer
+        childCount:
+          description: 'Number of child departments'
+          type: integer
+        fallback:
+          description: 'Department that is this departments fallback.'
+          type: integer
+        email:
+          description: 'Department''s email addresses.'
+          type: array
+          items:
+            type: string
+      type: object
+    member:
+      properties:
+        type:
+          type: string
+          enum:
+            - member
+        id:
+          description: 'member ID'
+          type: integer
+        firstName:
+          description: 'Members preferred first name'
+          type: string
+        lastName:
+          description: 'Members preferred last name'
+          type: string
+        email:
+          description: 'Members primary email'
+          type: string
+        legalFirstName:
+          description: 'Members legal first name.'
+          type: string
+        legalLastName:
+          description: 'Members legal last name.'
+          type: string
+        middleName:
+          description: 'Member''s middle name.'
+          type: string
+        suffix:
+          description: 'Suffix for members name.'
+          type: string
+        email2:
+          description: 'Member''s second email.'
+          type: string
+        email3:
+          description: 'Member''s third email'
+          type: string
+        phone1:
+          description: 'Member''s primary phone'
+          type: string
+        phone2:
+          description: 'Member''s secondary phone'
+          type: string
+        addressLine1:
+          description: 'Member''s address line 1'
+          type: string
+        addressLine2:
+          description: 'Member''s address line 2'
+          type: string
+        city:
+          description: 'Member''s address city.'
+          type: string
+        state:
+          description: 'Member''s address state'
+          type: string
+        zipCode:
+          description: 'Member''s Address Zip code.'
+          type: string
+        zipPlus4:
+          description: 'Member''s Address Zip code suffix'
+          type: string
+        countryName:
+          description: 'Member''s Address country.'
+          type: string
+        province:
+          description: 'Member''s Address province.'
+          type: string
+        preferredFirstName:
+          description: 'Member''s Preferred First Name.'
+          type: string
+        preferredLastName:
+          description: 'Member''s Preferred Last Name.'
+          type: string
+        Deceased:
+          description: 'Is member deceased.'
+          type: boolean
+        DoNotContact:
+          description: 'Do not contact member.'
+          type: boolean
+        EmailOptOut:
+          description: 'Do not mass email member.'
+          type: boolean
+        Birthdate:
+          description: 'Member''s birth date.'
+          type: string
+          format: date
+        Gender:
+          description: 'Member''s preferred gender string.'
+          type: string
+        conComDisplayPhone:
+          description: 'If Concom display phone on list.'
+          type: boolean
+      type: object
+  responses:
+    '401':
+      description: 'User is not authenticated or not authorized for the API.'
+    announce_not_found:
+      description: 'Announcement not found in the system.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/error'
+    department_not_found:
+      description: 'Department not found in the system.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/error'
+    member_not_found:
+      description: 'Member not found in the system.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/error'
+  securitySchemes:
+    ciab_auth:
+      type: oauth2
+      description: 'Authentication to the API server'
+      flows:
+        password:
+          tokenUrl: api/token
+          refreshUrl: api/token
+          scopes:
+            - ''
+tags:
+  -
+    name: announcements
+    description: 'Features around text announcements to event and event staff'
+  -
+    name: departments
+    description: 'Features around staffing departments for events'
+  -
+    name: members
+    description: 'Features around members of events'
+externalDocs:
+  description: 'View us on GitHub'
+  url: 'https://github.com/CON-In-A-Box/CIAB-Portal/tree/master/api/doc'

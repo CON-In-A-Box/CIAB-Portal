@@ -3,6 +3,63 @@
     require_module 'standard';
 .*/
 
+/**
+ *  @OA\Post(
+ *      tags={"departments"},
+ *      path="/department/{id}/announcement",
+ *      @OA\Parameter(
+ *          description="The id or name of the department",
+ *          in="path",
+ *          name="id",
+ *          required=true,
+ *          @OA\Schema(
+ *              oneOf = {
+ *                  @OA\Schema(
+ *                      description="Department name",
+ *                      type="integer"
+ *                  ),
+ *                  @OA\Schema(
+ *                      description="Department id",
+ *                      type="string"
+ *                  )
+ *              }
+ *          )
+ *      ),
+ *      summary="Adds a new announcement",
+ *      @OA\RequestBody(
+ *          @OA\MediaType(
+ *              mediaType="multipart/form-data",
+ *              @OA\Schema(
+ *                  @OA\Property(
+ *                      property="Text",
+ *                      type="string"
+ *                  ),
+ *                  @OA\Property(
+ *                      property="Scope",
+ *                      type="integer"
+ *                  ),
+ *              )
+ *          )
+ *      ),
+ *      @OA\Response(
+ *          response=201,
+ *          description="OK"
+ *      ),
+ *      @OA\Response(
+ *          response=401,
+ *          ref="#/components/responses/401"
+ *      ),
+ *      @OA\Response(
+ *          response=404,
+ *          description="Department or Member not found in the system",
+ *          @OA\JsonContent(
+ *              ref="#/components/schemas/error"
+ *          )
+ *      ),
+ *      security={{"ciab_auth":{}}}
+ *  )
+ **/
+
 namespace App\Controller\Announcement;
 
 require_once __DIR__.'/../../../../backends/email.inc';

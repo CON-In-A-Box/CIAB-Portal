@@ -3,6 +3,45 @@
     require_module 'standard';
 .*/
 
+/**
+ *  @OA\Info(
+ *      title="CIAB backend API",
+ *      description="The CIAB RESTful Web API is designed to allow access to the Con In A Box functionality from a variety of web clients as well as more cleanly divide the front end and back ends of the main CIAB web site.",
+ *      version="0.1",
+ *      @OA\License(
+ *          name="Apache 2.0",
+ *          url="http://www.apache.org/licenses/LICENSE-2.0.html"
+ *      ),
+ *   )
+ *
+ *   @OA\Server(
+ *      description="Sign-in",
+ *      url="http://localhost:8080/api"
+ *   )
+ *
+ *   @OA\ExternalDocumentation(
+ *      description="View us on GitHub",
+ *      url="https://github.com/CON-In-A-Box/CIAB-Portal/tree/master/api/doc"
+ *   )
+ *
+ *   @OA\SecurityScheme(
+ *      type="oauth2",
+ *      securityScheme="ciab_auth",
+ *      description="Authentication to the API server",
+ *      @OA\Flow(
+ *          flow="password",
+ *          tokenUrl="api/token",
+ *          refreshUrl="api/token",
+ *          scopes={ "" }
+ *      )
+ *   )
+ *
+ *   @OA\Response(
+ *      response=401,
+ *      description="User is not authenticated or not authorized for the API."
+ *   )
+ **/
+
 use Chadicus\Slim\OAuth2\Middleware;
 
 require __DIR__.'/../../../vendor/autoload.php';
