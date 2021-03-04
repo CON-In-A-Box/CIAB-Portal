@@ -15,7 +15,7 @@ The following methods are available to member resources:
 |[updatePassword](Member.md#updatePassword)|PUT /member/{id}/password|Update the password for a member.|core|api.put.member.password|
 |[deadlines](Member.md#deadlines)|GET /member/{id}/deadlines|Get deadlines for a given member.|core|--|
 |[announcements](Member.md#announcements)|GET /member/{id}/announcements|Get a list of announcements for a given member.|core|-|
-|[concom](Concom.md#member)|GET /member/{id}/concom|Get the list of concom positions the member fills, leave the `id` out specify the logged in Member|[concom](Concom.md)|api.get.concom|
+|[staff](Staff.md#member)|GET /member/{id}/staff_membership|Get the list of staff positions the member fills, leave the `id` out specify the logged in Member|[staff](Staff.md)|api.get.staff|
 
 <a name="common_objects"></a>
 ## Common Objects
@@ -65,7 +65,7 @@ Member object resources have a number of available properties. These include:
 |EmailOptOut|Boolean|Do not mass email member.|
 |Birthdate|Date|Member's birth date.|
 |Gender|string|Member's preferred gender string.|
-|conComDisplayPhone|Boolean|If Concom display phone on list.|
+|conComDisplayPhone|Boolean|If Staff display phone on list.|
 |links[]|list| List of HATEOAS links for this member|
 
 If a property is unset on the object then it will not be returned. 
@@ -181,7 +181,7 @@ There are no parameters available.
 |EmailOptOut|Boolean: Do not mass email member.|Optional|
 |Birthdate|Date: Member's birth date.|Optional|
 |Gender|Member's preferred gender string.|Optional|
-|conComDisplayPhone|Boolean: If Concom display phone on list.|Optional|
+|conComDisplayPhone|Boolean: If Staff display phone on list.|Optional|
 
 
 ### create Response
@@ -343,7 +343,7 @@ There are no parameters available.
 |EmailOptOut|Boolean: Do not mass email member.|Optional|
 |Birthdate|Date: Member's birth date.|Optional|
 |Gender|Member's preffered gender string.|Optional|
-|conComDisplayPhone|Boolean: If Concom display phone on list.|Optional|
+|conComDisplayPhone|Boolean: If Staff display phone on list.|Optional|
 ...
 
 ### update Response

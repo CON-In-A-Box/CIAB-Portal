@@ -3,14 +3,14 @@
     require_module 'standard';
 .*/
 
-namespace App\Modules\concom\Controller;
+namespace App\Modules\staff\Controller;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
 use App\Controller\PermissionDeniedException;
 use App\Controller\NotFoundException;
 
-class GetStaffMembership extends BaseConcom
+class GetStaffMembership extends BaseStaff
 {
 
 
@@ -23,12 +23,12 @@ class GetStaffMembership extends BaseConcom
         $data = $sth->fetchAll();
 
         if (empty($data)) {
-            throw new NotFoundException('ConCom record not found');
+            throw new NotFoundException('Staff record not found');
         }
 
         $user = $request->getAttribute('oauth2-token')['user_id'];
         if ($data[0]['AccountID'] != $user &&
-            !\ciab\RBAC::havePermission('api.get.concom')) {
+            !\ciab\RBAC::havePermission('api.get.staff')) {
             throw new PermissionDeniedException();
         }
 

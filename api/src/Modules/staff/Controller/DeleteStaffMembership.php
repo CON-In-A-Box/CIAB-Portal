@@ -3,13 +3,13 @@
     require_module 'standard';
 .*/
 
-namespace App\Modules\concom\Controller;
+namespace App\Modules\staff\Controller;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
 use App\Controller\NotFoundException;
 
-class DeleteStaffMembership extends BaseConcom
+class DeleteStaffMembership extends BaseStaff
 {
 
 
@@ -23,8 +23,8 @@ class DeleteStaffMembership extends BaseConcom
         }
         $target = $record[0];
 
-        $permissions = ['api.delete.concom.all',
-        'api.delete.concom.'.$target['DepartmentID']];
+        $permissions = ['api.delete.staff.all',
+        'api.delete.staff.'.$target['DepartmentID']];
         $this->checkPermissions($permissions);
 
         $sth = $this->container->db->prepare(<<<SQL
@@ -42,5 +42,5 @@ SQL
     }
 
 
-    /* end DeleteConCom */
+    /* end DeleteStaffMembership */
 }
