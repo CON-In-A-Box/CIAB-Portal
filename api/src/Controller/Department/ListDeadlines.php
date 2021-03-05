@@ -7,7 +7,6 @@ namespace App\Controller\Department;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
-use App\Controller\NotFoundException;
 
 class ListDeadlines extends \App\Controller\Deadline\BaseDeadline
 {
@@ -16,10 +15,6 @@ class ListDeadlines extends \App\Controller\Deadline\BaseDeadline
     public function buildResource(Request $request, Response $response, $params): array
     {
         $department = $this->getDepartment($params['name']);
-        if ($department === null) {
-            throw new NotFoundException('Department \''.$params['name'].'\' Not Found');
-        }
-
         $permissions = ['api.get.deadline.all',
         'api.get.deadline.'.$department['id']];
         $this->checkPermissions($permissions);

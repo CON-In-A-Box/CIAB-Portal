@@ -178,10 +178,10 @@ SQL;
         $staff = $this->listBuild($event);
         $data = array();
         foreach ($staff as $entry) {
-            $dept = $this->getDepartment($entry['Department']);
-            if ($dept) {
+            try {
+                $dept = $this->getDepartment($entry['Department']);
                 $id = $dept['id'];
-            } else {
+            } catch (\Exception $e) {
                 $id = $entry['Department'];
             }
             $data[] = $this->buildEntry($request, $entry['ListRecordID'], $id, $entry['Account ID'], $entry['Note'], $entry['Position']);
