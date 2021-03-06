@@ -148,7 +148,7 @@ class AnnouncementTest extends CiabTestCase
             '/announcement/'.$this->aid[2],
             null,
             ['Department' => -1],
-            400
+            404
         );
 
         $this->runRequest('POST', '/department/1/announcement', null, null, 400);

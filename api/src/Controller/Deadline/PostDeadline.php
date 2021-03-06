@@ -7,7 +7,6 @@ namespace App\Controller\Deadline;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
-use App\Controller\NotFoundException;
 use App\Controller\InvalidParameterException;
 
 class PostDeadline extends BaseDeadline
@@ -17,9 +16,6 @@ class PostDeadline extends BaseDeadline
     public function buildResource(Request $request, Response $response, $params): array
     {
         $department = $this->getDepartment($params['name']);
-        if ($department === null) {
-            throw new NotFoundException("Department '${params['name']}' Not Found");
-        }
         $permissions = ['api.post.deadline.'.$department['id'],
         'api.post.deadline.all'];
         $this->checkPermissions($permissions);

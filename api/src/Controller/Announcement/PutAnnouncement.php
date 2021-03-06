@@ -34,9 +34,6 @@ class PutAnnouncement extends BaseAnnouncement
 
         if (array_key_exists('Department', $body)) {
             $department = $this->getDepartment($body['Department']);
-            if ($department === null) {
-                throw new InvalidParameterException("Department '${body['Department']}' Not Found");
-            }
             $changes[] = "`DepartmentID` = '{$department['id']}' ";
         }
 

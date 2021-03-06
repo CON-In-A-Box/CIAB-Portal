@@ -28,31 +28,27 @@ class GetDepartment extends BaseDepartment
     public function buildResource(Request $request, Response $response, $params): array
     {
         $output = $this->getDepartment($params['name']);
-        if ($output) {
-            $email = [];
-            foreach ($output['Email'] as $entry) {
-                $alias = boolval($entry['IsAlias']);
-                $email[] = [
-                'email' => $entry['EMail'],
-                'isAlias' => $alias
-                ];
-            }
-            $output['name'] = $output['Name'];
-            $output['division'] = $output['Division'];
-            $output['fallback'] = $output['FallbackID'];
-            $output['email'] = $email;
-            unset($output['Email']);
-            unset($output['Name']);
-            unset($output['Division']);
-            unset($output['Fallback']);
-            unset($output['FallbackID']);
-            $this->buildDepartmentHateoas($request);
-            return [
-            \App\Controller\BaseController::RESOURCE_TYPE,
-            $output];
-        } else {
-            throw new NotFoundException('Department \''.$params['name'].'\' Not Found');
+        $email = [];
+        foreach ($output['Email'] as $entry) {
+            $alias = boolval($entry['IsAlias']);
+            $email[] = [
+            'email' => $entry['EMail'],
+            'isAlias' => $alias
+            ];
         }
+        $output['name'] = $output['Name'];
+        $output['division'] = $output['Division'];
+        $output['fallback'] = $output['FallbackID'];
+        $output['email'] = $email;
+        unset($output['Email']);
+        unset($output['Name']);
+        unset($output['Division']);
+        unset($output['Fallback']);
+        unset($output['FallbackID']);
+        $this->buildDepartmentHateoas($request);
+        return [
+        \App\Controller\BaseController::RESOURCE_TYPE,
+        $output];
 
     }
 

@@ -7,7 +7,6 @@ namespace App\Controller\Announcement;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
-use App\Controller\NotFoundException;
 
 class ListDepartmentAnnouncements extends BaseAnnouncement
 {
@@ -16,9 +15,6 @@ class ListDepartmentAnnouncements extends BaseAnnouncement
     public function buildResource(Request $request, Response $response, $args): array
     {
         $department = $this->getDepartment($args['name']);
-        if ($department === null) {
-            throw new NotFoundException("Department '${args['name']}' Not Found");
-        }
         $sth = $this->container->db->prepare(
             "SELECT * FROM `Announcements` WHERE DepartmentID = '".$department['id']."' ORDER BY `PostedOn` ASC"
         );

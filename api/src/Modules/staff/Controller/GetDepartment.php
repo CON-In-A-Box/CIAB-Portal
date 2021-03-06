@@ -8,8 +8,6 @@ namespace App\Modules\staff\Controller;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
-use App\Controller\NotFoundException;
-
 class GetDepartment extends BaseStaff
 {
 
@@ -19,9 +17,6 @@ class GetDepartment extends BaseStaff
         $permissions = ['api.get.staff'];
         $this->checkPermissions($permissions);
         $dept = $this->getDepartment($args['id']);
-        if ($dept === null) {
-            throw new NotFoundException('Department \''.$args['id'].'\' Not Found');
-        }
         $event = $request->getQueryParam('event');
         if ($event !== null) {
             $event = intval($event);

@@ -392,7 +392,7 @@ abstract class BaseController
                 }
             }
         }
-        return null;
+        throw new NotFoundException("Department '$id' Not Found");
 
     }
 

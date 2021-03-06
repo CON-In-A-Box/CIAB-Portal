@@ -36,9 +36,6 @@ class PutDeadline extends BaseDeadline
 
         if (array_key_exists('Department', $body)) {
             $department = $this->getDepartment($body['Department']);
-            if ($department === null) {
-                throw new NotFoundException("Department '${body['Department']}' Not Found");
-            }
             $target['DepartmentID'] = $department['id'];
         }
 

@@ -10,7 +10,6 @@ require_once __DIR__.'/../../../../backends/email.inc';
 use Slim\Http\Request;
 use Slim\Http\Response;
 use Slim\Views;
-use App\Controller\NotFoundException;
 use App\Controller\InvalidParameterException;
 
 require_once __DIR__.'/../../../../functions/users.inc';
@@ -115,10 +114,6 @@ SQL;
     public function buildResource(Request $request, Response $response, $args): array
     {
         $department = $this->getDepartment($args['name']);
-        if ($department === null) {
-            throw new NotFoundException("Department '${args['name']}' Not Found");
-        }
-
         $permissions = ['api.post.announcement.all',
         'api.post.announcement.'.$department['id']];
         $this->checkPermissions($permissions);

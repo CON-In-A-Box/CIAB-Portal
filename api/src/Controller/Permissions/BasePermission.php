@@ -60,9 +60,6 @@ abstract class BasePermission extends BaseController
         $path = $request->getUri()->getBaseUrl();
         if (array_key_exists('department', $params)) {
             $data = $this->getDepartment($params['department']);
-            if ($data === null) {
-                throw new NotFoundException('Department \''.$params['department'].'\' Invalid');
-            }
             $allowed = (\ciab\RBAC::havePermission("api.$methodArg.{$this->restype}.${data['id']}") ||
                         \ciab\RBAC::havePermission("api.$methodArg.{$this->restype}.all"));
             ;
@@ -145,9 +142,6 @@ abstract class BasePermission extends BaseController
         $path = $request->getUri()->getBaseUrl();
         $result = array();
         $data = $this->getDepartment($params['department']);
-        if ($data === null) {
-            throw new NotFoundException('Department \''.$params['department'].'\' Invalid');
-        }
         $id = $data['id'];
         $method = $params['method'];
         if ($method !== null && !in_array($method, $this->methods)) {

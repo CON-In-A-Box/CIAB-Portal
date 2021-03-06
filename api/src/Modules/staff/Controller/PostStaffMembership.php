@@ -38,10 +38,6 @@ class PostStaffMembership extends BaseStaff
         }
 
         $department = $this->getDepartment($body['Department']);
-        if ($department === null) {
-            throw new NotFoundException("Department '${body['Department']}' Not Found");
-        }
-
         $permissions = ['api.post.staff.'.$department['id'],
         'api.post.staff.all'];
         $this->checkPermissions($permissions);

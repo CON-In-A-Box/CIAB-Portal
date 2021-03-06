@@ -27,10 +27,6 @@ class ListDeadlines extends \App\Controller\Deadline\BaseDeadline
     public function buildResource(Request $request, Response $response, $params): array
     {
         $department = $this->getDepartment($params['name']);
-        if ($department === null) {
-            throw new NotFoundException('Department \''.$params['name'].'\' Not Found');
-        }
-
         $permissions = ['api.get.deadline.all',
         'api.get.deadline.'.$department['id']];
         $this->checkPermissions($permissions);
