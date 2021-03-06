@@ -10,6 +10,7 @@ use Slim\Http\Request;
 use Slim\Http\Response;
 use App\Controller\BaseController;
 use App\Controller\NotFoundException;
+use App\Controller\IncludeResource;
 
 abstract class BaseAnnouncement extends BaseController
 {
@@ -19,6 +20,19 @@ abstract class BaseAnnouncement extends BaseController
     {
         parent::__construct('deadline', $container);
         \ciab\RBAC::customizeRBAC(array($this, 'customizeAnnouncementRBAC'));
+
+        $this->includes = [
+        new IncludeResource(
+            '\App\Controller\Member\GetMember',
+            'id',
+            'postedBy'
+        ),
+        new IncludeResource(
+            '\App\Controller\Department\GetDepartment',
+            'name',
+            'departmentId'
+        )
+        ];
 
     }
 
@@ -94,28 +108,6 @@ abstract class BaseAnnouncement extends BaseController
             $this->addHateoasLink('modify', $path.'/announcement/'.strval($id), 'POST');
             $this->addHateoasLink('delete', $path.'/announcement/'.strval($id), 'DELETE');
             $this->addHateoasLink('department', $path.'/announcement/'.strval($dept), 'GET');
-        }
-
-    }
-
-
-    protected function baseIncludes(Request $request, Response $response, $args, $values, &$data)
-    {
-        if (in_array('departmentId', $values)) {
-            $target = new \App\Controller\Department\GetDepartment($this->container);
-            $newargs = $args;
-            $newargs['name'] = $data['departmentId'];
-            $newdata = $target->buildResource($request, $response, $newargs)[1];
-            $target->processIncludes($request, $response, $args, $values, $newdata);
-            $data['departmentId'] = $target->arrayResponse($request, $response, $newdata);
-        }
-        if (in_array('postedBy', $values)) {
-            $target = new \App\Controller\Member\GetMember($this->container);
-            $newargs = $args;
-            $newargs['id'] = $data['postedBy'];
-            $newdata = $target->buildResource($request, $response, $newargs)[1];
-            $target->processIncludes($request, $response, $args, $values, $newdata);
-            $data['postedBy'] = $target->arrayResponse($request, $response, $newdata);
         }
 
     }

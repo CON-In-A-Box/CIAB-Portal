@@ -7,10 +7,22 @@ namespace App\Controller\Department;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
+use Slim\Container;
 use App\Controller\NotFoundException;
+use App\Controller\IncludeResource;
 
 class GetDepartment extends BaseDepartment
 {
+
+
+    public function __construct(Container $container)
+    {
+        parent::__construct($container);
+        $this->includes = [
+        new IncludeResource('\App\Controller\Department\GetDepartment', 'name', 'fallback')
+        ];
+
+    }
 
 
     public function buildResource(Request $request, Response $response, $params): array
@@ -47,6 +59,7 @@ class GetDepartment extends BaseDepartment
 
     public function processIncludes(Request $request, Response $response, $params, $values, &$data)
     {
+        parent::processIncludes($request, $response, $params, $values, $data);
         if (in_array('division', $values)) {
             $target = new GetDepartment($this->container);
             $newargs = $params;
@@ -56,16 +69,6 @@ class GetDepartment extends BaseDepartment
                 $target->processIncludes($request, $response, $params, $values, $newdata);
                 $data['division'] = $target->arrayResponse($request, $response, $newdata);
             }
-        }
-        if (in_array('fallback', $values) &&
-            $data['fallback'] != $data['id'] &&
-            $data['fallback'] != null) {
-            $target = new GetDepartment($this->container);
-            $newargs = $params;
-            $newargs['name'] = $data['fallback'];
-            $newdata = $target->buildResource($request, $response, $newargs)[1];
-            $target->processIncludes($request, $response, $params, $values, $newdata);
-            $data['fallback'] = $target->arrayResponse($request, $response, $newdata);
         }
 
     }

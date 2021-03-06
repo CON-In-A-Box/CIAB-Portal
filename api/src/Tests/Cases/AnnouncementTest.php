@@ -94,6 +94,10 @@ class AnnouncementTest extends CiabTestCase
             ['include' => 'departmentId,postedBy']
         );
         $this->assertNotEmpty($data->data);
+        $this->assertIsObject($data->data[0]->departmentId);
+        $this->assertObjectHasAttribute('id', $data->data[0]->departmentId);
+        $this->assertIsObject($data->data[0]->postedBy);
+        $this->assertObjectHasAttribute('id', $data->data[0]->postedBy);
 
         $this->runSuccessRequest(
             'PUT',
@@ -110,6 +114,10 @@ class AnnouncementTest extends CiabTestCase
             ['include' => 'departmentId,postedBy']
         );
         $this->assertSame($data->text, 'New Message');
+        $this->assertIsObject($data->departmentId);
+        $this->assertObjectHasAttribute('id', $data->departmentId);
+        $this->assertIsObject($data->postedBy);
+        $this->assertObjectHasAttribute('id', $data->postedBy);
 
         $data = $this->runSuccessJsonRequest(
             'GET',

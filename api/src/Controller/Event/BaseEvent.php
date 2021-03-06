@@ -9,6 +9,7 @@ use Slim\Container;
 use Slim\Http\Request;
 use Slim\Http\Response;
 use App\Controller\BaseController;
+use App\Controller\IncludeResource;
 
 abstract class BaseEvent extends BaseController
 {
@@ -22,6 +23,9 @@ abstract class BaseEvent extends BaseController
     public function __construct(Container $container)
     {
         parent::__construct('event', $container);
+        $this->includes = [
+        new IncludeResource('\App\Controller\Cycle\GetCycle', 'id', 'cycle')
+        ];
 
     }
 
@@ -45,20 +49,6 @@ abstract class BaseEvent extends BaseController
         $newEvent['dateTo'] = $item['DateTo'];
         $newEvent['name'] = $item['EventName'];
         return $newEvent;
-
-    }
-
-
-    public function processIncludes(Request $request, Response $response, $args, $values, &$data)
-    {
-        if (in_array('cycle', $values)) {
-            $target = new \App\Controller\Cycle\GetCycle($this->container);
-            $newargs = $args;
-            $newargs['id'] = $data['cycle'];
-            $newdata = $target->buildResource($request, $response, $newargs)[1];
-            $target->processIncludes($request, $response, $args, $values, $newdata);
-            $data['cycle'] = $target->arrayResponse($request, $response, $newdata);
-        }
 
     }
 

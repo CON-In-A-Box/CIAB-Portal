@@ -168,15 +168,17 @@ abstract class BasePermission extends BaseController
     }
 
 
-    public function processIncludes(Request $request, Response $response, $args, $values, &$data)
+    public function processIncludes(Request $request, Response $response, $params, $values, &$data)
     {
+        parent::processIncludes($request, $response, $params, $values, $data);
+
         if (in_array('departmentId', $values)) {
             $target = new \App\Controller\Department\GetDepartment($this->container);
-            $newargs = $args;
-            $newargs['name'] = $data['subdata']['departmentId'];
-            $newdata = $target->buildResource($request, $response, $newargs)[1];
+            $newparams = $params;
+            $newparams['name'] = $data['subdata']['departmentId'];
+            $newdata = $target->buildResource($request, $response, $newparams)[1];
             if ($newdata['id'] != $data['id']) {
-                $target->processIncludes($request, $response, $args, $values, $newdata);
+                $target->processIncludes($request, $response, $params, $values, $newdata);
                 $data['subdata']['departmentId'] = $target->arrayResponse($request, $response, $newdata);
             }
         }

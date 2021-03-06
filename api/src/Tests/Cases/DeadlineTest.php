@@ -93,16 +93,21 @@ class DeadlineTest extends CiabTestCase
         $data = $this->runSuccessJsonRequest(
             'GET',
             '/department/1/deadlines',
-            ['include' => 'departmentId,postedBy']
+            ['include' => 'departmentId']
         );
         $this->assertNotEmpty($data->data);
+        $this->assertIsObject($data->data[0]->departmentId);
+        $this->assertObjectHasAttribute('id', $data->data[0]->departmentId);
+
 
         $data = $this->runSuccessJsonRequest(
             'GET',
             '/member/1000/deadlines',
-            ['include' => 'departmentId,postedBy']
+            ['include' => 'departmentId']
         );
         $this->assertNotEmpty($data->data);
+        $this->assertIsObject($data->data[0]->departmentId);
+        $this->assertObjectHasAttribute('id', $data->data[0]->departmentId);
 
         $when = date('Y-m-d', strtotime('+1 year'));
         $this->runRequest(
@@ -118,9 +123,11 @@ class DeadlineTest extends CiabTestCase
         $data = $this->runSuccessJsonRequest(
             'GET',
             '/deadline/'.$this->target,
-            ['include' => 'departmentId,postedBy']
+            ['include' => 'departmentId']
         );
         $this->assertSame($data->note, 'New Message');
+        $this->assertIsObject($data->departmentId);
+        $this->assertObjectHasAttribute('id', $data->departmentId);
 
     }
 

@@ -71,6 +71,8 @@ class EventTest extends CiabTestCase
             '/event/'.$id,
             ['include' => 'cycle']
         );
+        $this->assertIsObject($data->cycle);
+        $this->assertObjectHasAttribute('id', $data->cycle);
         $this->assertSame($data->cycle->id, $cycleid);
 
     }
