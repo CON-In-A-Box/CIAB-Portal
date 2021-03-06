@@ -38,6 +38,53 @@ class ConflictException extends Exception
 
 }
 
+class IncludeResource
+{
+
+    /**
+     * @var string
+     */
+    private $class;
+
+    /**
+     * @var string
+     */
+    private $field;
+
+    /**
+     * @var string
+     */
+    private $parameter;
+
+
+    public function __construct(string $class, string $parameter, string $field)
+    {
+        $this->class = $class;
+        $this->field = $field;
+        $this->parameter = $parameter;
+
+    }
+
+
+    public function process(Request $request, Response $response, Container $container, array $params, array $values, array &$data): void
+    {
+        if (in_array($this->field, $values) &&
+            in_array($this->field, array_keys($data)) &&
+            $data[$this->field] !== null) {
+            $newparams = $params;
+            $newparams[$this->parameter] = $data[$this->field];
+            $target = new $this->class($container);
+            $newdata = $target->buildResource($request, $response, $newparams)[1];
+            $target->processIncludes($request, $response, $params, $values, $newdata);
+            $data[$this->field] = $target->arrayResponse($request, $response, $newdata);
+        }
+
+    }
+
+
+    /* End IncludeResource */
+}
+
 abstract class BaseController
 {
 
@@ -65,6 +112,11 @@ abstract class BaseController
     */
     protected $chain;
 
+    /**
+     * @var array[]
+    */
+    protected $includes;
+
 
     protected function __construct(string $api_type, Container $container)
     {
@@ -72,6 +124,7 @@ abstract class BaseController
         $this->container = $container;
         $this->hateoas = [];
         $this->chain = [];
+        $this->includes = [];
 
         if (array_key_exists('Neon', $GLOBALS)) {
             \loadDefinedFields();
@@ -91,12 +144,6 @@ abstract class BaseController
 
 
     abstract public function buildResource(Request $request, Response $response, $args): array;
-
-
-    public function processIncludes(Request $request, Response $response, $args, $includes, &$data)
-    {
-
-    }
 
 
     public function __invoke(Request $request, Response $response, $args)
@@ -308,7 +355,7 @@ abstract class BaseController
     }
 
 
-    protected function arrayResponse(Request $request, Response $response, $data, $code = 200): Array
+    public function arrayResponse(Request $request, Response $response, $data, $code = 200): Array
     {
         foreach ($this->chain as $child) {
             $data = $child->handle($request, $response, $data, $code, $this->container);
@@ -470,6 +517,15 @@ abstract class BaseController
         }
         if (!$valid) {
             throw new PermissionDeniedException($message);
+        }
+
+    }
+
+
+    public function processIncludes(Request $request, Response $response, $params, $values, &$data)
+    {
+        foreach ($this->includes as $target) {
+            $target->process($request, $response, $this->container, $params, $values, $data);
         }
 
     }

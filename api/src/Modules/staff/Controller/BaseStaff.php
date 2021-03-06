@@ -9,6 +9,7 @@ use Slim\Container;
 use Slim\Http\Request;
 use Slim\Http\Response;
 use App\Controller\BaseController;
+use App\Controller\IncludeResource;
 
 abstract class BaseStaff extends BaseController
 {
@@ -17,6 +18,19 @@ abstract class BaseStaff extends BaseController
     public function __construct(Container $container)
     {
         parent::__construct('staff', $container);
+
+        $this->includes = [
+        new IncludeResource(
+            '\App\Controller\Member\GetMember',
+            'id',
+            'memberId'
+        ),
+        new IncludeResource(
+            '\App\Controller\Department\GetDepartment',
+            'name',
+            'departmentId'
+        )
+        ];
 
     }
 
@@ -106,34 +120,6 @@ SQL;
                     ]
             )
         ]);
-
-    }
-
-
-    public function processIncludes(Request $request, Response $response, $args, $values, &$data)
-    {
-        if (in_array('memberId', $values)) {
-            $target = new \App\Controller\Member\GetMember($this->container);
-            $newargs = $args;
-            $newargs['name'] = $data['memberId'];
-            $newdata = $target->buildResource($request, $response, $newargs);
-            if ($newdata[0] == \App\Controller\BaseController::RESOURCE_TYPE) {
-                $newdata = $newdata[1];
-                $target->processIncludes($request, $response, $args, $values, $newdata);
-                $data['memberId'] = $target->arrayResponse($request, $response, $newdata);
-            }
-        }
-        if (in_array('departmentId', $values)) {
-            $target = new \App\Controller\Department\GetDepartment($this->container);
-            $newargs = $args;
-            $newargs['name'] = $data['departmentId'];
-            $newdata = $target->buildResource($request, $response, $newargs);
-            if ($newdata[0] == \App\Controller\BaseController::RESOURCE_TYPE) {
-                $newdata = $newdata[1];
-                $target->processIncludes($request, $response, $args, $values, $newdata);
-                $data['departmentId'] = $target->arrayResponse($request, $response, $newdata);
-            }
-        }
 
     }
 

@@ -7,9 +7,21 @@ namespace App\Controller\Member;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
+use Slim\Container;
+use App\Controller\IncludeResource;
 
 class ListDeadlines extends BaseMember
 {
+
+
+    public function __construct(Container $container)
+    {
+        parent::__construct($container);
+        $this->includes = [
+        new IncludeResource('\App\Controller\Department\GetDepartment', 'name', 'departmentId')
+        ];
+
+    }
 
 
     public function buildResource(Request $request, Response $response, $args): array
@@ -61,20 +73,6 @@ SQL
         \App\Controller\BaseController::LIST_TYPE,
         $data,
         $output];
-
-    }
-
-
-    public function processIncludes(Request $request, Response $response, $args, $values, &$data)
-    {
-        if (in_array('departmentId', $values)) {
-            $target = new \App\Controller\Department\GetDepartment($this->container);
-            $newargs = $args;
-            $newargs['name'] = $data['departmentId'];
-            $newdata = $target->buildResource($request, $response, $newargs)[1];
-            $target->processIncludes($request, $response, $args, $values, $newdata);
-            $data['departmentId'] = $target->arrayResponse($request, $response, $newdata);
-        }
 
     }
 
