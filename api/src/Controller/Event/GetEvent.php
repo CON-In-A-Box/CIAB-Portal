@@ -3,6 +3,52 @@
     require_module 'standard';
 .*/
 
+/**
+ *  @OA\Get(
+ *      tags={"events"},
+ *      path="/event/{id}",
+ *      summary="Gets an event",
+ *      @OA\Parameter(
+ *          description="Id of the event",
+ *          in="path",
+ *          name="id",
+ *          required=true,
+ *          @OA\Schema(type="integer")
+ *      ),
+ *      @OA\Parameter(
+ *          description="Include the resource instead of the ID.",
+ *          in="query",
+ *          name="include",
+ *          required=false,
+ *          explode=false,
+ *          style="form",
+ *          @OA\Schema(
+ *              type="array",
+ *              @OA\Items(
+ *                  type="string",
+ *                  enum={"cycle"}
+ *              )
+ *           )
+ *      ),
+ *      @OA\Response(
+ *          response=200,
+ *          description="Event found",
+ *          @OA\JsonContent(
+ *           ref="#/components/schemas/event"
+ *          ),
+ *      ),
+ *      @OA\Response(
+ *          response=401,
+ *          ref="#/components/responses/401"
+ *      ),
+ *      @OA\Response(
+ *          response=404,
+ *          ref="#/components/responses/event_not_found"
+ *      ),
+ *      security={{"ciab_auth":{}}}
+ *  )
+ **/
+
 namespace App\Controller\Event;
 
 use Slim\Http\Request;

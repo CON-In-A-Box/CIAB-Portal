@@ -598,6 +598,150 @@ paths:
       security:
         -
           ciab_auth: []
+  '/event/{id}':
+    get:
+      tags:
+        - events
+      summary: 'Gets an event'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Id of the event'
+          required: true
+          schema:
+            type: integer
+        -
+          name: include
+          in: query
+          description: 'Include the resource instead of the ID.'
+          required: false
+          style: form
+          explode: false
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - cycle
+      responses:
+        '200':
+          description: 'Event found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/event'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/event_not_found'
+      security:
+        -
+          ciab_auth: []
+    delete:
+      tags:
+        - events
+      summary: 'Deletes an event'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Id of the event'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: OK
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/event_not_found'
+      security:
+        -
+          ciab_auth: []
+  /event:
+    get:
+      tags:
+        - events
+      summary: 'Lists events'
+      parameters:
+        -
+          name: begin
+          in: query
+          description: 'First date to search from.'
+          required: false
+          style: form
+          schema:
+            type: string
+            format: date
+        -
+          name: end
+          in: query
+          description: 'Last date to search until.'
+          required: false
+          style: form
+          schema:
+            type: string
+            format: date
+        -
+          name: include
+          in: query
+          description: 'Include the resource instead of the ID.'
+          required: false
+          style: form
+          explode: false
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - departmentId
+                - postedBy
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/event_list'
+        '401':
+          $ref: '#/components/responses/401'
+      security:
+        -
+          ciab_auth: []
+    post:
+      tags:
+        - events
+      summary: 'Adds a new event'
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                From:
+                  type: string
+                  format: date
+                To:
+                  type: string
+                  format: date
+                Name:
+                  type: string
+              type: object
+      responses:
+        '201':
+          description: OK
+        '401':
+          $ref: '#/components/responses/401'
+        '400':
+          description: 'Cycle not found in the system which contains event dates.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+      security:
+        -
+          ciab_auth: []
   '/member/{id}/deadlines':
     get:
       tags:
@@ -804,6 +948,47 @@ components:
           items:
             type: string
       type: object
+    event:
+      properties:
+        type:
+          type: string
+          enum:
+            - event
+        id:
+          description: 'event Id'
+          type: integer
+        cycle:
+          description: 'Annual cycle this event is part of'
+          oneOf:
+            -
+              description: 'Cycle Id'
+              type: integer
+            -
+              $ref: '#/components/schemas/cycle'
+        dateFrom:
+          description: 'Date the event starts'
+          type: string
+          format: date
+        dateTo:
+          description: 'Date the event ends'
+          type: string
+          format: date
+        name:
+          description: 'Name of the event'
+          type: string
+      type: object
+    event_list:
+      properties:
+        type:
+          type: string
+          enum:
+            - event_list
+        data:
+          description: 'List of events'
+          type: array
+          items:
+            $ref: '#/components/schemas/event'
+      type: object
     member:
       properties:
         type:
@@ -923,6 +1108,12 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/error'
+    event_not_found:
+      description: 'Event not found in the system.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/error'
     member_not_found:
       description: 'Member not found in the system.'
       content:
@@ -952,6 +1143,9 @@ tags:
   -
     name: departments
     description: 'Features around staffing departments for events'
+  -
+    name: events
+    description: 'Features around events'
   -
     name: members
     description: 'Features around members of events'
