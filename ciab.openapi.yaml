@@ -248,6 +248,173 @@ paths:
       security:
         -
           ciab_auth: []
+  '/cycle/{id}':
+    get:
+      tags:
+        - cycles
+      summary: 'Gets an cycle'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Id of the cycle'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Cycle found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/cycle'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/cycle_not_found'
+      security:
+        -
+          ciab_auth: []
+    put:
+      tags:
+        - cycles
+      summary: 'Updates a cycle'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Id of the cycle'
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                From:
+                  type: string
+                  format: date
+                  nullable: true
+                To:
+                  type: string
+                  format: date
+                  nullable: true
+              type: object
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/cycle'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/cycle_not_found'
+      security:
+        -
+          ciab_auth: []
+    delete:
+      tags:
+        - cycles
+      summary: 'Deletes an cycle'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Id of the cycle'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: OK
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/cycle_not_found'
+      security:
+        -
+          ciab_auth: []
+  /cycle:
+    get:
+      tags:
+        - cycles
+      summary: 'Lists cycles'
+      parameters:
+        -
+          name: from
+          in: query
+          description: 'Start date for cycle list'
+          required: false
+          schema:
+            type: string
+            format: date
+        -
+          name: to
+          in: query
+          description: 'Final date for cycle list'
+          required: false
+          schema:
+            type: string
+            format: date
+        -
+          name: includesDate
+          in: query
+          description: 'A date that must be included in cycles in the list'
+          required: false
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/cycle_list'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/cycle_not_found'
+      security:
+        -
+          ciab_auth: []
+    post:
+      tags:
+        - cycles
+      summary: 'Adds a new cycle'
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                From:
+                  type: string
+                  format: date
+                To:
+                  type: string
+                  format: date
+              type: object
+      responses:
+        '201':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/cycle'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          description: 'Department or Member not found in the system'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+      security:
+        -
+          ciab_auth: []
 components:
   schemas:
     announcement:
@@ -313,6 +480,36 @@ components:
         message:
           description: 'Error Message'
           type: string
+      type: object
+    cycle:
+      properties:
+        type:
+          type: string
+          enum:
+            - cycle
+        id:
+          description: 'cycle Id'
+          type: integer
+        dateFrom:
+          description: 'cycle start date'
+          type: string
+          format: date
+        dateTo:
+          description: 'cycle ending date'
+          type: string
+          format: date
+      type: object
+    cycle_list:
+      properties:
+        type:
+          type: string
+          enum:
+            - cycle_list
+        data:
+          description: 'List of cycles'
+          type: array
+          items:
+            $ref: '#/components/schemas/cycle'
       type: object
     department:
       properties:
@@ -442,6 +639,12 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/error'
+    cycle_not_found:
+      description: 'Cycle not found in the system.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/error'
     department_not_found:
       description: 'Department not found in the system.'
       content:
@@ -468,6 +671,9 @@ tags:
   -
     name: announcements
     description: 'Features around text announcements to event and event staff'
+  -
+    name: cycles
+    description: 'Features around annual cycles'
   -
     name: departments
     description: 'Features around staffing departments for events'

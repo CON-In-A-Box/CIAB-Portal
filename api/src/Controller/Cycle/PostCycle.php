@@ -2,6 +2,49 @@
 /*.
     require_module 'standard';
 .*/
+/**
+ *  @OA\Post(
+ *      tags={"cycles"},
+ *      path="/cycle",
+ *      summary="Adds a new cycle",
+ *      @OA\RequestBody(
+ *          @OA\MediaType(
+ *              mediaType="multipart/form-data",
+ *              @OA\Schema(
+ *                  @OA\Property(
+ *                      property="From",
+ *                      type="string",
+ *                      format="date"
+ *                  ),
+ *                  @OA\Property(
+ *                      property="To",
+ *                      type="string",
+ *                      format="date"
+ *                  ),
+*              )
+ *          )
+ *      ),
+ *      @OA\Response(
+ *          response=201,
+ *          description="OK",
+ *          @OA\JsonContent(
+ *              ref="#/components/schemas/cycle"
+ *          ),
+ *      ),
+ *      @OA\Response(
+ *          response=401,
+ *          ref="#/components/responses/401"
+ *      ),
+ *      @OA\Response(
+ *          response=404,
+ *          description="Department or Member not found in the system",
+ *          @OA\JsonContent(
+ *              ref="#/components/schemas/error"
+ *          )
+ *      ),
+ *      security={{"ciab_auth":{}}}
+ *  )
+ **/
 
 namespace App\Controller\Cycle;
 
