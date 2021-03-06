@@ -32,12 +32,5 @@ class GetAnnouncement extends BaseAnnouncement
     }
 
 
-    public function processIncludes(Request $request, Response $response, $params, $values, &$data)
-    {
-        $this->baseIncludes($request, $response, $params, $values, $data);
-
-    }
-
-
     /* end GetAnnouncement */
 }

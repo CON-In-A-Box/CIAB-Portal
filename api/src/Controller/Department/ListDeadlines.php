@@ -7,9 +7,21 @@ namespace App\Controller\Department;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
+use App\Controller\NotFoundException;
+use App\Controller\IncludeResource;
 
 class ListDeadlines extends \App\Controller\Deadline\BaseDeadline
 {
+
+
+    public function __construct($container)
+    {
+        parent::__construct($container);
+        $this->includes = [
+        new IncludeResource('\App\Controller\Department\GetDepartment', 'name', 'departmentId')
+        ];
+
+    }
 
 
     public function buildResource(Request $request, Response $response, $params): array
@@ -36,20 +48,6 @@ class ListDeadlines extends \App\Controller\Deadline\BaseDeadline
         \App\Controller\BaseController::LIST_TYPE,
         $data,
         $output];
-
-    }
-
-
-    public function processIncludes(Request $request, Response $response, $params, $values, &$data)
-    {
-        if (in_array('departmentId', $values)) {
-            $target = new \App\Controller\Department\GetDepartment($this->container);
-            $newargs = $params;
-            $newargs['name'] = $data['departmentId'];
-            $newdata = $target->buildResource($request, $response, $newargs)[1];
-            $target->processIncludes($request, $response, $params, $values, $newdata);
-            $data['departmentId'] = $target->arrayResponse($request, $response, $newdata);
-        }
 
     }
 
