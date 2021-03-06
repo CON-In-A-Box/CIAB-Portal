@@ -415,6 +415,235 @@ paths:
       security:
         -
           ciab_auth: []
+  '/deadline/{id}':
+    get:
+      tags:
+        - deadlines
+      summary: 'Gets a deadline'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Id of the deadline'
+          required: true
+          schema:
+            type: integer
+        -
+          name: include
+          in: query
+          description: 'Include the resource instead of the ID.'
+          required: false
+          style: form
+          explode: false
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - departmentId
+      responses:
+        '200':
+          description: 'Deadline found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/deadline'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/deadline_not_found'
+      security:
+        -
+          ciab_auth: []
+    put:
+      tags:
+        - deadlines
+      summary: 'Updates a deadline'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Id of the deadline'
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                Deadline:
+                  type: string
+                  format: date
+                  nullable: true
+                Note:
+                  type: string
+                  nullable: true
+              type: object
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/deadline_not_found'
+      security:
+        -
+          ciab_auth: []
+    delete:
+      tags:
+        - deadlines
+      summary: 'Deletes a deadline'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Id of the deadline'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: OK
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/deadline_not_found'
+      security:
+        -
+          ciab_auth: []
+  '/department/{id}/deadline':
+    post:
+      tags:
+        - departments
+      summary: 'Adds a new deadline'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'The id or name of the department'
+          required: true
+          schema:
+            oneOf:
+              -
+                description: 'Department name'
+                type: integer
+              -
+                description: 'Department id'
+                type: string
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                Deadline:
+                  type: string
+                  format: date
+                Note:
+                  type: string
+              type: object
+      responses:
+        '201':
+          description: OK
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/department_not_found'
+      security:
+        -
+          ciab_auth: []
+  '/department/{id}/deadlines':
+    get:
+      tags:
+        - departments
+      summary: 'Lists deadlines for a given department'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'The id or name of the department'
+          required: true
+          schema:
+            oneOf:
+              -
+                description: 'Department name'
+                type: integer
+              -
+                description: 'Department id'
+                type: string
+        -
+          name: include
+          in: query
+          description: 'Include the resource instead of the ID.'
+          required: false
+          style: form
+          explode: false
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - departmentId
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/deadline_list'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/department_not_found'
+      security:
+        -
+          ciab_auth: []
+  '/member/{id}/deadlines':
+    get:
+      tags:
+        - members
+      summary: 'Lists deadlines for a given member'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'The id or login of the member'
+          required: true
+          schema:
+            oneOf:
+              -
+                description: 'Member login'
+                type: string
+              -
+                description: 'Member id'
+                type: integer
+        -
+          name: include
+          in: query
+          description: 'Include the resource instead of the ID.'
+          required: false
+          style: form
+          explode: false
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - departmentId
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/deadline_list'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/member_not_found'
+      security:
+        -
+          ciab_auth: []
 components:
   schemas:
     announcement:
@@ -510,6 +739,43 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/cycle'
+      type: object
+    deadline:
+      properties:
+        type:
+          type: string
+          enum:
+            - deadline
+        id:
+          description: 'Deadline Id'
+          type: integer
+        deadline:
+          description: 'When this deadline expires'
+          type: string
+          format: date
+        departmentId:
+          description: 'Department for the deadline'
+          oneOf:
+            -
+              description: 'Department Id'
+              type: integer
+            -
+              $ref: '#/components/schemas/department'
+        note:
+          description: 'Note about the deadline.'
+          type: string
+      type: object
+    deadline_list:
+      properties:
+        type:
+          type: string
+          enum:
+            - deadline_list
+        data:
+          description: 'List of deadlines'
+          type: array
+          items:
+            $ref: '#/components/schemas/deadline'
       type: object
     department:
       properties:
@@ -645,6 +911,12 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/error'
+    deadline_not_found:
+      description: 'Deadline not found in the system.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/error'
     department_not_found:
       description: 'Department not found in the system.'
       content:
@@ -674,6 +946,9 @@ tags:
   -
     name: cycles
     description: 'Features around annual cycles'
+  -
+    name: deadlines
+    description: 'Features around event department deadlines'
   -
     name: departments
     description: 'Features around staffing departments for events'
