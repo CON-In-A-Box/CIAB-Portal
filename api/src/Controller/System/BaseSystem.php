@@ -3,6 +3,13 @@
     require_module 'standard';
 .*/
 
+/**
+ *  @OA\Tag(
+ *      name="administrative",
+ *      description="Features around Administration of the site"
+ *  )
+ */
+
 namespace App\Controller\System;
 
 use Slim\Container;

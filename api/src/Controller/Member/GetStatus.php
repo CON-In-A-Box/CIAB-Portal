@@ -3,6 +3,42 @@
     require_module 'standard';
 .*/
 
+/**
+ *  @OA\Get(
+ *      tags={"members"},
+ *      path="/member/{name}/status",
+ *      summary="Gets the status of an member account.",
+ *      @OA\Parameter(
+ *          description="login for the account",
+ *          in="path",
+ *          name="name",
+ *          required=true,
+ *          @OA\Schema(type="string")
+ *      ),
+ *      @OA\Response(
+ *          response=200,
+ *          description="Member status found",
+ *          @OA\JsonContent(
+ *              @OA\Property(
+ *                  property="type",
+ *                  type="string",
+ *                  enum={"member_status"}
+ *              ),
+ *              @OA\Property(
+ *                  property="status",
+ *                  type="integer",
+ *                  description="Member account status code",
+ *                  enum={0,1,2,3}
+ *              )
+ *          )
+ *      ),
+ *      @OA\Response(
+ *          response=404,
+ *          ref="#/components/responses/member_not_found"
+ *      )
+ *  )
+ **/
+
 namespace App\Controller\Member;
 
 use Slim\Http\Request;

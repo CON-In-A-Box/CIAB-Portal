@@ -3,6 +3,37 @@
     require_module 'standard';
 .*/
 
+/**
+ *  @OA\Get(
+ *      tags={"members"},
+ *      path="/member/find",
+ *      summary="Search for a member based on the query",
+ *      @OA\Parameter(
+ *          description="Query string",
+ *          in="query",
+ *          name="q",
+ *          required=true,
+ *          @OA\Schema(type="string")
+ *      ),
+ *      @OA\Response(
+ *          response=200,
+ *          description="Member(s) found",
+ *          @OA\JsonContent(
+ *           ref="#/components/schemas/member_list"
+ *          ),
+ *      ),
+ *      @OA\Response(
+ *          response=401,
+ *          ref="#/components/responses/401"
+ *      ),
+ *      @OA\Response(
+ *          response=404,
+ *          ref="#/components/responses/member_not_found"
+ *      ),
+ *      security={{"ciab_auth":{}}}
+ *  )
+ **/
+
 namespace App\Controller\Member;
 
 use Slim\Http\Request;

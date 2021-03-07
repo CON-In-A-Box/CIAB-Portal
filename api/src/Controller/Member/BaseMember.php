@@ -20,6 +20,13 @@
  *          type="integer",
  *          description="member ID"
  *      ),
+ *      allOf={
+ *          @OA\Schema(ref="#/components/schemas/member_body")
+ *      }
+ *  )
+ *
+ *  @OA\Schema(
+ *      schema="member_body",
  *      @OA\Property(
  *          property="firstName",
  *          type="string",
@@ -155,6 +162,37 @@
  *          property="conComDisplayPhone",
  *          type="boolean",
  *          description="If Concom display phone on list."
+ *      )
+ *  )
+ *
+ *  @OA\Schema(
+ *      schema="member_reference",
+ *      @OA\Property(
+ *          property="type",
+ *          type="string",
+ *          enum={"member_reference"}
+ *      ),
+ *      @OA\Property(
+ *          property="id",
+ *          description="Member Id",
+ *          type="integer"
+ *      )
+ *  )
+ *
+ *  @OA\Schema(
+ *      schema="member_list",
+ *      @OA\Property(
+ *          property="type",
+ *          type="string",
+ *          enum={"member_list"}
+ *      ),
+ *      @OA\Property(
+ *          property="data",
+ *          type="array",
+ *          description="List of members",
+ *          @OA\Items(
+ *              ref="#/components/schemas/member_reference"
+ *          )
  *      )
  *  )
  *
