@@ -39,6 +39,9 @@ class ModuleStaff extends BaseModule
             if (array_key_exists('id', $data)) {
                 $id = $data['id'];
                 $event = \current_eventID();
+                if ($event == null) {
+                    return $data;
+                }
                 $sql = <<<SQL
             SELECT
                 COUNT(ListRecordID) AS c
