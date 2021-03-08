@@ -1429,6 +1429,105 @@ paths:
       security:
         -
           ciab_auth: []
+  '/admin/configuration/{field}':
+    get:
+      tags:
+        - administrative
+      summary: 'Get a configuration setting for the site'
+      parameters:
+        -
+          name: field
+          in: path
+          description: 'Configuration setting field'
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/configuration'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/configuration_not_found'
+      security:
+        -
+          ciab_auth: []
+  /admin/configuration:
+    get:
+      tags:
+        - administrative
+      summary: 'Get all configuration settings for the site'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/configuration_list'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/configuration_not_found'
+      security:
+        -
+          ciab_auth: []
+    put:
+      tags:
+        - administrative
+      summary: 'Updates a site configuration setting'
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                Field:
+                  type: string
+                  nullable: false
+                Value:
+                  type: string
+                  nullable: false
+              type: object
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/configuration'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/configuration_not_found'
+      security:
+        -
+          ciab_auth: []
+  /admin/log:
+    get:
+      tags:
+        - administrative
+      summary: 'Read the system log'
+      responses:
+        '200':
+          description: 'Log entries found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/log'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          description: 'Log entries not found on the system.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+      security:
+        -
+          ciab_auth: []
 components:
   schemas:
     announcement:
@@ -1788,6 +1887,37 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/permission_entry'
+      type: object
+    log_entry:
+      properties:
+        LogEntryID:
+          description: 'Entry ID'
+          type: string
+        AccountID:
+          description: 'Member account generating the log'
+          type: string
+        Function:
+          description: 'Function generating the log'
+          type: string
+        Query:
+          description: 'The query string being logged'
+          type: string
+        Date:
+          description: 'When the log entry was generated'
+          type: string
+          format: date-time
+      type: object
+    log:
+      properties:
+        type:
+          type: string
+          enum:
+            - log
+        data:
+          description: 'List of entries'
+          type: array
+          items:
+            $ref: '#/components/schemas/log_entry'
       type: object
     configuration:
       properties:
