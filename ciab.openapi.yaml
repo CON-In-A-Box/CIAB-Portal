@@ -552,6 +552,53 @@ paths:
       security:
         -
           ciab_auth: []
+  '/department/{id}':
+    get:
+      tags:
+        - departments
+      summary: 'Gets a department'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Id or name of the deadline'
+          required: true
+          schema:
+            oneOf:
+              -
+                description: 'Department name'
+                type: integer
+              -
+                description: 'Department id'
+                type: string
+        -
+          name: include
+          in: query
+          description: 'Include the resource instead of the ID.'
+          required: false
+          style: form
+          explode: false
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - fallback
+                - division
+      responses:
+        '200':
+          description: 'Department found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/department'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/department_not_found'
+      security:
+        -
+          ciab_auth: []
   '/department/{id}/deadlines':
     get:
       tags:
@@ -595,6 +642,23 @@ paths:
           $ref: '#/components/responses/401'
         '404':
           $ref: '#/components/responses/department_not_found'
+      security:
+        -
+          ciab_auth: []
+  /department:
+    get:
+      tags:
+        - departments
+      summary: 'Lists departments'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/department_list'
+        '401':
+          $ref: '#/components/responses/401'
       security:
         -
           ciab_auth: []
@@ -1687,6 +1751,37 @@ components:
           type: array
           items:
             type: string
+      type: object
+    department_entry:
+      properties:
+        type:
+          type: string
+          enum:
+            - department_entry
+        id:
+          description: 'Department ID'
+          oneOf:
+            -
+              description: 'departemnt Id'
+              type: integer
+            -
+              $ref: '#/components/schemas/department'
+        get:
+          description: 'Method to get department data.'
+          type: string
+          format: url
+      type: object
+    department_list:
+      properties:
+        type:
+          type: string
+          enum:
+            - department_list
+        data:
+          description: 'List of departments'
+          type: array
+          items:
+            $ref: '#/components/schemas/department_entry'
       type: object
     event:
       properties:

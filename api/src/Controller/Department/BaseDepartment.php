@@ -47,6 +47,51 @@
  *              @OA\Items(type="string")
  *      )
  *  )
+
+ *   @OA\Schema(
+ *      schema="department_entry",
+ *      @OA\Property(
+ *          property="type",
+ *          type="string",
+ *          enum={"department_entry"}
+ *      ),
+ *      @OA\Property(
+ *          property="id",
+ *          description="Department ID",
+ *          oneOf={
+ *              @OA\Schema(
+ *                  type="integer",
+ *                  description="departemnt Id"
+ *              ),
+ *              @OA\Schema(
+ *                  ref="#/components/schemas/department"
+ *              )
+ *          }
+ *      ),
+ *      @OA\Property(
+ *          property="get",
+ *          type="string",
+ *          format="url",
+ *          description="Method to get department data."
+ *      )
+ *  )
+ *
+ *   @OA\Schema(
+ *      schema="department_list",
+ *      @OA\Property(
+ *          property="type",
+ *          type="string",
+ *          enum={"department_list"}
+ *      ),
+ *      @OA\Property(
+ *          property="data",
+ *          type="array",
+ *          description="List of departments",
+ *          @OA\Items(
+ *              ref="#/components/schemas/department_entry"
+ *          ),
+ *      )
+ *  )
  *
  *   @OA\Response(
  *      response="department_not_found",
