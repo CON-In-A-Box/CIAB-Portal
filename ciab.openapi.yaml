@@ -1204,6 +1204,231 @@ paths:
       security:
         -
           ciab_auth: []
+  '/permissions/method/{resource}':
+    get:
+      tags:
+        - permissions
+      summary: 'Gets permissions on a resource by method'
+      parameters:
+        -
+          name: resource
+          in: path
+          description: 'Resource being queried.'
+          required: true
+          schema:
+            type: string
+            enum:
+              - announcement
+              - deadline
+      responses:
+        '200':
+          description: 'Permissions found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/permission_list'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/permission_not_found'
+      security:
+        -
+          ciab_auth: []
+  '/permissions/method/{resource}/{method}':
+    get:
+      tags:
+        - permissions
+      summary: 'Gets a method permission'
+      parameters:
+        -
+          name: resource
+          in: path
+          description: 'Resource being queried.'
+          required: true
+          schema:
+            type: string
+            enum:
+              - announcement
+              - deadline
+        -
+          name: method
+          in: path
+          description: 'Method being queried.'
+          required: true
+          schema:
+            type: string
+            enum:
+              - get
+              - put
+              - post
+              - delete
+      responses:
+        '200':
+          description: 'Permissions found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/permission_list'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/permission_not_found'
+      security:
+        -
+          ciab_auth: []
+  '/permissions/method/{resource}/{method}/{department}':
+    get:
+      tags:
+        - permissions
+      summary: 'Gets a method permission'
+      parameters:
+        -
+          name: resource
+          in: path
+          description: 'Resource being queried.'
+          required: true
+          schema:
+            type: string
+            enum:
+              - announcement
+              - deadline
+        -
+          name: method
+          in: path
+          description: 'Method being queried.'
+          required: true
+          schema:
+            type: string
+            enum:
+              - get
+              - put
+              - post
+              - delete
+        -
+          name: department
+          in: path
+          description: 'The Id or name of the department'
+          required: true
+          schema:
+            oneOf:
+              -
+                description: 'Department name'
+                type: integer
+              -
+                description: 'Department id'
+                type: string
+      responses:
+        '200':
+          description: 'Permissions found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/permission_list'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/permission_not_found'
+      security:
+        -
+          ciab_auth: []
+  '/permissions/resource/{resource}/{department}':
+    get:
+      tags:
+        - permissions
+      summary: 'Gets a resource permission'
+      parameters:
+        -
+          name: resource
+          in: path
+          description: 'Resource being queried.'
+          required: true
+          schema:
+            type: string
+            enum:
+              - announcement
+              - deadline
+        -
+          name: department
+          in: path
+          description: 'The Id or name of the department'
+          required: true
+          schema:
+            oneOf:
+              -
+                description: 'Department name'
+                type: integer
+              -
+                description: 'Department id'
+                type: string
+      responses:
+        '200':
+          description: 'Permissions found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/permission_list'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/permission_not_found'
+      security:
+        -
+          ciab_auth: []
+  '/permissions/resource/{resource}/{department}/{method}':
+    get:
+      tags:
+        - permissions
+      summary: 'Gets a resource permission'
+      parameters:
+        -
+          name: resource
+          in: path
+          description: 'Resource being queried.'
+          required: true
+          schema:
+            type: string
+            enum:
+              - announcement
+              - deadline
+        -
+          name: department
+          in: path
+          description: 'The Id or name of the department'
+          required: true
+          schema:
+            oneOf:
+              -
+                description: 'Department name'
+                type: integer
+              -
+                description: 'Department id'
+                type: string
+        -
+          name: method
+          in: path
+          description: 'Method being queried.'
+          required: true
+          schema:
+            type: string
+            enum:
+              - get
+              - put
+              - post
+              - delete
+      responses:
+        '200':
+          description: 'Permissions found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/permission_list'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/permission_not_found'
+      security:
+        -
+          ciab_auth: []
 components:
   schemas:
     announcement:
@@ -1525,6 +1750,45 @@ components:
           items:
             $ref: '#/components/schemas/member_reference'
       type: object
+    permission_entry:
+      properties:
+        type:
+          type: string
+          enum:
+            - permission_entry
+        subtype:
+          description: 'Description string about the permission'
+          type: string
+        allowed:
+          description: 'Is the permission enabled'
+          type: boolean
+        action:
+          description: 'Request based on this permission'
+          type: object
+        subdata:
+          description: 'Request sepcific subdata'
+          type: array
+          items:
+            $ref: '#/components/schemas/permission_subdata'
+      type: object
+    permission_subdata:
+      properties:
+        departmentId:
+          description: 'Id for the target department'
+          type: integer
+      type: object
+    permission_list:
+      properties:
+        type:
+          type: string
+          enum:
+            - permission_list
+        data:
+          description: 'List of permissions'
+          type: array
+          items:
+            $ref: '#/components/schemas/permission_entry'
+      type: object
     configuration:
       properties:
         type:
@@ -1589,6 +1853,12 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/error'
+    permission_not_found:
+      description: 'Permission not found in the system.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/error'
     configuration_not_found:
       description: 'Configuration field not defined.'
       content:
@@ -1624,6 +1894,9 @@ tags:
   -
     name: members
     description: 'Features around members of events'
+  -
+    name: permissions
+    description: 'Querying and checking permissions in the API'
   -
     name: administrative
     description: 'Features around Administration of the site'
