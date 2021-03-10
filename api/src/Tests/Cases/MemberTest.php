@@ -139,14 +139,11 @@ class MemberTest extends CiabTestCase
 
         $basedata = $this->runSuccessJsonRequest('GET', '/member');
         $this->assertSame($basedata->id, '1000');
-        unset($basedata->links);
 
         $data = $this->runSuccessJsonRequest('GET', '/member/current');
-        unset($data->links);
         $this->assertEquals($basedata, $data);
 
         $data = $this->runSuccessJsonRequest('GET', '/member/1000');
-        unset($data->links);
         $this->assertEquals($basedata, $data);
 
         $data = $this->runSuccessJsonRequest('GET', '/member/find');
@@ -171,7 +168,6 @@ class MemberTest extends CiabTestCase
 
         $basedata = $this->runSuccessJsonRequest('GET', '/member');
         $this->assertSame($basedata->id, '1000');
-        unset($basedata->links);
 
         $this->runRequest('PUT', '/member/1000', null, null, 404);
 
@@ -180,7 +176,6 @@ class MemberTest extends CiabTestCase
 
         $data = $this->runSuccessJsonRequest('GET', '/member/current');
         $this->assertEquals($data->email2, 'phpunit@testing.test');
-        unset($data->links);
         unset($data->email2);
         $this->assertEquals($basedata, $data);
 

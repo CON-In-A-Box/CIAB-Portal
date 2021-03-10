@@ -36,7 +36,6 @@ class GetTicket extends BaseTicketInclude
         }
 
         $ticket = $this->buildTicket($data[0], $data[0]);
-        $this->buildTicketHateoas($request, $ticket['id']);
 
         return [
         \App\Controller\BaseController::RESOURCE_TYPE,

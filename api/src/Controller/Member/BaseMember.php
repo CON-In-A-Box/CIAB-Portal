@@ -29,19 +29,6 @@ abstract class BaseMember extends BaseController
     }
 
 
-    protected function buildMemberHateoas(Request $request)
-    {
-        if ($this->id !== 0) {
-            $path = $request->getUri()->getBaseUrl();
-            $this->addHateoasLink('self', $path.'/member/'.strval($this->id), 'GET');
-            $this->addHateoasLink('update', $path.'/member/'.strval($this->id), 'PUT');
-            $this->addHateoasLink('updatePassword', $path.'/member/'.strval($this->id).'/password', 'PUT');
-            $this->addHateoasLink('deadlines', $path.'/member/'.strval($this->id).'/deadlines', 'GET');
-        }
-
-    }
-
-
     public function findMember(
         Request $request,
         Response $response,

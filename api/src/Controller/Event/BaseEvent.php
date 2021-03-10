@@ -30,16 +30,6 @@ abstract class BaseEvent extends BaseController
     }
 
 
-    protected function buildEventHateoas(Request $request)
-    {
-        if ($this->id !== 0) {
-            $path = $request->getUri()->getBaseUrl();
-            $this->addHateoasLink('self', $path.'/event/'.strval($this->id), 'GET');
-        }
-
-    }
-
-
     protected function processEvent($item)
     {
         $newEvent['type'] = 'event';

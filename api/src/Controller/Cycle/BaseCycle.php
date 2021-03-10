@@ -27,16 +27,6 @@ abstract class BaseCycle extends BaseController
     }
 
 
-    protected function buildCycleHateoas(Request $request)
-    {
-        if ($this->id !== 0) {
-            $path = $request->getUri()->getBaseUrl();
-            $this->addHateoasLink('self', $path.'/cycle/'.strval($this->id), 'GET');
-        }
-
-    }
-
-
     protected function getCycle($params)
     {
         $sth = $this->container->db->prepare("SELECT * FROM `AnnualCycles` WHERE `AnnualCycleID` = ".$params['id']);

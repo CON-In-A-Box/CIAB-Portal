@@ -24,7 +24,6 @@ abstract class BaseDeadline extends BaseController
 
     public function buildDeadline(Request $request, Response $response, $id, $dept, $deadline, $note)
     {
-        $this->buildDeadlineHateoas($request, intval($id), intval($dept));
         $output = array();
         $output['type'] = 'deadline';
         $output['id'] = $id;
@@ -69,19 +68,6 @@ abstract class BaseDeadline extends BaseController
                 error_log($e);
             }
             $value = $result->fetch();
-        }
-
-    }
-
-
-    protected function buildDeadlineHateoas(Request $request, int $id, int $dept)
-    {
-        if ($id !== 0) {
-            $path = $request->getUri()->getBaseUrl();
-            $this->addHateoasLink('self', $path.'/deadline/'.strval($id), 'GET');
-            $this->addHateoasLink('modify', $path.'/deadline/'.strval($id), 'POST');
-            $this->addHateoasLink('delete', $path.'/deadline/'.strval($id), 'DELETE');
-            $this->addHateoasLink('department', $path.'/department/'.strval($dept), 'GET');
         }
 
     }

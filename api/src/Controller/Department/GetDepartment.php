@@ -45,7 +45,6 @@ class GetDepartment extends BaseDepartment
         unset($output['Division']);
         unset($output['Fallback']);
         unset($output['FallbackID']);
-        $this->buildDepartmentHateoas($request);
         return [
         \App\Controller\BaseController::RESOURCE_TYPE,
         $output];

@@ -22,7 +22,6 @@ class CycleTest extends CiabTestCase
             ['From' => $when, 'To' => $to],
             201
         );
-        unset($this->cycle->links);
 
     }
 
@@ -55,8 +54,6 @@ class CycleTest extends CiabTestCase
         );
 
         $data2 = $this->runSuccessJsonRequest('GET', '/cycle/'.$data->id);
-        unset($data2->links);
-        unset($data->links);
         $this->assertSame((array)$data, (array)$data2);
 
         return $data->id;
@@ -116,7 +113,6 @@ class CycleTest extends CiabTestCase
         $data = $this->runSuccessJsonRequest('GET', '/cycle', ['includesDate' => $target]);
         $this->assertTrue(!empty($data->data));
         $this->assertEquals(count($data->data), 1);
-        unset($data->data[0]->links);
         $this->assertEquals($data->data[0], $this->cycle);
 
     }
