@@ -105,11 +105,6 @@ abstract class BaseController
     /**
      * @var array[]
     */
-    protected $hateoas;
-
-    /**
-     * @var array[]
-    */
     protected $chain;
 
     /**
@@ -122,7 +117,6 @@ abstract class BaseController
     {
         $this->api_type = $api_type;
         $this->container = $container;
-        $this->hateoas = [];
         $this->chain = [];
         $this->includes = [];
 
@@ -231,17 +225,6 @@ abstract class BaseController
     }
 
 
-    public function addHateoasLink(string $method, string $href, string $request)
-    {
-        $this->hateoas[] = [
-        'method' => $method,
-        'href' => $href,
-        'request' => $request
-        ];
-
-    }
-
-
     protected function filterOutput(Request $request, $data, $code): array
     {
         if ($code == 200) {
@@ -307,10 +290,6 @@ abstract class BaseController
         if (!empty($data) && !array_key_exists('type', $data)) {
             $data['type'] = $this->api_type;
         }
-        if (!empty($data) && !empty($this->hateoas) &&
-            !array_key_exists('links', $data)) {
-            $data['links'] = $this->hateoas;
-        }
         $output = $this->filterOutput($request, $data, $code);
         return $response->withJson($output, $code, $parameters);
 
@@ -362,10 +341,6 @@ abstract class BaseController
         }
         if (!empty($data) && !array_key_exists('type', $data)) {
             $data['type'] = $this->api_type;
-        }
-        if (!empty($data) && !empty($this->hateoas) &&
-            !array_key_exists('links', $data)) {
-            $data['links'] = $this->hateoas;
         }
         $output = $this->filterOutput($request, $data, $code);
         return $output;

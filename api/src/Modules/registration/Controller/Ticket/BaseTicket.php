@@ -26,21 +26,6 @@ abstract class BaseTicket extends BaseRegistration
     }
 
 
-    protected function buildTicketHateoas(Request $request, $id)
-    {
-        if ($this->id !== 0) {
-            $path = $request->getUri()->getBaseUrl();
-            $this->addHateoasLink('self', $path.'/registration/ticket/'.strval($id), 'GET');
-            $this->addHateoasLink('checkin', $path.'/registration/ticket/'.strval($id).'/checkin', 'PUT');
-            $this->addHateoasLink('lost', $path.'/registration/ticket/'.strval($id).'/lost', 'PUT');
-            $this->addHateoasLink('pickup', $path.'/registration/ticket/'.strval($id).'/pickup', 'PUT');
-            $this->addHateoasLink('email', $path.'/registration/ticket/'.strval($id).'/email', 'PUT');
-            $this->addHateoasLink('print', $path.'/registration/ticket/'.strval($id).'/print', 'PUT');
-        }
-
-    }
-
-
     public function buildTicket($base, $ticket)
     {
         $ticket['type'] = 'ticket';

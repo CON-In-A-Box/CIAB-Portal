@@ -45,7 +45,6 @@ class ListTickets extends BaseTicketInclude
         foreach ($data as $index => $ticket) {
             $tickets[] = $this->buildTicket($data[$index], $ticket);
         }
-        #$this->buildTicketHateoas($request);
         if (count($tickets) > 1) {
             $output = ['type' => 'ticket_list'];
             return [

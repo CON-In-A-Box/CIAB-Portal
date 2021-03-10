@@ -42,7 +42,6 @@ class DeadlineTest extends CiabTestCase
         foreach ($data->data as $item) {
             if ($target == null && !in_array($item->id, $initial_ids)) {
                 $target = $item->id;
-                unset($item->links);
                 $this->assertSame([
                     'type' => 'deadline',
                     'id' => $target,
@@ -54,7 +53,6 @@ class DeadlineTest extends CiabTestCase
         }
 
         $data = $this->runSuccessJsonRequest('GET', '/deadline/'.$target);
-        unset($data->links);
         $this->assertSame([
             'type' => 'deadline',
             'id' => $target,

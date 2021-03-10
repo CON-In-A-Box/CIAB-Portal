@@ -28,7 +28,6 @@ class GetEvent extends BaseEvent
             $events[] = $this->processEvent($item);
         }
         $this->id = $events[0]['id'];
-        $this->buildEventHateoas($request);
 
         return [
         \App\Controller\BaseController::RESOURCE_TYPE,

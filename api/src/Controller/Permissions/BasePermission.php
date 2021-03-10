@@ -28,13 +28,13 @@ abstract class BasePermission extends BaseController
     }
 
 
-    protected function buildDeptEntry($id, $allowed, $subtype, $method, $hateoas) : array
+    protected function buildDeptEntry($id, $allowed, $subtype, $method, $link) : array
     {
         $entry = [
         'type' => 'permission_entry',
         'subtype' => $subtype.'_'.$method,
         'allowed' => $allowed,
-        'action' => $hateoas
+        'action' => $link
         ];
         $entry['subdata'] = [
         'departmentId' => $id

@@ -15,7 +15,6 @@ class GetMember extends BaseMember
     public function buildResource(Request $request, Response $response, $args): array
     {
         $data = $this->findMemberId($request, $response, $args, 'id');
-        $this->buildMemberHateoas($request);
         return [
         \App\Controller\BaseController::RESOURCE_TYPE,
         $data];

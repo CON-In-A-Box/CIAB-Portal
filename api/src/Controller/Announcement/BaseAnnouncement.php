@@ -52,7 +52,6 @@ abstract class BaseAnnouncement extends BaseController
 
     public function buildAnnouncement(Request $request, Response $response, $id, $dept, $posted, $poster, $scope, $text)
     {
-        $this->buildAnnouncementHateoas($request, intval($id), intval($dept));
         $output = array();
         $output['type'] = 'announcement';
         $output['id'] = $id;
@@ -95,19 +94,6 @@ abstract class BaseAnnouncement extends BaseController
                 error_log($e);
             }
             $value = $result->fetch();
-        }
-
-    }
-
-
-    protected function buildAnnouncementHateoas(Request $request, int $id, int $dept)
-    {
-        if ($id !== 0) {
-            $path = $request->getUri()->getBaseUrl();
-            $this->addHateoasLink('self', $path.'/announcement/'.strval($id), 'GET');
-            $this->addHateoasLink('modify', $path.'/announcement/'.strval($id), 'POST');
-            $this->addHateoasLink('delete', $path.'/announcement/'.strval($id), 'DELETE');
-            $this->addHateoasLink('department', $path.'/announcement/'.strval($dept), 'GET');
         }
 
     }

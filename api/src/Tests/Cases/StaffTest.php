@@ -28,15 +28,6 @@ class StaffTest extends CiabTestCase
         $position = $this->runSuccessJsonRequest('POST', '/member/1000/staff_membership', null, ['Department' => '2', 'Position' => '1', 'Note' => 'PHPUnit Testing'], 201);
         $this->assertNotEmpty($position);
 
-        $data = $this->runSuccessJsonRequest('GET', '/member/1000');
-        $found = false;
-        foreach ($data->links as $link) {
-            if ($link->method == 'staff') {
-                $found = true;
-            }
-        }
-        $this->assertTrue($found);
-
         $data = $this->runSuccessJsonRequest('GET', '/member/1000/staff_membership');
         $this->assertNotEmpty($data);
 

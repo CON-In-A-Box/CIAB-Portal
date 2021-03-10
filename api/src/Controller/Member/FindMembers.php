@@ -20,13 +20,13 @@ class FindMembers extends BaseMember
         if ($query !== null) {
             $data = \lookup_users_by_key($query, false, true, false);
             foreach ($data['users'] as $user) {
-                $hateoas[] = [
+                $link[] = [
                 'method' => 'self',
                 'href' => $request->getUri()->getBaseUrl().'/member/'.$user['Id'],
                 'request' => 'GET'
                 ];
                 $result[] = ['id' => $user['Id'],
-                'self' => $hateoas];
+                'self' => $link];
             }
         }
 

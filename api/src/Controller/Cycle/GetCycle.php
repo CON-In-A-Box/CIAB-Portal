@@ -22,7 +22,6 @@ class GetCycle extends BaseCycle
             throw new NotFoundException('Cycle Not Found');
         }
         $this->id = $args['id'];
-        $this->buildCycleHateoas($request);
         $entry = $cycles[0];
         $entry['id'] = $this->id;
         unset($entry['AnnualCycleID']);

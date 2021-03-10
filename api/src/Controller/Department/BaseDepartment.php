@@ -38,19 +38,6 @@ abstract class BaseDepartment extends BaseController
     }
 
 
-    protected function buildDepartmentHateoas(Request $request)
-    {
-        if ($this->id !== 0) {
-            $this->addHateoasLink('self', $this->buildDepartmentGet($request, $this->id), 'GET');
-            $this->addHateoasLink('deadlines', $this->buildDepartmentGet($request, $this->id).'/deadlines', 'GET');
-        }
-        if ($this->division !== 0 && $this->id !== $this->division) {
-            $this->addHateoasLink('division', $this->buildDepartmentGet($request, $this->division), 'GET');
-        }
-
-    }
-
-
     public function getDepartment($id, $setself = true)
     {
         $output = parent::getDepartment($id);

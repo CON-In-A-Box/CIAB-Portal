@@ -27,16 +27,6 @@ abstract class BaseStore extends BaseController
     }
 
 
-    protected function buildStoresHateoas(Request $request)
-    {
-        if ($this->id !== 0) {
-            $path = $request->getUri()->getBaseUrl();
-            $this->addHateoasLink('self', $path.'/stores/'.strval($this->id), 'GET');
-        }
-
-    }
-
-
     protected function getStore(array $params, Request $request, Response $response, &$error)
     {
         $select = Select::new($this->container->db);
