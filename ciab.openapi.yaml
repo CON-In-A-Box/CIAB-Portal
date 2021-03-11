@@ -1,0 +1,2139 @@
+openapi: 3.0.0
+info:
+  title: 'CIAB backend API'
+  description: 'The CIAB RESTful Web API is designed to allow access to the Con In A Box functionality from a variety of web clients as well as more cleanly divide the front end and back ends of the main CIAB web site.'
+  license:
+    name: 'Apache 2.0'
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+  version: '0.1'
+servers:
+  -
+    url: 'http://localhost:8080/api'
+    description: Sign-in
+paths:
+  '/announcement/{id}':
+    get:
+      tags:
+        - announcements
+      summary: 'Gets an announcement'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Id of the announcement'
+          required: true
+          schema:
+            type: integer
+        -
+          name: include
+          in: query
+          description: 'Include the resource instead of the ID.'
+          required: false
+          style: form
+          explode: false
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - departmentId
+                - postedBy
+      responses:
+        '200':
+          description: 'Announcement found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/announcement'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/announce_not_found'
+      security:
+        -
+          ciab_auth: []
+    put:
+      tags:
+        - announcements
+      summary: 'Updates a announcement'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Id of the announcement'
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                Department:
+                  type: integer
+                  nullable: true
+                Text:
+                  type: string
+                  nullable: true
+                Scope:
+                  type: integer
+                  nullable: true
+              type: object
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/department_not_found'
+      security:
+        -
+          ciab_auth: []
+    delete:
+      tags:
+        - announcements
+      summary: 'Deletes an announcement'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Id of the announcement'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: OK
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/announce_not_found'
+      security:
+        -
+          ciab_auth: []
+  '/department/{id}/announcements':
+    get:
+      tags:
+        - departments
+      summary: 'Lists announcements for a given department'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'The id or name of the department'
+          required: true
+          schema:
+            oneOf:
+              -
+                description: 'Department name'
+                type: integer
+              -
+                description: 'Department id'
+                type: string
+        -
+          name: include
+          in: query
+          description: 'Include the resource instead of the ID.'
+          required: false
+          style: form
+          explode: false
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - departmentId
+                - postedBy
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/announcement_list'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/department_not_found'
+      security:
+        -
+          ciab_auth: []
+  '/member/{id}/announcements':
+    get:
+      tags:
+        - members
+      summary: 'Lists announcements for a given member'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'The id or login of the member'
+          required: true
+          schema:
+            oneOf:
+              -
+                description: 'Member login'
+                type: string
+              -
+                description: 'Member id'
+                type: integer
+        -
+          name: include
+          in: query
+          description: 'Include the resource instead of the ID.'
+          required: false
+          style: form
+          explode: false
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - departmentId
+                - postedBy
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/announcement_list'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/member_not_found'
+      security:
+        -
+          ciab_auth: []
+  '/department/{id}/announcement':
+    post:
+      tags:
+        - departments
+      summary: 'Adds a new announcement'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'The id or name of the department'
+          required: true
+          schema:
+            oneOf:
+              -
+                description: 'Department name'
+                type: integer
+              -
+                description: 'Department id'
+                type: string
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                Text:
+                  type: string
+                Scope:
+                  type: integer
+              type: object
+      responses:
+        '201':
+          description: OK
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          description: 'Department or Member not found in the system'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+      security:
+        -
+          ciab_auth: []
+  '/cycle/{id}':
+    get:
+      tags:
+        - cycles
+      summary: 'Gets an cycle'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Id of the cycle'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Cycle found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/cycle'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/cycle_not_found'
+      security:
+        -
+          ciab_auth: []
+    put:
+      tags:
+        - cycles
+      summary: 'Updates a cycle'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Id of the cycle'
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                From:
+                  type: string
+                  format: date
+                  nullable: true
+                To:
+                  type: string
+                  format: date
+                  nullable: true
+              type: object
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/cycle'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/cycle_not_found'
+      security:
+        -
+          ciab_auth: []
+    delete:
+      tags:
+        - cycles
+      summary: 'Deletes an cycle'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Id of the cycle'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: OK
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/cycle_not_found'
+      security:
+        -
+          ciab_auth: []
+  /cycle:
+    get:
+      tags:
+        - cycles
+      summary: 'Lists cycles'
+      parameters:
+        -
+          name: from
+          in: query
+          description: 'Start date for cycle list'
+          required: false
+          schema:
+            type: string
+            format: date
+        -
+          name: to
+          in: query
+          description: 'Final date for cycle list'
+          required: false
+          schema:
+            type: string
+            format: date
+        -
+          name: includesDate
+          in: query
+          description: 'A date that must be included in cycles in the list'
+          required: false
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/cycle_list'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/cycle_not_found'
+      security:
+        -
+          ciab_auth: []
+    post:
+      tags:
+        - cycles
+      summary: 'Adds a new cycle'
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                From:
+                  type: string
+                  format: date
+                To:
+                  type: string
+                  format: date
+              type: object
+      responses:
+        '201':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/cycle'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          description: 'Department or Member not found in the system'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+      security:
+        -
+          ciab_auth: []
+  '/deadline/{id}':
+    get:
+      tags:
+        - deadlines
+      summary: 'Gets a deadline'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Id of the deadline'
+          required: true
+          schema:
+            type: integer
+        -
+          name: include
+          in: query
+          description: 'Include the resource instead of the ID.'
+          required: false
+          style: form
+          explode: false
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - departmentId
+      responses:
+        '200':
+          description: 'Deadline found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/deadline'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/deadline_not_found'
+      security:
+        -
+          ciab_auth: []
+    put:
+      tags:
+        - deadlines
+      summary: 'Updates a deadline'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Id of the deadline'
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                Deadline:
+                  type: string
+                  format: date
+                  nullable: true
+                Note:
+                  type: string
+                  nullable: true
+              type: object
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/deadline_not_found'
+      security:
+        -
+          ciab_auth: []
+    delete:
+      tags:
+        - deadlines
+      summary: 'Deletes a deadline'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Id of the deadline'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: OK
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/deadline_not_found'
+      security:
+        -
+          ciab_auth: []
+  '/department/{id}/deadline':
+    post:
+      tags:
+        - departments
+      summary: 'Adds a new deadline'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'The id or name of the department'
+          required: true
+          schema:
+            oneOf:
+              -
+                description: 'Department name'
+                type: integer
+              -
+                description: 'Department id'
+                type: string
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                Deadline:
+                  type: string
+                  format: date
+                Note:
+                  type: string
+              type: object
+      responses:
+        '201':
+          description: OK
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/department_not_found'
+      security:
+        -
+          ciab_auth: []
+  '/department/{id}':
+    get:
+      tags:
+        - departments
+      summary: 'Gets a department'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Id or name of the deadline'
+          required: true
+          schema:
+            oneOf:
+              -
+                description: 'Department name'
+                type: integer
+              -
+                description: 'Department id'
+                type: string
+        -
+          name: include
+          in: query
+          description: 'Include the resource instead of the ID.'
+          required: false
+          style: form
+          explode: false
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - fallback
+                - division
+      responses:
+        '200':
+          description: 'Department found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/department'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/department_not_found'
+      security:
+        -
+          ciab_auth: []
+  '/department/{id}/deadlines':
+    get:
+      tags:
+        - departments
+      summary: 'Lists deadlines for a given department'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'The id or name of the department'
+          required: true
+          schema:
+            oneOf:
+              -
+                description: 'Department name'
+                type: integer
+              -
+                description: 'Department id'
+                type: string
+        -
+          name: include
+          in: query
+          description: 'Include the resource instead of the ID.'
+          required: false
+          style: form
+          explode: false
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - departmentId
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/deadline_list'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/department_not_found'
+      security:
+        -
+          ciab_auth: []
+  /department:
+    get:
+      tags:
+        - departments
+      summary: 'Lists departments'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/department_list'
+        '401':
+          $ref: '#/components/responses/401'
+      security:
+        -
+          ciab_auth: []
+  '/event/{id}':
+    get:
+      tags:
+        - events
+      summary: 'Gets an event'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Id of the event'
+          required: true
+          schema:
+            type: integer
+        -
+          name: include
+          in: query
+          description: 'Include the resource instead of the ID.'
+          required: false
+          style: form
+          explode: false
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - cycle
+      responses:
+        '200':
+          description: 'Event found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/event'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/event_not_found'
+      security:
+        -
+          ciab_auth: []
+    delete:
+      tags:
+        - events
+      summary: 'Deletes an event'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Id of the event'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: OK
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/event_not_found'
+      security:
+        -
+          ciab_auth: []
+  /event:
+    get:
+      tags:
+        - events
+      summary: 'Lists events'
+      parameters:
+        -
+          name: begin
+          in: query
+          description: 'First date to search from.'
+          required: false
+          style: form
+          schema:
+            type: string
+            format: date
+        -
+          name: end
+          in: query
+          description: 'Last date to search until.'
+          required: false
+          style: form
+          schema:
+            type: string
+            format: date
+        -
+          name: include
+          in: query
+          description: 'Include the resource instead of the ID.'
+          required: false
+          style: form
+          explode: false
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - departmentId
+                - postedBy
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/event_list'
+        '401':
+          $ref: '#/components/responses/401'
+      security:
+        -
+          ciab_auth: []
+    post:
+      tags:
+        - events
+      summary: 'Adds a new event'
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                From:
+                  type: string
+                  format: date
+                To:
+                  type: string
+                  format: date
+                Name:
+                  type: string
+              type: object
+      responses:
+        '201':
+          description: OK
+        '401':
+          $ref: '#/components/responses/401'
+        '400':
+          description: 'Cycle not found in the system which contains event dates.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+      security:
+        -
+          ciab_auth: []
+  /member/find:
+    get:
+      tags:
+        - members
+      summary: 'Search for a member based on the query'
+      parameters:
+        -
+          name: q
+          in: query
+          description: 'Query string'
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'Member(s) found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/member_list'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/member_not_found'
+      security:
+        -
+          ciab_auth: []
+  '/member/{id}/configuration/{field}':
+    get:
+      tags:
+        - members
+      summary: 'Get a configuration setting for a member'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'The id or login of the member'
+          required: true
+          schema:
+            oneOf:
+              -
+                description: 'Member login'
+                type: string
+              -
+                description: 'Member id'
+                type: integer
+        -
+          name: field
+          in: path
+          description: 'Configuration setting field'
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/configuration'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/configuration_not_found'
+      security:
+        -
+          ciab_auth: []
+  '/member/{id}/configuration':
+    get:
+      tags:
+        - members
+      summary: 'Get all configuration settings for a member'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'The id or login of the member'
+          required: true
+          schema:
+            oneOf:
+              -
+                description: 'Member login'
+                type: string
+              -
+                description: 'Member id'
+                type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/configuration_list'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/configuration_not_found'
+      security:
+        -
+          ciab_auth: []
+    put:
+      tags:
+        - members
+      summary: 'Updates a member configuration setting'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'The id or login of the member'
+          required: true
+          schema:
+            oneOf:
+              -
+                description: 'Member login'
+                type: string
+              -
+                description: 'Member id'
+                type: integer
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                Field:
+                  type: string
+                  nullable: false
+                Value:
+                  type: string
+                  nullable: false
+              type: object
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/configuration'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/configuration_not_found'
+      security:
+        -
+          ciab_auth: []
+  '/member/{id}':
+    get:
+      tags:
+        - members
+      summary: 'Gets a member'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Id of the member.'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Member found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/member'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/member_not_found'
+      security:
+        -
+          ciab_auth: []
+    put:
+      tags:
+        - members
+      summary: 'Updates a member'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'The id or login of the member'
+          required: true
+          schema:
+            oneOf:
+              -
+                description: 'Member login'
+                type: string
+              -
+                description: 'Member id'
+                type: integer
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/member_body'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/member'
+        '400':
+          description: 'Parameter is missing or invalid'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '401':
+          $ref: '#/components/responses/401'
+      security:
+        -
+          ciab_auth: []
+  /member:
+    get:
+      tags:
+        - members
+      summary: 'Gets current member'
+      responses:
+        '200':
+          description: 'Member found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/member'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/member_not_found'
+      security:
+        -
+          ciab_auth: []
+    post:
+      tags:
+        - members
+      summary: 'Adds a new member'
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/member_body'
+      responses:
+        '201':
+          description: OK
+        '409':
+          description: 'Email address already in use.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '400':
+          description: 'Required parameters missing.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+  '/member/{name}/status':
+    get:
+      tags:
+        - members
+      summary: 'Gets the status of an member account.'
+      parameters:
+        -
+          name: name
+          in: path
+          description: 'login for the account'
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'Member status found'
+          content:
+            application/json:
+              schema:
+                properties:
+                  type: { type: string, enum: [member_status] }
+                  status: { description: 'Member account status code', type: integer, enum: [0, 1, 2, 3] }
+                type: object
+        '404':
+          $ref: '#/components/responses/member_not_found'
+  '/member/{id}/deadlines':
+    get:
+      tags:
+        - members
+      summary: 'Lists deadlines for a given member'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'The id or login of the member'
+          required: true
+          schema:
+            oneOf:
+              -
+                description: 'Member login'
+                type: string
+              -
+                description: 'Member id'
+                type: integer
+        -
+          name: include
+          in: query
+          description: 'Include the resource instead of the ID.'
+          required: false
+          style: form
+          explode: false
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - departmentId
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/deadline_list'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/member_not_found'
+      security:
+        -
+          ciab_auth: []
+  '/member/{email}/password':
+    post:
+      tags:
+        - members
+      summary: 'Requests a password reset for a member'
+      parameters:
+        -
+          name: email
+          in: path
+          description: 'The id or login email for the member'
+          required: true
+          schema:
+            oneOf:
+              -
+                description: 'Member ID'
+                type: integer
+              -
+                description: 'Member login email'
+                type: string
+      responses:
+        '201':
+          description: OK
+        '404':
+          $ref: '#/components/responses/member_not_found'
+  '/member/{id}/password':
+    put:
+      tags:
+        - members
+      summary: 'Updates a member''s password'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'The id or login of the member'
+          required: true
+          schema:
+            oneOf:
+              -
+                description: 'Member login'
+                type: string
+              -
+                description: 'Member id'
+                type: integer
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                OldPassword:
+                  type: string
+                  nullable: false
+                NewPassword:
+                  type: string
+                  nullable: false
+              type: object
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/member'
+        '400':
+          description: 'Parameter is missing or invalid'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '401':
+          $ref: '#/components/responses/401'
+      security:
+        -
+          ciab_auth: []
+  '/member/{email}/password/recovery':
+    put:
+      tags:
+        - members
+      summary: 'Updates a member''s password with recovery code'
+      parameters:
+        -
+          name: email
+          in: path
+          description: 'The login email of the member'
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                OneTimeCode:
+                  type: string
+                  nullable: false
+                NewPassword:
+                  type: string
+                  nullable: false
+              type: object
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: 'Parameter is missing or invalid'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+  '/admin/SUDO/{id}':
+    post:
+      tags:
+        - administrative
+      summary: 'Convert current session to that of another member.'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'The id or login of the member'
+          required: true
+          schema:
+            oneOf:
+              -
+                description: 'Member login'
+                type: string
+              -
+                description: 'Member id'
+                type: integer
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/member_not_found'
+      security:
+        -
+          ciab_auth: []
+  '/permissions/method/{resource}':
+    get:
+      tags:
+        - permissions
+      summary: 'Gets permissions on a resource by method'
+      parameters:
+        -
+          name: resource
+          in: path
+          description: 'Resource being queried.'
+          required: true
+          schema:
+            type: string
+            enum:
+              - announcement
+              - deadline
+      responses:
+        '200':
+          description: 'Permissions found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/permission_list'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/permission_not_found'
+      security:
+        -
+          ciab_auth: []
+  '/permissions/method/{resource}/{method}':
+    get:
+      tags:
+        - permissions
+      summary: 'Gets a method permission'
+      parameters:
+        -
+          name: resource
+          in: path
+          description: 'Resource being queried.'
+          required: true
+          schema:
+            type: string
+            enum:
+              - announcement
+              - deadline
+        -
+          name: method
+          in: path
+          description: 'Method being queried.'
+          required: true
+          schema:
+            type: string
+            enum:
+              - get
+              - put
+              - post
+              - delete
+      responses:
+        '200':
+          description: 'Permissions found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/permission_list'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/permission_not_found'
+      security:
+        -
+          ciab_auth: []
+  '/permissions/method/{resource}/{method}/{department}':
+    get:
+      tags:
+        - permissions
+      summary: 'Gets a method permission'
+      parameters:
+        -
+          name: resource
+          in: path
+          description: 'Resource being queried.'
+          required: true
+          schema:
+            type: string
+            enum:
+              - announcement
+              - deadline
+        -
+          name: method
+          in: path
+          description: 'Method being queried.'
+          required: true
+          schema:
+            type: string
+            enum:
+              - get
+              - put
+              - post
+              - delete
+        -
+          name: department
+          in: path
+          description: 'The Id or name of the department'
+          required: true
+          schema:
+            oneOf:
+              -
+                description: 'Department name'
+                type: integer
+              -
+                description: 'Department id'
+                type: string
+      responses:
+        '200':
+          description: 'Permissions found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/permission_list'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/permission_not_found'
+      security:
+        -
+          ciab_auth: []
+  '/permissions/resource/{resource}/{department}':
+    get:
+      tags:
+        - permissions
+      summary: 'Gets a resource permission'
+      parameters:
+        -
+          name: resource
+          in: path
+          description: 'Resource being queried.'
+          required: true
+          schema:
+            type: string
+            enum:
+              - announcement
+              - deadline
+        -
+          name: department
+          in: path
+          description: 'The Id or name of the department'
+          required: true
+          schema:
+            oneOf:
+              -
+                description: 'Department name'
+                type: integer
+              -
+                description: 'Department id'
+                type: string
+      responses:
+        '200':
+          description: 'Permissions found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/permission_list'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/permission_not_found'
+      security:
+        -
+          ciab_auth: []
+  '/permissions/resource/{resource}/{department}/{method}':
+    get:
+      tags:
+        - permissions
+      summary: 'Gets a resource permission'
+      parameters:
+        -
+          name: resource
+          in: path
+          description: 'Resource being queried.'
+          required: true
+          schema:
+            type: string
+            enum:
+              - announcement
+              - deadline
+        -
+          name: department
+          in: path
+          description: 'The Id or name of the department'
+          required: true
+          schema:
+            oneOf:
+              -
+                description: 'Department name'
+                type: integer
+              -
+                description: 'Department id'
+                type: string
+        -
+          name: method
+          in: path
+          description: 'Method being queried.'
+          required: true
+          schema:
+            type: string
+            enum:
+              - get
+              - put
+              - post
+              - delete
+      responses:
+        '200':
+          description: 'Permissions found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/permission_list'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/permission_not_found'
+      security:
+        -
+          ciab_auth: []
+  '/admin/configuration/{field}':
+    get:
+      tags:
+        - administrative
+      summary: 'Get a configuration setting for the site'
+      parameters:
+        -
+          name: field
+          in: path
+          description: 'Configuration setting field'
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/configuration'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/configuration_not_found'
+      security:
+        -
+          ciab_auth: []
+  /admin/configuration:
+    get:
+      tags:
+        - administrative
+      summary: 'Get all configuration settings for the site'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/configuration_list'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/configuration_not_found'
+      security:
+        -
+          ciab_auth: []
+    put:
+      tags:
+        - administrative
+      summary: 'Updates a site configuration setting'
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                Field:
+                  type: string
+                  nullable: false
+                Value:
+                  type: string
+                  nullable: false
+              type: object
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/configuration'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/configuration_not_found'
+      security:
+        -
+          ciab_auth: []
+  /admin/log:
+    get:
+      tags:
+        - administrative
+      summary: 'Read the system log'
+      responses:
+        '200':
+          description: 'Log entries found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/log'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          description: 'Log entries not found on the system.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+      security:
+        -
+          ciab_auth: []
+components:
+  schemas:
+    announcement:
+      properties:
+        type:
+          type: string
+          enum:
+            - announcement
+        id:
+          description: 'announcement ID'
+          type: integer
+        postedOn:
+          description: 'Date the announcement was first posted'
+          type: string
+          format: date
+        departmentId:
+          description: 'Department for the announcement'
+          oneOf:
+            -
+              description: 'Department Id'
+              type: integer
+            -
+              $ref: '#/components/schemas/department'
+        postedBy:
+          description: 'The member who created the announcement'
+          oneOf:
+            -
+              description: 'Member Id'
+              type: integer
+            -
+              $ref: '#/components/schemas/member'
+        scope:
+          description: 'The scope of the announcement'
+          type: integer
+        text:
+          description: 'Text of the announcement'
+          type: string
+      type: object
+    announcement_list:
+      properties:
+        type:
+          type: string
+          enum:
+            - announcement_list
+        data:
+          description: 'List of announcements'
+          type: array
+          items:
+            $ref: '#/components/schemas/announcement'
+      type: object
+    error:
+      properties:
+        type:
+          type: string
+          enum:
+            - error
+        code:
+          description: 'announcement ID'
+          type: integer
+        status:
+          description: 'Error Status'
+          type: string
+        message:
+          description: 'Error Message'
+          type: string
+      type: object
+    cycle:
+      properties:
+        type:
+          type: string
+          enum:
+            - cycle
+        id:
+          description: 'cycle Id'
+          type: integer
+        dateFrom:
+          description: 'cycle start date'
+          type: string
+          format: date
+        dateTo:
+          description: 'cycle ending date'
+          type: string
+          format: date
+      type: object
+    cycle_list:
+      properties:
+        type:
+          type: string
+          enum:
+            - cycle_list
+        data:
+          description: 'List of cycles'
+          type: array
+          items:
+            $ref: '#/components/schemas/cycle'
+      type: object
+    deadline:
+      properties:
+        type:
+          type: string
+          enum:
+            - deadline
+        id:
+          description: 'Deadline Id'
+          type: integer
+        deadline:
+          description: 'When this deadline expires'
+          type: string
+          format: date
+        departmentId:
+          description: 'Department for the deadline'
+          oneOf:
+            -
+              description: 'Department Id'
+              type: integer
+            -
+              $ref: '#/components/schemas/department'
+        note:
+          description: 'Note about the deadline.'
+          type: string
+      type: object
+    deadline_list:
+      properties:
+        type:
+          type: string
+          enum:
+            - deadline_list
+        data:
+          description: 'List of deadlines'
+          type: array
+          items:
+            $ref: '#/components/schemas/deadline'
+      type: object
+    department:
+      properties:
+        type:
+          type: string
+          enum:
+            - department
+        id:
+          description: 'department Id'
+          type: integer
+        name:
+          description: 'department name'
+          type: string
+        division:
+          description: 'Division containing this department.'
+          type: integer
+        childCount:
+          description: 'Number of child departments'
+          type: integer
+        fallback:
+          description: 'Department that is this departments fallback.'
+          type: integer
+        email:
+          description: 'Department''s email addresses.'
+          type: array
+          items:
+            type: string
+      type: object
+    department_entry:
+      properties:
+        type:
+          type: string
+          enum:
+            - department_entry
+        id:
+          description: 'Department ID'
+          oneOf:
+            -
+              description: 'departemnt Id'
+              type: integer
+            -
+              $ref: '#/components/schemas/department'
+        get:
+          description: 'Method to get department data.'
+          type: string
+          format: url
+      type: object
+    department_list:
+      properties:
+        type:
+          type: string
+          enum:
+            - department_list
+        data:
+          description: 'List of departments'
+          type: array
+          items:
+            $ref: '#/components/schemas/department_entry'
+      type: object
+    event:
+      properties:
+        type:
+          type: string
+          enum:
+            - event
+        id:
+          description: 'event Id'
+          type: integer
+        cycle:
+          description: 'Annual cycle this event is part of'
+          oneOf:
+            -
+              description: 'Cycle Id'
+              type: integer
+            -
+              $ref: '#/components/schemas/cycle'
+        dateFrom:
+          description: 'Date the event starts'
+          type: string
+          format: date
+        dateTo:
+          description: 'Date the event ends'
+          type: string
+          format: date
+        name:
+          description: 'Name of the event'
+          type: string
+      type: object
+    event_list:
+      properties:
+        type:
+          type: string
+          enum:
+            - event_list
+        data:
+          description: 'List of events'
+          type: array
+          items:
+            $ref: '#/components/schemas/event'
+      type: object
+    member:
+      properties:
+        type:
+          type: string
+          enum:
+            - member
+        id:
+          description: 'member ID'
+          type: integer
+      type: object
+      allOf:
+        -
+          $ref: '#/components/schemas/member_body'
+    member_body:
+      properties:
+        firstName:
+          description: 'Members preferred first name'
+          type: string
+        lastName:
+          description: 'Members preferred last name'
+          type: string
+        email:
+          description: 'Members primary email'
+          type: string
+        legalFirstName:
+          description: 'Members legal first name.'
+          type: string
+        legalLastName:
+          description: 'Members legal last name.'
+          type: string
+        middleName:
+          description: 'Member''s middle name.'
+          type: string
+        suffix:
+          description: 'Suffix for members name.'
+          type: string
+        email2:
+          description: 'Member''s second email.'
+          type: string
+        email3:
+          description: 'Member''s third email'
+          type: string
+        phone1:
+          description: 'Member''s primary phone'
+          type: string
+        phone2:
+          description: 'Member''s secondary phone'
+          type: string
+        addressLine1:
+          description: 'Member''s address line 1'
+          type: string
+        addressLine2:
+          description: 'Member''s address line 2'
+          type: string
+        city:
+          description: 'Member''s address city.'
+          type: string
+        state:
+          description: 'Member''s address state'
+          type: string
+        zipCode:
+          description: 'Member''s Address Zip code.'
+          type: string
+        zipPlus4:
+          description: 'Member''s Address Zip code suffix'
+          type: string
+        countryName:
+          description: 'Member''s Address country.'
+          type: string
+        province:
+          description: 'Member''s Address province.'
+          type: string
+        preferredFirstName:
+          description: 'Member''s Preferred First Name.'
+          type: string
+        preferredLastName:
+          description: 'Member''s Preferred Last Name.'
+          type: string
+        Deceased:
+          description: 'Is member deceased.'
+          type: boolean
+        DoNotContact:
+          description: 'Do not contact member.'
+          type: boolean
+        EmailOptOut:
+          description: 'Do not mass email member.'
+          type: boolean
+        Birthdate:
+          description: 'Member''s birth date.'
+          type: string
+          format: date
+        Gender:
+          description: 'Member''s preferred gender string.'
+          type: string
+        conComDisplayPhone:
+          description: 'If Concom display phone on list.'
+          type: boolean
+      type: object
+    member_reference:
+      properties:
+        type:
+          type: string
+          enum:
+            - member_reference
+        id:
+          description: 'Member Id'
+          type: integer
+      type: object
+    member_list:
+      properties:
+        type:
+          type: string
+          enum:
+            - member_list
+        data:
+          description: 'List of members'
+          type: array
+          items:
+            $ref: '#/components/schemas/member_reference'
+      type: object
+    permission_entry:
+      properties:
+        type:
+          type: string
+          enum:
+            - permission_entry
+        subtype:
+          description: 'Description string about the permission'
+          type: string
+        allowed:
+          description: 'Is the permission enabled'
+          type: boolean
+        action:
+          $ref: '#/components/schemas/permission_action'
+        subdata:
+          $ref: '#/components/schemas/permission_subdata'
+      type: object
+    permission_subdata:
+      properties:
+        departmentId:
+          description: 'Id for the target department'
+          type: integer
+      type: object
+    permission_action:
+      properties:
+        method:
+          description: 'Name of the method'
+          type: string
+        href:
+          description: 'URI for the method'
+          type: string
+          format: uri
+        request:
+          description: 'HTTP request type for the method'
+          type: string
+      type: object
+    permission_list:
+      properties:
+        type:
+          type: string
+          enum:
+            - permission_list
+        data:
+          description: 'List of permissions'
+          type: array
+          items:
+            $ref: '#/components/schemas/permission_entry'
+      type: object
+    log_entry:
+      properties:
+        LogEntryID:
+          description: 'Entry ID'
+          type: string
+        AccountID:
+          description: 'Member account generating the log'
+          type: string
+        Function:
+          description: 'Function generating the log'
+          type: string
+        Query:
+          description: 'The query string being logged'
+          type: string
+        Date:
+          description: 'When the log entry was generated'
+          type: string
+          format: date-time
+      type: object
+    log:
+      properties:
+        type:
+          type: string
+          enum:
+            - log
+        data:
+          description: 'List of entries'
+          type: array
+          items:
+            $ref: '#/components/schemas/log_entry'
+      type: object
+    configuration:
+      properties:
+        type:
+          type: string
+          enum:
+            - configuration
+        field:
+          description: 'Configuration Field'
+          type: string
+        value:
+          description: 'Configurtion Value'
+          type: string
+      type: object
+    configuration_list:
+      properties:
+        type:
+          type: string
+          enum:
+            - configuration_list
+        data:
+          description: 'List of configuration fields'
+          type: array
+          items:
+            $ref: '#/components/schemas/configuration'
+      type: object
+  responses:
+    '401':
+      description: 'User is not authenticated or not authorized for the API.'
+    announce_not_found:
+      description: 'Announcement not found in the system.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/error'
+    cycle_not_found:
+      description: 'Cycle not found in the system.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/error'
+    deadline_not_found:
+      description: 'Deadline not found in the system.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/error'
+    department_not_found:
+      description: 'Department not found in the system.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/error'
+    event_not_found:
+      description: 'Event not found in the system.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/error'
+    member_not_found:
+      description: 'Member not found in the system.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/error'
+    permission_not_found:
+      description: 'Permission not found in the system.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/error'
+    configuration_not_found:
+      description: 'Configuration field not defined.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/error'
+  securitySchemes:
+    ciab_auth:
+      type: oauth2
+      description: 'Authentication to the API server'
+      flows:
+        password:
+          tokenUrl: api/token
+          refreshUrl: api/token
+          scopes:
+            - ''
+tags:
+  -
+    name: announcements
+    description: 'Features around text announcements to event and event staff'
+  -
+    name: cycles
+    description: 'Features around annual cycles'
+  -
+    name: deadlines
+    description: 'Features around event department deadlines'
+  -
+    name: departments
+    description: 'Features around staffing departments for events'
+  -
+    name: events
+    description: 'Features around events'
+  -
+    name: members
+    description: 'Features around members of events'
+  -
+    name: permissions
+    description: 'Querying and checking permissions in the API'
+  -
+    name: administrative
+    description: 'Features around Administration of the site'
+externalDocs:
+  description: 'View us on GitHub'
+  url: 'https://github.com/CON-In-A-Box/CIAB-Portal/tree/master/api/doc'

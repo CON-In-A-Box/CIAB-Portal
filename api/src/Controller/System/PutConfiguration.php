@@ -3,6 +3,47 @@
     require_module 'standard';
 .*/
 
+/**
+ *  @OA\Put(
+ *      tags={"administrative"},
+ *      path="/admin/configuration",
+ *      summary="Updates a site configuration setting",
+ *      @OA\RequestBody(
+ *          @OA\MediaType(
+ *              mediaType="multipart/form-data",
+ *              @OA\Schema(
+ *                  @OA\Property(
+ *                      property="Field",
+ *                      type="string",
+ *                      nullable=false
+ *                  ),
+ *                  @OA\Property(
+ *                      property="Value",
+ *                      type="string",
+ *                      nullable=false
+ *                  ),
+ *              )
+ *          )
+ *      ),
+*      @OA\Response(
+ *          response=200,
+ *          description="OK",
+ *          @OA\JsonContent(
+ *              ref="#/components/schemas/configuration"
+ *          )
+ *      ),
+ *      @OA\Response(
+ *          response=401,
+ *          ref="#/components/responses/401"
+ *      ),
+ *      @OA\Response(
+ *          response=404,
+ *          ref="#/components/responses/configuration_not_found"
+ *      ),
+ *      security={{"ciab_auth":{}}}
+ *  )
+ **/
+
 namespace App\Controller\System;
 
 use Slim\Http\Request;

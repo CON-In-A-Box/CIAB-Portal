@@ -3,6 +3,339 @@
     require_module 'standard';
 .*/
 
+/**
+ *  @OA\Tag(
+ *      name="permissions",
+ *      description="Querying and checking permissions in the API"
+ *  )
+ *
+ *  @OA\Schema(
+ *      schema="permission_entry",
+ *      @OA\Property(
+ *          property="type",
+ *          type="string",
+ *          enum={"permission_entry"}
+ *      ),
+ *      @OA\Property(
+ *          property="subtype",
+ *          type="string",
+ *          description="Description string about the permission"
+ *      ),
+ *      @OA\Property(
+ *          property="allowed",
+ *          type="boolean",
+ *          description="Is the permission enabled"
+ *      ),
+ *      @OA\Property(
+ *          property="action",
+ *          ref="#/components/schemas/permission_action"
+ *      ),
+ *      @OA\Property(
+ *          property="subdata",
+ *          ref="#/components/schemas/permission_subdata"
+ *      )
+ *  )
+ *
+ *  @OA\Schema(
+ *      schema="permission_subdata",
+ *      @OA\Property(
+ *          property="departmentId",
+ *          type="integer",
+ *          description="Id for the target department"
+ *      )
+ *  )
+ *
+ *  @OA\Schema(
+ *      schema="permission_action",
+ *      @OA\Property(
+ *          property="method",
+ *          type="string",
+ *          description="Name of the method"
+ *      ),
+ *      @OA\Property(
+ *          property="href",
+ *          type="string",
+ *          format="uri",
+ *          description="URI for the method"
+ *      ),
+ *      @OA\Property(
+ *          property="request",
+ *          type="string",
+ *          description="HTTP request type for the method"
+ *      )
+ *  )
+ *
+ *  @OA\Schema(
+ *      schema="permission_list",
+ *      @OA\Property(
+ *          property="type",
+ *          type="string",
+ *          enum={"permission_list"}
+ *      ),
+ *      @OA\Property(
+ *          property="data",
+ *          type="array",
+ *          description="List of permissions",
+ *          @OA\Items(
+ *              ref="#/components/schemas/permission_entry"
+ *          )
+ *      )
+ *  )
+ *
+ *  @OA\Response(
+ *      response="permission_not_found",
+ *      description="Permission not found in the system.",
+ *      @OA\JsonContent(
+ *          ref="#/components/schemas/error"
+ *      )
+ *   )
+ *
+ *  @OA\Get(
+ *      tags={"permissions"},
+ *      path="/permissions/method/{resource}",
+ *      summary="Gets permissions on a resource by method",
+ *      @OA\Parameter(
+ *          description="Resource being queried.",
+ *          in="path",
+ *          name="resource",
+ *          required=true,
+ *          @OA\Schema(
+ *              type="string",
+ *              enum={"announcement","deadline"}
+ *          )
+ *      ),
+ *      @OA\Response(
+ *          response=200,
+ *          description="Permissions found",
+ *          @OA\JsonContent(
+ *           ref="#/components/schemas/permission_list"
+ *          ),
+ *      ),
+ *      @OA\Response(
+ *          response=401,
+ *          ref="#/components/responses/401"
+ *      ),
+ *      @OA\Response(
+ *          response=404,
+ *          ref="#/components/responses/permission_not_found"
+ *      ),
+ *      security={{"ciab_auth":{}}}
+ *  )
+ *
+ *  @OA\Get(
+ *      tags={"permissions"},
+ *      path="/permissions/method/{resource}/{method}",
+ *      summary="Gets a method permission",
+ *      @OA\Parameter(
+ *          description="Resource being queried.",
+ *          in="path",
+ *          name="resource",
+ *          required=true,
+ *          @OA\Schema(
+ *              type="string",
+ *              enum={"announcement","deadline"}
+ *          )
+ *      ),
+ *      @OA\Parameter(
+ *          description="Method being queried.",
+ *          in="path",
+ *          name="method",
+ *          required=true,
+ *          @OA\Schema(
+ *              type="string",
+ *              enum={"get","put","post","delete"}
+ *          )
+ *      ),
+ *      @OA\Response(
+ *          response=200,
+ *          description="Permissions found",
+ *          @OA\JsonContent(
+ *           ref="#/components/schemas/permission_list"
+ *          ),
+ *      ),
+ *      @OA\Response(
+ *          response=401,
+ *          ref="#/components/responses/401"
+ *      ),
+ *      @OA\Response(
+ *          response=404,
+ *          ref="#/components/responses/permission_not_found"
+ *      ),
+ *      security={{"ciab_auth":{}}}
+ *  )
+ *
+ *  @OA\Get(
+ *      tags={"permissions"},
+ *      path="/permissions/method/{resource}/{method}/{department}",
+ *      summary="Gets a method permission",
+ *      @OA\Parameter(
+ *          description="Resource being queried.",
+ *          in="path",
+ *          name="resource",
+ *          required=true,
+ *          @OA\Schema(
+ *              type="string",
+ *              enum={"announcement","deadline"}
+ *          )
+ *      ),
+ *      @OA\Parameter(
+ *          description="Method being queried.",
+ *          in="path",
+ *          name="method",
+ *          required=true,
+ *          @OA\Schema(
+ *              type="string",
+ *              enum={"get","put","post","delete"}
+ *          )
+ *      ),
+ *      @OA\Parameter(
+ *          description="The Id or name of the department",
+ *          in="path",
+ *          name="department",
+ *          required=true,
+ *          @OA\Schema(
+ *              oneOf = {
+ *                  @OA\Schema(
+ *                      description="Department name",
+ *                      type="integer"
+ *                  ),
+ *                  @OA\Schema(
+ *                      description="Department id",
+ *                      type="string"
+ *                  )
+ *              }
+ *          )
+ *      ),
+ *      @OA\Response(
+ *          response=200,
+ *          description="Permissions found",
+ *          @OA\JsonContent(
+ *           ref="#/components/schemas/permission_list"
+ *          ),
+ *      ),
+ *      @OA\Response(
+ *          response=401,
+ *          ref="#/components/responses/401"
+ *      ),
+ *      @OA\Response(
+ *          response=404,
+ *          ref="#/components/responses/permission_not_found"
+ *      ),
+ *      security={{"ciab_auth":{}}}
+ *  )
+ *
+ *  @OA\Get(
+ *      tags={"permissions"},
+ *      path="/permissions/resource/{resource}/{department}",
+ *      summary="Gets a resource permission",
+ *      @OA\Parameter(
+ *          description="Resource being queried.",
+ *          in="path",
+ *          name="resource",
+ *          required=true,
+ *          @OA\Schema(
+ *              type="string",
+ *              enum={"announcement","deadline"}
+ *          )
+ *      ),
+ *      @OA\Parameter(
+ *          description="The Id or name of the department",
+ *          in="path",
+ *          name="department",
+ *          required=true,
+ *          @OA\Schema(
+ *              oneOf = {
+ *                  @OA\Schema(
+ *                      description="Department name",
+ *                      type="integer"
+ *                  ),
+ *                  @OA\Schema(
+ *                      description="Department id",
+ *                      type="string"
+ *                  )
+ *              }
+ *          )
+ *      ),
+ *      @OA\Response(
+ *          response=200,
+ *          description="Permissions found",
+ *          @OA\JsonContent(
+ *           ref="#/components/schemas/permission_list"
+ *          ),
+ *      ),
+ *      @OA\Response(
+ *          response=401,
+ *          ref="#/components/responses/401"
+ *      ),
+ *      @OA\Response(
+ *          response=404,
+ *          ref="#/components/responses/permission_not_found"
+ *      ),
+ *      security={{"ciab_auth":{}}}
+ *  )
+ *
+ *  @OA\Get(
+ *      tags={"permissions"},
+ *      path="/permissions/resource/{resource}/{department}/{method}",
+ *      summary="Gets a resource permission",
+ *      @OA\Parameter(
+ *          description="Resource being queried.",
+ *          in="path",
+ *          name="resource",
+ *          required=true,
+ *          @OA\Schema(
+ *              type="string",
+ *              enum={"announcement","deadline"}
+ *          )
+ *      ),
+ *      @OA\Parameter(
+ *          description="The Id or name of the department",
+ *          in="path",
+ *          name="department",
+ *          required=true,
+ *          @OA\Schema(
+ *              oneOf = {
+ *                  @OA\Schema(
+ *                      description="Department name",
+ *                      type="integer"
+ *                  ),
+ *                  @OA\Schema(
+ *                      description="Department id",
+ *                      type="string"
+ *                  )
+ *              }
+ *          )
+ *      ),
+ *      @OA\Parameter(
+ *          description="Method being queried.",
+ *          in="path",
+ *          name="method",
+ *          required=true,
+ *          @OA\Schema(
+ *              type="string",
+ *              enum={"get","put","post","delete"}
+ *          )
+ *      ),
+ *      @OA\Response(
+ *          response=200,
+ *          description="Permissions found",
+ *          @OA\JsonContent(
+ *           ref="#/components/schemas/permission_list"
+ *          ),
+ *      ),
+ *      @OA\Response(
+ *          response=401,
+ *          ref="#/components/responses/401"
+ *      ),
+ *      @OA\Response(
+ *          response=404,
+ *          ref="#/components/responses/permission_not_found"
+ *      ),
+ *      security={{"ciab_auth":{}}}
+ *  )
+ **/
+
+
 namespace App\Controller\Permissions;
 
 use Slim\Http\Request;

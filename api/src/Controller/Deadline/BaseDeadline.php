@@ -2,6 +2,75 @@
 /*.
     require_module 'standard';
 .*/
+/**
+ *  @OA\Tag(
+ *      name="deadlines",
+ *      description="Features around event department deadlines"
+ *  )
+ *
+ *  @OA\Schema(
+ *      schema="deadline",
+ *      @OA\Property(
+ *          property="type",
+ *          type="string",
+ *          enum={"deadline"}
+ *      ),
+ *      @OA\Property(
+ *          property="id",
+ *          type="integer",
+ *          description="Deadline Id"
+ *      ),
+ *      @OA\Property(
+ *          property="deadline",
+ *          type="string",
+ *          format="date",
+ *          description="When this deadline expires"
+ *      ),
+ *      @OA\Property(
+ *          property="departmentId",
+ *          description="Department for the deadline",
+ *          oneOf={
+ *              @OA\Schema(
+ *                  type="integer",
+ *                  description="Department Id"
+ *              ),
+ *              @OA\Schema(
+ *                  ref="#/components/schemas/department"
+ *              )
+ *          }
+ *      ),
+ *      @OA\Property(
+ *          property="note",
+ *          type="string",
+ *          description="Note about the deadline."
+ *      )
+ *  )
+ *
+ *  @OA\Schema(
+ *      schema="deadline_list",
+ *      @OA\Property(
+ *          property="type",
+ *          type="string",
+ *          enum={"deadline_list"}
+ *      ),
+ *      @OA\Property(
+ *          property="data",
+ *          type="array",
+ *          description="List of deadlines",
+ *          @OA\Items(
+ *              ref="#/components/schemas/deadline"
+ *          ),
+ *      )
+ *  )
+ *
+ *  @OA\Response(
+ *      response="deadline_not_found",
+ *      description="Deadline not found in the system.",
+ *      @OA\JsonContent(
+ *          ref="#/components/schemas/error"
+ *      )
+ *   )
+ **/
 
 namespace App\Controller\Deadline;
 

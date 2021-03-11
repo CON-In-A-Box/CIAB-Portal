@@ -3,6 +3,82 @@
     require_module 'standard';
 .*/
 
+/**
+ *
+ * @OA\Schema(
+ *      schema="log_entry",
+ *      @OA\Property(
+ *          property="LogEntryID",
+ *          description="Entry ID",
+ *          type="string"
+ *      ),
+ *      @OA\Property(
+ *          property="AccountID",
+ *          description="Member account generating the log",
+ *          type="string"
+ *      ),
+ *      @OA\Property(
+ *          property="Function",
+ *          description="Function generating the log",
+ *          type="string"
+ *      ),
+ *      @OA\Property(
+ *          property="Query",
+ *          description="The query string being logged",
+ *          type="string"
+ *      ),
+ *      @OA\Property(
+ *          property="Date",
+ *          description="When the log entry was generated",
+ *          type="string",
+ *          format="date-time",
+ *      )
+ *  )
+ *
+ *  @OA\Schema(
+ *      schema="log",
+ *      @OA\Property(
+ *          property="type",
+ *          type="string",
+ *          enum={"log"}
+ *      ),
+ *      @OA\Property(
+ *          property="data",
+ *          type="array",
+ *          description="List of entries",
+ *          @OA\Items(
+ *              ref="#/components/schemas/log_entry"
+ *          ),
+ *      )
+ *  )
+ *
+ *  @OA\Get(
+ *      tags={"administrative"},
+ *      path="/admin/log",
+ *      summary="Read the system log",
+ *      @OA\Response(
+ *          response=200,
+ *          description="Log entries found",
+ *          @OA\JsonContent(
+ *           ref="#/components/schemas/log"
+ *          ),
+ *      ),
+ *      @OA\Response(
+ *          response=401,
+ *          ref="#/components/responses/401"
+ *      ),
+ *      @OA\Response(
+ *          response=404,
+ *          description="Log entries not found on the system.",
+ *          @OA\JsonContent(
+ *              ref="#/components/schemas/error"
+ *          )
+ *      ),
+ *      security={{"ciab_auth":{}}}
+ *  )
+ **/
+
+
 namespace App\Controller\System;
 
 use Slim\Http\Request;

@@ -3,6 +3,61 @@
     require_module 'standard';
 .*/
 
+/**
+ *  @OA\Get(
+ *      tags={"administrative"},
+ *      path="/admin/configuration/{field}",
+ *      summary="Get a configuration setting for the site",
+ *      @OA\Parameter(
+ *          description="Configuration setting field",
+ *          in="path",
+ *          name="field",
+ *          required=true,
+ *          @OA\Schema(
+ *              type="string"
+ *          )
+ *      ),
+ *      @OA\Response(
+ *          response=200,
+ *          description="OK",
+ *          @OA\JsonContent(
+ *              ref="#/components/schemas/configuration"
+ *          )
+ *      ),
+ *      @OA\Response(
+ *          response=401,
+ *          ref="#/components/responses/401"
+ *      ),
+ *      @OA\Response(
+ *          response=404,
+ *          ref="#/components/responses/configuration_not_found"
+ *      ),
+ *      security={{"ciab_auth":{}}}
+ *  )
+ *
+ *  @OA\Get(
+ *      tags={"administrative"},
+ *      path="/admin/configuration",
+ *      summary="Get all configuration settings for the site",
+ *      @OA\Response(
+ *          response=200,
+ *          description="OK",
+ *          @OA\JsonContent(
+ *              ref="#/components/schemas/configuration_list"
+ *          )
+ *      ),
+ *      @OA\Response(
+ *          response=401,
+ *          ref="#/components/responses/401"
+ *      ),
+ *      @OA\Response(
+ *          response=404,
+ *          ref="#/components/responses/configuration_not_found"
+ *      ),
+ *      security={{"ciab_auth":{}}}
+ *  )
+ **/
+
 namespace App\Controller\System;
 
 use Slim\Http\Request;

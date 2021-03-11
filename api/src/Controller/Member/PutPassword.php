@@ -3,6 +3,109 @@
     require_module 'standard';
 .*/
 
+/**
+ *  @OA\Put(
+ *      tags={"members"},
+ *      path="/member/{id}/password",
+ *      summary="Updates a member's password",
+ *      @OA\Parameter(
+ *          description="The id or login of the member",
+ *          in="path",
+ *          name="id",
+ *          required=true,
+ *          @OA\Schema(
+ *              oneOf = {
+ *                  @OA\Schema(
+ *                      description="Member login",
+ *                      type="string"
+ *                  ),
+ *                  @OA\Schema(
+ *                      description="Member id",
+ *                      type="integer"
+ *                  )
+ *              }
+ *          )
+ *      ),
+ *      @OA\RequestBody(
+ *          @OA\MediaType(
+ *              mediaType="multipart/form-data",
+ *              @OA\Schema(
+ *                  @OA\Property(
+ *                      property="OldPassword",
+ *                      type="string",
+ *                      nullable=false
+ *                  ),
+ *                  @OA\Property(
+ *                      property="NewPassword",
+ *                      type="string",
+ *                      nullable=false
+ *                  )
+ *              )
+ *          )
+ *      ),
+ *      @OA\Response(
+ *          response=200,
+ *          description="OK",
+ *          @OA\JsonContent(
+ *              ref="#/components/schemas/member"
+ *          )
+ *      ),
+ *      @OA\Response(
+ *          response=400,
+ *          description="Parameter is missing or invalid",
+ *          @OA\JsonContent(
+ *              ref="#/components/schemas/error"
+ *          )
+ *      ),
+ *      @OA\Response(
+ *          response=401,
+ *          ref="#/components/responses/401"
+ *      ),
+ *      security={{"ciab_auth":{}}}
+ *  )
+ *
+ *  @OA\Put(
+ *      tags={"members"},
+ *      path="/member/{email}/password/recovery",
+ *      summary="Updates a member's password with recovery code",
+ *      @OA\Parameter(
+ *          description="The login email of the member",
+ *          in="path",
+ *          name="email",
+ *          required=true,
+ *          @OA\Schema(type="string"),
+ *      ),
+ *      @OA\RequestBody(
+ *          @OA\MediaType(
+ *              mediaType="multipart/form-data",
+ *              @OA\Schema(
+ *                  @OA\Property(
+ *                      property="OneTimeCode",
+ *                      type="string",
+ *                      nullable=false
+ *                  ),
+ *                  @OA\Property(
+ *                      property="NewPassword",
+ *                      type="string",
+ *                      nullable=false
+ *                  )
+ *              )
+ *          )
+ *      ),
+ *      @OA\Response(
+ *          response=200,
+ *          description="OK"
+ *      ),
+ *      @OA\Response(
+ *          response=400,
+ *          description="Parameter is missing or invalid",
+ *          @OA\JsonContent(
+ *              ref="#/components/schemas/error"
+ *          )
+ *      )
+ *  )
+ **/
+
 namespace App\Controller\Member;
 
 use Slim\Http\Request;

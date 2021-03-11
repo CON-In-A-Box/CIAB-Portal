@@ -2,6 +2,59 @@
 /*.
     require_module 'standard';
 .*/
+/**
+ *  @OA\Get(
+ *      tags={"cycles"},
+ *      path="/cycle",
+ *      summary="Lists cycles",
+ *      @OA\Parameter(
+ *          description="Start date for cycle list",
+ *          in="query",
+ *          name="from",
+ *          required=false,
+ *          @OA\Schema(
+ *              type="string",
+ *              format="date"
+ *          )
+ *      ),
+ *      @OA\Parameter(
+ *          description="Final date for cycle list",
+ *          in="query",
+ *          name="to",
+ *          required=false,
+ *          @OA\Schema(
+ *              type="string",
+ *              format="date"
+ *          )
+ *      ),
+ *      @OA\Parameter(
+ *          description="A date that must be included in cycles in the list",
+ *          in="query",
+ *          name="includesDate",
+ *          required=false,
+ *          @OA\Schema(
+ *              type="string",
+ *              format="date"
+ *          )
+ *      ),
+ *      @OA\Response(
+ *          response=200,
+ *          description="OK",
+ *          @OA\JsonContent(
+ *              ref="#/components/schemas/cycle_list"
+ *          )
+ *      ),
+ *      @OA\Response(
+ *          response=401,
+ *          ref="#/components/responses/401"
+ *      ),
+ *      @OA\Response(
+ *          response=404,
+ *          ref="#/components/responses/cycle_not_found"
+ *      ),
+ *      security={{"ciab_auth":{}}}
+ *  )
+ **/
 
 namespace App\Controller\Cycle;
 

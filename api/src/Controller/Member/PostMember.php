@@ -3,6 +3,40 @@
     require_module 'standard';
 .*/
 
+/**
+ *  @OA\Post(
+ *      tags={"members"},
+ *      path="/member",
+ *      summary="Adds a new member",
+ *      @OA\RequestBody(
+ *          @OA\MediaType(
+ *              mediaType="multipart/form-data",
+ *              @OA\Schema(
+ *                  ref="#/components/schemas/member_body"
+ *              )
+ *          )
+ *      ),
+ *      @OA\Response(
+ *          response=201,
+ *          description="OK"
+ *      ),
+ *      @OA\Response(
+ *          response=409,
+ *          description="Email address already in use.",
+ *          @OA\JsonContent(
+ *              ref="#/components/schemas/error"
+ *          )
+ *      ),
+ *      @OA\Response(
+ *          response=400,
+ *          description="Required parameters missing.",
+ *          @OA\JsonContent(
+ *              ref="#/components/schemas/error"
+ *          )
+ *      )
+ *  )
+ **/
+
 namespace App\Controller\Member;
 
 use Slim\Http\Request;

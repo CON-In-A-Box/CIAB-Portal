@@ -3,6 +3,59 @@
     require_module 'standard';
 .*/
 
+/**
+ *  @OA\Put(
+ *      tags={"members"},
+ *      path="/member/{id}",
+ *      summary="Updates a member",
+ *      @OA\Parameter(
+ *          description="The id or login of the member",
+ *          in="path",
+ *          name="id",
+ *          required=true,
+ *          @OA\Schema(
+ *              oneOf = {
+ *                  @OA\Schema(
+ *                      description="Member login",
+ *                      type="string"
+ *                  ),
+ *                  @OA\Schema(
+ *                      description="Member id",
+ *                      type="integer"
+ *                  )
+ *              }
+ *          )
+ *      ),
+ *      @OA\RequestBody(
+ *          @OA\MediaType(
+ *              mediaType="multipart/form-data",
+ *              @OA\Schema(
+ *                  ref="#/components/schemas/member_body"
+ *              )
+ *          )
+ *      ),
+ *      @OA\Response(
+ *          response=200,
+ *          description="OK",
+ *          @OA\JsonContent(
+ *              ref="#/components/schemas/member"
+ *          )
+ *      ),
+ *      @OA\Response(
+ *          response=400,
+ *          description="Parameter is missing or invalid",
+ *          @OA\JsonContent(
+ *              ref="#/components/schemas/error"
+ *          )
+ *      ),
+ *      @OA\Response(
+ *          response=401,
+ *          ref="#/components/responses/401"
+ *      ),
+ *      security={{"ciab_auth":{}}}
+ *  )
+ **/
+
 namespace App\Controller\Member;
 
 use Slim\Http\Request;

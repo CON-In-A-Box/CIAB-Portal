@@ -10,6 +10,63 @@ use Slim\Http\Response;
 use Slim\Container;
 use App\Controller\IncludeResource;
 
+/**
+ *  @OA\Get(
+ *      tags={"members"},
+ *      path="/member/{id}/deadlines",
+ *      summary="Lists deadlines for a given member",
+ *      @OA\Parameter(
+ *          description="The id or login of the member",
+ *          in="path",
+ *          name="id",
+ *          required=true,
+ *          @OA\Schema(
+ *              oneOf = {
+ *                  @OA\Schema(
+ *                      description="Member login",
+ *                      type="string"
+ *                  ),
+ *                  @OA\Schema(
+ *                      description="Member id",
+ *                      type="integer"
+ *                  )
+ *              }
+ *          )
+ *      ),
+ *      @OA\Parameter(
+ *          description="Include the resource instead of the ID.",
+ *          in="query",
+ *          name="include",
+ *          required=false,
+ *          explode=false,
+ *          style="form",
+ *          @OA\Schema(
+ *              type="array",
+ *              @OA\Items(
+ *                  type="string",
+ *                  enum={"departmentId"}
+ *              )
+ *          )
+ *      ),
+ *      @OA\Response(
+ *          response=200,
+ *          description="OK",
+ *          @OA\JsonContent(
+ *              ref="#/components/schemas/deadline_list"
+ *          )
+ *      ),
+ *      @OA\Response(
+ *          response=401,
+ *          ref="#/components/responses/401"
+ *      ),
+ *      @OA\Response(
+ *          response=404,
+ *          ref="#/components/responses/member_not_found"
+ *      ),
+ *      security={{"ciab_auth":{}}}
+ *  )
+ **/
+
 class ListDeadlines extends BaseMember
 {
 
