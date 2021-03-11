@@ -28,16 +28,11 @@
  *      ),
  *      @OA\Property(
  *          property="action",
- *          type="object",
- *          description="Request based on this permission"
+ *          ref="#/components/schemas/permission_action"
  *      ),
  *      @OA\Property(
  *          property="subdata",
- *          type="array",
- *          description="Request sepcific subdata",
- *          @OA\Items(
- *              ref="#/components/schemas/permission_subdata"
- *          )
+ *          ref="#/components/schemas/permission_subdata"
  *      )
  *  )
  *
@@ -47,6 +42,26 @@
  *          property="departmentId",
  *          type="integer",
  *          description="Id for the target department"
+ *      )
+ *  )
+ *
+ *  @OA\Schema(
+ *      schema="permission_action",
+ *      @OA\Property(
+ *          property="method",
+ *          type="string",
+ *          description="Name of the method"
+ *      ),
+ *      @OA\Property(
+ *          property="href",
+ *          type="string",
+ *          format="uri",
+ *          description="URI for the method"
+ *      ),
+ *      @OA\Property(
+ *          property="request",
+ *          type="string",
+ *          description="HTTP request type for the method"
  *      )
  *  )
  *

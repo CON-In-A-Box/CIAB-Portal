@@ -1957,19 +1957,28 @@ components:
           description: 'Is the permission enabled'
           type: boolean
         action:
-          description: 'Request based on this permission'
-          type: object
+          $ref: '#/components/schemas/permission_action'
         subdata:
-          description: 'Request sepcific subdata'
-          type: array
-          items:
-            $ref: '#/components/schemas/permission_subdata'
+          $ref: '#/components/schemas/permission_subdata'
       type: object
     permission_subdata:
       properties:
         departmentId:
           description: 'Id for the target department'
           type: integer
+      type: object
+    permission_action:
+      properties:
+        method:
+          description: 'Name of the method'
+          type: string
+        href:
+          description: 'URI for the method'
+          type: string
+          format: uri
+        request:
+          description: 'HTTP request type for the method'
+          type: string
       type: object
     permission_list:
       properties:
