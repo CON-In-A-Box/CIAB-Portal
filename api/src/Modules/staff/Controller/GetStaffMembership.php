@@ -3,6 +3,37 @@
     require_module 'standard';
 .*/
 
+/**
+ *  @OA\Get(
+ *      tags={"staff"},
+ *      path="/staff_membership/{id}",
+ *      summary="Gets staff position",
+ *      @OA\Parameter(
+ *          description="Id of the staff position.",
+ *          in="path",
+ *          name="id",
+ *          required=true,
+ *          @OA\Schema(type="integer")
+ *      ),
+ *      @OA\Response(
+ *          response=200,
+ *          description="Member staff positions found",
+ *          @OA\JsonContent(
+ *           ref="#/components/schemas/staff_entry"
+ *          ),
+ *      ),
+ *      @OA\Response(
+ *          response=401,
+ *          ref="#/components/responses/401"
+ *      ),
+ *      @OA\Response(
+ *          response=404,
+ *          ref="#/components/responses/staff_not_found"
+ *      ),
+ *      security={{"ciab_auth":{}}}
+ *  )
+ **/
+
 namespace App\Modules\staff\Controller;
 
 use Slim\Http\Request;

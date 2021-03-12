@@ -1592,6 +1592,220 @@ paths:
       security:
         -
           ciab_auth: []
+  '/staff_membership/{id}':
+    get:
+      tags:
+        - staff
+      summary: 'Gets staff position'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Id of the staff position.'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Member staff positions found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/staff_entry'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/staff_not_found'
+      security:
+        -
+          ciab_auth: []
+    delete:
+      tags:
+        - staff
+      summary: 'Deletes a staff member.'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Id of the position'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: OK
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/staff_not_found'
+      security:
+        -
+          ciab_auth: []
+  '/department/{id}/staff':
+    get:
+      tags:
+        - departments
+      summary: 'List staff for a department'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Department being listed'
+          required: true
+          schema:
+            type: integer
+        -
+          name: event
+          in: query
+          description: 'Event id being querried, if empty then current event'
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/staff_list'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          description: 'Event or Department not found in the system.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+      security:
+        -
+          ciab_auth: []
+  '/member/{id}/staff_membership':
+    get:
+      tags:
+        - members
+      summary: 'Gets staff positions for a member'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Id of the member.'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Member staff positions found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/staff_list'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/member_not_found'
+      security:
+        -
+          ciab_auth: []
+  /member/staff_membership/:
+    get:
+      tags:
+        - members
+      summary: 'Gets staff positions for the current member'
+      responses:
+        '200':
+          description: 'Member staff positions found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/staff_list'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/member_not_found'
+      security:
+        -
+          ciab_auth: []
+  /department/staff/:
+    get:
+      tags:
+        - staff
+      summary: 'List staff all departments'
+      parameters:
+        -
+          name: event
+          in: query
+          description: 'Event id being querried, if empty then current event'
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/staff_list'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          description: 'Event or Department not found in the system.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+      security:
+        -
+          ciab_auth: []
+  'member/{id}/staff_membership':
+    post:
+      tags:
+        - members
+      summary: 'Adds a new staff membership to a member'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'The id or email of the member'
+          required: true
+          schema:
+            oneOf:
+              -
+                description: 'Member ID'
+                type: integer
+              -
+                description: 'Member login email'
+                type: string
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                Department:
+                  description: 'Id or name of the department'
+                  type: string
+                  nullable: false
+                Position:
+                  description: 'ID of the position'
+                  type: integer
+                  nullable: false
+                Note:
+                  type: string
+                  nullable: true
+                Event:
+                  description: 'If not present, current event'
+                  type: integer
+                  nullable: true
+              type: object
+      responses:
+        '201':
+          description: OK
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/department_not_found'
+      security:
+        -
+          ciab_auth: []
 components:
   schemas:
     announcement:
@@ -2048,6 +2262,53 @@ components:
           items:
             $ref: '#/components/schemas/configuration'
       type: object
+    staff_entry:
+      properties:
+        type:
+          type: string
+          enum:
+            - staff_entry
+        id:
+          description: 'Entry Id'
+          type: integer
+        memberId:
+          description: 'Member resource Id'
+          oneOf:
+            -
+              description: 'Member Id'
+              type: integer
+            -
+              $ref: '#/components/schemas/member'
+        note:
+          description: 'Note about this staffing entry'
+          type: string
+        position:
+          description: 'Title of the staff position.'
+          type: string
+        departemntId:
+          description: 'Id of the department of the staff position.'
+          oneOf:
+            -
+              description: 'departemnt Id'
+              type: integer
+            -
+              $ref: '#/components/schemas/department'
+      type: object
+    staff_list:
+      properties:
+        type:
+          type: string
+          enum:
+            - staff_list
+        event:
+          description: 'Id of the event being listed.'
+          type: integer
+        data:
+          description: 'List of staff positions'
+          type: array
+          items:
+            $ref: '#/components/schemas/staff_entry'
+      type: object
   responses:
     '401':
       description: 'User is not authenticated or not authorized for the API.'
@@ -2099,6 +2360,12 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/error'
+    staff_not_found:
+      description: 'Staff Position not found in the system.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/error'
   securitySchemes:
     ciab_auth:
       type: oauth2
@@ -2134,6 +2401,9 @@ tags:
   -
     name: administrative
     description: 'Features around Administration of the site'
+  -
+    name: staff
+    description: 'Features around event staff. (Only avalaible if the ''staff'' module is enabled)'
 externalDocs:
   description: 'View us on GitHub'
   url: 'https://github.com/CON-In-A-Box/CIAB-Portal/tree/master/api/doc'

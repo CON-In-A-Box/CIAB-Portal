@@ -2,6 +2,58 @@
 /*.
     require_module 'standard';
 .*/
+/**
+ *  @OA\Get(
+ *      tags={"members"},
+ *      path="/member/{id}/staff_membership",
+ *      summary="Gets staff positions for a member",
+ *      @OA\Parameter(
+ *          description="Id of the member.",
+ *          in="path",
+ *          name="id",
+ *          required=true,
+ *          @OA\Schema(type="integer")
+ *      ),
+ *      @OA\Response(
+ *          response=200,
+ *          description="Member staff positions found",
+ *          @OA\JsonContent(
+ *           ref="#/components/schemas/staff_list"
+ *          ),
+ *      ),
+ *      @OA\Response(
+ *          response=401,
+ *          ref="#/components/responses/401"
+ *      ),
+ *      @OA\Response(
+ *          response=404,
+ *          ref="#/components/responses/member_not_found"
+ *      ),
+ *      security={{"ciab_auth":{}}}
+ *  )
+ *
+ *  @OA\Get(
+ *      tags={"members"},
+ *      path="/member/staff_membership/",
+ *      summary="Gets staff positions for the current member",
+ *      @OA\Response(
+ *          response=200,
+ *          description="Member staff positions found",
+ *          @OA\JsonContent(
+ *           ref="#/components/schemas/staff_list"
+ *          ),
+ *      ),
+ *      @OA\Response(
+ *          response=401,
+ *          ref="#/components/responses/401"
+ *      ),
+ *      @OA\Response(
+ *          response=404,
+ *          ref="#/components/responses/member_not_found"
+ *      ),
+ *      security={{"ciab_auth":{}}}
+ *  )
+ **/
 
 namespace App\Modules\staff\Controller;
 
