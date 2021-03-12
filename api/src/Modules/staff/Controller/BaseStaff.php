@@ -100,25 +100,13 @@ SQL;
 
     protected function buildEntry(Request $request, $id, $dept, $member, $note, $position)
     {
-        $path = $request->getUri()->getBaseUrl();
         return ([
                 'type' => 'staff_entry',
                 'id' => $id,
                 'memberId' => $member,
                 'note' => $note,
                 'position' => $position,
-                'departmentId' => $dept,
-                'links' => array([
-                    'method' => 'member',
-                    'href' => $path.'/member/'.$member,
-                    'request' => 'GET'
-                    ],
-                    [
-                    'method' => 'department',
-                    'href' => $path.'/department/'.$dept,
-                    'request' => 'GET'
-                    ]
-            )
+                'departmentId' => $dept
         ]);
 
     }
