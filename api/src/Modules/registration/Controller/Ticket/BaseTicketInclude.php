@@ -3,6 +3,27 @@
     require_module 'standard';
 .*/
 
+/**
+ *      @OA\Parameter(
+ *          parameter="ticket_includes",
+ *          description="Include the resource instead of the ID.",
+ *          in="query",
+ *          name="include",
+ *          required=false,
+ *          explode=false,
+ *          style="form",
+ *          @OA\Schema(
+ *              type="array",
+ *              @OA\Items(
+ *                  type="string",
+ *                  enum={"ticketType","member","badgeDependentOn",
+ *                        "registeredBy", "event"}
+ *              )
+ *          )
+ *      )
+ **/
+
+
 namespace App\Modules\registration\Controller\Ticket;
 
 use Slim\Container;

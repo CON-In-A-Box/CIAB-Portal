@@ -3,6 +3,91 @@
     require_module 'standard';
 .*/
 
+/**
+ *  @OA\Get(
+ *      tags={"registration"},
+ *      path="/registration/ticket/type/{id}/{event}",
+ *      summary="Gets a ticket type for an event",
+ *      @OA\Parameter(
+ *          description="Id of the ticket type",
+ *          in="path",
+ *          name="id",
+ *          required=true,
+ *          @OA\Schema(type="integer")
+ *      ),
+ *      @OA\Parameter(
+ *          description="Id of the event",
+ *          in="path",
+ *          name="event",
+ *          required=true,
+ *          @OA\Schema(type="integer")
+ *      ),
+ *      @OA\Response(
+ *          response=200,
+ *          description="Ticket type found",
+ *          @OA\JsonContent(
+ *           ref="#/components/schemas/ticket_type"
+ *          ),
+ *      ),
+ *      @OA\Response(
+ *          response=401,
+ *          ref="#/components/responses/401"
+ *      ),
+ *      @OA\Response(
+ *          response=404,
+ *          ref="#/components/responses/event_not_found"
+ *      ),
+ *      security={{"ciab_auth":{}}}
+ *  )
+ *
+ *  @OA\Get(
+ *      tags={"registration"},
+ *      path="/registration/ticket/type/{id}",
+ *      summary="Gets a ticket type for the current event",
+ *      @OA\Parameter(
+ *          description="Id of the ticket type",
+ *          in="path",
+ *          name="id",
+ *          required=true,
+ *          @OA\Schema(type="integer")
+ *      ),
+ *      @OA\Response(
+ *          response=200,
+ *          description="Ticket type found",
+ *          @OA\JsonContent(
+ *           ref="#/components/schemas/ticket_type"
+ *          ),
+ *      ),
+ *      @OA\Response(
+ *          response=401,
+ *          ref="#/components/responses/401"
+ *      ),
+ *      @OA\Response(
+ *          response=404,
+ *          ref="#/components/responses/ticket_not_found"
+ *      ),
+ *      security={{"ciab_auth":{}}}
+ *  )
+ *
+ *  @OA\Get(
+ *      tags={"registration"},
+ *      path="/registration/ticket/type",
+ *      summary="List all ticket types for the current event",
+ *      @OA\Response(
+ *          response=200,
+ *          description="Ticket type found",
+ *          @OA\JsonContent(
+ *           ref="#/components/schemas/ticket_type_list"
+ *          ),
+ *      ),
+ *      @OA\Response(
+ *          response=401,
+ *          ref="#/components/responses/401"
+ *      ),
+ *      security={{"ciab_auth":{}}}
+ *  )
+ **/
+
 namespace App\Modules\registration\Controller\Ticket;
 
 use Slim\Http\Request;

@@ -1592,6 +1592,685 @@ paths:
       security:
         -
           ciab_auth: []
+  '/registration/admin/configuration/{field}':
+    get:
+      tags:
+        - registration
+      summary: 'Get a configuration setting for registration'
+      parameters:
+        -
+          name: field
+          in: path
+          description: 'Configuration setting field'
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/configuration'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/configuration_not_found'
+      security:
+        -
+          ciab_auth: []
+  /registration/admin/configuration:
+    get:
+      tags:
+        - registration
+      summary: 'Get all configuration settings for registration'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/configuration_list'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/configuration_not_found'
+      security:
+        -
+          ciab_auth: []
+    put:
+      tags:
+        - registration
+      summary: 'Updates a registration configuration setting'
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                Field:
+                  type: string
+                  nullable: false
+                Value:
+                  type: string
+                  nullable: false
+              type: object
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/configuration'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/configuration_not_found'
+      security:
+        -
+          ciab_auth: []
+  '/registration/open/{event}':
+    get:
+      tags:
+        - registration
+      summary: 'Returns if event registration is open or not..'
+      parameters:
+        -
+          name: event
+          in: path
+          description: 'Event ID'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Event registration open status'
+          content:
+            application/json:
+              schema:
+                properties:
+                  type: { type: string, enum: [registration] }
+                  event: { description: 'event Id', type: integer }
+                  open: { description: 'Is registration open', type: boolean }
+                type: object
+        '404':
+          $ref: '#/components/responses/event_not_found'
+  /registration/open:
+    get:
+      tags:
+        - registration
+      summary: 'Returns if current event registration is open or not..'
+      responses:
+        '200':
+          description: 'Event registration open status'
+          content:
+            application/json:
+              schema:
+                properties:
+                  type: { type: string, enum: [registration] }
+                  event: { description: 'event Id', type: integer }
+                  open: { description: 'Is registration open', type: boolean }
+                type: object
+  /registration/admin:
+    get:
+      tags:
+        - registration
+      summary: 'Returns is the current account is a registration admin.'
+      responses:
+        '200':
+          description: 'Member status found'
+          content:
+            application/json:
+              schema:
+                properties:
+                  admin: { type: boolean, enum: [true] }
+                type: object
+        '401':
+          $ref: '#/components/responses/401'
+      security:
+        -
+          ciab_auth: []
+  '/registration/ticket/{id}/checkin':
+    put:
+      tags:
+        - registration
+      summary: 'Check in a ticket and generate boarding pass'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Id of the ticket'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ticket'
+        '401':
+          $ref: '#/components/responses/401'
+        '409':
+          description: 'Update Conflict'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '404':
+          $ref: '#/components/responses/ticket_not_found'
+      security:
+        -
+          ciab_auth: []
+  '/registration/ticket/{id}':
+    get:
+      tags:
+        - registration
+      summary: 'Gets a registration ticket'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Id of the ticket.'
+          required: true
+          schema:
+            type: integer
+        -
+          name: showVoid
+          in: query
+          description: 'Show voided tickets as well.'
+          required: false
+          schema:
+            type: integer
+            enum:
+              - 0
+              - 1
+        -
+          $ref: '#/components/parameters/ticket_includes'
+      responses:
+        '200':
+          description: 'Ticket found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ticket'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/member_not_found'
+      security:
+        -
+          ciab_auth: []
+    put:
+      tags:
+        - registration
+      summary: 'Updates ticket information.'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Id of the ticket'
+          required: true
+          schema:
+            type: integer
+        -
+          $ref: '#/components/parameters/ticket_includes'
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                badgeName:
+                  type: string
+                contact:
+                  type: string
+                note:
+                  type: string
+              type: object
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ticket'
+        '401':
+          $ref: '#/components/responses/401'
+        '409':
+          description: 'Update Conflict'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '404':
+          $ref: '#/components/responses/ticket_not_found'
+      security:
+        -
+          ciab_auth: []
+    delete:
+      tags:
+        - registration
+      summary: 'Deletes a ticket'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Id of the ticket'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: OK
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/ticket_not_found'
+      security:
+        -
+          ciab_auth: []
+  '/registration/ticket/{id}/email':
+    put:
+      tags:
+        - registration
+      summary: 'Email the boarding pass to the ticket holder.'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Id of the ticket'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/401'
+        '409':
+          description: 'Update Conflict'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '404':
+          $ref: '#/components/responses/ticket_not_found'
+      security:
+        -
+          ciab_auth: []
+  '/registration/ticket/type/{id}/{event}':
+    get:
+      tags:
+        - registration
+      summary: 'Gets a ticket type for an event'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Id of the ticket type'
+          required: true
+          schema:
+            type: integer
+        -
+          name: event
+          in: path
+          description: 'Id of the event'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Ticket type found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ticket_type'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/event_not_found'
+      security:
+        -
+          ciab_auth: []
+  '/registration/ticket/type/{id}':
+    get:
+      tags:
+        - registration
+      summary: 'Gets a ticket type for the current event'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Id of the ticket type'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Ticket type found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ticket_type'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/ticket_not_found'
+      security:
+        -
+          ciab_auth: []
+  /registration/ticket/type:
+    get:
+      tags:
+        - registration
+      summary: 'List all ticket types for the current event'
+      responses:
+        '200':
+          description: 'Ticket type found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ticket_type_list'
+        '401':
+          $ref: '#/components/responses/401'
+      security:
+        -
+          ciab_auth: []
+  '/registration/ticket/list/{member}/{event}':
+    get:
+      tags:
+        - registration
+      summary: 'Gets tickets for an event for a member'
+      parameters:
+        -
+          name: member
+          in: path
+          description: 'The member'
+          required: true
+          schema:
+            oneOf:
+              -
+                description: 'Member email'
+                type: string
+              -
+                description: 'Member id'
+                type: integer
+        -
+          name: event
+          in: path
+          description: 'Id of the event'
+          required: true
+          schema:
+            type: integer
+        -
+          $ref: '#/components/parameters/ticket_includes'
+      responses:
+        '200':
+          description: 'Tickets found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ticket_list'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/event_not_found'
+      security:
+        -
+          ciab_auth: []
+  '/registration/ticket/list/{member}':
+    get:
+      tags:
+        - registration
+      summary: 'Gets tickets for a member for the current event'
+      parameters:
+        -
+          name: member
+          in: path
+          description: 'The member'
+          required: true
+          schema:
+            oneOf:
+              -
+                description: 'Member email'
+                type: string
+              -
+                description: 'Member id'
+                type: integer
+      responses:
+        '200':
+          description: 'Tickets found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ticket_list'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/event_not_found'
+      security:
+        -
+          ciab_auth: []
+  /registration/ticket/list:
+    get:
+      tags:
+        - registration
+      summary: 'Gets tickets for the current member for the current event'
+      responses:
+        '200':
+          description: 'Tickets found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ticket_list'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/event_not_found'
+      security:
+        -
+          ciab_auth: []
+  '/registration/ticket/{id}/lost':
+    put:
+      tags:
+        - registration
+      summary: 'Report the badge for the ticket lost.'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Id of the ticket'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ticket'
+        '401':
+          $ref: '#/components/responses/401'
+        '409':
+          description: 'Update Conflict'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '404':
+          $ref: '#/components/responses/ticket_not_found'
+      security:
+        -
+          ciab_auth: []
+  '/registration/ticket/{id}/pickup':
+    put:
+      tags:
+        - registration
+      summary: 'Report the badge for the ticket as picked up.'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Id of the ticket'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ticket'
+        '401':
+          $ref: '#/components/responses/401'
+        '409':
+          description: 'Update Conflict'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '404':
+          $ref: '#/components/responses/ticket_not_found'
+      security:
+        -
+          ciab_auth: []
+  /registration/ticket:
+    post:
+      tags:
+        - registration
+      summary: 'Create a new Ticket'
+      parameters:
+        -
+          $ref: '#/components/parameters/ticket_includes'
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                member:
+                  type: string
+                event:
+                  type: string
+                ticketType:
+                  type: string
+                dependOn:
+                  type: string
+                badgeName:
+                  type: string
+                contact:
+                  type: string
+                registeredBy:
+                  type: string
+              type: object
+      responses:
+        '201':
+          description: 'Ticket created'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ticket'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/event_not_found'
+      security:
+        -
+          ciab_auth: []
+  '/registration/ticket/{id}/print':
+    put:
+      tags:
+        - registration
+      summary: 'Send the badge for the ticket to the print queue.'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Id of the ticket'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/401'
+        '409':
+          description: 'Update Conflict'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '404':
+          $ref: '#/components/responses/ticket_not_found'
+      security:
+        -
+          ciab_auth: []
+  '/registration/ticket/{id}/reinstate':
+    put:
+      tags:
+        - registration
+      summary: 'Reinstate a voided ticket.'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Id of the ticket'
+          required: true
+          schema:
+            type: integer
+        -
+          $ref: '#/components/parameters/ticket_includes'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ticket'
+        '401':
+          $ref: '#/components/responses/401'
+        '409':
+          description: 'Update Conflict'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '404':
+          $ref: '#/components/responses/ticket_not_found'
+      security:
+        -
+          ciab_auth: []
+  '/registration/ticket/{id}/void':
+    put:
+      tags:
+        - registration
+      summary: 'Void a ticket.'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Id of the ticket'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/401'
+        '409':
+          description: 'Update Conflict'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '404':
+          $ref: '#/components/responses/ticket_not_found'
+      security:
+        -
+          ciab_auth: []
   '/staff_membership/{id}':
     get:
       tags:
@@ -2262,6 +2941,144 @@ components:
           items:
             $ref: '#/components/schemas/configuration'
       type: object
+    ticket:
+      properties:
+        type:
+          type: string
+          enum:
+            - ticket
+        id:
+          type: integer
+        badgeDependentOn:
+          description: 'Member badge is dependent on'
+          oneOf:
+            -
+              description: 'Member Id'
+              type: integer
+            -
+              $ref: '#/components/schemas/member'
+        badgeName:
+          type: string
+        badgesPickedUp:
+          description: 'The number of times this badge has been printed and picked up'
+          type: integer
+        emergencyContact:
+          type: string
+        event:
+          description: 'Event the badge is for'
+          oneOf:
+            -
+              description: 'Event Id'
+              type: integer
+            -
+              $ref: '#/components/schemas/event'
+        registeredBy:
+          description: 'Member who create the ticket'
+          oneOf:
+            -
+              description: 'Member Id'
+              type: integer
+            -
+              $ref: '#/components/schemas/member'
+        registrationDate:
+          type: string
+          format: date
+        boardingPassGenerated:
+          type: string
+          format: date
+        printRequested:
+          type: string
+          format: date
+        lastPrintedDate:
+          type: string
+          format: date
+        printRequestIp:
+          type: string
+          format: ip
+        note:
+          type: string
+        voidDate:
+          type: string
+          format: date
+        voidBy:
+          description: 'Member who voided the ticket'
+          oneOf:
+            -
+              description: 'Member Id'
+              type: integer
+            -
+              $ref: '#/components/schemas/member'
+        voidReason:
+          type: string
+        ticketType:
+          description: 'Type of the ticket'
+          oneOf:
+            -
+              description: 'Ticket Type Id'
+              type: integer
+            -
+              $ref: '#/components/schemas/ticket_type'
+        member:
+          description: 'Member who the ticket is for'
+          oneOf:
+            -
+              description: 'Member Id'
+              type: integer
+            -
+              $ref: '#/components/schemas/member'
+      type: object
+    ticket_type:
+      properties:
+        type:
+          type: string
+          enum:
+            - ticket_type
+        id:
+          type: integer
+        event:
+          description: 'Event the badge is for'
+          oneOf:
+            -
+              description: 'Event Id'
+              type: integer
+            -
+              $ref: '#/components/schemas/event'
+        name:
+          type: string
+        avaliableFrom:
+          type: string
+          format: date
+        avaliableTo:
+          type: string
+          format: date
+        cost:
+          type: number
+          format: float
+        backgroundImage:
+          type: string
+      type: object
+    ticket_type_list:
+      properties:
+        type:
+          type: string
+          enum:
+            - ticket_type_list
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ticket_type'
+      type: object
+    ticket_list:
+      properties:
+        type:
+          type: string
+          enum:
+            - ticket_list
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ticket'
+      type: object
     staff_entry:
       properties:
         type:
@@ -2360,12 +3177,36 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/error'
+    ticket_not_found:
+      description: 'Ticket not found in the system.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/error'
     staff_not_found:
       description: 'Staff Position not found in the system.'
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/error'
+  parameters:
+    ticket_includes:
+      name: include
+      in: query
+      description: 'Include the resource instead of the ID.'
+      required: false
+      style: form
+      explode: false
+      schema:
+        type: array
+        items:
+          type: string
+          enum:
+            - ticketType
+            - member
+            - badgeDependentOn
+            - registeredBy
+            - event
   securitySchemes:
     ciab_auth:
       type: oauth2
@@ -2401,6 +3242,9 @@ tags:
   -
     name: administrative
     description: 'Features around Administration of the site'
+  -
+    name: registration
+    description: 'Features around members of event registration'
   -
     name: staff
     description: 'Features around event staff. (Only avalaible if the ''staff'' module is enabled)'

@@ -3,6 +3,73 @@
     require_module 'standard';
 .*/
 
+/**
+ *  @OA\Get(
+ *      tags={"registration"},
+ *      path="/registration/open/{event}",
+ *      summary="Returns if event registration is open or not..",
+ *      @OA\Parameter(
+ *          description="Event ID",
+ *          in="path",
+ *          name="event",
+ *          required=true,
+ *          @OA\Schema(type="integer")
+ *      ),
+ *      @OA\Response(
+ *          response=200,
+ *          description="Event registration open status",
+ *          @OA\JsonContent(
+ *              @OA\Property(
+ *                  property="type",
+ *                  type="string",
+ *                  enum={"registration"}
+ *              ),
+ *              @OA\Property(
+ *                  property="event",
+ *                  type="integer",
+ *                  description="event Id"
+ *              ),
+ *              @OA\Property(
+ *                  property="open",
+ *                  type="boolean",
+ *                  description="Is registration open"
+ *              )
+ *          )
+ *      ),
+ *      @OA\Response(
+ *          response=404,
+ *          ref="#/components/responses/event_not_found"
+ *      )
+ *  )
+ *
+ *  @OA\Get(
+ *      tags={"registration"},
+ *      path="/registration/open",
+ *      summary="Returns if current event registration is open or not..",
+ *      @OA\Response(
+ *          response=200,
+ *          description="Event registration open status",
+ *          @OA\JsonContent(
+ *              @OA\Property(
+ *                  property="type",
+ *                  type="string",
+ *                  enum={"registration"}
+ *              ),
+ *              @OA\Property(
+ *                  property="event",
+ *                  type="integer",
+ *                  description="event Id"
+ *              ),
+ *              @OA\Property(
+ *                  property="open",
+ *                  type="boolean",
+ *                  description="Is registration open"
+ *              )
+ *          )
+ *      )
+ *  )
+ **/
+
 namespace App\Modules\registration\Controller;
 
 use Slim\Http\Request;

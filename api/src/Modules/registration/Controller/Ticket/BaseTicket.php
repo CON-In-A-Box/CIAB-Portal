@@ -3,6 +3,244 @@
     require_module 'standard';
 .*/
 
+/**
+ *  @OA\Tag(
+ *      name="registration",
+ *      description="Features around members of event registration"
+ *  )
+ *
+ *  @OA\Schema(
+ *      schema="ticket",
+ *      @OA\Property(
+ *          property="type",
+ *          type="string",
+ *          enum={"ticket"}
+ *      ),
+ *      @OA\Property(
+ *          property="id",
+ *          type="integer",
+ *      ),
+ *      @OA\Property(
+ *          property="badgeDependentOn",
+ *          description="Member badge is dependent on",
+ *          oneOf={
+ *              @OA\Schema(
+ *                  type="integer",
+ *                  description="Member Id"
+ *              ),
+ *              @OA\Schema(
+ *                  ref="#/components/schemas/member"
+ *              )
+ *          }
+ *      ),
+ *      @OA\Property(
+ *          property="badgeName",
+ *          type="string",
+ *      ),
+ *      @OA\Property(
+ *          property="badgesPickedUp",
+ *          type="integer",
+ *          description="The number of times this badge has been printed and picked up"
+ *      ),
+ *      @OA\Property(
+ *          property="emergencyContact",
+ *          type="string",
+ *      ),
+ *      @OA\Property(
+ *          property="event",
+ *          description="Event the badge is for",
+ *          oneOf={
+ *              @OA\Schema(
+ *                  type="integer",
+ *                  description="Event Id"
+ *              ),
+ *              @OA\Schema(
+ *                  ref="#/components/schemas/event"
+ *              )
+ *          }
+ *      ),
+ *      @OA\Property(
+ *          property="registeredBy",
+ *          description="Member who create the ticket",
+ *          oneOf={
+ *              @OA\Schema(
+ *                  type="integer",
+ *                  description="Member Id"
+ *              ),
+ *              @OA\Schema(
+ *                  ref="#/components/schemas/member"
+ *              )
+ *          }
+ *      ),
+ *      @OA\Property(
+ *          property="registrationDate",
+ *          type="string",
+ *          format="date",
+ *      ),
+ *      @OA\Property(
+ *          property="boardingPassGenerated",
+ *          type="string",
+ *          format="date",
+ *      ),
+ *      @OA\Property(
+ *          property="printRequested",
+ *          type="string",
+ *          format="date",
+ *      ),
+ *      @OA\Property(
+ *          property="lastPrintedDate",
+ *          type="string",
+ *          format="date",
+ *      ),
+ *      @OA\Property(
+ *          property="printRequestIp",
+ *          type="string",
+ *          format="ip",
+ *      ),
+ *      @OA\Property(
+ *          property="note",
+ *          type="string",
+ *      ),
+ *      @OA\Property(
+ *          property="voidDate",
+ *          type="string",
+ *          format="date",
+ *      ),
+ *      @OA\Property(
+ *          property="voidBy",
+ *          description="Member who voided the ticket",
+ *          oneOf={
+ *              @OA\Schema(
+ *                  type="integer",
+ *                  description="Member Id"
+ *              ),
+ *              @OA\Schema(
+ *                  ref="#/components/schemas/member"
+ *              )
+ *          }
+ *      ),
+ *      @OA\Property(
+ *          property="voidReason",
+ *          type="string",
+ *      ),
+ *      @OA\Property(
+ *          property="ticketType",
+ *          description="Type of the ticket",
+ *          oneOf={
+ *              @OA\Schema(
+ *                  type="integer",
+ *                  description="Ticket Type Id"
+ *              ),
+ *              @OA\Schema(
+ *                  ref="#/components/schemas/ticket_type"
+ *              )
+ *          }
+ *      ),
+ *      @OA\Property(
+ *          property="member",
+ *          description="Member who the ticket is for",
+ *          oneOf={
+ *              @OA\Schema(
+ *                  type="integer",
+ *                  description="Member Id"
+ *              ),
+ *              @OA\Schema(
+ *                  ref="#/components/schemas/member"
+ *              )
+ *          }
+ *      ),
+ *  )
+ *
+ *  @OA\Schema(
+ *      schema="ticket_type",
+ *      @OA\Property(
+ *          property="type",
+ *          type="string",
+ *          enum={"ticket_type"}
+ *      ),
+ *      @OA\Property(
+ *          property="id",
+ *          type="integer",
+ *      ),
+ *      @OA\Property(
+ *          property="event",
+ *          description="Event the badge is for",
+ *          oneOf={
+ *              @OA\Schema(
+ *                  type="integer",
+ *                  description="Event Id"
+ *              ),
+ *              @OA\Schema(
+ *                  ref="#/components/schemas/event"
+ *              )
+ *          }
+ *      ),
+ *      @OA\Property(
+ *          property="name",
+ *          type="string",
+ *      ),
+ *      @OA\Property(
+ *          property="avaliableFrom",
+ *          type="string",
+ *          format="date",
+ *      ),
+ *      @OA\Property(
+ *          property="avaliableTo",
+ *          type="string",
+ *          format="date",
+ *      ),
+ *      @OA\Property(
+ *          property="cost",
+ *          type="number",
+ *          format="float",
+ *      ),
+ *      @OA\Property(
+ *          property="backgroundImage",
+ *          type="string",
+ *      )
+ *  )
+ *
+ *  @OA\Schema(
+ *      schema="ticket_type_list",
+ *      @OA\Property(
+ *          property="type",
+ *          type="string",
+ *          enum={"ticket_type_list"}
+ *      ),
+ *      @OA\Property(
+ *          property="data",
+ *          type="array",
+ *          @OA\Items(
+ *              ref="#/components/schemas/ticket_type"
+ *          )
+ *      )
+ *  )
+ *
+ *  @OA\Schema(
+ *      schema="ticket_list",
+ *      @OA\Property(
+ *          property="type",
+ *          type="string",
+ *          enum={"ticket_list"}
+ *      ),
+ *      @OA\Property(
+ *          property="data",
+ *          type="array",
+ *          @OA\Items(
+ *              ref="#/components/schemas/ticket"
+ *          )
+ *      )
+ *  )
+ *
+ *   @OA\Response(
+ *      response="ticket_not_found",
+ *      description="Ticket not found in the system.",
+ *      @OA\JsonContent(
+ *          ref="#/components/schemas/error"
+ *      )
+ *   )
+ **/
+
 namespace App\Modules\registration\Controller\Ticket;
 
 use Slim\Container;
