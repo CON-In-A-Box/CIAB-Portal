@@ -3,6 +3,76 @@
     require_module 'standard';
 .*/
 
+/**
+ *  @OA\Post(
+ *      tags={"members"},
+ *      path="member/{id}/staff_membership",
+ *      summary="Adds a new staff membership to a member",
+ *      @OA\Parameter(
+ *          description="The id or email of the member",
+ *          in="path",
+ *          name="id",
+ *          required=true,
+ *          @OA\Schema(
+ *              oneOf = {
+ *                  @OA\Schema(
+ *                      description="Member ID",
+ *                      type="integer"
+ *                  ),
+ *                  @OA\Schema(
+ *                      description="Member login email",
+ *                      type="string"
+ *                  )
+ *              }
+ *          )
+ *      ),
+ *      @OA\RequestBody(
+ *          @OA\MediaType(
+ *              mediaType="multipart/form-data",
+ *              @OA\Schema(
+ *                  @OA\Property(
+ *                      property="Department",
+ *                      description="Id or name of the department",
+ *                      nullable=false,
+ *                      type="string"
+ *                  ),
+ *                  @OA\Property(
+ *                      property="Position",
+ *                      description="ID of the position",
+ *                      nullable=false,
+ *                      type="integer"
+ *                  ),
+ *                  @OA\Property(
+ *                      property="Note",
+ *                      nullable=true,
+ *                      type="string"
+ *                  ),
+ *                  @OA\Property(
+ *                      property="Event",
+ *                      description="If not present, current event",
+ *                      nullable=true,
+ *                      type="integer"
+ *                  )
+ *              )
+ *          )
+ *      ),
+ *      @OA\Response(
+ *          response=201,
+ *          description="OK"
+ *      ),
+ *      @OA\Response(
+ *          response=401,
+ *          ref="#/components/responses/401"
+ *      ),
+ *      @OA\Response(
+ *          response=404,
+ *          ref="#/components/responses/department_not_found"
+ *      ),
+ *      security={{"ciab_auth":{}}}
+ *  )
+ **/
+
+
 namespace App\Modules\staff\Controller;
 
 use Slim\Http\Request;

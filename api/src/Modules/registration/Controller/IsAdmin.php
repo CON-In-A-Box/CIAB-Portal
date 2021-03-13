@@ -3,6 +3,30 @@
     require_module 'standard';
 .*/
 
+/**
+ *  @OA\Get(
+ *      tags={"registration"},
+ *      path="/registration/admin",
+ *      summary="Returns is the current account is a registration admin.",
+ *      @OA\Response(
+ *          response=200,
+ *          description="Member status found",
+ *          @OA\JsonContent(
+ *              @OA\Property(
+ *                  property="admin",
+ *                  type="boolean",
+ *                  enum={True}
+ *              ),
+ *          )
+ *      ),
+ *      @OA\Response(
+ *          response=401,
+ *          ref="#/components/responses/401"
+ *      ),
+ *      security={{"ciab_auth":{}}}
+ *  )
+ **/
+
 namespace App\Modules\registration\Controller;
 
 use Slim\Http\Request;

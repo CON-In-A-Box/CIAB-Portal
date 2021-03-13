@@ -2,6 +2,67 @@
 /*.
     require_module 'standard';
 .*/
+/**
+ *  @OA\Post(
+ *      tags={"registration"},
+ *      path="/registration/ticket",
+ *      summary="Create a new Ticket",
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/ticket_includes"
+ *      ),
+ *      @OA\RequestBody(
+ *          @OA\MediaType(
+ *              mediaType="multipart/form-data",
+ *              @OA\Schema(
+ *                  @OA\Property(
+ *                      property="member",
+ *                      type="string",
+ *                  ),
+ *                  @OA\Property(
+ *                      property="event",
+ *                      type="string",
+ *                  ),
+ *                  @OA\Property(
+ *                      property="ticketType",
+ *                      type="string",
+ *                  ),
+ *                  @OA\Property(
+ *                      property="dependOn",
+ *                      type="string",
+ *                  ),
+ *                  @OA\Property(
+ *                      property="badgeName",
+ *                      type="string",
+ *                  ),
+ *                  @OA\Property(
+ *                      property="contact",
+ *                      type="string",
+ *                  ),
+ *                  @OA\Property(
+ *                      property="registeredBy",
+ *                      type="string",
+ *                  )
+ *              )
+ *          )
+ *      ),
+ *      @OA\Response(
+ *          response=201,
+ *          description="Ticket created",
+ *          @OA\JsonContent(
+ *           ref="#/components/schemas/ticket"
+ *          ),
+ *      ),
+ *      @OA\Response(
+ *          response=401,
+ *          ref="#/components/responses/401"
+ *      ),
+ *      @OA\Response(
+ *          response=404,
+ *          ref="#/components/responses/event_not_found"
+ *      ),
+ *      security={{"ciab_auth":{}}}
+ *  )
+ **/
 
 namespace App\Modules\registration\Controller\Ticket;
 

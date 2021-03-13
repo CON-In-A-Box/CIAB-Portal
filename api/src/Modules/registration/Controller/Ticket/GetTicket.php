@@ -3,6 +3,47 @@
     require_module 'standard';
 .*/
 
+/**
+ *  @OA\Get(
+ *      tags={"registration"},
+ *      path="/registration/ticket/{id}",
+ *      summary="Gets a registration ticket",
+ *      @OA\Parameter(
+ *          description="Id of the ticket.",
+ *          in="path",
+ *          name="id",
+ *          required=true,
+ *          @OA\Schema(type="integer")
+ *      ),
+ *      @OA\Parameter(
+ *          description="Show voided tickets as well.",
+ *          in="query",
+ *          name="showVoid",
+ *          required=false,
+ *          @OA\Schema(type="integer", enum={0,1})
+ *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/ticket_includes"
+ *      ),
+ *      @OA\Response(
+ *          response=200,
+ *          description="Ticket found",
+ *          @OA\JsonContent(
+ *           ref="#/components/schemas/ticket"
+ *          ),
+ *      ),
+ *      @OA\Response(
+ *          response=401,
+ *          ref="#/components/responses/401"
+ *      ),
+ *      @OA\Response(
+ *          response=404,
+ *          ref="#/components/responses/member_not_found"
+ *      ),
+ *      security={{"ciab_auth":{}}}
+ *  )
+ **/
+
 namespace App\Modules\registration\Controller\Ticket;
 
 use Slim\Http\Request;

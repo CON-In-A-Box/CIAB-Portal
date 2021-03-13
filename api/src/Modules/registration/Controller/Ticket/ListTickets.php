@@ -3,6 +3,120 @@
     require_module 'standard';
 .*/
 
+/**
+ *  @OA\Get(
+ *      tags={"registration"},
+ *      path="/registration/ticket/list/{member}/{event}",
+ *      summary="Gets tickets for an event for a member",
+ *      @OA\Parameter(
+ *          description="The member",
+ *          in="path",
+ *          name="member",
+ *          required=true,
+ *          @OA\Schema(
+ *              oneOf = {
+ *                  @OA\Schema(
+ *                      description="Member email",
+ *                      type="string"
+ *                  ),
+ *                  @OA\Schema(
+ *                      description="Member id",
+ *                      type="integer"
+ *                  )
+ *              }
+ *          )
+ *      ),
+ *      @OA\Parameter(
+ *          description="Id of the event",
+ *          in="path",
+ *          name="event",
+ *          required=true,
+ *          @OA\Schema(type="integer")
+ *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/ticket_includes"
+ *      ),
+ *      @OA\Response(
+ *          response=200,
+ *          description="Tickets found",
+ *          @OA\JsonContent(
+ *           ref="#/components/schemas/ticket_list"
+ *          ),
+ *      ),
+ *      @OA\Response(
+ *          response=401,
+ *          ref="#/components/responses/401"
+ *      ),
+ *      @OA\Response(
+ *          response=404,
+ *          ref="#/components/responses/event_not_found"
+ *      ),
+ *      security={{"ciab_auth":{}}}
+ *  )
+ *
+ *  @OA\Get(
+ *      tags={"registration"},
+ *      path="/registration/ticket/list/{member}",
+ *      summary="Gets tickets for a member for the current event",
+ *      @OA\Parameter(
+ *          description="The member",
+ *          in="path",
+ *          name="member",
+ *          required=true,
+ *          @OA\Schema(
+ *              oneOf = {
+ *                  @OA\Schema(
+ *                      description="Member email",
+ *                      type="string"
+ *                  ),
+ *                  @OA\Schema(
+ *                      description="Member id",
+ *                      type="integer"
+ *                  )
+ *              }
+ *          )
+ *      ),
+ *      @OA\Response(
+ *          response=200,
+ *          description="Tickets found",
+ *          @OA\JsonContent(
+ *           ref="#/components/schemas/ticket_list"
+ *          ),
+ *      ),
+ *      @OA\Response(
+ *          response=401,
+ *          ref="#/components/responses/401"
+ *      ),
+ *      @OA\Response(
+ *          response=404,
+ *          ref="#/components/responses/event_not_found"
+ *      ),
+ *      security={{"ciab_auth":{}}}
+ *  )
+ *
+ *  @OA\Get(
+ *      tags={"registration"},
+ *      path="/registration/ticket/list",
+ *      summary="Gets tickets for the current member for the current event",
+ *      @OA\Response(
+ *          response=200,
+ *          description="Tickets found",
+ *          @OA\JsonContent(
+ *           ref="#/components/schemas/ticket_list"
+ *          ),
+ *      ),
+ *      @OA\Response(
+ *          response=401,
+ *          ref="#/components/responses/401"
+ *      ),
+ *      @OA\Response(
+ *          response=404,
+ *          ref="#/components/responses/event_not_found"
+ *      ),
+ *      security={{"ciab_auth":{}}}
+ *  )
+ **/
+
 namespace App\Modules\registration\Controller\Ticket;
 
 use Slim\Http\Request;
