@@ -4,6 +4,24 @@
 .*/
 
 /**
+ *
+ *  @OA\Parameter(
+ *      parameter="ticket_type_includes",
+ *      description="Include the resource instead of the ID.",
+ *      in="query",
+ *      name="include",
+ *      required=false,
+ *      explode=false,
+ *      style="form",
+ *      @OA\Schema(
+ *          type="array",
+ *          @OA\Items(
+ *              type="string",
+ *              enum={"event"}
+ *          )
+ *      )
+ *  )
+ *
  *  @OA\Get(
  *      tags={"registration"},
  *      path="/registration/ticket/type/{id}/{event}",
@@ -21,6 +39,9 @@
  *          name="event",
  *          required=true,
  *          @OA\Schema(type="integer")
+ *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/ticket_type_includes",
  *      ),
  *      @OA\Response(
  *          response=200,
@@ -51,6 +72,9 @@
  *          required=true,
  *          @OA\Schema(type="integer")
  *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/ticket_type_includes",
+ *      ),
  *      @OA\Response(
  *          response=200,
  *          description="Ticket type found",
@@ -73,6 +97,15 @@
  *      tags={"registration"},
  *      path="/registration/ticket/type",
  *      summary="List all ticket types for the current event",
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/maxResults",
+ *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/pageToken",
+ *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/ticket_type_includes",
+ *      ),
  *      @OA\Response(
  *          response=200,
  *          description="Ticket type found",
@@ -92,11 +125,21 @@ namespace App\Modules\registration\Controller\Ticket;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
-
+use App\Controller\IncludeResource;
 use App\Controller\NotFoundException;
 
 class GetTicketTypes extends BaseTicket
 {
+
+
+    public function __construct($container)
+    {
+        parent::__construct($container);
+        $this->includes = [
+        new IncludeResource('\App\Controller\Event\GetEvent', 'id', 'event')
+        ];
+
+    }
 
 
     public function buildResource(Request $request, Response $response, $params): array
@@ -142,20 +185,6 @@ class GetTicketTypes extends BaseTicket
             \App\Controller\BaseController::RESOURCE_TYPE,
             $badges[0]
             ];
-        }
-
-    }
-
-
-    public function processIncludes(Request $request, Response $response, $args, $values, &$data)
-    {
-        if (in_array('event', $values)) {
-            $target = new \App\Controller\Event\GetEvent($this->container);
-            $newargs = $args;
-            $newargs['id'] = $data['event'];
-            $newdata = $target->buildResource($request, $response, $newargs)[1];
-            $target->processIncludes($request, $response, $args, $values, $newdata);
-            $data['event'] = $target->arrayResponse($request, $response, $newdata);
         }
 
     }
