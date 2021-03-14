@@ -48,6 +48,12 @@ use App\Controller\IncludeResource;
  *              )
  *          )
  *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/maxResults",
+ *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/pageToken",
+ *      ),
  *      @OA\Response(
  *          response=200,
  *          description="OK",

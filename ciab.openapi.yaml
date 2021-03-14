@@ -144,6 +144,10 @@ paths:
               enum:
                 - departmentId
                 - postedBy
+        -
+          $ref: '#/components/parameters/maxResults'
+        -
+          $ref: '#/components/parameters/pageToken'
       responses:
         '200':
           description: OK
@@ -191,6 +195,10 @@ paths:
               enum:
                 - departmentId
                 - postedBy
+        -
+          $ref: '#/components/parameters/maxResults'
+        -
+          $ref: '#/components/parameters/pageToken'
       responses:
         '200':
           description: OK
@@ -367,6 +375,10 @@ paths:
           schema:
             type: string
             format: date
+        -
+          $ref: '#/components/parameters/maxResults'
+        -
+          $ref: '#/components/parameters/pageToken'
       responses:
         '200':
           description: OK
@@ -650,6 +662,26 @@ paths:
       tags:
         - departments
       summary: 'Lists departments'
+      parameters:
+        -
+          name: include
+          in: query
+          description: 'Include the resource instead of the ID.'
+          required: false
+          style: form
+          explode: false
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - id
+                - fallback
+                - division
+        -
+          $ref: '#/components/parameters/maxResults'
+        -
+          $ref: '#/components/parameters/pageToken'
       responses:
         '200':
           description: OK
@@ -762,6 +794,10 @@ paths:
               enum:
                 - departmentId
                 - postedBy
+        -
+          $ref: '#/components/parameters/maxResults'
+        -
+          $ref: '#/components/parameters/pageToken'
       responses:
         '200':
           description: OK
@@ -819,6 +855,10 @@ paths:
           required: true
           schema:
             type: string
+        -
+          $ref: '#/components/parameters/maxResults'
+        -
+          $ref: '#/components/parameters/pageToken'
       responses:
         '200':
           description: 'Member(s) found'
@@ -892,6 +932,10 @@ paths:
               -
                 description: 'Member id'
                 type: integer
+        -
+          $ref: '#/components/parameters/maxResults'
+        -
+          $ref: '#/components/parameters/pageToken'
       responses:
         '200':
           description: OK
@@ -1118,6 +1162,10 @@ paths:
               type: string
               enum:
                 - departmentId
+        -
+          $ref: '#/components/parameters/maxResults'
+        -
+          $ref: '#/components/parameters/pageToken'
       responses:
         '200':
           description: OK
@@ -1284,6 +1332,23 @@ paths:
             enum:
               - announcement
               - deadline
+        -
+          name: include
+          in: query
+          description: 'Include the resource instead of the ID.'
+          required: false
+          style: form
+          explode: false
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - departmentId
+        -
+          $ref: '#/components/parameters/maxResults'
+        -
+          $ref: '#/components/parameters/pageToken'
       responses:
         '200':
           description: 'Permissions found'
@@ -1326,6 +1391,23 @@ paths:
               - put
               - post
               - delete
+        -
+          name: include
+          in: query
+          description: 'Include the resource instead of the ID.'
+          required: false
+          style: form
+          explode: false
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - departmentId
+        -
+          $ref: '#/components/parameters/maxResults'
+        -
+          $ref: '#/components/parameters/pageToken'
       responses:
         '200':
           description: 'Permissions found'
@@ -1381,6 +1463,23 @@ paths:
               -
                 description: 'Department id'
                 type: string
+        -
+          name: include
+          in: query
+          description: 'Include the resource instead of the ID.'
+          required: false
+          style: form
+          explode: false
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - departmentId
+        -
+          $ref: '#/components/parameters/maxResults'
+        -
+          $ref: '#/components/parameters/pageToken'
       responses:
         '200':
           description: 'Permissions found'
@@ -1424,6 +1523,23 @@ paths:
               -
                 description: 'Department id'
                 type: string
+        -
+          name: include
+          in: query
+          description: 'Include the resource instead of the ID.'
+          required: false
+          style: form
+          explode: false
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - departmentId
+        -
+          $ref: '#/components/parameters/maxResults'
+        -
+          $ref: '#/components/parameters/pageToken'
       responses:
         '200':
           description: 'Permissions found'
@@ -1479,6 +1595,23 @@ paths:
               - put
               - post
               - delete
+        -
+          name: include
+          in: query
+          description: 'Include the resource instead of the ID.'
+          required: false
+          style: form
+          explode: false
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - departmentId
+        -
+          $ref: '#/components/parameters/maxResults'
+        -
+          $ref: '#/components/parameters/pageToken'
       responses:
         '200':
           description: 'Permissions found'
@@ -1525,6 +1658,11 @@ paths:
       tags:
         - administrative
       summary: 'Get all configuration settings for the site'
+      parameters:
+        -
+          $ref: '#/components/parameters/maxResults'
+        -
+          $ref: '#/components/parameters/pageToken'
       responses:
         '200':
           description: OK
@@ -1624,6 +1762,11 @@ paths:
       tags:
         - registration
       summary: 'Get all configuration settings for registration'
+      parameters:
+        -
+          $ref: '#/components/parameters/maxResults'
+        -
+          $ref: '#/components/parameters/pageToken'
       responses:
         '200':
           description: OK
@@ -1918,6 +2061,8 @@ paths:
           required: true
           schema:
             type: integer
+        -
+          $ref: '#/components/parameters/ticket_type_includes'
       responses:
         '200':
           description: 'Ticket type found'
@@ -1945,6 +2090,8 @@ paths:
           required: true
           schema:
             type: integer
+        -
+          $ref: '#/components/parameters/ticket_type_includes'
       responses:
         '200':
           description: 'Ticket type found'
@@ -1964,6 +2111,13 @@ paths:
       tags:
         - registration
       summary: 'List all ticket types for the current event'
+      parameters:
+        -
+          $ref: '#/components/parameters/maxResults'
+        -
+          $ref: '#/components/parameters/pageToken'
+        -
+          $ref: '#/components/parameters/ticket_type_includes'
       responses:
         '200':
           description: 'Ticket type found'
@@ -2004,6 +2158,10 @@ paths:
             type: integer
         -
           $ref: '#/components/parameters/ticket_includes'
+        -
+          $ref: '#/components/parameters/maxResults'
+        -
+          $ref: '#/components/parameters/pageToken'
       responses:
         '200':
           description: 'Tickets found'
@@ -2037,6 +2195,10 @@ paths:
               -
                 description: 'Member id'
                 type: integer
+        -
+          $ref: '#/components/parameters/maxResults'
+        -
+          $ref: '#/components/parameters/pageToken'
       responses:
         '200':
           description: 'Tickets found'
@@ -2056,6 +2218,13 @@ paths:
       tags:
         - registration
       summary: 'Gets tickets for the current member for the current event'
+      parameters:
+        -
+          $ref: '#/components/parameters/maxResults'
+        -
+          $ref: '#/components/parameters/pageToken'
+        -
+          $ref: '#/components/parameters/ticket_includes'
       responses:
         '200':
           description: 'Tickets found'
@@ -2340,6 +2509,10 @@ paths:
           required: false
           schema:
             type: integer
+        -
+          $ref: '#/components/parameters/maxResults'
+        -
+          $ref: '#/components/parameters/pageToken'
       responses:
         '200':
           description: OK
@@ -2371,6 +2544,10 @@ paths:
           required: true
           schema:
             type: integer
+        -
+          $ref: '#/components/parameters/maxResults'
+        -
+          $ref: '#/components/parameters/pageToken'
       responses:
         '200':
           description: 'Member staff positions found'
@@ -2390,6 +2567,11 @@ paths:
       tags:
         - members
       summary: 'Gets staff positions for the current member'
+      parameters:
+        -
+          $ref: '#/components/parameters/maxResults'
+        -
+          $ref: '#/components/parameters/pageToken'
       responses:
         '200':
           description: 'Member staff positions found'
@@ -2417,6 +2599,10 @@ paths:
           required: false
           schema:
             type: integer
+        -
+          $ref: '#/components/parameters/maxResults'
+        -
+          $ref: '#/components/parameters/pageToken'
       responses:
         '200':
           description: OK
@@ -2535,6 +2721,9 @@ components:
           items:
             $ref: '#/components/schemas/announcement'
       type: object
+      allOf:
+        -
+          $ref: '#/components/schemas/resource_list'
     error:
       properties:
         type:
@@ -2550,6 +2739,18 @@ components:
         message:
           description: 'Error Message'
           type: string
+      type: object
+    resource_list:
+      properties:
+        type:
+          type: string
+        data:
+          description: 'List of resources'
+          type: array
+          items: {  }
+        nextPageToken:
+          description: 'If present, the `pageToken` for the next page of results'
+          type: integer
       type: object
     cycle:
       properties:
@@ -2581,6 +2782,9 @@ components:
           items:
             $ref: '#/components/schemas/cycle'
       type: object
+      allOf:
+        -
+          $ref: '#/components/schemas/resource_list'
     deadline:
       properties:
         type:
@@ -2618,6 +2822,9 @@ components:
           items:
             $ref: '#/components/schemas/deadline'
       type: object
+      allOf:
+        -
+          $ref: '#/components/schemas/resource_list'
     department:
       properties:
         type:
@@ -2676,6 +2883,9 @@ components:
           items:
             $ref: '#/components/schemas/department_entry'
       type: object
+      allOf:
+        -
+          $ref: '#/components/schemas/resource_list'
     event:
       properties:
         type:
@@ -2717,6 +2927,9 @@ components:
           items:
             $ref: '#/components/schemas/event'
       type: object
+      allOf:
+        -
+          $ref: '#/components/schemas/resource_list'
     member:
       properties:
         type:
@@ -2837,6 +3050,9 @@ components:
           items:
             $ref: '#/components/schemas/member_reference'
       type: object
+      allOf:
+        -
+          $ref: '#/components/schemas/resource_list'
     permission_entry:
       properties:
         type:
@@ -2885,6 +3101,9 @@ components:
           items:
             $ref: '#/components/schemas/permission_entry'
       type: object
+      allOf:
+        -
+          $ref: '#/components/schemas/resource_list'
     log_entry:
       properties:
         LogEntryID:
@@ -2941,6 +3160,9 @@ components:
           items:
             $ref: '#/components/schemas/configuration'
       type: object
+      allOf:
+        -
+          $ref: '#/components/schemas/resource_list'
     ticket:
       properties:
         type:
@@ -3068,6 +3290,9 @@ components:
           items:
             $ref: '#/components/schemas/ticket_type'
       type: object
+      allOf:
+        -
+          $ref: '#/components/schemas/resource_list'
     ticket_list:
       properties:
         type:
@@ -3079,6 +3304,9 @@ components:
           items:
             $ref: '#/components/schemas/ticket'
       type: object
+      allOf:
+        -
+          $ref: '#/components/schemas/resource_list'
     staff_entry:
       properties:
         type:
@@ -3126,6 +3354,9 @@ components:
           items:
             $ref: '#/components/schemas/staff_entry'
       type: object
+      allOf:
+        -
+          $ref: '#/components/schemas/resource_list'
   responses:
     '401':
       description: 'User is not authenticated or not authorized for the API.'
@@ -3190,6 +3421,28 @@ components:
           schema:
             $ref: '#/components/schemas/error'
   parameters:
+    maxResults:
+      name: maxResults
+      in: query
+      description: 'Maximum members of the list per page or ''all'' (default 100).'
+      required: false
+      style: form
+      schema:
+        oneOf:
+          -
+            type: integer
+          -
+            type: string
+            enum:
+              - all
+    pageToken:
+      name: pageToken
+      in: query
+      description: 'Starting page of results.'
+      required: false
+      style: form
+      schema:
+        type: integer
     ticket_includes:
       name: include
       in: query
@@ -3206,6 +3459,19 @@ components:
             - member
             - badgeDependentOn
             - registeredBy
+            - event
+    ticket_type_includes:
+      name: include
+      in: query
+      description: 'Include the resource instead of the ID.'
+      required: false
+      style: form
+      explode: false
+      schema:
+        type: array
+        items:
+          type: string
+          enum:
             - event
   securitySchemes:
     ciab_auth:

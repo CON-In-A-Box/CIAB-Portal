@@ -78,6 +78,9 @@
  *
  *   @OA\Schema(
  *      schema="department_list",
+ *      allOf = {
+ *          @OA\Schema(ref="#/components/schemas/resource_list")
+ *      },
  *      @OA\Property(
  *          property="type",
  *          type="string",

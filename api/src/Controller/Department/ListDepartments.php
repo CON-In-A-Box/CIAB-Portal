@@ -8,6 +8,27 @@
  *      tags={"departments"},
  *      path="/department",
  *      summary="Lists departments",
+ *      @OA\Parameter(
+ *          description="Include the resource instead of the ID.",
+ *          in="query",
+ *          name="include",
+ *          required=false,
+ *          explode=false,
+ *          style="form",
+ *          @OA\Schema(
+ *              type="array",
+ *              @OA\Items(
+ *                  type="string",
+ *                  enum={"id", "fallback","division"}
+ *              )
+ *           )
+ *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/maxResults",
+ *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/pageToken",
+ *      ),
  *      @OA\Response(
  *          response=200,
  *          description="OK",
