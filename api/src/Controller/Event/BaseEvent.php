@@ -105,18 +105,5 @@ abstract class BaseEvent extends BaseController
     }
 
 
-    protected function processEvent($item)
-    {
-        $newEvent['type'] = 'event';
-        $newEvent['id'] = $item['EventID'];
-        $newEvent['cycle'] = $item['AnnualCycleID'];
-        $newEvent['dateFrom'] = $item['DateFrom'];
-        $newEvent['dateTo'] = $item['DateTo'];
-        $newEvent['name'] = $item['EventName'];
-        return $newEvent;
-
-    }
-
-
     /* End BaseEvent */
 }

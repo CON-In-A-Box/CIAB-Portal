@@ -62,22 +62,11 @@ class GetEvent extends BaseEvent
 
     public function buildResource(Request $request, Response $response, $params): array
     {
-        $sth = $this->container->db->prepare("SELECT * FROM `Events` WHERE `EventID` = ".$params['id']);
-        $sth->execute();
-        $data = $sth->fetchAll();
-        if (empty($data)) {
-            throw new NotFoundException('Event Not Found');
-        }
-
-        $events = [];
-        foreach ($data as $item) {
-            $events[] = $this->processEvent($item);
-        }
-        $this->id = $events[0]['id'];
-
+        $event = $this->getEvent($params['id']);
+        $this->id = $event['id'];
         return [
         \App\Controller\BaseController::RESOURCE_TYPE,
-        $events[0]
+        $event
         ];
 
     }

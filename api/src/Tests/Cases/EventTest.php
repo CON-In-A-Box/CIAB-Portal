@@ -43,7 +43,11 @@ class EventTest extends CiabTestCase
         $when = date('Y-m-d', strtotime('+1999 years'));
         $to = date('Y-m-d', strtotime('+1999 years'));
 
-        $this->runSuccessJsonRequest('GET', '/event');
+        $data = $this->runSuccessJsonRequest('GET', '/event');
+        $this->assertSame($data->type, 'event_list');
+
+        $data = $this->runSuccessJsonRequest('GET', '/event/current');
+        $this->assertSame($data->type, 'event');
 
         $this->runSuccessJsonRequest(
             'GET',
