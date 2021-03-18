@@ -93,10 +93,9 @@ class PostTicket extends BaseTicketInclude
         if (array_key_exists('event', $body)) {
             $event = $body['event'];
         } else {
-            $event = \current_eventID();
+            $event = 'current';
         }
-        $target = new \App\Controller\Event\GetEvent($this->container);
-        $target->buildResource($request, $response, ['id' => $event])[1];
+        $event = $this->getEvent($event)['id'];
 
 
         if (array_key_exists('ticketType', $body)) {

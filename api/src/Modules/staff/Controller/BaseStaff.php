@@ -122,14 +122,9 @@ abstract class BaseStaff extends BaseController
     }
 
 
-    protected function getStaffPosition($account, $event = null)
+    protected function getStaffPosition($account, $event)
     {
-        if ($event == null) {
-            $event = \current_eventID();
-            if ($event === null) {
-                return array();
-            }
-        }
+        $event = $this->getEvent($event)['id'];
         $sql = <<<SQL
             SELECT
                 *,

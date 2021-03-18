@@ -85,7 +85,7 @@ class GetMemberPosition extends BaseStaff
             }
             $user = $data['users'][0]['Id'];
         }
-        $staff = $this->getStaffPosition($user);
+        $staff = $this->getStaffPosition($user, 'current');
         $data = [];
         $path = $request->getUri()->getBaseUrl();
         foreach ($staff as $entry) {

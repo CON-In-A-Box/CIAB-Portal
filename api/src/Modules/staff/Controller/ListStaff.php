@@ -203,12 +203,9 @@ SQL;
         if (array_key_exists('event', $params)) {
             $event = $params['event'];
         } else {
-            $event = \current_eventID();
+            $event = 'current';
         }
-
-        $target = new \App\Controller\Event\GetEvent($this->container);
-        $target->buildResource($request, $response, ['id' => $event])[1];
-
+        $event = $this->getEvent($event)['id'];
         $staff = $this->listBuild($event);
         $data = array();
         foreach ($staff as $entry) {
