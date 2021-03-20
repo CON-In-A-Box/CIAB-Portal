@@ -47,34 +47,6 @@
  *              @OA\Items(type="string")
  *      )
  *  )
-
- *   @OA\Schema(
- *      schema="department_entry",
- *      @OA\Property(
- *          property="type",
- *          type="string",
- *          enum={"department_entry"}
- *      ),
- *      @OA\Property(
- *          property="id",
- *          description="Department ID",
- *          oneOf={
- *              @OA\Schema(
- *                  type="integer",
- *                  description="departemnt Id"
- *              ),
- *              @OA\Schema(
- *                  ref="#/components/schemas/department"
- *              )
- *          }
- *      ),
- *      @OA\Property(
- *          property="get",
- *          type="string",
- *          format="url",
- *          description="Method to get department data."
- *      )
- *  )
  *
  *   @OA\Schema(
  *      schema="department_list",
@@ -88,7 +60,7 @@
  *          type="array",
  *          description="List of departments",
  *          @OA\Items(
- *              ref="#/components/schemas/department_entry"
+ *              ref="#/components/schemas/department"
  *          ),
  *      )
  *  )
@@ -125,14 +97,6 @@ abstract class BaseDepartment extends BaseController
         new IncludeResource('\App\Controller\Department\GetDepartment', 'name', 'fallback'),
         new IncludeResource('\App\Controller\Department\GetDepartment', 'name', 'parent')
         ];
-
-    }
-
-
-    protected function buildDepartmentGet($request, $id)
-    {
-        $path = $request->getUri()->getBaseUrl();
-        return ($path.'/department/'.strval($id));
 
     }
 

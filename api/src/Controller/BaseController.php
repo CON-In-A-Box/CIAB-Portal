@@ -396,8 +396,12 @@ abstract class BaseController
             FROM
                 Departments d1
             WHERE
-                (DepartmentID = '$id' OR Name = '$id')
-                AND DepartmentID NOT IN (
+SQL;
+        if ($id !== null) {
+            $sql .= "(DepartmentID = '$id' OR Name = '$id') AND \n";
+        }
+        $sql .= <<<SQL
+                DepartmentID NOT IN (
                     SELECT
                         `DepartmentID`
                     FROM
@@ -416,18 +420,22 @@ abstract class BaseController
 SQL;
         $result = $this->container->db->prepare($sql);
         $result->execute();
-        $data = $result->fetch();
-        if ($data !== false) {
+        $data = $result->fetchAll();
+        $final = [];
+        if (empty($data)) {
+            throw new NotFoundException("Department '$id' Not Found");
+        }
+        foreach ($data as $entry) {
             $output = [];
-            $output['id'] = $data['DepartmentID'];
-            if ($data['DepartmentID'] != $data['ParentDepartmentID']) {
-                $output['parent'] = $data['ParentDepartmentID'];
+            $output['id'] = $entry['DepartmentID'];
+            if ($entry['DepartmentID'] != $entry['ParentDepartmentID']) {
+                $output['parent'] = $entry['ParentDepartmentID'];
             } else {
                 $output['parent'] = null;
             }
-            unset($data['DepartmentID']);
-            unset($data['ParentDepartmentID']);
-            foreach ($data as $key => $value) {
+            unset($entry['DepartmentID']);
+            unset($entry['ParentDepartmentID']);
+            foreach ($entry as $key => $value) {
                 $key = lcfirst($key);
                 $key = str_replace('ID', '', $key);
                 $output[$key] = $value;
@@ -438,10 +446,12 @@ SQL;
                 $v = [];
             }
             $output['email'] = $v;
-
-            return $output;
+            if ($id != null) {
+                return $output;
+            }
+            $final[] = $output;
         }
-        throw new NotFoundException("Department '$id' Not Found");
+        return $final;
 
     }
 
