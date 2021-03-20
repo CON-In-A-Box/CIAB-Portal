@@ -26,9 +26,9 @@
  *          description="department name"
  *      ),
  *      @OA\Property(
- *          property="division",
+ *          property="parent",
  *          type="integer",
- *          description="Division containing this department."
+ *          description="Department that is the parent of this department."
  *      ),
  *      @OA\Property(
  *          property="childCount",
@@ -107,6 +107,7 @@ namespace App\Controller\Department;
 use Slim\Container;
 use Slim\Http\Request;
 use App\Controller\BaseController;
+use App\Controller\IncludeResource;
 
 abstract class BaseDepartment extends BaseController
 {
@@ -116,15 +117,14 @@ abstract class BaseDepartment extends BaseController
      */
     protected $id = 0;
 
-    /**
-     * @var int
-     */
-    protected $division = 0;
-
 
     public function __construct(Container $container)
     {
         parent::__construct('department', $container);
+        $this->includes = [
+        new IncludeResource('\App\Controller\Department\GetDepartment', 'name', 'fallback'),
+        new IncludeResource('\App\Controller\Department\GetDepartment', 'name', 'parent')
+        ];
 
     }
 
@@ -141,14 +141,8 @@ abstract class BaseDepartment extends BaseController
     {
         $output = parent::getDepartment($id);
         if ($setself) {
-            if (!empty($output)) {
-                if (array_key_exists('id', $output)) {
-                    $this->id = $output['id'];
-                }
-                if (array_key_exists('Division', $output) &&
-                    $output['Division'] !== $output['Name']) {
-                    $this->division = $this->getDepartment($output['Division'], false)['id'];
-                }
+            if (array_key_exists('id', $output)) {
+                $this->id = $output['id'];
             }
         }
         return $output;

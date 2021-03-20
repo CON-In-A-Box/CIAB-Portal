@@ -25,7 +25,7 @@ var departmentDropdown = (function(options) {
       var list = [];
       data.data.forEach(function(dept) {
         if (settings.filter === null || settings.filter(dept)) {
-          list.push(dept.id);
+          list.push(dept);
         }
       });
       list.sort(function(a, b) {
@@ -47,7 +47,7 @@ var departmentDropdown = (function(options) {
       select.id = 'department_dropdown_select';
       select.classList.add('UI-input');
       dom.appendChild(select);
-      apiRequest('GET', '/department/', 'maxResults=all&include=id')
+      apiRequest('GET', '/department', 'maxResults=all')
         .then(departmentDropdown.addDepartments)
         .catch(function(response) {
           select.value = response.responseText;
