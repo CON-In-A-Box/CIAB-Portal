@@ -584,5 +584,36 @@ abstract class BaseController
     }
 
 
+    protected function processEvent($item)
+    {
+        $newEvent['type'] = 'event';
+        $newEvent['id'] = $item['EventID'];
+        $newEvent['cycle'] = $item['AnnualCycleID'];
+        $newEvent['dateFrom'] = $item['DateFrom'];
+        $newEvent['dateTo'] = $item['DateTo'];
+        $newEvent['name'] = $item['EventName'];
+        return $newEvent;
+
+    }
+
+
+    protected function getEvent(string $id)
+    {
+        if ($id == 'current') {
+            $sth = $this->container->db->prepare("SELECT * FROM `Events` WHERE `DateTo` >= NOW() ORDER BY `DateFrom` ASC LIMIT 1");
+        } else {
+            $sth = $this->container->db->prepare("SELECT * FROM `Events` WHERE `EventID` = '$id'");
+        }
+        $sth->execute();
+        $data = $sth->fetchAll();
+        if (empty($data)) {
+            throw new NotFoundException("Event '$id' Not Found");
+        }
+
+        return $this->processEvent($data[0]);
+
+    }
+
+
     /* END BaseController */
 }

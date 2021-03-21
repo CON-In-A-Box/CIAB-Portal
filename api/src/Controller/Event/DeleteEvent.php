@@ -45,6 +45,7 @@ class DeleteEvent extends BaseEvent
     {
         $permissions = ['api.delete.event'];
         $this->checkPermissions($permissions);
+        $this->getEvent($params['id']);
 
         $sth = $this->container->db->prepare("DELETE FROM `Events` WHERE `EventID` = ".$params['id'].";");
         $sth->execute();

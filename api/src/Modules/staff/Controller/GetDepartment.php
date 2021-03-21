@@ -69,8 +69,9 @@ class GetDepartment extends BaseStaff
         if ($event !== null) {
             $event = intval($event);
         } else {
-            $event = \current_eventID();
+            $event = 'current';
         }
+        $event = $this->getEvent($event)['id'];
         $sql = <<<SQL
     SELECT
         l.ListRecordID AS record,

@@ -126,8 +126,9 @@ class PostStaffMembership extends BaseStaff
         if (array_key_exists('Event', $body)) {
             $event = $body['Event'];
         } else {
-            $event = \current_eventID();
+            $event = 'current';
         }
+        $event = $this->getEvent($event)['id'];
 
         $sql = "INSERT INTO `ConComList` (AccountID, DepartmentID, EventID, Note, PositionID) VALUES ($user, {$department['id']}, $event, $note, $position)";
         $sth = $this->container->db->prepare($sql);

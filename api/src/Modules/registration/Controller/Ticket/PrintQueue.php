@@ -18,8 +18,9 @@ class PrintQueue extends BaseTicket
         if (array_key_exists('event', $params)) {
             $event = $params['event'];
         } else {
-            $event = \current_eventID();
+            $event = 'current';
         }
+        $event = $this->getEvent($event)['id'];
         $sql .= ' AND `EventID` = '.$event;
 
         $target = new \App\Controller\Event\GetEvent($this->container);

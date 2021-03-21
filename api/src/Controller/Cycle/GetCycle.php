@@ -43,21 +43,15 @@ class GetCycle extends BaseCycle
 {
 
 
-    public function buildResource(Request $request, Response $response, $args): array
+    public function buildResource(Request $request, Response $response, $params): array
     {
-        $sth = $this->container->db->prepare("SELECT * FROM `AnnualCycles` WHERE `AnnualCycleID` = ".$args['id']);
-        $sth->execute();
-        $cycles = $sth->fetchAll();
-        if (empty($cycles)) {
-            throw new NotFoundException('Cycle Not Found');
-        }
-        $this->id = $args['id'];
-        $entry = $cycles[0];
-        $entry['id'] = $this->id;
-        unset($entry['AnnualCycleID']);
+        $cycle = $this->getCycle($params)[0];
+        $cycle['id'] = $cycle['AnnualCycleID'];
+        $this->id = $params['id'];
+        unset($cycle['AnnualCycleID']);
         return [
         \App\Controller\BaseController::RESOURCE_TYPE,
-        $entry
+        $cycle
         ];
 
     }
