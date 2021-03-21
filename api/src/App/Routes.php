@@ -36,6 +36,7 @@ function setupAPIRoutes(App $app, $authMiddleware)
         function () use ($app, $authMiddleware) {
             $app->get('[/]', 'App\Controller\Department\ListDepartments');
             $app->get('/{name}', 'App\Controller\Department\GetDepartment');
+            $app->get('/{name}/children', 'App\Controller\Department\GetDepartmentChildren');
             $app->get('/{name}/deadlines', 'App\Controller\Department\ListDeadlines');
             $app->post('/{name}/deadline', 'App\Controller\Deadline\PostDeadline');
             $app->get('/{name}/announcements', 'App\Controller\Announcement\ListDepartmentAnnouncements');
