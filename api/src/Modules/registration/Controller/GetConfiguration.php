@@ -39,6 +39,12 @@
  *      tags={"registration"},
  *      path="/registration/admin/configuration",
  *      summary="Get all configuration settings for registration",
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/maxResults",
+ *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/pageToken",
+ *      ),
  *      @OA\Response(
  *          response=200,
  *          description="OK",

@@ -67,6 +67,9 @@
  *
  *  @OA\Schema(
  *      schema="permission_list",
+ *      allOf = {
+ *          @OA\Schema(ref="#/components/schemas/resource_list")
+ *      },
  *      @OA\Property(
  *          property="type",
  *          type="string",
@@ -103,6 +106,27 @@
  *              type="string",
  *              enum={"announcement","deadline"}
  *          )
+ *      ),
+ *      @OA\Parameter(
+ *          description="Include the resource instead of the ID.",
+ *          in="query",
+ *          name="include",
+ *          required=false,
+ *          explode=false,
+ *          style="form",
+ *          @OA\Schema(
+ *              type="array",
+ *              @OA\Items(
+ *                  type="string",
+ *                  enum={"departmentId"}
+ *              )
+ *          )
+ *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/maxResults",
+ *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/pageToken",
  *      ),
  *      @OA\Response(
  *          response=200,
@@ -145,6 +169,27 @@
  *              type="string",
  *              enum={"get","put","post","delete"}
  *          )
+ *      ),
+ *      @OA\Parameter(
+ *          description="Include the resource instead of the ID.",
+ *          in="query",
+ *          name="include",
+ *          required=false,
+ *          explode=false,
+ *          style="form",
+ *          @OA\Schema(
+ *              type="array",
+ *              @OA\Items(
+ *                  type="string",
+ *                  enum={"departmentId"}
+ *              )
+ *          )
+ *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/maxResults",
+ *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/pageToken",
  *      ),
  *      @OA\Response(
  *          response=200,
@@ -206,6 +251,27 @@
  *              }
  *          )
  *      ),
+ *      @OA\Parameter(
+ *          description="Include the resource instead of the ID.",
+ *          in="query",
+ *          name="include",
+ *          required=false,
+ *          explode=false,
+ *          style="form",
+ *          @OA\Schema(
+ *              type="array",
+ *              @OA\Items(
+ *                  type="string",
+ *                  enum={"departmentId"}
+ *              )
+ *          )
+ *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/maxResults",
+ *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/pageToken",
+ *      ),
  *      @OA\Response(
  *          response=200,
  *          description="Permissions found",
@@ -255,6 +321,27 @@
  *                  )
  *              }
  *          )
+ *      ),
+ *      @OA\Parameter(
+ *          description="Include the resource instead of the ID.",
+ *          in="query",
+ *          name="include",
+ *          required=false,
+ *          explode=false,
+ *          style="form",
+ *          @OA\Schema(
+ *              type="array",
+ *              @OA\Items(
+ *                  type="string",
+ *                  enum={"departmentId"}
+ *              )
+ *          )
+ *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/maxResults",
+ *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/pageToken",
  *      ),
  *      @OA\Response(
  *          response=200,
@@ -315,6 +402,27 @@
  *              type="string",
  *              enum={"get","put","post","delete"}
  *          )
+ *      ),
+ *      @OA\Parameter(
+ *          description="Include the resource instead of the ID.",
+ *          in="query",
+ *          name="include",
+ *          required=false,
+ *          explode=false,
+ *          style="form",
+ *          @OA\Schema(
+ *              type="array",
+ *              @OA\Items(
+ *                  type="string",
+ *                  enum={"departmentId"}
+ *              )
+ *          )
+ *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/maxResults",
+ *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/pageToken",
  *      ),
  *      @OA\Response(
  *          response=200,

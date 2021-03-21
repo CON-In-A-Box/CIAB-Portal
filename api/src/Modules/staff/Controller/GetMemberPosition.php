@@ -14,6 +14,12 @@
  *          required=true,
  *          @OA\Schema(type="integer")
  *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/maxResults",
+ *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/pageToken",
+ *      ),
  *      @OA\Response(
  *          response=200,
  *          description="Member staff positions found",
@@ -36,6 +42,12 @@
  *      tags={"members"},
  *      path="/member/staff_membership/",
  *      summary="Gets staff positions for the current member",
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/maxResults",
+ *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/pageToken",
+ *      ),
  *      @OA\Response(
  *          response=200,
  *          description="Member staff positions found",

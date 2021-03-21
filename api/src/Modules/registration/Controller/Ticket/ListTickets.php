@@ -36,6 +36,12 @@
  *      @OA\Parameter(
  *          ref="#/components/parameters/ticket_includes"
  *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/maxResults",
+ *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/pageToken",
+ *      ),
  *      @OA\Response(
  *          response=200,
  *          description="Tickets found",
@@ -76,6 +82,12 @@
  *              }
  *          )
  *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/maxResults",
+ *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/pageToken",
+ *      ),
  *      @OA\Response(
  *          response=200,
  *          description="Tickets found",
@@ -98,6 +110,15 @@
  *      tags={"registration"},
  *      path="/registration/ticket/list",
  *      summary="Gets tickets for the current member for the current event",
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/maxResults",
+ *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/pageToken",
+ *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/ticket_includes"
+ *      ),
  *      @OA\Response(
  *          response=200,
  *          description="Tickets found",

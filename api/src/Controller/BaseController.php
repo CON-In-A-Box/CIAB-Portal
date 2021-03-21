@@ -26,6 +26,59 @@
  *          description="Error Message"
  *      )
  *  )
+ *
+ *  @OA\Parameter(
+ *      parameter="maxResults",
+ *      description="Maximum members of the list per page or 'all' (default 100).",
+ *      in="query",
+ *      name="maxResults",
+ *      required=false,
+ *      style="form",
+ *      @OA\Schema(
+ *          oneOf={
+ *              @OA\Schema(
+ *                  type="integer"
+ *              ),
+ *              @OA\Schema(
+ *                  type="string",
+ *                  enum={"all"}
+ *              ),
+ *          }
+ *      )
+ *  )
+ *
+ *  @OA\Parameter(
+ *      parameter="pageToken",
+ *      description="Starting page of results.",
+ *      in="query",
+ *      name="pageToken",
+ *      required=false,
+ *      style="form",
+ *      @OA\Schema(
+ *          type="integer",
+ *      )
+ *  )
+ *
+ *  @OA\Schema(
+ *      schema="resource_list",
+ *      @OA\Property(
+ *          property="type",
+ *          type="string",
+ *      ),
+ *      @OA\Property(
+ *          property="data",
+ *          type="array",
+ *          description="List of resources",
+ *          @OA\Items(
+ *              @OA\Schema(type="object")
+ *          )
+ *      ),
+ *      @OA\Property(
+ *          property="nextPageToken",
+ *          description="If present, the `pageToken` for the next page of results",
+ *          type="integer",
+ *      )
+ *  )
  */
 
 namespace App\Controller;

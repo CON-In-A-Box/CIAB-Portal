@@ -39,6 +39,12 @@
  *      tags={"administrative"},
  *      path="/admin/configuration",
  *      summary="Get all configuration settings for the site",
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/maxResults",
+ *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/pageToken",
+ *      ),
  *      @OA\Response(
  *          response=200,
  *          description="OK",

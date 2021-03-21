@@ -202,6 +202,9 @@
  *
  *  @OA\Schema(
  *      schema="ticket_type_list",
+ *      allOf = {
+ *          @OA\Schema(ref="#/components/schemas/resource_list")
+ *      },
  *      @OA\Property(
  *          property="type",
  *          type="string",
@@ -218,6 +221,9 @@
  *
  *  @OA\Schema(
  *      schema="ticket_list",
+ *      allOf = {
+ *          @OA\Schema(ref="#/components/schemas/resource_list")
+ *      },
  *      @OA\Property(
  *          property="type",
  *          type="string",
