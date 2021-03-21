@@ -247,7 +247,7 @@ var deadlinePage = (function(options) {
     },
 
     filter: function(dept) {
-      var id = dept.id.id.toString() + '_deadline_post';
+      var id = dept.id.toString() + '_deadline_post';
       return Object.prototype.hasOwnProperty.call(permissions, id);
     },
 

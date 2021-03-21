@@ -26,9 +26,9 @@
  *          description="department name"
  *      ),
  *      @OA\Property(
- *          property="division",
+ *          property="parent",
  *          type="integer",
- *          description="Division containing this department."
+ *          description="Department that is the parent of this department."
  *      ),
  *      @OA\Property(
  *          property="childCount",
@@ -47,34 +47,6 @@
  *              @OA\Items(type="string")
  *      )
  *  )
-
- *   @OA\Schema(
- *      schema="department_entry",
- *      @OA\Property(
- *          property="type",
- *          type="string",
- *          enum={"department_entry"}
- *      ),
- *      @OA\Property(
- *          property="id",
- *          description="Department ID",
- *          oneOf={
- *              @OA\Schema(
- *                  type="integer",
- *                  description="departemnt Id"
- *              ),
- *              @OA\Schema(
- *                  ref="#/components/schemas/department"
- *              )
- *          }
- *      ),
- *      @OA\Property(
- *          property="get",
- *          type="string",
- *          format="url",
- *          description="Method to get department data."
- *      )
- *  )
  *
  *   @OA\Schema(
  *      schema="department_list",
@@ -91,7 +63,7 @@
  *          type="array",
  *          description="List of departments",
  *          @OA\Items(
- *              ref="#/components/schemas/department_entry"
+ *              ref="#/components/schemas/department"
  *          ),
  *      )
  *  )
@@ -110,6 +82,7 @@ namespace App\Controller\Department;
 use Slim\Container;
 use Slim\Http\Request;
 use App\Controller\BaseController;
+use App\Controller\IncludeResource;
 
 abstract class BaseDepartment extends BaseController
 {
@@ -119,23 +92,14 @@ abstract class BaseDepartment extends BaseController
      */
     protected $id = 0;
 
-    /**
-     * @var int
-     */
-    protected $division = 0;
-
 
     public function __construct(Container $container)
     {
         parent::__construct('department', $container);
-
-    }
-
-
-    protected function buildDepartmentGet($request, $id)
-    {
-        $path = $request->getUri()->getBaseUrl();
-        return ($path.'/department/'.strval($id));
+        $this->includes = [
+        new IncludeResource('\App\Controller\Department\GetDepartment', 'name', 'fallback'),
+        new IncludeResource('\App\Controller\Department\GetDepartment', 'name', 'parent')
+        ];
 
     }
 
@@ -144,14 +108,8 @@ abstract class BaseDepartment extends BaseController
     {
         $output = parent::getDepartment($id);
         if ($setself) {
-            if (!empty($output)) {
-                if (array_key_exists('id', $output)) {
-                    $this->id = $output['id'];
-                }
-                if (array_key_exists('Division', $output) &&
-                    $output['Division'] !== $output['Name']) {
-                    $this->division = $this->getDepartment($output['Division'], false)['id'];
-                }
+            if (array_key_exists('id', $output)) {
+                $this->id = $output['id'];
             }
         }
         return $output;

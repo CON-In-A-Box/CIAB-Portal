@@ -91,7 +91,6 @@ use Slim\Http\Response;
 use Slim\Http\Request;
 
 require_once __DIR__.'/../../../backends/RBAC.inc';
-require_once __DIR__.'/../../../functions/divisional.inc';
 
 class NotFoundException extends Exception
 {
@@ -428,24 +427,84 @@ abstract class BaseController
 
     public function getDepartment($id)
     {
-        global $Departments;
-
-        $output = array();
-
-        if (array_key_exists($id, $Departments)) {
-            $output = array('Name' => $id);
-            $output = array_merge($output, $Departments[$id]);
-            return $output;
-        } else {
-            foreach ($Departments as $key => $dept) {
-                if ($dept['id'] == $id) {
-                    $output = array('Name' => $key);
-                    $output = array_merge($output, $dept);
-                    return $output;
-                }
-            }
+        $sql = <<<SQL
+            SELECT
+                *,
+                (
+                SELECT
+                    COUNT(DepartmentID)
+                FROM
+                    `Departments` d2
+                WHERE
+                    d2.ParentDepartmentID = d1.DepartmentID AND NOT NAME = 'Historical Placeholder'
+            ) AS childCount,
+            (
+                SELECT
+                    GROUP_CONCAT(Email)
+                FROM
+                    EMails
+                WHERE
+                    DepartmentID = d1.DepartmentID
+            ) AS email
+            FROM
+                Departments d1
+            WHERE
+SQL;
+        if ($id !== null) {
+            $sql .= "(DepartmentID = '$id' OR Name = '$id') AND \n";
         }
-        throw new NotFoundException("Department '$id' Not Found");
+        $sql .= <<<SQL
+                DepartmentID NOT IN (
+                    SELECT
+                        `DepartmentID`
+                    FROM
+                        `Departments`
+                    WHERE
+                        Name = 'Historical Placeholder'
+                )
+                AND ParentDepartmentID NOT IN (
+                    SELECT
+                        `DepartmentID`
+                    FROM
+                        `Departments`
+                    WHERE
+                        Name = 'Historical Placeholder'
+                );
+SQL;
+        $result = $this->container->db->prepare($sql);
+        $result->execute();
+        $data = $result->fetchAll();
+        $final = [];
+        if (empty($data)) {
+            throw new NotFoundException("Department '$id' Not Found");
+        }
+        foreach ($data as $entry) {
+            $output = [];
+            $output['id'] = $entry['DepartmentID'];
+            if ($entry['DepartmentID'] != $entry['ParentDepartmentID']) {
+                $output['parent'] = $entry['ParentDepartmentID'];
+            } else {
+                $output['parent'] = null;
+            }
+            unset($entry['DepartmentID']);
+            unset($entry['ParentDepartmentID']);
+            foreach ($entry as $key => $value) {
+                $key = lcfirst($key);
+                $key = str_replace('ID', '', $key);
+                $output[$key] = $value;
+            }
+            if ($output['email']) {
+                $v = explode(',', $output['email']);
+            } else {
+                $v = [];
+            }
+            $output['email'] = $v;
+            if ($id != null) {
+                return $output;
+            }
+            $final[] = $output;
+        }
+        return $final;
 
     }
 

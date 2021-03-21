@@ -452,6 +452,8 @@ use Slim\Container;
 use App\Controller\BaseController;
 use App\Controller\NotFoundException;
 
+require_once __DIR__.'/../../../../functions/divisional.inc';
+
 abstract class BasePermission extends BaseController
 {
 

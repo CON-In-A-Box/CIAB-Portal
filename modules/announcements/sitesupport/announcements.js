@@ -296,7 +296,7 @@ var announcementPage = (function(options) {
     },
 
     filter: function(dept) {
-      var id = dept.id.id.toString() + '_announcement_post';
+      var id = dept.id.toString() + '_announcement_post';
       return Object.prototype.hasOwnProperty.call(permissions, id);
     },
 
