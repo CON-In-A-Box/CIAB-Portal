@@ -152,7 +152,7 @@ SQL;
         foreach ($members as $target) {
             $phpView = new Views\PhpRenderer(__DIR__.'/../../Templates', [
                 'site' => $BASEURL,
-                'department' => $department['Name'],
+                'department' => $department['name'],
                 'announcement' => $text,
                 'con' => $CONSITENAME,
                 'url' => $BASEURL.'?Function=configuration',
