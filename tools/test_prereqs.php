@@ -14,6 +14,7 @@ use Atlas\Query\Update;
 $db = MyPDO::instance();
 
 $delete = Delete::new($db);
+$delete->from('Announcements')->perform();
 $delete->from('Authentication')->perform();
 $delete->from('ConComList')->perform();
 $delete->from('Registrations')->perform();
