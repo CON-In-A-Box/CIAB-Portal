@@ -100,6 +100,7 @@ use Slim\Http\Request;
 use Slim\Http\Response;
 use App\Controller\BaseController;
 use App\Controller\IncludeResource;
+use Atlas\Query\Select;
 
 abstract class BaseStaff extends BaseController
 {
@@ -125,64 +126,6 @@ abstract class BaseStaff extends BaseController
     }
 
 
-    protected function getStaffPosition($account, $event)
-    {
-        $event = $this->getEvent($event)['id'];
-        $sql = <<<SQL
-            SELECT
-                *,
-                (
-                    SELECT
-                        Name
-                    FROM
-                        Departments
-                    WHERE
-                        DepartmentID = c.DepartmentID
-                ) as Department,
-                (
-                    SELECT
-                        Name
-                    FROM
-                        ConComPositions
-                    WHERE
-                        PositionID = c.PositionID
-                ) as Position
-            FROM
-                ConComList as c
-            WHERE
-                AccountID = $account
-                AND EventID = $event
-                AND DepartmentID NOT IN (
-                    SELECT
-                        `DepartmentID`
-                    FROM
-                        `Departments`
-                    WHERE
-                        Name = 'Historical Placeholder'
-                )
-                AND DepartmentID NOT IN (
-                    SELECT
-                        `DepartmentID`
-                    FROM
-                        `Departments`
-                    WHERE
-                        ParentDepartmentID IN (
-                            SELECT
-                                `DepartmentID`
-                            FROM
-                                `Departments`
-                            WHERE
-                                Name = 'Historical Placeholder'
-                        )
-                )
-SQL;
-        $sth = $this->container->db->prepare($sql);
-        $sth->execute();
-        return $sth->fetchAll();
-
-    }
-
-
     protected function buildEntry(Request $request, $id, $dept, $member, $note, $position)
     {
         return ([
@@ -193,6 +136,76 @@ SQL;
                 'position' => $position,
                 'department' => $dept
         ]);
+
+    }
+
+
+    protected function selectStaff($event = null, $department = null, $member = null)
+    {
+        if ($event === null) {
+            $event = $this->getEvent('current')['id'];
+        }
+
+        $select = Select::new($this->container->db);
+
+        $historical = $select->subselect()->columns(
+            'DepartmentID'
+        )->from(
+            'Departments'
+        )->where(
+            "Name = 'Historical Placeholder'"
+        );
+        $historicalParents = $select->subselect()->columns(
+            'DepartmentID'
+        )->from(
+            'Departments'
+        )->where(
+            'ParentDepartmentID IN ',
+            $historical
+        );
+
+        $select->columns(
+            '"staff_entry" AS type'
+        )->columns(
+            'l.ListRecordID AS id',
+            'l.AccountID AS member',
+            'l.DepartmentID AS department'
+        )->columns(
+            'COALESCE(l.Note, "") AS note'
+        )->columns(
+            $select->subselect()->columns(
+                'Name'
+            )->from(
+                'ConComPositions'
+            )->where(
+                'PositionID = l.PositionID'
+            )->as(
+                'position'
+            )->getStatement()
+        )->from(
+            'ConComList AS l'
+        )->where(
+            'l.EventID = ',
+            $event
+        );
+
+        if ($department !== null) {
+            $department = $this->getDepartment($department);
+            $select->where('l.DepartmentID = ', $department['id']);
+        }
+
+        if ($member !== null) {
+            $select->where('l.AccountID = ', $member);
+        }
+
+        $select->where(
+            'l.DepartmentID NOT IN ',
+            $historical
+        )->where(
+            'l.DepartmentID NOT IN ',
+            $historicalParents
+        );
+        return $select->fetchAll();
 
     }
 

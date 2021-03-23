@@ -43,6 +43,7 @@ use Slim\Http\Request;
 use Slim\Http\Response;
 use App\Controller\PermissionDeniedException;
 use App\Controller\NotFoundException;
+use Atlas\Query\Select;
 
 class GetStaffMembership extends BaseStaff
 {
@@ -50,56 +51,46 @@ class GetStaffMembership extends BaseStaff
 
     public function buildResource(Request $request, Response $response, $params): array
     {
-        $id = $params['id'];
-        $sql = "SELECT * FROM `ConComList` WHERE `ListRecordID` = $id";
-        $sth = $this->container->db->prepare($sql);
-        $sth->execute();
-        $data = $sth->fetchAll();
+        $select = Select::new($this->container->db);
+        $select->columns(
+            '"staff_entry" AS type'
+        )->columns(
+            'l.ListRecordID AS id',
+            'l.AccountID AS member',
+            'l.DepartmentID AS department'
+        )->columns(
+            'COALESCE(l.Note, "") AS note'
+        )->columns(
+            $select->subselect()->columns(
+                'Name'
+            )->from(
+                'ConComPositions'
+            )->where(
+                'PositionID = l.PositionID'
+            )->as(
+                'position'
+            )->getStatement()
+        )->from(
+            'ConComList AS l'
+        )->where(
+            'ListRecordID = ',
+            $params['id']
+        );
 
+        $data = $select->fetchAll();
         if (empty($data)) {
             throw new NotFoundException('Staff record not found');
         }
 
         $user = $request->getAttribute('oauth2-token')['user_id'];
-        if ($data[0]['AccountID'] != $user &&
+        if ($data[0]['id'] != $user &&
             !\ciab\RBAC::havePermission('api.get.staff')) {
             throw new PermissionDeniedException();
         }
 
-        $sql = <<<SQL
-            SELECT
-                *,
-                (
-                    SELECT
-                        Name
-                    FROM
-                        Departments
-                    WHERE
-                        DepartmentID = c.DepartmentID
-                ) as Department,
-                (
-                    SELECT
-                        Name
-                    FROM
-                        ConComPositions
-                    WHERE
-                        PositionID = c.PositionID
-                ) as Position
-            FROM
-                ConComList as c
-            WHERE
-                ListRecordID = $id;
-SQL;
-        $sth = $this->container->db->prepare($sql);
-        $sth->execute();
-        $data = $sth->fetch();
-
-        $path = $request->getUri()->getBaseUrl();
-        $entry = $this->buildEntry($request, $data['ListRecordID'], $data['DepartmentID'], $user, $data['Note'], $data['Position']);
-
         return [
         \App\Controller\BaseController::RESOURCE_TYPE,
-        $entry,
+        $data[0],
         ];
 
     }

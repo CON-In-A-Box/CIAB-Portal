@@ -79,6 +79,7 @@ use Slim\Http\Request;
 use Slim\Http\Response;
 use App\Controller\NotFoundException;
 use App\Controller\InvalidParameterException;
+use Atlas\Query\Insert;
 
 class PostStaffMembership extends BaseStaff
 {
@@ -112,15 +113,19 @@ class PostStaffMembership extends BaseStaff
         'api.post.staff.all'];
         $this->checkPermissions($permissions);
 
+        $insert = Insert::new($this->container->db);
+        $insert->into('ConComList');
+        $insert->column('AccountID', $user);
+        $insert->column('DepartmentID', $department['id']);
+
         if (!array_key_exists('Position', $body)) {
             throw new InvalidParameterException('Required \'Position\' parameter not present');
         }
-        $position = $body['Position'];
+        $insert->column('PositionID', $body['Position']);
 
         if (array_key_exists('Note', $body)) {
             $note = "'".$body['Note']."'";
-        } else {
-            $note = 'NULL';
+            $insert->column('Note', $note);
         }
 
         if (array_key_exists('Event', $body)) {
@@ -129,13 +134,11 @@ class PostStaffMembership extends BaseStaff
             $event = 'current';
         }
         $event = $this->getEvent($event)['id'];
-
-        $sql = "INSERT INTO `ConComList` (AccountID, DepartmentID, EventID, Note, PositionID) VALUES ($user, {$department['id']}, $event, $note, $position)";
-        $sth = $this->container->db->prepare($sql);
-        $sth->execute();
+        $insert->column('EventID', $event);
+        $insert->perform();
 
         $target = new GetStaffMembership($this->container);
-        $data = $target->buildResource($request, $response, ['id' => $this->container->db->lastInsertId()])[1];
+        $data = $target->buildResource($request, $response, ['id' => $insert->getLastInsertId()])[1];
 
         return [
         \App\Controller\BaseController::RESOURCE_TYPE,
