@@ -234,5 +234,15 @@ abstract class CiabTestCase extends TestCase
     }
 
 
+    protected function assertIncludes($data, $id)
+    {
+        $tid = $data->{$id};
+        $this->assertNotEmpty($tid);
+        $this->assertIsObject($tid);
+        $this->assertObjectHasAttribute('id', $tid);
+
+    }
+
+
     /* End */
 }

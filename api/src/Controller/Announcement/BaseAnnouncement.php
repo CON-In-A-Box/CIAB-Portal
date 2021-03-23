@@ -31,11 +31,11 @@
  *          description="Department for the announcement",
  *          oneOf={
  *              @OA\Schema(
- *                  type="integer",
- *                  description="Department Id"
+ *                  ref="#/components/schemas/department"
  *              ),
  *              @OA\Schema(
- *                  ref="#/components/schemas/department"
+ *                  type="integer",
+ *                  description="Department Id"
  *              )
  *          }
  *      ),
@@ -44,11 +44,11 @@
  *          description="The member who created the announcement",
  *          oneOf={
  *              @OA\Schema(
- *                  type="integer",
- *                  description="Member Id"
+ *                  ref="#/components/schemas/member"
  *              ),
  *              @OA\Schema(
- *                  ref="#/components/schemas/member"
+ *                  type="integer",
+ *                  description="Member Id"
  *              )
  *          }
  *      ),

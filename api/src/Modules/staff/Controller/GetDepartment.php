@@ -23,6 +23,9 @@
  *          @OA\Schema(type="integer")
  *      ),
  *      @OA\Parameter(
+ *          ref="#/components/parameters/short_response",
+ *      ),
+ *      @OA\Parameter(
  *          ref="#/components/parameters/maxResults",
  *      ),
  *      @OA\Parameter(

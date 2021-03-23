@@ -217,8 +217,7 @@ class ManagePage {
 
   processBadges() {
     var obj = this;
-    apiRequest('GET', 'registration/ticket/list',
-      'maxResults=all&include=ticketType,member,registeredBy,event')
+    apiRequest('GET', 'registration/ticket/list', 'maxResults=all')
       .then(function(response) {
         var d = JSON.parse(response.responseText);
         if (Array.isArray(d.data)) {

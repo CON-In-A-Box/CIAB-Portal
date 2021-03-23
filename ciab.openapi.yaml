@@ -25,19 +25,7 @@ paths:
           schema:
             type: integer
         -
-          name: include
-          in: query
-          description: 'Include the resource instead of the ID.'
-          required: false
-          style: form
-          explode: false
-          schema:
-            type: array
-            items:
-              type: string
-              enum:
-                - departmentId
-                - postedBy
+          $ref: '#/components/parameters/short_response'
       responses:
         '200':
           description: 'Announcement found'
@@ -125,25 +113,13 @@ paths:
           schema:
             oneOf:
               -
-                description: 'Department name'
+                description: 'Department id'
                 type: integer
               -
-                description: 'Department id'
+                description: 'Department name'
                 type: string
         -
-          name: include
-          in: query
-          description: 'Include the resource instead of the ID.'
-          required: false
-          style: form
-          explode: false
-          schema:
-            type: array
-            items:
-              type: string
-              enum:
-                - departmentId
-                - postedBy
+          $ref: '#/components/parameters/short_response'
         -
           $ref: '#/components/parameters/maxResults'
         -
@@ -182,19 +158,7 @@ paths:
                 description: 'Member id'
                 type: integer
         -
-          name: include
-          in: query
-          description: 'Include the resource instead of the ID.'
-          required: false
-          style: form
-          explode: false
-          schema:
-            type: array
-            items:
-              type: string
-              enum:
-                - departmentId
-                - postedBy
+          $ref: '#/components/parameters/short_response'
         -
           $ref: '#/components/parameters/maxResults'
         -
@@ -227,10 +191,10 @@ paths:
           schema:
             oneOf:
               -
-                description: 'Department name'
+                description: 'Department id'
                 type: integer
               -
-                description: 'Department id'
+                description: 'Department name'
                 type: string
       requestBody:
         content:
@@ -441,18 +405,7 @@ paths:
           schema:
             type: integer
         -
-          name: include
-          in: query
-          description: 'Include the resource instead of the ID.'
-          required: false
-          style: form
-          explode: false
-          schema:
-            type: array
-            items:
-              type: string
-              enum:
-                - departmentId
+          $ref: '#/components/parameters/short_response'
       responses:
         '200':
           description: 'Deadline found'
@@ -538,10 +491,10 @@ paths:
           schema:
             oneOf:
               -
-                description: 'Department name'
+                description: 'Department id'
                 type: integer
               -
-                description: 'Department id'
+                description: 'Department name'
                 type: string
       requestBody:
         content:
@@ -578,25 +531,13 @@ paths:
           schema:
             oneOf:
               -
-                description: 'Department name'
+                description: 'Department id'
                 type: integer
               -
-                description: 'Department id'
+                description: 'Department name'
                 type: string
         -
-          name: include
-          in: query
-          description: 'Include the resource instead of the ID.'
-          required: false
-          style: form
-          explode: false
-          schema:
-            type: array
-            items:
-              type: string
-              enum:
-                - fallback
-                - division
+          $ref: '#/components/parameters/short_response'
       responses:
         '200':
           description: 'Department found'
@@ -608,6 +549,43 @@ paths:
           $ref: '#/components/responses/401'
         '404':
           $ref: '#/components/responses/department_not_found'
+      security:
+        -
+          ciab_auth: []
+  '/department/{id}/children':
+    get:
+      tags:
+        - departments
+      summary: 'Lists children of the department'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Id or name of the deadline'
+          required: true
+          schema:
+            oneOf:
+              -
+                description: 'Department name'
+                type: string
+              -
+                description: 'Department id'
+                type: integer
+        -
+          $ref: '#/components/parameters/short_response'
+        -
+          $ref: '#/components/parameters/maxResults'
+        -
+          $ref: '#/components/parameters/pageToken'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/department_list'
+        '401':
+          $ref: '#/components/responses/401'
       security:
         -
           ciab_auth: []
@@ -625,24 +603,13 @@ paths:
           schema:
             oneOf:
               -
-                description: 'Department name'
+                description: 'Department id'
                 type: integer
               -
-                description: 'Department id'
+                description: 'Department name'
                 type: string
         -
-          name: include
-          in: query
-          description: 'Include the resource instead of the ID.'
-          required: false
-          style: form
-          explode: false
-          schema:
-            type: array
-            items:
-              type: string
-              enum:
-                - departmentId
+          $ref: '#/components/parameters/short_response'
       responses:
         '200':
           description: OK
@@ -664,20 +631,7 @@ paths:
       summary: 'Lists departments'
       parameters:
         -
-          name: include
-          in: query
-          description: 'Include the resource instead of the ID.'
-          required: false
-          style: form
-          explode: false
-          schema:
-            type: array
-            items:
-              type: string
-              enum:
-                - id
-                - fallback
-                - division
+          $ref: '#/components/parameters/short_response'
         -
           $ref: '#/components/parameters/maxResults'
         -
@@ -708,18 +662,7 @@ paths:
           schema:
             type: integer
         -
-          name: include
-          in: query
-          description: 'Include the resource instead of the ID.'
-          required: false
-          style: form
-          explode: false
-          schema:
-            type: array
-            items:
-              type: string
-              enum:
-                - cycle
+          $ref: '#/components/parameters/short_response'
       responses:
         '200':
           description: 'Event found'
@@ -781,19 +724,7 @@ paths:
             type: string
             format: date
         -
-          name: include
-          in: query
-          description: 'Include the resource instead of the ID.'
-          required: false
-          style: form
-          explode: false
-          schema:
-            type: array
-            items:
-              type: string
-              enum:
-                - departmentId
-                - postedBy
+          $ref: '#/components/parameters/short_response'
         -
           $ref: '#/components/parameters/maxResults'
         -
@@ -1150,18 +1081,7 @@ paths:
                 description: 'Member id'
                 type: integer
         -
-          name: include
-          in: query
-          description: 'Include the resource instead of the ID.'
-          required: false
-          style: form
-          explode: false
-          schema:
-            type: array
-            items:
-              type: string
-              enum:
-                - departmentId
+          $ref: '#/components/parameters/short_response'
         -
           $ref: '#/components/parameters/maxResults'
         -
@@ -1333,18 +1253,7 @@ paths:
               - announcement
               - deadline
         -
-          name: include
-          in: query
-          description: 'Include the resource instead of the ID.'
-          required: false
-          style: form
-          explode: false
-          schema:
-            type: array
-            items:
-              type: string
-              enum:
-                - departmentId
+          $ref: '#/components/parameters/short_response'
         -
           $ref: '#/components/parameters/maxResults'
         -
@@ -1392,18 +1301,7 @@ paths:
               - post
               - delete
         -
-          name: include
-          in: query
-          description: 'Include the resource instead of the ID.'
-          required: false
-          style: form
-          explode: false
-          schema:
-            type: array
-            items:
-              type: string
-              enum:
-                - departmentId
+          $ref: '#/components/parameters/short_response'
         -
           $ref: '#/components/parameters/maxResults'
         -
@@ -1458,24 +1356,13 @@ paths:
           schema:
             oneOf:
               -
-                description: 'Department name'
+                description: 'Department id'
                 type: integer
               -
-                description: 'Department id'
+                description: 'Department name'
                 type: string
         -
-          name: include
-          in: query
-          description: 'Include the resource instead of the ID.'
-          required: false
-          style: form
-          explode: false
-          schema:
-            type: array
-            items:
-              type: string
-              enum:
-                - departmentId
+          $ref: '#/components/parameters/short_response'
         -
           $ref: '#/components/parameters/maxResults'
         -
@@ -1524,18 +1411,7 @@ paths:
                 description: 'Department id'
                 type: string
         -
-          name: include
-          in: query
-          description: 'Include the resource instead of the ID.'
-          required: false
-          style: form
-          explode: false
-          schema:
-            type: array
-            items:
-              type: string
-              enum:
-                - departmentId
+          $ref: '#/components/parameters/short_response'
         -
           $ref: '#/components/parameters/maxResults'
         -
@@ -1596,18 +1472,7 @@ paths:
               - post
               - delete
         -
-          name: include
-          in: query
-          description: 'Include the resource instead of the ID.'
-          required: false
-          style: form
-          explode: false
-          schema:
-            type: array
-            items:
-              type: string
-              enum:
-                - departmentId
+          $ref: '#/components/parameters/short_response'
         -
           $ref: '#/components/parameters/maxResults'
         -
@@ -1929,7 +1794,7 @@ paths:
               - 0
               - 1
         -
-          $ref: '#/components/parameters/ticket_includes'
+          $ref: '#/components/parameters/short_response'
       responses:
         '200':
           description: 'Ticket found'
@@ -1957,7 +1822,7 @@ paths:
           schema:
             type: integer
         -
-          $ref: '#/components/parameters/ticket_includes'
+          $ref: '#/components/parameters/short_response'
       requestBody:
         content:
           multipart/form-data:
@@ -2062,7 +1927,7 @@ paths:
           schema:
             type: integer
         -
-          $ref: '#/components/parameters/ticket_type_includes'
+          $ref: '#/components/parameters/short_response'
       responses:
         '200':
           description: 'Ticket type found'
@@ -2091,7 +1956,7 @@ paths:
           schema:
             type: integer
         -
-          $ref: '#/components/parameters/ticket_type_includes'
+          $ref: '#/components/parameters/short_response'
       responses:
         '200':
           description: 'Ticket type found'
@@ -2117,7 +1982,7 @@ paths:
         -
           $ref: '#/components/parameters/pageToken'
         -
-          $ref: '#/components/parameters/ticket_type_includes'
+          $ref: '#/components/parameters/short_response'
       responses:
         '200':
           description: 'Ticket type found'
@@ -2157,7 +2022,7 @@ paths:
           schema:
             type: integer
         -
-          $ref: '#/components/parameters/ticket_includes'
+          $ref: '#/components/parameters/short_response'
         -
           $ref: '#/components/parameters/maxResults'
         -
@@ -2224,7 +2089,7 @@ paths:
         -
           $ref: '#/components/parameters/pageToken'
         -
-          $ref: '#/components/parameters/ticket_includes'
+          $ref: '#/components/parameters/short_response'
       responses:
         '200':
           description: 'Tickets found'
@@ -2312,7 +2177,7 @@ paths:
       summary: 'Create a new Ticket'
       parameters:
         -
-          $ref: '#/components/parameters/ticket_includes'
+          $ref: '#/components/parameters/short_response'
       requestBody:
         content:
           multipart/form-data:
@@ -2390,7 +2255,7 @@ paths:
           schema:
             type: integer
         -
-          $ref: '#/components/parameters/ticket_includes'
+          $ref: '#/components/parameters/short_response'
       responses:
         '200':
           description: OK
@@ -2453,6 +2318,8 @@ paths:
           required: true
           schema:
             type: integer
+        -
+          $ref: '#/components/parameters/short_response'
       responses:
         '200':
           description: 'Member staff positions found'
@@ -2510,6 +2377,8 @@ paths:
           schema:
             type: integer
         -
+          $ref: '#/components/parameters/short_response'
+        -
           $ref: '#/components/parameters/maxResults'
         -
           $ref: '#/components/parameters/pageToken'
@@ -2548,6 +2417,8 @@ paths:
           $ref: '#/components/parameters/maxResults'
         -
           $ref: '#/components/parameters/pageToken'
+        -
+          $ref: '#/components/parameters/short_response'
       responses:
         '200':
           description: 'Member staff positions found'
@@ -2599,6 +2470,8 @@ paths:
           required: false
           schema:
             type: integer
+        -
+          $ref: '#/components/parameters/short_response'
         -
           $ref: '#/components/parameters/maxResults'
         -
@@ -2690,18 +2563,18 @@ components:
           description: 'Department for the announcement'
           oneOf:
             -
+              $ref: '#/components/schemas/department'
+            -
               description: 'Department Id'
               type: integer
-            -
-              $ref: '#/components/schemas/department'
         postedBy:
           description: 'The member who created the announcement'
           oneOf:
             -
+              $ref: '#/components/schemas/member'
+            -
               description: 'Member Id'
               type: integer
-            -
-              $ref: '#/components/schemas/member'
         scope:
           description: 'The scope of the announcement'
           type: integer
@@ -2802,10 +2675,10 @@ components:
           description: 'Department for the deadline'
           oneOf:
             -
+              $ref: '#/components/schemas/department'
+            -
               description: 'Department Id'
               type: integer
-            -
-              $ref: '#/components/schemas/department'
         note:
           description: 'Note about the deadline.'
           type: string
@@ -2837,39 +2710,30 @@ components:
         name:
           description: 'department name'
           type: string
-        division:
-          description: 'Division containing this department.'
-          type: integer
+        parent:
+          description: 'Department that is the parent of this department.'
+          oneOf:
+            -
+              $ref: '#/components/schemas/department'
+            -
+              description: 'Department Id'
+              type: integer
         childCount:
           description: 'Number of child departments'
           type: integer
         fallback:
           description: 'Department that is this departments fallback.'
-          type: integer
+          oneOf:
+            -
+              $ref: '#/components/schemas/department'
+            -
+              description: 'Department Id'
+              type: integer
         email:
           description: 'Department''s email addresses.'
           type: array
           items:
             type: string
-      type: object
-    department_entry:
-      properties:
-        type:
-          type: string
-          enum:
-            - department_entry
-        id:
-          description: 'Department ID'
-          oneOf:
-            -
-              description: 'departemnt Id'
-              type: integer
-            -
-              $ref: '#/components/schemas/department'
-        get:
-          description: 'Method to get department data.'
-          type: string
-          format: url
       type: object
     department_list:
       properties:
@@ -2881,7 +2745,7 @@ components:
           description: 'List of departments'
           type: array
           items:
-            $ref: '#/components/schemas/department_entry'
+            $ref: '#/components/schemas/department'
       type: object
       allOf:
         -
@@ -2899,10 +2763,10 @@ components:
           description: 'Annual cycle this event is part of'
           oneOf:
             -
+              $ref: '#/components/schemas/cycle'
+            -
               description: 'Cycle Id'
               type: integer
-            -
-              $ref: '#/components/schemas/cycle'
         dateFrom:
           description: 'Date the event starts'
           type: string
@@ -3175,10 +3039,10 @@ components:
           description: 'Member badge is dependent on'
           oneOf:
             -
+              $ref: '#/components/schemas/member'
+            -
               description: 'Member Id'
               type: integer
-            -
-              $ref: '#/components/schemas/member'
         badgeName:
           type: string
         badgesPickedUp:
@@ -3190,18 +3054,18 @@ components:
           description: 'Event the badge is for'
           oneOf:
             -
+              $ref: '#/components/schemas/event'
+            -
               description: 'Event Id'
               type: integer
-            -
-              $ref: '#/components/schemas/event'
         registeredBy:
           description: 'Member who create the ticket'
           oneOf:
             -
+              $ref: '#/components/schemas/member'
+            -
               description: 'Member Id'
               type: integer
-            -
-              $ref: '#/components/schemas/member'
         registrationDate:
           type: string
           format: date
@@ -3226,28 +3090,28 @@ components:
           description: 'Member who voided the ticket'
           oneOf:
             -
+              $ref: '#/components/schemas/member'
+            -
               description: 'Member Id'
               type: integer
-            -
-              $ref: '#/components/schemas/member'
         voidReason:
           type: string
         ticketType:
           description: 'Type of the ticket'
           oneOf:
             -
+              $ref: '#/components/schemas/ticket_type'
+            -
               description: 'Ticket Type Id'
               type: integer
-            -
-              $ref: '#/components/schemas/ticket_type'
         member:
           description: 'Member who the ticket is for'
           oneOf:
             -
+              $ref: '#/components/schemas/member'
+            -
               description: 'Member Id'
               type: integer
-            -
-              $ref: '#/components/schemas/member'
       type: object
     ticket_type:
       properties:
@@ -3261,10 +3125,10 @@ components:
           description: 'Event the badge is for'
           oneOf:
             -
+              $ref: '#/components/schemas/event'
+            -
               description: 'Event Id'
               type: integer
-            -
-              $ref: '#/components/schemas/event'
         name:
           type: string
         avaliableFrom:
@@ -3320,10 +3184,10 @@ components:
           description: 'Member resource Id'
           oneOf:
             -
+              $ref: '#/components/schemas/member'
+            -
               description: 'Member Id'
               type: integer
-            -
-              $ref: '#/components/schemas/member'
         note:
           description: 'Note about this staffing entry'
           type: string
@@ -3334,10 +3198,10 @@ components:
           description: 'Id of the department of the staff position.'
           oneOf:
             -
+              $ref: '#/components/schemas/department'
+            -
               description: 'departemnt Id'
               type: integer
-            -
-              $ref: '#/components/schemas/department'
       type: object
     staff_list:
       properties:
@@ -3443,36 +3307,17 @@ components:
       style: form
       schema:
         type: integer
-    ticket_includes:
-      name: include
+    short_response:
+      name: short_response
       in: query
-      description: 'Include the resource instead of the ID.'
+      description: 'Do not include sub-resource structures, only Ids.'
       required: false
       style: form
-      explode: false
       schema:
-        type: array
-        items:
-          type: string
-          enum:
-            - ticketType
-            - member
-            - badgeDependentOn
-            - registeredBy
-            - event
-    ticket_type_includes:
-      name: include
-      in: query
-      description: 'Include the resource instead of the ID.'
-      required: false
-      style: form
-      explode: false
-      schema:
-        type: array
-        items:
-          type: string
-          enum:
-            - event
+        type: integer
+        enum:
+          - 0
+          - 1
   securitySchemes:
     ciab_auth:
       type: oauth2

@@ -26,11 +26,11 @@
  *          description="Member resource Id",
  *          oneOf={
  *              @OA\Schema(
- *                  type="integer",
- *                  description="Member Id"
+ *                  ref="#/components/schemas/member"
  *              ),
  *              @OA\Schema(
- *                  ref="#/components/schemas/member"
+ *                  type="integer",
+ *                  description="Member Id"
  *              )
  *          }
  *      ),
@@ -49,11 +49,11 @@
  *          description="Id of the department of the staff position.",
  *          oneOf={
  *              @OA\Schema(
- *                  type="integer",
- *                  description="departemnt Id"
+ *                  ref="#/components/schemas/department"
  *              ),
  *              @OA\Schema(
- *                  ref="#/components/schemas/department"
+ *                  type="integer",
+ *                  description="departemnt Id"
  *              )
  *          }
  *      )

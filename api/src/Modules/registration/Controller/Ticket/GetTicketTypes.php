@@ -4,24 +4,6 @@
 .*/
 
 /**
- *
- *  @OA\Parameter(
- *      parameter="ticket_type_includes",
- *      description="Include the resource instead of the ID.",
- *      in="query",
- *      name="include",
- *      required=false,
- *      explode=false,
- *      style="form",
- *      @OA\Schema(
- *          type="array",
- *          @OA\Items(
- *              type="string",
- *              enum={"event"}
- *          )
- *      )
- *  )
- *
  *  @OA\Get(
  *      tags={"registration"},
  *      path="/registration/ticket/type/{id}/{event}",
@@ -41,7 +23,7 @@
  *          @OA\Schema(type="integer")
  *      ),
  *      @OA\Parameter(
- *          ref="#/components/parameters/ticket_type_includes",
+ *          ref="#/components/parameters/short_response",
  *      ),
  *      @OA\Response(
  *          response=200,
@@ -73,7 +55,7 @@
  *          @OA\Schema(type="integer")
  *      ),
  *      @OA\Parameter(
- *          ref="#/components/parameters/ticket_type_includes",
+ *          ref="#/components/parameters/short_response",
  *      ),
  *      @OA\Response(
  *          response=200,
@@ -104,7 +86,7 @@
  *          ref="#/components/parameters/pageToken",
  *      ),
  *      @OA\Parameter(
- *          ref="#/components/parameters/ticket_type_includes",
+ *          ref="#/components/parameters/short_response",
  *      ),
  *      @OA\Response(
  *          response=200,

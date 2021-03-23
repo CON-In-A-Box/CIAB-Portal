@@ -23,7 +23,7 @@
  *          @OA\Schema(type="integer", enum={0,1})
  *      ),
  *      @OA\Parameter(
- *          ref="#/components/parameters/ticket_includes"
+ *          ref="#/components/parameters/short_response",
  *      ),
  *      @OA\Response(
  *          response=200,

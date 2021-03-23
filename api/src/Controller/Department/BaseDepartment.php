@@ -27,8 +27,16 @@
  *      ),
  *      @OA\Property(
  *          property="parent",
- *          type="integer",
- *          description="Department that is the parent of this department."
+ *          description="Department that is the parent of this department.",
+ *          oneOf={
+ *              @OA\Schema(
+ *                  ref="#/components/schemas/department"
+ *              ),
+ *              @OA\Schema(
+ *                  type="integer",
+ *                  description="Department Id"
+ *              )
+ *          }
  *      ),
  *      @OA\Property(
  *          property="childCount",
@@ -37,8 +45,16 @@
  *      ),
  *      @OA\Property(
  *          property="fallback",
- *          type="integer",
- *          description="Department that is this departments fallback."
+ *          description="Department that is this departments fallback.",
+ *          oneOf={
+ *              @OA\Schema(
+ *                  ref="#/components/schemas/department"
+ *              ),
+ *              @OA\Schema(
+ *                  type="integer",
+ *                  description="Department Id"
+ *              )
+ *          }
  *      ),
  *      @OA\Property(
  *          property="email",

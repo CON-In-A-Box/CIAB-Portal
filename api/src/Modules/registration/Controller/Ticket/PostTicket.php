@@ -8,7 +8,7 @@
  *      path="/registration/ticket",
  *      summary="Create a new Ticket",
  *      @OA\Parameter(
- *          ref="#/components/parameters/ticket_includes"
+ *          ref="#/components/parameters/short_response",
  *      ),
  *      @OA\RequestBody(
  *          @OA\MediaType(

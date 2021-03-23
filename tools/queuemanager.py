@@ -43,7 +43,7 @@ def get_queue(server, access):
 
 def claim_and_print(ticket, access):
     ''' Claim and ticket and print it '''
-    url = ticket['claim']['href'] + '?include=ticketType,member,event'
+    url = ticket['claim']['href']
     print(url)
     data = requests.put(url,
                         headers={'Authorization': 'Bearer ' + access},

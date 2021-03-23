@@ -25,11 +25,11 @@
  *          description="Member badge is dependent on",
  *          oneOf={
  *              @OA\Schema(
- *                  type="integer",
- *                  description="Member Id"
+ *                  ref="#/components/schemas/member"
  *              ),
  *              @OA\Schema(
- *                  ref="#/components/schemas/member"
+ *                  type="integer",
+ *                  description="Member Id"
  *              )
  *          }
  *      ),
@@ -51,11 +51,11 @@
  *          description="Event the badge is for",
  *          oneOf={
  *              @OA\Schema(
- *                  type="integer",
- *                  description="Event Id"
+ *                  ref="#/components/schemas/event"
  *              ),
  *              @OA\Schema(
- *                  ref="#/components/schemas/event"
+ *                  type="integer",
+ *                  description="Event Id"
  *              )
  *          }
  *      ),
@@ -64,11 +64,11 @@
  *          description="Member who create the ticket",
  *          oneOf={
  *              @OA\Schema(
- *                  type="integer",
- *                  description="Member Id"
+ *                  ref="#/components/schemas/member"
  *              ),
  *              @OA\Schema(
- *                  ref="#/components/schemas/member"
+ *                  type="integer",
+ *                  description="Member Id"
  *              )
  *          }
  *      ),
@@ -111,11 +111,11 @@
  *          description="Member who voided the ticket",
  *          oneOf={
  *              @OA\Schema(
- *                  type="integer",
- *                  description="Member Id"
+ *                  ref="#/components/schemas/member"
  *              ),
  *              @OA\Schema(
- *                  ref="#/components/schemas/member"
+ *                  type="integer",
+ *                  description="Member Id"
  *              )
  *          }
  *      ),
@@ -128,11 +128,11 @@
  *          description="Type of the ticket",
  *          oneOf={
  *              @OA\Schema(
- *                  type="integer",
- *                  description="Ticket Type Id"
+ *                  ref="#/components/schemas/ticket_type"
  *              ),
  *              @OA\Schema(
- *                  ref="#/components/schemas/ticket_type"
+ *                  type="integer",
+ *                  description="Ticket Type Id"
  *              )
  *          }
  *      ),
@@ -141,11 +141,11 @@
  *          description="Member who the ticket is for",
  *          oneOf={
  *              @OA\Schema(
- *                  type="integer",
- *                  description="Member Id"
+ *                  ref="#/components/schemas/member"
  *              ),
  *              @OA\Schema(
- *                  ref="#/components/schemas/member"
+ *                  type="integer",
+ *                  description="Member Id"
  *              )
  *          }
  *      ),
@@ -167,11 +167,11 @@
  *          description="Event the badge is for",
  *          oneOf={
  *              @OA\Schema(
- *                  type="integer",
- *                  description="Event Id"
+ *                  ref="#/components/schemas/event"
  *              ),
  *              @OA\Schema(
- *                  ref="#/components/schemas/event"
+ *                  type="integer",
+ *                  description="Event Id"
  *              )
  *          }
  *      ),

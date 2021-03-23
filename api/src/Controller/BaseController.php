@@ -59,6 +59,19 @@
  *      )
  *  )
  *
+ *  @OA\Parameter(
+ *      parameter="short_response",
+ *      description="Do not include sub-resource structures, only Ids.",
+ *      in="query",
+ *      name="short_response",
+ *      required=false,
+ *      style="form",
+ *      @OA\Schema(
+ *          type="integer",
+ *          enum={0, 1}
+ *      )
+ *  )
+ *
  *  @OA\Schema(
  *      schema="resource_list",
  *      @OA\Property(
@@ -143,16 +156,19 @@ class IncludeResource
     }
 
 
-    public function process(Request $request, Response $response, Container $container, array $params, array $values, array &$data): void
+    public function process(Request $request, Response $response, Container $container, array $params, array &$data): void
     {
-        if (in_array($this->field, $values) &&
-            in_array($this->field, array_keys($data)) &&
+        if (in_array($this->field, array_keys($data), true) &&
             $data[$this->field] !== null) {
             $newparams = $params;
             $newparams[$this->parameter] = $data[$this->field];
             $target = new $this->class($container);
-            $newdata = $target->buildResource($request, $response, $newparams)[1];
-            $target->processIncludes($request, $response, $params, $values, $newdata);
+            try {
+                $newdata = $target->buildResource($request, $response, $newparams)[1];
+            } catch (Exception $e) {
+                return;
+            }
+            $target->processIncludes($request, $response, $params, $newdata);
             $data[$this->field] = $target->arrayResponse($request, $response, $newdata);
         }
 
@@ -276,13 +292,12 @@ abstract class BaseController
     }
 
 
-    public function handleListType(Request $request, Response $response, array $output, array $data, array $args, int $code = 200)
+    public function handleListType(Request $request, Response $response, array $output, array $data, array $params, int $code = 200)
     {
-        $includes = $request->getQueryParam('include', null);
-        if ($includes) {
-            $values = array_map('trim', explode(',', $includes));
+        $short = $request->getQueryParam('short_response', false);
+        if (!boolval($short)) {
             for ($i = 0; $i < count($data); $i++) {
-                $this->processIncludes($request, $response, $args, $values, $data[$i]);
+                $this->processIncludes($request, $response, $params, $data[$i]);
             }
         }
         return $this->listResponse($request, $response, $output, $data, $code);
@@ -290,12 +305,11 @@ abstract class BaseController
     }
 
 
-    public function handleResourceType(Request $request, Response $response, $data, array $args, $code = 200)
+    public function handleResourceType(Request $request, Response $response, $data, array $params, $code = 200)
     {
-        $includes = $request->getQueryParam('include', null);
-        if ($includes) {
-            $values = array_map('trim', explode(',', $includes));
-            $this->processIncludes($request, $response, $args, $values, $data);
+        $short = $request->getQueryParam('short_response', false);
+        if (!boolval($short)) {
+            $this->processIncludes($request, $response, $params, $data);
         }
         return $this->jsonResponse($request, $response, $data, $code);
 
@@ -634,10 +648,10 @@ SQL;
     }
 
 
-    public function processIncludes(Request $request, Response $response, $params, $values, &$data)
+    public function processIncludes(Request $request, Response $response, $params, &$data)
     {
         foreach ($this->includes as $target) {
-            $target->process($request, $response, $this->container, $params, $values, $data);
+            $target->process($request, $response, $this->container, $params, $data);
         }
 
     }
