@@ -42,8 +42,8 @@ class DeadlineTest extends CiabTestCase
         foreach ($data->data as $item) {
             if ($target == null && !in_array($item->id, $initial_ids)) {
                 $target = $item->id;
-                $this->assertIncludes($item, 'departmentId');
-                unset($item->departmentId);
+                $this->assertIncludes($item, 'department');
+                unset($item->department);
                 $this->assertSame([
                     'type' => 'deadline',
                     'id' => $target,
@@ -54,8 +54,8 @@ class DeadlineTest extends CiabTestCase
         }
 
         $data = $this->runSuccessJsonRequest('GET', '/deadline/'.$target);
-        $this->assertIncludes($data, 'departmentId');
-        unset($data->departmentId);
+        $this->assertIncludes($data, 'department');
+        unset($data->department);
         $this->assertSame([
             'type' => 'deadline',
             'id' => $target,
@@ -95,7 +95,7 @@ class DeadlineTest extends CiabTestCase
             '/department/1/deadlines'
         );
         $this->assertNotEmpty($data->data);
-        $this->assertIncludes($data->data[0], 'departmentId');
+        $this->assertIncludes($data->data[0], 'department');
 
 
         $data = $this->runSuccessJsonRequest(
@@ -103,7 +103,7 @@ class DeadlineTest extends CiabTestCase
             '/member/1000/deadlines'
         );
         $this->assertNotEmpty($data->data);
-        $this->assertIncludes($data->data[0], 'departmentId');
+        $this->assertIncludes($data->data[0], 'department');
 
         $when = date('Y-m-d', strtotime('+1 year'));
         $this->runRequest(
@@ -121,7 +121,7 @@ class DeadlineTest extends CiabTestCase
             '/deadline/'.$this->target
         );
         $this->assertSame($data->note, 'New Message');
-        $this->assertIncludes($data, 'departmentId');
+        $this->assertIncludes($data, 'department');
 
     }
 

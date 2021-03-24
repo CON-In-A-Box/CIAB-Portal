@@ -34,8 +34,8 @@ class StaffTest extends CiabTestCase
         $data2 = $this->runSuccessJsonRequest('GET', '/member/staff_membership/');
         $this->assertNotEmpty($data);
         $this->assertEquals($data, $data2);
-        $this->assertIncludes($data->data[0], 'departmentId');
-        $this->assertIncludes($data->data[0], 'memberId');
+        $this->assertIncludes($data->data[0], 'department');
+        $this->assertIncludes($data->data[0], 'member');
 
         $this->runRequest('GET', '/staff_membership/-1', null, null, 404);
 

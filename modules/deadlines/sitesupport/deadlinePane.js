@@ -53,7 +53,7 @@ var deadlinePane = (function(options) {
       f = document.createElement('DIV');
       f.classList.add('UI-table-cell');
       f.id = 'deadline-' + data2.id + '-department';
-      f.appendChild(document.createTextNode(data2.departmentId.name));
+      f.appendChild(document.createTextNode(data2.department.name));
       line.appendChild(f);
       f = document.createElement('DIV');
       f.classList.add('UI-table-cell');

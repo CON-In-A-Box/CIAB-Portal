@@ -27,7 +27,7 @@
  *          description="When this deadline expires"
  *      ),
  *      @OA\Property(
- *          property="departmentId",
+ *          property="department",
  *          description="Department for the deadline",
  *          oneOf={
  *              @OA\Schema(
@@ -99,7 +99,7 @@ abstract class BaseDeadline extends BaseController
         $output = array();
         $output['type'] = 'deadline';
         $output['id'] = $id;
-        $output['departmentId'] = $dept;
+        $output['department'] = $dept;
         $output['deadline'] = $deadline;
         $output['note'] = $note;
         return $output;

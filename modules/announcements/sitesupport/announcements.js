@@ -182,14 +182,14 @@ var announcementPage = (function(options) {
 
       f = document.createElement('DIV');
       f.setAttribute('name', 'announcement-table-modify-' +
-        data2.departmentId.id);
+        data2.department.id);
       f.classList.add('UI-table-cell');
       f.classList.add('UI-center');
       f.classList.add('UI-hide');
       var button = document.createElement('button');
       button.innerHTML = '<i class="fas fa-calendar-check"></i>';
       button.dataset.ciabAnnouncementId = data2.id;
-      button.dataset.ciabAnnouncementDepartment = data2.departmentId.id;
+      button.dataset.ciabAnnouncementDepartment = data2.department.id;
       button.onclick = announcementPage.openEdit;
       button.classList.add('UI-button');
       f.appendChild(button);
@@ -283,13 +283,13 @@ var announcementPage = (function(options) {
     buildAnnouncementBlock: function(cache, result, data) {
       var table;
       var rc;
-      var dept = cache[parseInt(data.departmentId.id)];
+      var dept = cache[parseInt(data.department.id)];
       if (!dept) {
-        rc = announcementPage.emptyAnnouncementBlock(data.departmentId);
+        rc = announcementPage.emptyAnnouncementBlock(data.department);
         table = rc[1];
-        cache[parseInt(data.departmentId.id)] = rc;
+        cache[parseInt(data.department.id)] = rc;
       } else {
-        rc = cache[parseInt(data.departmentId.id)];
+        rc = cache[parseInt(data.department.id)];
         table = rc[1];
       }
       announcementPage.addAnnouncement(table, data);
@@ -324,11 +324,11 @@ var announcementPage = (function(options) {
               if (result.data.length > 0) {
                 result.data.forEach(function(data) {
                   if (data.allowed) {
-                    permissions[data.subdata.departmentId.id + '_' +
+                    permissions[data.subdata.departmentId + '_' +
                                   data.subtype] = data;
                     if (data.subtype == 'announcement_post') {
                       var sect = 'announcement-block-' +
-                                 data.subdata.departmentId.id;
+                                 data.subdata.departmentId;
                       var block = document.getElementById(sect);
                       if (block !== null) {
                         var button = block.getElementsByTagName('button');
@@ -347,7 +347,7 @@ var announcementPage = (function(options) {
                     if (data.subtype == 'announcement_delete' ||
                           data.subtype == 'announcement_put') {
                       var line = 'announcement-table-modify-' +
-                            data.subdata.departmentId.id;
+                            data.subdata.departmentId;
                       var cells = document.getElementsByName(line);
                       cells.forEach(function(cell) {
                         cell.classList.remove('UI-hide');

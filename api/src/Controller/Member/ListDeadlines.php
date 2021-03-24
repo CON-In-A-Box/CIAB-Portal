@@ -69,7 +69,7 @@ class ListDeadlines extends BaseMember
     {
         parent::__construct($container);
         $this->includes = [
-        new IncludeResource('\App\Controller\Department\GetDepartment', 'name', 'departmentId')
+        new IncludeResource('\App\Controller\Department\GetDepartment', 'name', 'department')
         ];
 
     }

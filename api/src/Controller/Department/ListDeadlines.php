@@ -63,7 +63,7 @@ class ListDeadlines extends \App\Controller\Deadline\BaseDeadline
     {
         parent::__construct($container);
         $this->includes = [
-        new IncludeResource('\App\Controller\Department\GetDepartment', 'name', 'departmentId')
+        new IncludeResource('\App\Controller\Department\GetDepartment', 'name', 'department')
         ];
 
     }

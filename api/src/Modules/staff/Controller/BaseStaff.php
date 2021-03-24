@@ -22,8 +22,8 @@
  *          description="Entry Id"
  *      ),
  *      @OA\Property(
- *          property="memberId",
- *          description="Member resource Id",
+ *          property="member",
+ *          description="Member resource",
  *          oneOf={
  *              @OA\Schema(
  *                  ref="#/components/schemas/member"
@@ -45,8 +45,8 @@
  *          description="Title of the staff position."
  *      ),
  *      @OA\Property(
- *          property="departemntId",
- *          description="Id of the department of the staff position.",
+ *          property="departemnt",
+ *          description="The department of the staff position.",
  *          oneOf={
  *              @OA\Schema(
  *                  ref="#/components/schemas/department"
@@ -113,12 +113,12 @@ abstract class BaseStaff extends BaseController
         new IncludeResource(
             '\App\Controller\Member\GetMember',
             'id',
-            'memberId'
+            'member'
         ),
         new IncludeResource(
             '\App\Controller\Department\GetDepartment',
             'name',
-            'departmentId'
+            'department'
         )
         ];
 
@@ -188,10 +188,10 @@ SQL;
         return ([
                 'type' => 'staff_entry',
                 'id' => $id,
-                'memberId' => $member,
+                'member' => $member,
                 'note' => $note,
                 'position' => $position,
-                'departmentId' => $dept
+                'department' => $dept
         ]);
 
     }
