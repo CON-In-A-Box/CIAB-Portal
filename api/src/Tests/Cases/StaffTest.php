@@ -35,7 +35,7 @@ class StaffTest extends CiabTestCase
         $this->assertNotEmpty($data);
         $this->assertEquals($data, $data2);
         $this->assertIncludes($data->data[0], 'department');
-        $this->assertIncludes($data->data[0], 'memberId');
+        $this->assertIncludes($data->data[0], 'member');
 
         $this->runRequest('GET', '/staff_membership/-1', null, null, 404);
 

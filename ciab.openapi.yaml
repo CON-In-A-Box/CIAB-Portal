@@ -3180,8 +3180,8 @@ components:
         id:
           description: 'Entry Id'
           type: integer
-        memberId:
-          description: 'Member resource Id'
+        member:
+          description: 'Member resource'
           oneOf:
             -
               $ref: '#/components/schemas/member'
