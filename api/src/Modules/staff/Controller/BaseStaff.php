@@ -45,8 +45,8 @@
  *          description="Title of the staff position."
  *      ),
  *      @OA\Property(
- *          property="departemntId",
- *          description="Id of the department of the staff position.",
+ *          property="departemnt",
+ *          description="The department of the staff position.",
  *          oneOf={
  *              @OA\Schema(
  *                  ref="#/components/schemas/department"
@@ -118,7 +118,7 @@ abstract class BaseStaff extends BaseController
         new IncludeResource(
             '\App\Controller\Department\GetDepartment',
             'name',
-            'departmentId'
+            'department'
         )
         ];
 
@@ -191,7 +191,7 @@ SQL;
                 'memberId' => $member,
                 'note' => $note,
                 'position' => $position,
-                'departmentId' => $dept
+                'department' => $dept
         ]);
 
     }

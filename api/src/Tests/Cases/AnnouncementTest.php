@@ -35,9 +35,9 @@ class AnnouncementTest extends CiabTestCase
         foreach ($data->data as $item) {
             if ($target == null && !in_array($item->id, $initial_ids)) {
                 $target = $item->id;
-                $this->assertIncludes($item, 'departmentId');
+                $this->assertIncludes($item, 'department');
                 $this->assertIncludes($item, 'postedBy');
-                unset($item->departmentId);
+                unset($item->department);
                 unset($item->postedBy);
                 $this->assertEquals([
                     'type' => 'announcement',
@@ -93,7 +93,7 @@ class AnnouncementTest extends CiabTestCase
             '/department/1/announcements'
         );
         $this->assertNotEmpty($data->data);
-        $this->assertIncludes($data->data[0], 'departmentId');
+        $this->assertIncludes($data->data[0], 'department');
         $this->assertIncludes($data->data[0], 'postedBy');
 
         $this->runSuccessRequest(
@@ -110,7 +110,7 @@ class AnnouncementTest extends CiabTestCase
             '/announcement/'.$this->aid[1]
         );
         $this->assertSame($data->text, 'New Message');
-        $this->assertIncludes($data, 'departmentId');
+        $this->assertIncludes($data, 'department');
         $this->assertIncludes($data, 'postedBy');
 
         $data = $this->runSuccessJsonRequest(
@@ -118,7 +118,7 @@ class AnnouncementTest extends CiabTestCase
             '/member/1000/announcements'
         );
         $this->assertNotEmpty($data->data);
-        $this->assertIncludes($data->data[0], 'departmentId');
+        $this->assertIncludes($data->data[0], 'department');
         $this->assertIncludes($data->data[0], 'postedBy');
 
     }

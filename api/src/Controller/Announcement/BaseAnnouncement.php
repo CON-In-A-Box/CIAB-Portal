@@ -27,7 +27,7 @@
  *          description="Date the announcement was first posted"
  *      ),
  *      @OA\Property(
- *          property="departmentId",
+ *          property="department",
  *          description="Department for the announcement",
  *          oneOf={
  *              @OA\Schema(
@@ -120,7 +120,7 @@ abstract class BaseAnnouncement extends BaseController
         new IncludeResource(
             '\App\Controller\Department\GetDepartment',
             'name',
-            'departmentId'
+            'department'
         )
         ];
 
@@ -145,7 +145,7 @@ abstract class BaseAnnouncement extends BaseController
         $output = array();
         $output['type'] = 'announcement';
         $output['id'] = $id;
-        $output['departmentId'] = $dept;
+        $output['department'] = $dept;
         $output['postedOn'] = $posted;
         $output['postedBy'] = $poster;
         $output['scope'] = $scope;

@@ -38,7 +38,7 @@ var announcementPane = (function(options) {
       a.appendChild(document.createTextNode(data2.text));
       var s = document.createElement('SPAN');
       s.classList.add('UI-announcement-source');
-      s.appendChild(document.createTextNode('  -  ' + data2.departmentId.name));
+      s.appendChild(document.createTextNode('  -  ' + data2.department.name));
       a.appendChild(s);
       s.appendChild(document.createTextNode(' (' + data2.postedOn + ')'));
       a.appendChild(s);

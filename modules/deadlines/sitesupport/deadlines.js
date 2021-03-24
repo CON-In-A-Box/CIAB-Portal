@@ -141,14 +141,14 @@ var deadlinePage = (function(options) {
       f.appendChild(document.createTextNode(data2.note));
       line.appendChild(f);
       f = document.createElement('DIV');
-      f.setAttribute('name', 'deadline-table-modify-' + data2.departmentId.id);
+      f.setAttribute('name', 'deadline-table-modify-' + data2.department.id);
       f.classList.add('UI-table-cell');
       f.classList.add('UI-center');
       f.classList.add('UI-hide');
       var button = document.createElement('button');
       button.innerHTML = '<i class="fas fa-calendar-check"></i>';
       button.dataset.ciabDeadlineId = data2.id;
-      button.dataset.ciabDeadlineDepartment = data2.departmentId.id;
+      button.dataset.ciabDeadlineDepartment = data2.department.id;
       button.dataset.ciabDeadlineDate = t[0] + '-' + t[1] + '-' + t[2];
       button.onclick = deadlinePage.openEdit;
       button.classList.add('UI-button');
@@ -234,13 +234,13 @@ var deadlinePage = (function(options) {
     buildDeadlineBlock: function(cache, result, data) {
       var table;
       var rc;
-      var dept = cache[parseInt(data.departmentId.id)];
+      var dept = cache[parseInt(data.department.id)];
       if (!dept) {
-        rc = deadlinePage.emptyDeadlineBlock(data.departmentId);
+        rc = deadlinePage.emptyDeadlineBlock(data.department);
         table = rc[1];
-        cache[parseInt(data.departmentId.id)] = rc;
+        cache[parseInt(data.department.id)] = rc;
       } else {
-        rc = cache[parseInt(data.departmentId.id)];
+        rc = cache[parseInt(data.department.id)];
         table = rc[1];
       }
       deadlinePage.addDeadline(table, data);
@@ -275,11 +275,11 @@ var deadlinePage = (function(options) {
               if (result.data.length > 0) {
                 result.data.forEach(function(data) {
                   if (data.allowed) {
-                    permissions[data.subdata.departmentId.id + '_' +
+                    permissions[data.subdata.departmentId + '_' +
                                   data.subtype] = data;
                     if (data.subtype == 'deadline_post') {
                       var sect = 'deadline-block-' +
-                                 data.subdata.departmentId.id;
+                                 data.subdata.departmentId;
                       var block = document.getElementById(sect);
                       if (block !== null) {
                         var button = block.getElementsByTagName('button');
@@ -298,7 +298,7 @@ var deadlinePage = (function(options) {
                     if (data.subtype == 'deadline_delete' ||
                           data.subtype == 'deadline_put') {
                       var line = 'deadline-table-modify-' +
-                            data.subdata.departmentId.id;
+                            data.subdata.departmentId;
                       var cells = document.getElementsByName(line);
                       cells.forEach(function(cell) {
                         cell.classList.remove('UI-hide');

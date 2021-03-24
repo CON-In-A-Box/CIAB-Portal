@@ -2559,7 +2559,7 @@ components:
           description: 'Date the announcement was first posted'
           type: string
           format: date
-        departmentId:
+        department:
           description: 'Department for the announcement'
           oneOf:
             -
@@ -2671,7 +2671,7 @@ components:
           description: 'When this deadline expires'
           type: string
           format: date
-        departmentId:
+        department:
           description: 'Department for the deadline'
           oneOf:
             -
@@ -3194,8 +3194,8 @@ components:
         position:
           description: 'Title of the staff position.'
           type: string
-        departemntId:
-          description: 'Id of the department of the staff position.'
+        departemnt:
+          description: 'The department of the staff position.'
           oneOf:
             -
               $ref: '#/components/schemas/department'
