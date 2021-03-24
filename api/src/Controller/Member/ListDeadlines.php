@@ -34,19 +34,7 @@ use App\Controller\IncludeResource;
  *          )
  *      ),
  *      @OA\Parameter(
- *          description="Include the resource instead of the ID.",
- *          in="query",
- *          name="include",
- *          required=false,
- *          explode=false,
- *          style="form",
- *          @OA\Schema(
- *              type="array",
- *              @OA\Items(
- *                  type="string",
- *                  enum={"departmentId"}
- *              )
- *          )
+ *          ref="#/components/parameters/short_response",
  *      ),
  *      @OA\Parameter(
  *          ref="#/components/parameters/maxResults",

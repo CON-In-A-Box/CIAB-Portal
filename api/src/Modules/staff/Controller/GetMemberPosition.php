@@ -20,6 +20,9 @@
  *      @OA\Parameter(
  *          ref="#/components/parameters/pageToken",
  *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/short_response",
+ *      ),
  *      @OA\Response(
  *          response=200,
  *          description="Member staff positions found",

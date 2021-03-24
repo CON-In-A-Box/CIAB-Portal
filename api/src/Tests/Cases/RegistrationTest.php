@@ -75,15 +75,11 @@ class RegistrationTest extends CiabTestCase
 
         $this->ticket = $this->runSuccessJsonRequest('POST', '/registration/ticket', null, ['member' => self::$login, 'ticketType' => $type->id], 201);
 
-        $data = $this->runSuccessJsonRequest('GET', '/registration/ticket/'.$this->ticket->id, ['include' => 'ticketType,member,registeredBy,badgeDependentOn,event'], null);
-        $this->assertObjectHasAttribute('id', $data->event);
-        $this->assertObjectHasAttribute('type', $data->event);
-        $this->assertObjectHasAttribute('id', $data->registeredBy);
-        $this->assertObjectHasAttribute('type', $data->registeredBy);
-        $this->assertObjectHasAttribute('id', $data->ticketType);
-        $this->assertObjectHasAttribute('type', $data->ticketType);
-        $this->assertObjectHasAttribute('id', $data->member);
-        $this->assertObjectHasAttribute('type', $data->member);
+        $data = $this->runSuccessJsonRequest('GET', '/registration/ticket/'.$this->ticket->id);
+        $this->assertIncludes($data, 'event');
+        $this->assertIncludes($data, 'registeredBy');
+        $this->assertIncludes($data, 'ticketType');
+        $this->assertIncludes($data, 'member');
 
         /* PUT */
 

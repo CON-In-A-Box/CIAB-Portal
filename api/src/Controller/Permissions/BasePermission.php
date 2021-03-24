@@ -108,19 +108,7 @@
  *          )
  *      ),
  *      @OA\Parameter(
- *          description="Include the resource instead of the ID.",
- *          in="query",
- *          name="include",
- *          required=false,
- *          explode=false,
- *          style="form",
- *          @OA\Schema(
- *              type="array",
- *              @OA\Items(
- *                  type="string",
- *                  enum={"departmentId"}
- *              )
- *          )
+ *          ref="#/components/parameters/short_response",
  *      ),
  *      @OA\Parameter(
  *          ref="#/components/parameters/maxResults",
@@ -171,19 +159,7 @@
  *          )
  *      ),
  *      @OA\Parameter(
- *          description="Include the resource instead of the ID.",
- *          in="query",
- *          name="include",
- *          required=false,
- *          explode=false,
- *          style="form",
- *          @OA\Schema(
- *              type="array",
- *              @OA\Items(
- *                  type="string",
- *                  enum={"departmentId"}
- *              )
- *          )
+ *          ref="#/components/parameters/short_response",
  *      ),
  *      @OA\Parameter(
  *          ref="#/components/parameters/maxResults",
@@ -241,30 +217,18 @@
  *          @OA\Schema(
  *              oneOf = {
  *                  @OA\Schema(
- *                      description="Department name",
+ *                      description="Department id",
  *                      type="integer"
  *                  ),
  *                  @OA\Schema(
- *                      description="Department id",
+ *                      description="Department name",
  *                      type="string"
  *                  )
  *              }
  *          )
  *      ),
  *      @OA\Parameter(
- *          description="Include the resource instead of the ID.",
- *          in="query",
- *          name="include",
- *          required=false,
- *          explode=false,
- *          style="form",
- *          @OA\Schema(
- *              type="array",
- *              @OA\Items(
- *                  type="string",
- *                  enum={"departmentId"}
- *              )
- *          )
+ *          ref="#/components/parameters/short_response",
  *      ),
  *      @OA\Parameter(
  *          ref="#/components/parameters/maxResults",
@@ -323,19 +287,7 @@
  *          )
  *      ),
  *      @OA\Parameter(
- *          description="Include the resource instead of the ID.",
- *          in="query",
- *          name="include",
- *          required=false,
- *          explode=false,
- *          style="form",
- *          @OA\Schema(
- *              type="array",
- *              @OA\Items(
- *                  type="string",
- *                  enum={"departmentId"}
- *              )
- *          )
+ *          ref="#/components/parameters/short_response",
  *      ),
  *      @OA\Parameter(
  *          ref="#/components/parameters/maxResults",
@@ -404,19 +356,7 @@
  *          )
  *      ),
  *      @OA\Parameter(
- *          description="Include the resource instead of the ID.",
- *          in="query",
- *          name="include",
- *          required=false,
- *          explode=false,
- *          style="form",
- *          @OA\Schema(
- *              type="array",
- *              @OA\Items(
- *                  type="string",
- *                  enum={"departmentId"}
- *              )
- *          )
+ *          ref="#/components/parameters/short_response",
  *      ),
  *      @OA\Parameter(
  *          ref="#/components/parameters/maxResults",
@@ -605,19 +545,17 @@ abstract class BasePermission extends BaseController
     }
 
 
-    public function processIncludes(Request $request, Response $response, $params, $values, &$data)
+    public function processIncludes(Request $request, Response $response, $params, &$data)
     {
-        parent::processIncludes($request, $response, $params, $values, $data);
+        parent::processIncludes($request, $response, $params, $data);
 
-        if (in_array('departmentId', $values)) {
-            $target = new \App\Controller\Department\GetDepartment($this->container);
-            $newparams = $params;
-            $newparams['name'] = $data['subdata']['departmentId'];
-            $newdata = $target->buildResource($request, $response, $newparams)[1];
-            if ($newdata['id'] != $data['id']) {
-                $target->processIncludes($request, $response, $params, $values, $newdata);
-                $data['subdata']['departmentId'] = $target->arrayResponse($request, $response, $newdata);
-            }
+        $target = new \App\Controller\Department\GetDepartment($this->container);
+        $newparams = $params;
+        $newparams['name'] = $data['subdata']['departmentId'];
+        $newdata = $target->buildResource($request, $response, $newparams)[1];
+        if ($newdata['id'] != $data['subdata']['departmentId']) {
+            $target->processIncludes($request, $response, $params, $newdata);
+            $data['subdata']['departmentId'] = $target->arrayResponse($request, $response, $newdata);
         }
 
     }

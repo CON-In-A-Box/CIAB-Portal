@@ -68,16 +68,7 @@ class EventTest extends CiabTestCase
         );
         $id = $data->data[0]->id;
         $data = $this->runSuccessJsonRequest('GET', '/event/'.$id);
-        $cycleid = $data->cycle;
-
-        $data = $this->runSuccessJsonRequest(
-            'GET',
-            '/event/'.$id,
-            ['include' => 'cycle']
-        );
-        $this->assertIsObject($data->cycle);
-        $this->assertObjectHasAttribute('id', $data->cycle);
-        $this->assertSame($data->cycle->id, $cycleid);
+        $this->assertIncludes($data, 'cycle');
 
     }
 

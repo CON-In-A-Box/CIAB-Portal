@@ -15,11 +15,11 @@
  *          @OA\Schema(
  *              oneOf = {
  *                  @OA\Schema(
- *                      description="Department name",
+ *                      description="Department id",
  *                      type="integer"
  *                  ),
  *                  @OA\Schema(
- *                      description="Department id",
+ *                      description="Department name",
  *                      type="string"
  *                  )
  *              }

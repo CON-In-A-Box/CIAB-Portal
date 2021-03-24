@@ -34,7 +34,7 @@
  *          @OA\Schema(type="integer")
  *      ),
  *      @OA\Parameter(
- *          ref="#/components/parameters/ticket_includes"
+ *          ref="#/components/parameters/short_response",
  *      ),
  *      @OA\Parameter(
  *          ref="#/components/parameters/maxResults",
@@ -117,7 +117,7 @@
  *          ref="#/components/parameters/pageToken",
  *      ),
  *      @OA\Parameter(
- *          ref="#/components/parameters/ticket_includes"
+ *          ref="#/components/parameters/short_response",
  *      ),
  *      @OA\Response(
  *          response=200,

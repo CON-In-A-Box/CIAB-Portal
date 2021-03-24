@@ -31,11 +31,11 @@
  *          description="Department for the deadline",
  *          oneOf={
  *              @OA\Schema(
- *                  type="integer",
- *                  description="Department Id"
+ *                  ref="#/components/schemas/department"
  *              ),
  *              @OA\Schema(
- *                  ref="#/components/schemas/department"
+ *                  type="integer",
+ *                  description="Department Id"
  *              )
  *          }
  *      ),

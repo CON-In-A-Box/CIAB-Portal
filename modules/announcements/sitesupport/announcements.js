@@ -304,7 +304,7 @@ var announcementPage = (function(options) {
       showSpinner();
       apiRequest('GET',
         'member/current/announcements',
-        'maxResults=all&include=departmentId,postedBy')
+        'maxResults=all')
         .then(function(response) {
           var result = JSON.parse(response.responseText);
           if (result.data.length > 0) {
@@ -324,11 +324,11 @@ var announcementPage = (function(options) {
               if (result.data.length > 0) {
                 result.data.forEach(function(data) {
                   if (data.allowed) {
-                    permissions[data.subdata.departmentId + '_' +
+                    permissions[data.subdata.departmentId.id + '_' +
                                   data.subtype] = data;
                     if (data.subtype == 'announcement_post') {
                       var sect = 'announcement-block-' +
-                                 data.subdata.departmentId;
+                                 data.subdata.departmentId.id;
                       var block = document.getElementById(sect);
                       if (block !== null) {
                         var button = block.getElementsByTagName('button');
@@ -347,7 +347,7 @@ var announcementPage = (function(options) {
                     if (data.subtype == 'announcement_delete' ||
                           data.subtype == 'announcement_put') {
                       var line = 'announcement-table-modify-' +
-                            data.subdata.departmentId;
+                            data.subdata.departmentId.id;
                       var cells = document.getElementsByName(line);
                       cells.forEach(function(cell) {
                         cell.classList.remove('UI-hide');

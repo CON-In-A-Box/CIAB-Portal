@@ -16,14 +16,13 @@ class DepartmentTest extends CiabTestCase
         $data2 = $this->runSuccessJsonRequest('GET', '/department/1');
         $this->assertEquals($data, $data2);
         $this->runSuccessJsonRequest('GET', '/department/1/children');
-        $this->runSuccessJsonRequest('GET', '/department', ['include' => 'id']);
+        $this->runSuccessJsonRequest('GET', '/department');
         $data = $this->runSuccessJsonRequest(
             'GET',
-            '/department/100',
-            ['include' => 'parent,fallback']
+            '/department/100'
         );
         $this->assertIsObject($data->parent);
-        $this->assertObjectHasAttribute('id', $data->parent);
+        $this->assertIncludes($data, 'parent');
 
     }
 

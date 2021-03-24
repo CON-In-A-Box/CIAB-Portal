@@ -42,10 +42,11 @@ class DeadlineTest extends CiabTestCase
         foreach ($data->data as $item) {
             if ($target == null && !in_array($item->id, $initial_ids)) {
                 $target = $item->id;
+                $this->assertIncludes($item, 'departmentId');
+                unset($item->departmentId);
                 $this->assertSame([
                     'type' => 'deadline',
                     'id' => $target,
-                    'departmentId' => '1',
                     'deadline' => "$when",
                     'note' => 'testing'
                 ], (array)$item);
@@ -53,10 +54,11 @@ class DeadlineTest extends CiabTestCase
         }
 
         $data = $this->runSuccessJsonRequest('GET', '/deadline/'.$target);
+        $this->assertIncludes($data, 'departmentId');
+        unset($data->departmentId);
         $this->assertSame([
             'type' => 'deadline',
             'id' => $target,
-            'departmentId' => '1',
             'deadline' => "$when",
             'note' => 'testing'
         ], (array)$data);
@@ -90,22 +92,18 @@ class DeadlineTest extends CiabTestCase
     {
         $data = $this->runSuccessJsonRequest(
             'GET',
-            '/department/1/deadlines',
-            ['include' => 'departmentId']
+            '/department/1/deadlines'
         );
         $this->assertNotEmpty($data->data);
-        $this->assertIsObject($data->data[0]->departmentId);
-        $this->assertObjectHasAttribute('id', $data->data[0]->departmentId);
+        $this->assertIncludes($data->data[0], 'departmentId');
 
 
         $data = $this->runSuccessJsonRequest(
             'GET',
-            '/member/1000/deadlines',
-            ['include' => 'departmentId']
+            '/member/1000/deadlines'
         );
         $this->assertNotEmpty($data->data);
-        $this->assertIsObject($data->data[0]->departmentId);
-        $this->assertObjectHasAttribute('id', $data->data[0]->departmentId);
+        $this->assertIncludes($data->data[0], 'departmentId');
 
         $when = date('Y-m-d', strtotime('+1 year'));
         $this->runRequest(
@@ -120,12 +118,10 @@ class DeadlineTest extends CiabTestCase
 
         $data = $this->runSuccessJsonRequest(
             'GET',
-            '/deadline/'.$this->target,
-            ['include' => 'departmentId']
+            '/deadline/'.$this->target
         );
         $this->assertSame($data->note, 'New Message');
-        $this->assertIsObject($data->departmentId);
-        $this->assertObjectHasAttribute('id', $data->departmentId);
+        $this->assertIncludes($data, 'departmentId');
 
     }
 

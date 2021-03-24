@@ -75,7 +75,7 @@ class EmailTicket extends BaseTicket
         if ($newdata['type'] == 'error') {
             return $output;
         }
-        $target->processIncludes($request, $response, $params, ['member', 'event', 'ticketType'], $newdata);
+        $target->processIncludes($request, $response, $params, $newdata);
         $data = $target->arrayResponse($request, $response, $newdata);
 
         $checkin = $request->getUri()->getBaseUrl();

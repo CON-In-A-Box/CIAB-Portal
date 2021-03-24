@@ -82,7 +82,7 @@ var announcementPane = (function(options) {
       var frame = [ announcementPane.emptyAnnouncementBlock() ];
       apiRequest('GET',
         'member/current/announcements',
-        'maxResults=all&include=departmentId')
+        'maxResults=all')
         .then(function(response) {
           var target = document.getElementById('announcement_pane');
           var result = JSON.parse(response.responseText);

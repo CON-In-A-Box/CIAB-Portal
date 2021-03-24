@@ -25,11 +25,11 @@
  *          description="Annual cycle this event is part of",
  *          oneOf={
  *              @OA\Schema(
- *                  type="integer",
- *                  description="Cycle Id"
+ *                  ref="#/components/schemas/cycle"
  *              ),
  *              @OA\Schema(
- *                  ref="#/components/schemas/cycle"
+ *                  type="integer",
+ *                  description="Cycle Id"
  *              )
  *          }
  *      ),
