@@ -100,12 +100,7 @@ class GetMemberPosition extends BaseStaff
             }
             $user = $data['users'][0]['Id'];
         }
-        $staff = $this->getStaffPosition($user, 'current');
-        $data = [];
-        $path = $request->getUri()->getBaseUrl();
-        foreach ($staff as $entry) {
-            $data[] = $this->buildEntry($request, $entry['ListRecordID'], $entry['DepartmentID'], $user, $entry['Note'], $entry['Position']);
-        }
+        $data = $this->selectStaff(null, null, $user);
         return [
         \App\Controller\BaseController::LIST_TYPE,
         $data,

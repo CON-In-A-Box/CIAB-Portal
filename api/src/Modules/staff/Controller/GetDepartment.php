@@ -63,49 +63,19 @@ class GetDepartment extends BaseStaff
 {
 
 
-    public function buildResource(Request $request, Response $response, $args) :array
+    public function buildResource(Request $request, Response $response, $params) :array
     {
         $permissions = ['api.get.staff'];
         $this->checkPermissions($permissions);
-        $dept = $this->getDepartment($args['id']);
-        $event = $request->getQueryParam('event');
-        if ($event !== null) {
-            $event = intval($event);
-        } else {
-            $event = 'current';
-        }
-        $event = $this->getEvent($event)['id'];
-        $sql = <<<SQL
-    SELECT
-        l.ListRecordID AS record,
-        l.AccountID AS member,
-        COALESCE(l.Note, "") AS note,
-        (
-            SELECT
-                Name
-            FROM
-                ConComPositions
-            WHERE
-                PositionID = l.PositionID
-        ) AS position
-    FROM
-        ConComList AS l
-    WHERE
-        l.EventID = $event
-        AND l.DepartmentID = {$dept['id']}
-SQL;
-        $sth = $this->container->db->prepare($sql);
-        $sth->execute();
-        $data = $sth->fetchAll();
-        $path = $request->getUri()->getBaseUrl();
-        $output = [];
-        foreach ($data as $entry) {
-            $output[] = $this->buildEntry($request, $entry['record'], $dept['id'], $entry['member'], $entry['note'], $entry['position']);
-        }
+        $data = $this->selectStaff(
+            $request->getQueryParam('event'),
+            $params['id']
+        );
         return [
         \App\Controller\BaseController::LIST_TYPE,
-        $output,
-        array('type' => 'staff_list', 'event' => $event)];
+        $data,
+        array('type' => 'staff_list')
+        ];
 
     }
 
