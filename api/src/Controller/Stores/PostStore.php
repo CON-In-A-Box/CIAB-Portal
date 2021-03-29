@@ -1,5 +1,49 @@
 <?php declare(strict_types=1);
 
+/**
+ *  @OA\Post(
+ *      tags={"stores"},
+ *      path="/stores",
+ *      summary="Adds a new store",
+ *      @OA\RequestBody(
+ *          @OA\MediaType(
+ *              mediaType="application/json",
+ *              @OA\Schema(
+ *                  @OA\Property(
+ *                      property="store_slug",
+ *                      type="string",
+ *                      nullable=false
+ *                  ),
+ *                  @OA\Property(
+ *                      property="name",
+ *                      type="string",
+ *                      nullable=false
+ *                  ),
+ *                  @OA\Property(
+ *                      property="description",
+ *                      type="string"
+ *                  )
+ *              )
+ *          )
+ *      ),
+ *      @OA\Response(
+ *          response=201,
+ *          description="OK"
+ *      ),
+ *      @OA\Response(
+ *          response=401,
+ *          ref="#/components/responses/401"
+ *      ),
+ *      @OA\Response(
+ *          response=400,
+ *          description="Invalid parameters",
+ *          @OA\JsonContent(
+ *              ref="#/components/schemas/error"
+ *          )
+ *      ),
+ *      security={{"ciab_auth":{}}}
+ *  )
+ */
 namespace App\Controller\Stores;
 
 use Atlas\Query\Insert;
@@ -20,17 +64,16 @@ class PostStore extends BaseStore
         }
 
         $body = $request->getParsedBody();
-        if (!array_key_exists('Name', $body)) {
-            throw new InvalidParameterException('Required \'Name\' parameter not present');
+        $required_params = ['name', 'store_slug'];
+        foreach ($required_params as $required) {
+            if (!array_key_exists($required, $body) || $body[$required] == null) {
+                throw new InvalidParameterException("Required '$required' parameter not present");
+            }
         }
 
-        $body['StoreID'] = null;
-        $permitted_params = ['StoreID', 'Name', 'StoreSlug', 'Description'];
-        $body = $this->filterBodyParams($permitted_params, $body);
-
         $insert = Insert::new($this->container->db);
-        $insert->into('Stores')->columns($body);
-        
+        $insert->into('Stores')->columns(BaseStore::insertPayloadFromParams($body));
+
         $sth = $insert->perform();
         $id = $insert->getLastInsertId();
 

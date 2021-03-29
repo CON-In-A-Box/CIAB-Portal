@@ -351,7 +351,7 @@ abstract class BaseController
     }
 
 
-    protected function filterBodyParams(array $permitted_keys, array $body): array
+    protected static function filterBodyParams(array $permitted_keys, array $body): array
     {
         $ret = (new ArrayObject($body))->getArrayCopy();
         $diff = array_diff(array_keys($body), $permitted_keys);
