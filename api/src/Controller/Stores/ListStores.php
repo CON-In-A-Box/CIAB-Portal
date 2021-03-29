@@ -1,5 +1,20 @@
 <?php declare(strict_types=1);
 
+/**
+ *  @OA\Get(
+ *      tags={"stores"},
+ *      path="/stores",
+ *      summary="Lists stores",
+ *      @OA\Response(
+ *          response=200,
+ *          description="OK",
+ *          @OA\JsonContent(
+ *              ref="#/components/schemas/store_list"
+ *          )
+ *      )
+ *  )
+ */
+
 namespace App\Controller\Stores;
 
 use Atlas\Query\Select;
@@ -9,12 +24,12 @@ use Slim\Http\Response;
 
 class ListStores extends BaseStore
 {
-    
+
 
     public function buildResource(Request $request, Response $response, $args): array
     {
         $select = Select::new($this->container->db);
-        $stores = $select->columns('StoreID as id', 'Name', 'StoreSlug', 'Description')->from('Stores')->fetchAll();
+        $stores = $select->columns(...self::selectMapping())->from('Stores')->fetchAll();
 
         $output = array();
         $output['type'] = 'stores_list';
@@ -22,7 +37,7 @@ class ListStores extends BaseStore
         \App\Controller\BaseController::LIST_TYPE,
         $stores,
         $output];
-        
+
     }
 
 

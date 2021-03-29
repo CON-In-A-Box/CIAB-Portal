@@ -1,5 +1,54 @@
 <?php declare(strict_types=1);
 
+/**
+ *  @OA\Put(
+ *      tags={"stores"},
+ *      path="/stores/{id}",
+ *      summary="Updates a store",
+ *      @OA\Parameter(
+ *          description="Id of the store",
+ *          in="path",
+ *          name="id",
+ *          required=true,
+ *          @OA\Schema(type="integer")
+ *      ),
+ *      @OA\RequestBody(
+ *          @OA\MediaType(
+ *              mediaType="application/json",
+ *              @OA\Schema(
+ *                  @OA\Property(
+ *                      property="store_slug",
+ *                      type="string"
+ *                  ),
+ *                  @OA\Property(
+ *                      property="name",
+ *                      type="string"
+ *                  ),
+ *                  @OA\Property(
+ *                      property="description",
+ *                      type="string"
+ *                  )
+ *              )
+ *          )
+ *      ),
+ *      @OA\Response(
+ *          response=200,
+ *          description="OK",
+ *          @OA\JsonContent(
+ *              ref="#/components/schemas/store"
+ *          )
+ *      ),
+ *      @OA\Response(
+ *          response=401,
+ *          ref="#/components/responses/401"
+ *      ),
+ *      @OA\Response(
+ *          response=404,
+ *          ref="#/components/responses/store_not_found"
+ *      ),
+ *      security={{"ciab_auth":{}}}
+ *  )
+ */
 namespace App\Controller\Stores;
 
 use Atlas\Query\Select;
@@ -21,24 +70,20 @@ class PutStore extends BaseStore
         if (!$_SESSION['IS_ADMIN']) {
             throw new PermissionDeniedException();
         }
-        
+
         $body = $request->getParsedBody();
-        
-        # Filter for keys we accept. TODO: extract as a base clas function?
-        $permitted_keys = ['Name', 'StoreSlug', 'Description'];
-        $body = $this->filterBodyParams($permitted_keys, $body);
-        
+
         $update = Update::new($this->container->db);
-        $update->table('Stores')->columns($body);
+        $update->table('Stores')->columns(BaseStore::insertPayloadFromParams($body, false));
         $update->whereEquals(['StoreID' => $params['id']]);
         $result = $update->perform();
-        
+
         if ($result->rowCount() == 0) {
             throw new NotFoundException("Store ID ${params['id']} does not exist");
         }
-        
+
         $store = $this->getStore($params, $request, $response, $error);
-        
+
         return [
         BaseController::RESOURCE_TYPE,
         $store
@@ -46,6 +91,6 @@ class PutStore extends BaseStore
 
     }
 
-    
+
     /* end PutStore */
 }

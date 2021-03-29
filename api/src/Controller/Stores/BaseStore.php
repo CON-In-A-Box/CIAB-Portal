@@ -1,5 +1,66 @@
 <?php declare(strict_types=1);
 
+/**
+ *  @OA\Tag(
+ *      name="stores",
+ *      description="Features around stores"
+ *  )
+ *
+ *  @OA\Schema(
+ *      schema="store",
+ *      @OA\Property(
+ *          property="type",
+ *          type="string",
+ *          enum={"store"}
+ *      ),
+ *      @OA\Property(
+ *          property="id",
+ *          type="integer",
+ *          description="store Id"
+ *      ),
+ *      @OA\Property(
+ *          property="store_slug",
+ *          type="string",
+ *          description="short, unique name for store"
+ *      ),
+ *      @OA\Property(
+ *          property="name",
+ *          type="string",
+ *          description="public-facing name for store, e.g. 'Membership'"
+ *      ),
+ *      @OA\Property(
+ *          property="description",
+ *          type="string",
+ *          description="description of store, eventually public facing"
+ *      )
+ *  )
+ *
+ *  @OA\Schema(
+ *      schema="store_list",
+ *      @OA\Property(
+ *          property="type",
+ *          type="string",
+ *          enum={"store_list"}
+ *      ),
+ *      @OA\Property(
+ *          property="data",
+ *          type="array",
+ *          description="List of stores",
+ *          @OA\Items(
+ *              ref="#/components/schemas/store"
+ *          )
+ *      )
+ *  )
+ *
+ *  @OA\Response(
+ *      response="store_not_found",
+ *      description="Store not found in the system.",
+ *      @OA\JsonContent(
+ *          ref="#/components/schemas/error"
+ *      )
+ *  )
+ */
+
 namespace App\Controller\Stores;
 
 use Atlas\Query\Select;
@@ -13,24 +74,75 @@ use App\Controller\NotFoundException;
 
 abstract class BaseStore extends BaseController
 {
-    
+
     /**
      * @var int
      */
     protected $id = 0;
 
+    /* This the various mapping functions here are intended as a
+     * prototype for how we could handle name conversion. It's
+     * the beginning of an idea, not the end of it.
+     */
+    protected static $columnsToParams = [
+    'StoreID' => 'id',
+    'StoreSlug' => 'store_slug',
+    'Name' => 'name',
+    'Description' => 'description'
+    ];
+
+
+    protected static function paramsToColumns(): array
+    {
+        return array_flip(self::$columnsToParams);
+
+    }
+
 
     public function __construct(Container $container)
     {
-        parent::__construct('stores', $container);
-        
+        parent::__construct('store', $container);
+
+    }
+
+
+    public static function insertPayloadFromParams(array $params, $includeId = true): array
+    {
+        $paramsToColumns = self::paramsToColumns();
+        $params = parent::filterBodyParams(array_keys($paramsToColumns), $params);
+
+        $ret = array();
+
+        if ($includeId && !array_key_exists('id', $params)) {
+            $ret[$paramsToColumns['id']] = null;
+        };
+
+        foreach ($params as $key => $val) {
+            $ret[$paramsToColumns[$key]] = $val;
+        }
+
+        return $ret;
+
+    }
+
+
+    protected function selectMapping(): array
+    {
+        $ret = array();
+        foreach (self::$columnsToParams as $key => $value) {
+            $ret[] = "$key as $value";
+        }
+        return $ret;
+
     }
 
 
     protected function getStore(array $params, Request $request, Response $response, &$error)
     {
         $select = Select::new($this->container->db);
-        $store = $select->columns('StoreID as id', 'Name', 'StoreSlug', 'Description')->from('Stores')->whereEquals(['StoreID' => $params['id']])->fetchOne();
+        $select->columns(...$this->selectMapping());
+        $select->from('Stores');
+        $store = $select->whereEquals(['StoreID' => $params['id']])->fetchOne();
 
         if (empty($store)) {
             throw new NotFoundException("Could not find Store ID ${params['id']}");

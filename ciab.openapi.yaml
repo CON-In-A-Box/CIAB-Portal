@@ -1491,6 +1491,135 @@ paths:
       security:
         -
           ciab_auth: []
+  '/stores/{id}':
+    get:
+      tags:
+        - stores
+      summary: 'Gets a store'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Id of the store.'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Store found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/store'
+        '404':
+          $ref: '#/components/responses/store_not_found'
+      security:
+        -
+          ciab_auth: []
+    put:
+      tags:
+        - stores
+      summary: 'Updates a store'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Id of the store'
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                store_slug:
+                  type: string
+                name:
+                  type: string
+                description:
+                  type: string
+              type: object
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/store'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/store_not_found'
+      security:
+        -
+          ciab_auth: []
+    delete:
+      tags:
+        - stores
+      summary: 'Deletes a store'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Id of a store'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: OK
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/store_not_found'
+      security:
+        -
+          ciab_auth: []
+  /stores:
+    get:
+      tags:
+        - stores
+      summary: 'Lists stores'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/store_list'
+    post:
+      tags:
+        - stores
+      summary: 'Adds a new store'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                store_slug:
+                  type: string
+                  nullable: false
+                name:
+                  type: string
+                  nullable: false
+                description:
+                  type: string
+              type: object
+      responses:
+        '201':
+          description: OK
+        '401':
+          $ref: '#/components/responses/401'
+        '400':
+          description: 'Invalid parameters'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+      security:
+        -
+          ciab_auth: []
   '/admin/configuration/{field}':
     get:
       tags:
@@ -2968,6 +3097,37 @@ components:
       allOf:
         -
           $ref: '#/components/schemas/resource_list'
+    store:
+      properties:
+        type:
+          type: string
+          enum:
+            - store
+        id:
+          description: 'store Id'
+          type: integer
+        store_slug:
+          description: 'short, unique name for store'
+          type: string
+        name:
+          description: 'public-facing name for store, e.g. ''Membership'''
+          type: string
+        description:
+          description: 'description of store, eventually public facing'
+          type: string
+      type: object
+    store_list:
+      properties:
+        type:
+          type: string
+          enum:
+            - store_list
+        data:
+          description: 'List of stores'
+          type: array
+          items:
+            $ref: '#/components/schemas/store'
+      type: object
     log_entry:
       properties:
         LogEntryID:
@@ -3266,6 +3426,12 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/error'
+    store_not_found:
+      description: 'Store not found in the system.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/error'
     configuration_not_found:
       description: 'Configuration field not defined.'
       content:
@@ -3350,6 +3516,9 @@ tags:
   -
     name: permissions
     description: 'Querying and checking permissions in the API'
+  -
+    name: stores
+    description: 'Features around stores'
   -
     name: administrative
     description: 'Features around Administration of the site'
