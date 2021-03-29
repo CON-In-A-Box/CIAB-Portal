@@ -34,6 +34,13 @@ jobs:
       
     - name: run tests
       run: ./bin/run_coverage.sh
+      env:
+        DBUSER: ciabuser
+        DBPASS: ciabpass
+        DBNAME: ciabdefault
+        TEST_DBNAME: ciabtest
+        DBROOTPW: lamepasswordislame
+        DB_BACKEND: mysqlpdo.inc
       
     # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
     # Docs: https://getcomposer.org/doc/articles/scripts.md
