@@ -5,9 +5,15 @@
     require_module 'array';
 .*/
 
-require_once(__DIR__."/../backends/email.inc");
 require __DIR__."/../vendor/autoload.php";
 require_once(__DIR__."/locations.inc");
+
+if (is_file($BASEDIR.'/.env')) {
+    $dotenv = Dotenv\Dotenv::create($BASEDIR);
+    $dotenv->load();
+}
+
+require_once(__DIR__."/../backends/email.inc");
 require_once(__DIR__."/database.inc");
 
 // Main setup function
@@ -15,11 +21,6 @@ $MODULENAME  = "Member Portal";
 
 // Set a Date stamp for use anywhere
 $DS             = uniqid('', true);
-
-if (is_file($BASEDIR.'/.env')) {
-    $dotenv = Dotenv\Dotenv::create($BASEDIR);
-    $dotenv->load();
-}
 
 
 function getVersion()
