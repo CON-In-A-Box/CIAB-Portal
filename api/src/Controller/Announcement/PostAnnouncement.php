@@ -3,6 +3,63 @@
     require_module 'standard';
 .*/
 
+/**
+ *  @OA\Post(
+ *      tags={"departments"},
+ *      path="/department/{id}/announcement",
+ *      @OA\Parameter(
+ *          description="The id or name of the department",
+ *          in="path",
+ *          name="id",
+ *          required=true,
+ *          @OA\Schema(
+ *              oneOf = {
+ *                  @OA\Schema(
+ *                      description="Department id",
+ *                      type="integer"
+ *                  ),
+ *                  @OA\Schema(
+ *                      description="Department name",
+ *                      type="string"
+ *                  )
+ *              }
+ *          )
+ *      ),
+ *      summary="Adds a new announcement",
+ *      @OA\RequestBody(
+ *          @OA\MediaType(
+ *              mediaType="multipart/form-data",
+ *              @OA\Schema(
+ *                  @OA\Property(
+ *                      property="Text",
+ *                      type="string"
+ *                  ),
+ *                  @OA\Property(
+ *                      property="Scope",
+ *                      type="integer"
+ *                  ),
+ *              )
+ *          )
+ *      ),
+ *      @OA\Response(
+ *          response=201,
+ *          description="OK"
+ *      ),
+ *      @OA\Response(
+ *          response=401,
+ *          ref="#/components/responses/401"
+ *      ),
+ *      @OA\Response(
+ *          response=404,
+ *          description="Department or Member not found in the system",
+ *          @OA\JsonContent(
+ *              ref="#/components/schemas/error"
+ *          )
+ *      ),
+ *      security={{"ciab_auth":{}}}
+ *  )
+ **/
+
 namespace App\Controller\Announcement;
 
 require_once __DIR__.'/../../../../backends/email.inc';
@@ -10,7 +67,6 @@ require_once __DIR__.'/../../../../backends/email.inc';
 use Slim\Http\Request;
 use Slim\Http\Response;
 use Slim\Views;
-use App\Controller\NotFoundException;
 use App\Controller\InvalidParameterException;
 
 require_once __DIR__.'/../../../../functions/users.inc';
@@ -96,7 +152,7 @@ SQL;
         foreach ($members as $target) {
             $phpView = new Views\PhpRenderer(__DIR__.'/../../Templates', [
                 'site' => $BASEURL,
-                'department' => $department['Name'],
+                'department' => $department['name'],
                 'announcement' => $text,
                 'con' => $CONSITENAME,
                 'url' => $BASEURL.'?Function=configuration',
@@ -114,11 +170,7 @@ SQL;
 
     public function buildResource(Request $request, Response $response, $args): array
     {
-        $department = $this->getDepartment($args['dept']);
-        if ($department === null) {
-            throw new NotFoundException("Department '${args['dept']}' Not Found");
-        }
-
+        $department = $this->getDepartment($args['name']);
         $permissions = ['api.post.announcement.all',
         'api.post.announcement.'.$department['id']];
         $this->checkPermissions($permissions);

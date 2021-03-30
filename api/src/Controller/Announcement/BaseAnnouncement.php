@@ -2,6 +2,96 @@
 /*.
     require_module 'standard';
 .*/
+/**
+ *  @OA\Tag(
+ *      name="announcements",
+ *      description="Features around text announcements to event and event staff"
+ *  )
+ *
+ *  @OA\Schema(
+ *      schema="announcement",
+ *      @OA\Property(
+ *          property="type",
+ *          type="string",
+ *          enum={"announcement"}
+ *      ),
+ *      @OA\Property(
+ *          property="id",
+ *          type="integer",
+ *          description="announcement ID"
+ *      ),
+ *      @OA\Property(
+ *          property="postedOn",
+ *          type="string",
+ *          format="date",
+ *          description="Date the announcement was first posted"
+ *      ),
+ *      @OA\Property(
+ *          property="department",
+ *          description="Department for the announcement",
+ *          oneOf={
+ *              @OA\Schema(
+ *                  ref="#/components/schemas/department"
+ *              ),
+ *              @OA\Schema(
+ *                  type="integer",
+ *                  description="Department Id"
+ *              )
+ *          }
+ *      ),
+ *      @OA\Property(
+ *          property="postedBy",
+ *          description="The member who created the announcement",
+ *          oneOf={
+ *              @OA\Schema(
+ *                  ref="#/components/schemas/member"
+ *              ),
+ *              @OA\Schema(
+ *                  type="integer",
+ *                  description="Member Id"
+ *              )
+ *          }
+ *      ),
+ *      @OA\Property(
+ *          property="scope",
+ *          type="integer",
+ *          description="The scope of the announcement"
+ *      ),
+ *      @OA\Property(
+ *          property="text",
+ *          type="string",
+ *          description="Text of the announcement"
+ *      )
+ *  )
+ *
+ *  @OA\Schema(
+ *      schema="announcement_list",
+ *      allOf = {
+ *          @OA\Schema(ref="#/components/schemas/resource_list")
+ *      },
+ *      @OA\Property(
+ *          property="type",
+ *          type="string",
+ *          enum={"announcement_list"}
+ *      ),
+ *      @OA\Property(
+ *          property="data",
+ *          type="array",
+ *          description="List of announcements",
+ *          @OA\Items(
+ *              ref="#/components/schemas/announcement"
+ *          ),
+ *      )
+ *  )
+ *
+ *   @OA\Response(
+ *      response="announce_not_found",
+ *      description="Announcement not found in the system.",
+ *      @OA\JsonContent(
+ *          ref="#/components/schemas/error"
+ *      )
+ *   )
+ **/
 
 namespace App\Controller\Announcement;
 
@@ -10,6 +100,7 @@ use Slim\Http\Request;
 use Slim\Http\Response;
 use App\Controller\BaseController;
 use App\Controller\NotFoundException;
+use App\Controller\IncludeResource;
 
 abstract class BaseAnnouncement extends BaseController
 {
@@ -19,6 +110,19 @@ abstract class BaseAnnouncement extends BaseController
     {
         parent::__construct('deadline', $container);
         \ciab\RBAC::customizeRBAC(array($this, 'customizeAnnouncementRBAC'));
+
+        $this->includes = [
+        new IncludeResource(
+            '\App\Controller\Member\GetMember',
+            'id',
+            'postedBy'
+        ),
+        new IncludeResource(
+            '\App\Controller\Department\GetDepartment',
+            'name',
+            'department'
+        )
+        ];
 
     }
 
@@ -38,11 +142,10 @@ abstract class BaseAnnouncement extends BaseController
 
     public function buildAnnouncement(Request $request, Response $response, $id, $dept, $posted, $poster, $scope, $text)
     {
-        $this->buildAnnouncementHateoas($request, intval($id), intval($dept));
         $output = array();
         $output['type'] = 'announcement';
         $output['id'] = $id;
-        $output['departmentId'] = $dept;
+        $output['department'] = $dept;
         $output['postedOn'] = $posted;
         $output['postedBy'] = $poster;
         $output['scope'] = $scope;
@@ -81,41 +184,6 @@ abstract class BaseAnnouncement extends BaseController
                 error_log($e);
             }
             $value = $result->fetch();
-        }
-
-    }
-
-
-    protected function buildAnnouncementHateoas(Request $request, int $id, int $dept)
-    {
-        if ($id !== 0) {
-            $path = $request->getUri()->getBaseUrl();
-            $this->addHateoasLink('self', $path.'/announcement/'.strval($id), 'GET');
-            $this->addHateoasLink('modify', $path.'/announcement/'.strval($id), 'POST');
-            $this->addHateoasLink('delete', $path.'/announcement/'.strval($id), 'DELETE');
-            $this->addHateoasLink('department', $path.'/announcement/'.strval($dept), 'GET');
-        }
-
-    }
-
-
-    protected function baseIncludes(Request $request, Response $response, $args, $values, &$data)
-    {
-        if (in_array('departmentId', $values)) {
-            $target = new \App\Controller\Department\GetDepartment($this->container);
-            $newargs = $args;
-            $newargs['name'] = $data['departmentId'];
-            $newdata = $target->buildResource($request, $response, $newargs)[1];
-            $target->processIncludes($request, $response, $args, $values, $newdata);
-            $data['departmentId'] = $target->arrayResponse($request, $response, $newdata);
-        }
-        if (in_array('postedBy', $values)) {
-            $target = new \App\Controller\Member\GetMember($this->container);
-            $newargs = $args;
-            $newargs['id'] = $data['postedBy'];
-            $newdata = $target->buildResource($request, $response, $newargs)[1];
-            $target->processIncludes($request, $response, $args, $values, $newdata);
-            $data['postedBy'] = $target->arrayResponse($request, $response, $newdata);
         }
 
     }

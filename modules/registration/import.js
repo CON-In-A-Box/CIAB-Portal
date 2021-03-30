@@ -21,7 +21,7 @@ function load() {
       if (response instanceof Error) { throw response; }
     });
 
-  apiRequest('GET', 'registration/ticket/list', 'include=event')
+  apiRequest('GET', 'registration/ticket/list', null)
     .then(function(response) {
       var result = JSON.parse(response.responseText);
       var data = null;

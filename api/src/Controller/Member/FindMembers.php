@@ -3,6 +3,43 @@
     require_module 'standard';
 .*/
 
+/**
+ *  @OA\Get(
+ *      tags={"members"},
+ *      path="/member/find",
+ *      summary="Search for a member based on the query",
+ *      @OA\Parameter(
+ *          description="Query string",
+ *          in="query",
+ *          name="q",
+ *          required=true,
+ *          @OA\Schema(type="string")
+ *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/maxResults",
+ *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/pageToken",
+ *      ),
+ *      @OA\Response(
+ *          response=200,
+ *          description="Member(s) found",
+ *          @OA\JsonContent(
+ *           ref="#/components/schemas/member_list"
+ *          ),
+ *      ),
+ *      @OA\Response(
+ *          response=401,
+ *          ref="#/components/responses/401"
+ *      ),
+ *      @OA\Response(
+ *          response=404,
+ *          ref="#/components/responses/member_not_found"
+ *      ),
+ *      security={{"ciab_auth":{}}}
+ *  )
+ **/
+
 namespace App\Controller\Member;
 
 use Slim\Http\Request;
@@ -20,13 +57,13 @@ class FindMembers extends BaseMember
         if ($query !== null) {
             $data = \lookup_users_by_key($query, false, true, false);
             foreach ($data['users'] as $user) {
-                $hateoas[] = [
+                $link[] = [
                 'method' => 'self',
-                'href' => $request->getUri()->getBaseUrl().'/member/'.$user['id'],
+                'href' => $request->getUri()->getBaseUrl().'/member/'.$user['Id'],
                 'request' => 'GET'
                 ];
                 $result[] = ['id' => $user['Id'],
-                'self' => $hateoas];
+                'self' => $link];
             }
         }
 

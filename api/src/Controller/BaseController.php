@@ -2,6 +2,97 @@
 /*.
     require_module 'standard';
 .*/
+/**
+ *  @OA\Schema(
+ *      schema="error",
+ *      @OA\Property(
+ *          property="type",
+ *          type="string",
+ *          enum={"error"}
+ *      ),
+ *      @OA\Property(
+ *          property="code",
+ *          type="integer",
+ *          description="announcement ID"
+ *      ),
+ *      @OA\Property(
+ *          property="status",
+ *          type="string",
+ *          description="Error Status"
+ *      ),
+ *      @OA\Property(
+ *          property="message",
+ *          type="string",
+ *          description="Error Message"
+ *      )
+ *  )
+ *
+ *  @OA\Parameter(
+ *      parameter="maxResults",
+ *      description="Maximum members of the list per page or 'all' (default 100).",
+ *      in="query",
+ *      name="maxResults",
+ *      required=false,
+ *      style="form",
+ *      @OA\Schema(
+ *          oneOf={
+ *              @OA\Schema(
+ *                  type="integer"
+ *              ),
+ *              @OA\Schema(
+ *                  type="string",
+ *                  enum={"all"}
+ *              ),
+ *          }
+ *      )
+ *  )
+ *
+ *  @OA\Parameter(
+ *      parameter="pageToken",
+ *      description="Starting page of results.",
+ *      in="query",
+ *      name="pageToken",
+ *      required=false,
+ *      style="form",
+ *      @OA\Schema(
+ *          type="integer",
+ *      )
+ *  )
+ *
+ *  @OA\Parameter(
+ *      parameter="short_response",
+ *      description="Do not include sub-resource structures, only Ids.",
+ *      in="query",
+ *      name="short_response",
+ *      required=false,
+ *      style="form",
+ *      @OA\Schema(
+ *          type="integer",
+ *          enum={0, 1}
+ *      )
+ *  )
+ *
+ *  @OA\Schema(
+ *      schema="resource_list",
+ *      @OA\Property(
+ *          property="type",
+ *          type="string",
+ *      ),
+ *      @OA\Property(
+ *          property="data",
+ *          type="array",
+ *          description="List of resources",
+ *          @OA\Items(
+ *              @OA\Schema(type="object")
+ *          )
+ *      ),
+ *      @OA\Property(
+ *          property="nextPageToken",
+ *          description="If present, the `pageToken` for the next page of results",
+ *          type="integer",
+ *      )
+ *  )
+ */
 
 namespace App\Controller;
 
@@ -13,7 +104,6 @@ use Slim\Http\Response;
 use Slim\Http\Request;
 
 require_once __DIR__.'/../../../backends/RBAC.inc';
-require_once __DIR__.'/../../../functions/divisional.inc';
 
 class NotFoundException extends Exception
 {
@@ -38,6 +128,56 @@ class ConflictException extends Exception
 
 }
 
+class IncludeResource
+{
+
+    /**
+     * @var string
+     */
+    private $class;
+
+    /**
+     * @var string
+     */
+    private $field;
+
+    /**
+     * @var string
+     */
+    private $parameter;
+
+
+    public function __construct(string $class, string $parameter, string $field)
+    {
+        $this->class = $class;
+        $this->field = $field;
+        $this->parameter = $parameter;
+
+    }
+
+
+    public function process(Request $request, Response $response, Container $container, array $params, array &$data): void
+    {
+        if (in_array($this->field, array_keys($data), true) &&
+            $data[$this->field] !== null) {
+            $newparams = $params;
+            $newparams[$this->parameter] = $data[$this->field];
+            $target = new $this->class($container);
+            try {
+                $newdata = $target->buildResource($request, $response, $newparams)[1];
+            } catch (Exception $e) {
+                return;
+            }
+            $target->processIncludes($request, $response, $params, $newdata);
+            $data[$this->field] = $target->arrayResponse($request, $response, $newdata);
+        }
+
+    }
+
+
+    /* End IncludeResource */
+}
+
 abstract class BaseController
 {
 
@@ -58,20 +198,20 @@ abstract class BaseController
     /**
      * @var array[]
     */
-    protected $hateoas;
+    protected $chain;
 
     /**
      * @var array[]
     */
-    protected $chain;
+    protected $includes;
 
 
     protected function __construct(string $api_type, Container $container)
     {
         $this->api_type = $api_type;
         $this->container = $container;
-        $this->hateoas = [];
         $this->chain = [];
+        $this->includes = [];
 
         if (array_key_exists('Neon', $GLOBALS)) {
             \loadDefinedFields();
@@ -91,12 +231,6 @@ abstract class BaseController
 
 
     abstract public function buildResource(Request $request, Response $response, $args): array;
-
-
-    public function processIncludes(Request $request, Response $response, $args, $includes, &$data)
-    {
-
-    }
 
 
     public function __invoke(Request $request, Response $response, $args)
@@ -158,13 +292,12 @@ abstract class BaseController
     }
 
 
-    public function handleListType(Request $request, Response $response, array $output, array $data, array $args, int $code = 200)
+    public function handleListType(Request $request, Response $response, array $output, array $data, array $params, int $code = 200)
     {
-        $includes = $request->getQueryParam('include', null);
-        if ($includes) {
-            $values = array_map('trim', explode(',', $includes));
+        $short = $request->getQueryParam('short_response', false);
+        if (!boolval($short)) {
             for ($i = 0; $i < count($data); $i++) {
-                $this->processIncludes($request, $response, $args, $values, $data[$i]);
+                $this->processIncludes($request, $response, $params, $data[$i]);
             }
         }
         return $this->listResponse($request, $response, $output, $data, $code);
@@ -172,25 +305,13 @@ abstract class BaseController
     }
 
 
-    public function handleResourceType(Request $request, Response $response, $data, array $args, $code = 200)
+    public function handleResourceType(Request $request, Response $response, $data, array $params, $code = 200)
     {
-        $includes = $request->getQueryParam('include', null);
-        if ($includes) {
-            $values = array_map('trim', explode(',', $includes));
-            $this->processIncludes($request, $response, $args, $values, $data);
+        $short = $request->getQueryParam('short_response', false);
+        if (!boolval($short)) {
+            $this->processIncludes($request, $response, $params, $data);
         }
         return $this->jsonResponse($request, $response, $data, $code);
-
-    }
-
-
-    public function addHateoasLink(string $method, string $href, string $request)
-    {
-        $this->hateoas[] = [
-        'method' => $method,
-        'href' => $href,
-        'request' => $request
-        ];
 
     }
 
@@ -230,7 +351,7 @@ abstract class BaseController
     }
 
 
-    protected function filterBodyParams(array $permitted_keys, array $body): array
+    protected static function filterBodyParams(array $permitted_keys, array $body): array
     {
         $ret = (new ArrayObject($body))->getArrayCopy();
         $diff = array_diff(array_keys($body), $permitted_keys);
@@ -246,7 +367,7 @@ abstract class BaseController
     protected function jsonResponse(Request $request, Response $response, $data, $code = 200): Response
     {
         foreach ($this->chain as $child) {
-            $data = $child->handle($request, $response, $data, $code);
+            $data = $child->handle($request, $response, $data, $code, $this->container);
         }
 
         $parameters = null;
@@ -259,10 +380,6 @@ abstract class BaseController
         }
         if (!empty($data) && !array_key_exists('type', $data)) {
             $data['type'] = $this->api_type;
-        }
-        if (!empty($data) && !empty($this->hateoas) &&
-            !array_key_exists('links', $data)) {
-            $data['links'] = $this->hateoas;
         }
         $output = $this->filterOutput($request, $data, $code);
         return $response->withJson($output, $code, $parameters);
@@ -308,17 +425,13 @@ abstract class BaseController
     }
 
 
-    protected function arrayResponse(Request $request, Response $response, $data, $code = 200): Array
+    public function arrayResponse(Request $request, Response $response, $data, $code = 200): Array
     {
         foreach ($this->chain as $child) {
-            $data = $child->handle($request, $response, $data, $code);
+            $data = $child->handle($request, $response, $data, $code, $this->container);
         }
         if (!empty($data) && !array_key_exists('type', $data)) {
             $data['type'] = $this->api_type;
-        }
-        if (!empty($data) && !empty($this->hateoas) &&
-            !array_key_exists('links', $data)) {
-            $data['links'] = $this->hateoas;
         }
         $output = $this->filterOutput($request, $data, $code);
         return $output;
@@ -328,24 +441,84 @@ abstract class BaseController
 
     public function getDepartment($id)
     {
-        global $Departments;
-
-        $output = array();
-
-        if (array_key_exists($id, $Departments)) {
-            $output = array('Name' => $id);
-            $output = array_merge($output, $Departments[$id]);
-            return $output;
-        } else {
-            foreach ($Departments as $key => $dept) {
-                if ($dept['id'] == $id) {
-                    $output = array('Name' => $key);
-                    $output = array_merge($output, $dept);
-                    return $output;
-                }
-            }
+        $sql = <<<SQL
+            SELECT
+                *,
+                (
+                SELECT
+                    COUNT(DepartmentID)
+                FROM
+                    `Departments` d2
+                WHERE
+                    d2.ParentDepartmentID = d1.DepartmentID AND NOT NAME = 'Historical Placeholder'
+            ) AS childCount,
+            (
+                SELECT
+                    GROUP_CONCAT(Email)
+                FROM
+                    EMails
+                WHERE
+                    DepartmentID = d1.DepartmentID
+            ) AS email
+            FROM
+                Departments d1
+            WHERE
+SQL;
+        if ($id !== null) {
+            $sql .= "(DepartmentID = '$id' OR Name = '$id') AND \n";
         }
-        return null;
+        $sql .= <<<SQL
+                DepartmentID NOT IN (
+                    SELECT
+                        `DepartmentID`
+                    FROM
+                        `Departments`
+                    WHERE
+                        Name = 'Historical Placeholder'
+                )
+                AND ParentDepartmentID NOT IN (
+                    SELECT
+                        `DepartmentID`
+                    FROM
+                        `Departments`
+                    WHERE
+                        Name = 'Historical Placeholder'
+                );
+SQL;
+        $result = $this->container->db->prepare($sql);
+        $result->execute();
+        $data = $result->fetchAll();
+        $final = [];
+        if (empty($data)) {
+            throw new NotFoundException("Department '$id' Not Found");
+        }
+        foreach ($data as $entry) {
+            $output = [];
+            $output['id'] = $entry['DepartmentID'];
+            if ($entry['DepartmentID'] != $entry['ParentDepartmentID']) {
+                $output['parent'] = $entry['ParentDepartmentID'];
+            } else {
+                $output['parent'] = null;
+            }
+            unset($entry['DepartmentID']);
+            unset($entry['ParentDepartmentID']);
+            foreach ($entry as $key => $value) {
+                $key = lcfirst($key);
+                $key = str_replace('ID', '', $key);
+                $output[$key] = $value;
+            }
+            if ($output['email']) {
+                $v = explode(',', $output['email']);
+            } else {
+                $v = [];
+            }
+            $output['email'] = $v;
+            if ($id != null) {
+                return $output;
+            }
+            $final[] = $output;
+        }
+        return $final;
 
     }
 
@@ -471,6 +644,46 @@ abstract class BaseController
         if (!$valid) {
             throw new PermissionDeniedException($message);
         }
+
+    }
+
+
+    public function processIncludes(Request $request, Response $response, $params, &$data)
+    {
+        foreach ($this->includes as $target) {
+            $target->process($request, $response, $this->container, $params, $data);
+        }
+
+    }
+
+
+    protected function processEvent($item)
+    {
+        $newEvent['type'] = 'event';
+        $newEvent['id'] = $item['EventID'];
+        $newEvent['cycle'] = $item['AnnualCycleID'];
+        $newEvent['dateFrom'] = $item['DateFrom'];
+        $newEvent['dateTo'] = $item['DateTo'];
+        $newEvent['name'] = $item['EventName'];
+        return $newEvent;
+
+    }
+
+
+    protected function getEvent(string $id)
+    {
+        if ($id == 'current') {
+            $sth = $this->container->db->prepare("SELECT * FROM `Events` WHERE `DateTo` >= NOW() ORDER BY `DateFrom` ASC LIMIT 1");
+        } else {
+            $sth = $this->container->db->prepare("SELECT * FROM `Events` WHERE `EventID` = '$id'");
+        }
+        $sth->execute();
+        $data = $sth->fetchAll();
+        if (empty($data)) {
+            throw new NotFoundException("Event '$id' Not Found");
+        }
+
+        return $this->processEvent($data[0]);
 
     }
 

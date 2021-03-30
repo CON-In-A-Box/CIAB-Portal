@@ -2,6 +2,67 @@
 /*.
     require_module 'standard';
 .*/
+/**
+ *  @OA\Post(
+ *      tags={"registration"},
+ *      path="/registration/ticket",
+ *      summary="Create a new Ticket",
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/short_response",
+ *      ),
+ *      @OA\RequestBody(
+ *          @OA\MediaType(
+ *              mediaType="multipart/form-data",
+ *              @OA\Schema(
+ *                  @OA\Property(
+ *                      property="member",
+ *                      type="string",
+ *                  ),
+ *                  @OA\Property(
+ *                      property="event",
+ *                      type="string",
+ *                  ),
+ *                  @OA\Property(
+ *                      property="ticketType",
+ *                      type="string",
+ *                  ),
+ *                  @OA\Property(
+ *                      property="dependOn",
+ *                      type="string",
+ *                  ),
+ *                  @OA\Property(
+ *                      property="badgeName",
+ *                      type="string",
+ *                  ),
+ *                  @OA\Property(
+ *                      property="contact",
+ *                      type="string",
+ *                  ),
+ *                  @OA\Property(
+ *                      property="registeredBy",
+ *                      type="string",
+ *                  )
+ *              )
+ *          )
+ *      ),
+ *      @OA\Response(
+ *          response=201,
+ *          description="Ticket created",
+ *          @OA\JsonContent(
+ *           ref="#/components/schemas/ticket"
+ *          ),
+ *      ),
+ *      @OA\Response(
+ *          response=401,
+ *          ref="#/components/responses/401"
+ *      ),
+ *      @OA\Response(
+ *          response=404,
+ *          ref="#/components/responses/event_not_found"
+ *      ),
+ *      security={{"ciab_auth":{}}}
+ *  )
+ **/
 
 namespace App\Modules\registration\Controller\Ticket;
 
@@ -11,7 +72,7 @@ use Slim\Http\Response;
 use App\Controller\InvalidParameterException;
 use App\Controller\ConflictException;
 
-class PostTicket extends BaseTicket
+class PostTicket extends BaseTicketInclude
 {
 
 
@@ -26,20 +87,28 @@ class PostTicket extends BaseTicket
         } else {
             throw new InvalidParameterException('Required \'member\' parameter not present');
         }
+        $data = $this->findMember($request, $response, $body, 'member');
+        $member = $data['id'];
+
+        if (array_key_exists('event', $body)) {
+            $event = $body['event'];
+        } else {
+            $event = 'current';
+        }
+        $event = $this->getEvent($event)['id'];
+
+
         if (array_key_exists('ticketType', $body)) {
             $type = $body['ticketType'];
         } else {
             throw new InvalidParameterException('Required \'ticketType\' parameter not present');
         }
-
-        if (array_key_exists('event', $body)) {
-            $event = $body['event'];
-        } else {
-            $event = \current_eventID();
-        }
+        $target = new GetTicketTypes($this->container);
+        $target->buildResource($request, $response, ['id' => $type])[1];
 
         if (array_key_exists('dependOn', $body)) {
-            $depend = $body['dependOn'];
+            $data = $this->findMember($request, $response, $body, 'dependOn');
+            $depend = $data['id'];
         } else {
             $depend = 'NULL';
         }
@@ -57,9 +126,10 @@ class PostTicket extends BaseTicket
         }
 
         if (array_key_exists('registeredBy', $body)) {
-            $regBy = $body['registeredBy'];
+            $data = $this->findMember($request, $response, $body, 'registeredBy');
+            $regBy = $data['id'];
         } else {
-            $regBy = $body['member'];
+            $regBy = $member;
         }
 
         $sql = "INSERT INTO Registrations(AccountId, BadgeDependentOnID, BadgeName, BadgeTypeID, EmergencyContact, EventID, RegisteredByID, RegistrationDate) VALUES ($member, $depend, $badgeName, $type, $contact, $event, $regBy, NOW())";
@@ -76,13 +146,6 @@ class PostTicket extends BaseTicket
         $target->arrayResponse($request, $response, $data),
         201
         ];
-
-    }
-
-
-    public function processIncludes(Request $request, Response $response, $args, $values, &$data)
-    {
-        $this->ticketIncludes($request, $response, $args, $values, $data);
 
     }
 

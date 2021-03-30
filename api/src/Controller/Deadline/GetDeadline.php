@@ -2,15 +2,59 @@
 /*.
     require_module 'standard';
 .*/
+/**
+ *  @OA\Get(
+ *      tags={"deadlines"},
+ *      path="/deadline/{id}",
+ *      summary="Gets a deadline",
+ *      @OA\Parameter(
+ *          description="Id of the deadline",
+ *          in="path",
+ *          name="id",
+ *          required=true,
+ *          @OA\Schema(type="integer")
+ *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/short_response",
+ *      ),
+ *      @OA\Response(
+ *          response=200,
+ *          description="Deadline found",
+ *          @OA\JsonContent(
+ *           ref="#/components/schemas/deadline"
+ *          ),
+ *      ),
+ *      @OA\Response(
+ *          response=401,
+ *          ref="#/components/responses/401"
+ *      ),
+ *      @OA\Response(
+ *          response=404,
+ *          ref="#/components/responses/deadline_not_found"
+ *      ),
+ *      security={{"ciab_auth":{}}}
+ *  )
+ **/
 
 namespace App\Controller\Deadline;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
 use App\Controller\NotFoundException;
+use \App\Controller\IncludeResource;
 
 class GetDeadline extends BaseDeadline
 {
+
+
+    public function __construct($container)
+    {
+        parent::__construct($container);
+        $this->includes = [
+        new IncludeResource('\App\Controller\Department\GetDepartment', 'name', 'department')
+        ];
+
+    }
 
 
     public function buildResource(Request $request, Response $response, $args): array
@@ -34,20 +78,6 @@ class GetDeadline extends BaseDeadline
             $deadlines[0]['Deadline'],
             $deadlines[0]['Note']
         )];
-
-    }
-
-
-    public function processIncludes(Request $request, Response $response, $args, $values, &$data)
-    {
-        if (in_array('departmentId', $values)) {
-            $target = new \App\Controller\Department\GetDepartment($this->container);
-            $newargs = $args;
-            $newargs['name'] = $data['departmentId'];
-            $newdata = $target->buildResource($request, $response, $newargs)[1];
-            $target->processIncludes($request, $response, $args, $values, $newdata);
-            $data['departmentId'] = $target->arrayResponse($request, $response, $newdata);
-        }
 
     }
 

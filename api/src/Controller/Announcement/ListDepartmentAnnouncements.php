@@ -3,11 +3,61 @@
     require_module 'standard';
 .*/
 
+/**
+ *  @OA\Get(
+ *      tags={"departments"},
+ *      path="/department/{id}/announcements",
+ *      summary="Lists announcements for a given department",
+ *      @OA\Parameter(
+ *          description="The id or name of the department",
+ *          in="path",
+ *          name="id",
+ *          required=true,
+ *          @OA\Schema(
+ *              oneOf = {
+ *                  @OA\Schema(
+ *                      description="Department id",
+ *                      type="integer"
+ *                  ),
+ *                  @OA\Schema(
+ *                      description="Department name",
+ *                      type="string"
+ *                  )
+ *              }
+ *          )
+ *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/short_response",
+ *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/maxResults",
+ *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/pageToken",
+ *      ),
+ *      @OA\Response(
+ *          response=200,
+ *          description="OK",
+ *          @OA\JsonContent(
+ *              ref="#/components/schemas/announcement_list"
+ *          )
+ *      ),
+ *      @OA\Response(
+ *          response=401,
+ *          ref="#/components/responses/401"
+ *      ),
+ *      @OA\Response(
+ *          response=404,
+ *          ref="#/components/responses/department_not_found"
+ *      ),
+ *      security={{"ciab_auth":{}}}
+ *  )
+ **/
+
 namespace App\Controller\Announcement;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
-use App\Controller\NotFoundException;
 
 class ListDepartmentAnnouncements extends BaseAnnouncement
 {
@@ -16,9 +66,6 @@ class ListDepartmentAnnouncements extends BaseAnnouncement
     public function buildResource(Request $request, Response $response, $args): array
     {
         $department = $this->getDepartment($args['name']);
-        if ($department === null) {
-            throw new NotFoundException("Department '${args['name']}' Not Found");
-        }
         $sth = $this->container->db->prepare(
             "SELECT * FROM `Announcements` WHERE DepartmentID = '".$department['id']."' ORDER BY `PostedOn` ASC"
         );
@@ -45,13 +92,6 @@ class ListDepartmentAnnouncements extends BaseAnnouncement
         \App\Controller\BaseController::LIST_TYPE,
         $data,
         $output];
-
-    }
-
-
-    public function processIncludes(Request $request, Response $response, $args, $values, &$data)
-    {
-        $this->baseIncludes($request, $response, $args, $values, $data);
 
     }
 

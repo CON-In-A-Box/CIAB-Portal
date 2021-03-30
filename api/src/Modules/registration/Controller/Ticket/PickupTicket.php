@@ -3,6 +3,44 @@
     require_module 'standard';
 .*/
 
+/**
+ *  @OA\Put(
+ *      tags={"registration"},
+ *      path="/registration/ticket/{id}/pickup",
+ *      summary="Report the badge for the ticket as picked up.",
+ *      @OA\Parameter(
+ *          description="Id of the ticket",
+ *          in="path",
+ *          name="id",
+ *          required=true,
+ *          @OA\Schema(type="integer")
+ *      ),
+ *      @OA\Response(
+ *          response=200,
+ *          description="OK",
+ *          @OA\JsonContent(
+ *              ref="#/components/schemas/ticket"
+ *          )
+ *      ),
+ *      @OA\Response(
+ *          response=401,
+ *          ref="#/components/responses/401"
+ *      ),
+ *      @OA\Response(
+ *          response=409,
+ *          description="Update Conflict",
+ *          @OA\JsonContent(
+ *              ref="#/components/schemas/error"
+ *          )
+ *      ),
+ *      @OA\Response(
+ *          response=404,
+ *          ref="#/components/responses/ticket_not_found"
+ *      ),
+ *      security={{"ciab_auth":{}}}
+ *  )
+ **/
+
 namespace App\Modules\registration\Controller\Ticket;
 
 use Slim\Http\Request;

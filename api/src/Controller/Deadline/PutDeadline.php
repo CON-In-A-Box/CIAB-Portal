@@ -2,6 +2,51 @@
 /*.
     require_module 'standard';
 .*/
+/**
+ *  @OA\Put(
+ *      tags={"deadlines"},
+ *      path="/deadline/{id}",
+ *      summary="Updates a deadline",
+ *      @OA\Parameter(
+ *          description="Id of the deadline",
+ *          in="path",
+ *          name="id",
+ *          required=true,
+ *          @OA\Schema(type="integer")
+ *      ),
+ *      @OA\RequestBody(
+ *          @OA\MediaType(
+ *              mediaType="multipart/form-data",
+ *              @OA\Schema(
+ *                  @OA\Property(
+ *                      property="Deadline",
+ *                      type="string",
+ *                      format="date",
+ *                      nullable=true
+ *                  ),
+ *                  @OA\Property(
+ *                      property="Note",
+ *                      type="string",
+ *                      nullable=true
+ *                  )
+ *              )
+ *          )
+ *      ),
+ *      @OA\Response(
+ *          response=200,
+ *          description="OK"
+ *      ),
+ *      @OA\Response(
+ *          response=401,
+ *          ref="#/components/responses/401"
+ *      ),
+ *      @OA\Response(
+ *          response=404,
+ *          ref="#/components/responses/deadline_not_found"
+ *      ),
+ *      security={{"ciab_auth":{}}}
+ *  )
+ **/
 
 namespace App\Controller\Deadline;
 
@@ -36,9 +81,6 @@ class PutDeadline extends BaseDeadline
 
         if (array_key_exists('Department', $body)) {
             $department = $this->getDepartment($body['Department']);
-            if ($department === null) {
-                throw new NotFoundException("Department '${body['Department']}' Not Found");
-            }
             $target['DepartmentID'] = $department['id'];
         }
 

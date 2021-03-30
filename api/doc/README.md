@@ -98,37 +98,11 @@ Where applicable, the code of an error will match known HTTP error codes.
 | 409 | Conflict | At attempt was made to edit a resource which has changed beneath the API in a way where merging could not be handled gracefully.|
 | 500 | Internal Failure | Something in the internal processing of the API request failed in an unexpected way.|
 
-## HateOAS
-Every API call will return an array of HATEOAS ("Hypermedia as the Engine of Application State") links. These links remove any need for you to build or hard code any logic to create URLs into your application. The API will provide the HATEOAS links for each resource and transition the resource can accommodate.
-
-A HATEOAS link object is as follows:
-
-```
-{
-	"method":{string},
-	"href":{string},
-	"request":{string}
-}
-```
-HATEOS objects have the following properties:
-
-|Object Property|Value|Description
-|---|---|---|
-|method|string|The method name|
-|href|string|The full URL for this method|
-|request|string|The HTTP request used {GET, PUT, POST, DELETE}
-
-HATEOAS links will include a link for each request in the object that can operate on a resource. If there are HATEOAS links beyond those that would describe the set of requests available on that resource, there will be a table like the one shown below describing the additional HATEOAS links the object will return:
-
-HATEOAS Method|Request|Description
-|---|---|---|
-|self|GET|Get information about the object|
-
 ## Modules
 A number of modules exist in the API. These modules, while enabled by default, can be explicitly disabled. When enabled a module may not only have additional resources to be used but can add additional properties and/or methods to the base resources.
 
- * [Concom](Concom.md)
  * [Registration](Registration.md)
+ * [Staff](Staff.md)
 
 <a name="resources"></a>
 ## Resources

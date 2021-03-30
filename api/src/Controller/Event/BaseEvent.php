@@ -2,6 +2,84 @@
 /*.
     require_module 'standard';
 .*/
+/**
+ *  @OA\Tag(
+ *      name="events",
+ *      description="Features around events"
+ *  )
+ *
+ *  @OA\Schema(
+ *      schema="event",
+ *      @OA\Property(
+ *          property="type",
+ *          type="string",
+ *          enum={"event"}
+ *      ),
+ *      @OA\Property(
+ *          property="id",
+ *          type="integer",
+ *          description="event Id"
+ *      ),
+ *      @OA\Property(
+ *          property="cycle",
+ *          description="Annual cycle this event is part of",
+ *          oneOf={
+ *              @OA\Schema(
+ *                  ref="#/components/schemas/cycle"
+ *              ),
+ *              @OA\Schema(
+ *                  type="integer",
+ *                  description="Cycle Id"
+ *              )
+ *          }
+ *      ),
+ *      @OA\Property(
+ *          property="dateFrom",
+ *          type="string",
+ *          format="date",
+ *          description="Date the event starts"
+ *      ),
+ *      @OA\Property(
+ *          property="dateTo",
+ *          type="string",
+ *          format="date",
+ *          description="Date the event ends"
+ *      ),
+ *      @OA\Property(
+ *          property="name",
+ *          type="string",
+ *          description="Name of the event"
+ *      )
+ *  )
+ *
+ *  @OA\Schema(
+ *      schema="event_list",
+ *      allOf = {
+ *          @OA\Schema(ref="#/components/schemas/resource_list")
+ *      },
+ *      @OA\Property(
+ *          property="type",
+ *          type="string",
+ *          enum={"event_list"}
+ *      ),
+ *      @OA\Property(
+ *          property="data",
+ *          type="array",
+ *          description="List of events",
+ *          @OA\Items(
+ *              ref="#/components/schemas/event"
+ *          ),
+ *      )
+ *  )
+ *
+ *   @OA\Response(
+ *      response="event_not_found",
+ *      description="Event not found in the system.",
+ *      @OA\JsonContent(
+ *          ref="#/components/schemas/error"
+ *      )
+ *   )
+ **/
 
 namespace App\Controller\Event;
 
@@ -9,6 +87,7 @@ use Slim\Container;
 use Slim\Http\Request;
 use Slim\Http\Response;
 use App\Controller\BaseController;
+use App\Controller\IncludeResource;
 
 abstract class BaseEvent extends BaseController
 {
@@ -22,43 +101,9 @@ abstract class BaseEvent extends BaseController
     public function __construct(Container $container)
     {
         parent::__construct('event', $container);
-
-    }
-
-
-    protected function buildEventHateoas(Request $request)
-    {
-        if ($this->id !== 0) {
-            $path = $request->getUri()->getBaseUrl();
-            $this->addHateoasLink('self', $path.'/event/'.strval($this->id), 'GET');
-        }
-
-    }
-
-
-    protected function processEvent($item)
-    {
-        $newEvent['type'] = 'event';
-        $newEvent['id'] = $item['EventID'];
-        $newEvent['cycle'] = $item['AnnualCycleID'];
-        $newEvent['dateFrom'] = $item['DateFrom'];
-        $newEvent['dateTo'] = $item['DateTo'];
-        $newEvent['name'] = $item['EventName'];
-        return $newEvent;
-
-    }
-
-
-    public function processIncludes(Request $request, Response $response, $args, $values, &$data)
-    {
-        if (in_array('cycle', $values)) {
-            $target = new \App\Controller\Cycle\GetCycle($this->container);
-            $newargs = $args;
-            $newargs['id'] = $data['cycle'];
-            $newdata = $target->buildResource($request, $response, $newargs)[1];
-            $target->processIncludes($request, $response, $args, $values, $newdata);
-            $data['cycle'] = $target->arrayResponse($request, $response, $newdata);
-        }
+        $this->includes = [
+        new IncludeResource('\App\Controller\Cycle\GetCycle', 'id', 'cycle')
+        ];
 
     }
 

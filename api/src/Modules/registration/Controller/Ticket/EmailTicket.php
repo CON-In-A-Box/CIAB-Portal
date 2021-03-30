@@ -2,6 +2,40 @@
 /*.
     require_module 'standard';
 .*/
+/**
+ *  @OA\Put(
+ *      tags={"registration"},
+ *      path="/registration/ticket/{id}/email",
+ *      summary="Email the boarding pass to the ticket holder.",
+ *      @OA\Parameter(
+ *          description="Id of the ticket",
+ *          in="path",
+ *          name="id",
+ *          required=true,
+ *          @OA\Schema(type="integer")
+ *      ),
+ *      @OA\Response(
+ *          response=200,
+ *          description="OK"
+ *      ),
+ *      @OA\Response(
+ *          response=401,
+ *          ref="#/components/responses/401"
+ *      ),
+ *      @OA\Response(
+ *          response=409,
+ *          description="Update Conflict",
+ *          @OA\JsonContent(
+ *              ref="#/components/schemas/error"
+ *          )
+ *      ),
+ *      @OA\Response(
+ *          response=404,
+ *          ref="#/components/responses/ticket_not_found"
+ *      ),
+ *      security={{"ciab_auth":{}}}
+ *  )
+ **/
 
 namespace App\Modules\registration\Controller\Ticket;
 
@@ -41,7 +75,7 @@ class EmailTicket extends BaseTicket
         if ($newdata['type'] == 'error') {
             return $output;
         }
-        $target->processIncludes($request, $response, $params, ['member', 'event', 'ticketType'], $newdata);
+        $target->processIncludes($request, $response, $params, $newdata);
         $data = $target->arrayResponse($request, $response, $newdata);
 
         $checkin = $request->getUri()->getBaseUrl();

@@ -3,14 +3,75 @@
     require_module 'standard';
 .*/
 
+/**
+ *  @OA\Put(
+ *      tags={"registration"},
+ *      path="/registration/ticket/{id}",
+ *      summary="Updates ticket information.",
+ *      @OA\Parameter(
+ *          description="Id of the ticket",
+ *          in="path",
+ *          name="id",
+ *          required=true,
+ *          @OA\Schema(type="integer")
+ *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/short_response",
+ *      ),
+ *      @OA\RequestBody(
+ *          @OA\MediaType(
+ *              mediaType="multipart/form-data",
+ *              @OA\Schema(
+ *                  @OA\Property(
+ *                      property="badgeName",
+ *                      type="string",
+ *                  ),
+ *                  @OA\Property(
+ *                      property="contact",
+ *                      type="string",
+ *                  ),
+ *                  @OA\Property(
+ *                      property="note",
+ *                      type="string",
+ *                  )
+ *              )
+ *          )
+ *      ),
+ *      @OA\Response(
+ *          response=200,
+ *          description="OK",
+ *          @OA\JsonContent(
+ *              ref="#/components/schemas/ticket"
+ *          )
+ *      ),
+ *      @OA\Response(
+ *          response=401,
+ *          ref="#/components/responses/401"
+ *      ),
+ *      @OA\Response(
+ *          response=409,
+ *          description="Update Conflict",
+ *          @OA\JsonContent(
+ *              ref="#/components/schemas/error"
+ *          )
+ *      ),
+ *      @OA\Response(
+ *          response=404,
+ *          ref="#/components/responses/ticket_not_found"
+ *      ),
+ *      security={{"ciab_auth":{}}}
+ *  )
+ **/
+
 namespace App\Modules\registration\Controller\Ticket;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
 
 use App\Controller\ConflictException;
+use App\Controller\InvalidParameterException;
 
-class PutTicket extends BaseTicket
+class PutTicket extends BaseTicketInclude
 {
 
 
@@ -18,11 +79,11 @@ class PutTicket extends BaseTicket
     {
         $id = $params['id'];
         $aid = $this->getAccount($id, $request, $response, 'api.registration.ticket.put');
-        if (is_array($aid)) {
-            return $aid;
-        }
 
         $body = $request->getParsedBody();
+        if (empty($body)) {
+            throw new InvalidParameterException('Body not present');
+        }
         $set = [];
 
         if (array_key_exists('badgeName', $body)) {
@@ -37,9 +98,7 @@ class PutTicket extends BaseTicket
         }
 
         if (empty($set)) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, 'Unprocessable Entity', 'Understood Parameter missing.', 422)];
+            throw new InvalidParameterException('Understood Parameter missing.');
         }
 
         $setStr = implode(', ', $set);
@@ -60,13 +119,6 @@ class PutTicket extends BaseTicket
         \App\Controller\BaseController::RESOURCE_TYPE,
         $data
         ];
-
-    }
-
-
-    public function processIncludes(Request $request, Response $response, $args, $values, &$data)
-    {
-        $this->ticketIncludes($request, $response, $args, $values, $data);
 
     }
 

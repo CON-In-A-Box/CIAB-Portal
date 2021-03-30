@@ -3,6 +3,57 @@
     require_module 'standard';
 .*/
 
+/**
+ *  @OA\Get(
+ *      tags={"events"},
+ *      path="/event",
+ *      summary="Lists events",
+ *      @OA\Parameter(
+ *          description="First date to search from.",
+ *          in="query",
+ *          name="begin",
+ *          required=false,
+ *          style="form",
+ *          @OA\Schema(
+ *              type="string",
+ *              format="date"
+ *          )
+ *      ),
+ *      @OA\Parameter(
+ *          description="Last date to search until.",
+ *          in="query",
+ *          name="end",
+ *          required=false,
+ *          style="form",
+ *          @OA\Schema(
+ *              type="string",
+ *              format="date"
+ *          )
+ *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/short_response",
+ *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/maxResults",
+ *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/pageToken",
+ *      ),
+ *      @OA\Response(
+ *          response=200,
+ *          description="OK",
+ *          @OA\JsonContent(
+ *              ref="#/components/schemas/event_list"
+ *          )
+ *      ),
+ *      @OA\Response(
+ *          response=401,
+ *          ref="#/components/responses/401"
+ *      ),
+ *      security={{"ciab_auth":{}}}
+ *  )
+ **/
+
 namespace App\Controller\Event;
 
 use Slim\Http\Request;

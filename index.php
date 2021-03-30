@@ -8,7 +8,14 @@
 // Start the session so we are ready to go no matter what we do!
 session_start();
 
+$DISABLEDMODULES = array(); // TODO: Deglobalize
+
 require_once __DIR__.'/functions/locations.inc';
+
+// Load in basic functions
+require_once __DIR__.'/functions/functions.inc';
+require_once __DIR__.'/console/console.inc';
+
 
 require __DIR__."/vendor/autoload.php";
 if (is_file(__DIR__.'/.env')) {
@@ -48,9 +55,7 @@ try {
     }
 }
 
-// Load in basic functions
-require_once __DIR__.'/functions/functions.inc';
-require_once __DIR__.'/console/console.inc';
+initializeApplication();
 
 // Divert to public page if we are not under function control
 if (empty($_REQUEST['Function'])) {

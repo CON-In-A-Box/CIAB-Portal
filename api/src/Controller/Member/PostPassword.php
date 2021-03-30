@@ -3,6 +3,40 @@
     require_module 'standard';
 .*/
 
+/**
+ *  @OA\Post(
+ *      tags={"members"},
+ *      path="/member/{email}/password",
+ *      summary="Requests a password reset for a member",
+ *      @OA\Parameter(
+ *          description="The id or login email for the member",
+ *          in="path",
+ *          name="email",
+ *          required=true,
+ *          @OA\Schema(
+ *              oneOf = {
+ *                  @OA\Schema(
+ *                      description="Member ID",
+ *                      type="integer"
+ *                  ),
+ *                  @OA\Schema(
+ *                      description="Member login email",
+ *                      type="string"
+ *                  )
+ *              }
+ *          )
+ *      ),
+ *      @OA\Response(
+ *          response=201,
+ *          description="OK"
+ *      ),
+ *      @OA\Response(
+ *          response=404,
+ *          ref="#/components/responses/member_not_found"
+ *      )
+ *  )
+ **/
+
 namespace App\Controller\Member;
 
 require_once __DIR__.'/../../../../backends/email.inc';

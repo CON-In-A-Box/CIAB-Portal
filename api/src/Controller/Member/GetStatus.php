@@ -3,12 +3,50 @@
     require_module 'standard';
 .*/
 
+/**
+ *  @OA\Get(
+ *      tags={"members"},
+ *      path="/member/{name}/status",
+ *      summary="Gets the status of an member account.",
+ *      @OA\Parameter(
+ *          description="login for the account",
+ *          in="path",
+ *          name="name",
+ *          required=true,
+ *          @OA\Schema(type="string")
+ *      ),
+ *      @OA\Response(
+ *          response=200,
+ *          description="Member status found",
+ *          @OA\JsonContent(
+ *              @OA\Property(
+ *                  property="type",
+ *                  type="string",
+ *                  enum={"member_status"}
+ *              ),
+ *              @OA\Property(
+ *                  property="status",
+ *                  type="integer",
+ *                  description="Member account status code",
+ *                  enum={0,1,2,3}
+ *              )
+ *          )
+ *      ),
+ *      @OA\Response(
+ *          response=404,
+ *          ref="#/components/responses/member_not_found"
+ *      )
+ *  )
+ **/
+
 namespace App\Controller\Member;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
 
 use App\Controller\NotFoundException;
+
+require_once(__DIR__.'/../../../../functions/authentication.inc');
 
 class GetStatus extends BaseMember
 {
@@ -62,12 +100,12 @@ SQL;
             throw new NotFoundException($error);
         }
         $data = $data['users'][0];
-        if (!array_key_exists('id', $data)) {
+        if (!array_key_exists('Id', $data)) {
             $error = 'User ID not found';
             throw new NotFoundException($error);
         }
         $valid = array('type' => 'member_status',
-                       'status' => $this->verifyAccount($data['id']));
+                       'status' => $this->verifyAccount($data['Id']));
         return [
         \App\Controller\BaseController::RESOURCE_TYPE,
         $valid];

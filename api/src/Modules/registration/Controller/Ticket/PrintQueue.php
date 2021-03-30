@@ -16,8 +16,15 @@ class PrintQueue extends BaseTicket
     {
         $sql = "SELECT `RegistrationID` FROM `Registrations` WHERE `PrintRequested` IS NOT NULL";
         if (array_key_exists('event', $params)) {
-            $sql .= ' AND `EventID` = '.$params['event'];
+            $event = $params['event'];
+        } else {
+            $event = 'current';
         }
+        $event = $this->getEvent($event)['id'];
+        $sql .= ' AND `EventID` = '.$event;
+
+        $target = new \App\Controller\Event\GetEvent($this->container);
+        $target->buildResource($request, $response, ['id' => $event])[1];
 
         $sth = $this->container->db->prepare($sql);
         $sth->execute();

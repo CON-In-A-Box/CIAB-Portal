@@ -1,19 +1,20 @@
 ##### [Return to Top](README.md)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Return to Resource List](README.md#resources)
 ---
-# Concom Module
+# Staff Module
 
-The Concom module includes the following methods.
+The Staff module includes the following methods.
 
 ## Common Resources
 
-<a name="concom_list"></a>
-#### concom\_entry object resource
+<a name="staff_list"></a>
+#### staff\_entry object resource
 
-A concom\_entry object resource is used when listing concom members. Use a member get method to retrieve the full member data.
+A staff\_entry object resource is used when listing staff members. Use a member get method to retrieve the full member data.
 
 ```
 {
-	"type":"concom_entry",
+	"type":"staff_entry",
+	"id": {integer},
 	"memberId":{integer},
 	"note":{string},
 	"position":{string},
@@ -22,14 +23,15 @@ A concom\_entry object resource is used when listing concom members. Use a membe
 }
 ```
 
-concom\_entry object resources have the following available properties:
+staff\_entry object resources have the following available properties:
 
 |Object Property|Value|Description|Includable|
 |---|---|---|---|
 |note|string|Note for the entry|-|
+|id|integer|Resource ID for this record|-|
 |memberId|integer|Member ID for this entry|**yes** `member`|
-|position|string|Concom position|-|
-|type|string|Always `concom_entry`|-|
+|position|string|Staff position|-|
+|type|string|Always `staff_entry`|-|
 |departmentId|integer|`id` of the department for this position|**yes** `department`|
 |links[]|[list]|HATEOAS links for the resource|-|
 
@@ -41,34 +43,34 @@ The following HATEOAS methods are available as well:
 |department|GET|Get the department resource for the department.|
 
 
-#### concom\_list object resource
+#### staff\_list object resource
 
-A concom\_list object resource is used when listing concom members.
+A staff\_list object resource is used when listing staff members.
 
 ```
 {
-	"type": "concom_list",
+	"type": "staff_list",
 	"event": {integer},
 	"data": {list}
 }
 ```
 
-concom\_list object resources have the following available properties:
+staff\_list object resources have the following available properties:
 
 |Object Property|Value|Description|
 |---|---|---|
-|type|string|Always "concom\_list"|
+|type|string|Always "staff\_list"|
 |event|integer|The `id` of the event being listed|
-|data[]|[concom\_entry]|A matching list of members in the concom.|
+|data[]|[staff\_entry]|A matching list of members in the staff.|
 
 
 <a name="department"></a>
 ## department
-Get a list of concom for a given department.
+Get a list of staff for a given department.
 
 ### department Request
 
-```GET /department/{identifier}/concom ```
+```GET /department/{identifier}/staff ```
 
 ### department Parameters
 
@@ -85,24 +87,25 @@ The following department parameters are available:
 Do not supply a request body.
 
 ### department Response
-A [concom\_list](#concom_list) object resource.
+A [staff\_list](#staff_list) object resource.
 
 ### department Code Samples
 Request Sample
 
 ```
 curl -X GET -H 'Authorization: Bearer e0438d90599b1c4762d12fd03db6311c9ca46729' \
-    http://localhost/api/department/Art%20Show/concom?pretty=true
+    http://localhost/api/department/Art%20Show/staff?pretty=true
 ```
 Response Sample
 
 ```
 {
-    "type": "concom_list",
+    "type": "staff_list",
     "event": "1",
     "data": [
         {
-            "type": "concom_entry",
+            "type": "staff_entry",
+            "id": "45",
             "memberId": "1405",
             "note": "",
             "position": "Head",
@@ -121,7 +124,8 @@ Response Sample
             ]
         },
         {
-            "type": "concom_entry",
+            "type": "staff_entry",
+            "id": "46",
             "memberId": "1458",
             "note": "",
             "position": "Sub-Head",
@@ -140,7 +144,8 @@ Response Sample
             ]
         },
         {
-            "type": "concom_entry",
+            "type": "staff_entry",
+            "id": "47",
             "memberId": "1228",
             "note": "",
             "position": "Specialist",
@@ -163,16 +168,16 @@ Response Sample
 ```
 
 <a name="list"></a>
-## concom list
-Get a list of concom for an event.
+## staff list
+Get a list of staff for an event.
 
-### concom list Request
+### staff list Request
 
-```GET /department/concom/```
+```GET /department/staff/```
 
-### concom list Parameters
+### staff list Parameters
 
-The following concom list parameters are available:
+The following staff list parameters are available:
 
 |Parameter|Meaning|Notes|
 |---|---|---|
@@ -180,29 +185,30 @@ The following concom list parameters are available:
 |maxResults|Maximum results in the list|Defaults to 100. The token "all" specifies the full remaining list.|
 
 
-### concom list Request Body
+### staff list Request Body
 
 Do not supply a request body.
 
-### concom list Response
-A [concom\_list](#concom_list) object resource.
+### staff list Response
+A [staff\_list](#staff_list) object resource.
 
-### concom list Code Samples
+### staff list Code Samples
 Request Sample
 
 ```
 curl -X GET -H 'Authorization: Bearer e0438d90599b1c4762d12fd03db6311c9ca46729' \
-    http://localhost/api/department/concom/?pretty=true
+    http://localhost/api/department/staff/?pretty=true
 ```
 Response Sample
 
 ```
 {
-    "type": "concom_list",
+    "type": "staff_list",
     "event": "1",
     "data": [
         {
-            "type": "concom_entry",
+            "type": "staff_entry",
+            "id": "45",
             "memberId": "1000",
             "note": "",
             "position": "Head",
@@ -221,7 +227,8 @@ Response Sample
             ]
         },
         {
-            "type": "concom_entry",
+            "type": "staff_entry",
+            "id": "46",
             "memberId": "1000",
             "note": "",
             "position": "Head",
@@ -246,11 +253,11 @@ Response Sample
 
 <a name="member"></a>
 ## member
-Get a list of concom for an member.
+Get a list of staff for an member.
 
 ### member list Request
 
-```GET /member/{id}/concom```
+```GET /member/{id}/staff```
 
 ### member list Parameters
 
@@ -268,24 +275,25 @@ The following member parameters are available:
 Do not supply a request body.
 
 ### member list Response
-A [concom\_list](#concom_list) object resource.
+A [staff\_list](#staff_list) object resource.
 
 ### member list Code Samples
 Request Sample
 
 ```
 curl -X GET -H 'Authorization: Bearer e0438d90599b1c4762d12fd03db6311c9ca46729' \
-    http://localhost/api/member/1002/concom?pretty=true
+    http://localhost/api/member/1002/staff?pretty=true
 ```
 Response Sample
 
 ```
 {
-    "type": "concom_list",
+    "type": "staff_list",
     "event": "1",
     "data": [
         {
-            "type": "concom_entry",
+            "type": "staff_entry",
+            "id": "45",
             "note": "",
             "memberId": "1002",
             "position": "Sub-Head",

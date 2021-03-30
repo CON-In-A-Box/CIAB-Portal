@@ -3,12 +3,67 @@
     require_module 'standard';
 .*/
 
+/**
+ *  @OA\Put(
+ *      tags={"members"},
+ *      path="/member/{id}",
+ *      summary="Updates a member",
+ *      @OA\Parameter(
+ *          description="The id or login of the member",
+ *          in="path",
+ *          name="id",
+ *          required=true,
+ *          @OA\Schema(
+ *              oneOf = {
+ *                  @OA\Schema(
+ *                      description="Member login",
+ *                      type="string"
+ *                  ),
+ *                  @OA\Schema(
+ *                      description="Member id",
+ *                      type="integer"
+ *                  )
+ *              }
+ *          )
+ *      ),
+ *      @OA\RequestBody(
+ *          @OA\MediaType(
+ *              mediaType="multipart/form-data",
+ *              @OA\Schema(
+ *                  ref="#/components/schemas/member_body"
+ *              )
+ *          )
+ *      ),
+ *      @OA\Response(
+ *          response=200,
+ *          description="OK",
+ *          @OA\JsonContent(
+ *              ref="#/components/schemas/member"
+ *          )
+ *      ),
+ *      @OA\Response(
+ *          response=400,
+ *          description="Parameter is missing or invalid",
+ *          @OA\JsonContent(
+ *              ref="#/components/schemas/error"
+ *          )
+ *      ),
+ *      @OA\Response(
+ *          response=401,
+ *          ref="#/components/responses/401"
+ *      ),
+ *      security={{"ciab_auth":{}}}
+ *  )
+ **/
+
 namespace App\Controller\Member;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
 
 use App\Controller\PermissionDeniedException;
+use App\Controller\NotFoundException;
+use App\Controller\InvalidParameterException;
 
 class PutMember extends BaseMember
 {
@@ -19,8 +74,11 @@ class PutMember extends BaseMember
     protected static function checkBoolParam(&$body, $param)
     {
         if (array_key_exists($param, $body)) {
-            $value = (int) filter_var($body[$param], FILTER_VALIDATE_BOOLEAN);
-            $body[$param] = $value;
+            $value = filter_var($body[$param], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+            if ($value === null) {
+                throw new InvalidParameterException("'$param' parameter not valid boolean.");
+            }
+            $body[$param] = (int) $value;
         }
 
     }
@@ -29,7 +87,11 @@ class PutMember extends BaseMember
     protected static function checkDateParam(&$body, $param)
     {
         if (array_key_exists($param, $body)) {
-            $value = date("Y-m-d", strtotime($body[$param]));
+            $date = strtotime($body[$param]);
+            if (!$date) {
+                throw new InvalidParameterException("'$param' parameter not valid date.");
+            }
+            $value = date("Y-m-d", $date);
             $body[$param] = "$value";
         }
 
@@ -50,13 +112,17 @@ class PutMember extends BaseMember
         }
 
         $body = $request->getParsedBody();
+        if (empty($body)) {
+            throw new NotFoundException('No update parameter present');
+        }
+
         if (array_key_exists('email', $body)) {
             $body['email1'] = $body['email'];
         }
         if (array_key_exists('legalFirstName', $body)) {
             $body['firstName'] = $body['legalFirstName'];
         }
-        if (array_key_exists('email', $body)) {
+        if (array_key_exists('legalLastName', $body)) {
             $body['lastName'] = $body['legalLastName'];
         }
         PutMember::checkBoolParam($body, 'Deceased');

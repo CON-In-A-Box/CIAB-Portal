@@ -107,11 +107,12 @@ var announcementPage = (function(options) {
           function() {
             showSpinner();
             var method = 'PUT';
+            var path = 'announcement/' + id;
             if (id == -1) {
               method = 'POST';
-              id = dept;
+              path = 'department/' + dept + '/announcement';
             }
-            apiRequest(method, 'announcement/' + id,
+            apiRequest(method, path,
               'Scope=' + scope + '&Text=' + encodeURI(text) + '&Department=' +
               dept + '&Email=' + email)
               .then(function() {
@@ -181,14 +182,14 @@ var announcementPage = (function(options) {
 
       f = document.createElement('DIV');
       f.setAttribute('name', 'announcement-table-modify-' +
-        data2.departmentId.id);
+        data2.department.id);
       f.classList.add('UI-table-cell');
       f.classList.add('UI-center');
       f.classList.add('UI-hide');
       var button = document.createElement('button');
       button.innerHTML = '<i class="fas fa-calendar-check"></i>';
       button.dataset.ciabAnnouncementId = data2.id;
-      button.dataset.ciabAnnouncementDepartment = data2.departmentId.id;
+      button.dataset.ciabAnnouncementDepartment = data2.department.id;
       button.onclick = announcementPage.openEdit;
       button.classList.add('UI-button');
       f.appendChild(button);
@@ -282,20 +283,20 @@ var announcementPage = (function(options) {
     buildAnnouncementBlock: function(cache, result, data) {
       var table;
       var rc;
-      var dept = cache[parseInt(data.departmentId.id)];
+      var dept = cache[parseInt(data.department.id)];
       if (!dept) {
-        rc = announcementPage.emptyAnnouncementBlock(data.departmentId);
+        rc = announcementPage.emptyAnnouncementBlock(data.department);
         table = rc[1];
-        cache[parseInt(data.departmentId.id)] = rc;
+        cache[parseInt(data.department.id)] = rc;
       } else {
-        rc = cache[parseInt(data.departmentId.id)];
+        rc = cache[parseInt(data.department.id)];
         table = rc[1];
       }
       announcementPage.addAnnouncement(table, data);
     },
 
     filter: function(dept) {
-      var id = dept.id.id.toString() + '_announcement_post';
+      var id = dept.id.toString() + '_announcement_post';
       return Object.prototype.hasOwnProperty.call(permissions, id);
     },
 
@@ -303,7 +304,7 @@ var announcementPage = (function(options) {
       showSpinner();
       apiRequest('GET',
         'member/current/announcements',
-        'maxResults=all&include=departmentId,postedBy')
+        'maxResults=all')
         .then(function(response) {
           var result = JSON.parse(response.responseText);
           if (result.data.length > 0) {

@@ -1,5 +1,32 @@
 <?php declare(strict_types=1);
 
+/**
+ *  @OA\Delete(
+ *      tags={"stores"},
+ *      path="/stores/{id}",
+ *      summary="Deletes a store",
+ *      @OA\Parameter(
+ *          description="Id of a store",
+ *          in="path",
+ *          name="id",
+ *          required=true,
+ *          @OA\Schema(type="integer")
+ *      ),
+ *      @OA\Response(
+ *          response=204,
+ *          description="OK"
+ *      ),
+ *      @OA\Response(
+ *          response=401,
+ *          ref="#/components/responses/401"
+ *      ),
+ *      @OA\Response(
+ *          response=404,
+ *          ref="#/components/responses/store_not_found"
+ *      ),
+ *      security={{"ciab_auth": {}}}
+ *  )
+ */
 namespace App\Controller\Stores;
 
 use App\Controller\BaseController;
@@ -20,7 +47,7 @@ class DeleteStore extends BaseStore
         if (!$_SESSION['IS_ADMIN']) {
             throw new PermissionDeniedException();
         }
-        
+
         $delete = Delete::new($this->container->db);
         $result = $delete->from('Stores')->whereEquals(['StoreID' => $params['id']])->perform();
 

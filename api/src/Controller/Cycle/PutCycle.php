@@ -2,6 +2,55 @@
 /*.
     require_module 'standard';
 .*/
+/**
+ *  @OA\Put(
+ *      tags={"cycles"},
+ *      path="/cycle/{id}",
+ *      summary="Updates a cycle",
+ *      @OA\Parameter(
+ *          description="Id of the cycle",
+ *          in="path",
+ *          name="id",
+ *          required=true,
+ *          @OA\Schema(type="integer")
+ *      ),
+ *      @OA\RequestBody(
+ *          @OA\MediaType(
+ *              mediaType="multipart/form-data",
+ *              @OA\Schema(
+ *                  @OA\Property(
+ *                      property="From",
+ *                      type="string",
+ *                      format="date",
+ *                      nullable=true
+ *                  ),
+ *                  @OA\Property(
+ *                      property="To",
+ *                      type="string",
+ *                      format="date",
+ *                      nullable=true
+ *                  ),
+*              )
+ *          )
+ *      ),
+ *      @OA\Response(
+ *          response=200,
+ *          description="OK",
+ *          @OA\JsonContent(
+ *              ref="#/components/schemas/cycle"
+ *          ),
+ *      ),
+ *      @OA\Response(
+ *          response=401,
+ *          ref="#/components/responses/401"
+ *      ),
+ *      @OA\Response(
+ *          response=404,
+ *          ref="#/components/responses/cycle_not_found"
+ *      ),
+ *      security={{"ciab_auth":{}}}
+ *  )
+ **/
 
 namespace App\Controller\Cycle;
 

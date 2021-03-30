@@ -85,11 +85,12 @@ var deadlinePage = (function(options) {
         function() {
           showSpinner();
           var method = 'PUT';
+          var path = 'deadline/' + id;
           if (id == -1) {
             method = 'POST';
-            id = dept;
+            path = 'department/' + dept + '/deadline';
           }
-          apiRequest(method, 'deadline/' + id,
+          apiRequest(method, path,
             'Deadline=' + date + '&Note=' + encodeURI(note) + '&Department=' +
             dept)
             .then(function() {
@@ -140,14 +141,14 @@ var deadlinePage = (function(options) {
       f.appendChild(document.createTextNode(data2.note));
       line.appendChild(f);
       f = document.createElement('DIV');
-      f.setAttribute('name', 'deadline-table-modify-' + data2.departmentId.id);
+      f.setAttribute('name', 'deadline-table-modify-' + data2.department.id);
       f.classList.add('UI-table-cell');
       f.classList.add('UI-center');
       f.classList.add('UI-hide');
       var button = document.createElement('button');
       button.innerHTML = '<i class="fas fa-calendar-check"></i>';
       button.dataset.ciabDeadlineId = data2.id;
-      button.dataset.ciabDeadlineDepartment = data2.departmentId.id;
+      button.dataset.ciabDeadlineDepartment = data2.department.id;
       button.dataset.ciabDeadlineDate = t[0] + '-' + t[1] + '-' + t[2];
       button.onclick = deadlinePage.openEdit;
       button.classList.add('UI-button');
@@ -233,20 +234,20 @@ var deadlinePage = (function(options) {
     buildDeadlineBlock: function(cache, result, data) {
       var table;
       var rc;
-      var dept = cache[parseInt(data.departmentId.id)];
+      var dept = cache[parseInt(data.department.id)];
       if (!dept) {
-        rc = deadlinePage.emptyDeadlineBlock(data.departmentId);
+        rc = deadlinePage.emptyDeadlineBlock(data.department);
         table = rc[1];
-        cache[parseInt(data.departmentId.id)] = rc;
+        cache[parseInt(data.department.id)] = rc;
       } else {
-        rc = cache[parseInt(data.departmentId.id)];
+        rc = cache[parseInt(data.department.id)];
         table = rc[1];
       }
       deadlinePage.addDeadline(table, data);
     },
 
     filter: function(dept) {
-      var id = dept.id.id.toString() + '_deadline_post';
+      var id = dept.id.toString() + '_deadline_post';
       return Object.prototype.hasOwnProperty.call(permissions, id);
     },
 
@@ -254,7 +255,7 @@ var deadlinePage = (function(options) {
       showSpinner();
       apiRequest('GET',
         'member/current/deadlines',
-        'maxResults=all&include=departmentId')
+        'maxResults=all')
         .then(function(response) {
           var result = JSON.parse(response.responseText);
           if (result.data.length > 0) {
@@ -277,7 +278,8 @@ var deadlinePage = (function(options) {
                     permissions[data.subdata.departmentId + '_' +
                                   data.subtype] = data;
                     if (data.subtype == 'deadline_post') {
-                      var sect = 'deadline-block-' + data.subdata.departmentId;
+                      var sect = 'deadline-block-' +
+                                 data.subdata.departmentId;
                       var block = document.getElementById(sect);
                       if (block !== null) {
                         var button = block.getElementsByTagName('button');

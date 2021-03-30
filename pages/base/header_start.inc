@@ -16,7 +16,8 @@ if (!function_exists('get_console') || get_console() === null) {
     $modules = scandir($MODULESDIR);
     foreach ($modules as $key => $value) {
         if (!in_array($value, array(".", ".."))) {
-            if (in_array($value, $DISABLEDMODULES)) {
+            if (array_key_exists('DISABLEDMODULES', $GLOBALS) &&
+                in_array($value, $DISABLEDMODULES)) {
                 continue;
             }
             if (is_dir($MODULESDIR.DIRECTORY_SEPARATOR.$value) &&

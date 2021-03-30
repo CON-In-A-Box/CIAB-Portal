@@ -5,7 +5,6 @@ The following methods are available to announcement resources:
 
 |Resource Method|HTTP Request|Description|module|RBAC|
 |---|---|---|---|---|
-|[add](Announcement.md#add)|POST /announcement/{department}|Add a new announcement.|core|api.post.announcement.{department}|
 |[get](Announcement.md#get)|GET /announcement/{id}|Get details about a given announcement.|core|-|
 |[modify](Announcement.md#modify)|PUT /announcement/{id}|Modify an existing announcement|core|api.put.announcement.{department}|
 |[delete](Announcement.md#delete)|DELETE /announcement/{id}|Delete a announcement|core|api.delete.announcement.{department}|
@@ -75,44 +74,6 @@ announcement_list object resources have the following available properties:
 |type|string|Always `announcement_list`.|
 |data[]|list|A list of `announcement` resources.|
 
-
-<a name="add"></a>
-## add
-Add a new announcement.
-
-### add Request
-
-```POST /announcement/{department}?Scope={integer}&Text={text}[&Email={bool}]```
-
-### add Parameters
-The following parameters are available:
-
-|Parameter|Meaning|Notes|
-|---|---|---|
-|department|Department adding the announcement.|`integer` id or `string` name|
-|Scope|Scope of the announcement.|*required*|
-|Text|Text of the announcement.|*required*|
-|Email|Send announcment via email to all relevent members.|default `true`|
-
-
-### add Request Body
-Do not supply a request body.
-
-### add Response
-
-Does not return a response.
-
-### add Code Samples
-Request Sample
-
-```
-curl -X POST -H 'Authorization: Bearer e0438d90599b1c4762d12fd03db6311c9ca46729' http://localhost/api/announcement/Art%20Show?Scope=0&Text=Testing
-```
-Response Sample
-
-```
-[]
-```
 
 <a name="get"></a>
 ## get

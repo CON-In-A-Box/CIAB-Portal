@@ -2,6 +2,78 @@
 /*.
     require_module 'standard';
 .*/
+/**
+ *  @OA\Tag(
+ *      name="deadlines",
+ *      description="Features around event department deadlines"
+ *  )
+ *
+ *  @OA\Schema(
+ *      schema="deadline",
+ *      @OA\Property(
+ *          property="type",
+ *          type="string",
+ *          enum={"deadline"}
+ *      ),
+ *      @OA\Property(
+ *          property="id",
+ *          type="integer",
+ *          description="Deadline Id"
+ *      ),
+ *      @OA\Property(
+ *          property="deadline",
+ *          type="string",
+ *          format="date",
+ *          description="When this deadline expires"
+ *      ),
+ *      @OA\Property(
+ *          property="department",
+ *          description="Department for the deadline",
+ *          oneOf={
+ *              @OA\Schema(
+ *                  ref="#/components/schemas/department"
+ *              ),
+ *              @OA\Schema(
+ *                  type="integer",
+ *                  description="Department Id"
+ *              )
+ *          }
+ *      ),
+ *      @OA\Property(
+ *          property="note",
+ *          type="string",
+ *          description="Note about the deadline."
+ *      )
+ *  )
+ *
+ *  @OA\Schema(
+ *      schema="deadline_list",
+ *      allOf = {
+ *          @OA\Schema(ref="#/components/schemas/resource_list")
+ *      },
+ *      @OA\Property(
+ *          property="type",
+ *          type="string",
+ *          enum={"deadline_list"}
+ *      ),
+ *      @OA\Property(
+ *          property="data",
+ *          type="array",
+ *          description="List of deadlines",
+ *          @OA\Items(
+ *              ref="#/components/schemas/deadline"
+ *          ),
+ *      )
+ *  )
+ *
+ *  @OA\Response(
+ *      response="deadline_not_found",
+ *      description="Deadline not found in the system.",
+ *      @OA\JsonContent(
+ *          ref="#/components/schemas/error"
+ *      )
+ *   )
+ **/
 
 namespace App\Controller\Deadline;
 
@@ -24,11 +96,10 @@ abstract class BaseDeadline extends BaseController
 
     public function buildDeadline(Request $request, Response $response, $id, $dept, $deadline, $note)
     {
-        $this->buildDeadlineHateoas($request, intval($id), intval($dept));
         $output = array();
         $output['type'] = 'deadline';
         $output['id'] = $id;
-        $output['departmentId'] = $dept;
+        $output['department'] = $dept;
         $output['deadline'] = $deadline;
         $output['note'] = $note;
         return $output;
@@ -69,19 +140,6 @@ abstract class BaseDeadline extends BaseController
                 error_log($e);
             }
             $value = $result->fetch();
-        }
-
-    }
-
-
-    protected function buildDeadlineHateoas(Request $request, int $id, int $dept)
-    {
-        if ($id !== 0) {
-            $path = $request->getUri()->getBaseUrl();
-            $this->addHateoasLink('self', $path.'/deadline/'.strval($id), 'GET');
-            $this->addHateoasLink('modify', $path.'/deadline/'.strval($id), 'POST');
-            $this->addHateoasLink('delete', $path.'/deadline/'.strval($id), 'DELETE');
-            $this->addHateoasLink('department', $path.'/department/'.strval($dept), 'GET');
         }
 
     }

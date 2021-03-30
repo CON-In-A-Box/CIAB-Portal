@@ -5,7 +5,6 @@ The following methods are available to deadline resources:
 
 |Resource Method|HTTP Request|Description|module|RBAC|
 |---|---|---|---|---|
-|[add](Deadline.md#add)|POST /deadline/{department}|Add a new deadline.|core|api.post.deadline.{department}|
 |[get](Deadline.md#get)|GET /deadline/{id}|Get details about a given deadline.|core|api.get.deadline.{department}|
 |[modify](Deadline.md#modify)|PUT /deadline/{id}|Modify an existing deadline|core|api.put.deadline.{department}|
 |[delete](Deadline.md#delete)|DELETE /deadline/{id}|Delete a deadline|core|api.delete.deadline.{department}|
@@ -71,43 +70,6 @@ deadline_list object resources have the following available properties:
 |type|string|Always `deadline_list`.|
 |data[]|list|A list of `deadline` resources.|
 
-
-<a name="add"></a>
-## add
-Add a new deadline.
-
-### add Request
-
-```POST /deadline/{department}?Deadline={date}&Note={note}```
-
-### add Parameters
-The following parameters are available:
-
-|Parameter|Meaning|Notes|
-|---|---|---|
-|department|Department for which data is being retrieved.|`integer` id or `string` name|
-|date|Date of the deadline.|*required*|
-|note|Note specifying the deadline.|*required*|
-
-
-### add Request Body
-Do not supply a request body.
-
-### add Response
-
-Does not return a response.
-
-### add Code Samples
-Request Sample
-
-```
-curl -X POST -H 'Authorization: Bearer e0438d90599b1c4762d12fd03db6311c9ca46729' http://localhost/api/deadline/Art%20Show?Deadline=2019-12-27&Note=Testing
-```
-Response Sample
-
-```
-[]
-```
 
 <a name="get"></a>
 ## get

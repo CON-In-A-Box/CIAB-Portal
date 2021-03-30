@@ -3,6 +3,56 @@
     require_module 'standard';
 .*/
 
+/**
+ *  @OA\Put(
+ *      tags={"announcements"},
+ *      path="/announcement/{id}",
+ *      summary="Updates a announcement",
+ *      @OA\Parameter(
+ *          description="Id of the announcement",
+ *          in="path",
+ *          name="id",
+ *          required=true,
+ *          @OA\Schema(type="integer")
+ *      ),
+ *      @OA\RequestBody(
+ *          @OA\MediaType(
+ *              mediaType="multipart/form-data",
+ *              @OA\Schema(
+ *                  @OA\Property(
+ *                      property="Department",
+ *                      type="integer",
+ *                      nullable=true
+ *                  ),
+ *                  @OA\Property(
+ *                      property="Text",
+ *                      type="string",
+ *                      nullable=true
+ *                  ),
+ *                  @OA\Property(
+ *                      property="Scope",
+ *                      type="integer",
+ *                      nullable=true
+ *                  )
+ *              )
+ *          )
+ *      ),
+ *      @OA\Response(
+ *          response=200,
+ *          description="OK"
+ *      ),
+ *      @OA\Response(
+ *          response=401,
+ *          ref="#/components/responses/401"
+ *      ),
+ *      @OA\Response(
+ *          response=404,
+ *          ref="#/components/responses/department_not_found"
+ *      ),
+ *      security={{"ciab_auth":{}}}
+ *  )
+ **/
+
 namespace App\Controller\Announcement;
 
 use Slim\Http\Request;
@@ -34,9 +84,6 @@ class PutAnnouncement extends BaseAnnouncement
 
         if (array_key_exists('Department', $body)) {
             $department = $this->getDepartment($body['Department']);
-            if ($department === null) {
-                throw new InvalidParameterException("Department '${body['Department']}' Not Found");
-            }
             $changes[] = "`DepartmentID` = '{$department['id']}' ";
         }
 

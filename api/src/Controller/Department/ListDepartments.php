@@ -3,9 +3,36 @@
     require_module 'standard';
 .*/
 
-namespace App\Controller\Department;
+/**
+ *  @OA\Get(
+ *      tags={"departments"},
+ *      path="/department",
+ *      summary="Lists departments",
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/short_response",
+ *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/maxResults",
+ *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/pageToken",
+ *      ),
+ *      @OA\Response(
+ *          response=200,
+ *          description="OK",
+ *          @OA\JsonContent(
+ *              ref="#/components/schemas/department_list"
+ *          )
+ *      ),
+ *      @OA\Response(
+ *          response=401,
+ *          ref="#/components/responses/401"
+ *      ),
+ *      security={{"ciab_auth":{}}}
+ *  )
+ **/
 
-require_once __DIR__.'/../../../../functions/divisional.inc';
+namespace App\Controller\Department;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
@@ -14,35 +41,13 @@ class ListDepartments extends BaseDepartment
 {
 
 
-    public function buildResource(Request $request, Response $response, $args): array
+    public function buildResource(Request $request, Response $response, $params): array
     {
-        global $Departments;
-        $output = array();
-        foreach ($Departments as $key => $data) {
-            $output[] = [
-            'type' => 'department_entry',
-            'id' => $data['id'],
-            'get' => $this->buildDepartmentGet($request, $data['id'])
-            ];
-        }
+        $output = $this->getDepartment(null);
         return [
         \App\Controller\BaseController::LIST_TYPE,
         $output,
         array('type' => 'department_list')];
-
-    }
-
-
-    public function processIncludes(Request $request, Response $response, $args, $values, &$data)
-    {
-        if (in_array('id', $values)) {
-            $target = new GetDepartment($this->container);
-            $newargs = $args;
-            $newargs['name'] = $data['id'];
-            $newdata = $target->buildResource($request, $response, $newargs)[1];
-            $target->processIncludes($request, $response, $args, $values, $newdata);
-            $data['id'] = $target->arrayResponse($request, $response, $newdata);
-        }
 
     }
 

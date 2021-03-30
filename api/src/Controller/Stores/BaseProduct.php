@@ -27,16 +27,6 @@ abstract class BaseProduct extends BaseController
     }
 
 
-    protected function buildProductHateoas(Request $request, Number $store_id)
-    {
-        if ($this->id !== 0) {
-            $path = $request->getUri()->getBaseUrl();
-            $this->addHateoasLink('self', $path.'/stores/'.strval($store_id).'/products/'.strval($this->id), 'GET');
-        }
-
-    }
-
-
     protected function getProduct(array $params, Request $request, Response $response, &$error)
     {
         $select = Select::new($this->container->db);

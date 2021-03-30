@@ -8,18 +8,70 @@ namespace App\Controller\Department;
 use Slim\Http\Request;
 use Slim\Http\Response;
 use App\Controller\NotFoundException;
+use App\Controller\IncludeResource;
+
+/**
+ *  @OA\Get(
+ *      tags={"departments"},
+ *      path="/department/{id}/deadlines",
+ *      summary="Lists deadlines for a given department",
+ *      @OA\Parameter(
+ *          description="The id or name of the department",
+ *          in="path",
+ *          name="id",
+ *          required=true,
+ *          @OA\Schema(
+ *              oneOf = {
+ *                  @OA\Schema(
+ *                      description="Department id",
+ *                      type="integer"
+ *                  ),
+ *                  @OA\Schema(
+ *                      description="Department name",
+ *                      type="string"
+ *                  )
+ *              }
+ *          )
+ *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/short_response",
+ *      ),
+ *      @OA\Response(
+ *          response=200,
+ *          description="OK",
+ *          @OA\JsonContent(
+ *              ref="#/components/schemas/deadline_list"
+ *          )
+ *      ),
+ *      @OA\Response(
+ *          response=401,
+ *          ref="#/components/responses/401"
+ *      ),
+ *      @OA\Response(
+ *          response=404,
+ *          ref="#/components/responses/department_not_found"
+ *      ),
+ *      security={{"ciab_auth":{}}}
+ *  )
+ **/
 
 class ListDeadlines extends \App\Controller\Deadline\BaseDeadline
 {
 
 
+    public function __construct($container)
+    {
+        parent::__construct($container);
+        $this->includes = [
+        new IncludeResource('\App\Controller\Department\GetDepartment', 'name', 'department')
+        ];
+
+    }
+
+
     public function buildResource(Request $request, Response $response, $params): array
     {
         $department = $this->getDepartment($params['name']);
-        if ($department === null) {
-            throw new NotFoundException('Department \''.$params['name'].'\' Not Found');
-        }
-
         $permissions = ['api.get.deadline.all',
         'api.get.deadline.'.$department['id']];
         $this->checkPermissions($permissions);
@@ -41,20 +93,6 @@ class ListDeadlines extends \App\Controller\Deadline\BaseDeadline
         \App\Controller\BaseController::LIST_TYPE,
         $data,
         $output];
-
-    }
-
-
-    public function processIncludes(Request $request, Response $response, $params, $values, &$data)
-    {
-        if (in_array('departmentId', $values)) {
-            $target = new \App\Controller\Department\GetDepartment($this->container);
-            $newargs = $params;
-            $newargs['name'] = $data['departmentId'];
-            $newdata = $target->buildResource($request, $response, $newargs)[1];
-            $target->processIncludes($request, $response, $params, $values, $newdata);
-            $data['departmentId'] = $target->arrayResponse($request, $response, $newdata);
-        }
 
     }
 
