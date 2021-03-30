@@ -58,6 +58,15 @@ services:
     ports:
       - "1025:1025"
       - "1080:1080"
+  swagger:
+    image: swaggerapi/swagger-ui
+    networks:
+      - frontend
+    ports:
+      - "2080:8080"
+    environment:
+        URL: 'http://localhost:8080/ciab.openapi.yaml'
+        BASE_URL: '/swagger'
 networks:
   frontend:
   backend:

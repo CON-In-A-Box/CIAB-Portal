@@ -53,3 +53,5 @@ Options -Indexes
     php_value session.cookie_lifetime 3600
     php_value session.gc_maxlifetime 3600
 </IfModule>
+
+Header set Access-Control-Allow-Origin "http://localhost:2080"

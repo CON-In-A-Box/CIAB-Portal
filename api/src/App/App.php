@@ -66,6 +66,7 @@ $storage = $oauth[1];
 setupAPIOAuth2($app, $server);
 $authMiddleware = new Middleware\Authorization($server, $container);
 setupAPIRoutes($app, $authMiddleware);
+setupAPICORSRoutes($app, $authMiddleware);
 
 global $DISABLEDMODULES;
 
@@ -102,3 +103,5 @@ foreach ($modules as $key => $value) {
         }
     }
 }
+
+setupAPICORSFinalRoute($app, $authMiddleware);
