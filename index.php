@@ -4,6 +4,12 @@
     require_module 'standard';
     require_module 'core';
 .*/
+require __DIR__."/vendor/autoload.php";
+
+if (is_file(__DIR__.'/.env')) {
+    $dotenv = Dotenv\Dotenv::create(__DIR__);
+    $dotenv->load();
+}
 
 // Start the session so we are ready to go no matter what we do!
 session_start();
@@ -17,11 +23,7 @@ require_once __DIR__.'/functions/functions.inc';
 require_once __DIR__.'/console/console.inc';
 
 
-require __DIR__."/vendor/autoload.php";
-if (is_file(__DIR__.'/.env')) {
-    $dotenv = Dotenv\Dotenv::create(__DIR__);
-    $dotenv->load();
-}
+
 
 $configure = false;
 try {
