@@ -10,6 +10,11 @@ use Slim\Http\Environment;
 use App\Tests\Base\BlankMiddleWare;
 use Chadicus\Slim\OAuth2\Middleware;
 
+if (is_file(__DIR__.'/../../../../.env')) {
+    $dotenv = \Dotenv\Dotenv::create(__DIR__.'/../../../..');
+    $dotenv->load();
+}
+
 require __DIR__.'/../../App/Routes.php';
 require __DIR__.'/../../App/Dependencies.php';
 require __DIR__.'/../../App/OAuth2.php';
@@ -71,11 +76,6 @@ abstract class CiabTestCase extends TestCase
         parent::setUpBeforeClass();
         $already_loaded = array_key_exists('init', $GLOBALS);
         $GLOBALS['init'] = true;
-
-        if (is_file(__DIR__.'/../../../../.env')) {
-            $dotenv = \Dotenv\Dotenv::create(__DIR__.'/../../../..');
-            $dotenv->load();
-        }
 
         if (!$already_loaded) {
             $modules = scandir(__DIR__.'/../../Modules');
