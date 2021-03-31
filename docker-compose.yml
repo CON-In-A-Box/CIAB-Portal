@@ -10,6 +10,7 @@ services:
     volumes:
       - .:/var/www/html/
     environment:
+        # To more nearly simulate Production, comment all but `DOCKER` out and rely on `.env`
         DBHOST: 'mysql'
         DBNAME: ${DBNAME}
         DBPASS: ${DBPASS}

@@ -29,25 +29,6 @@ const NEW_COLOR_PRIM_BACK = 'NEW_COLOR_PRIM_BACK';
 const NEW_COLOR_SECONDARY = 'NEW_COLOR_SECONDARY';
 const NEW_COLOR_SECOND_BACK = 'NEW_COLOR_SECOND_BACK';
 
-
-function delete_files($target)
-{
-    if (is_dir($target)) {
-        $files = glob($target.'*', GLOB_MARK);
-
-        foreach ($files as $file) {
-            delete_files($file);
-        }
-
-        @rmdir($target);
-    } elseif (is_file($target)) {
-        @unlink($target);
-    }
-
-}
-
-
-require_once __DIR__."/functions/locations.inc";
 require __DIR__."/vendor/autoload.php";
 if (is_file(ENV_FILE)) {
     $dotenv = Dotenv\Dotenv::create(__DIR__);
@@ -72,6 +53,27 @@ if (is_file(ENV_FILE)) {
 } else {
     $configure = true;
 }
+
+
+function delete_files($target)
+{
+    if (is_dir($target)) {
+        $files = glob($target.'*', GLOB_MARK);
+
+        foreach ($files as $file) {
+            delete_files($file);
+        }
+
+        @rmdir($target);
+    } elseif (is_file($target)) {
+        @unlink($target);
+    }
+
+}
+
+
+require_once __DIR__."/functions/locations.inc";
+
 
 if (!$configure) {
     header("Location: ".$BASEURL."/index.php?Function=public");

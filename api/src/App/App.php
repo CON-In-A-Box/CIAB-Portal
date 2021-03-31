@@ -45,16 +45,17 @@
 use Chadicus\Slim\OAuth2\Middleware;
 
 require __DIR__.'/../../../vendor/autoload.php';
-require __DIR__.'/../../../functions/functions.inc';
-require_once __DIR__.'/../../../backends/oauth2.inc';
-require __DIR__.'/Dependencies.php';
-require __DIR__.'/Routes.php';
-require __DIR__.'/OAuth2.php';
 
 if (is_file(__DIR__.'/../../../.env')) {
     $dotenv = Dotenv\Dotenv::create(__DIR__.'/../../..');
     $dotenv->load();
 }
+
+require __DIR__.'/../../../functions/functions.inc';
+require_once __DIR__.'/../../../backends/oauth2.inc';
+require __DIR__.'/Dependencies.php';
+require __DIR__.'/Routes.php';
+require __DIR__.'/OAuth2.php';
 
 $settings = require __DIR__.'/Settings.php';
 $app = new \Slim\App($settings);
