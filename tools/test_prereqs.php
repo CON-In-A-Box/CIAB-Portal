@@ -19,6 +19,8 @@ $delete->from('Authentication')->perform();
 $delete->from('ConComList')->perform();
 $delete->from('Registrations')->perform();
 $delete->from('BadgeTypes')->perform();
+$delete->from('VolunteerHours')->perform();
+$delete->from('HourRedemptions')->perform();
 $delete->from('Events')->perform();
 $delete->from('AnnualCycles')->perform();
 $delete->from('Members')->perform();
