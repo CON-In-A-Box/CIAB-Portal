@@ -156,10 +156,16 @@ class IncludeResource
     }
 
 
-    public function process(Request $request, Response $response, Container $container, array $params, array &$data): void
+    public function process(Request $request, Response $response, Container $container, array $params, array &$data, array $history): void
     {
         if (in_array($this->field, array_keys($data), true) &&
             $data[$this->field] !== null) {
+            if (!array_key_exists($this->class, $history)) {
+                $history[$this->class] = [];
+            }
+            if (in_array($data[$this->field], $history[$this->class])) {
+                return;
+            }
             $newparams = $params;
             $newparams[$this->parameter] = $data[$this->field];
             $target = new $this->class($container);
@@ -168,7 +174,8 @@ class IncludeResource
             } catch (Exception $e) {
                 return;
             }
-            $target->processIncludes($request, $response, $params, $newdata);
+            $history[$this->class][] = $data[$this->field];
+            $target->processIncludes($request, $response, $params, $newdata, $history);
             $data[$this->field] = $target->arrayResponse($request, $response, $newdata);
         }
 
@@ -648,10 +655,10 @@ SQL;
     }
 
 
-    public function processIncludes(Request $request, Response $response, $params, &$data)
+    public function processIncludes(Request $request, Response $response, $params, &$data, array $history = [])
     {
         foreach ($this->includes as $target) {
-            $target->process($request, $response, $this->container, $params, $data);
+            $target->process($request, $response, $this->container, $params, $data, $history);
         }
 
     }
