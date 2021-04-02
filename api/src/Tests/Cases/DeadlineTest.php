@@ -70,7 +70,7 @@ class DeadlineTest extends CiabTestCase
         $this->cycle = $this->runSuccessJsonRequest('POST', '/cycle', null, ['From' => $when, 'To' => $to], 201);
         $when = date('Y-m-d', strtotime('+1999 years'));
         $to = date('Y-m-d', strtotime('+1999 years'));
-        $this->event = $this->runSuccessJsonRequest('POST', '/event', null, ['From' => $when, 'To' => $to, 'Name' => 'PHPTest-a-con'], 201);
+        $this->event = $this->runSuccessJsonRequest('POST', '/event', null, ['dateFrom' => $when, 'dateTo' => $to, 'name' => 'PHPTest-a-con'], 201);
         $this->position = $this->runSuccessJsonRequest('POST', '/member/1000/staff_membership', null, ['Department' => '1', 'Position' => '1', 'Note' => 'PHPUnit Testing', 'Event' => $this->event->id], 201);
 
     }

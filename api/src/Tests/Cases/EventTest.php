@@ -20,7 +20,7 @@ class EventTest extends CiabTestCase
         $this->cycle = $this->runSuccessJsonRequest('POST', '/cycle', null, ['From' => $when, 'To' => $to], 201);
         $when = date('Y-m-d', strtotime('+1999 years'));
         $to = date('Y-m-d', strtotime('+1999 years'));
-        $this->events[] = $this->runSuccessJsonRequest('POST', '/event', null, ['From' => $when, 'To' => $to, 'Name' => 'PHPTest-a-con'], 201);
+        $this->events[] = $this->runSuccessJsonRequest('POST', '/event', null, ['dateFrom' => $when, 'dateTo' => $to, 'name' => 'PHPTest-a-con'], 201);
 
     }
 
@@ -78,18 +78,18 @@ class EventTest extends CiabTestCase
         $when = date('Y-m-d', strtotime('+2000 years'));
         $to = date('Y-m-d', strtotime('+2001 years'));
         $this->runRequest('POST', '/event', null, null, 400);
-        $this->runRequest('POST', '/event', null, ['From' => $when], 400);
-        $this->runRequest('POST', '/event', null, ['From' => $when, 'To' => 'notadate'], 400);
-        $this->runRequest('POST', '/event', null, ['From' => 'notadate', 'To' => $to], 400);
-        $this->runRequest('POST', '/event', null, ['From' => $when, 'To' => $to], 400);
-        $this->runRequest('POST', '/event', null, ['From' => $when, 'To' => $to], 400);
+        $this->runRequest('POST', '/event', null, ['dateFrom' => $when], 400);
+        $this->runRequest('POST', '/event', null, ['dateFrom' => $when, 'dateTo' => 'notadate'], 400);
+        $this->runRequest('POST', '/event', null, ['dateFrom' => 'notadate', 'dateTo' => $to], 400);
+        $this->runRequest('POST', '/event', null, ['dateFrom' => $when, 'dateTo' => $to], 400);
+        $this->runRequest('POST', '/event', null, ['dateFrom' => $when, 'dateTo' => $to], 400);
         $when = date('Y-m-d', strtotime('+3000 years'));
         $to = date('Y-m-d', strtotime('+3001 years'));
-        $this->runRequest('POST', '/event', null, ['From' => $when, 'To' => $to, 'Name' => 'PHPTest-a-con'], 400);
+        $this->runRequest('POST', '/event', null, ['dateFrom' => $when, 'dateTo' => $to, 'name' => 'PHPTest-a-con'], 400);
         $when = date('Y-m-d', strtotime('+2000 years'));
         $to = date('Y-m-d', strtotime('+2001 years'));
 
-        $this->events[] = $this->runSuccessJsonRequest('POST', '/event', null, ['From' => $when, 'To' => $to, 'Name' => 'NEW PHPTest-a-con'], 201);
+        $this->events[] = $this->runSuccessJsonRequest('POST', '/event', null, ['dateFrom' => $when, 'dateTo' => $to, 'name' => 'NEW PHPTest-a-con'], 201);
 
     }
 

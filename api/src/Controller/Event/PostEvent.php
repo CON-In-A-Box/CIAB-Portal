@@ -13,17 +13,17 @@
  *              mediaType="multipart/form-data",
  *              @OA\Schema(
  *                  @OA\Property(
- *                      property="From",
+ *                      property="dateFrom",
  *                      type="string",
  *                      format="date"
  *                  ),
  *                  @OA\Property(
- *                      property="To",
+ *                      property="dateTo",
  *                      type="string",
  *                      format="date"
  *                  ),
  *                  @OA\Property(
- *                      property="Name",
+ *                      property="name",
  *                      type="string"
  *                  ),
  *              )
@@ -52,6 +52,7 @@ namespace App\Controller\Event;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
+use Atlas\Query\Insert;
 
 use App\Controller\InvalidParameterException;
 
@@ -64,30 +65,19 @@ class PostEvent extends BaseEvent
         $permissions = ['api.post.event'];
         $this->checkPermissions($permissions);
 
-        $body = $request->getParsedBody();
-        if (empty($body)) {
-            throw new InvalidParameterException('Required body not present');
-        }
-        if (!array_key_exists('From', $body)) {
-            throw new InvalidParameterException('Required \'From\' parameter not present');
-        }
-        if (!array_key_exists('To', $body)) {
-            throw new InvalidParameterException('Required \'To\' parameter not present');
+        $required = ['dateFrom', 'dateTo', 'name'];
+        $body = $this->checkRequiredBody($request, $required);
+
+        try {
+            $from = date_format(new \DateTime($body['dateFrom']), 'Y-m-d');
+        } catch (\Exception $e) {
+            throw new InvalidParameterException('Required \'dateFrom\' parameter not valid');
         }
         try {
-            $from = date_format(new \DateTime($body['From']), 'Y-m-d');
+            $to = date_format(new \DateTime($body['dateTo']), 'Y-m-d');
         } catch (\Exception $e) {
-            throw new InvalidParameterException('Required \'From\' parameter not valid');
+            throw new InvalidParameterException('Required \'dateTo\' parameter not valid');
         }
-        try {
-            $to = date_format(new \DateTime($body['To']), 'Y-m-d');
-        } catch (\Exception $e) {
-            throw new InvalidParameterException('Required \'To\' parameter not valid');
-        }
-        if (!array_key_exists('Name', $body)) {
-            throw new InvalidParameterException('Required \'Name\' parameter not present');
-        }
-        $name = $body['Name'];
 
         $target = new \App\Controller\Cycle\ListCycles($this->container);
         $newrequest = $request->withQueryParams(['includesDate' => $from]);
@@ -95,13 +85,15 @@ class PostEvent extends BaseEvent
         if (empty($data)) {
             throw new InvalidParameterException('No existing cycle contains event.');
         }
-        $cycle = $data[0]['id'];
-        $sql = "INSERT INTO `Events` (`EventID`, `AnnualCycleID`, `DateFrom`, `DateTo`, `EventName`) VALUES (NULL, $cycle, '$from', '$to', '$name')";
-        $sth = $this->container->db->prepare($sql);
-        $sth->execute();
+        $body['cycle'] = $data[0]['id'];
+
+        $insert = Insert::new($this->container->db);
+        $insert->into('Events')->columns(BaseEvent::insertPayloadFromParams($body));
+        $insert->perform();
+        $id = $insert->getLastInsertId();
 
         $target = new \App\Controller\Event\GetEvent($this->container);
-        $data = $target->buildResource($request, $response, ['id' => $this->container->db->lastInsertId()])[1];
+        $data = $target->buildResource($request, $response, ['id' => $id])[1];
         return [
         \App\Controller\BaseController::RESOURCE_TYPE,
         $target->arrayResponse($request, $response, $data),
