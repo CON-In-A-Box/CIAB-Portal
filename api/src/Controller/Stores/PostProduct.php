@@ -21,8 +21,6 @@ class PostProduct extends BaseProduct
             throw new PermissionDeniedException();
         }
 
-        $body = $request->getParsedBody();
-
         $store_select = Select::new($this->container->db);
         $store_id = $params['store_id'];
         $store = $store_select->columns('StoreID')->from('Stores')->whereEquals(['StoreID' => $store_id]);
@@ -33,18 +31,10 @@ class PostProduct extends BaseProduct
             ];
         }
 
-        if (!empty($body)) {
-            $required = ['Name', 'ProductSlug', 'Description', 'UnitPriceCents'];
-            $diff = array_diff($required, array_keys($body));
-            if (count($diff)) {
-                throw new InvalidParameterException("Missing required parameters: ".implode(', ', $diff));
-            }
-        } else {
-            throw new InvalidParameterException('No data provided');
-        }
-
+        $required = ['Name', 'ProductSlug', 'Description', 'UnitPriceCents'];
+        $body = $request->checkRequiredBody($request, $required);
         $body['StoreID'] = $store_id;
-        
+
         if (!array_key_exists('PaymentSystemRef', $body)) {
             $body['PaymentSystemRef'] = null;
         }

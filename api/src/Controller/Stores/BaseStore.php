@@ -84,7 +84,7 @@ abstract class BaseStore extends BaseController
      * prototype for how we could handle name conversion. It's
      * the beginning of an idea, not the end of it.
      */
-    protected static $columnsToParams = [
+    protected static $columnsToAttributes = [
     'StoreID' => 'id',
     'StoreSlug' => 'store_slug',
     'Name' => 'name',
@@ -92,47 +92,9 @@ abstract class BaseStore extends BaseController
     ];
 
 
-    protected static function paramsToColumns(): array
-    {
-        return array_flip(self::$columnsToParams);
-
-    }
-
-
     public function __construct(Container $container)
     {
         parent::__construct('store', $container);
-
-    }
-
-
-    public static function insertPayloadFromParams(array $params, $includeId = true): array
-    {
-        $paramsToColumns = self::paramsToColumns();
-        $params = parent::filterBodyParams(array_keys($paramsToColumns), $params);
-
-        $ret = array();
-
-        if ($includeId && !array_key_exists('id', $params)) {
-            $ret[$paramsToColumns['id']] = null;
-        };
-
-        foreach ($params as $key => $val) {
-            $ret[$paramsToColumns[$key]] = $val;
-        }
-
-        return $ret;
-
-    }
-
-
-    protected function selectMapping(): array
-    {
-        $ret = array();
-        foreach (self::$columnsToParams as $key => $value) {
-            $ret[] = "$key as $value";
-        }
-        return $ret;
 
     }
 

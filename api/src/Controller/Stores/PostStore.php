@@ -63,14 +63,8 @@ class PostStore extends BaseStore
             throw new PermissionDeniedException();
         }
 
-        $body = $request->getParsedBody();
         $required_params = ['name', 'store_slug'];
-        foreach ($required_params as $required) {
-            if (!array_key_exists($required, $body) || $body[$required] == null) {
-                throw new InvalidParameterException("Required '$required' parameter not present");
-            }
-        }
-
+        $body = $this->checkRequiredBody($request, $required_params);
         $insert = Insert::new($this->container->db);
         $insert->into('Stores')->columns(BaseStore::insertPayloadFromParams($body));
 

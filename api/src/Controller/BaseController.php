@@ -212,6 +212,11 @@ abstract class BaseController
     */
     protected $includes;
 
+    /**
+     * @var array[]
+    */
+    protected static $columnsToAttributes = null;
+
 
     protected function __construct(string $api_type, Container $container)
     {
@@ -691,6 +696,67 @@ SQL;
         }
 
         return $this->processEvent($data[0]);
+
+    }
+
+
+    protected function checkRequiredBody(Request $request, array $required_params)
+    {
+        $body = $request->getParsedBody();
+        if (empty($body)) {
+            throw new InvalidParameterException('Required body not present');
+        }
+        foreach ($required_params as $required) {
+            if (!array_key_exists($required, $body) || $body[$required] === null) {
+                throw new InvalidParameterException("Required '$required' parameter not present");
+            }
+        }
+
+        return $body;
+
+    }
+
+
+    protected static function attributesToColumns(): array
+    {
+        if (static::$columnsToAttributes !== null) {
+            return array_flip(static::$columnsToAttributes);
+        }
+        return null;
+
+    }
+
+
+    protected static function selectMapping(): array
+    {
+        if (static::$columnsToAttributes !== null) {
+            $ret = array();
+            foreach (static::$columnsToAttributes as $key => $value) {
+                $ret[] = "$key AS $value";
+            }
+            return $ret;
+        }
+        return ['*'];
+
+    }
+
+
+    public static function insertPayloadFromParams(array $params, $includeId = true): array
+    {
+        $paramsToColumns = static::attributesToColumns();
+        $params = static::filterBodyParams(array_keys($paramsToColumns), $params);
+
+        $ret = array();
+
+        if ($includeId && !array_key_exists('id', $params)) {
+            $ret[$paramsToColumns['id']] = null;
+        };
+
+        foreach ($params as $key => $val) {
+            $ret[$paramsToColumns[$key]] = $val;
+        }
+
+        return $ret;
 
     }
 
