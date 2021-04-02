@@ -66,6 +66,7 @@ namespace App\Controller\Cycle;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
+use Atlas\Query\Select;
 
 use App\Controller\InvalidParameterException;
 
@@ -99,41 +100,24 @@ class ListCycles extends BaseCycle
         }
 
         $condition = false;
-        $sql = "SELECT * FROM `AnnualCycles`";
+
+        $select = Select::new($this->container->db);
+        $select->columns(...BaseCycle::selectMapping());
+        $select->from('AnnualCycles');
+
         if ($begin !== null) {
-            $sql .= " WHERE `DateFrom` >= '".date("Y-m-d", $begin)."'";
-            $condition = true;
+            $select->where("`DateFrom` >= '".date("Y-m-d", $begin)."'");
         }
         if ($end !== null) {
-            if (!$condition) {
-                $sql .= " WHERE";
-            } else {
-                $sql .= " AND";
-            }
-            $sql .= " DateTo <= '".date("Y-m-d", $end)."'";
-            $condition = true;
+            $select->where("DateTo <= '".date("Y-m-d", $end)."'");
         }
         if ($includesDate !== null) {
-            if (!$condition) {
-                $sql .= " WHERE";
-            } else {
-                $sql .= " AND";
-            }
             $target = date("Y-m-d", $includesDate);
-            $sql .= " (DateFrom <= '$target' AND DateTo >= '$target')";
+            $select->where("(DateFrom <= '$target' AND DateTo >= '$target')");
         }
-        $sth = $this->container->db->prepare($sql);
-        $sth->execute();
-        $cycles = $sth->fetchAll();
+        $data = $select->fetchAll();
         $output = array();
         $output['type'] = 'cycle_list';
-        $data = array();
-        foreach ($cycles as $entry) {
-            $entry['type'] = 'cycle';
-            $entry['id'] = $entry['AnnualCycleID'];
-            unset($entry['AnnualCycleID']);
-            $data[] = $entry;
-        }
         return [
         \App\Controller\BaseController::LIST_TYPE,
         $data,

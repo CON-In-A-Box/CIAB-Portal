@@ -37,6 +37,7 @@ namespace App\Controller\Cycle;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
+use Atlas\Query\Select;
 use App\Controller\NotFoundException;
 
 class GetCycle extends BaseCycle
@@ -45,13 +46,17 @@ class GetCycle extends BaseCycle
 
     public function buildResource(Request $request, Response $response, $params): array
     {
-        $cycle = $this->getCycle($params)[0];
-        $cycle['id'] = $cycle['AnnualCycleID'];
-        $this->id = $params['id'];
-        unset($cycle['AnnualCycleID']);
+        $select = Select::new($this->container->db);
+        $select->columns(...BaseCycle::selectMapping());
+        $select->from('AnnualCycles');
+        $select->whereEquals(['AnnualCycleID' => $params['id']]);
+        $data = $select->fetchOne();
+        if (empty($data)) {
+            throw new NotFoundException("Cycle '{$params['id']}' Not Found");
+        }
         return [
         \App\Controller\BaseController::RESOURCE_TYPE,
-        $cycle
+        $data
         ];
 
     }

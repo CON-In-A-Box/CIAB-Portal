@@ -69,7 +69,6 @@ use Slim\Container;
 use Slim\Http\Request;
 use Slim\Http\Response;
 use App\Controller\BaseController;
-use App\Controller\NotFoundException;
 
 abstract class BaseCycle extends BaseController
 {
@@ -79,6 +78,13 @@ abstract class BaseCycle extends BaseController
      */
     protected $id = 0;
 
+    protected static $columnsToAttributes = [
+    '"cycle"' => 'type',
+    'AnnualCycleID' => 'id',
+    'DateFrom' => 'dateFrom',
+    'DateTo' => 'dateTo',
+    ];
+
 
     public function __construct(Container $container)
     {
@@ -87,16 +93,11 @@ abstract class BaseCycle extends BaseController
     }
 
 
-    protected function getCycle($params)
+    protected function getCycle(Request $request, Response $response, $params)
     {
-        $sth = $this->container->db->prepare("SELECT * FROM `AnnualCycles` WHERE `AnnualCycleID` = ".$params['id']);
-        $sth->execute();
-        $cycles = $sth->fetchAll();
-        if (empty($cycles)) {
-            throw new NotFoundException('Cycle Not Found');
-        }
-
-        return $cycles;
+        $cycle = new GetCycle($this->container);
+        $cycle->buildResource($request, $response, $params);
+        return $cycle;
 
     }
 
