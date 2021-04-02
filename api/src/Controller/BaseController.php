@@ -102,6 +102,7 @@ use Exception;
 use Slim\Container;
 use Slim\Http\Response;
 use Slim\Http\Request;
+use Slim\Http\Environment;
 
 require_once __DIR__.'/../../../backends/RBAC.inc';
 
@@ -211,6 +212,11 @@ abstract class BaseController
      * @var array[]
     */
     protected $includes;
+
+    /**
+     * @var array[]
+    */
+    protected static $columnsToAttributes = null;
 
 
     protected function __construct(string $api_type, Container $container)
@@ -664,33 +670,74 @@ SQL;
     }
 
 
-    protected function processEvent($item)
+    protected function getEvent(string $id)
     {
-        $newEvent['type'] = 'event';
-        $newEvent['id'] = $item['EventID'];
-        $newEvent['cycle'] = $item['AnnualCycleID'];
-        $newEvent['dateFrom'] = $item['DateFrom'];
-        $newEvent['dateTo'] = $item['DateTo'];
-        $newEvent['name'] = $item['EventName'];
-        return $newEvent;
+        $event = new \App\Controller\Event\GetEvent($this->container);
+        $env = Environment::mock([]);
+        $request = Request::createFromEnvironment($env);
+        $response = new Response();
+        return $event->buildResource($request, $response, ['id' => $id])[1];
 
     }
 
 
-    protected function getEvent(string $id)
+    protected function checkRequiredBody(Request $request, array $required_params)
     {
-        if ($id == 'current') {
-            $sth = $this->container->db->prepare("SELECT * FROM `Events` WHERE `DateTo` >= NOW() ORDER BY `DateFrom` ASC LIMIT 1");
-        } else {
-            $sth = $this->container->db->prepare("SELECT * FROM `Events` WHERE `EventID` = '$id'");
+        $body = $request->getParsedBody();
+        if (empty($body)) {
+            throw new InvalidParameterException('Required body not present');
         }
-        $sth->execute();
-        $data = $sth->fetchAll();
-        if (empty($data)) {
-            throw new NotFoundException("Event '$id' Not Found");
+        foreach ($required_params as $required) {
+            if (!array_key_exists($required, $body) || $body[$required] === null) {
+                throw new InvalidParameterException("Required '$required' parameter not present");
+            }
         }
 
-        return $this->processEvent($data[0]);
+        return $body;
+
+    }
+
+
+    protected static function attributesToColumns(): array
+    {
+        if (static::$columnsToAttributes !== null) {
+            return array_flip(static::$columnsToAttributes);
+        }
+        return null;
+
+    }
+
+
+    protected static function selectMapping(): array
+    {
+        if (static::$columnsToAttributes !== null) {
+            $ret = array();
+            foreach (static::$columnsToAttributes as $key => $value) {
+                $ret[] = "$key AS $value";
+            }
+            return $ret;
+        }
+        return ['*'];
+
+    }
+
+
+    public static function insertPayloadFromParams(array $params, $includeId = true): array
+    {
+        $paramsToColumns = static::attributesToColumns();
+        $params = static::filterBodyParams(array_keys($paramsToColumns), $params);
+
+        $ret = array();
+
+        if ($includeId && !array_key_exists('id', $params)) {
+            $ret[$paramsToColumns['id']] = null;
+        };
+
+        foreach ($params as $key => $val) {
+            $ret[$paramsToColumns[$key]] = $val;
+        }
+
+        return $ret;
 
     }
 

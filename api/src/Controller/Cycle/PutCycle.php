@@ -19,13 +19,13 @@
  *              mediaType="multipart/form-data",
  *              @OA\Schema(
  *                  @OA\Property(
- *                      property="From",
+ *                      property="dateFrom",
  *                      type="string",
  *                      format="date",
  *                      nullable=true
  *                  ),
  *                  @OA\Property(
- *                      property="To",
+ *                      property="dateTo",
  *                      type="string",
  *                      format="date",
  *                      nullable=true
@@ -57,6 +57,7 @@ namespace App\Controller\Cycle;
 use Slim\Http\Request;
 use Slim\Http\Response;
 use App\Controller\InvalidParameterException;
+use Atlas\Query\Update;
 
 class PutCycle extends BaseCycle
 {
@@ -64,36 +65,20 @@ class PutCycle extends BaseCycle
 
     public function buildResource(Request $request, Response $response, $params): array
     {
-        $this->getCycle($params);
+        $this->getCycle($request, $response, $params);
         $permissions = ['api.put.cycle'];
         $this->checkPermissions($permissions);
-
-        $sql = "UPDATE `AnnualCycles` SET ";
 
         $body = $request->getParsedBody();
         if (empty($body)) {
             throw new InvalidParameterException('Required body not present');
         }
-        $changes = array();
 
-        if (array_key_exists('From', $body)) {
-            $from = date_format(new \DateTime($body['From']), 'Y-m-d');
-            $changes[] = "`DateFrom` = '$from'";
-        }
+        $update = Update::new($this->container->db);
+        $update->table('AnnualCycles')->columns(BaseCycle::insertPayloadFromParams($body, false));
+        $update->whereEquals(['AnnualCycleID' => $params['id']]);
+        $result = $update->perform();
 
-        if (array_key_exists('To', $body)) {
-            $to = date_format(new \DateTime($body['To']), 'Y-m-d');
-            $changes[] = "`DateTo` = '$to'";
-        }
-
-        if (count($changes) > 0) {
-            $sql .= implode(',', $changes);
-            $sql .= " WHERE `AnnualCycleID` = '".$params['id']."';";
-
-            print $sql;
-            $sth = $this->container->db->prepare($sql);
-            $sth->execute();
-        }
         return [null];
 
     }

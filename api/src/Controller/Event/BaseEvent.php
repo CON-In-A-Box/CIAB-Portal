@@ -97,6 +97,15 @@ abstract class BaseEvent extends BaseController
      */
     protected $id = 0;
 
+    protected static $columnsToAttributes = [
+    '"event"' => 'type',
+    'EventID' => 'id',
+    'AnnualCycleID' => 'cycle',
+    'DateFrom' => 'dateFrom',
+    'DateTo' => 'dateTo',
+    'EventName' => 'name'
+    ];
+
 
     public function __construct(Container $container)
     {

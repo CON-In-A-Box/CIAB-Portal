@@ -95,8 +95,8 @@ function saveCycle() {
     target += '/' + id;
   }
   confirmbox(title, msg).then(function() {
-    var data = 'From=' + document.getElementById('cycle_from').value + '&' +
-      'To=' + document.getElementById('cycle_to').value;
+    var data = 'dateFrom=' + document.getElementById('cycle_from').value + '&' +
+      'dateTo=' + document.getElementById('cycle_to').value;
     apiRequest(method, target, data).then(function() {
       location.reload();
     })
@@ -289,11 +289,11 @@ function loadEvents() {
           line.appendChild(f);
           f = document.createElement('DIV');
           f.classList.add('UI-table-cell');
-          f.appendChild(document.createTextNode(data.DateFrom));
+          f.appendChild(document.createTextNode(data.dateFrom));
           line.appendChild(f);
           f = document.createElement('DIV');
           f.classList.add('UI-table-cell');
-          f.appendChild(document.createTextNode(data.DateTo));
+          f.appendChild(document.createTextNode(data.dateTo));
           line.appendChild(f);
 
           var to = new Date(data.DateTo);
