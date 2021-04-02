@@ -57,6 +57,7 @@ namespace App\Controller\Announcement;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
+use Atlas\Query\Select;
 
 class ListMemberAnnouncements extends BaseAnnouncement
 {
@@ -66,66 +67,30 @@ class ListMemberAnnouncements extends BaseAnnouncement
     {
         $user = $this->findMemberId($request, $response, $args, 'id');
         $user = $user['id'];
-        $sth = $this->container->db->prepare(<<<SQL
-            SELECT
-                *
-            FROM
-                `Announcements`
-            WHERE
-                `Scope` = 0 OR
-                `Scope` = 1 AND (
-                    SELECT
-                        COUNT(AccountID)
-                    FROM
-                        `ConComList`
-                    WHERE
-                        `AccountID`  = '$user'
-                ) > 0 OR
-                `Scope` = 2 AND (
-                `DepartmentID` IN(
-                SELECT
-                    `DepartmentID`
-                FROM
-                    `ConComList`
-                WHERE
-                    `AccountID` = '$user'
-            ) OR `DepartmentID` IN(
-                SELECT
-                    `DepartmentID`
-                FROM
-                    `Departments`
-                WHERE
-                    `ParentDepartmentID` IN(
-                    SELECT
-                        `DepartmentID`
-                    FROM
-                        `ConComList`
-                    WHERE
-                        `AccountID` = '$user'
-                )
-            ))
-            ORDER BY `PostedOn` ASC
-SQL
-        );
-        $sth->execute();
-        $todos = $sth->fetchAll();
+        $select = Select::new($this->container->db);
+
+        $sub1 = $select->subselect()->columns('COUNT(AccountID)')->from('ConComList')->whereEquals(['AccountID' => $user]);
+        $sub2a = $select->subselect()->columns('DepartmentID')->from('ConComList')->whereEquals(['AccountID' => $user]);
+        $sub2 = $select->subselect()->columns('DepartmentID')->from('Departments')->where('ParentDepartmentID IN ', $sub2a);
+
+        $select->columns(...BaseAnnouncement::selectMapping());
+        $select->from('Announcements');
+        $select->whereEquals(['Scope' => 0]);
+        $select->orWhere('(');
+        $select->catWhere('Scope = 1 AND ');
+        $select->catWhere('DepartmentID IN ', $sub1);
+        $select->catWhere(')');
+        $select->orWhere('(');
+        $select->catWhere('Scope = 2 AND (');
+        $select->catWhere('DepartmentID IN ', $sub1);
+        $select->catWhere(') OR ( DepartmentID IN', $sub2);
+        $select->catWhere(')');
+        $select->catWhere(')');
+        $select->orderBy('`PostedOn` ASC');
+
+        $data = $select->fetchAll();
         $output = array();
-        $output['type'] = 'announce_list';
-        $data = array();
-        foreach ($todos as $entry) {
-            $announce = new \App\Controller\Announcement\GetAnnouncement($this->container);
-            $result = $this->buildAnnouncement(
-                $request,
-                $response,
-                $entry['AnnouncementID'],
-                $entry['DepartmentID'],
-                $entry['PostedOn'],
-                $entry['PostedBy'],
-                $entry['Scope'],
-                $entry['Text']
-            );
-            $data[] = $announce->arrayResponse($request, $response, $result);
-        }
+        $output['type'] = 'announcement_list';
         return [
         \App\Controller\BaseController::LIST_TYPE,
         $data,

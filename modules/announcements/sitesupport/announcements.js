@@ -113,8 +113,8 @@ var announcementPage = (function(options) {
               path = 'department/' + dept + '/announcement';
             }
             apiRequest(method, path,
-              'Scope=' + scope + '&Text=' + encodeURI(text) + '&Department=' +
-              dept + '&Email=' + email)
+              'scope=' + scope + '&text=' + encodeURI(text) + '&department=' +
+              dept + '&email=' + email)
               .then(function() {
                 location.reload();
               })
