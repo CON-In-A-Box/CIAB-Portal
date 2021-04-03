@@ -737,6 +737,10 @@ SQL;
             $ret[$paramsToColumns[$key]] = $val;
         }
 
+        if (empty($ret)) {
+            throw new InvalidParameterException("No parameters not present");
+        }
+
         return $ret;
 
     }
