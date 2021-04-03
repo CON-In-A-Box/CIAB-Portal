@@ -91,7 +91,7 @@ var deadlinePage = (function(options) {
             path = 'department/' + dept + '/deadline';
           }
           apiRequest(method, path,
-            'Deadline=' + date + '&Note=' + encodeURI(note) + '&Department=' +
+            'deadline=' + date + '&note=' + encodeURI(note) + '&department=' +
             dept)
             .then(function() {
               location.reload();

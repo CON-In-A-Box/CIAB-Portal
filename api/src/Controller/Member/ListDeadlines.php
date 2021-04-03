@@ -2,14 +2,6 @@
 /*.
     require_module 'standard';
 .*/
-
-namespace App\Controller\Member;
-
-use Slim\Http\Request;
-use Slim\Http\Response;
-use Slim\Container;
-use App\Controller\IncludeResource;
-
 /**
  *  @OA\Get(
  *      tags={"members"},
@@ -61,7 +53,15 @@ use App\Controller\IncludeResource;
  *  )
  **/
 
-class ListDeadlines extends BaseMember
+namespace App\Controller\Member;
+
+use Slim\Http\Request;
+use Slim\Http\Response;
+use Slim\Container;
+use Atlas\Query\Select;
+use App\Controller\IncludeResource;
+
+class ListDeadlines extends \App\Controller\Deadline\BaseDeadline
 {
 
 
@@ -79,47 +79,19 @@ class ListDeadlines extends BaseMember
     {
         $data = $this->findMemberId($request, $response, $args, 'id');
         $user = $data['id'];
-        $sth = $this->container->db->prepare(<<<SQL
-            SELECT
-                *
-            FROM
-                `Deadlines`
-            WHERE
-                `DepartmentID` IN(
-                SELECT
-                    `DepartmentID`
-                FROM
-                    `ConComList`
-                WHERE
-                    `AccountID` = '$user'
-            ) OR `DepartmentID` IN(
-                SELECT
-                    `DepartmentID`
-                FROM
-                    `Departments`
-                WHERE
-                    `ParentDepartmentID` IN(
-                    SELECT
-                        `DepartmentID`
-                    FROM
-                        `ConComList`
-                    WHERE
-                        `AccountID` = '$user'
-                )
-            )
-            ORDER BY `Deadline` ASC
-SQL
-        );
-        $sth->execute();
-        $todos = $sth->fetchAll();
+        $select = Select::new($this->container->db);
+        $select->columns(...\App\Controller\Deadline\BaseDeadline::selectMapping());
+        $select->from('Deadlines');
+
+        $sub1 = $select->subselect()->columns('DepartmentID')->from('ConComList')->whereEquals(['AccountID' => $user]);
+        $sub2 = $select->subselect()->columns('DepartmentID')->from('Departments')->where('`ParentDepartmentID` IN ', $sub1);
+
+        $select->where('DepartmentID IN ', $sub1);
+        $select->orWhere('DepartmentID IN ', $sub1);
+        $select->orderBy('`Deadline` ASC');
+        $data = $select->fetchAll();
         $output = array();
         $output['type'] = 'deadline_list';
-        $data = array();
-        foreach ($todos as $entry) {
-            $deadline = new \App\Controller\Deadline\GetDeadline($this->container);
-            $result = $deadline->buildDeadline($request, $response, $entry['DeadlineID'], $entry['DepartmentID'], $entry['Deadline'], $entry['Note']);
-            $data[] = $deadline->arrayResponse($request, $response, $result);
-        }
         return [
         \App\Controller\BaseController::LIST_TYPE,
         $data,

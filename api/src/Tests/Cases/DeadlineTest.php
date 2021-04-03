@@ -31,8 +31,8 @@ class DeadlineTest extends CiabTestCase
             'POST',
             '/department/1/deadline',
             null,
-            ['Deadline' => $when,
-             'Note' => 'testing'],
+            ['deadline' => $when,
+             'note' => 'testing'],
             201
         );
 
@@ -71,7 +71,7 @@ class DeadlineTest extends CiabTestCase
         $when = date('Y-m-d', strtotime('+1999 years'));
         $to = date('Y-m-d', strtotime('+1999 years'));
         $this->event = $this->runSuccessJsonRequest('POST', '/event', null, ['dateFrom' => $when, 'dateTo' => $to, 'name' => 'PHPTest-a-con'], 201);
-        $this->position = $this->runSuccessJsonRequest('POST', '/member/1000/staff_membership', null, ['Department' => '1', 'Position' => '1', 'Note' => 'PHPUnit Testing', 'Event' => $this->event->id], 201);
+        $this->position = $this->runSuccessJsonRequest('POST', '/member/1000/staff_membership', null, ['Department' => '1', 'Position' => '1', 'note' => 'PHPUnit Testing', 'Event' => $this->event->id], 201);
 
     }
 
@@ -110,9 +110,9 @@ class DeadlineTest extends CiabTestCase
             'PUT',
             '/deadline/'.$this->target,
             null,
-            ['Department' => 2,
-             'Note' => 'New Message',
-             'Deadline' => "$when" ],
+            ['department' => 2,
+             'note' => 'New Message',
+             'deadline' => "$when" ],
             200
         );
 
@@ -137,7 +137,7 @@ class DeadlineTest extends CiabTestCase
             'PUT',
             '/deadline/'.$this->target,
             null,
-            ['Department' => -1],
+            ['department' => -1],
             404
         );
 
@@ -145,7 +145,15 @@ class DeadlineTest extends CiabTestCase
             'PUT',
             '/deadline/'.$this->target,
             null,
-            ['Deadline' => "not-a-date"],
+            ['nothing' => -1, 'we' => 1, 'Known' => 2],
+            400
+        );
+
+        $this->runRequest(
+            'PUT',
+            '/deadline/'.$this->target,
+            null,
+            ['deadline' => "not-a-date"],
             400
         );
 
@@ -154,7 +162,7 @@ class DeadlineTest extends CiabTestCase
             'PUT',
             '/deadline/'.$this->target,
             null,
-            ['Deadline' => "$when"],
+            ['deadline' => "$when"],
             400
         );
 
@@ -165,7 +173,7 @@ class DeadlineTest extends CiabTestCase
             'POST',
             '/department/-1/deadline',
             null,
-            ['Deadline' => $when, 'Note' => 'testing'],
+            ['deadline' => $when, 'note' => 'testing'],
             404
         );
 
@@ -173,7 +181,7 @@ class DeadlineTest extends CiabTestCase
             'POST',
             '/department/1/deadline',
             null,
-            ['Note' => 'testing'],
+            ['note' => 'testing'],
             400
         );
 
@@ -181,7 +189,7 @@ class DeadlineTest extends CiabTestCase
             'POST',
             '/department/1/deadline',
             null,
-            ['Deadline' => "$when"],
+            ['deadline' => "$when"],
             400
         );
 
@@ -189,7 +197,7 @@ class DeadlineTest extends CiabTestCase
             'POST',
             '/department/1/deadline',
             null,
-            ['Deadline' => "not-a-date", 'Note' => 'testing'],
+            ['deadline' => "not-a-date", 'note' => 'testing'],
             400
         );
 
@@ -198,7 +206,7 @@ class DeadlineTest extends CiabTestCase
             'POST',
             '/department/1/deadline',
             null,
-            ['Deadline' => "$when", 'Note' => 'testing'],
+            ['deadline' => "$when", 'note' => 'testing'],
             400
         );
 

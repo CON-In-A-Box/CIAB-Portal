@@ -30,12 +30,12 @@
  *              mediaType="multipart/form-data",
  *              @OA\Schema(
  *                  @OA\Property(
- *                      property="Deadline",
+ *                      property="deadline",
  *                      type="string",
  *                      format="date"
  *                  ),
  *                  @OA\Property(
- *                      property="Note",
+ *                      property="note",
  *                      type="string"
  *                  )
  *              )
@@ -61,6 +61,7 @@ namespace App\Controller\Deadline;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
+use Atlas\Query\Insert;
 use App\Controller\InvalidParameterException;
 
 class PostDeadline extends BaseDeadline
@@ -74,26 +75,23 @@ class PostDeadline extends BaseDeadline
         'api.post.deadline.all'];
         $this->checkPermissions($permissions);
 
-        $body = $request->getParsedBody();
-        if (!$body) {
-            throw new InvalidParameterException("Body required");
-        }
-        if (!array_key_exists('Deadline', $body)) {
-            throw new InvalidParameterException('Required \'Deadline\' parameter not present');
-        }
-        if (!array_key_exists('Note', $body)) {
-            throw new InvalidParameterException('Required \'Note\' parameter not present');
-        }
-        $date = strtotime($body['Deadline']);
+        $required = ['deadline', 'note'];
+        $body = $this->checkRequiredBody($request, $required);
+
+        $date = strtotime($body['deadline']);
         if ($date == false) {
-            throw new InvalidParameterException('\'Deadline\' parameter not valid \''.$body['Deadline'].'\'');
+            throw new InvalidParameterException('\'deadline\' parameter not valid \''.$body['deadline'].'\'');
         }
         if ($date < strtotime('now')) {
-            throw new InvalidParameterException('\'Deadline\' parameter in the past not valid \''.$body['Deadline'].'\'');
+            throw new InvalidParameterException('\'deadline\' parameter in the past not valid \''.$body['deadline'].'\'');
         }
-        $sql_date = date("Y-m-d", $date);
-        $sth = $this->container->db->prepare("INSERT INTO `Deadlines` (DepartmentID, Deadline, Note) VALUES ({$department['id']}, '$sql_date', '{$body['Note']}')");
-        $sth->execute();
+        $body['deadline'] = date("Y-m-d", $date);
+        $body['department'] = $department['id'];
+
+        $insert = Insert::new($this->container->db);
+        $insert->into('Deadlines');
+        $insert->columns(BaseDeadline::insertPayloadFromParams($body));
+        $insert->perform();
         return [
         \App\Controller\BaseController::RESOURCE_TYPE,
         [null],
