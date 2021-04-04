@@ -23,6 +23,7 @@ $delete->from('VolunteerHours')->perform();
 $delete->from('HourRedemptions')->perform();
 $delete->from('Events')->perform();
 $delete->from('AnnualCycles')->perform();
+$delete->from('AccountConfiguration')->perform();
 $delete->from('Members')->perform();
 
 $select = Select::new($db);
