@@ -107,11 +107,23 @@ namespace App\Modules\registration\Controller\Ticket;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
+use Atlas\Query\Select;
 use App\Controller\IncludeResource;
 use App\Controller\NotFoundException;
 
 class GetTicketTypes extends BaseTicket
 {
+
+    protected static $columnsToAttributes = [
+    '"ticket_type"' => 'type',
+    'BadgeTypeID' => 'id',
+    'EventID' => 'event',
+    'AvailableFrom' => 'availableFrom',
+    'AvailableTo' => 'availableTo',
+    'Cost' => 'cost',
+    'Name' => 'name',
+    'BackgroundImage' => 'backgroundImage'
+    ];
 
 
     public function __construct($container)
@@ -126,33 +138,19 @@ class GetTicketTypes extends BaseTicket
 
     public function buildResource(Request $request, Response $response, $params): array
     {
-        $sql = "SELECT * FROM `BadgeTypes` ";
-        $conditional = [];
+        $select = Select::new($this->container->db)
+            ->columns(...GetTicketTypes::selectMapping())
+            ->from('BadgeTypes');
         if (array_key_exists('event', $params)) {
-            $conditional[] = '`EventID` = '.$params['event'];
+            $select->whereEquals(['EventID' => $params['event']]);
         }
         if (array_key_exists('id', $params)) {
-            $conditional[] = '`BadgeTypeID` = '.$params['id'];
-        }
-        if (!empty($conditional)) {
-            $sql .= 'WHERE '.implode(' AND ', $conditional);
+            $select->whereEquals(['BadgeTypeID' => $params['id']]);
         }
 
-        $sth = $this->container->db->prepare($sql);
-        $sth->execute();
-        $data = $sth->fetchAll();
-        if (empty($data)) {
+        $badges = $select->fetchAll();
+        if (empty($badges)) {
             throw new NotFoundException('Badge Type Not Found');
-        }
-        $badges = [];
-        foreach ($data as $entry) {
-            $badge = $entry;
-            $badge['id'] = $entry['BadgeTypeID'];
-            unset($badge['BadgeTypeID']);
-            $badge['event'] = $entry['EventID'];
-            unset($badge['EventID']);
-            $badge['type'] = 'ticket_type';
-            $badges[] = $badge;
         }
 
         if (count($badges) > 1) {

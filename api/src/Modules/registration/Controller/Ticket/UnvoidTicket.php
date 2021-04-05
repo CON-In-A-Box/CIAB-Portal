@@ -48,6 +48,7 @@ namespace App\Modules\registration\Controller\Ticket;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
+use Atlas\Query\Update;
 
 class UnvoidTicket extends BaseTicketInclude
 {
@@ -55,15 +56,18 @@ class UnvoidTicket extends BaseTicketInclude
 
     public function buildResource(Request $request, Response $response, $params): array
     {
-        $id = $params['id'];
-        $sql = "UPDATE `Registrations` SET `VoidDate` = NULL, `VoidBy` = NULL, `VoidReason` = NULL WHERE RegistrationID = $id AND `VoidDate` IS NOT NULL";
+        $update = Update::new($this->container->db)
+            ->table('Registrations')
+            ->columns(['VoidDate' => null, 'VoidBy' => null, 'VoidReason' => null])
+            ->whereEquals(['RegistrationID' => $params['id']])
+            ->where('`VoidDate` IS NOT ', null);
 
         return $this->updateTicket(
             $request,
             $response,
             $params,
             'api.registration.ticket.unvoid',
-            $sql,
+            $update,
             'Could not update.'
         );
 

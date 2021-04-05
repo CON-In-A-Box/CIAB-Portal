@@ -74,6 +74,7 @@ namespace App\Modules\registration\Controller;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
+use Atlas\Query\Select;
 
 use App\Controller\NotFoundException;
 
@@ -96,10 +97,11 @@ class GetOpen extends BaseRegistration
             throw new NotFoundException('Event not found');
         }
 
-        $sql = "SELECT * FROM `Events` WHERE `EventID` = $event";
-        $sth = $this->container->db->prepare($sql);
-        $sth->execute();
-        $data = $sth->fetch();
+        $data = Select::new($this->container->db)
+            ->columns('*')
+            ->from('Events')
+            ->whereEquals(['EventID' => $event])
+            ->fetchOne();
         if (empty($data)) {
             throw new NotFoundException('Event not found');
         }

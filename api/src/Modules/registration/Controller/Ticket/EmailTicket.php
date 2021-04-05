@@ -86,7 +86,7 @@ class EmailTicket extends BaseTicket
             'name' => $data['member']['firstName'],
             'event' => $data['event']['name'],
             'badgeNumber' => $data['member']['id'],
-            'badgeType' => $data['ticketType']['Name'],
+            'badgeType' => $data['ticketType']['name'],
             'fullName' => $data['member']['legalFirstName'].' '.$data['member']['legalLastName'],
             'instructions' => $config['passInstructions'],
             'checkin' => $checkin,

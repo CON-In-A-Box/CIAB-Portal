@@ -45,6 +45,7 @@ namespace App\Modules\registration\Controller\Ticket;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
+use Atlas\Query\Update;
 
 class CheckinTicket extends BaseTicket
 {
@@ -52,15 +53,17 @@ class CheckinTicket extends BaseTicket
 
     public function buildResource(Request $request, Response $response, $params): array
     {
-        $id = $params['id'];
-        $sql = "UPDATE `Registrations` SET `BoardingPassGenerated` = NOW() WHERE `RegistrationID` = $id AND `BoardingPassGenerated` IS NULL AND `VoidDate` IS NULL";
+        $update = Update::new($this->container->db)
+            ->table('Registrations')
+            ->set('BoardingPassGenerated', 'NOW()')
+            ->whereEquals(['RegistrationID' => $params['id'], 'BoardingPassGenerated' => null, 'VoidDate' => null]);
         return $this->updateAndPrintTicket(
             $request,
             $response,
             $params,
-            $id,
+            $params['id'],
             'api.registration.ticket.checkin',
-            $sql,
+            $update,
             'Generation of Boarding Pass Failed.'
         );
 

@@ -7,6 +7,7 @@ namespace App\Modules\registration\Controller\Ticket;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
+use Atlas\Query\Update;
 
 class PrintQueueClaim extends BaseTicketInclude
 {
@@ -14,15 +15,19 @@ class PrintQueueClaim extends BaseTicketInclude
 
     public function buildResource(Request $request, Response $response, $params): array
     {
-        $id = $params['id'];
-        $sql = "UPDATE `Registrations` SET `PrintRequested` = NULL, `LastPrintedDate` = NOW() WHERE `RegistrationID` = $id AND `PrintRequested` IS NOT NULL";
+        $update = Update::new($this->container->db)
+            ->table('Registrations')
+            ->columns(['PrintRequested' => null])
+            ->set('LastPrintedDate', 'NOW()')
+            ->whereEquals(['RegistrationID' => $params['id']])
+            ->where('`PrintRequested` IS NOT NULL ');
 
         return $this->updateTicket(
             $request,
             $response,
             $params,
             'api.registration.ticket.print',
-            $sql,
+            $update,
             'Not in Print Queue.'
         );
 
