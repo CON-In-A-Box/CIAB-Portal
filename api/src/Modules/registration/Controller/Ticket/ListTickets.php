@@ -142,6 +142,7 @@ namespace App\Modules\registration\Controller\Ticket;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
+use Atlas\Query\Select;
 
 use App\Controller\PermissionDeniedException;
 use App\Controller\NotFoundException;
@@ -161,24 +162,22 @@ class ListTickets extends BaseTicketInclude
             throw new PermissionDeniedException();
         }
 
-        $sql = "SELECT * FROM `Registrations` WHERE ( `RegisteredByID` = $aid OR `AccountID` = $aid)";
+        $select = Select::new($this->container->db)
+            ->columns(...BaseTicket::selectMapping())
+            ->from('Registrations')->where(' (')
+            ->catWhere(' RegisteredByID = ', $aid)
+            ->catWhere(' OR AccountID = ', $aid)
+            ->catWhere(') ');
         if (array_key_exists('event', $params)) {
-            $sql .= ' AND `EventID` = '.$params['event'];
+            $select->whereEquals(['EventID' => $params['event']]);
         }
         $query = $request->getQueryParams();
         if (!array_key_exists('showVoid', $query) || !boolval($query['showVoid'])) {
-            $sql .= " AND `VoidDate` IS NULL";
+            $select->whereEquals(['VoidDate' => null]);
         }
-
-        $sth = $this->container->db->prepare($sql);
-        $sth->execute();
-        $data = $sth->fetchAll();
-        if (empty($data)) {
+        $tickets = $select->fetchAll();
+        if (empty($tickets)) {
             throw new NotFoundException('Ticket Not Found');
-        }
-        $tickets = [];
-        foreach ($data as $index => $ticket) {
-            $tickets[] = $this->buildTicket($data[$index], $ticket);
         }
         if (count($tickets) > 1) {
             $output = ['type' => 'ticket_list'];

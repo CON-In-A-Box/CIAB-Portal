@@ -48,6 +48,7 @@ namespace App\Modules\registration\Controller\Ticket;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
+use Atlas\Query\Select;
 
 use App\Controller\NotFoundException;
 
@@ -62,21 +63,20 @@ class GetTicket extends BaseTicketInclude
         if (is_array($aid)) {
             return $aid;
         }
-        $sql = "SELECT * FROM `Registrations` WHERE  RegistrationID = $id";
+        $select = Select::new($this->container->db)
+            ->columns(...BaseTicket::selectMapping())
+            ->from('Registrations')
+            ->whereEquals(['RegistrationID' => $id]);
 
         $query = $request->getQueryParams();
         if (!array_key_exists('showVoid', $query) || !boolval($query['showVoid'])) {
-            $sql .= " AND `VoidDate` IS NULL";
+            $select->whereEquals(['VoidDate' => null]);
         }
 
-        $sth = $this->container->db->prepare($sql);
-        $sth->execute();
-        $data = $sth->fetchAll();
-        if (empty($data)) {
+        $ticket = $select->fetchOne();
+        if (empty($ticket)) {
             throw new NotFoundException('Ticket Not Found');
         }
-
-        $ticket = $this->buildTicket($data[0], $data[0]);
 
         return [
         \App\Controller\BaseController::RESOURCE_TYPE,

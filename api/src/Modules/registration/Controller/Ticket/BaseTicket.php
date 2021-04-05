@@ -252,6 +252,8 @@ namespace App\Modules\registration\Controller\Ticket;
 use Slim\Container;
 use Slim\Http\Request;
 use Slim\Http\Response;
+use Atlas\Query\Select;
+use Atlas\Query\Update;
 use App\Modules\registration\Controller\BaseRegistration;
 use App\Controller\PermissionDeniedException;
 use App\Controller\NotFoundException;
@@ -262,6 +264,28 @@ abstract class BaseTicket extends BaseRegistration
 
     public $id = 0;
 
+    protected static $columnsToAttributes = [
+    '"ticket"' => 'type',
+    'RegistrationID' => 'id' ,
+    'AccountID' => 'member',
+    'BadgeDependentOnID' => 'badgeDependentOn',
+    'BadgeName' => 'badgeName',
+    'BadgesPickedUp' => 'badgesPickedUp',
+    'BadgeTypeID' => 'ticketType',
+    'EmergencyContact' => 'emergencyContact',
+    'EventID' => 'event',
+    'RegisteredByID' => 'registeredBy',
+    'RegistrationDate' => 'registrationDate',
+    'BoardingPassGenerated' => 'boardingPassGenerated',
+    'PrintRequested' => 'printRequested' ,
+    'LastPrintedDate' => 'lastPrintedDate',
+    'PrintRequestIp' => 'printRequestIp',
+    'Note' => 'note',
+    'VoidDate' => 'voidDate',
+    'VoidBy' => 'voidBy',
+    'VoidReason' => 'voidReason'
+    ];
+
 
     public function __construct(Container $container)
     {
@@ -270,45 +294,18 @@ abstract class BaseTicket extends BaseRegistration
     }
 
 
-    public function buildTicket($base, $ticket)
-    {
-        $ticket['type'] = 'ticket';
-        foreach ($base as $key => $value) {
-            if (!ctype_lower($key[0])) {
-                $ticket[lcfirst($key)] = $value;
-                unset($ticket[$key]);
-                $key = lcfirst($key);
-            }
-            $key2 = str_replace('ID', '', $key);
-            if ($key2 != $key) {
-                $ticket[$key2] = $value;
-                unset($ticket[$key]);
-            }
-        }
-        $ticket['ticketType'] = $ticket['badgeType'];
-        unset($ticket['badgeType']);
-        $ticket['id'] = $ticket['registration'];
-        unset($ticket['registration']);
-        $ticket['member'] = $ticket['account'];
-        unset($ticket['account']);
-
-        return $ticket;
-
-    }
-
-
     public function getAccount($id, Request $request, Response $response, $permission)
     {
         $user = $request->getAttribute('oauth2-token')['user_id'];
-
-        $sql = "SELECT `AccountID` FROM `Registrations` WHERE `RegistrationID` = $id";
-        $sth = $this->container->db->prepare($sql);
-        $sth->execute();
-        $data = $sth->fetchAll();
+        $data = Select::new($this->container->db)
+            ->columns('AccountID')
+            ->from('Registrations')
+            ->whereEquals(['RegistrationID' => $id])
+            ->fetchOne();
         if (!$data) {
             throw new NotFoundException('Registration Not Found');
         }
-        $aid = $data[0]['AccountID'];
+        $aid = $data['AccountID'];
 
         if ($user != $aid && $permission &&
             !\ciab\RBAC::havePermission($permission)) {
@@ -323,21 +320,23 @@ abstract class BaseTicket extends BaseRegistration
     public function printBadge($request, $id)
     {
         $ip = \MyPDO::quote($_SERVER['REMOTE_ADDR']);
-        $sql = "UPDATE `Registrations` SET `PrintRequested` = NOW(), `PrintRequestIp` = $ip  WHERE `RegistrationID` = $id AND `VoidDate` IS NULL";
-        $sth = $this->container->db->prepare($sql);
-        $sth->execute();
+        Update::new($this->container->db)
+            ->table('Registrations')
+            ->columns(['PrintRequestIp' => $ip])
+            ->set('PrintRequested', 'NOW()')
+            ->whereEquals(['RegistrationID' => $id, 'VoidDate' => null])
+            ->perform();
 
     }
 
 
-    protected function updateTicket($request, $response, $params, $rbac, $sql, $error, $getResult = true)
+    protected function updateTicket($request, $response, $params, $rbac, $db_request, $error, $getResult = true)
     {
         if ($rbac) {
             $this->checkPermissions([$rbac]);
         }
-        $sth = $this->container->db->prepare($sql);
-        $sth->execute();
-        if ($sth->rowCount() == 0) {
+        $result = $db_request->perform();
+        if ($result->rowCount() == 0) {
             throw new ConflictException($error);
         }
 
@@ -357,7 +356,7 @@ abstract class BaseTicket extends BaseRegistration
     }
 
 
-    protected function updateAndPrintTicket($request, $response, $params, $id, $rbac, $sql, $error)
+    protected function updateAndPrintTicket($request, $response, $params, $id, $rbac, $db_request, $error)
     {
         $this->getAccount($id, $request, $response, $rbac);
 
@@ -369,7 +368,7 @@ abstract class BaseTicket extends BaseRegistration
             $response,
             $params,
             null,
-            $sql,
+            $db_request,
             $error,
             false
         );
@@ -385,10 +384,11 @@ abstract class BaseTicket extends BaseRegistration
 
     protected function verifyTicket($id)
     {
-        $sql = "SELECT * FROM `Registrations` WHERE `RegistrationID` = $id AND `VoidDate` IS NULL";
-        $sth = $this->container->db->prepare($sql);
-        $sth->execute();
-        $data = $sth->fetch();
+        $data = Select::new($this->container->db)
+            ->columns('*')
+            ->from('Registrations')
+            ->whereEquals(['RegistrationID' => $id, 'VoidDate' => null])
+            ->fetchOne();
         if (!$data) {
             throw new NotFoundException('Registration Not Found');
         }

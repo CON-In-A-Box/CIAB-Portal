@@ -37,6 +37,7 @@ namespace App\Modules\registration\Controller\Ticket;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
+use Atlas\Query\Delete;
 
 use App\Controller\NotFoundException;
 
@@ -49,10 +50,11 @@ class DeleteTicket extends BaseTicket
         $permissions = ['api.registration.ticket.delete'];
         $this->checkPermissions($permissions);
         $id = $params['id'];
-        $sql = "DELETE FROM `Registrations` WHERE RegistrationID = $id";
-        $sth = $this->container->db->prepare($sql);
-        $sth->execute();
-        if ($sth->rowCount() == 0) {
+        $result = Delete::new($this->container->db)
+            ->from('Registrations')
+            ->whereEquals(['RegistrationID' => $id])
+            ->perform();
+        if ($result->rowCount() == 0) {
             throw new NotFoundException('Ticket Not Found');
         }
 

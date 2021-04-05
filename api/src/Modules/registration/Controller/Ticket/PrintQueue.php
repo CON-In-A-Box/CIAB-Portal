@@ -7,34 +7,35 @@ namespace App\Modules\registration\Controller\Ticket;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
+use Atlas\Query\Select;
 
 class PrintQueue extends BaseTicket
 {
 
+    protected static $columnsToAttributes = [
+    '"print_job"' => 'type',
+    'RegistrationID' => 'id'
+    ];
+
 
     public function buildResource(Request $request, Response $response, $params): array
     {
-        $sql = "SELECT `RegistrationID` FROM `Registrations` WHERE `PrintRequested` IS NOT NULL";
+        $select = Select::new($this->container->db);
+        $select->columns(...PrintQueue::selectMapping())
+            ->from('Registrations')
+            ->where('`PrintRequested` IS NOT NULL');
         if (array_key_exists('event', $params)) {
             $event = $params['event'];
         } else {
             $event = 'current';
         }
         $event = $this->getEvent($event)['id'];
-        $sql .= ' AND `EventID` = '.$event;
+        $select->whereEquals(['EventID' => $event]);
 
-        $target = new \App\Controller\Event\GetEvent($this->container);
-        $target->buildResource($request, $response, ['id' => $event])[1];
-
-        $sth = $this->container->db->prepare($sql);
-        $sth->execute();
-        $data = $sth->fetchAll();
+        $data = $select->fetchAll();
         $tickets = [];
         $path = $request->getUri()->getBaseUrl();
-        foreach ($data as $index => $ticket) {
-            $ticket['type'] = 'print_job';
-            $ticket['id'] = $ticket['RegistrationID'];
-            unset($ticket['RegistrationID']);
+        foreach ($data as $ticket) {
             $ticket['claim'] = [
             'method' => 'claim',
             'href' => $path.'/registration/ticket/printqueue/claim/'.$ticket['id'],

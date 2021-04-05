@@ -45,6 +45,7 @@ namespace App\Modules\registration\Controller\Ticket;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
+use Atlas\Query\Update;
 
 class PickupTicket extends BaseTicket
 {
@@ -58,14 +59,17 @@ class PickupTicket extends BaseTicket
             return $aid;
         }
 
-        $sql = "UPDATE `Registrations` SET `BadgesPickedUp` = 1 WHERE `RegistrationID` = $id AND `VoidDate` IS NULL;";
+        $update = Update::new($this->container->db)
+            ->table('Registrations')
+            ->columns(['BadgesPickedUp' => 1])
+            ->whereEquals(['RegistrationID' => $id, 'VoidDate' => null]);
 
         $rc = $this->updateTicket(
             $request,
             $response,
             $params,
             null,
-            $sql,
+            $update,
             'Pickup Ticket report Failed.',
             false
         );

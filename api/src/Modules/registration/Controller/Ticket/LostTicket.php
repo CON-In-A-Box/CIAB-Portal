@@ -45,6 +45,7 @@ namespace App\Modules\registration\Controller\Ticket;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
+use Atlas\Query\Update;
 
 class LostTicket extends BaseTicket
 {
@@ -52,15 +53,17 @@ class LostTicket extends BaseTicket
 
     public function buildResource(Request $request, Response $response, $params): array
     {
-        $id = $params['id'];
-        $sql = "UPDATE `Registrations` SET `BadgesPickedUp` = `BadgesPickedUp` + 1  WHERE `RegistrationID` = $id AND `VoidDate` IS NULL;";
+        $update = Update::new($this->container->db)
+            ->table('Registrations')
+            ->set('BadgesPickedUp', '`BadgesPickedUp` + 1')
+            ->whereEquals(['RegistrationID' => $params['id'], 'VoidDate' => null]);
         return $this->updateAndPrintTicket(
             $request,
             $response,
             $params,
-            $id,
+            $params['id'],
             'api.registration.ticket.lost',
-            $sql,
+            $update,
             'Lost Ticket report Failed.'
         );
 
