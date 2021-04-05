@@ -8,6 +8,7 @@ namespace App\Controller\Permissions;
 use Slim\Container;
 use Slim\Http\Request;
 use Slim\Http\Response;
+use Atlas\Query\Select;
 
 abstract class DeadlinePermission extends BasePermission
 {
@@ -24,19 +25,17 @@ abstract class DeadlinePermission extends BasePermission
     public function customizeDeadlineRBAC($instance)
     {
         $positions = [];
-        $sql = "SELECT `PositionID`, `Name` FROM `ConComPositions` ORDER BY `PositionID` ASC";
-        $result = $this->container->db->prepare($sql);
-        $result->execute();
-        $value = $result->fetch();
-        while ($value !== false) {
+        $select = Select::new($this->container->db);
+        $select->columns('PositionID', 'Name')->from('ConComPositions')->orderBy('`PositionID` ASC');
+        $values = $select->fetchAll();
+        foreach ($values as $value) {
             $positions[intval($value['PositionID'])] = $value['Name'];
-            $value = $result->fetch();
         }
 
-        $result = $this->container->db->prepare("SELECT `DepartmentID` FROM `Departments`");
-        $result->execute();
-        $value = $result->fetch();
-        while ($value !== false) {
+        $select = Select::new($this->container->db);
+        $select->columns('DepartmentID')->from('Departments');
+        $values = $select->fetchAll();
+        foreach ($values as $value) {
             $perm_get = 'api.get.deadline.'.$value['DepartmentID'];
             $perm_del = 'api.delete.deadline.'.$value['DepartmentID'];
             $perm_pos = 'api.post.deadline.'.$value['DepartmentID'];
@@ -53,7 +52,6 @@ abstract class DeadlinePermission extends BasePermission
             } catch (Exception\InvalidArgumentException $e) {
                 error_log($e);
             }
-            $value = $result->fetch();
         }
 
     }

@@ -2,7 +2,6 @@
 /*.
     require_module 'standard';
 .*/
-
 /**
  *  @OA\Schema(
  *      schema="configuration",
@@ -57,7 +56,9 @@ namespace App\Controller;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
-
+use Atlas\Query\Select;
+use Atlas\Query\Insert;
+use Atlas\Query\Update;
 use App\Controller\InvalidParameterException;
 use App\Controller\NotFoundException;
 use App\Controller\ConflictException;
@@ -68,58 +69,52 @@ trait TraitConfiguration
 
     private function checkConfigValue($table, $field): bool
     {
-        $sql = <<<SQL
-SELECT
-    (SELECT COUNT(*) FROM `$table` WHERE `Field` = '$field') AS f1,
-    (SELECT COUNT(*) FROM `ConfigurationField` WHERE `TargetTable` = '$table' AND `Field` = '$field') AS f2
-SQL;
-        $sth = $this->container->db->prepare($sql);
-        $sth->execute();
-        $data = $sth->fetch();
+        $select = Select::new($this->container->db);
+        $select->columns(
+            $select->subselect()->columns('COUNT(*)')->from($table)->whereEquals(['Field' => $field])->as('f1')->getStatement()
+        );
+        $select->columns(
+            $select->subselect()->columns('COUNT(*)')->from('ConfigurationField')->whereEquals(['TargetTable' => $table, 'Field' => $field])->as('f2')->getStatement()
+        );
+        $data = $select->fetchOne();
         return intval($data['f1']) || intval($data['f2']);
 
     }
 
 
-    private function getConfiguration($args, $table, $extendCondition = '', $extendSQL = ''): array
+    private function getConfiguration($params, $table, $condition = null): array
     {
-        if (array_key_exists('key', $args)) {
-            if (!$this->checkConfigValue($table, $args['key'])) {
-                throw new NotFoundException("Field '${args['key']}' not present in '$table'");
-            }
-            $target = "AND cf.Field = '{$args['key']}'";
+        $select = Select::new($this->container->db);
+        $select->columns('cf.*');
+        $select->columns('(CASE WHEN a.Value IS NULL THEN cf.InitialValue ELSE a.Value END) AS `Value`');
+        $select->from('ConfigurationField cf');
+        if ($condition === null) {
+            $select->join('LEFT', "$table a", 'a.Field = cf.Field');
         } else {
-            $target = '';
+            $select->join('LEFT', "$table a", $condition.' AND a.Field = cf.Field');
         }
-        $sql = <<<SQL
-            SELECT
-                cf.*,
-                (
-                    CASE WHEN a.Value IS NULL THEN cf.InitialValue ELSE a.Value
-                    END
-                ) AS `Value`
-            FROM
-                `ConfigurationField` cf
-            LEFT JOIN `$table` a ON
-                a.Field = cf.Field $extendCondition
-            WHERE
-                cf.TargetTable = '$table'
-                $target
-            $extendSQL
-            ORDER BY `Field`;
-SQL;
-        $sth = $this->container->db->prepare($sql);
-        $sth->execute();
-        $data = $sth->fetchAll();
+        $select->whereEquals(['cf.TargetTable' => $table]);
+        if (array_key_exists('key', $params)) {
+            if (!$this->checkConfigValue($table, $params['key'])) {
+                throw new NotFoundException("Field '${params['key']}' not present in '$table'");
+            }
+            $select->whereEquals(['cf.Field' => $params['key']]);
+        }
+
+        if (method_exists($this, 'buildExtendedConfQuery')) {
+            $this->buildExtendedConfQuery($select, $params);
+        }
+
+        $select->orderBy('Field');
+        $data = $select->fetchAll();
         $result = [];
         foreach ($data as $entry) {
             $options = null;
             if ($entry['Type'] == 'select') {
                 $options = [];
-                $sql = "SELECT Name FROM `ConfigurationOption` WHERE Field = '{$entry['Field']}'";
-                $sth = $this->container->db->prepare($sql);
-                $sth->execute();
-                $opts = $sth->fetchAll();
+                $subsel = Select::new($this->container->db);
+                $subsel->columns('Name')->from('ConfigurationOption')->whereEquals(['Field' => $entry['Field']]);
+                $opts = $subsel->fetchAll();
                 foreach ($opts as $o) {
                     $options[] = $o['Name'];
                 }
@@ -155,10 +150,9 @@ SQL;
 
     private function checkSelect($value, $field)
     {
-        $sql = "SELECT * FROM `ConfigurationOption` WHERE Field = '$field' AND Name = '$value';";
-        $sth = $this->container->db->prepare($sql);
-        $sth->execute();
-        if ($sth->fetch() === false) {
+        $select = Select::new($this->container->db);
+        $select->columns('*')->from('ConfigurationOption')->whereEquals(['Field' => $field, 'Name' => $value]);
+        if ($select->fetchOne() === null) {
             return null;
         }
         return $value;
@@ -168,14 +162,13 @@ SQL;
 
     private function verifyValue($value, $field)
     {
-        $sql = "SELECT Type FROM `ConfigurationField` WHERE Field = '$field'";
-        $sth = $this->container->db->prepare($sql);
-        $sth->execute();
-        $data = $sth->fetchAll();
+        $select = Select::new($this->container->db);
+        $select->columns('Type')->from('ConfigurationField')->whereEquals(['Field' => $field]);
+        $data = $select->fetchOne();
         if ($data === false || empty($data)) {
             return $value;
         }
-        switch ($data[0]['Type']) {
+        switch ($data['Type']) {
             case 'boolean':
                 return $this->checkBool($value);
             case 'integer':
@@ -189,7 +182,7 @@ SQL;
     }
 
 
-    private function putConfiguration(Request $request, Response $response, $args, $table, $data)
+    private function putConfiguration(Request $request, Response $response, $params, $table, $data)
     {
         if (empty($data)) {
             throw new InvalidParameterException('No update parameter present');
@@ -203,19 +196,20 @@ SQL;
 
         $data['Value'] = $this->verifyValue($data['Value'], $data['Field']);
 
-        $columns = implode(',', array_keys($data));
-        $values = "'".implode('\', \'', array_values($data))."'";
-        $value = $data['Value'];
-
-        $sql = <<<SQL
-            INSERT INTO `$table` ($columns)
-            VALUES ($values)
-            ON DUPLICATE KEY UPDATE
-                Value = '$value';
-SQL;
-        $sth = $this->container->db->prepare($sql);
+        $select = Select::new($this->container->db);
+        $select->columns('Field')->from($table)->whereEquals(['Field' => $data['Field']]);
+        $exists = $select->fetchOne();
+        if ($exists === null) {
+            $action = Insert::new($this->container->db);
+            $action->into($table);
+        } else {
+            $action = Update::new($this->container->db);
+            $action->table($table);
+            $action->whereEquals(['Field' => $data['Field']]);
+        }
+        $action->columns($data);
         try {
-            $sth->execute();
+            $action->perform();
         } catch (\Exception $e) {
             throw new ConflictException('Failed to update configuration.');
         }

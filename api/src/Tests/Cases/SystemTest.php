@@ -164,15 +164,25 @@ class SystemTest extends CiabTestCase
             $this->assertSame($data->value, $default[0]);
         }
 
-        $this->runSuccessJsonRequest(
-            'PUT',
-            '/admin/configuration',
-            null,
-            ['Value' => "$value", 'Field' => "$resource"]
-        );
+        if ($result !== null) {
+            $this->runSuccessJsonRequest(
+                'PUT',
+                '/admin/configuration',
+                null,
+                ['Value' => "$value", 'Field' => "$resource"]
+            );
 
-        $data = $this->runSuccessJsonRequest('GET', '/admin/configuration/'.$resource);
-        $this->assertSame($data->value, $result);
+            $data = $this->runSuccessJsonRequest('GET', '/admin/configuration/'.$resource);
+            $this->assertSame($data->value, $result);
+        } else {
+            $this->runRequest(
+                'PUT',
+                '/admin/configuration',
+                null,
+                ['Value' => "$value", 'Field' => "$resource"],
+                409
+            );
+        }
 
         $sql = "DELETE FROM `ConfigurationOption`  WHERE `Field` = '$resource'";
         $sth = $this->container->db->prepare($sql);
@@ -196,7 +206,7 @@ class SystemTest extends CiabTestCase
         $this->systemConfigTypes('list', '1,2,3', '4,5,6', '4,5,6');
         $this->systemConfigTypes('list', '1,2,3', 'banana', 'banana');
         $this->systemConfigTypes('select', ['1','2','3'], '3', '3');
-        $this->systemConfigTypes('select', ['1','2','3'], '4', '');
+        $this->systemConfigTypes('select', ['1','2','3'], '4', null);
 
     }
 

@@ -103,6 +103,7 @@ use Slim\Container;
 use Slim\Http\Response;
 use Slim\Http\Request;
 use Slim\Http\Environment;
+use Atlas\Query\Select;
 
 require_once __DIR__.'/../../../backends/RBAC.inc';
 
@@ -454,53 +455,19 @@ abstract class BaseController
 
     public function getDepartment($id)
     {
-        $sql = <<<SQL
-            SELECT
-                *,
-                (
-                SELECT
-                    COUNT(DepartmentID)
-                FROM
-                    `Departments` d2
-                WHERE
-                    d2.ParentDepartmentID = d1.DepartmentID AND NOT NAME = 'Historical Placeholder'
-            ) AS childCount,
-            (
-                SELECT
-                    GROUP_CONCAT(Email)
-                FROM
-                    EMails
-                WHERE
-                    DepartmentID = d1.DepartmentID
-            ) AS email
-            FROM
-                Departments d1
-            WHERE
-SQL;
+        $select = Select::new($this->container->db);
+        $select->columns('*');
+        $select->columns($select->subselect()->columns('COUNT(DepartmentID)')->from('`Departments` d2')->whereEquals(['d2.ParentDepartmentID' => 'd1.DepartmentID'])->andWhere("NOT NAME = 'Historical Placeholder'")->as('childCount')->getStatement());
+        $select->columns($select->subselect()->columns('GROUP_CONCAT(Email)')->from('EMails')->whereEquals(['DepartmentID' => 'd1.DepartmentID'])->as('email')->getStatement());
+        $select->from('Departments d1');
         if ($id !== null) {
-            $sql .= "(DepartmentID = '$id' OR Name = '$id') AND \n";
+            $select->where("(DepartmentID = '$id' OR Name = '$id')");
         }
-        $sql .= <<<SQL
-                DepartmentID NOT IN (
-                    SELECT
-                        `DepartmentID`
-                    FROM
-                        `Departments`
-                    WHERE
-                        Name = 'Historical Placeholder'
-                )
-                AND ParentDepartmentID NOT IN (
-                    SELECT
-                        `DepartmentID`
-                    FROM
-                        `Departments`
-                    WHERE
-                        Name = 'Historical Placeholder'
-                );
-SQL;
-        $result = $this->container->db->prepare($sql);
-        $result->execute();
-        $data = $result->fetchAll();
+        $placeholders = $select->subselect()->columns('DepartmentID')->from('Departments')->whereEquals(['Name' => 'Historical Placeholder']);
+        $select->where('DepartmentID NOT IN ', $placeholders);
+        $select->where('ParentDepartmentID NOT IN ', $placeholders);
+        $data = $select->fetchAll();
+
         $final = [];
         if (empty($data)) {
             throw new NotFoundException("Department '$id' Not Found");
@@ -735,6 +702,10 @@ SQL;
 
         foreach ($params as $key => $val) {
             $ret[$paramsToColumns[$key]] = $val;
+        }
+
+        if (empty($ret)) {
+            throw new InvalidParameterException("No parameters not present");
         }
 
         return $ret;

@@ -19,13 +19,13 @@
  *              mediaType="multipart/form-data",
  *              @OA\Schema(
  *                  @OA\Property(
- *                      property="Deadline",
+ *                      property="deadline",
  *                      type="string",
  *                      format="date",
  *                      nullable=true
  *                  ),
  *                  @OA\Property(
- *                      property="Note",
+ *                      property="note",
  *                      type="string",
  *                      nullable=true
  *                  )
@@ -52,6 +52,8 @@ namespace App\Controller\Deadline;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
+use Atlas\Query\Update;
+use Atlas\Query\Select;
 use App\Controller\NotFoundException;
 use App\Controller\InvalidParameterException;
 
@@ -61,13 +63,12 @@ class PutDeadline extends BaseDeadline
 
     public function buildResource(Request $request, Response $response, $params): array
     {
-        $sth = $this->container->db->prepare("SELECT * FROM `Deadlines` WHERE `DeadlineID` = '".$params['id']."'");
-        $sth->execute();
-        $deadlines = $sth->fetchAll();
-        if (empty($deadlines)) {
+        $select = Select::new($this->container->db);
+        $select->columns('*')->from('Deadlines')->whereEquals(['DeadlineID' => $params['id']]);
+        $target = $select->fetchOne();
+        if (empty($target)) {
             throw new NotFoundException('Deadline Not Found');
         }
-        $target = $deadlines[0];
 
         $department = $target['DepartmentID'];
         $permissions = ['api.put.deadline.'.$department,
@@ -79,35 +80,31 @@ class PutDeadline extends BaseDeadline
             throw new InvalidParameterException("Body required");
         }
 
-        if (array_key_exists('Department', $body)) {
-            $department = $this->getDepartment($body['Department']);
-            $target['DepartmentID'] = $department['id'];
+        if (array_key_exists('department', $body)) {
+            $department = $this->getDepartment($body['department']);
+            $body['department'] = $department['id'];
+
+            $permissions = ['api.put.deadline.'.$department['id'],
+            'api.put.deadline.all'];
+            $this->checkPermissions($permissions);
         }
 
-        if (array_key_exists('Deadline', $body)) {
-            $date = strtotime($body['Deadline']);
+        if (array_key_exists('deadline', $body)) {
+            $date = strtotime($body['deadline']);
             if ($date == false) {
-                throw new InvalidParameterException('\'Deadline\' parameter not valid \''.$body['Deadline'].'\'');
+                throw new InvalidParameterException('\'deadline\' parameter not valid \''.$body['deadline'].'\'');
             }
             if ($date < strtotime('now')) {
-                throw new InvalidParameterException('\'Deadline\' parameter in the past not valid \''.$body['Deadline'].'\'');
+                throw new InvalidParameterException('\'deadline\' parameter in the past not valid \''.$body['deadline'].'\'');
             }
-            $target['Deadline'] = date("Y-m-d", $date);
-        }
-        if (array_key_exists('Note', $body)) {
-            $target['Note'] = $body['Note'];
+            $body['deadline'] = date("Y-m-d", $date);
         }
 
-        $sth = $this->container->db->prepare(<<<SQL
-            UPDATE `Deadlines`
-            SET
-                `DepartmentID` = {$target['DepartmentID']},
-                `Deadline` = '{$target['Deadline']}',
-                `Note` = '{$target['Note']}'
-            WHERE `DeadlineID` = '{$params['id']}';
-SQL
-        );
-        $sth->execute();
+        $update = Update::new($this->container->db);
+        $update->table('Deadlines');
+        $update->columns(BaseDeadline::insertPayloadFromParams($body, false));
+        $update->whereEquals(['DeadlineID' => $params['id']]);
+        $update->perform();
         return [null];
 
     }

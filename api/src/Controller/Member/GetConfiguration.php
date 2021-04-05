@@ -122,7 +122,7 @@ class GetConfiguration extends BaseMember
             throw new PermissionDeniedException();
         }
 
-        $result = $this->getConfiguration($args, 'AccountConfiguration', "AND a.AccountId = {$data['id']}");
+        $result = $this->getConfiguration($args, 'AccountConfiguration', "a.AccountId = {$data['id']}");
 
         if (count($result) > 1) {
             $output = [];

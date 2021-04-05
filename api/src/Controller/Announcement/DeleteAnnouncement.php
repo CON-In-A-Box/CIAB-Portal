@@ -36,6 +36,7 @@ namespace App\Controller\Announcement;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
+use Atlas\Query\Delete;
 use App\Controller\NotFoundException;
 
 class DeleteAnnouncement extends BaseAnnouncement
@@ -46,15 +47,10 @@ class DeleteAnnouncement extends BaseAnnouncement
     {
         $target = $this->getAnnouncement($args['id']);
         $permissions = ['api.delete.announcement.all',
-        'api.delete.announcement.'.$target['DepartmentID']];
+        'api.delete.announcement.'.$target['department']];
         $this->checkPermissions($permissions);
-
-        $sth = $this->container->db->prepare(<<<SQL
-            DELETE FROM `Announcements`
-            WHERE `AnnouncementID` = '{$target['AnnouncementID']}';
-SQL
-        );
-        $sth->execute();
+        $delete = Delete::new($this->container->db);
+        $delete->from('Announcements')->whereEquals(['AnnouncementID' => $target['id']])->perform();
         return [
         \App\Controller\BaseController::RESULT_TYPE,
         [null],

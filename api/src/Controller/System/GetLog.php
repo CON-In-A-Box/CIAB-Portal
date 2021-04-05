@@ -83,6 +83,7 @@ namespace App\Controller\System;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
+use Atlas\Query\Select;
 
 class GetLog extends BaseSystem
 {
@@ -103,10 +104,9 @@ class GetLog extends BaseSystem
         $this->checkPermissions($permissions);
 
         $this->api_type = 'log';
-        $sql = "SELECT MAX(LogEntryID) as mid FROM ActivityLog;";
-        $sth = $this->container->db->prepare($sql);
-        $sth->execute();
-        $data = $sth->fetch();
+        $select = Select::new($this->container->db);
+        $select->columns('MAX(LogEntryID) as mid')->from('ActivityLog');
+        $data = $select->fetchOne();
         $max = intval($data['mid']);
         $limit = 1000;
         if (array_key_exists('lines', $params)) {
@@ -114,12 +114,11 @@ class GetLog extends BaseSystem
         }
         $max = $max - $limit;
 
-        $sql = <<<SQL
-            SELECT * FROM ( SELECT * FROM ActivityLog WHERE LogEntryID > $max)   sub ORDER BY LogEntryID DESC;
-SQL;
-        $sth = $this->container->db->prepare($sql);
-        $sth->execute();
-        $data = $sth->fetchAll();
+        $select = Select::new($this->container->db);
+        $select->columns('*')->from(
+            $select->subselect()->columns('*')->from('ActivityLog')->where('LogEntryID > ', $max)->as('sub')->getStatement()
+        )->orderBy('LogEntryID DESC');
+        $data = $select->fetchAll();
 
         foreach ($data as $idx => $line) {
             $data[$idx]['Query'] = $this->filterLog($line['Query']);

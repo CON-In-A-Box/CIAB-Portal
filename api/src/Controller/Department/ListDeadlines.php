@@ -2,14 +2,6 @@
 /*.
     require_module 'standard';
 .*/
-
-namespace App\Controller\Department;
-
-use Slim\Http\Request;
-use Slim\Http\Response;
-use App\Controller\NotFoundException;
-use App\Controller\IncludeResource;
-
 /**
  *  @OA\Get(
  *      tags={"departments"},
@@ -55,6 +47,14 @@ use App\Controller\IncludeResource;
  *  )
  **/
 
+namespace App\Controller\Department;
+
+use Slim\Http\Request;
+use Slim\Http\Response;
+use Atlas\Query\Select;
+use App\Controller\NotFoundException;
+use App\Controller\IncludeResource;
+
 class ListDeadlines extends \App\Controller\Deadline\BaseDeadline
 {
 
@@ -76,19 +76,14 @@ class ListDeadlines extends \App\Controller\Deadline\BaseDeadline
         'api.get.deadline.'.$department['id']];
         $this->checkPermissions($permissions);
 
-        $sth = $this->container->db->prepare(
-            "SELECT * FROM `Deadlines` WHERE DepartmentID = '".$department['id']."' ORDER BY `Deadline` ASC"
-        );
-        $sth->execute();
-        $todos = $sth->fetchAll();
+        $select = Select::new($this->container->db);
+        $select->columns(...\App\Controller\Deadline\BaseDeadline::selectMapping());
+        $select->from('Deadlines')->whereEquals(['DepartmentID' => $department['id']]);
+        $select->orderBy('`Deadline` ASC');
+        $data = $select->fetchAll();
+
         $output = array();
         $output['type'] = 'deadline_list';
-        $data = array();
-        foreach ($todos as $entry) {
-            $deadline = new \App\Controller\Deadline\GetDeadline($this->container);
-            $result = $deadline->buildDeadline($request, $response, $entry['DeadlineID'], $entry['DepartmentID'], $entry['Deadline'], $entry['Note']);
-            $data[] = $deadline->arrayResponse($request, $response, $result);
-        }
         return [
         \App\Controller\BaseController::LIST_TYPE,
         $data,

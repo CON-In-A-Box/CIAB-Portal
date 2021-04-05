@@ -40,6 +40,7 @@ namespace App\Controller\Deadline;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
+use Atlas\Query\Select;
 use App\Controller\NotFoundException;
 use \App\Controller\IncludeResource;
 
@@ -57,27 +58,22 @@ class GetDeadline extends BaseDeadline
     }
 
 
-    public function buildResource(Request $request, Response $response, $args): array
+    public function buildResource(Request $request, Response $response, $params): array
     {
-        $sth = $this->container->db->prepare("SELECT * FROM `Deadlines` WHERE `DeadlineID` = '".$args['id']."'");
-        $sth->execute();
-        $deadlines = $sth->fetchAll();
-        if (empty($deadlines)) {
+        $select = Select::new($this->container->db);
+        $select->columns(...BaseDeadline::selectMapping());
+        $select->from('Deadlines')->whereEquals(['DeadlineID' => $params['id']]);
+        $deadline = $select->fetchOne();
+        if (empty($deadline)) {
             throw new NotFoundException('Deadline Not Found');
         }
-        $permissions = ['api.get.deadline.'.$deadlines[0]['DepartmentID'],
+        $permissions = ['api.get.deadline.'.$deadline['department'],
         'api.get.deadline.all'];
         $this->checkPermissions($permissions);
         return [
         \App\Controller\BaseController::RESOURCE_TYPE,
-        $this->buildDeadline(
-            $request,
-            $response,
-            $deadlines[0]['DeadlineID'],
-            $deadlines[0]['DepartmentID'],
-            $deadlines[0]['Deadline'],
-            $deadlines[0]['Note']
-        )];
+        $deadline
+        ];
 
     }
 

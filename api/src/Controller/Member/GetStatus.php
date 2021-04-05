@@ -43,6 +43,7 @@ namespace App\Controller\Member;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
+use Atlas\Query\Select;
 
 use App\Controller\NotFoundException;
 
@@ -61,12 +62,9 @@ class GetStatus extends BaseMember
             $max_fail = intval($MAXLOGINFAIL);
         }
 
-        $sql = <<<SQL
-            SELECT * FROM `Authentication` WHERE AccountID = $account;
-SQL;
-        $result = $this->container->db->prepare($sql);
-        $result->execute();
-        $value = $result->fetch();
+        $select = Select::new($this->container->db);
+        $select->columns('FailedAttempts', 'Expires')->from('Authentication')->whereEquals(['AccountID' => $account]);
+        $value = $select->fetchOne();
         if ($value !== false) {
             if ($value['FailedAttempts'] >= $max_fail) {
                 return AUTH_LOCKED;

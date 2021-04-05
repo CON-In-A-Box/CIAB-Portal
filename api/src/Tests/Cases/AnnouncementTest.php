@@ -22,9 +22,9 @@ class AnnouncementTest extends CiabTestCase
             'POST',
             '/department/1/announcement',
             null,
-            ['Scope' => $scope,
-             'Text' => 'testing',
-             'Email' => 1],
+            ['scope' => $scope,
+             'text' => 'testing',
+             'email' => 1],
             201
         );
 
@@ -100,9 +100,9 @@ class AnnouncementTest extends CiabTestCase
             'PUT',
             '/announcement/'.$this->aid[1],
             null,
-            ['Department' => 2,
-             'Text' => 'New Message',
-             'Scope' => 1]
+            ['department' => 2,
+             'text' => 'New Message',
+             'scope' => 1]
         );
 
         $data = $this->runSuccessJsonRequest(
@@ -142,7 +142,7 @@ class AnnouncementTest extends CiabTestCase
             'PUT',
             '/announcement/'.$this->aid[2],
             null,
-            ['Department' => -1],
+            ['department' => -1],
             404
         );
 
@@ -152,9 +152,9 @@ class AnnouncementTest extends CiabTestCase
             'POST',
             '/department/-1/announcement',
             null,
-            ['Scope' => 2,
-             'Text' => 'testing',
-             'Email' => 0],
+            ['scope' => 2,
+             'text' => 'testing',
+             'email' => 0],
             404
         );
 
@@ -162,8 +162,8 @@ class AnnouncementTest extends CiabTestCase
             'POST',
             '/department/1/announcement',
             null,
-            ['Text' => 'testing',
-             'Email' => 0],
+            ['text' => 'testing',
+             'email' => 0],
             400
         );
 
@@ -171,8 +171,8 @@ class AnnouncementTest extends CiabTestCase
             'POST',
             '/department/1/announcement',
             null,
-            ['Scope' => 2,
-             'Email' => 0],
+            ['scope' => 2,
+             'email' => 0],
             400
         );
 

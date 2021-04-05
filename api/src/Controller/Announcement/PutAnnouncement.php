@@ -57,51 +57,40 @@ namespace App\Controller\Announcement;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
-use App\Controller\NotFoundException;
+use Atlas\Query\Update;
 use App\Controller\InvalidParameterException;
 
 class PutAnnouncement extends BaseAnnouncement
 {
 
 
-    public function buildResource(Request $request, Response $response, $args): array
+    public function buildResource(Request $request, Response $response, $params): array
     {
-        $target = $this->getAnnouncement($args['id']);
-        $department = $target['DepartmentID'];
+        $target = $this->getAnnouncement($params['id']);
+        $department = $target['department'];
 
         $permissions = ['api.put.announcement.all',
         'api.put.announcement.'.$department];
         $this->checkPermissions($permissions);
 
-        $sql = "UPDATE `Announcements` SET ";
-        $changes = [];
-
         $body = $request->getParsedBody();
-
         if (empty($body)) {
             throw new InvalidParameterException('No update parameter present');
         }
 
-        if (array_key_exists('Department', $body)) {
-            $department = $this->getDepartment($body['Department']);
-            $changes[] = "`DepartmentID` = '{$department['id']}' ";
+        if (array_key_exists('department', $body)) {
+            $department = $this->getDepartment($body['department'])['id'];
+            $permissions = ['api.put.announcement.all',
+            'api.put.announcement.'.$department];
+            $this->checkPermissions($permissions);
+            $body['department'] = $department;
         }
 
-        if (array_key_exists('Text', $body)) {
-            $text = \MyPDO::quote($body['Text']);
-            $changes[] = "`Text` = $text ";
-        }
-
-        if (array_key_exists('Scope', $body)) {
-            $changes[] = "`Scope` = '{$body['Scope']}' ";
-        }
-
-        if (count($changes) > 0) {
-            $sql .= implode(',', $changes);
-            $sql .= "WHERE `AnnouncementID` = '{$args['id']}';";
-            $sth = $this->container->db->prepare($sql);
-            $sth->execute();
-        }
+        $update = Update::new($this->container->db);
+        $update->table('Announcements');
+        $update->columns(BaseAnnouncement::insertPayloadFromParams($body, false));
+        $update->whereEquals(['AnnouncementID' => $params['id']]);
+        $update->perform();
         return [null];
 
     }

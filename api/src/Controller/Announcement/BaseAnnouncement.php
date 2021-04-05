@@ -98,12 +98,23 @@ namespace App\Controller\Announcement;
 use Slim\Container;
 use Slim\Http\Request;
 use Slim\Http\Response;
+use Atlas\Query\Select;
 use App\Controller\BaseController;
 use App\Controller\NotFoundException;
 use App\Controller\IncludeResource;
 
 abstract class BaseAnnouncement extends BaseController
 {
+
+    protected static $columnsToAttributes = [
+    '"announcement"' => 'type',
+    'AnnouncementID' => 'id',
+    'DepartmentID' => 'department',
+    'PostedOn' => 'postedOn',
+    'PostedBy' => 'postedBy',
+    'Scope' => 'scope',
+    'Text' => 'text'
+    ];
 
 
     public function __construct(Container $container)
@@ -129,28 +140,15 @@ abstract class BaseAnnouncement extends BaseController
 
     public function getAnnouncement($id)
     {
-        $sth = $this->container->db->prepare("SELECT * FROM `Announcements` WHERE `AnnouncementID` = $id");
-        $sth->execute();
-        $announce = $sth->fetchAll();
+        $select = Select::new($this->container->db);
+        $select->columns(...BaseAnnouncement::selectMapping());
+        $select->from('Announcements');
+        $select->whereEquals(['AnnouncementID' => $id]);
+        $announce = $select->fetchOne();
         if (empty($announce)) {
             throw new NotFoundException('Announcement Not Found');
         }
-        return $announce[0];
-
-    }
-
-
-    public function buildAnnouncement(Request $request, Response $response, $id, $dept, $posted, $poster, $scope, $text)
-    {
-        $output = array();
-        $output['type'] = 'announcement';
-        $output['id'] = $id;
-        $output['department'] = $dept;
-        $output['postedOn'] = $posted;
-        $output['postedBy'] = $poster;
-        $output['scope'] = $scope;
-        $output['text'] = $text;
-        return $output;
+        return $announce;
 
     }
 
@@ -158,19 +156,17 @@ abstract class BaseAnnouncement extends BaseController
     public function customizeAnnouncementRBAC($instance)
     {
         $positions = [];
-        $sql = "SELECT `PositionID`, `Name` FROM `ConComPositions` ORDER BY `PositionID` ASC";
-        $result = $this->container->db->prepare($sql);
-        $result->execute();
-        $value = $result->fetch();
-        while ($value !== false) {
+        $select = Select::new($this->container->db);
+        $select->columns('PositionID, Name')->from('ConComPositions')->orderBy('`PositionID` ASC');
+        $values = $select->fetchAll();
+        foreach ($values as $value) {
             $positions[intval($value['PositionID'])] = $value['Name'];
-            $value = $result->fetch();
         }
 
-        $result = $this->container->db->prepare("SELECT `DepartmentID` FROM `Departments`");
-        $result->execute();
-        $value = $result->fetch();
-        while ($value !== false) {
+        $select = Select::new($this->container->db);
+        $select->columns('DepartmentID')->from('Departments');
+        $values = $select->fetchAll();
+        foreach ($values as $value) {
             $perm_del = 'api.delete.announcement.'.$value['DepartmentID'];
             $perm_pos = 'api.post.announcement.'.$value['DepartmentID'];
             $perm_put = 'api.put.announcement.'.$value['DepartmentID'];
@@ -183,7 +179,6 @@ abstract class BaseAnnouncement extends BaseController
             } catch (Exception\InvalidArgumentException $e) {
                 error_log($e);
             }
-            $value = $result->fetch();
         }
 
     }

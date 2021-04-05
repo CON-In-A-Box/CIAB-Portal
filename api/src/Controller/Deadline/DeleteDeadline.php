@@ -36,32 +36,29 @@ namespace App\Controller\Deadline;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
+use Atlas\Query\Delete;
+use Atlas\Query\Select;
 use App\Controller\NotFoundException;
 
 class DeleteDeadline extends BaseDeadline
 {
 
 
-    public function buildResource(Request $request, Response $response, $args): array
+    public function buildResource(Request $request, Response $response, $params): array
     {
-        $sth = $this->container->db->prepare("SELECT * FROM `Deadlines` WHERE `DeadlineID` = '".$args['id']."'");
-        $sth->execute();
-        $deadlines = $sth->fetchAll();
-        if (empty($deadlines)) {
+        $select = Select::new($this->container->db);
+        $select->columns('DeadlineID', 'DepartmentID')->from('Deadlines')->whereEquals(['DeadlineID' => $params['id']]);
+        $target = $select->fetchOne();
+        if (empty($target)) {
             throw new NotFoundException('Deadline Not Found');
         }
-        $target = $deadlines[0];
 
         $permissions = ['api.delete.deadline.all',
         'api.delete.deadline.'.$target['DepartmentID']];
         $this->checkPermissions($permissions);
 
-        $sth = $this->container->db->prepare(<<<SQL
-            DELETE FROM `Deadlines`
-            WHERE `DeadlineID` = '{$target['DeadlineID']}';
-SQL
-        );
-        $sth->execute();
+        $delete = Delete::new($this->container->db);
+        $delete->from('Deadlines')->whereEquals(['DeadlineID' => $target['DeadlineID']])->perform();
         return [
         \App\Controller\BaseController::RESOURCE_TYPE,
         [null],
