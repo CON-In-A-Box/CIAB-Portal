@@ -2,6 +2,9 @@
 
 namespace App\Tests\TestCase\Controller;
 
+use Atlas\Query\Delete;
+use Atlas\Query\Insert;
+use Atlas\Query\Update;
 use App\Tests\Base\CiabTestCase;
 
 class MemberTest extends CiabTestCase
@@ -11,51 +14,62 @@ class MemberTest extends CiabTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $sql = "DELETE FROM `AccountConfiguration` WHERE `Field` = 'phptestmember'";
-        $sth = $this->container->db->prepare($sql);
-        $sth->execute();
-        $sql = "DELETE FROM `ConfigurationField` WHERE `Field` = 'phptestmember'";
-        $sth = $this->container->db->prepare($sql);
-        $sth->execute();
+        Delete::new($this->container->db)
+            ->from('AccountConfiguration')
+            ->whereEquals(['Field' => 'phptestmember'])
+            ->perform();
+        Delete::new($this->container->db)
+            ->from('ConfigurationField')
+            ->whereEquals(['Field' => 'phptestmember'])
+            ->perform();
 
-        $sql = "INSERT INTO `ConfigurationField` (Field, TargetTable, Type, InitialValue, Description) VALUES ('phptestmember', 'AccountConfiguration', 'text', 'no', 'PHPTest value') ON DUPLICATE KEY UPDATE `Field` = 'phptestmember'";
-        $sth = $this->container->db->prepare($sql);
-        $sth->execute();
+        Insert::new($this->container->db)
+            ->into('ConfigurationField')
+            ->columns(['Field' => 'phptestmember', 'TargetTable' => 'AccountConfiguration', 'Type' => 'text', 'InitialValue' => 'no', 'Description' => 'PHPTest value'])
+            ->perform();
 
         $this->runSuccessJsonRequest('PUT', '/member/1000', null, ['email2' => '']);
         $when = date('Y-m-d', strtotime('+1 year'));
-        $sql = "UPDATE `Authentication` SET `FailedAttempts` = 0, `Expires` = '$when' WHERE `AccountID` = 1000";
-        $sth = $this->container->db->prepare($sql);
-        $sth->execute();
+        Update::new($this->container->db)
+            ->table('Authentication')
+            ->columns(['FailedAttempts' => 0, 'Expires' => $when])
+            ->whereEquals(['AccountID' => 1000])
+            ->perform();
 
     }
 
 
     private function deleteTestUser(): void
     {
-        $sql = "DELETE FROM `Members` WHERE `Email` = 'phpunit@unit.test'";
-        $sth = $this->container->db->prepare($sql);
-        $sth->execute();
+        Delete::new($this->container->db)
+            ->from('Members')
+            ->whereEquals(['Email' => 'phpunit@unit.test'])
+            ->perform();
 
     }
 
 
     protected function tearDown(): void
     {
-        $sql = "DELETE FROM `AccountConfiguration` WHERE `Field` = 'phptestmember'";
-        $sth = $this->container->db->prepare($sql);
-        $sth->execute();
-        $sql = "DELETE FROM `ConfigurationField` WHERE `Field` = 'phptestmember'";
-        $sth = $this->container->db->prepare($sql);
-        $sth->execute();
+        Delete::new($this->container->db)
+            ->from('AccountConfiguration')
+            ->whereEquals(['Field' => 'phptestmember'])
+            ->perform();
+        Delete::new($this->container->db)
+            ->from('ConfigurationField')
+            ->whereEquals(['Field' => 'phptestmember'])
+            ->perform();
+
         $this->runSuccessJsonRequest('PUT', '/member/1000', null, ['email2' => '']);
 
         $this->deleteTestUser();
 
         $when = date('Y-m-d', strtotime('+1 year'));
-        $sql = "UPDATE `Authentication` SET `FailedAttempts` = 0, `Expires` = '$when' WHERE `AccountID` = 1000";
-        $sth = $this->container->db->prepare($sql);
-        $sth->execute();
+        Update::new($this->container->db)
+            ->table('Authentication')
+            ->columns(['FailedAttempts' => 0, 'Expires' => $when])
+            ->whereEquals(['AccountID' => 1000])
+            ->perform();
 
         parent::tearDown();
 
@@ -116,25 +130,30 @@ class MemberTest extends CiabTestCase
         $data = $this->runSuccessJsonRequest('GET', '/member/1000/status');
         $this->assertEquals($data->status, 0);
 
-        $sql = "UPDATE `Authentication` SET `FailedAttempts` = 9999999 WHERE `AccountID` = 1000";
-        $sth = $this->container->db->prepare($sql);
-        $sth->execute();
+        Update::new($this->container->db)
+            ->table('Authentication')
+            ->columns(['FailedAttempts' => 999999999])
+            ->whereEquals(['AccountID' => 1000])
+            ->perform();
 
         $data = $this->runSuccessJsonRequest('GET', '/member/1000/status');
         $this->assertEquals($data->status, 3);
 
         $when = date('Y-m-d', strtotime('-1 month'));
-        $sql = "UPDATE `Authentication` SET `FailedAttempts` = 0, `Expires` = '$when' WHERE `AccountID` = 1000";
-        $sth = $this->container->db->prepare($sql);
-        $sth->execute();
+        Update::new($this->container->db)
+            ->table('Authentication')
+            ->columns(['FailedAttempts' => 0, 'Expires' => $when])
+            ->whereEquals(['AccountID' => 1000])
+            ->perform();
         $data = $this->runSuccessJsonRequest('GET', '/member/1000/status');
         $this->assertEquals($data->status, 2);
 
         $when = date('Y-m-d', strtotime('+1 year'));
-        $sql = "UPDATE `Authentication` SET `Expires` = '$when' WHERE `AccountID` = 1000";
-        $sth = $this->container->db->prepare($sql);
-        $sth->execute();
-
+        Update::new($this->container->db)
+            ->table('Authentication')
+            ->columns(['FailedAttempts' => 0, 'Expires' => $when])
+            ->whereEquals(['AccountID' => 1000])
+            ->perform();
         $this->runRequest('GET', '/member/-1', null, null, 404);
 
         $basedata = $this->runSuccessJsonRequest('GET', '/member');
