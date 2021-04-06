@@ -238,6 +238,54 @@
  *      )
  *  )
  *
+ *  @OA\Schema(
+ *      schema="print_job",
+ *      @OA\Property(
+ *          property="type",
+ *          type="string",
+ *          enum={"print_job"}
+ *      ),
+ *      @OA\Property(
+ *          property="id",
+ *          type="integer"
+ *      ),
+ *      @OA\Property(
+ *          property="method",
+ *          type="string",
+ *          enum={"claim"}
+ *      ),
+ *      @OA\Property(
+ *          property="request",
+ *          type="string",
+ *          enum={"PUT"}
+ *      ),
+ *      @OA\Property(
+ *          property="href",
+ *          type="string"
+ *      )
+ *  )
+ *
+ *  @OA\Schema(
+ *      schema="print_queue",
+ *      allOf = {
+ *          @OA\Schema(ref="#/components/schemas/resource_list")
+ *      },
+ *      @OA\Property(
+ *          property="type",
+ *          type="string",
+ *          enum={"print_queue"}
+ *      ),
+ *      @OA\Property(
+ *          property="data",
+ *          type="array",
+ *          description="List of queued print jobs",
+ *          @OA\Items(
+ *              ref="#/components/schemas/print_job"
+ *          )
+ *      )
+ *  )
+ *
+ *
  *   @OA\Response(
  *      response="ticket_not_found",
  *      description="Ticket not found in the system.",
