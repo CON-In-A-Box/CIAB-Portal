@@ -5,7 +5,7 @@
 
 /**
  *  @OA\Get(
- *      tags={"staff"},
+ *      tags={"departments"},
  *      path="/department/staff/",
  *      summary="List staff all departments",
  *      @OA\Parameter(

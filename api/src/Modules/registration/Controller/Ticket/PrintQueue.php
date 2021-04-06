@@ -3,6 +3,56 @@
     require_module 'standard';
 .*/
 
+/**
+ *  @OA\Get(
+ *      tags={"registration"},
+ *      path="/registration/ticket/printqueue",
+ *      summary="Get the current print queue for badges for the current event.",
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/maxResults",
+ *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/pageToken",
+ *      ),
+ *      @OA\Response(
+ *          response=200,
+ *          description="OK",
+ *          @OA\JsonContent(
+ *           ref="#/components/schemas/print_queue"
+ *          )
+ *      ),
+ *      @OA\Response(
+ *          response=401,
+ *          ref="#/components/responses/401"
+ *      ),
+ *      security={{"ciab_auth":{}}}
+ *  )
+ *
+ *  @OA\Get(
+ *      tags={"registration"},
+ *      path="/registration/ticket/printqueue/{event}",
+ *      summary="Get the current print queue for badges for the given event.",
+ *      @OA\Parameter(
+ *          description="Event being queried.",
+ *          in="path",
+ *          name="event",
+ *          required=true
+ *      ),
+ *      @OA\Response(
+ *          response=200,
+ *          description="OK",
+ *          @OA\JsonContent(
+ *           ref="#/components/schemas/print_queue"
+ *          )
+ *      ),
+ *      @OA\Response(
+ *          response=401,
+ *          ref="#/components/responses/401"
+ *      ),
+ *      security={{"ciab_auth":{}}}
+ *  )
+ **/
+
 namespace App\Modules\registration\Controller\Ticket;
 
 use Slim\Http\Request;
@@ -37,7 +87,9 @@ class PrintQueue extends BaseTicket
         $path = $request->getUri()->getBaseUrl();
         foreach ($data as $ticket) {
             $ticket['claim'] = [
+            'type' => 'print_job',
             'method' => 'claim',
+            'id' => $ticket['id'],
             'href' => $path.'/registration/ticket/printqueue/claim/'.$ticket['id'],
             'request' => 'PUT'
             ];

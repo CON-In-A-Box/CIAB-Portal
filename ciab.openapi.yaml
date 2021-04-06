@@ -201,9 +201,9 @@ paths:
           multipart/form-data:
             schema:
               properties:
-                Text:
+                text:
                   type: string
-                Scope:
+                scope:
                   type: integer
               type: object
       responses:
@@ -264,11 +264,11 @@ paths:
           multipart/form-data:
             schema:
               properties:
-                From:
+                dateFrom:
                   type: string
                   format: date
                   nullable: true
-                To:
+                dateTo:
                   type: string
                   format: date
                   nullable: true
@@ -366,10 +366,10 @@ paths:
           multipart/form-data:
             schema:
               properties:
-                From:
+                dateFrom:
                   type: string
                   format: date
-                To:
+                dateTo:
                   type: string
                   format: date
               type: object
@@ -437,11 +437,11 @@ paths:
           multipart/form-data:
             schema:
               properties:
-                Deadline:
+                deadline:
                   type: string
                   format: date
                   nullable: true
-                Note:
+                note:
                   type: string
                   nullable: true
               type: object
@@ -501,10 +501,10 @@ paths:
           multipart/form-data:
             schema:
               properties:
-                Deadline:
+                deadline:
                   type: string
                   format: date
-                Note:
+                note:
                   type: string
               type: object
       responses:
@@ -750,13 +750,13 @@ paths:
           multipart/form-data:
             schema:
               properties:
-                From:
+                dateFrom:
                   type: string
                   format: date
-                To:
+                dateTo:
                   type: string
                   format: date
-                Name:
+                name:
                   type: string
               type: object
       responses:
@@ -2370,6 +2370,86 @@ paths:
       security:
         -
           ciab_auth: []
+  /registration/ticket/printqueue:
+    get:
+      tags:
+        - registration
+      summary: 'Get the current print queue for badges for the current event.'
+      parameters:
+        -
+          $ref: '#/components/parameters/maxResults'
+        -
+          $ref: '#/components/parameters/pageToken'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/print_queue'
+        '401':
+          $ref: '#/components/responses/401'
+      security:
+        -
+          ciab_auth: []
+  '/registration/ticket/printqueue/{event}':
+    get:
+      tags:
+        - registration
+      summary: 'Get the current print queue for badges for the given event.'
+      parameters:
+        -
+          name: event
+          in: path
+          description: 'Event being queried.'
+          required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/print_queue'
+        '401':
+          $ref: '#/components/responses/401'
+      security:
+        -
+          ciab_auth: []
+  '/registration/ticket/printqueue/claim/{id}':
+    put:
+      tags:
+        - registration
+      summary: 'Claim and clear a job from the print queue.'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Id of the ticket'
+          required: true
+          schema:
+            type: integer
+        -
+          $ref: '#/components/parameters/short_response'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ticket'
+        '401':
+          $ref: '#/components/responses/401'
+        '409':
+          description: 'Update Conflict'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '404':
+          $ref: '#/components/responses/ticket_not_found'
+      security:
+        -
+          ciab_auth: []
   '/registration/ticket/{id}/reinstate':
     put:
       tags:
@@ -2589,7 +2669,7 @@ paths:
   /department/staff/:
     get:
       tags:
-        - staff
+        - departments
       summary: 'List staff all departments'
       parameters:
         -
@@ -3327,6 +3407,40 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ticket'
+      type: object
+      allOf:
+        -
+          $ref: '#/components/schemas/resource_list'
+    print_job:
+      properties:
+        type:
+          type: string
+          enum:
+            - print_job
+        id:
+          type: integer
+        method:
+          type: string
+          enum:
+            - claim
+        request:
+          type: string
+          enum:
+            - PUT
+        href:
+          type: string
+      type: object
+    print_queue:
+      properties:
+        type:
+          type: string
+          enum:
+            - print_queue
+        data:
+          description: 'List of queued print jobs'
+          type: array
+          items:
+            $ref: '#/components/schemas/print_job'
       type: object
       allOf:
         -
