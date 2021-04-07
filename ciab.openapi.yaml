@@ -121,9 +121,9 @@ paths:
         -
           $ref: '#/components/parameters/short_response'
         -
-          $ref: '#/components/parameters/maxResults'
+          $ref: '#/components/parameters/max_results'
         -
-          $ref: '#/components/parameters/pageToken'
+          $ref: '#/components/parameters/page_token'
       responses:
         '200':
           description: OK
@@ -160,9 +160,9 @@ paths:
         -
           $ref: '#/components/parameters/short_response'
         -
-          $ref: '#/components/parameters/maxResults'
+          $ref: '#/components/parameters/max_results'
         -
-          $ref: '#/components/parameters/pageToken'
+          $ref: '#/components/parameters/page_token'
       responses:
         '200':
           description: OK
@@ -340,9 +340,9 @@ paths:
             type: string
             format: date
         -
-          $ref: '#/components/parameters/maxResults'
+          $ref: '#/components/parameters/max_results'
         -
-          $ref: '#/components/parameters/pageToken'
+          $ref: '#/components/parameters/page_token'
       responses:
         '200':
           description: OK
@@ -574,9 +574,9 @@ paths:
         -
           $ref: '#/components/parameters/short_response'
         -
-          $ref: '#/components/parameters/maxResults'
+          $ref: '#/components/parameters/max_results'
         -
-          $ref: '#/components/parameters/pageToken'
+          $ref: '#/components/parameters/page_token'
       responses:
         '200':
           description: OK
@@ -633,9 +633,9 @@ paths:
         -
           $ref: '#/components/parameters/short_response'
         -
-          $ref: '#/components/parameters/maxResults'
+          $ref: '#/components/parameters/max_results'
         -
-          $ref: '#/components/parameters/pageToken'
+          $ref: '#/components/parameters/page_token'
       responses:
         '200':
           description: OK
@@ -726,9 +726,9 @@ paths:
         -
           $ref: '#/components/parameters/short_response'
         -
-          $ref: '#/components/parameters/maxResults'
+          $ref: '#/components/parameters/max_results'
         -
-          $ref: '#/components/parameters/pageToken'
+          $ref: '#/components/parameters/page_token'
       responses:
         '200':
           description: OK
@@ -787,9 +787,9 @@ paths:
           schema:
             type: string
         -
-          $ref: '#/components/parameters/maxResults'
+          $ref: '#/components/parameters/max_results'
         -
-          $ref: '#/components/parameters/pageToken'
+          $ref: '#/components/parameters/page_token'
       responses:
         '200':
           description: 'Member(s) found'
@@ -864,9 +864,9 @@ paths:
                 description: 'Member id'
                 type: integer
         -
-          $ref: '#/components/parameters/maxResults'
+          $ref: '#/components/parameters/max_results'
         -
-          $ref: '#/components/parameters/pageToken'
+          $ref: '#/components/parameters/page_token'
       responses:
         '200':
           description: OK
@@ -1083,9 +1083,9 @@ paths:
         -
           $ref: '#/components/parameters/short_response'
         -
-          $ref: '#/components/parameters/maxResults'
+          $ref: '#/components/parameters/max_results'
         -
-          $ref: '#/components/parameters/pageToken'
+          $ref: '#/components/parameters/page_token'
       responses:
         '200':
           description: OK
@@ -1255,9 +1255,9 @@ paths:
         -
           $ref: '#/components/parameters/short_response'
         -
-          $ref: '#/components/parameters/maxResults'
+          $ref: '#/components/parameters/max_results'
         -
-          $ref: '#/components/parameters/pageToken'
+          $ref: '#/components/parameters/page_token'
       responses:
         '200':
           description: 'Permissions found'
@@ -1303,9 +1303,9 @@ paths:
         -
           $ref: '#/components/parameters/short_response'
         -
-          $ref: '#/components/parameters/maxResults'
+          $ref: '#/components/parameters/max_results'
         -
-          $ref: '#/components/parameters/pageToken'
+          $ref: '#/components/parameters/page_token'
       responses:
         '200':
           description: 'Permissions found'
@@ -1364,9 +1364,9 @@ paths:
         -
           $ref: '#/components/parameters/short_response'
         -
-          $ref: '#/components/parameters/maxResults'
+          $ref: '#/components/parameters/max_results'
         -
-          $ref: '#/components/parameters/pageToken'
+          $ref: '#/components/parameters/page_token'
       responses:
         '200':
           description: 'Permissions found'
@@ -1413,9 +1413,9 @@ paths:
         -
           $ref: '#/components/parameters/short_response'
         -
-          $ref: '#/components/parameters/maxResults'
+          $ref: '#/components/parameters/max_results'
         -
-          $ref: '#/components/parameters/pageToken'
+          $ref: '#/components/parameters/page_token'
       responses:
         '200':
           description: 'Permissions found'
@@ -1474,9 +1474,9 @@ paths:
         -
           $ref: '#/components/parameters/short_response'
         -
-          $ref: '#/components/parameters/maxResults'
+          $ref: '#/components/parameters/max_results'
         -
-          $ref: '#/components/parameters/pageToken'
+          $ref: '#/components/parameters/page_token'
       responses:
         '200':
           description: 'Permissions found'
@@ -1654,9 +1654,9 @@ paths:
       summary: 'Get all configuration settings for the site'
       parameters:
         -
-          $ref: '#/components/parameters/maxResults'
+          $ref: '#/components/parameters/max_results'
         -
-          $ref: '#/components/parameters/pageToken'
+          $ref: '#/components/parameters/page_token'
       responses:
         '200':
           description: OK
@@ -1758,9 +1758,9 @@ paths:
       summary: 'Get all configuration settings for registration'
       parameters:
         -
-          $ref: '#/components/parameters/maxResults'
+          $ref: '#/components/parameters/max_results'
         -
-          $ref: '#/components/parameters/pageToken'
+          $ref: '#/components/parameters/page_token'
       responses:
         '200':
           description: OK
@@ -2107,9 +2107,9 @@ paths:
       summary: 'List all ticket types for the current event'
       parameters:
         -
-          $ref: '#/components/parameters/maxResults'
+          $ref: '#/components/parameters/max_results'
         -
-          $ref: '#/components/parameters/pageToken'
+          $ref: '#/components/parameters/page_token'
         -
           $ref: '#/components/parameters/short_response'
       responses:
@@ -2153,9 +2153,9 @@ paths:
         -
           $ref: '#/components/parameters/short_response'
         -
-          $ref: '#/components/parameters/maxResults'
+          $ref: '#/components/parameters/max_results'
         -
-          $ref: '#/components/parameters/pageToken'
+          $ref: '#/components/parameters/page_token'
       responses:
         '200':
           description: 'Tickets found'
@@ -2190,9 +2190,9 @@ paths:
                 description: 'Member id'
                 type: integer
         -
-          $ref: '#/components/parameters/maxResults'
+          $ref: '#/components/parameters/max_results'
         -
-          $ref: '#/components/parameters/pageToken'
+          $ref: '#/components/parameters/page_token'
       responses:
         '200':
           description: 'Tickets found'
@@ -2214,9 +2214,9 @@ paths:
       summary: 'Gets tickets for the current member for the current event'
       parameters:
         -
-          $ref: '#/components/parameters/maxResults'
+          $ref: '#/components/parameters/max_results'
         -
-          $ref: '#/components/parameters/pageToken'
+          $ref: '#/components/parameters/page_token'
         -
           $ref: '#/components/parameters/short_response'
       responses:
@@ -2377,9 +2377,9 @@ paths:
       summary: 'Get the current print queue for badges for the current event.'
       parameters:
         -
-          $ref: '#/components/parameters/maxResults'
+          $ref: '#/components/parameters/max_results'
         -
-          $ref: '#/components/parameters/pageToken'
+          $ref: '#/components/parameters/page_token'
       responses:
         '200':
           description: OK
@@ -2588,9 +2588,9 @@ paths:
         -
           $ref: '#/components/parameters/short_response'
         -
-          $ref: '#/components/parameters/maxResults'
+          $ref: '#/components/parameters/max_results'
         -
-          $ref: '#/components/parameters/pageToken'
+          $ref: '#/components/parameters/page_token'
       responses:
         '200':
           description: OK
@@ -2623,9 +2623,9 @@ paths:
           schema:
             type: integer
         -
-          $ref: '#/components/parameters/maxResults'
+          $ref: '#/components/parameters/max_results'
         -
-          $ref: '#/components/parameters/pageToken'
+          $ref: '#/components/parameters/page_token'
         -
           $ref: '#/components/parameters/short_response'
       responses:
@@ -2649,9 +2649,9 @@ paths:
       summary: 'Gets staff positions for the current member'
       parameters:
         -
-          $ref: '#/components/parameters/maxResults'
+          $ref: '#/components/parameters/max_results'
         -
-          $ref: '#/components/parameters/pageToken'
+          $ref: '#/components/parameters/page_token'
       responses:
         '200':
           description: 'Member staff positions found'
@@ -2682,9 +2682,9 @@ paths:
         -
           $ref: '#/components/parameters/short_response'
         -
-          $ref: '#/components/parameters/maxResults'
+          $ref: '#/components/parameters/max_results'
         -
-          $ref: '#/components/parameters/pageToken'
+          $ref: '#/components/parameters/page_token'
       responses:
         '200':
           description: OK
@@ -2830,8 +2830,8 @@ components:
           description: 'List of resources'
           type: array
           items: {  }
-        nextPageToken:
-          description: 'If present, the `pageToken` for the next page of results'
+        next_page_token:
+          description: 'If present, the `page_token` for the next page of results'
           type: integer
       type: object
     cycle:
@@ -3565,8 +3565,8 @@ components:
           schema:
             $ref: '#/components/schemas/error'
   parameters:
-    maxResults:
-      name: maxResults
+    max_results:
+      name: max_results
       in: query
       description: 'Maximum members of the list per page or ''all'' (default 100).'
       required: false
@@ -3579,8 +3579,8 @@ components:
             type: string
             enum:
               - all
-    pageToken:
-      name: pageToken
+    page_token:
+      name: page_token
       in: query
       description: 'Starting page of results.'
       required: false

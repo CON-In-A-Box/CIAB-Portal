@@ -76,10 +76,10 @@
  *          )
  *      ),
  *      @OA\Parameter(
- *          ref="#/components/parameters/maxResults",
+ *          ref="#/components/parameters/max_results",
  *      ),
  *      @OA\Parameter(
- *          ref="#/components/parameters/pageToken",
+ *          ref="#/components/parameters/page_token",
  *      ),
  *      @OA\Response(
  *          response=200,

@@ -256,7 +256,7 @@ class CheckinPage {
       e.classList.remove('UI-hide');
       e.innerHTML = this.configuration.badgeNotice.value;
     }
-    apiRequest('GET', 'registration/ticket/list', 'maxResults=all')
+    apiRequest('GET', 'registration/ticket/list', 'max_results=all')
       .then(function(response) {
         var d = JSON.parse(response.responseText);
         if (Array.isArray(d.data)) {

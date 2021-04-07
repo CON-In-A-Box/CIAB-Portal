@@ -37,10 +37,10 @@
  *          ref="#/components/parameters/short_response",
  *      ),
  *      @OA\Parameter(
- *          ref="#/components/parameters/maxResults",
+ *          ref="#/components/parameters/max_results",
  *      ),
  *      @OA\Parameter(
- *          ref="#/components/parameters/pageToken",
+ *          ref="#/components/parameters/page_token",
  *      ),
  *      @OA\Response(
  *          response=200,
@@ -83,10 +83,10 @@
  *          )
  *      ),
  *      @OA\Parameter(
- *          ref="#/components/parameters/maxResults",
+ *          ref="#/components/parameters/max_results",
  *      ),
  *      @OA\Parameter(
- *          ref="#/components/parameters/pageToken",
+ *          ref="#/components/parameters/page_token",
  *      ),
  *      @OA\Response(
  *          response=200,
@@ -111,10 +111,10 @@
  *      path="/registration/ticket/list",
  *      summary="Gets tickets for the current member for the current event",
  *      @OA\Parameter(
- *          ref="#/components/parameters/maxResults",
+ *          ref="#/components/parameters/max_results",
  *      ),
  *      @OA\Parameter(
- *          ref="#/components/parameters/pageToken",
+ *          ref="#/components/parameters/page_token",
  *      ),
  *      @OA\Parameter(
  *          ref="#/components/parameters/short_response",

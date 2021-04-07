@@ -271,7 +271,7 @@ function editCycle(data) {
 
 function loadEvents() {
   showSpinner();
-  apiRequest('GET', 'cycle', 'maxResults=all')
+  apiRequest('GET', 'cycle', 'max_results=all')
     .then(function(response) {
       hideSpinner();
       var result = JSON.parse(response.responseText);

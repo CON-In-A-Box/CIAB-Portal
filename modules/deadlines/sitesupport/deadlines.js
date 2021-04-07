@@ -255,7 +255,7 @@ var deadlinePage = (function(options) {
       showSpinner();
       apiRequest('GET',
         'member/current/deadlines',
-        'maxResults=all')
+        'max_results=all')
         .then(function(response) {
           var result = JSON.parse(response.responseText);
           if (result.data.length > 0) {
@@ -267,7 +267,7 @@ var deadlinePage = (function(options) {
           }
           apiRequest('GET',
             'permissions/method/deadline',
-            'maxResults=all')
+            'max_results=all')
             .then(function(response) {
               result = JSON.parse(response.responseText);
               var havePost = false;

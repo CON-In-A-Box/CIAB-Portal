@@ -80,10 +80,10 @@
  *      path="/registration/ticket/type",
  *      summary="List all ticket types for the current event",
  *      @OA\Parameter(
- *          ref="#/components/parameters/maxResults",
+ *          ref="#/components/parameters/max_results",
  *      ),
  *      @OA\Parameter(
- *          ref="#/components/parameters/pageToken",
+ *          ref="#/components/parameters/page_token",
  *      ),
  *      @OA\Parameter(
  *          ref="#/components/parameters/short_response",

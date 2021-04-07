@@ -172,7 +172,7 @@ var settingsTable = function(options) {
     createElement: function() {
       var obj = this;
       showSpinner();
-      apiRequest('GET', this.settings.api, 'maxResults=all')
+      apiRequest('GET', this.settings.api, 'max_results=all')
         .then(function(response) {
           hideSpinner();
           var data = JSON.parse(response.responseText);

@@ -10,7 +10,7 @@
 export class apiConfiguration {
   constructor(resource, resolve, reject) {
     var obj = this;
-    apiRequest('GET', resource, 'maxResults=all')
+    apiRequest('GET', resource, 'max_results=all')
       .then(function(response) {
         var v = JSON.parse(response.responseText).data;
         if (v) {
