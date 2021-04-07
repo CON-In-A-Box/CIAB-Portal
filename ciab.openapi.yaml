@@ -3210,19 +3210,23 @@ components:
       type: object
     log_entry:
       properties:
-        LogEntryID:
+        type:
+          type: string
+          enum:
+            - log_entry
+        id:
           description: 'Entry ID'
           type: string
-        AccountID:
+        account:
           description: 'Member account generating the log'
           type: string
-        Function:
+        function:
           description: 'Function generating the log'
           type: string
-        Query:
+        query:
           description: 'The query string being logged'
           type: string
-        Date:
+        date:
           description: 'When the log entry was generated'
           type: string
           format: date-time

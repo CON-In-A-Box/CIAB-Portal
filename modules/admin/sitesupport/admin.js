@@ -69,19 +69,19 @@ function addLogRow(data) {
   e.classList.add('ADMIN-log-row');
   var d = document.createElement('DIV');
   d.classList.add('ADMIN-log-col-date');
-  d.innerHTML = data.Date;
+  d.innerHTML = data.date;
   e.append(d);
   d = document.createElement('DIV');
   d.classList.add('ADMIN-log-col-id');
-  d.innerHTML = data.AccountID;
+  d.innerHTML = data.account;
   e.append(d);
   d = document.createElement('DIV');
   d.classList.add('ADMIN-log-col-function');
-  d.innerHTML = data.Function;
+  d.innerHTML = data.function;
   e.append(d);
   d = document.createElement('DIV');
   d.classList.add('ADMIN-log-col-query');
-  var t = data.Query.trim();
+  var t = data.query.trim();
   if (t.length > 100) {
     var p = document.createElement('P');
     p.classList.add('UI-tooltip');
