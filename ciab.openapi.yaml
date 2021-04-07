@@ -2764,7 +2764,7 @@ components:
         id:
           description: 'announcement ID'
           type: integer
-        postedOn:
+        posted_on:
           description: 'Date the announcement was first posted'
           type: string
           format: date
@@ -2776,7 +2776,7 @@ components:
             -
               description: 'Department Id'
               type: integer
-        postedBy:
+        posted_by:
           description: 'The member who created the announcement'
           oneOf:
             -

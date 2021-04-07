@@ -40,7 +40,7 @@ var announcementPane = (function(options) {
       s.classList.add('UI-announcement-source');
       s.appendChild(document.createTextNode('  -  ' + data2.department.name));
       a.appendChild(s);
-      s.appendChild(document.createTextNode(' (' + data2.postedOn + ')'));
+      s.appendChild(document.createTextNode(' (' + data2.posted_on + ')'));
       a.appendChild(s);
       f.appendChild(a);
       line.appendChild(f);

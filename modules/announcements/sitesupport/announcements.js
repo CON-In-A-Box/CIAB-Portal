@@ -152,14 +152,14 @@ var announcementPage = (function(options) {
       f = document.createElement('DIV');
       f.classList.add('UI-table-cell');
       f.id = 'announcement-' + data2.id + '-posted';
-      f.appendChild(document.createTextNode(data2.postedOn));
+      f.appendChild(document.createTextNode(data2.posted_on));
       line.appendChild(f);
 
       f = document.createElement('DIV');
       f.classList.add('UI-table-cell');
       f.id = 'announcement-' + data2.id + '-poster';
-      var name = data2.postedBy.firstName + ' ' + data2.postedBy.lastName +
-        ' (' + data2.postedBy.email + ')';
+      var name = data2.posted_by.firstName + ' ' + data2.posted_by.lastName +
+        ' (' + data2.posted_by.email + ')';
       f.appendChild(document.createTextNode(name));
       line.appendChild(f);
 
