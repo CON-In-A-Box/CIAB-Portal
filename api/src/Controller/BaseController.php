@@ -28,10 +28,10 @@
  *  )
  *
  *  @OA\Parameter(
- *      parameter="maxResults",
+ *      parameter="max_results",
  *      description="Maximum members of the list per page or 'all' (default 100).",
  *      in="query",
- *      name="maxResults",
+ *      name="max_results",
  *      required=false,
  *      style="form",
  *      @OA\Schema(
@@ -48,10 +48,10 @@
  *  )
  *
  *  @OA\Parameter(
- *      parameter="pageToken",
+ *      parameter="page_token",
  *      description="Starting page of results.",
  *      in="query",
- *      name="pageToken",
+ *      name="page_token",
  *      required=false,
  *      style="form",
  *      @OA\Schema(
@@ -87,8 +87,8 @@
  *          )
  *      ),
  *      @OA\Property(
- *          property="nextPageToken",
- *          description="If present, the `pageToken` for the next page of results",
+ *          property="next_page_token",
+ *          description="If present, the `page_token` for the next page of results",
  *          type="integer",
  *      )
  *  )
@@ -417,8 +417,8 @@ abstract class BaseController
     protected function listResponse(Request $request, Response $response, $output, $data, $code = 200): Response
     {
         $len = count($data);
-        $index = intval($request->getQueryParam('pageToken', 0));
-        $maxPage = $request->getQueryParam('maxResults', 100);
+        $index = intval($request->getQueryParam('page_token', 0));
+        $maxPage = $request->getQueryParam('max_results', 100);
         $count = $maxPage;
         if (is_string($count) && strtolower($count) === 'all') {
             $count = $len;
@@ -431,7 +431,7 @@ abstract class BaseController
         }
         $output['data'] = array_slice($data, $index, $count, true);
         if ($maxPage !== 'all' and $index + $count < $len) {
-            $output['nextPageToken'] = $index + $count;
+            $output['next_page_token'] = $index + $count;
         }
 
         return $this->jsonResponse($request, $response, $output, $code);
@@ -456,10 +456,25 @@ abstract class BaseController
     public function getDepartment($id)
     {
         $select = Select::new($this->container->db);
-        $select->columns('*');
-        $select->columns($select->subselect()->columns('COUNT(DepartmentID)')->from('`Departments` d2')->whereEquals(['d2.ParentDepartmentID' => 'd1.DepartmentID'])->andWhere("NOT NAME = 'Historical Placeholder'")->as('childCount')->getStatement());
-        $select->columns($select->subselect()->columns('GROUP_CONCAT(Email)')->from('EMails')->whereEquals(['DepartmentID' => 'd1.DepartmentID'])->as('email')->getStatement());
-        $select->from('Departments d1');
+        $select->columns('*')
+            ->columns(
+                $select->subselect()
+                    ->columns('COUNT(DepartmentID)')
+                    ->from('`Departments` d2')
+                    ->whereEquals(['d2.ParentDepartmentID' => 'd1.DepartmentID'])
+                    ->andWhere("NOT NAME = 'Historical Placeholder'")
+                    ->as('child_count')
+                    ->getStatement()
+            )
+            ->columns(
+                $select->subselect()
+                    ->columns('GROUP_CONCAT(Email)')
+                    ->from('EMails')
+                    ->whereEquals(['DepartmentID' => 'd1.DepartmentID'])
+                    ->as('email')
+                    ->getStatement()
+            )
+            ->from('Departments d1');
         if ($id !== null) {
             $select->where("(DepartmentID = '$id' OR Name = '$id')");
         }

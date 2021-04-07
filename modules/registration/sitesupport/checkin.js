@@ -25,13 +25,13 @@ class CheckinTicket extends RegTicket {
     s.classList.add('UI-padding');
     n.append(s);
     s.innerHTML = 'Badge&nbsp;#' + this.data.member.id + '&nbsp;-&nbsp;' +
-       this.data.ticketType.Name;
+       this.data.ticket_type.name;
     var br = document.createElement('BR');
     n.append(br);
     s = document.createElement('SPAN');
     s.classList.add('UI-padding');
     n.append(s);
-    s.innerHTML = 'Badge Name ' + this.data.badgeName;
+    s.innerHTML = 'Badge Name ' + this.data.badge_name;
     br = document.createElement('BR');
     n.append(br);
     if (page.isOpen) {
@@ -64,7 +64,7 @@ class CheckinTicket extends RegTicket {
     s.classList.add('UI-padding');
     n.append(s);
     s.innerHTML = 'Badge&nbsp;#' + this.data.member.id + '&nbsp;-&nbsp;' +
-      this.data.ticketType.Name;
+      this.data.ticket_type.name;
     var br = document.createElement('BR');
     n.append(br);
     s = document.createElement('SPAN');
@@ -127,7 +127,7 @@ class CheckinTicket extends RegTicket {
     s.classList.add('UI-padding');
     n.append(s);
     s.innerHTML = 'Badge&nbsp;#' + this.data.member.id + '&nbsp;-&nbsp;' +
-      this.data.ticketType.Name;
+      this.data.ticket_type.name;
     var br = document.createElement('BR');
     n.append(br);
     s = document.createElement('SPAN');
@@ -229,7 +229,7 @@ class CheckinPage {
 
   handleTicket(ticket) {
     var e = this.createCard(ticket.data.id);
-    if (ticket.data.boardingPassGenerated == null) {
+    if (ticket.data.boarding_pass_generated == null) {
       var p = document.getElementById('checkin');
       this.pendingCheckin.push(ticket.data);
       p.append(ticket.displayCheckIn(e, this));
@@ -237,7 +237,7 @@ class CheckinPage {
       if (this.isOpen) {
         document.getElementById('checkin_button').classList.remove('UI-hide');
       }
-    } else if (ticket.data.badgesPickedUp < 1) {
+    } else if (ticket.data.badges_picked_up < 1) {
       p = document.getElementById('pickup');
       p.append(ticket.displayBoardingPass(e, this.isOpen));
       p.classList.remove('UI-hide');
@@ -256,7 +256,7 @@ class CheckinPage {
       e.classList.remove('UI-hide');
       e.innerHTML = this.configuration.badgeNotice.value;
     }
-    apiRequest('GET', 'registration/ticket/list', 'maxResults=all')
+    apiRequest('GET', 'registration/ticket/list', 'max_results=all')
       .then(function(response) {
         var d = JSON.parse(response.responseText);
         if (Array.isArray(d.data)) {

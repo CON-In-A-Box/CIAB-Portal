@@ -21,7 +21,7 @@
  *          description="announcement ID"
  *      ),
  *      @OA\Property(
- *          property="postedOn",
+ *          property="posted_on",
  *          type="string",
  *          format="date",
  *          description="Date the announcement was first posted"
@@ -40,7 +40,7 @@
  *          }
  *      ),
  *      @OA\Property(
- *          property="postedBy",
+ *          property="posted_by",
  *          description="The member who created the announcement",
  *          oneOf={
  *              @OA\Schema(
@@ -110,8 +110,8 @@ abstract class BaseAnnouncement extends BaseController
     '"announcement"' => 'type',
     'AnnouncementID' => 'id',
     'DepartmentID' => 'department',
-    'PostedOn' => 'postedOn',
-    'PostedBy' => 'postedBy',
+    'PostedOn' => 'posted_on',
+    'PostedBy' => 'posted_by',
     'Scope' => 'scope',
     'Text' => 'text'
     ];
@@ -126,7 +126,7 @@ abstract class BaseAnnouncement extends BaseController
         new IncludeResource(
             '\App\Controller\Member\GetMember',
             'id',
-            'postedBy'
+            'posted_by'
         ),
         new IncludeResource(
             '\App\Controller\Department\GetDepartment',

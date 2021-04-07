@@ -57,8 +57,8 @@ export class RegTicket {
   updateBadge() {
     showSpinner();
     apiRequest('PUT', 'registration/ticket/' + this.data.id,
-      'badgeName=' + this.data.badgeName +
-      '&contact=' + this.data.emergencyContact)
+      'badge_name=' + this.data.badge_name +
+      '&emergency_contact=' + this.data.emergency_contact)
       .then(function() {
         hideSpinner();
         location.reload();

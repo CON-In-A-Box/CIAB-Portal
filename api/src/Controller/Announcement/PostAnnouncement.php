@@ -151,12 +151,13 @@ Q
         $required = ['scope', 'text'];
         $body = $this->checkRequiredBody($request, $required);
         $user = $this->findMember($request, $response, null, null);
-        $body['postedBy'] = $user['id'];
+        $body['posted_by'] = $user['id'];
         $body['department'] = $department['id'];
 
         $insert = Insert::new($this->container->db);
         $insert->into('Announcements');
         $insert->columns(BaseAnnouncement::insertPayloadFromParams($body));
+        /* This is the column name, not the memeber parameter name */
         $insert->set('postedOn', 'NOW()');
         $insert->perform();
 

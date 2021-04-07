@@ -19,7 +19,7 @@ class CycleTest extends CiabTestCase
             'POST',
             '/cycle',
             null,
-            ['dateFrom' => $when, 'dateTo' => $to],
+            ['date_from' => $when, 'date_to' => $to],
             201
         );
 
@@ -49,7 +49,7 @@ class CycleTest extends CiabTestCase
             'POST',
             '/cycle',
             null,
-            ['dateFrom' => $when, 'dateTo' => $to],
+            ['date_from' => $when, 'date_to' => $to],
             201
         );
 
@@ -95,8 +95,8 @@ class CycleTest extends CiabTestCase
             'PUT',
             '/cycle/'.$target,
             null,
-            ['dateFrom' => $when,
-             'dateTo' => $to]
+            ['date_from' => $when,
+             'date_to' => $to]
         );
 
         $this->runRequest('DELETE', '/cycle/'.$target, null, null, 204);
@@ -149,7 +149,7 @@ class CycleTest extends CiabTestCase
             'POST',
             '/cycle',
             null,
-            ['dateFrom' => $when, 'dateTo' => 'not-a-date'],
+            ['date_from' => $when, 'date_to' => 'not-a-date'],
             400
         );
 
@@ -157,7 +157,7 @@ class CycleTest extends CiabTestCase
             'POST',
             '/cycle',
             null,
-            ['dateTo' => $to, 'dateFrom' => 'not-a-date'],
+            ['date_to' => $to, 'date_from' => 'not-a-date'],
             400
         );
 
@@ -165,11 +165,11 @@ class CycleTest extends CiabTestCase
             'POST',
             '/cycle',
             null,
-            ['dateFrom' => $when],
+            ['date_from' => $when],
             400
         );
 
-        $this->runRequest('POST', '/cycle', ['dateTo' => $to], null, 400);
+        $this->runRequest('POST', '/cycle', ['date_to' => $to], null, 400);
         $this->runRequest('DELETE', '/cycle/-1', null, null, 404);
         $this->runRequest('DELETE', '/cycle/'.$target, null, null, 204);
 

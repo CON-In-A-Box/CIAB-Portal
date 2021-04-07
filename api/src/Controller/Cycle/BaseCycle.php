@@ -21,13 +21,13 @@
  *          description="cycle Id"
  *      ),
  *      @OA\Property(
- *          property="dateFrom",
+ *          property="date_from",
  *          type="string",
  *          format="date",
  *          description="cycle start date"
  *      ),
  *      @OA\Property(
- *          property="dateTo",
+ *          property="date_to",
  *          type="string",
  *          format="date",
  *          description="cycle ending date"
@@ -81,8 +81,8 @@ abstract class BaseCycle extends BaseController
     protected static $columnsToAttributes = [
     '"cycle"' => 'type',
     'AnnualCycleID' => 'id',
-    'DateFrom' => 'dateFrom',
-    'DateTo' => 'dateTo',
+    'DateFrom' => 'date_from',
+    'DateTo' => 'date_to',
     ];
 
 

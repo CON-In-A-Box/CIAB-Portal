@@ -152,14 +152,14 @@ var announcementPage = (function(options) {
       f = document.createElement('DIV');
       f.classList.add('UI-table-cell');
       f.id = 'announcement-' + data2.id + '-posted';
-      f.appendChild(document.createTextNode(data2.postedOn));
+      f.appendChild(document.createTextNode(data2.posted_on));
       line.appendChild(f);
 
       f = document.createElement('DIV');
       f.classList.add('UI-table-cell');
       f.id = 'announcement-' + data2.id + '-poster';
-      var name = data2.postedBy.firstName + ' ' + data2.postedBy.lastName +
-        ' (' + data2.postedBy.email + ')';
+      var name = data2.posted_by.firstName + ' ' + data2.posted_by.lastName +
+        ' (' + data2.posted_by.email + ')';
       f.appendChild(document.createTextNode(name));
       line.appendChild(f);
 
@@ -304,7 +304,7 @@ var announcementPage = (function(options) {
       showSpinner();
       apiRequest('GET',
         'member/current/announcements',
-        'maxResults=all')
+        'max_results=all')
         .then(function(response) {
           var result = JSON.parse(response.responseText);
           if (result.data.length > 0) {
@@ -316,7 +316,7 @@ var announcementPage = (function(options) {
           }
           apiRequest('GET',
             'permissions/method/announcement',
-            'maxResults=all')
+            'max_results=all')
             .then(function(response) {
               result = JSON.parse(response.responseText);
               var havePost = false;
@@ -324,11 +324,11 @@ var announcementPage = (function(options) {
               if (result.data.length > 0) {
                 result.data.forEach(function(data) {
                   if (data.allowed) {
-                    permissions[data.subdata.departmentId + '_' +
+                    permissions[data.subdata.department + '_' +
                                   data.subtype] = data;
                     if (data.subtype == 'announcement_post') {
                       var sect = 'announcement-block-' +
-                                 data.subdata.departmentId;
+                                 data.subdata.department;
                       var block = document.getElementById(sect);
                       if (block !== null) {
                         var button = block.getElementsByTagName('button');
@@ -347,7 +347,7 @@ var announcementPage = (function(options) {
                     if (data.subtype == 'announcement_delete' ||
                           data.subtype == 'announcement_put') {
                       var line = 'announcement-table-modify-' +
-                            data.subdata.departmentId;
+                            data.subdata.department;
                       var cells = document.getElementsByName(line);
                       cells.forEach(function(cell) {
                         cell.classList.remove('UI-hide');

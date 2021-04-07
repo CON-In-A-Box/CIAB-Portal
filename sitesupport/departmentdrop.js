@@ -47,7 +47,7 @@ var departmentDropdown = (function(options) {
       select.id = 'department_dropdown_select';
       select.classList.add('UI-input');
       dom.appendChild(select);
-      apiRequest('GET', '/department', 'maxResults=all')
+      apiRequest('GET', '/department', 'max_results=all')
         .then(departmentDropdown.addDepartments)
         .catch(function(response) {
           select.value = response.responseText;

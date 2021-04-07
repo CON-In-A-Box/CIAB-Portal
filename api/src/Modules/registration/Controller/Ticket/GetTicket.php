@@ -18,7 +18,7 @@
  *      @OA\Parameter(
  *          description="Show voided tickets as well.",
  *          in="query",
- *          name="showVoid",
+ *          name="show_void",
  *          required=false,
  *          @OA\Schema(type="integer", enum={0,1})
  *      ),
@@ -69,7 +69,7 @@ class GetTicket extends BaseTicketInclude
             ->whereEquals(['RegistrationID' => $id]);
 
         $query = $request->getQueryParams();
-        if (!array_key_exists('showVoid', $query) || !boolval($query['showVoid'])) {
+        if (!array_key_exists('show_void', $query) || !boolval($query['show_void'])) {
             $select->whereEquals(['VoidDate' => null]);
         }
 

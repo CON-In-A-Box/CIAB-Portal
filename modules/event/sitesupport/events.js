@@ -95,8 +95,8 @@ function saveCycle() {
     target += '/' + id;
   }
   confirmbox(title, msg).then(function() {
-    var data = 'dateFrom=' + document.getElementById('cycle_from').value + '&' +
-      'dateTo=' + document.getElementById('cycle_to').value;
+    var data = 'date_from=' + document.getElementById('cycle_from').value +
+    '&' + 'date_to=' + document.getElementById('cycle_to').value;
     apiRequest(method, target, data).then(function() {
       location.reload();
     })
@@ -271,7 +271,7 @@ function editCycle(data) {
 
 function loadEvents() {
   showSpinner();
-  apiRequest('GET', 'cycle', 'maxResults=all')
+  apiRequest('GET', 'cycle', 'max_results=all')
     .then(function(response) {
       hideSpinner();
       var result = JSON.parse(response.responseText);
@@ -289,11 +289,11 @@ function loadEvents() {
           line.appendChild(f);
           f = document.createElement('DIV');
           f.classList.add('UI-table-cell');
-          f.appendChild(document.createTextNode(data.dateFrom));
+          f.appendChild(document.createTextNode(data.date_from));
           line.appendChild(f);
           f = document.createElement('DIV');
           f.classList.add('UI-table-cell');
-          f.appendChild(document.createTextNode(data.dateTo));
+          f.appendChild(document.createTextNode(data.date_to));
           line.appendChild(f);
 
           var to = new Date(data.DateTo);

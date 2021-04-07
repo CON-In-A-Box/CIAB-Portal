@@ -23,11 +23,11 @@
  *              mediaType="multipart/form-data",
  *              @OA\Schema(
  *                  @OA\Property(
- *                      property="badgeName",
+ *                      property="badge_name",
  *                      type="string",
  *                  ),
  *                  @OA\Property(
- *                      property="contact",
+ *                      property="emergency_contact",
  *                      type="string",
  *                  ),
  *                  @OA\Property(
@@ -87,11 +87,11 @@ class PutTicket extends BaseTicketInclude
         }
         $set = [];
 
-        if (array_key_exists('badgeName', $body)) {
-            $set['BadgeName'] = $body['badgeName'];
+        if (array_key_exists('badge_name', $body)) {
+            $set['BadgeName'] = $body['badge_name'];
         }
-        if (array_key_exists('contact', $body)) {
-            $set['EmergencyContact'] = $body['contact'];
+        if (array_key_exists('emergency_contact', $body)) {
+            $set['EmergencyContact'] = $body['emergency_contact'];
         }
 
         if (array_key_exists('note', $body)) {

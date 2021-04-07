@@ -39,7 +39,7 @@
  *  @OA\Schema(
  *      schema="permission_subdata",
  *      @OA\Property(
- *          property="departmentId",
+ *          property="department",
  *          type="integer",
  *          description="Id for the target department"
  *      )
@@ -111,10 +111,10 @@
  *          ref="#/components/parameters/short_response",
  *      ),
  *      @OA\Parameter(
- *          ref="#/components/parameters/maxResults",
+ *          ref="#/components/parameters/max_results",
  *      ),
  *      @OA\Parameter(
- *          ref="#/components/parameters/pageToken",
+ *          ref="#/components/parameters/page_token",
  *      ),
  *      @OA\Response(
  *          response=200,
@@ -162,10 +162,10 @@
  *          ref="#/components/parameters/short_response",
  *      ),
  *      @OA\Parameter(
- *          ref="#/components/parameters/maxResults",
+ *          ref="#/components/parameters/max_results",
  *      ),
  *      @OA\Parameter(
- *          ref="#/components/parameters/pageToken",
+ *          ref="#/components/parameters/page_token",
  *      ),
  *      @OA\Response(
  *          response=200,
@@ -231,10 +231,10 @@
  *          ref="#/components/parameters/short_response",
  *      ),
  *      @OA\Parameter(
- *          ref="#/components/parameters/maxResults",
+ *          ref="#/components/parameters/max_results",
  *      ),
  *      @OA\Parameter(
- *          ref="#/components/parameters/pageToken",
+ *          ref="#/components/parameters/page_token",
  *      ),
  *      @OA\Response(
  *          response=200,
@@ -290,10 +290,10 @@
  *          ref="#/components/parameters/short_response",
  *      ),
  *      @OA\Parameter(
- *          ref="#/components/parameters/maxResults",
+ *          ref="#/components/parameters/max_results",
  *      ),
  *      @OA\Parameter(
- *          ref="#/components/parameters/pageToken",
+ *          ref="#/components/parameters/page_token",
  *      ),
  *      @OA\Response(
  *          response=200,
@@ -359,10 +359,10 @@
  *          ref="#/components/parameters/short_response",
  *      ),
  *      @OA\Parameter(
- *          ref="#/components/parameters/maxResults",
+ *          ref="#/components/parameters/max_results",
  *      ),
  *      @OA\Parameter(
- *          ref="#/components/parameters/pageToken",
+ *          ref="#/components/parameters/page_token",
  *      ),
  *      @OA\Response(
  *          response=200,
@@ -420,7 +420,7 @@ abstract class BasePermission extends BaseController
         'action' => $link
         ];
         $entry['subdata'] = [
-        'departmentId' => $id
+        'department' => $id
         ];
         return $entry;
 
@@ -551,11 +551,11 @@ abstract class BasePermission extends BaseController
 
         $target = new \App\Controller\Department\GetDepartment($this->container);
         $newparams = $params;
-        $newparams['name'] = $data['subdata']['departmentId'];
+        $newparams['name'] = $data['subdata']['department'];
         $newdata = $target->buildResource($request, $response, $newparams)[1];
-        if ($newdata['id'] != $data['subdata']['departmentId']) {
+        if ($newdata['id'] != $data['subdata']['department']) {
             $target->processIncludes($request, $response, $params, $newdata, $history);
-            $data['subdata']['departmentId'] = $target->arrayResponse($request, $response, $newdata);
+            $data['subdata']['department'] = $target->arrayResponse($request, $response, $newdata);
         }
 
     }

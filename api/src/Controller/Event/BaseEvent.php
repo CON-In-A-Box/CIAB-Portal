@@ -34,13 +34,13 @@
  *          }
  *      ),
  *      @OA\Property(
- *          property="dateFrom",
+ *          property="date_from",
  *          type="string",
  *          format="date",
  *          description="Date the event starts"
  *      ),
  *      @OA\Property(
- *          property="dateTo",
+ *          property="date_to",
  *          type="string",
  *          format="date",
  *          description="Date the event ends"
@@ -101,8 +101,8 @@ abstract class BaseEvent extends BaseController
     '"event"' => 'type',
     'EventID' => 'id',
     'AnnualCycleID' => 'cycle',
-    'DateFrom' => 'dateFrom',
-    'DateTo' => 'dateTo',
+    'DateFrom' => 'date_from',
+    'DateTo' => 'date_to',
     'EventName' => 'name'
     ];
 

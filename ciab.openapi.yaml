@@ -121,9 +121,9 @@ paths:
         -
           $ref: '#/components/parameters/short_response'
         -
-          $ref: '#/components/parameters/maxResults'
+          $ref: '#/components/parameters/max_results'
         -
-          $ref: '#/components/parameters/pageToken'
+          $ref: '#/components/parameters/page_token'
       responses:
         '200':
           description: OK
@@ -160,9 +160,9 @@ paths:
         -
           $ref: '#/components/parameters/short_response'
         -
-          $ref: '#/components/parameters/maxResults'
+          $ref: '#/components/parameters/max_results'
         -
-          $ref: '#/components/parameters/pageToken'
+          $ref: '#/components/parameters/page_token'
       responses:
         '200':
           description: OK
@@ -264,11 +264,11 @@ paths:
           multipart/form-data:
             schema:
               properties:
-                dateFrom:
+                date_from:
                   type: string
                   format: date
                   nullable: true
-                dateTo:
+                date_to:
                   type: string
                   format: date
                   nullable: true
@@ -340,9 +340,9 @@ paths:
             type: string
             format: date
         -
-          $ref: '#/components/parameters/maxResults'
+          $ref: '#/components/parameters/max_results'
         -
-          $ref: '#/components/parameters/pageToken'
+          $ref: '#/components/parameters/page_token'
       responses:
         '200':
           description: OK
@@ -366,10 +366,10 @@ paths:
           multipart/form-data:
             schema:
               properties:
-                dateFrom:
+                date_from:
                   type: string
                   format: date
-                dateTo:
+                date_to:
                   type: string
                   format: date
               type: object
@@ -574,9 +574,9 @@ paths:
         -
           $ref: '#/components/parameters/short_response'
         -
-          $ref: '#/components/parameters/maxResults'
+          $ref: '#/components/parameters/max_results'
         -
-          $ref: '#/components/parameters/pageToken'
+          $ref: '#/components/parameters/page_token'
       responses:
         '200':
           description: OK
@@ -633,9 +633,9 @@ paths:
         -
           $ref: '#/components/parameters/short_response'
         -
-          $ref: '#/components/parameters/maxResults'
+          $ref: '#/components/parameters/max_results'
         -
-          $ref: '#/components/parameters/pageToken'
+          $ref: '#/components/parameters/page_token'
       responses:
         '200':
           description: OK
@@ -726,9 +726,9 @@ paths:
         -
           $ref: '#/components/parameters/short_response'
         -
-          $ref: '#/components/parameters/maxResults'
+          $ref: '#/components/parameters/max_results'
         -
-          $ref: '#/components/parameters/pageToken'
+          $ref: '#/components/parameters/page_token'
       responses:
         '200':
           description: OK
@@ -750,10 +750,10 @@ paths:
           multipart/form-data:
             schema:
               properties:
-                dateFrom:
+                date_from:
                   type: string
                   format: date
-                dateTo:
+                date_to:
                   type: string
                   format: date
                 name:
@@ -787,9 +787,9 @@ paths:
           schema:
             type: string
         -
-          $ref: '#/components/parameters/maxResults'
+          $ref: '#/components/parameters/max_results'
         -
-          $ref: '#/components/parameters/pageToken'
+          $ref: '#/components/parameters/page_token'
       responses:
         '200':
           description: 'Member(s) found'
@@ -864,9 +864,9 @@ paths:
                 description: 'Member id'
                 type: integer
         -
-          $ref: '#/components/parameters/maxResults'
+          $ref: '#/components/parameters/max_results'
         -
-          $ref: '#/components/parameters/pageToken'
+          $ref: '#/components/parameters/page_token'
       responses:
         '200':
           description: OK
@@ -1083,9 +1083,9 @@ paths:
         -
           $ref: '#/components/parameters/short_response'
         -
-          $ref: '#/components/parameters/maxResults'
+          $ref: '#/components/parameters/max_results'
         -
-          $ref: '#/components/parameters/pageToken'
+          $ref: '#/components/parameters/page_token'
       responses:
         '200':
           description: OK
@@ -1255,9 +1255,9 @@ paths:
         -
           $ref: '#/components/parameters/short_response'
         -
-          $ref: '#/components/parameters/maxResults'
+          $ref: '#/components/parameters/max_results'
         -
-          $ref: '#/components/parameters/pageToken'
+          $ref: '#/components/parameters/page_token'
       responses:
         '200':
           description: 'Permissions found'
@@ -1303,9 +1303,9 @@ paths:
         -
           $ref: '#/components/parameters/short_response'
         -
-          $ref: '#/components/parameters/maxResults'
+          $ref: '#/components/parameters/max_results'
         -
-          $ref: '#/components/parameters/pageToken'
+          $ref: '#/components/parameters/page_token'
       responses:
         '200':
           description: 'Permissions found'
@@ -1364,9 +1364,9 @@ paths:
         -
           $ref: '#/components/parameters/short_response'
         -
-          $ref: '#/components/parameters/maxResults'
+          $ref: '#/components/parameters/max_results'
         -
-          $ref: '#/components/parameters/pageToken'
+          $ref: '#/components/parameters/page_token'
       responses:
         '200':
           description: 'Permissions found'
@@ -1413,9 +1413,9 @@ paths:
         -
           $ref: '#/components/parameters/short_response'
         -
-          $ref: '#/components/parameters/maxResults'
+          $ref: '#/components/parameters/max_results'
         -
-          $ref: '#/components/parameters/pageToken'
+          $ref: '#/components/parameters/page_token'
       responses:
         '200':
           description: 'Permissions found'
@@ -1474,9 +1474,9 @@ paths:
         -
           $ref: '#/components/parameters/short_response'
         -
-          $ref: '#/components/parameters/maxResults'
+          $ref: '#/components/parameters/max_results'
         -
-          $ref: '#/components/parameters/pageToken'
+          $ref: '#/components/parameters/page_token'
       responses:
         '200':
           description: 'Permissions found'
@@ -1654,9 +1654,9 @@ paths:
       summary: 'Get all configuration settings for the site'
       parameters:
         -
-          $ref: '#/components/parameters/maxResults'
+          $ref: '#/components/parameters/max_results'
         -
-          $ref: '#/components/parameters/pageToken'
+          $ref: '#/components/parameters/page_token'
       responses:
         '200':
           description: OK
@@ -1758,9 +1758,9 @@ paths:
       summary: 'Get all configuration settings for registration'
       parameters:
         -
-          $ref: '#/components/parameters/maxResults'
+          $ref: '#/components/parameters/max_results'
         -
-          $ref: '#/components/parameters/pageToken'
+          $ref: '#/components/parameters/page_token'
       responses:
         '200':
           description: OK
@@ -1913,7 +1913,7 @@ paths:
           schema:
             type: integer
         -
-          name: showVoid
+          name: show_void
           in: query
           description: 'Show voided tickets as well.'
           required: false
@@ -1957,9 +1957,9 @@ paths:
           multipart/form-data:
             schema:
               properties:
-                badgeName:
+                badge_name:
                   type: string
-                contact:
+                emergency_contact:
                   type: string
                 note:
                   type: string
@@ -2107,9 +2107,9 @@ paths:
       summary: 'List all ticket types for the current event'
       parameters:
         -
-          $ref: '#/components/parameters/maxResults'
+          $ref: '#/components/parameters/max_results'
         -
-          $ref: '#/components/parameters/pageToken'
+          $ref: '#/components/parameters/page_token'
         -
           $ref: '#/components/parameters/short_response'
       responses:
@@ -2151,11 +2151,21 @@ paths:
           schema:
             type: integer
         -
+          name: show_void
+          in: query
+          description: 'Show voided tickets as well.'
+          required: false
+          schema:
+            type: integer
+            enum:
+              - 0
+              - 1
+        -
           $ref: '#/components/parameters/short_response'
         -
-          $ref: '#/components/parameters/maxResults'
+          $ref: '#/components/parameters/max_results'
         -
-          $ref: '#/components/parameters/pageToken'
+          $ref: '#/components/parameters/page_token'
       responses:
         '200':
           description: 'Tickets found'
@@ -2190,9 +2200,19 @@ paths:
                 description: 'Member id'
                 type: integer
         -
-          $ref: '#/components/parameters/maxResults'
+          name: show_void
+          in: query
+          description: 'Show voided tickets as well.'
+          required: false
+          schema:
+            type: integer
+            enum:
+              - 0
+              - 1
         -
-          $ref: '#/components/parameters/pageToken'
+          $ref: '#/components/parameters/max_results'
+        -
+          $ref: '#/components/parameters/page_token'
       responses:
         '200':
           description: 'Tickets found'
@@ -2214,9 +2234,19 @@ paths:
       summary: 'Gets tickets for the current member for the current event'
       parameters:
         -
-          $ref: '#/components/parameters/maxResults'
+          name: show_void
+          in: query
+          description: 'Show voided tickets as well.'
+          required: false
+          schema:
+            type: integer
+            enum:
+              - 0
+              - 1
         -
-          $ref: '#/components/parameters/pageToken'
+          $ref: '#/components/parameters/max_results'
+        -
+          $ref: '#/components/parameters/page_token'
         -
           $ref: '#/components/parameters/short_response'
       responses:
@@ -2316,15 +2346,15 @@ paths:
                   type: string
                 event:
                   type: string
-                ticketType:
+                ticket_type:
                   type: string
-                dependOn:
+                badge_dependent_on:
                   type: string
-                badgeName:
+                badge_name:
                   type: string
-                contact:
+                emergency_contact:
                   type: string
-                registeredBy:
+                registered_by:
                   type: string
               type: object
       responses:
@@ -2377,9 +2407,9 @@ paths:
       summary: 'Get the current print queue for badges for the current event.'
       parameters:
         -
-          $ref: '#/components/parameters/maxResults'
+          $ref: '#/components/parameters/max_results'
         -
-          $ref: '#/components/parameters/pageToken'
+          $ref: '#/components/parameters/page_token'
       responses:
         '200':
           description: OK
@@ -2588,9 +2618,9 @@ paths:
         -
           $ref: '#/components/parameters/short_response'
         -
-          $ref: '#/components/parameters/maxResults'
+          $ref: '#/components/parameters/max_results'
         -
-          $ref: '#/components/parameters/pageToken'
+          $ref: '#/components/parameters/page_token'
       responses:
         '200':
           description: OK
@@ -2623,9 +2653,9 @@ paths:
           schema:
             type: integer
         -
-          $ref: '#/components/parameters/maxResults'
+          $ref: '#/components/parameters/max_results'
         -
-          $ref: '#/components/parameters/pageToken'
+          $ref: '#/components/parameters/page_token'
         -
           $ref: '#/components/parameters/short_response'
       responses:
@@ -2649,9 +2679,9 @@ paths:
       summary: 'Gets staff positions for the current member'
       parameters:
         -
-          $ref: '#/components/parameters/maxResults'
+          $ref: '#/components/parameters/max_results'
         -
-          $ref: '#/components/parameters/pageToken'
+          $ref: '#/components/parameters/page_token'
       responses:
         '200':
           description: 'Member staff positions found'
@@ -2682,9 +2712,9 @@ paths:
         -
           $ref: '#/components/parameters/short_response'
         -
-          $ref: '#/components/parameters/maxResults'
+          $ref: '#/components/parameters/max_results'
         -
-          $ref: '#/components/parameters/pageToken'
+          $ref: '#/components/parameters/page_token'
       responses:
         '200':
           description: OK
@@ -2764,7 +2794,7 @@ components:
         id:
           description: 'announcement ID'
           type: integer
-        postedOn:
+        posted_on:
           description: 'Date the announcement was first posted'
           type: string
           format: date
@@ -2776,7 +2806,7 @@ components:
             -
               description: 'Department Id'
               type: integer
-        postedBy:
+        posted_by:
           description: 'The member who created the announcement'
           oneOf:
             -
@@ -2830,8 +2860,8 @@ components:
           description: 'List of resources'
           type: array
           items: {  }
-        nextPageToken:
-          description: 'If present, the `pageToken` for the next page of results'
+        next_page_token:
+          description: 'If present, the `page_token` for the next page of results'
           type: integer
       type: object
     cycle:
@@ -2843,11 +2873,11 @@ components:
         id:
           description: 'cycle Id'
           type: integer
-        dateFrom:
+        date_from:
           description: 'cycle start date'
           type: string
           format: date
-        dateTo:
+        date_to:
           description: 'cycle ending date'
           type: string
           format: date
@@ -2927,7 +2957,7 @@ components:
             -
               description: 'Department Id'
               type: integer
-        childCount:
+        child_count:
           description: 'Number of child departments'
           type: integer
         fallback:
@@ -2976,11 +3006,11 @@ components:
             -
               description: 'Cycle Id'
               type: integer
-        dateFrom:
+        date_from:
           description: 'Date the event starts'
           type: string
           format: date
-        dateTo:
+        date_to:
           description: 'Date the event ends'
           type: string
           format: date
@@ -3145,7 +3175,7 @@ components:
       type: object
     permission_subdata:
       properties:
-        departmentId:
+        department:
           description: 'Id for the target department'
           type: integer
       type: object
@@ -3210,19 +3240,23 @@ components:
       type: object
     log_entry:
       properties:
-        LogEntryID:
+        type:
+          type: string
+          enum:
+            - log_entry
+        id:
           description: 'Entry ID'
           type: string
-        AccountID:
+        account:
           description: 'Member account generating the log'
           type: string
-        Function:
+        function:
           description: 'Function generating the log'
           type: string
-        Query:
+        query:
           description: 'The query string being logged'
           type: string
-        Date:
+        date:
           description: 'When the log entry was generated'
           type: string
           format: date-time
@@ -3275,7 +3309,7 @@ components:
             - ticket
         id:
           type: integer
-        badgeDependentOn:
+        badge_dependent_on:
           description: 'Member badge is dependent on'
           oneOf:
             -
@@ -3283,12 +3317,12 @@ components:
             -
               description: 'Member Id'
               type: integer
-        badgeName:
+        badge_name:
           type: string
-        badgesPickedUp:
+        badges_picked_up:
           description: 'The number of times this badge has been printed and picked up'
           type: integer
-        emergencyContact:
+        emergency_contact:
           type: string
         event:
           description: 'Event the badge is for'
@@ -3298,7 +3332,7 @@ components:
             -
               description: 'Event Id'
               type: integer
-        registeredBy:
+        registered_by:
           description: 'Member who create the ticket'
           oneOf:
             -
@@ -3306,27 +3340,27 @@ components:
             -
               description: 'Member Id'
               type: integer
-        registrationDate:
+        registration_date:
           type: string
           format: date
-        boardingPassGenerated:
+        boarding_pass_generated:
           type: string
           format: date
-        printRequested:
+        print_requested:
           type: string
           format: date
-        lastPrintedDate:
+        last_printed_date:
           type: string
           format: date
-        printRequestIp:
+        print_request_ip:
           type: string
           format: ip
         note:
           type: string
-        voidDate:
+        void_date:
           type: string
           format: date
-        voidBy:
+        void_by:
           description: 'Member who voided the ticket'
           oneOf:
             -
@@ -3334,9 +3368,9 @@ components:
             -
               description: 'Member Id'
               type: integer
-        voidReason:
+        void_reason:
           type: string
-        ticketType:
+        ticket_type:
           description: 'Type of the ticket'
           oneOf:
             -
@@ -3371,16 +3405,16 @@ components:
               type: integer
         name:
           type: string
-        avaliableFrom:
+        avaliable_from:
           type: string
           format: date
-        avaliableTo:
+        avaliable_to:
           type: string
           format: date
         cost:
           type: number
           format: float
-        backgroundImage:
+        background_image:
           type: string
       type: object
     ticket_type_list:
@@ -3565,8 +3599,8 @@ components:
           schema:
             $ref: '#/components/schemas/error'
   parameters:
-    maxResults:
-      name: maxResults
+    max_results:
+      name: max_results
       in: query
       description: 'Maximum members of the list per page or ''all'' (default 100).'
       required: false
@@ -3579,8 +3613,8 @@ components:
             type: string
             enum:
               - all
-    pageToken:
-      name: pageToken
+    page_token:
+      name: page_token
       in: query
       description: 'Starting page of results.'
       required: false

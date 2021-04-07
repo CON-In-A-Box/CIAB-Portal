@@ -39,7 +39,7 @@
  *          }
  *      ),
  *      @OA\Property(
- *          property="childCount",
+ *          property="child_count",
  *          type="integer",
  *          description="Number of child departments"
  *      ),
