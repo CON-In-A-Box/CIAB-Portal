@@ -38,14 +38,14 @@ class ManageTicket extends RegTicket {
     s = document.createElement('SPAN');
     s.classList.add('UI-padding');
     n.append(s);
-    s.innerHTML = this.data.badgeName;
+    s.innerHTML = this.data.badge_name;
     br = document.createElement('BR');
     n.append(br);
 
     s = document.createElement('SPAN');
     s.classList.add('UI-padding');
     n.append(s);
-    s.innerHTML = this.data.ticketType.Name;
+    s.innerHTML = this.data.ticket_type.name;
     br = document.createElement('BR');
     n.append(br);
 
@@ -57,7 +57,7 @@ class ManageTicket extends RegTicket {
     cb.type = 'checkbox';
     cb.classList.add('UI-checkbox');
     cb.disabled = true;
-    cb.checked = (this.data.badgesPickedUp > 0);
+    cb.checked = (this.data.badges_picked_up > 0);
     s.append(cb);
 
     br = document.createElement('BR');
@@ -66,16 +66,16 @@ class ManageTicket extends RegTicket {
     n.append(br);
 
     var obj = this;
-    if (this.data.badgesPickedUp < 1) {
+    if (this.data.badges_picked_up < 1) {
       s = document.createElement('A');
       n.append(s);
       s.href = 'javascript:;';
       s.onclick = function() {
-        document.getElementById('badge_name').value = obj.data.badgeName;
-        document.getElementById('contact').value = obj.data.emergencyContact;
+        document.getElementById('badge_name').value = obj.data.badge_name;
+        document.getElementById('contact').value = obj.data.emergency_contact;
         document.getElementById('save_button').onclick = function() {
-          obj.data.badgeName = document.getElementById('badge_name').value;
-          obj.data.emergencyContact = document.getElementById('contact').value;
+          obj.data.badge_name = document.getElementById('badge_name').value;
+          obj.data.emergency_contact = document.getElementById('contact').value;
           obj.updateBadge();
         }
         showSidebar('modify_ticket');
@@ -87,7 +87,7 @@ class ManageTicket extends RegTicket {
 
     s = document.createElement('A');
     n.append(s);
-    if (this.data.boardingPassGenerated == null) {
+    if (this.data.boarding_pass_generated == null) {
       if (isOpen) {
         s.innerHTML = 'Check in';
         s.href = 'index.php?Function=registration/checkin&highlight=' +
@@ -97,7 +97,7 @@ class ManageTicket extends RegTicket {
         s.href = 'javascript:;';
         s.disabled = true;
       }
-    } else if (this.data.badgesPickedUp < 1) {
+    } else if (this.data.badges_picked_up < 1) {
       if (isOpen) {
         s.innerHTML = 'Boarding Pass';
         s.href = 'index.php?Function=registration/checkin&highlight=' +
@@ -123,8 +123,8 @@ class ManageTicket extends RegTicket {
     }
 
 
-    if (this.data.boardingPassGenerated != null &&
-        this.data.badgesPickedUp < 1) {
+    if (this.data.boarding_pass_generated != null &&
+        this.data.badges_picked_up < 1) {
       br = document.createElement('BR');
       n.append(br);
       s = document.createElement('A');

@@ -21,7 +21,7 @@
  *          type="integer",
  *      ),
  *      @OA\Property(
- *          property="badgeDependentOn",
+ *          property="badge_dependent_on",
  *          description="Member badge is dependent on",
  *          oneOf={
  *              @OA\Schema(
@@ -34,16 +34,16 @@
  *          }
  *      ),
  *      @OA\Property(
- *          property="badgeName",
+ *          property="badge_name",
  *          type="string",
  *      ),
  *      @OA\Property(
- *          property="badgesPickedUp",
+ *          property="badges_picked_up",
  *          type="integer",
  *          description="The number of times this badge has been printed and picked up"
  *      ),
  *      @OA\Property(
- *          property="emergencyContact",
+ *          property="emergency_contact",
  *          type="string",
  *      ),
  *      @OA\Property(
@@ -60,7 +60,7 @@
  *          }
  *      ),
  *      @OA\Property(
- *          property="registeredBy",
+ *          property="registered_by",
  *          description="Member who create the ticket",
  *          oneOf={
  *              @OA\Schema(
@@ -73,27 +73,27 @@
  *          }
  *      ),
  *      @OA\Property(
- *          property="registrationDate",
+ *          property="registration_date",
  *          type="string",
  *          format="date",
  *      ),
  *      @OA\Property(
- *          property="boardingPassGenerated",
+ *          property="boarding_pass_generated",
  *          type="string",
  *          format="date",
  *      ),
  *      @OA\Property(
- *          property="printRequested",
+ *          property="print_requested",
  *          type="string",
  *          format="date",
  *      ),
  *      @OA\Property(
- *          property="lastPrintedDate",
+ *          property="last_printed_date",
  *          type="string",
  *          format="date",
  *      ),
  *      @OA\Property(
- *          property="printRequestIp",
+ *          property="print_request_ip",
  *          type="string",
  *          format="ip",
  *      ),
@@ -102,12 +102,12 @@
  *          type="string",
  *      ),
  *      @OA\Property(
- *          property="voidDate",
+ *          property="void_date",
  *          type="string",
  *          format="date",
  *      ),
  *      @OA\Property(
- *          property="voidBy",
+ *          property="void_by",
  *          description="Member who voided the ticket",
  *          oneOf={
  *              @OA\Schema(
@@ -120,11 +120,11 @@
  *          }
  *      ),
  *      @OA\Property(
- *          property="voidReason",
+ *          property="void_reason",
  *          type="string",
  *      ),
  *      @OA\Property(
- *          property="ticketType",
+ *          property="ticket_type",
  *          description="Type of the ticket",
  *          oneOf={
  *              @OA\Schema(
@@ -180,12 +180,12 @@
  *          type="string",
  *      ),
  *      @OA\Property(
- *          property="avaliableFrom",
+ *          property="avaliable_from",
  *          type="string",
  *          format="date",
  *      ),
  *      @OA\Property(
- *          property="avaliableTo",
+ *          property="avaliable_to",
  *          type="string",
  *          format="date",
  *      ),
@@ -195,7 +195,7 @@
  *          format="float",
  *      ),
  *      @OA\Property(
- *          property="backgroundImage",
+ *          property="background_image",
  *          type="string",
  *      )
  *  )
@@ -316,22 +316,22 @@ abstract class BaseTicket extends BaseRegistration
     '"ticket"' => 'type',
     'RegistrationID' => 'id' ,
     'AccountID' => 'member',
-    'BadgeDependentOnID' => 'badgeDependentOn',
-    'BadgeName' => 'badgeName',
-    'BadgesPickedUp' => 'badgesPickedUp',
-    'BadgeTypeID' => 'ticketType',
-    'EmergencyContact' => 'emergencyContact',
+    'BadgeDependentOnID' => 'badge_dependent_on',
+    'BadgeName' => 'badge_name',
+    'BadgesPickedUp' => 'badges_picked_up',
+    'BadgeTypeID' => 'ticket_type',
+    'EmergencyContact' => 'emergency_contact',
     'EventID' => 'event',
-    'RegisteredByID' => 'registeredBy',
-    'RegistrationDate' => 'registrationDate',
-    'BoardingPassGenerated' => 'boardingPassGenerated',
-    'PrintRequested' => 'printRequested' ,
-    'LastPrintedDate' => 'lastPrintedDate',
-    'PrintRequestIp' => 'printRequestIp',
+    'RegisteredByID' => 'registered_by',
+    'RegistrationDate' => 'registration_date',
+    'BoardingPassGenerated' => 'boarding_pass_generated',
+    'PrintRequested' => 'print_requested' ,
+    'LastPrintedDate' => 'last_printed_date',
+    'PrintRequestIp' => 'print_request_ip',
     'Note' => 'note',
-    'VoidDate' => 'voidDate',
-    'VoidBy' => 'voidBy',
-    'VoidReason' => 'voidReason'
+    'VoidDate' => 'void_date',
+    'VoidBy' => 'void_by',
+    'VoidReason' => 'void_reason'
     ];
 
 

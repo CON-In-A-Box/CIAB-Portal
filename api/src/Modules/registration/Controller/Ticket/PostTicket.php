@@ -23,23 +23,23 @@
  *                      type="string",
  *                  ),
  *                  @OA\Property(
- *                      property="ticketType",
+ *                      property="ticket_type",
  *                      type="string",
  *                  ),
  *                  @OA\Property(
- *                      property="dependOn",
+ *                      property="badge_dependent_on",
  *                      type="string",
  *                  ),
  *                  @OA\Property(
- *                      property="badgeName",
+ *                      property="badge_name",
  *                      type="string",
  *                  ),
  *                  @OA\Property(
- *                      property="contact",
+ *                      property="emergency_contact",
  *                      type="string",
  *                  ),
  *                  @OA\Property(
- *                      property="registeredBy",
+ *                      property="registered_by",
  *                      type="string",
  *                  )
  *              )
@@ -82,7 +82,7 @@ class PostTicket extends BaseTicketInclude
         $permissions = ['api.registration.ticket.post'];
         $this->checkPermissions($permissions);
 
-        $required = ['member', 'ticketType'];
+        $required = ['member', 'ticket_type'];
         $body = $this->checkRequiredBody($request, $required);
 
         $data = $this->findMember($request, $response, $body, 'member');
@@ -97,18 +97,18 @@ class PostTicket extends BaseTicketInclude
         $body['event'] = $this->getEvent($event)['id'];
 
         $target = new GetTicketTypes($this->container);
-        $target->buildResource($request, $response, ['id' => $body['ticketType']])[1];
+        $target->buildResource($request, $response, ['id' => $body['ticket_type']])[1];
 
-        if (array_key_exists('dependOn', $body)) {
-            $data = $this->findMember($request, $response, $body, 'dependOn');
-            $body['dependOn'] = $data['id'];
+        if (array_key_exists('badge_dependent_on', $body)) {
+            $data = $this->findMember($request, $response, $body, 'badge_dependent_on');
+            $body['badge_dependent_on'] = $data['id'];
         }
 
-        if (array_key_exists('registeredBy', $body)) {
-            $data = $this->findMember($request, $response, $body, 'registeredBy');
-            $body['registeredBy'] = $data['id'];
+        if (array_key_exists('registered_by', $body)) {
+            $data = $this->findMember($request, $response, $body, 'registered_by');
+            $body['registered_by'] = $data['id'];
         } else {
-            $body['registeredBy'] = $member;
+            $body['registered_by'] = $member;
         }
 
         $insert = Insert::new($this->container->db);

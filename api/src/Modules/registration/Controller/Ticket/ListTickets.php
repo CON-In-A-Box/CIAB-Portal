@@ -34,6 +34,13 @@
  *          @OA\Schema(type="integer")
  *      ),
  *      @OA\Parameter(
+ *          description="Show voided tickets as well.",
+ *          in="query",
+ *          name="show_void",
+ *          required=false,
+ *          @OA\Schema(type="integer", enum={0,1})
+ *      ),
+ *      @OA\Parameter(
  *          ref="#/components/parameters/short_response",
  *      ),
  *      @OA\Parameter(
@@ -83,6 +90,13 @@
  *          )
  *      ),
  *      @OA\Parameter(
+ *          description="Show voided tickets as well.",
+ *          in="query",
+ *          name="show_void",
+ *          required=false,
+ *          @OA\Schema(type="integer", enum={0,1})
+ *      ),
+ *      @OA\Parameter(
  *          ref="#/components/parameters/max_results",
  *      ),
  *      @OA\Parameter(
@@ -110,6 +124,13 @@
  *      tags={"registration"},
  *      path="/registration/ticket/list",
  *      summary="Gets tickets for the current member for the current event",
+ *      @OA\Parameter(
+ *          description="Show voided tickets as well.",
+ *          in="query",
+ *          name="show_void",
+ *          required=false,
+ *          @OA\Schema(type="integer", enum={0,1})
+ *      ),
  *      @OA\Parameter(
  *          ref="#/components/parameters/max_results",
  *      ),
@@ -172,7 +193,7 @@ class ListTickets extends BaseTicketInclude
             $select->whereEquals(['EventID' => $params['event']]);
         }
         $query = $request->getQueryParams();
-        if (!array_key_exists('showVoid', $query) || !boolval($query['showVoid'])) {
+        if (!array_key_exists('show_void', $query) || !boolval($query['show_void'])) {
             $select->whereEquals(['VoidDate' => null]);
         }
         $tickets = $select->fetchAll();

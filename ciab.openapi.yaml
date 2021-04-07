@@ -1913,7 +1913,7 @@ paths:
           schema:
             type: integer
         -
-          name: showVoid
+          name: show_void
           in: query
           description: 'Show voided tickets as well.'
           required: false
@@ -1957,9 +1957,9 @@ paths:
           multipart/form-data:
             schema:
               properties:
-                badgeName:
+                badge_name:
                   type: string
-                contact:
+                emergency_contact:
                   type: string
                 note:
                   type: string
@@ -2151,6 +2151,16 @@ paths:
           schema:
             type: integer
         -
+          name: show_void
+          in: query
+          description: 'Show voided tickets as well.'
+          required: false
+          schema:
+            type: integer
+            enum:
+              - 0
+              - 1
+        -
           $ref: '#/components/parameters/short_response'
         -
           $ref: '#/components/parameters/max_results'
@@ -2190,6 +2200,16 @@ paths:
                 description: 'Member id'
                 type: integer
         -
+          name: show_void
+          in: query
+          description: 'Show voided tickets as well.'
+          required: false
+          schema:
+            type: integer
+            enum:
+              - 0
+              - 1
+        -
           $ref: '#/components/parameters/max_results'
         -
           $ref: '#/components/parameters/page_token'
@@ -2213,6 +2233,16 @@ paths:
         - registration
       summary: 'Gets tickets for the current member for the current event'
       parameters:
+        -
+          name: show_void
+          in: query
+          description: 'Show voided tickets as well.'
+          required: false
+          schema:
+            type: integer
+            enum:
+              - 0
+              - 1
         -
           $ref: '#/components/parameters/max_results'
         -
@@ -2316,15 +2346,15 @@ paths:
                   type: string
                 event:
                   type: string
-                ticketType:
+                ticket_type:
                   type: string
-                dependOn:
+                badge_dependent_on:
                   type: string
-                badgeName:
+                badge_name:
                   type: string
-                contact:
+                emergency_contact:
                   type: string
-                registeredBy:
+                registered_by:
                   type: string
               type: object
       responses:
@@ -3279,7 +3309,7 @@ components:
             - ticket
         id:
           type: integer
-        badgeDependentOn:
+        badge_dependent_on:
           description: 'Member badge is dependent on'
           oneOf:
             -
@@ -3287,12 +3317,12 @@ components:
             -
               description: 'Member Id'
               type: integer
-        badgeName:
+        badge_name:
           type: string
-        badgesPickedUp:
+        badges_picked_up:
           description: 'The number of times this badge has been printed and picked up'
           type: integer
-        emergencyContact:
+        emergency_contact:
           type: string
         event:
           description: 'Event the badge is for'
@@ -3302,7 +3332,7 @@ components:
             -
               description: 'Event Id'
               type: integer
-        registeredBy:
+        registered_by:
           description: 'Member who create the ticket'
           oneOf:
             -
@@ -3310,27 +3340,27 @@ components:
             -
               description: 'Member Id'
               type: integer
-        registrationDate:
+        registration_date:
           type: string
           format: date
-        boardingPassGenerated:
+        boarding_pass_generated:
           type: string
           format: date
-        printRequested:
+        print_requested:
           type: string
           format: date
-        lastPrintedDate:
+        last_printed_date:
           type: string
           format: date
-        printRequestIp:
+        print_request_ip:
           type: string
           format: ip
         note:
           type: string
-        voidDate:
+        void_date:
           type: string
           format: date
-        voidBy:
+        void_by:
           description: 'Member who voided the ticket'
           oneOf:
             -
@@ -3338,9 +3368,9 @@ components:
             -
               description: 'Member Id'
               type: integer
-        voidReason:
+        void_reason:
           type: string
-        ticketType:
+        ticket_type:
           description: 'Type of the ticket'
           oneOf:
             -
@@ -3375,16 +3405,16 @@ components:
               type: integer
         name:
           type: string
-        avaliableFrom:
+        avaliable_from:
           type: string
           format: date
-        avaliableTo:
+        avaliable_to:
           type: string
           format: date
         cost:
           type: number
           format: float
-        backgroundImage:
+        background_image:
           type: string
       type: object
     ticket_type_list:

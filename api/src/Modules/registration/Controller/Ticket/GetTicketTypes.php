@@ -118,11 +118,11 @@ class GetTicketTypes extends BaseTicket
     '"ticket_type"' => 'type',
     'BadgeTypeID' => 'id',
     'EventID' => 'event',
-    'AvailableFrom' => 'availableFrom',
-    'AvailableTo' => 'availableTo',
+    'AvailableFrom' => 'available_from',
+    'AvailableTo' => 'available_to',
     'Cost' => 'cost',
     'Name' => 'name',
-    'BackgroundImage' => 'backgroundImage'
+    'BackgroundImage' => 'background_image'
     ];
 
 
