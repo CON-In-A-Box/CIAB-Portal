@@ -275,11 +275,11 @@ var deadlinePage = (function(options) {
               if (result.data.length > 0) {
                 result.data.forEach(function(data) {
                   if (data.allowed) {
-                    permissions[data.subdata.departmentId + '_' +
+                    permissions[data.subdata.department + '_' +
                                   data.subtype] = data;
                     if (data.subtype == 'deadline_post') {
                       var sect = 'deadline-block-' +
-                                 data.subdata.departmentId;
+                                 data.subdata.department;
                       var block = document.getElementById(sect);
                       if (block !== null) {
                         var button = block.getElementsByTagName('button');
@@ -298,7 +298,7 @@ var deadlinePage = (function(options) {
                     if (data.subtype == 'deadline_delete' ||
                           data.subtype == 'deadline_put') {
                       var line = 'deadline-table-modify-' +
-                            data.subdata.departmentId;
+                            data.subdata.department;
                       var cells = document.getElementsByName(line);
                       cells.forEach(function(cell) {
                         cell.classList.remove('UI-hide');

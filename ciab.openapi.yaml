@@ -3145,7 +3145,7 @@ components:
       type: object
     permission_subdata:
       properties:
-        departmentId:
+        department:
           description: 'Id for the target department'
           type: integer
       type: object
