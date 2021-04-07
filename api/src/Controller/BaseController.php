@@ -456,10 +456,25 @@ abstract class BaseController
     public function getDepartment($id)
     {
         $select = Select::new($this->container->db);
-        $select->columns('*');
-        $select->columns($select->subselect()->columns('COUNT(DepartmentID)')->from('`Departments` d2')->whereEquals(['d2.ParentDepartmentID' => 'd1.DepartmentID'])->andWhere("NOT NAME = 'Historical Placeholder'")->as('childCount')->getStatement());
-        $select->columns($select->subselect()->columns('GROUP_CONCAT(Email)')->from('EMails')->whereEquals(['DepartmentID' => 'd1.DepartmentID'])->as('email')->getStatement());
-        $select->from('Departments d1');
+        $select->columns('*')
+            ->columns(
+                $select->subselect()
+                    ->columns('COUNT(DepartmentID)')
+                    ->from('`Departments` d2')
+                    ->whereEquals(['d2.ParentDepartmentID' => 'd1.DepartmentID'])
+                    ->andWhere("NOT NAME = 'Historical Placeholder'")
+                    ->as('child_count')
+                    ->getStatement()
+            )
+            ->columns(
+                $select->subselect()
+                    ->columns('GROUP_CONCAT(Email)')
+                    ->from('EMails')
+                    ->whereEquals(['DepartmentID' => 'd1.DepartmentID'])
+                    ->as('email')
+                    ->getStatement()
+            )
+            ->from('Departments d1');
         if ($id !== null) {
             $select->where("(DepartmentID = '$id' OR Name = '$id')");
         }

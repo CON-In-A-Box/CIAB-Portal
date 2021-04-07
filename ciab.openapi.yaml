@@ -2927,7 +2927,7 @@ components:
             -
               description: 'Department Id'
               type: integer
-        childCount:
+        child_count:
           description: 'Number of child departments'
           type: integer
         fallback:
