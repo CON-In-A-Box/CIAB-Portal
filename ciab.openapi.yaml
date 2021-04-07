@@ -264,11 +264,11 @@ paths:
           multipart/form-data:
             schema:
               properties:
-                dateFrom:
+                date_from:
                   type: string
                   format: date
                   nullable: true
-                dateTo:
+                date_to:
                   type: string
                   format: date
                   nullable: true
@@ -366,10 +366,10 @@ paths:
           multipart/form-data:
             schema:
               properties:
-                dateFrom:
+                date_from:
                   type: string
                   format: date
-                dateTo:
+                date_to:
                   type: string
                   format: date
               type: object
@@ -750,10 +750,10 @@ paths:
           multipart/form-data:
             schema:
               properties:
-                dateFrom:
+                date_from:
                   type: string
                   format: date
-                dateTo:
+                date_to:
                   type: string
                   format: date
                 name:
@@ -2843,11 +2843,11 @@ components:
         id:
           description: 'cycle Id'
           type: integer
-        dateFrom:
+        date_from:
           description: 'cycle start date'
           type: string
           format: date
-        dateTo:
+        date_to:
           description: 'cycle ending date'
           type: string
           format: date
@@ -2976,11 +2976,11 @@ components:
             -
               description: 'Cycle Id'
               type: integer
-        dateFrom:
+        date_from:
           description: 'Date the event starts'
           type: string
           format: date
-        dateTo:
+        date_to:
           description: 'Date the event ends'
           type: string
           format: date

@@ -19,13 +19,13 @@
  *              mediaType="multipart/form-data",
  *              @OA\Schema(
  *                  @OA\Property(
- *                      property="dateFrom",
+ *                      property="date_from",
  *                      type="string",
  *                      format="date",
  *                      nullable=true
  *                  ),
  *                  @OA\Property(
- *                      property="dateTo",
+ *                      property="date_to",
  *                      type="string",
  *                      format="date",
  *                      nullable=true

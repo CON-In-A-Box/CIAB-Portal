@@ -12,12 +12,12 @@
  *              mediaType="multipart/form-data",
  *              @OA\Schema(
  *                  @OA\Property(
- *                      property="dateFrom",
+ *                      property="date_from",
  *                      type="string",
  *                      format="date"
  *                  ),
  *                  @OA\Property(
- *                      property="dateTo",
+ *                      property="date_to",
  *                      type="string",
  *                      format="date"
  *                  ),
@@ -62,17 +62,17 @@ class PostCycle extends BaseCycle
     {
         $permissions = ['api.post.cycle'];
         $this->checkPermissions($permissions);
-        $required = ['dateFrom', 'dateTo'];
+        $required = ['date_from', 'date_to'];
         $body = $this->checkRequiredBody($request, $required);
         try {
-            $from = date_format(new \DateTime($body['dateFrom']), 'Y-m-d');
+            $from = date_format(new \DateTime($body['date_from']), 'Y-m-d');
         } catch (\Exception $e) {
-            throw new InvalidParameterException('Required \'dateFrom\' parameter not valid');
+            throw new InvalidParameterException('Required \'date_from\' parameter not valid');
         }
         try {
-            $to = date_format(new \DateTime($body['dateTo']), 'Y-m-d');
+            $to = date_format(new \DateTime($body['date_to']), 'Y-m-d');
         } catch (\Exception $e) {
-            throw new InvalidParameterException('Required \'dateTo\' parameter not valid');
+            throw new InvalidParameterException('Required \'date_to\' parameter not valid');
         }
 
         $insert = Insert::new($this->container->db);
