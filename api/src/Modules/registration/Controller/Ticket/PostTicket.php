@@ -111,9 +111,10 @@ class PostTicket extends BaseTicketInclude
             $body['registered_by'] = $member;
         }
 
-        $insert = Insert::new($this->container->db);
-        $insert->into('Registrations');
-        $insert->columns(BaseTicket::insertPayloadFromParams($body, false));
+        $insert = Insert::new($this->container->db)
+            ->into('Registrations')
+            ->columns(BaseTicket::insertPayloadFromParams($body, false))
+            ->set('RegistrationDate', 'NOW()');
         $result = $insert->perform();
         if ($result->rowCount() == 0) {
             throw new ConflictException('Could not update');
