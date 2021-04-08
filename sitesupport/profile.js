@@ -10,16 +10,16 @@ var userProfile = (function(options) {
   'use strict';
 
   const map = [
-    ['id', 'badgeNumber'], ['email', 'email1'], ['legalFirstName', 'firstName'],
-    ['legalLastName', 'lastName'], ['middleName', 'middleName'],
-    ['suffix', 'suffix'], ['email2', 'email2'], ['email3', 'email3'],
-    ['phone1', 'phone1'], ['phone2', 'phone2'],
-    ['addressLine1', 'addressLine1'], ['addressLine2', 'addressLine2'],
-    ['city', 'city'], ['state', 'state'], ['zipCode', 'zipCode'],
-    ['zipPlus4', 'zipPlus4'], ['countryName', 'countryName'],
-    ['province', 'province'], ['preferredFirstName', 'preferredFirstName'],
-    ['preferredLastName', 'preferredLastName'],
-    ['conComDisplayPhone', 'conComDisplayPhone'],
+    ['id', 'badgeNumber'], ['email', 'email1'],
+    ['legal_first_name', 'firstName'], ['legal_last_name', 'lastName'],
+    ['middle_name', 'middleName'], ['suffix', 'suffix'], ['email2', 'email2'],
+    ['email3', 'email3'], ['phone', 'phone1'], ['phone2', 'phone2'],
+    ['address_line1', 'addressLine1'], ['address_line2', 'addressLine2'],
+    ['city', 'city'], ['state', 'state'], ['zip_code', 'zipCode'],
+    ['zip_plus4', 'zipPlus4'], ['country', 'countryName'],
+    ['province', 'province'], ['preferred_first_name', 'preferredFirstName'],
+    ['preferred_last_name', 'preferredLastName'],
+    ['concom_display_phone', 'conComDisplayPhone'],
   ];
 
   var accountId;

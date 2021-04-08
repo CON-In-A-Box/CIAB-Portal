@@ -63,10 +63,9 @@ class ListMemberAnnouncements extends BaseAnnouncement
 {
 
 
-    public function buildResource(Request $request, Response $response, $args): array
+    public function buildResource(Request $request, Response $response, $params): array
     {
-        $user = $this->findMemberId($request, $response, $args, 'id');
-        $user = $user['id'];
+        $user = $this->getMember($request, $params['id'])[0]['id'];
         $select = Select::new($this->container->db);
 
         $sub1 = $select->subselect()->columns('COUNT(AccountID)')->from('ConComList')->whereEquals(['AccountID' => $user]);

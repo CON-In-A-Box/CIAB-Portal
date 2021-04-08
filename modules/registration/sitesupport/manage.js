@@ -26,8 +26,8 @@ class ManageTicket extends RegTicket {
     s.classList.add('UI-table-heading');
     s.classList.add('UI-bold');
     n.append(s);
-    s.innerHTML = this.data.member.legalFirstName + '&nbsp;' +
-                  this.data.member.legalLastName
+    s.innerHTML = this.data.member.legal_first_name + '&nbsp;' +
+                  this.data.member.legal_last_name
     s = document.createElement('SPAN');
     s.classList.add('UI-padding');
     n.append(s);

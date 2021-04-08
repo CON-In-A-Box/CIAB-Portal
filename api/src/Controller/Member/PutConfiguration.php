@@ -75,12 +75,15 @@ class PutConfiguration extends BaseMember
     use \App\Controller\TraitConfiguration;
 
 
-    public function buildResource(Request $request, Response $response, $args): array
+    public function buildResource(Request $request, Response $response, $params): array
     {
-        $data = $this->findMemberId($request, $response, $args, 'id');
-        $accountID = $data['id'];
-
         $user = $request->getAttribute('oauth2-token')['user_id'];
+        if (array_key_exists('id', $params)) {
+            $accountID = $this->getMember($request, $params['id'])[0]['id'];
+        } else {
+            $accountID = $user;
+        }
+
         if ($accountID != $user &&
             !\ciab\RBAC::havePermission("api.put.member")) {
             throw new PermissionDeniedException();
@@ -88,11 +91,11 @@ class PutConfiguration extends BaseMember
 
         $body = $request->getParsedBody();
         $body['AccountID'] = $accountID;
-        $this->putConfiguration($request, $response, $args, 'AccountConfiguration', $body);
+        $this->putConfiguration($request, $response, $params, 'AccountConfiguration', $body);
 
         $target = new GetConfiguration($this->container);
-        $args['key'] = $body['Field'];
-        $data = $target->buildResource($request, $response, $args)[1];
+        $params['key'] = $body['Field'];
+        $data = $target->buildResource($request, $response, $params)[1];
         return [
         \App\Controller\BaseController::RESOURCE_TYPE,
         $target->arrayResponse($request, $response, $data)

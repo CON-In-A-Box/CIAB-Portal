@@ -70,8 +70,8 @@ class CheckinTicket extends RegTicket {
     s = document.createElement('SPAN');
     s.classList.add('UI-padding');
     n.append(s);
-    s.innerHTML = this.data.member.legalFirstName + '&nbsp;' +
-                  this.data.member.legalLastName
+    s.innerHTML = this.data.member.legal_first_name + '&nbsp;' +
+                  this.data.member.legal_last_name
     br = document.createElement('BR');
     n.append(br);
     var b = document.createElement('BUTTON');
@@ -133,8 +133,8 @@ class CheckinTicket extends RegTicket {
     s = document.createElement('SPAN');
     s.classList.add('UI-padding');
     n.append(s);
-    s.innerHTML = this.data.member.legalFirstName + '&nbsp;' +
-                  this.data.member.legalLastName
+    s.innerHTML = this.data.member.legal_first_name + '&nbsp;' +
+                  this.data.member.legal_last_name
     br = document.createElement('BR');
     n.append(br);
     var b = document.createElement('BUTTON');

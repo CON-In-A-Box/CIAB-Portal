@@ -114,15 +114,19 @@ class GetConfiguration extends BaseMember
     use \App\Controller\TraitConfiguration;
 
 
-    public function buildResource(Request $request, Response $response, $args): array
+    public function buildResource(Request $request, Response $response, $params): array
     {
-        $data = $this->findMemberId($request, $response, $args, 'id');
         $user = $request->getAttribute('oauth2-token')['user_id'];
-        if ($user != $data['id'] && !\ciab\RBAC::havePermission("api.get.configuration")) {
+        if (array_key_exists('id', $params)) {
+            $id = $this->getMember($request, $params['id'])[0]['id'];
+        } else {
+            $id = $user;
+        }
+        if ($user != $id && !\ciab\RBAC::havePermission("api.get.configuration")) {
             throw new PermissionDeniedException();
         }
 
-        $result = $this->getConfiguration($args, 'AccountConfiguration', "a.AccountId = {$data['id']}");
+        $result = $this->getConfiguration($params, 'AccountConfiguration', "a.AccountId = $id");
 
         if (count($result) > 1) {
             $output = [];

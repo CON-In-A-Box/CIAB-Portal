@@ -209,15 +209,15 @@ class PutPassword extends BaseMember
     }
 
 
-    public function buildResource(Request $request, Response $response, $args): array
+    public function buildResource(Request $request, Response $response, $params): array
     {
-        if (array_key_exists('email', $args)) {
+        if (array_key_exists('email', $params)) {
             $index = 'email';
         } else {
             $index = 'id';
         }
-        $data = $this->findMember($request, $response, $args, $index);
-        $accountID = $data['id'];
+        $accountID = $this->getMember($request, $params[$index])[0]['id'];
+
         $body = $request->getParsedBody();
         if (empty($body)) {
             throw new InvalidParameterException('No body present');

@@ -75,10 +75,14 @@ class ListDeadlines extends \App\Controller\Deadline\BaseDeadline
     }
 
 
-    public function buildResource(Request $request, Response $response, $args): array
+    public function buildResource(Request $request, Response $response, $params): array
     {
-        $data = $this->findMemberId($request, $response, $args, 'id');
-        $user = $data['id'];
+        if (array_key_exists('id', $params)) {
+            $user = $this->getMember($request, $params['id'])[0]['id'];
+        } else {
+            $user = $request->getAttribute('oauth2-token')['user_id'];
+        }
+
         $select = Select::new($this->container->db);
         $select->columns(...\App\Controller\Deadline\BaseDeadline::selectMapping());
         $select->from('Deadlines');

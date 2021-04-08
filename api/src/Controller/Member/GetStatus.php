@@ -82,28 +82,20 @@ class GetStatus extends BaseMember
     }
 
 
-    public function buildResource(Request $request, Response $response, $args): array
+    public function buildResource(Request $request, Response $response, $params): array
     {
-        $data = \lookup_users_by_key($args['name']);
-        if (empty($data['users'])) {
-            if (empty($data['error'])) {
-                $error = 'No Members Found';
-            } else {
-                $error = $data['error'];
-            }
-            throw new NotFoundException($error);
-        }
-        if (count($data['users']) > 1) {
+        $data = $this->getMember($request, $params['name']);
+        if (count($data) > 1) {
             $error = 'Too many matches found';
             throw new NotFoundException($error);
         }
-        $data = $data['users'][0];
-        if (!array_key_exists('Id', $data)) {
+        $data = $data[0];
+        if (!array_key_exists('id', $data)) {
             $error = 'User ID not found';
             throw new NotFoundException($error);
         }
         $valid = array('type' => 'member_status',
-                       'status' => $this->verifyAccount($data['Id']));
+                       'status' => $this->verifyAccount($data['id']));
         return [
         \App\Controller\BaseController::RESOURCE_TYPE,
         $valid];
