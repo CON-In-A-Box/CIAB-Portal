@@ -151,8 +151,7 @@ var userLookup = (function(options) {
             settings.success(target, response);
           },
           function(input) {
-            var response = JSON.parse(input.responseText);
-            settings.fail(target, response, id, input.status);
+            settings.fail(target, input.responseText, id, input.status);
           });
       } else {
         if (target) {
