@@ -9,6 +9,8 @@ use Slim\Http\Request;
 use Slim\Http\Environment;
 use App\Tests\Base\BlankMiddleWare;
 use Chadicus\Slim\OAuth2\Middleware;
+use Atlas\Query\Insert;
+use Atlas\Query\Delete;
 
 if (is_file(__DIR__.'/../../../../.env')) {
     $dotenv = \Dotenv\Dotenv::create(__DIR__.'/../../../..');
@@ -22,6 +24,8 @@ require __DIR__.'/../../App/OAuth2.php';
 require __DIR__.'/../../../../functions/functions.inc';
 require_once __DIR__.'/../../../../backends/oauth2.inc';
 
+require_once __DIR__.'/../../../../modules/concom/functions/RBAC.inc';
+
 abstract class CiabTestCase extends TestCase
 {
 
@@ -29,6 +33,11 @@ abstract class CiabTestCase extends TestCase
      * @var string
      */
     static protected $login = 'allfather@oneeye.com';
+
+    /**
+     * @var string
+     */
+    static protected $unpriv_login = 'loki@oneeye.com';
 
     /**
      * @var string
@@ -66,9 +75,24 @@ abstract class CiabTestCase extends TestCase
     protected $useOAuth2 = true;
 
     /**
+     * @var bool
+     */
+    protected $setupUnpriv = true;
+
+    /**
      * @var object
      */
     protected $token;
+
+    /**
+     * @var object
+     */
+    protected $unpriv_token;
+
+    /**
+     * @var array[string]
+     */
+    protected $testing_accounts = [];
 
 
     public static function setUpBeforeClass(): void
@@ -149,8 +173,73 @@ abstract class CiabTestCase extends TestCase
         }
 
         if ($this->setupToken && $this->useOAuth2) {
-            $this->token = $this->runSuccessJsonRequest('POST', '/token', null, ['grant_type' => 'password', 'username' => self::$login, 'password' => self::$password, 'client_id' => self::$client]);
+            $this->token = $this->createToken(self::$login);
+
+            if ($this->setupUnpriv) {
+                $this->createTestingAccount(self::$unpriv_login);
+                $this->unpriv_token = $this->createToken(self::$unpriv_login);
+            }
         }
+
+    }
+
+
+    protected function tearDown(): void
+    {
+        foreach ($this->testing_accounts as $account) {
+            Delete::new($this->container->db)
+                ->from('Authentication')
+                ->whereEquals(['AccountID' => $account])
+                ->perform();
+
+            Delete::new($this->container->db)
+                ->from('Members')
+                ->whereEquals(['AccountID' => $account])
+                ->perform();
+        }
+        parent::tearDown();
+
+    }
+
+
+    protected function createTestingAccount($email): string
+    {
+        $insert = Insert::new($this->container->db)
+            ->into('Members')
+            ->columns([
+            'FirstName' => 'PHPTester',
+            'LastName' => 'TestingMcTesterTest',
+            'Email' => $email,
+            'Gender' => 'Amoeba'
+            ]);
+        $insert->perform();
+        $id = $insert->getLastInsertId();
+
+        $auth = \password_hash(static::$password, PASSWORD_DEFAULT);
+
+        Insert::new($this->container->db)
+            ->into('Authentication')
+            ->columns([
+            'AccountID' => $id,
+            'Authentication' => $auth,
+            'LastLogin' => null,
+            'Expires' => date('Y-m-d', strtotime('+1 year')),
+            'FailedAttempts' => 0,
+            'OneTime' => null,
+            'OneTimeExpires' => null
+            ])
+            ->perform();
+
+        array_push($this->testing_accounts, $id);
+
+        return $id;
+
+    }
+
+
+    protected function createToken($email)
+    {
+        return $this->runSuccessJsonRequest('POST', '/token', null, ['grant_type' => 'password', 'username' => $email, 'password' => self::$password, 'client_id' => self::$client]);
 
     }
 
@@ -158,7 +247,8 @@ abstract class CiabTestCase extends TestCase
     protected function createRequest(
         string $method,
         $uri,
-        string $serverParams = null
+        string $serverParams = null,
+        object $token = null
     ) {
         $env = Environment::mock([
             'REQUEST_METHOD' => $method,
@@ -166,7 +256,9 @@ abstract class CiabTestCase extends TestCase
             'QUERY_STRING'   => $serverParams
             ]);
         $request = Request::createFromEnvironment($env);
-        if ($this->token) {
+        if ($token) {
+            $request = $request->withHeader('Authorization', 'Bearer '.$token->access_token);
+        } elseif ($this->token) {
             $request = $request->withHeader('Authorization', 'Bearer '.$this->token->access_token);
         }
         return $request;
@@ -179,7 +271,8 @@ abstract class CiabTestCase extends TestCase
         string $uri,
         array $serverParams = null,
         array $body = null,
-        int $code = null
+        int $code = null,
+        object $token = null
     ) {
         if (!empty($serverParams)) {
             $params = [];
@@ -188,7 +281,7 @@ abstract class CiabTestCase extends TestCase
             }
             $serverParams = implode('&', $params);
         }
-        $request = $this->createRequest($method, $uri, $serverParams);
+        $request = $this->createRequest($method, $uri, $serverParams, $token);
         if (!empty($body)) {
             $request = $request->withParsedBody($body);
         }
@@ -207,14 +300,39 @@ abstract class CiabTestCase extends TestCase
     }
 
 
+    protected function NPRunRequest(
+        string $method,
+        string $uri,
+        array $serverParams = null,
+        array $body = null,
+        int $code = null
+    ) {
+        return $this->runRequest($method, $uri, $serverParams, $body, $code, $this->unpriv_token);
+
+    }
+
+
     protected function runSuccessRequest(
+        string $method,
+        string $uri,
+        array $params = null,
+        array $body = null,
+        int $code = 200,
+        object $token = null
+    ) {
+        return $this->runRequest($method, $uri, $params, $body, $code, $token);
+
+    }
+
+
+    protected function NPRunSuccessRequest(
         string $method,
         string $uri,
         array $params = null,
         array $body = null,
         int $code = 200
     ) {
-        return $this->runRequest($method, $uri, $params, $body, $code);
+        return $this->runSuccessRequest($method, $uri, $params, $body, $code, $this->unpriv_token);
 
     }
 
@@ -224,12 +342,25 @@ abstract class CiabTestCase extends TestCase
         string $uri,
         array $params = null,
         array $body = null,
-        int $code = 200
+        int $code = 200,
+        object $token = null
     ) {
-        $response = $this->runRequest($method, $uri, $params, $body, $code);
+        $response = $this->runRequest($method, $uri, $params, $body, $code, $token);
         $data = json_decode((string)$response->getBody());
         $this->assertNotEmpty($data);
         return $data;
+
+    }
+
+
+    protected function NPRunSuccessJsonRequest(
+        string $method,
+        string $uri,
+        array $params = null,
+        array $body = null,
+        int $code = 200
+    ) {
+        return $this->runSuccessJsonRequest($method, $uri, $params, $body, $code, $this->unpriv_token);
 
     }
 
