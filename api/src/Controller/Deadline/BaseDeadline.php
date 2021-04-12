@@ -106,14 +106,14 @@ abstract class BaseDeadline extends BaseController
     public function customizeDeadlineRBAC($instance)
     {
         $positions = [];
-        $select = Select::new();
+        $select = Select::new($this->container->db);
         $select->columns('PositionID', 'Name')->from('ConComPositions')->orderBy('`PositionID` ASC');
         $values = $select->fetchAll();
         foreach ($values as $value) {
             $positions[intval($value['PositionID'])] = $value['Name'];
         }
 
-        $select = Select::new();
+        $select = Select::new($this->container->db);
         $select->columns('DepartmentID')->from('Departments');
         $values = $select->fetchAll();
         foreach ($values as $value) {
