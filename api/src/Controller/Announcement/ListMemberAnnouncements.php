@@ -89,6 +89,9 @@ class ListMemberAnnouncements extends BaseAnnouncement
         $select->orderBy('`PostedOn` ASC');
 
         $data = $select->fetchAll();
+
+        $data = $this->filterAnnouncements($data);
+
         $output = array();
         $output['type'] = 'announcement_list';
         return [

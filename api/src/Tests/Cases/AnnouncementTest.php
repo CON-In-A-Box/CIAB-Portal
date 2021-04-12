@@ -9,6 +9,8 @@ class AnnouncementTest extends CiabTestCase
 
     private $aid = array();
 
+    private $staff = false;
+
 
     protected function addAnnouncement($scope): string
     {
@@ -78,10 +80,17 @@ class AnnouncementTest extends CiabTestCase
 
     protected function tearDown(): void
     {
-        parent::tearDown();
         foreach ($this->aid as $target) {
             $this->runSuccessRequest('DELETE', '/announcement/'.$target, null, null, 204);
         }
+
+        if ($this->staff) {
+            $staff = $this->runSuccessJsonRequest('GET', '/member/'.CiabTestCase::$unpriv_login.'/staff_membership');
+            foreach ($staff->data as $entry) {
+                $this->runSuccessRequest('DELETE', '/staff_membership/'.$entry->id, null, null, 204);
+            }
+        }
+        parent::tearDown();
 
     }
 
@@ -95,6 +104,30 @@ class AnnouncementTest extends CiabTestCase
         $this->assertNotEmpty($data->data);
         $this->assertIncludes($data->data[0], 'department');
         $this->assertIncludes($data->data[0], 'posted_by');
+        $announce_count = count($data->data);
+        $this->assertGreaterThanOrEqual(4, $announce_count);
+
+        $data = $this->NPRunSuccessJsonRequest(
+            'GET',
+            '/department/1/announcements'
+        );
+        $this->assertNotEmpty($data->data);
+        $this->assertIncludes($data->data[0], 'department');
+        $this->assertIncludes($data->data[0], 'posted_by');
+        $this->assertLessThanOrEqual($announce_count - 3, count($data->data));
+
+        $this->staff = true;
+        $this->runSuccessRequest('POST', '/member/'.CiabTestCase::$unpriv_login.'/staff_membership', null, ['Department' => 1,  'Position' => 3], 201);
+
+        $data = $this->NPRunSuccessJsonRequest(
+            'GET',
+            '/department/1/announcements'
+        );
+        $this->assertNotEmpty($data->data);
+        $this->assertIncludes($data->data[0], 'department');
+        $this->assertIncludes($data->data[0], 'posted_by');
+
+        $this->assertGreaterThanOrEqual($announce_count, count($data->data));
 
         $this->runSuccessRequest(
             'PUT',
