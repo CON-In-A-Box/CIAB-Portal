@@ -153,6 +153,27 @@ abstract class BaseAnnouncement extends BaseController
     }
 
 
+    protected function filterAnnouncements($data)
+    {
+        if (!\ciab\RBAC::havePermission('api.get.announcement.all')) {
+            foreach ($data as $index => $target) {
+                if ($target['scope'] >= 2) {
+                    if (!\ciab\RBAC::havePermission('api.get.announcement.'.$target['department'])) {
+                        unset($data[$index]);
+                    }
+                } elseif ($target['scope'] == 1) {
+                    if (!\ciab\RBAC::havePermission('api.get.announcement.staff')) {
+                        unset($data[$index]);
+                    }
+                }
+            }
+        }
+
+        return $data;
+
+    }
+
+
     public function customizeAnnouncementRBAC($instance)
     {
         $positions = [];
@@ -170,15 +191,26 @@ abstract class BaseAnnouncement extends BaseController
             $perm_del = 'api.delete.announcement.'.$value['DepartmentID'];
             $perm_pos = 'api.post.announcement.'.$value['DepartmentID'];
             $perm_put = 'api.put.announcement.'.$value['DepartmentID'];
+            $perm_read = 'api.get.announcement.'.$value['DepartmentID'];
             $target_h = $value['DepartmentID'].'.'.array_keys($positions)[0];
+            $target_r = $value['DepartmentID'].'.'.end(array_keys($positions));
             try {
                 $role = $instance->getRole($target_h);
                 $role->addPermission($perm_del);
                 $role->addPermission($perm_pos);
                 $role->addPermission($perm_put);
+                $role = $instance->getRole($target_r);
+                $role->addPermission($perm_read);
             } catch (Exception\InvalidArgumentException $e) {
                 error_log($e);
             }
+        }
+
+        try {
+            $role = $instance->getRole('all.staff');
+            $role->addPermission('api.get.announcement.staff');
+        } catch (Exception\InvalidArgumentException $e) {
+            error_log($e);
         }
 
     }

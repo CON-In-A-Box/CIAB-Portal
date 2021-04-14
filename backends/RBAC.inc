@@ -51,7 +51,8 @@ class RBAC
         if (self::instance() !== null) {
             return self::instance()->havePermission($name);
         } else {
-            return ($_SESSION['IS_ADMIN']);
+            return (array_key_exists('IS_ADMIN', $_SESSION) &&
+                    $_SESSION['IS_ADMIN']);
         }
 
     }

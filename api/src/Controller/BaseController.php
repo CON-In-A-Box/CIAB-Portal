@@ -308,13 +308,14 @@ abstract class BaseController
 
     public function handleListType(Request $request, Response $response, array $output, array $data, array $params, int $code = 200)
     {
+        $cleandata = array_values($data);
         $short = $request->getQueryParam('short_response', false);
         if (!boolval($short)) {
-            for ($i = 0; $i < count($data); $i++) {
-                $this->processIncludes($request, $response, $params, $data[$i]);
+            foreach ($cleandata as $index => $entry) {
+                $this->processIncludes($request, $response, $params, $cleandata[$index]);
             }
         }
-        return $this->listResponse($request, $response, $output, $data, $code);
+        return $this->listResponse($request, $response, $output, $cleandata, $code);
 
     }
 

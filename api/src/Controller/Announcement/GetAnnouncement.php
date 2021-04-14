@@ -49,6 +49,17 @@ class GetAnnouncement extends BaseAnnouncement
     public function buildResource(Request $request, Response $response, $params): array
     {
         $target = $this->getAnnouncement($params['id']);
+
+        if ($target['scope'] >= 2) {
+            $permissions = ['api.get.announcement.all',
+            'api.get.announcement.'.$target['department']];
+            $this->checkPermissions($permissions);
+        } elseif ($target['scope'] == 1) {
+            $permissions = ['api.get.announcement.all',
+            'all.staff'];
+            $this->checkPermissions($permissions);
+        }
+
         return [
         \App\Controller\BaseController::RESOURCE_TYPE,
         $target
