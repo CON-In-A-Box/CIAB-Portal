@@ -126,6 +126,7 @@ class MemberTest extends CiabTestCase
     public function testMemberGet(): void
     {
         $this->runRequest('GET', '/member/-1/status', null, null, 404);
+        $this->runRequest('GET', '/member/billybob/status', null, null, 404);
         $this->runSuccessJsonRequest('GET', '/member/allfather@oneeye.com/status');
         $data = $this->runSuccessJsonRequest('GET', '/member/1000/status');
         $this->assertEquals($data->status, 0);
@@ -165,19 +166,6 @@ class MemberTest extends CiabTestCase
         $data = $this->runSuccessJsonRequest('GET', '/member/1000');
         $this->assertEquals($basedata, $data);
 
-        $data = $this->runSuccessJsonRequest('GET', '/member/find');
-        $this->assertEquals($data->type, 'member_list');
-        $this->assertEmpty($data->data);
-
-        $data = $this->runSuccessJsonRequest('GET', '/member/find', ['q' => 'thiswillnotbefound']);
-        $this->assertEquals($data->type, 'member_list');
-        $this->assertEmpty($data->data);
-
-        $data = $this->runSuccessJsonRequest('GET', '/member/find', ['q' => $basedata->email]);
-        $this->assertEquals($data->type, 'member_list');
-        $this->assertNotEmpty($data->data);
-        $this->assertEquals($data->data[0]->id, 1000);
-
     }
 
 
@@ -195,69 +183,69 @@ class MemberTest extends CiabTestCase
 
         $data = $this->runSuccessJsonRequest('GET', '/member/current');
         $this->assertEquals($data->email2, 'phpunit@testing.test');
-        unset($data->email2);
+        $data->email2 = null;
         $this->assertEquals($basedata, $data);
 
         $this->deleteTestUser();
-        $userdata = $this->runSuccessJsonRequest('POST', '/member', null, ['email' => 'phpunit@unit.test', 'legalFirstName' => 'Testie', 'legalLastName' => 'McTester'], 201);
+        $userdata = $this->runSuccessJsonRequest('POST', '/member', null, ['email' => 'phpunit@unit.test', 'legal_first_name' => 'Testie', 'legal_last_name' => 'McTester'], 201);
 
         $when = date('Y-m-d', strtotime('-1 year'));
         $data = $this->runSuccessJsonRequest(
             'PUT',
             '/member/'.$userdata->id,
             null,
-            ['firstName' => 'Testie2',
-            'lastName' => 'McTestie2',
-            'Deceased' => '1',
-            'DoNotContact' => '1',
-            'EmailOptOut' => '1',
-            'Birthdate' => $when,
+            ['legal_first_name' => 'Testie2',
+            'legal_last_name' => 'McTestie2',
+            'deceased' => '1',
+            'do_not_contact' => '1',
+            'email_optout' => '1',
+            'birthdate' => $when,
             'email2' => 'email2@com.com',
             'email3' => 'email3@com.com',
-            'phone1' => '1231231234',
-            'middleName' => 'tost',
+            'phone' => '1231231234',
+            'middle_name' => 'tost',
             'phone2' => '3213213213',
-            'addressLine1' => '123 1st st.',
-            'addressLine2' => 'Apt 13',
+            'address_line1' => '123 1st st.',
+            'address_line2' => 'Apt 13',
             'city' => 'Minneapolis',
             'state' => 'MN',
-            'zipCode' => '55405',
-            'zipPlus4' => '1111',
-            'countryName' => 'USA',
+            'zip_code' => '55405',
+            'zip_plus4' => '1111',
+            'country' => 'USA',
             'province' => 'Northland',
-            'Gender' => 'alien',
-            'preferredFirstName' => 'tee',
-            'preferredLastName' => 'Micky']
+            'gender' => 'alien',
+            'preferred_first_name' => 'tee',
+            'preferred_last_name' => 'Micky']
         );
-        $this->assertEquals($data->firstName, 'tee');
-        $this->assertEquals($data->lastName, 'Micky');
-        $this->assertEquals($data->legalFirstName, 'Testie2');
-        $this->assertEquals($data->legalLastName, 'McTestie2');
-        $this->assertEquals($data->Deceased, 1);
-        $this->assertEquals($data->DoNotContact, 1);
-        $this->assertEquals($data->EmailOptOut, 1);
-        $this->assertEquals($data->Birthdate, $when);
+        $this->assertEquals($data->first_name, 'tee');
+        $this->assertEquals($data->last_name, 'Micky');
+        $this->assertEquals($data->legal_first_name, 'Testie2');
+        $this->assertEquals($data->legal_last_name, 'McTestie2');
+        $this->assertEquals($data->deceased, 1);
+        $this->assertEquals($data->do_not_contact, 1);
+        $this->assertEquals($data->email_optout, 1);
+        $this->assertEquals($data->birthdate, $when);
         $this->assertEquals($data->email2, 'email2@com.com');
         $this->assertEquals($data->email3, 'email3@com.com');
-        $this->assertEquals($data->phone1, '1231231234');
-        $this->assertEquals($data->middleName, 'tost');
+        $this->assertEquals($data->phone, '1231231234');
+        $this->assertEquals($data->middle_name, 'tost');
         $this->assertEquals($data->phone2, '3213213213');
-        $this->assertEquals($data->addressLine1, '123 1st st.');
-        $this->assertEquals($data->addressLine2, 'Apt 13');
+        $this->assertEquals($data->address_line1, '123 1st st.');
+        $this->assertEquals($data->address_line2, 'Apt 13');
         $this->assertEquals($data->city, 'Minneapolis');
         $this->assertEquals($data->state, 'MN');
-        $this->assertEquals($data->zipCode, '55405');
-        $this->assertEquals($data->zipPlus4, '1111');
-        $this->assertEquals($data->countryName, 'USA');
+        $this->assertEquals($data->zip_code, '55405');
+        $this->assertEquals($data->zip_plus4, '1111');
+        $this->assertEquals($data->country, 'USA');
         $this->assertEquals($data->province, 'Northland');
-        $this->assertEquals($data->Gender, 'alien');
-        $this->assertEquals($data->preferredFirstName, 'tee');
-        $this->assertEquals($data->preferredLastName, 'Micky');
+        $this->assertEquals($data->gender, 'alien');
+        $this->assertEquals($data->preferred_first_name, 'tee');
+        $this->assertEquals($data->preferred_last_name, 'Micky');
 
-        $data = $this->runRequest('PUT', '/member/'.$userdata->id, null, ['Birthdate' => 'not a date'], 400);
-        $data = $this->runRequest('PUT', '/member/'.$userdata->id, null, ['Deceased' => 'not a boolean'], 400);
-        $data = $this->runRequest('PUT', '/member/'.$userdata->id, null, ['DoNotContact' => 'not a boolean'], 400);
-        $data = $this->runRequest('PUT', '/member/'.$userdata->id, null, ['EmailOptOut' => 'not a boolean'], 400);
+        $data = $this->runRequest('PUT', '/member/'.$userdata->id, null, ['birthdate' => 'not a date'], 400);
+        $data = $this->runRequest('PUT', '/member/'.$userdata->id, null, ['deceased' => 'not a boolean'], 400);
+        $data = $this->runRequest('PUT', '/member/'.$userdata->id, null, ['do_not_contact' => 'not a boolean'], 400);
+        $data = $this->runRequest('PUT', '/member/'.$userdata->id, null, ['email_optout' => 'not a boolean'], 400);
 
     }
 
@@ -265,18 +253,18 @@ class MemberTest extends CiabTestCase
     public function testNewMember(): void
     {
         $this->runRequest('POST', '/member', null, null, 400);
-        $this->runRequest('POST', '/member', null, ['email1' => 'phpunit@unit.test'], 400);
-        $this->runRequest('POST', '/member', null, ['firstName' => 'phpunit'], 400);
-        $this->runRequest('POST', '/member', null, ['lastName' => 'phpunit'], 400);
+        $this->runRequest('POST', '/member', null, ['email' => 'phpunit@unit.test'], 400);
+        $this->runRequest('POST', '/member', null, ['legal_first_name' => 'phpunit'], 400);
+        $this->runRequest('POST', '/member', null, ['legal_last_name' => 'phpunit'], 400);
 
-        $userdata = $this->runSuccessJsonRequest('POST', '/member', null, ['email1' => 'phpunit@unit.test', 'firstName' => 'Testie'], 201);
+        $userdata = $this->runSuccessJsonRequest('POST', '/member', null, ['email' => 'phpunit@unit.test', 'legal_first_name' => 'Testie'], 201);
 
-        $this->runRequest('POST', '/member', null, ['email1' => 'phpunit@unit.test', 'firstName' => 'Testie'], 409);
+        $this->runRequest('POST', '/member', null, ['email' => 'phpunit@unit.test', 'legal_first_name' => 'Testie'], 409);
 
         $this->runRequest('POST', '/member/phpunit@unit.test/password', null, null, 201);
 
         $this->deleteTestUser();
-        $userdata = $this->runSuccessJsonRequest('POST', '/member', null, ['email' => 'phpunit@unit.test', 'legalFirstName' => 'Testie', 'legalLastName' => 'McTester'], 201);
+        $userdata = $this->runSuccessJsonRequest('POST', '/member', null, ['email' => 'phpunit@unit.test', 'legal_first_name' => 'Testie', 'legal_last_name' => 'McTester'], 201);
 
 
         $this->runRequest('PUT', '/member/phpunit@unit.test/password/recovery', null, null, 400);
@@ -286,6 +274,54 @@ class MemberTest extends CiabTestCase
         $this->runRequest('PUT', '/member/phpunit@unit.test/password', null, null, 400);
         $this->runRequest('PUT', '/member/phpunit@unit.test/password', null, ['NewPassword' => 'asdfasdf'], 200);
         $this->runRequest('PUT', '/member/badmember@bad.bad/password/recovery', null, ['NewPassword' => 'asdfasdf'], 404);
+
+    }
+
+
+    public function testFindMember() :void
+    {
+        $this->runRequest('GET', '/member/find', null, null, 400);
+
+        $this->runRequest('GET', '/member/find', ['q' => 'Billy Bob'], null, 404);
+
+        $data = $this->runSuccessJsonRequest('GET', '/member/find', ['q' => 'A1000', 'from' => 'id']);
+        $this->assertEquals($data->type, 'member_list');
+        $this->assertNotEmpty($data->data);
+        $this->assertEquals(count($data->data), 1);
+        $this->assertEquals($data->data[0]->id, 1000);
+
+        $data = $this->runSuccessJsonRequest('GET', '/member/find', ['q' => '1000', 'from' => 'id']);
+        $this->assertEquals($data->type, 'member_list');
+        $this->assertNotEmpty($data->data);
+        $this->assertEquals(count($data->data), 1);
+        $this->assertEquals($data->data[0]->id, 1000);
+
+        $data = $this->runRequest('GET', '/member/find', ['q' => 'Odin'], null, 404);
+
+        $data = $this->runSuccessJsonRequest('GET', '/member/find', ['q' => 'Od', 'partial' => 'true']);
+        $this->assertEquals($data->type, 'member_list');
+        $this->assertNotEmpty($data->data);
+        $this->assertEquals($data->data[0]->id, 1000);
+
+        $data = $this->runRequest('GET', '/member/find', ['q' => 'Od', 'partial' => 'false'], null, 404);
+
+        $data = $this->runRequest('GET', '/member/find', ['q' => 'Odin', 'from' => 'name', 'partial' => 'false'], null, 404);
+
+        $data = $this->runSuccessJsonRequest('GET', '/member/find', ['q' => 'Odin Allfather', 'from' => 'name', 'partial' => 'false']);
+        $this->assertEquals($data->type, 'member_list');
+        $this->assertNotEmpty($data->data);
+        $this->assertEquals($data->data[0]->id, 1000);
+
+        $data = $this->runRequest('GET', '/member/find', ['q' => 'Odin billybob', 'from' => 'name', 'partial' => 'false'], null, 404);
+
+        $data = $this->runSuccessJsonRequest('GET', '/member/find', ['q' => 'Odin', 'from' => 'legal_name', 'partial' => 'true']);
+        $this->assertEquals($data->type, 'member_list');
+        $this->assertNotEmpty($data->data);
+        $this->assertEquals($data->data[0]->id, 1000);
+
+        $this->runRequest('GET', '/member/find', ['q' => 'Odin', 'from' => 'email'], null, 404);
+
+        $this->runRequest('GET', '/member/find', ['q' => 'thiswillnotbefound'], null, 404);
 
     }
 

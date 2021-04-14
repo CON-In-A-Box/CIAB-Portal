@@ -41,7 +41,8 @@ namespace App\Controller\Member;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
-
+use Atlas\Query\Insert;
+use Atlas\Query\Select;
 use App\Controller\InvalidParameterException;
 use App\Controller\ConflictException;
 
@@ -51,53 +52,47 @@ class PostMember extends BaseMember
 
     public function buildResource(Request $request, Response $response, $args): array
     {
-        $body = $request->getParsedBody();
-        if ($body && array_key_exists('email', $body)) {
-            $body['email1'] = $body['email'];
+        $required = ['email'];
+        $body = $this->checkRequiredBody($request, $required);
+        $good = false;
+        try {
+            $this->getMember($request, $body['email'], 'email');
+        } catch (\Exception $e) {
+            $good = true;
         }
-        if (!$body || !array_key_exists('email1', $body)) {
-            throw new InvalidParameterException("Required 'email1' parameter not present");
-        }
-        $user = \lookup_users_by_email($body['email1']);
-        if (count($user['users']) > 0) {
+        if (!$good) {
             throw new ConflictException("Account with Email Already Exists");
         }
-        if (array_key_exists('legalFirstName', $body)) {
-            $body['firstName'] = $body['legalFirstName'];
-        }
-        if (array_key_exists('legalLastLast', $body)) {
-            $body['lastName'] = $body['legalLastName'];
-        }
-        if (!array_key_exists('firstName', $body) &&
-            !array_key_exists('lastName', $body)) {
-            throw new InvalidParameterException("Required 'firstName' and/or 'lastName' parameter not present");
+
+        if (!array_key_exists('legal_first_name', $body) &&
+            !array_key_exists('legal_last_name', $body)) {
+            throw new InvalidParameterException("Required 'legal_first_name' and/or 'legal_last_name' parameter not present");
         }
 
-        if (array_key_exists('Neon', $GLOBALS)) {
-            $accountID = \neon_createUser(
-                $body['email1'],
-                $body['firstName'],
-                $body['lastName']
-            );
+        $currentIdTop = Select::new($this->container->db)
+            ->columns('MAX(AccountID) AS max')
+            ->from('Members')
+            ->fetchOne()['max'];
+
+        if ($currentIdTop < 1000) {
+            $body['id'] = 1000;
         } else {
-            $accountID = \createUser($body['email1'], 1000);
-        }
-        if (!$accountID) {
-            throw new ConflictException("Account Creation Failed");
+            unset($body['id']);
         }
 
-        $target = new \App\Controller\Member\PutMember($this->container);
-        $target->privilaged = true;
-        $data = $target->buildResource($request, $response, ['id' => $accountID])[1];
-        $result = $target->arrayResponse($request, $response, $data);
+        Insert::new($this->container->db)
+            ->into('Members')
+            ->columns(BaseMember::insertPayloadFromParams($body))
+            ->perform();
 
         $pwd = new \App\Controller\Member\PostPassword($this->container);
         $pwd->privilaged = true;
-        $pwd->buildResource($request, $response, ['email' => $accountID]);
+        $pwd->buildResource($request, $response, ['email' => $body['email']]);
 
+        $target = $this->getMember($request, $body['email'], 'email');
         return [
         \App\Controller\BaseController::RESOURCE_TYPE,
-        $result,
+        $target[0],
         201
         ];
 

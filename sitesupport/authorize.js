@@ -20,8 +20,8 @@ var oauthAuthorize = (function() {
           hideSpinner();
           document.getElementById('known_user').classList.remove('UI-hide');
           document.getElementById('username').classList.remove('UI-hide');
-          document.getElementById('user').innerHTML = result.firstName +
-            '&nbsp;' + result.lastName;
+          document.getElementById('user').innerHTML = result.first_name +
+            '&nbsp;' + result.last_name;
           document.getElementById('user_id').value = result.id;
           console.log(response);
         })

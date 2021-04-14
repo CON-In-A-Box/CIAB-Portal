@@ -518,97 +518,6 @@ abstract class BaseController
     }
 
 
-    private static function mapMemberData($input)
-    {
-        $map = ['Id' => 'id', 'First Name' => 'firstName',
-        'Last Name' => 'lastName', 'Email' => 'email',
-        'FirstName' => 'legalFirstName', 'LastName' => 'legalLastName',
-        'MiddleName' => 'middleName', 'Suffix' => 'suffix',
-        'Email2' => 'email2', 'Email3' => 'email3', 'Phone' => 'phone1',
-        'Phone2' => 'phone2', 'AddressLine1' => 'addressLine1',
-        'AddressLine2' => 'addressLine2', 'AddressCity' => 'city',
-        'AddressState' => 'state', 'AddressZipCode' => 'zipCode',
-        'AddressZipCodeSuffix' => 'zipPlus4', 'AddressCountry' => 'countryName',
-        'AddressProvince' => 'province',
-        'PreferredFirstName' => 'preferredFirstName',
-        'PreferredLastName' => 'preferredLastName',
-        'Deceased' => 'Deceased', 'DoNotContact' => 'DoNotContact',
-        'EmailOptOut' => 'EmailOptOut', 'Birthdate' => 'Birthdate',
-        'Gender' => 'Gender', 'DisplayPhone' => 'conComDisplayPhone'];
-        $output = [];
-        foreach ($map as $inField => $outField) {
-            if (array_key_exists($inField, $input) && $input[$inField]) {
-                $output[$outField] = $input[$inField];
-            }
-        }
-        return $output;
-
-    }
-
-
-    public function findMember(
-        Request $request,
-        Response $response,
-        $args,
-        $key,
-        $fields = null
-    ) {
-        if ($fields === null) {
-            $fields = ['FirstName', 'MiddleName', 'LastName',
-            'Suffix', 'Email2', 'Email3', 'Phone', 'Phone2',
-            'AddressLine1', 'AddressLine2', 'AddressCity', 'AddressState',
-            'AddressZipCode', 'AddressZipCodeSuffix', 'AddressCountry',
-            'AddressProvince', 'PreferredFirstName', 'PreferredLastName',
-            'Deceased', 'DoNotContact', 'EmailOptOut', 'Birthdate',
-            'Gender', 'DisplayPhone'];
-        }
-        if ($args !== null && array_key_exists($key, $args)) {
-            $data = \lookup_users_by_key($args[$key], true, true, false, $fields);
-            if (empty($data['users'])) {
-                throw new NotFoundException('Member Not Found');
-            }
-            $data = BaseController::mapMemberData($data['users'][0]);
-        } else {
-            $user = $request->getAttribute('oauth2-token')['user_id'];
-            $data = \lookup_user_by_id($user, $fields);
-            $data = BaseController::mapMemberData($data['users'][0]);
-        }
-        return $data;
-
-    }
-
-
-    public function findMemberId(
-        Request $request,
-        Response $response,
-        $args,
-        $key,
-        $fields = null
-    ) {
-        if ($fields === null) {
-            $fields = ['FirstName', 'MiddleName', 'LastName',
-            'Suffix', 'Email2', 'Email3', 'Phone', 'Phone2',
-            'AddressLine1', 'AddressLine2', 'AddressCity', 'AddressState',
-            'AddressZipCode', 'AddressZipCodeSuffix', 'AddressCountry',
-            'AddressProvince', 'PreferredFirstName', 'PreferredLastName',
-            'Deceased', 'DoNotContact', 'EmailOptOut', 'Birthdate',
-            'Gender', 'DisplayPhone'];
-        }
-        if ($args !== null && array_key_exists($key, $args) && $args[$key] !== 'current') {
-            $user = $args[$key];
-        } else {
-            $user = $request->getAttribute('oauth2-token')['user_id'];
-        }
-        $data = \lookup_user_by_id($user, $fields);
-        if (empty($data['users'])) {
-            throw new NotFoundException('Member Not Found');
-        }
-        $data = BaseController::mapMemberData($data['users'][0]);
-        return $data;
-
-    }
-
-
     public function notFoundResponse(
         Request $request,
         Response $response,
@@ -659,6 +568,25 @@ abstract class BaseController
         $request = Request::createFromEnvironment($env);
         $response = new Response();
         return $event->buildResource($request, $response, ['id' => $id])[1];
+
+    }
+
+
+    protected function getMember(Request $request, string $id, string $from = null, bool $internal = true)
+    {
+        if ($from === null) {
+            $from = 'id,email';
+        }
+        if ($id === 'current') {
+            $id = $request->getAttribute('oauth2-token')['user_id'];
+        }
+        $query = "q=".urlencode($id)."&from=$from";
+        $lookup = new \App\Controller\Member\FindMembers($this->container);
+        $lookup->internal = $internal;
+        $env = Environment::mock(['QUERY_STRING' => $query]);
+        $new_request = Request::createFromEnvironment($env);
+        $response = new Response();
+        return $lookup->buildResource($new_request, $response, [])[1];
 
     }
 

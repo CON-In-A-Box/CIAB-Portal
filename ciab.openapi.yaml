@@ -787,6 +787,31 @@ paths:
           schema:
             type: string
         -
+          name: from
+          in: query
+          description: 'Comma seperated list of attributes to be searched, default = ''all'''
+          required: false
+          style: simple
+          explode: false
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - all
+                - email
+                - id
+                - legal_name
+                - name
+                - badge
+        -
+          name: partial
+          in: query
+          description: 'Allow partial matches, default is false'
+          required: false
+          schema:
+            type: boolean
+        -
           $ref: '#/components/parameters/max_results'
         -
           $ref: '#/components/parameters/page_token'
@@ -3048,22 +3073,22 @@ components:
           $ref: '#/components/schemas/member_body'
     member_body:
       properties:
-        firstName:
+        first_name:
           description: 'Members preferred first name'
           type: string
-        lastName:
+        last_name:
           description: 'Members preferred last name'
           type: string
         email:
           description: 'Members primary email'
           type: string
-        legalFirstName:
+        legal_first_name:
           description: 'Members legal first name.'
           type: string
-        legalLastName:
+        legal_last_name:
           description: 'Members legal last name.'
           type: string
-        middleName:
+        middle_name:
           description: 'Member''s middle name.'
           type: string
         suffix:
@@ -3075,16 +3100,16 @@ components:
         email3:
           description: 'Member''s third email'
           type: string
-        phone1:
+        phone:
           description: 'Member''s primary phone'
           type: string
         phone2:
           description: 'Member''s secondary phone'
           type: string
-        addressLine1:
+        address_line1:
           description: 'Member''s address line 1'
           type: string
-        addressLine2:
+        address_line2:
           description: 'Member''s address line 2'
           type: string
         city:
@@ -3093,41 +3118,41 @@ components:
         state:
           description: 'Member''s address state'
           type: string
-        zipCode:
+        zip_code:
           description: 'Member''s Address Zip code.'
           type: string
-        zipPlus4:
+        zip_plus4:
           description: 'Member''s Address Zip code suffix'
           type: string
-        countryName:
+        country:
           description: 'Member''s Address country.'
           type: string
         province:
           description: 'Member''s Address province.'
           type: string
-        preferredFirstName:
+        preferred_first_name:
           description: 'Member''s Preferred First Name.'
           type: string
-        preferredLastName:
+        preferred_last_name:
           description: 'Member''s Preferred Last Name.'
           type: string
-        Deceased:
+        deceased:
           description: 'Is member deceased.'
           type: boolean
-        DoNotContact:
+        do_not_contact:
           description: 'Do not contact member.'
           type: boolean
-        EmailOptOut:
+        email_optout:
           description: 'Do not mass email member.'
           type: boolean
-        Birthdate:
+        birthdate:
           description: 'Member''s birth date.'
           type: string
           format: date
-        Gender:
+        gender:
           description: 'Member''s preferred gender string.'
           type: string
-        conComDisplayPhone:
+        concom_display_phone:
           description: 'If Concom display phone on list.'
           type: boolean
       type: object

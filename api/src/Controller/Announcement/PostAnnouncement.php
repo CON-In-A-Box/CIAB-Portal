@@ -71,8 +71,6 @@ use Atlas\Query\Insert;
 use Atlas\Query\Select;
 use App\Controller\InvalidParameterException;
 
-require_once __DIR__.'/../../../../functions/users.inc';
-
 class PostAnnouncement extends BaseAnnouncement
 {
 
@@ -150,8 +148,7 @@ Q
 
         $required = ['scope', 'text'];
         $body = $this->checkRequiredBody($request, $required);
-        $user = $this->findMember($request, $response, null, null);
-        $body['posted_by'] = $user['id'];
+        $body['posted_by'] = $request->getAttribute('oauth2-token')['user_id'];
         $body['department'] = $department['id'];
 
         $insert = Insert::new($this->container->db);

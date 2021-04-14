@@ -83,11 +83,11 @@ class EmailTicket extends BaseTicket
 
         $subject = $data['event']['name'].' Boarding Pass';
         $phpView = new Views\PhpRenderer(__DIR__.'/../../Templates', [
-            'name' => $data['member']['firstName'],
+            'name' => $data['member']['first_name'],
             'event' => $data['event']['name'],
             'badgeNumber' => $data['member']['id'],
             'badgeType' => $data['ticket_type']['name'],
-            'fullName' => $data['member']['legalFirstName'].' '.$data['member']['legalLastName'],
+            'fullName' => $data['member']['legal_first_name'].' '.$data['member']['legal_last_name'],
             'instructions' => $config['passInstructions'],
             'checkin' => $checkin,
         ]);

@@ -28,12 +28,12 @@
  *  @OA\Schema(
  *      schema="member_body",
  *      @OA\Property(
- *          property="firstName",
+ *          property="first_name",
  *          type="string",
  *          description="Members preferred first name"
  *      ),
  *      @OA\Property(
- *          property="lastName",
+ *          property="last_name",
  *          type="string",
  *          description="Members preferred last name"
  *      ),
@@ -43,17 +43,17 @@
  *          description="Members primary email"
  *      ),
  *      @OA\Property(
- *          property="legalFirstName",
+ *          property="legal_first_name",
  *          type="string",
  *          description="Members legal first name."
  *      ),
  *      @OA\Property(
- *          property="legalLastName",
+ *          property="legal_last_name",
  *          type="string",
  *          description="Members legal last name."
  *      ),
  *      @OA\Property(
- *          property="middleName",
+ *          property="middle_name",
  *          type="string",
  *          description="Member's middle name."
  *      ),
@@ -73,7 +73,7 @@
  *          description="Member's third email"
  *      ),
  *      @OA\Property(
- *          property="phone1",
+ *          property="phone",
  *          type="string",
  *          description="Member's primary phone"
  *      ),
@@ -83,12 +83,12 @@
  *          description="Member's secondary phone"
  *      ),
  *      @OA\Property(
- *          property="addressLine1",
+ *          property="address_line1",
  *          type="string",
  *          description="Member's address line 1"
  *      ),
  *      @OA\Property(
- *          property="addressLine2",
+ *          property="address_line2",
  *          type="string",
  *          description="Member's address line 2"
  *      ),
@@ -103,17 +103,17 @@
  *          description="Member's address state"
  *      ),
  *      @OA\Property(
- *          property="zipCode",
+ *          property="zip_code",
  *          type="string",
  *          description="Member's Address Zip code."
  *      ),
  *      @OA\Property(
- *          property="zipPlus4",
+ *          property="zip_plus4",
  *          type="string",
  *          description="Member's Address Zip code suffix"
  *      ),
  *      @OA\Property(
- *          property="countryName",
+ *          property="country",
  *          type="string",
  *          description="Member's Address country."
  *      ),
@@ -123,43 +123,43 @@
  *          description="Member's Address province."
  *      ),
  *      @OA\Property(
- *          property="preferredFirstName",
+ *          property="preferred_first_name",
  *          type="string",
  *          description="Member's Preferred First Name."
  *      ),
  *      @OA\Property(
- *          property="preferredLastName",
+ *          property="preferred_last_name",
  *          type="string",
  *          description="Member's Preferred Last Name."
  *      ),
  *      @OA\Property(
- *          property="Deceased",
+ *          property="deceased",
  *          type="boolean",
  *          description="Is member deceased."
  *      ),
  *      @OA\Property(
- *          property="DoNotContact",
+ *          property="do_not_contact",
  *          type="boolean",
  *          description="Do not contact member."
  *      ),
  *      @OA\Property(
- *          property="EmailOptOut",
+ *          property="email_optout",
  *          type="boolean",
  *          description="Do not mass email member."
  *      ),
  *      @OA\Property(
- *          property="Birthdate",
+ *          property="birthdate",
  *          type="string",
  *          format="date",
  *          description="Member's birth date."
  *      ),
  *      @OA\Property(
- *          property="Gender",
+ *          property="gender",
  *          type="string",
  *          description="Member's preferred gender string."
  *      ),
  *      @OA\Property(
- *          property="conComDisplayPhone",
+ *          property="concom_display_phone",
  *          type="boolean",
  *          description="If Concom display phone on list."
  *      )
@@ -216,10 +216,39 @@ use Slim\Http\Response;
 use App\Controller\BaseController;
 use App\Controller\NotFoundException;
 
-require_once __DIR__.'/../../../../functions/users.inc';
-
 abstract class BaseMember extends BaseController
 {
+
+    protected static $columnsToAttributes = [
+    '"member"' => 'type',
+    'AccountID' => 'id',
+    'FirstName' => 'legal_first_name',
+    'LastName' => 'legal_last_name',
+    'MiddleName' => 'middle_name',
+    'Suffix' => 'suffix',
+    'Email' => 'email',
+    'Email2' => 'email2',
+    'Email3' => 'email3',
+    'Phone' => 'phone',
+    'Phone2' => 'phone2',
+    'AddressLine1' => 'address_line1',
+    'AddressLine2' => 'address_line2',
+    'AddressCity' => 'city',
+    'AddressState' => 'state',
+    'AddressZipCode' => 'zip_code',
+    'AddressZipCodeSuffix' => 'zip_plus4',
+    'AddressCountry' => 'country',
+    'AddressProvince' => 'province',
+    'PreferredFirstName' => 'preferred_first_name',
+    'PreferredLastName' => 'preferred_last_name',
+    'Deceased' => 'deceased',
+    'DoNotContact' => 'do_not_contact',
+    'EmailOptOut' => 'email_optout',
+    'Birthdate' => 'birthdate',
+    'Gender' => 'gender',
+    'DisplayPhone' => 'concom_display_phone',
+    'dependentOnID' => 'dependent_on'
+    ];
 
     /**
      * @var int
@@ -230,34 +259,6 @@ abstract class BaseMember extends BaseController
     public function __construct(Container $container)
     {
         parent::__construct('member', $container);
-
-    }
-
-
-    public function findMember(
-        Request $request,
-        Response $response,
-        $args,
-        $key,
-        $fields = null
-    ) {
-        $data = parent::findMember($request, $response, $args, $key, $fields);
-        $this->id = $data['id'];
-        return $data;
-
-    }
-
-
-    public function findMemberId(
-        Request $request,
-        Response $response,
-        $args,
-        $key,
-        $fields = null
-    ) {
-        $data = parent::findMemberId($request, $response, $args, $key, $fields);
-        $this->id = $data['id'];
-        return $data;
 
     }
 

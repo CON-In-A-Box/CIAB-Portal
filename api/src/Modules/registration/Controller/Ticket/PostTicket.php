@@ -85,8 +85,7 @@ class PostTicket extends BaseTicketInclude
         $required = ['member', 'ticket_type'];
         $body = $this->checkRequiredBody($request, $required);
 
-        $data = $this->findMember($request, $response, $body, 'member');
-        $member = $data['id'];
+        $member = $this->getMember($request, $body['member'])[0]['id'];
         $body['member'] = $member;
 
         if (array_key_exists('event', $body)) {
@@ -100,13 +99,11 @@ class PostTicket extends BaseTicketInclude
         $target->buildResource($request, $response, ['id' => $body['ticket_type']])[1];
 
         if (array_key_exists('badge_dependent_on', $body)) {
-            $data = $this->findMember($request, $response, $body, 'badge_dependent_on');
-            $body['badge_dependent_on'] = $data['id'];
+            $body['badge_dependent_on'] = $this->getMember($request, $body['badge_dependent_on'])[0]['id'];
         }
 
         if (array_key_exists('registered_by', $body)) {
-            $data = $this->findMember($request, $response, $body, 'registered_by');
-            $body['registered_by'] = $data['id'];
+            $body['registered_by'] = $this->getMember($request, $body['registered_by'])[0]['id'];
         } else {
             $body['registered_by'] = $member;
         }

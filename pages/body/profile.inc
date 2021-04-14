@@ -13,25 +13,25 @@ if (!empty($_SESSION['customFields']['currConComPos'])) {
     var data = {
         'id':'<?php echo $_SESSION['accountId']; ?>',
         'email':'<?php echo $_SESSION['email'];  ?>',
-        'legalFirstName':'<?php echo $_SESSION['firstName'];  ?>',
-        'legalLastName':'<?php echo $_SESSION['lastName'];  ?>',
-        'middleName':'<?php echo $_SESSION['accountInfo']['MiddleName'];  ?>',
+        'legal_first_name':'<?php echo $_SESSION['firstName'];  ?>',
+        'legal_last_name':'<?php echo $_SESSION['lastName'];  ?>',
+        'middle_name':'<?php echo $_SESSION['accountInfo']['MiddleName'];  ?>',
         'suffix':'<?php echo $_SESSION['accountInfo']['Suffix'];  ?>',
         'email2':'<?php echo $_SESSION['accountInfo']['Email2'];  ?>',
         'email3':'<?php echo $_SESSION['accountInfo']['Email3'];  ?>',
-        'phone1':'<?php echo $_SESSION['accountInfo']['Phone'];  ?>',
+        'phone':'<?php echo $_SESSION['accountInfo']['Phone'];  ?>',
         'phone2':'<?php echo $_SESSION['accountInfo']['Phone2'];  ?>',
-        'addressLine1':'<?php echo $_SESSION['addr1'];  ?>',
-        'addressLine2':'<?php echo $_SESSION['addr2'];  ?>',
+        'address_line1':'<?php echo $_SESSION['addr1'];  ?>',
+        'address_line2':'<?php echo $_SESSION['addr2'];  ?>',
         'city':'<?php echo $_SESSION['city'];  ?>',
         'state':'<?php echo $_SESSION['accountInfo']['AddressState'];  ?>',
-        'zipCode':'<?php echo $_SESSION['zip'];  ?>',
-        'zipPlus4':'<?php echo $_SESSION['accountInfo']['AddressZipCodeSuffix'];  ?>',
-        'countryName':'<?php echo $_SESSION['accountInfo']['AddressCountry'];  ?>',
+        'zip_code':'<?php echo $_SESSION['zip'];  ?>',
+        'zip_plus4':'<?php echo $_SESSION['accountInfo']['AddressZipCodeSuffix'];  ?>',
+        'country':'<?php echo $_SESSION['accountInfo']['AddressCountry'];  ?>',
         'province':'<?php echo $_SESSION['accountInfo']['AddressProvince'];  ?>',
-        'preferredFirstName':'<?php echo $_SESSION['accountInfo']['PreferredFirstName'];  ?>',
-        'preferredLastName':'<?php echo $_SESSION['accountInfo']['PreferredLastName'];  ?>',
-        'conComDisplayPhone':'<?php echo $_SESSION['accountInfo']['DisplayPhone'];  ?>'
+        'preferred_first_name':'<?php echo $_SESSION['accountInfo']['PreferredFirstName'];  ?>',
+        'preferred_last_name':'<?php echo $_SESSION['accountInfo']['PreferredLastName'];  ?>',
+        'concom_display_phone':'<?php echo $_SESSION['accountInfo']['DisplayPhone'];  ?>'
     };
 
     if (window.addEventListener) {

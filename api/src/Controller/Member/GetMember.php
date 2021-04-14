@@ -65,9 +65,16 @@ class GetMember extends BaseMember
 {
 
 
-    public function buildResource(Request $request, Response $response, $args): array
+    public function buildResource(Request $request, Response $response, $params): array
     {
-        $data = $this->findMemberId($request, $response, $args, 'id');
+        $id = null;
+        if (array_key_exists('id', $params)) {
+            $id = $params['id'];
+        }
+        if ($id == null) {
+            $id = $request->getAttribute('oauth2-token')['user_id'];
+        }
+        $data = $this->getMember($request, $id, null, false)[0];
         return [
         \App\Controller\BaseController::RESOURCE_TYPE,
         $data];

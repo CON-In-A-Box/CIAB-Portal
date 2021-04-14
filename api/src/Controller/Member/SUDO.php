@@ -53,15 +53,15 @@ class SUDO extends BaseMember
 {
 
 
-    public function buildResource(Request $request, Response $response, $args): array
+    public function buildResource(Request $request, Response $response, $params): array
     {
         global $storage;
 
-        $data = $this->findMember($request, $response, $args, 'name');
+        $id = $this->getMember($request, $params['name'])[0]['id'];
         $permissions = ['admin.sudo'];
         $this->checkPermissions($permissions);
         $token = $request->getAttribute('oauth2-token');
-        $storage->setAccessToken($token['access_token'], $token['client_id'], $data['id'], $token['expires']);
+        $storage->setAccessToken($token['access_token'], $token['client_id'], $id, $token['expires']);
         return [null];
 
     }

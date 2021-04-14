@@ -77,7 +77,6 @@ namespace App\Modules\staff\Controller;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
-use App\Controller\NotFoundException;
 use App\Controller\InvalidParameterException;
 use Atlas\Query\Insert;
 
@@ -87,17 +86,11 @@ class PostStaffMembership extends BaseStaff
 
     public function buildResource(Request $request, Response $response, $params): array
     {
-        $user = $request->getAttribute('oauth2-token')['user_id'];
-        $data = \lookup_users_by_key($params['id']);
-        if (empty($data['users'])) {
-            if (empty($data['error'])) {
-                $error = 'No Members Found';
-            } else {
-                $error = $data['error'];
-            }
-            throw new NotFoundException($error);
+        if (array_key_exists('id', $params)) {
+            $user = $this->getMember($request, $params['id'])[0]['id'];
+        } else {
+            $user = $request->getAttribute('oauth2-token')['user_id'];
         }
-        $user = $data['users'][0]['Id'];
 
         $body = $request->getParsedBody();
         if (!$body) {

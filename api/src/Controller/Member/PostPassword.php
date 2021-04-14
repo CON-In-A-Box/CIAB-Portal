@@ -113,10 +113,10 @@ class PostPassword extends BaseMember
         $modify->perform();
 
         $name = 'Member';
-        if (array_key_exists('firstName', $data)) {
-            $name = $data['firstName'];
-        } elseif (array_key_exists('lastName', $data)) {
-            $name = $data['lastName'];
+        if (array_key_exists('first_name', $data)) {
+            $name = $data['first_name'];
+        } elseif (array_key_exists('last_name', $data)) {
+            $name = $data['last_name'];
         }
 
         $phpView = new Views\PhpRenderer(__DIR__.'/../../Templates', [
@@ -147,10 +147,10 @@ class PostPassword extends BaseMember
     }
 
 
-    public function buildResource(Request $request, Response $response, $args): array
+    public function buildResource(Request $request, Response $response, $params): array
     {
-        $data = $this->findMember($request, $response, $args, 'email');
-        $this->resetPassword($response, $data);
+        $data = $this->getMember($request, $params['email']);
+        $this->resetPassword($response, $data[0]);
         return [
         \App\Controller\BaseController::RESOURCE_TYPE,
         [null],

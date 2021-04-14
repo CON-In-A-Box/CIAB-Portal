@@ -158,7 +158,7 @@ var announcementPage = (function(options) {
       f = document.createElement('DIV');
       f.classList.add('UI-table-cell');
       f.id = 'announcement-' + data2.id + '-poster';
-      var name = data2.posted_by.firstName + ' ' + data2.posted_by.lastName +
+      var name = data2.posted_by.first_name + ' ' + data2.posted_by.last_name +
         ' (' + data2.posted_by.email + ')';
       f.appendChild(document.createTextNode(name));
       line.appendChild(f);

@@ -174,10 +174,14 @@ class ListTickets extends BaseTicketInclude
 
     public function buildResource(Request $request, Response $response, $params): array
     {
-        $data = $this->findMemberId($request, $response, $params, 'member');
-        $aid = $data['id'];
-
         $user = $request->getAttribute('oauth2-token')['user_id'];
+
+        if (array_key_exists('member', $params)) {
+            $aid = $this->getMember($request, $params['member'], 'id')[0]['id'];
+        } else {
+            $aid = $user;
+        }
+
         if ($user != $aid &&
             !\ciab\RBAC::havePermission('api.registration.ticket.list')) {
             throw new PermissionDeniedException();

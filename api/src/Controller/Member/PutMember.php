@@ -60,7 +60,7 @@ namespace App\Controller\Member;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
-
+use Atlas\Query\Update;
 use App\Controller\PermissionDeniedException;
 use App\Controller\NotFoundException;
 use App\Controller\InvalidParameterException;
@@ -98,10 +98,9 @@ class PutMember extends BaseMember
     }
 
 
-    public function buildResource(Request $request, Response $response, $args): array
+    public function buildResource(Request $request, Response $response, $params): array
     {
-        $data = $this->findMemberId($request, $response, $args, 'id');
-        $accountID = $data['id'];
+        $accountID = $this->getMember($request, $params['id'])[0]['id'];
 
         if (!$this->privilaged) {
             $user = $request->getAttribute('oauth2-token')['user_id'];
@@ -116,27 +115,21 @@ class PutMember extends BaseMember
             throw new NotFoundException('No update parameter present');
         }
 
-        if (array_key_exists('email', $body)) {
-            $body['email1'] = $body['email'];
-        }
-        if (array_key_exists('legalFirstName', $body)) {
-            $body['firstName'] = $body['legalFirstName'];
-        }
-        if (array_key_exists('legalLastName', $body)) {
-            $body['lastName'] = $body['legalLastName'];
-        }
-        PutMember::checkBoolParam($body, 'Deceased');
-        PutMember::checkBoolParam($body, 'DoNotContact');
-        PutMember::checkBoolParam($body, 'EmailOptOut');
-        PutMember::checkDateParam($body, 'Birthdate');
+        PutMember::checkBoolParam($body, 'deceased');
+        PutMember::checkBoolParam($body, 'do_not_contact');
+        PutMember::checkBoolParam($body, 'email_optout');
+        PutMember::checkDateParam($body, 'birthdate');
 
-        \updateAccount($body, $accountID);
+        Update::new($this->container->db)
+            ->table('Members')
+            ->columns(BaseMember::insertPayloadFromParams($body, false))
+            ->whereEquals(['AccountID' => $params['id']])
+            ->perform();
 
-        $target = new \App\Controller\Member\GetMember($this->container);
-        $data = $target->buildResource($request, $response, $args)[1];
+        $data = $this->getMember($request, $params['id'], 'id');
         return [
         \App\Controller\BaseController::RESOURCE_TYPE,
-        $target->arrayResponse($request, $response, $data)
+        $data[0]
         ];
 
     }
