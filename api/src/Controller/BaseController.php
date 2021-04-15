@@ -104,6 +104,7 @@ use Slim\Http\Response;
 use Slim\Http\Request;
 
 require_once __DIR__.'/../../../backends/RBAC.inc';
+require_once __DIR__.'/../../../modules/concom/functions/RBAC.inc';
 
 class NotFoundException extends Exception
 {
