@@ -106,6 +106,7 @@ use Slim\Http\Environment;
 use Atlas\Query\Select;
 
 require_once __DIR__.'/../../../backends/RBAC.inc';
+require_once __DIR__.'/../../../modules/concom/functions/RBAC.inc';
 
 class NotFoundException extends Exception
 {
