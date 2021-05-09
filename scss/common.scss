@@ -554,6 +554,13 @@
     @extend .w3-mobile;
 }
 
+/* Hide it entirely if the screen is narrow*/
+@media screen and (max-width: 630px) {
+    .UI-page-title {
+        display: none;
+    }
+}
+
 .UI-recovery-text-block {
     @extend .UI-center;
     @extend .UI-bold;
