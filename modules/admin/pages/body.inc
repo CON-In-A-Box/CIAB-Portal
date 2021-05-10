@@ -3,7 +3,6 @@
     require_module 'standard';
 .*/
 
-require_once $PAGESDIR.'/base/leftnav.inc';
 require_once $FUNCTIONDIR.'/authentication.inc';
 require_once $FUNCTIONDIR."/database.inc";
 require_once $FUNCTIONDIR.'/users.inc';

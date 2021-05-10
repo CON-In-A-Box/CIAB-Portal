@@ -4,7 +4,6 @@
   require_module 'standard';
 .*/
 
-require($PAGESDIR.'/base/leftnav.inc');
 
 $homepage_panes = [];
 $modules = scandir($MODULESDIR);
