@@ -9,7 +9,7 @@
 
 <header class="w3-cell-row event-color-primary w3-mobile">
   <?php require($PAGESDIR.'/base/logo.inc'); ?>
-  <div class="w3-container w3-cell w3-mobile">
+  <div class="UI-page-title w3-container w3-cell w3-mobile">
     <h2><?php echo $CONSITENAME; ?></h2>
   </div>
 </header>
