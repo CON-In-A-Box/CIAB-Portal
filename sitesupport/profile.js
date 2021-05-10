@@ -32,7 +32,8 @@ var userProfile = (function(options) {
       updateButtonText: 'Update Profile',
       inlineUpdateButton: true,
       panes: ['name', 'prefName', 'badge', 'emailAll', 'phone', 'addr'],
-      onChange: null
+      onChange: null,
+      noTitleBlock: false
     }, options);
 
   return {
@@ -357,8 +358,9 @@ var userProfile = (function(options) {
   </div>
   <div class="UI-container">
     <input class="UI-input" id="${prefix}email1" name="email1" placeholder=
-    "Primary Email and Login (Required)" type="text" value=""
+    "Email Address (Required)" type="email" value=""
     onchange="userProfile.onChange(this);">
+
   </div>
 </div>
 `;
@@ -511,8 +513,18 @@ ${settings.updateButtonText}</button>
 </div>
 `;
 
-      var form = [ titleBlock ];
+      var form = [];
 
+      if (!settings.noTitleBlock) {
+        form.push(titleBlock);
+      }
+
+      if (settings.panes.includes('emailPrimary')) {
+        form.push(emailPrimaryBlock);
+      }
+      if (settings.panes.includes('emailAll')) {
+        form.push(emailAllBlock);
+      }
       if (settings.panes.includes('name')) {
         form.push(nameBlock);
       }
@@ -521,12 +533,6 @@ ${settings.updateButtonText}</button>
       }
       if (settings.panes.includes('badge')) {
         form.push(badgeBlock);
-      }
-      if (settings.panes.includes('emailPrimary')) {
-        form.push(emailPrimaryBlock);
-      }
-      if (settings.panes.includes('emailAll')) {
-        form.push(emailAllBlock);
       }
       if (settings.panes.includes('phone')) {
         form.push(phoneBlock);
