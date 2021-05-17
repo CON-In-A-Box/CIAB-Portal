@@ -189,7 +189,7 @@ class ManagePage {
   }
 
   checkinOnOff() {
-    var a = document.getElementsByName('checking-checkbox');
+    var a = document.getElementsByName('checkin-checkbox');
     var active = false;
     this.readyCheckin = [];
     a.forEach(function(e, i) {
