@@ -17,3 +17,11 @@
     @extend .w3-gray;
     @extend .w3-opacity;
 }
+
+.REG-checkin-badge {
+    margin-bottom: 10px;
+}
+
+input[name="checkin-checkbox"] {
+    margin-left: 25px;
+}

@@ -4,12 +4,17 @@
 
 /* jshint browser: true */
 /* jshint -W097 */
+/* jshint esversion: 6 */
 /* globals apiRequest, showSpinner, hideSpinner, alertbox */
 
 export class RegTicket {
 
   constructor(data) {
     this.data = data;
+  }
+
+  display(e) {
+    /* Override me! */
   }
 
   emailMe() {
@@ -23,7 +28,7 @@ export class RegTicket {
       .catch(function(response) {
         hideSpinner();
         if (response instanceof Error) { throw response; }
-      })
+      });
   }
 
   pickupBadge() {
@@ -37,7 +42,7 @@ export class RegTicket {
       .catch(function(response) {
         hideSpinner();
         if (response instanceof Error) { throw response; }
-      })
+      });
   }
 
   lostBadge() {
@@ -51,7 +56,7 @@ export class RegTicket {
       .catch(function(response) {
         hideSpinner();
         if (response instanceof Error) { throw response; }
-      })
+      });
   }
 
   updateBadge() {
@@ -66,7 +71,7 @@ export class RegTicket {
       .catch(function(response) {
         hideSpinner();
         if (response instanceof Error) { throw response; }
-      })
+      });
   }
 
 }

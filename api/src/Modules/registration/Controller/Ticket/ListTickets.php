@@ -41,6 +41,20 @@
  *          @OA\Schema(type="integer", enum={0,1})
  *      ),
  *      @OA\Parameter(
+ *          description="Show/exclude checked in",
+ *          in="query",
+ *          name="checked_in",
+ *          required=false,
+ *          @OA\Schema(type="integer", enum={0,1})
+ *      ),
+ *      @OA\Parameter(
+ *          description="Show/exclude picked up",
+ *          in="query",
+ *          name="picked_up",
+ *          required=false,
+ *          @OA\Schema(type="integer", enum={0,1})
+ *      ),
+ *      @OA\Parameter(
  *          ref="#/components/parameters/short_response",
  *      ),
  *      @OA\Parameter(
@@ -97,6 +111,20 @@
  *          @OA\Schema(type="integer", enum={0,1})
  *      ),
  *      @OA\Parameter(
+ *          description="Show/exclude checked in",
+ *          in="query",
+ *          name="checked_in",
+ *          required=false,
+ *          @OA\Schema(type="integer", enum={0,1})
+ *      ),*
+  *      @OA\Parameter(
+ *          description="Show/exclude picked up",
+ *          in="query",
+ *          name="picked_up",
+ *          required=false,
+ *          @OA\Schema(type="integer", enum={0,1})
+ *      ),
+ *      @OA\Parameter(
  *          ref="#/components/parameters/max_results",
  *      ),
  *      @OA\Parameter(
@@ -128,6 +156,20 @@
  *          description="Show voided tickets as well.",
  *          in="query",
  *          name="show_void",
+ *          required=false,
+ *          @OA\Schema(type="integer", enum={0,1})
+ *      ),
+ *      @OA\Parameter(
+ *          description="Show/exclude checked in",
+ *          in="query",
+ *          name="checked_in",
+ *          required=false,
+ *          @OA\Schema(type="integer", enum={0,1})
+ *      ),
+ *      @OA\Parameter(
+ *          description="Show/exclude picked up",
+ *          in="query",
+ *          name="picked_up",
  *          required=false,
  *          @OA\Schema(type="integer", enum={0,1})
  *      ),
@@ -199,6 +241,20 @@ class ListTickets extends BaseTicketInclude
         $query = $request->getQueryParams();
         if (!array_key_exists('show_void', $query) || !boolval($query['show_void'])) {
             $select->whereEquals(['VoidDate' => null]);
+        }
+        if (array_key_exists('checked_in', $query)) {
+            if (boolval($query['checked_in'])) {
+                $select->where('BoardingPassGenerated IS NOT NULL');
+            } else {
+                $select->whereEquals(['BoardingPassGenerated' => null]);
+            }
+        }
+        if (array_key_exists('picked_up', $query)) {
+            if (boolval($query['picked_up'])) {
+                $select->where('BadgesPickedUp > 0');
+            } else {
+                $select->where('BadgesPickedUp = 0');
+            }
         }
         $tickets = $select->fetchAll();
         if (empty($tickets)) {
