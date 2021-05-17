@@ -204,19 +204,13 @@ class ListTickets extends BaseTicketInclude
         if (empty($tickets)) {
             throw new NotFoundException('Ticket Not Found');
         }
-        if (count($tickets) > 1) {
-            $output = ['type' => 'ticket_list'];
-            return [
-            \App\Controller\BaseController::LIST_TYPE,
-            $tickets,
-            $output
-            ];
-        } else {
-            return [
-            \App\Controller\BaseController::RESOURCE_TYPE,
-            $tickets[0]
-            ];
-        }
+
+        $output = ['type' => 'ticket_list'];
+        return [
+        \App\Controller\BaseController::LIST_TYPE,
+        $tickets,
+        $output
+        ];
 
     }
 
