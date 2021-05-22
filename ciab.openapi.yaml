@@ -1261,6 +1261,44 @@ paths:
       security:
         -
           ciab_auth: []
+  /payment/:
+    post:
+      tags:
+        - payments
+      summary: 'Start a new payment'
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                success:
+                  type: string
+                  format: url
+                cancel:
+                  type: string
+                  format: url
+                cart:
+                  type: array
+                  items: {  }
+              type: object
+      responses:
+        '201':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/payment'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          description: 'Payment Processor Not Found.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+      security:
+        -
+          ciab_auth: []
   '/permissions/method/{resource}':
     get:
       tags:
@@ -2186,6 +2224,26 @@ paths:
               - 0
               - 1
         -
+          name: checked_in
+          in: query
+          description: 'Show/exclude checked in'
+          required: false
+          schema:
+            type: integer
+            enum:
+              - 0
+              - 1
+        -
+          name: picked_up
+          in: query
+          description: 'Show/exclude picked up'
+          required: false
+          schema:
+            type: integer
+            enum:
+              - 0
+              - 1
+        -
           $ref: '#/components/parameters/short_response'
         -
           $ref: '#/components/parameters/max_results'
@@ -2235,6 +2293,26 @@ paths:
               - 0
               - 1
         -
+          name: checked_in
+          in: query
+          description: 'Show/exclude checked in'
+          required: false
+          schema:
+            type: integer
+            enum:
+              - 0
+              - 1
+        -
+          name: picked_up
+          in: query
+          description: 'Show/exclude picked up'
+          required: false
+          schema:
+            type: integer
+            enum:
+              - 0
+              - 1
+        -
           $ref: '#/components/parameters/max_results'
         -
           $ref: '#/components/parameters/page_token'
@@ -2262,6 +2340,26 @@ paths:
           name: show_void
           in: query
           description: 'Show voided tickets as well.'
+          required: false
+          schema:
+            type: integer
+            enum:
+              - 0
+              - 1
+        -
+          name: checked_in
+          in: query
+          description: 'Show/exclude checked in'
+          required: false
+          schema:
+            type: integer
+            enum:
+              - 0
+              - 1
+        -
+          name: picked_up
+          in: query
+          description: 'Show/exclude picked up'
           required: false
           schema:
             type: integer
@@ -3181,6 +3279,13 @@ components:
       allOf:
         -
           $ref: '#/components/schemas/resource_list'
+    payment:
+      properties:
+        type:
+          type: string
+          enum:
+            - payment
+      type: object
     permission_entry:
       properties:
         type:
@@ -3593,6 +3698,12 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/error'
+    payment_not_found:
+      description: 'Payment Processor not found.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/error'
     permission_not_found:
       description: 'Permission not found in the system.'
       content:
@@ -3686,6 +3797,9 @@ tags:
   -
     name: members
     description: 'Features around members of events'
+  -
+    name: payments
+    description: 'Features around payments'
   -
     name: permissions
     description: 'Querying and checking permissions in the API'
