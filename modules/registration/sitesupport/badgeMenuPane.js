@@ -1,7 +1,7 @@
 /* jshint esversion: 6 */
-/* globals Vue */
+/* globals alertbox, apiRequest, Vue */
 
-var pane = Vue.component('badge-menu-pane', {
+Vue.component('badge-menu-pane', {
   props: {
     open: Boolean,
     eventName: String,
