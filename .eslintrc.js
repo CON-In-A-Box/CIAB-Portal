@@ -30,7 +30,7 @@ module.exports = {
       ],
       "max-len": [
         2,
-       150
+        150
       ],
       "indent": [
         2,

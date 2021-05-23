@@ -33,7 +33,7 @@ Vue.component('badge-menu-pane', {
           <div class="UI-table-cell"><a href="/index.php?Function=registration/lost">Report lost badge(s) for {{eventName}}</a></div>
         </div>
         <div class="UI-table-row UI-white">
-          <div class="UI-table-cell"><a href="/index.php?Function=registration/manage">Manage registration(s)</a></div>
+        <div class="UI-table-cell"><a href="/index.php?Function=registration/manage">Manage registration(s)</a></div>
         </div>
         <div class="UI-table-row UI-white">
           <div class="UI-table-cell"><a href="/index.php?Function=profile">Manage Account</a></div>
@@ -80,10 +80,10 @@ var app = new Vue({
 
     getEventInfo() {
       apiRequest('GET', `event/${this.event}`, null)
-      .then((response) => {
-        const result = JSON.parse(response.responseText);
-        this.eventName = result.name;
-      });
+        .then((response) => {
+          const result = JSON.parse(response.responseText);
+          this.eventName = result.name;
+        });
     },
 
     getTicketInfo() {
@@ -103,3 +103,5 @@ var app = new Vue({
     }
   }
 });
+
+export default app;

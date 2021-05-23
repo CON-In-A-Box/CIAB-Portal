@@ -13,7 +13,7 @@ export class RegTicket {
     this.data = data;
   }
 
-  display(e) {
+  display() {
     /* Override me! */
   }
 
@@ -34,7 +34,7 @@ export class RegTicket {
   pickupBadge() {
     showSpinner();
     apiRequest('PUT', 'registration/ticket/' + this.data.id + '/pickup','')
-      .then(function(response) {
+      .then(function() {
         location.assign('/index.php?Function=main');
         hideSpinner();
       })
