@@ -32,7 +32,14 @@ if (isset($_SESSION['duplicates'])) {
     echo '<p class="UI-main-email-warning">';
     echo "This e-mail has ".count($_SESSION['duplicates'])." duplicate "."accounts. IDs:[".implode(", ", $_SESSION['duplicates'])."]. "."This is only displaying information for one of these Accounts."."<br />"."<b>Please</b> contact IT to have this situation corrected.<br />"."</p>";
 }
+?>
 
+<div id="componentland">
+    <badge-menu-pane :open="open" :event-name="eventName" :tickets="tickets">
+    </badge-menu-pane>
+</div>
+
+<?php
 foreach ($homepage_panes as $drawfunc) {
     $drawfunc();
 }

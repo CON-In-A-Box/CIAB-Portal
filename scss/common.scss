@@ -251,7 +251,7 @@
 }
 
 .UI-table-heading .UI-table-row:first-of-type {
-    @extend .UI-bold !important;
+    @extend .UI-bold;
     font-size:125% !important;
 }
 

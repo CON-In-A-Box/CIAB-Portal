@@ -57,7 +57,7 @@ class CheckinPage extends RegPage {
                             '/checkin','')
             .then(function(response) {
               hideSpinner();
-              location.reload();
+              location.assign('/index.php?Function=main');
             })
             .catch(function(response) {
               hideSpinner();

@@ -42,9 +42,9 @@ function load() {
         }).createElement();
 
         var eventName =  data[0].event.name;
-        var generated = 0
+        var generated = 0;
         data.forEach(function(ticket) {
-          if (ticket.BoardingPassGenerated) {
+          if (ticket.boarding_pass_generated) {
             generated += 1;
           }
         });
