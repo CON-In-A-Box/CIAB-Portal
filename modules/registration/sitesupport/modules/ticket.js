@@ -13,7 +13,7 @@ export class RegTicket {
     this.data = data;
   }
 
-  display(e) {
+  display() {
     /* Override me! */
   }
 
@@ -34,10 +34,9 @@ export class RegTicket {
   pickupBadge() {
     showSpinner();
     apiRequest('PUT', 'registration/ticket/' + this.data.id + '/pickup','')
-      .then(function(response) {
-        location.reload();
+      .then(function() {
+        location.assign('/index.php?Function=main');
         hideSpinner();
-        console.log(response);
       })
       .catch(function(response) {
         hideSpinner();
@@ -51,7 +50,8 @@ export class RegTicket {
       .then(function() {
         hideSpinner();
         alertbox('Badge has been re-printed!',
-          'Please visit registration to claim your new badge.');
+          'Please visit registration to claim your new badge.')
+          .then(() => location.assign('/index.php?Function=main'));
       })
       .catch(function(response) {
         hideSpinner();

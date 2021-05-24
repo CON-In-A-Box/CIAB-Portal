@@ -15,8 +15,5 @@
                 <button class="UI-eventbutton UI-disabled" id="checkinbutton">Check In</button>
             </div>
         </div>
-        <!-- TODO: These are temporary and not-smart links to the other pages -->
-        <div><a href="/index.php?Function=registration/boarding">Display Boarding Passes</a></div>
-        <div><a href="/index.php?Function=registration/lost">Report Lost Badge(s)</a></div>
     </div>
 </div>

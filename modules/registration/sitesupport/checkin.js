@@ -55,9 +55,9 @@ class CheckinPage extends RegPage {
         this.readyCheckin.forEach(function(ticket) {
           apiRequest('PUT', 'registration/ticket/' + ticket.id +
                             '/checkin','')
-            .then(function(response) {
+            .then(function() {
               hideSpinner();
-              location.reload();
+              location.assign('/index.php?Function=main');
             })
             .catch(function(response) {
               hideSpinner();
