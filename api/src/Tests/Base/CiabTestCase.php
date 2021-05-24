@@ -20,6 +20,7 @@ if (is_file(__DIR__.'/../../../../.env')) {
 require __DIR__.'/../../App/Routes.php';
 require __DIR__.'/../../App/Dependencies.php';
 require __DIR__.'/../../App/OAuth2.php';
+require __DIR__.'/../../App/Vendors.php';
 
 require __DIR__.'/../../../../functions/functions.inc';
 require_once __DIR__.'/../../../../backends/oauth2.inc';
@@ -131,6 +132,7 @@ abstract class CiabTestCase extends TestCase
         $settings = require __DIR__.'/../../App/Settings.php';
         $this->app = new \Slim\App($settings);
         setupAPIDependencies($this->app, $settings);
+        setupAPIVendors($settings);
 
         $container = $this->app->getContainer();
         if ($container === null) {

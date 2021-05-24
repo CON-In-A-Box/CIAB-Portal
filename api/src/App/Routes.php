@@ -127,6 +127,13 @@ function setupAPIRoutes(App $app, $authMiddleware)
         }
     )->add(new \App\Middleware\CiabMiddleware($app))->add($authMiddleware);
 
+    $app->group(
+        '/payment',
+        function () use ($app, $authMiddleware) {
+            $app->post('[/]', 'App\Controller\Payment\PostPayment');
+        }
+    )->add(new \App\Middleware\CiabMiddleware($app))->add($authMiddleware);
+
 }
 
 

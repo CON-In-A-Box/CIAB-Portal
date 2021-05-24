@@ -131,6 +131,12 @@ class ConflictException extends Exception
 
 }
 
+
+class InternalServerErrorException extends Exception
+{
+
+}
+
 class IncludeResource
 {
 
@@ -271,6 +277,11 @@ abstract class BaseController
             $result = [
             BaseController::RESULT_TYPE,
             $this->errorResponse($request, $response, $e->getMessage(), 'Conflict', 409)
+            ];
+        } catch (InternalServerErrorException $e) {
+            $result = [
+            BaseController::RESULT_TYPE,
+            $this->errorResponse($request, $response, $e->getMessage(), 'Internal Server Error', 500)
             ];
         }
 
