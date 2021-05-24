@@ -56,6 +56,7 @@ require_once __DIR__.'/../../../backends/oauth2.inc';
 require __DIR__.'/Dependencies.php';
 require __DIR__.'/Routes.php';
 require __DIR__.'/OAuth2.php';
+require __DIR__.'/Vendors.php';
 
 $settings = require __DIR__.'/Settings.php';
 $app = new \Slim\App($settings);
