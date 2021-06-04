@@ -4,6 +4,114 @@
 .*/
 
 /**
+ *  @OA\Parameter(
+ *      parameter="show_void",
+ *      description="Show voided tickets as well.",
+ *      in="query",
+ *      name="show_void",
+ *      required=false,
+ *      @OA\Schema(type="integer", enum={0,1})
+ *  )
+ *
+ *  @OA\Parameter(
+ *      parameter="show_checked_in",
+ *      description="Show/exclude checked in",
+ *      in="query",
+ *      name="checked_in",
+ *      required=false,
+ *      @OA\Schema(type="integer", enum={0,1})
+ *  )
+ *
+ *  @OA\Parameter(
+ *      parameter="show_picked_up",
+ *      description="Show/exclude picked up",
+ *      in="query",
+ *      name="picked_up",
+ *      required=false,
+ *      @OA\Schema(type="integer", enum={0,1})
+ *  )
+ *
+ *  @OA\Get(
+ *      tags={"registration"},
+ *      path="/registration/ticket/list/unclaimed/{event}",
+ *      summary="Gets all unclaimed tickets for an event",
+ *      @OA\Parameter(
+ *          description="Id of the event",
+ *          in="path",
+ *          name="event",
+ *          required=true,
+ *          @OA\Schema(type="integer")
+ *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/show_void",
+ *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/show_checked_in",
+ *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/short_response",
+ *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/max_results",
+ *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/page_token",
+ *      ),
+ *      @OA\Response(
+ *          response=200,
+ *          description="Tickets found",
+ *          @OA\JsonContent(
+ *           ref="#/components/schemas/ticket_list"
+ *          ),
+ *      ),
+ *      @OA\Response(
+ *          response=401,
+ *          ref="#/components/responses/401"
+ *      ),
+ *      @OA\Response(
+ *          response=404,
+ *          ref="#/components/responses/event_not_found"
+ *      ),
+ *      security={{"ciab_auth":{}}}
+ *  )
+ *
+ *  @OA\Get(
+ *      tags={"registration"},
+ *      path="/registration/ticket/list/unclaimed",
+ *      summary="Gets unclaimed tickets the current event",
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/show_void",
+ *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/show_checked_in",
+ *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/short_response",
+ *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/max_results",
+ *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/page_token",
+ *      ),
+ *      @OA\Response(
+ *          response=200,
+ *          description="Tickets found",
+ *          @OA\JsonContent(
+ *           ref="#/components/schemas/ticket_list"
+ *          ),
+ *      ),
+ *      @OA\Response(
+ *          response=401,
+ *          ref="#/components/responses/401"
+ *      ),
+ *      @OA\Response(
+ *          response=404,
+ *          ref="#/components/responses/event_not_found"
+ *      ),
+ *      security={{"ciab_auth":{}}}
+ *  )
+ *
  *  @OA\Get(
  *      tags={"registration"},
  *      path="/registration/ticket/list/{member}/{event}",
@@ -34,25 +142,13 @@
  *          @OA\Schema(type="integer")
  *      ),
  *      @OA\Parameter(
- *          description="Show voided tickets as well.",
- *          in="query",
- *          name="show_void",
- *          required=false,
- *          @OA\Schema(type="integer", enum={0,1})
+ *          ref="#/components/parameters/show_void",
  *      ),
  *      @OA\Parameter(
- *          description="Show/exclude checked in",
- *          in="query",
- *          name="checked_in",
- *          required=false,
- *          @OA\Schema(type="integer", enum={0,1})
+ *          ref="#/components/parameters/show_checked_in",
  *      ),
  *      @OA\Parameter(
- *          description="Show/exclude picked up",
- *          in="query",
- *          name="picked_up",
- *          required=false,
- *          @OA\Schema(type="integer", enum={0,1})
+ *          ref="#/components/parameters/show_picked_up",
  *      ),
  *      @OA\Parameter(
  *          ref="#/components/parameters/short_response",
@@ -104,25 +200,16 @@
  *          )
  *      ),
  *      @OA\Parameter(
- *          description="Show voided tickets as well.",
- *          in="query",
- *          name="show_void",
- *          required=false,
- *          @OA\Schema(type="integer", enum={0,1})
+ *          ref="#/components/parameters/show_void",
  *      ),
  *      @OA\Parameter(
- *          description="Show/exclude checked in",
- *          in="query",
- *          name="checked_in",
- *          required=false,
- *          @OA\Schema(type="integer", enum={0,1})
- *      ),*
-  *      @OA\Parameter(
- *          description="Show/exclude picked up",
- *          in="query",
- *          name="picked_up",
- *          required=false,
- *          @OA\Schema(type="integer", enum={0,1})
+ *          ref="#/components/parameters/show_checked_in",
+ *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/show_picked_up",
+ *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/short_response",
  *      ),
  *      @OA\Parameter(
  *          ref="#/components/parameters/max_results",
@@ -153,25 +240,16 @@
  *      path="/registration/ticket/list",
  *      summary="Gets tickets for the current member for the current event",
  *      @OA\Parameter(
- *          description="Show voided tickets as well.",
- *          in="query",
- *          name="show_void",
- *          required=false,
- *          @OA\Schema(type="integer", enum={0,1})
+ *          ref="#/components/parameters/show_void",
  *      ),
  *      @OA\Parameter(
- *          description="Show/exclude checked in",
- *          in="query",
- *          name="checked_in",
- *          required=false,
- *          @OA\Schema(type="integer", enum={0,1})
+ *          ref="#/components/parameters/show_checked_in",
  *      ),
  *      @OA\Parameter(
- *          description="Show/exclude picked up",
- *          in="query",
- *          name="picked_up",
- *          required=false,
- *          @OA\Schema(type="integer", enum={0,1})
+ *          ref="#/components/parameters/show_picked_up",
+ *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/short_response",
  *      ),
  *      @OA\Parameter(
  *          ref="#/components/parameters/max_results",
@@ -219,7 +297,11 @@ class ListTickets extends BaseTicketInclude
         $user = $request->getAttribute('oauth2-token')['user_id'];
 
         if (array_key_exists('member', $params)) {
-            $aid = $this->getMember($request, $params['member'], 'id')[0]['id'];
+            if ($params['member'] != 'unclaimed') {
+                $aid = $this->getMember($request, $params['member'], 'id')[0]['id'];
+            } else {
+                $aid = 'unclaimed';
+            }
         } else {
             $aid = $user;
         }
@@ -231,10 +313,16 @@ class ListTickets extends BaseTicketInclude
 
         $select = Select::new($this->container->db)
             ->columns(...BaseTicket::selectMapping())
-            ->from('Registrations')->where(' (')
-            ->catWhere(' RegisteredByID = ', $aid)
-            ->catWhere(' OR AccountID = ', $aid)
-            ->catWhere(') ');
+            ->from('Registrations')
+            ->where(' (');
+        if ($aid !== 'unclaimed') {
+            $select->catWhere(' RegisteredByID = ', $aid)
+                ->catWhere(' OR AccountID = ', $aid);
+        } else {
+            $select->catWhere(' BadgesPickedUp < 1')
+                ->catWhere(' OR BadgesPickedUp IS NULL');
+        }
+        $select->catWhere(') ');
         if (array_key_exists('event', $params)) {
             $select->whereEquals(['EventID' => $params['event']]);
         }
