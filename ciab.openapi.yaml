@@ -2187,6 +2187,73 @@ paths:
       security:
         -
           ciab_auth: []
+  '/registration/ticket/list/unclaimed/{event}':
+    get:
+      tags:
+        - registration
+      summary: 'Gets all unclaimed tickets for an event'
+      parameters:
+        -
+          name: event
+          in: path
+          description: 'Id of the event'
+          required: true
+          schema:
+            type: integer
+        -
+          $ref: '#/components/parameters/show_void'
+        -
+          $ref: '#/components/parameters/show_checked_in'
+        -
+          $ref: '#/components/parameters/short_response'
+        -
+          $ref: '#/components/parameters/max_results'
+        -
+          $ref: '#/components/parameters/page_token'
+      responses:
+        '200':
+          description: 'Tickets found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ticket_list'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/event_not_found'
+      security:
+        -
+          ciab_auth: []
+  /registration/ticket/list/unclaimed:
+    get:
+      tags:
+        - registration
+      summary: 'Gets unclaimed tickets the current event'
+      parameters:
+        -
+          $ref: '#/components/parameters/show_void'
+        -
+          $ref: '#/components/parameters/show_checked_in'
+        -
+          $ref: '#/components/parameters/short_response'
+        -
+          $ref: '#/components/parameters/max_results'
+        -
+          $ref: '#/components/parameters/page_token'
+      responses:
+        '200':
+          description: 'Tickets found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ticket_list'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/event_not_found'
+      security:
+        -
+          ciab_auth: []
   '/registration/ticket/list/{member}/{event}':
     get:
       tags:
@@ -2214,35 +2281,11 @@ paths:
           schema:
             type: integer
         -
-          name: show_void
-          in: query
-          description: 'Show voided tickets as well.'
-          required: false
-          schema:
-            type: integer
-            enum:
-              - 0
-              - 1
+          $ref: '#/components/parameters/show_void'
         -
-          name: checked_in
-          in: query
-          description: 'Show/exclude checked in'
-          required: false
-          schema:
-            type: integer
-            enum:
-              - 0
-              - 1
+          $ref: '#/components/parameters/show_checked_in'
         -
-          name: picked_up
-          in: query
-          description: 'Show/exclude picked up'
-          required: false
-          schema:
-            type: integer
-            enum:
-              - 0
-              - 1
+          $ref: '#/components/parameters/show_picked_up'
         -
           $ref: '#/components/parameters/short_response'
         -
@@ -2283,35 +2326,13 @@ paths:
                 description: 'Member id'
                 type: integer
         -
-          name: show_void
-          in: query
-          description: 'Show voided tickets as well.'
-          required: false
-          schema:
-            type: integer
-            enum:
-              - 0
-              - 1
+          $ref: '#/components/parameters/show_void'
         -
-          name: checked_in
-          in: query
-          description: 'Show/exclude checked in'
-          required: false
-          schema:
-            type: integer
-            enum:
-              - 0
-              - 1
+          $ref: '#/components/parameters/show_checked_in'
         -
-          name: picked_up
-          in: query
-          description: 'Show/exclude picked up'
-          required: false
-          schema:
-            type: integer
-            enum:
-              - 0
-              - 1
+          $ref: '#/components/parameters/show_picked_up'
+        -
+          $ref: '#/components/parameters/short_response'
         -
           $ref: '#/components/parameters/max_results'
         -
@@ -2337,35 +2358,13 @@ paths:
       summary: 'Gets tickets for the current member for the current event'
       parameters:
         -
-          name: show_void
-          in: query
-          description: 'Show voided tickets as well.'
-          required: false
-          schema:
-            type: integer
-            enum:
-              - 0
-              - 1
+          $ref: '#/components/parameters/show_void'
         -
-          name: checked_in
-          in: query
-          description: 'Show/exclude checked in'
-          required: false
-          schema:
-            type: integer
-            enum:
-              - 0
-              - 1
+          $ref: '#/components/parameters/show_checked_in'
         -
-          name: picked_up
-          in: query
-          description: 'Show/exclude picked up'
-          required: false
-          schema:
-            type: integer
-            enum:
-              - 0
-              - 1
+          $ref: '#/components/parameters/show_picked_up'
+        -
+          $ref: '#/components/parameters/short_response'
         -
           $ref: '#/components/parameters/max_results'
         -
@@ -3763,6 +3762,36 @@ components:
       description: 'Do not include sub-resource structures, only Ids.'
       required: false
       style: form
+      schema:
+        type: integer
+        enum:
+          - 0
+          - 1
+    show_void:
+      name: show_void
+      in: query
+      description: 'Show voided tickets as well.'
+      required: false
+      schema:
+        type: integer
+        enum:
+          - 0
+          - 1
+    show_checked_in:
+      name: checked_in
+      in: query
+      description: 'Show/exclude checked in'
+      required: false
+      schema:
+        type: integer
+        enum:
+          - 0
+          - 1
+    show_picked_up:
+      name: picked_up
+      in: query
+      description: 'Show/exclude picked up'
+      required: false
       schema:
         type: integer
         enum:
