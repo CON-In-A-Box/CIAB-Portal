@@ -232,9 +232,12 @@ function deleteEvent(id, name) {
   confirmbox(
     'Confirms Event Deletion',
     'Delete event \'' + name + '\' ?').then(function() {
-    basicEventRequest('deleteEvent=' + id, function() {
+    showSpinner();
+    apiRequest('DELETE', '/event/' + id, null).then(function() {
       hideSidebar();
       location.reload();
+    }).catch(function() {
+      hideSpinner();
     });
   });
 }

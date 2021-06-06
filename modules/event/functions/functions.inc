@@ -466,14 +466,6 @@ SQL;
 }
 
 
-function delete_event($id)
-{
-    $sql = "DELETE FROM `Events` WHERE `EventID` = $id;";
-    DB::run($sql);
-
-}
-
-
 function duplicate_concom($to, $from)
 {
     $sql = <<<SQL

@@ -34,7 +34,6 @@ if (!empty($_REQUEST)) {
     'cycle' => FILTER_SANITIZE_STRING,
     'deleteBadge' => FILTER_SANITIZE_NUMBER_INT,
     'badge' => FILTER_SANITIZE_STRING,
-    'deleteEvent' => FILTER_SANITIZE_NUMBER_INT,
     'event' => FILTER_SANITIZE_STRING,
     'duplicateConcom' => FILTER_SANITIZE_NUMBER_INT,
     'from' => FILTER_SANITIZE_NUMBER_INT,
@@ -61,11 +60,6 @@ if (!empty($_REQUEST)) {
     if (isset($updateData['badge'])) {
         $data = json_decode(base64_decode($updateData['badge']));
         save_badge($data);
-        exit();
-    }
-
-    if (isset($updateData['deleteEvent'])) {
-        delete_event($updateData['deleteEvent']);
         exit();
     }
 
