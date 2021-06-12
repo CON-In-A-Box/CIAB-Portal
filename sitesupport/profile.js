@@ -66,11 +66,14 @@ var userProfile = (function(options) {
       this.accountId = member['id'];
       map.forEach(function(data) {
         if (userProfile.getElementById(data[1])) {
+          var element = userProfile.getElementById(data[1]);
           if (data[0] in member && member[data[0]]) {
-            userProfile.getElementById(data[1]).value = member[data[0]];
+            element.value = member[data[0]];
+            element['originalValue'] = member[data[0]];
           } else {
             if (userProfile.getElementById(data[1]).nodeName == 'INPUT') {
-              userProfile.getElementById(data[1]).value = '';
+              element.value = '';
+              element['originalValue'] = '';
             }
           }
         }
@@ -81,7 +84,9 @@ var userProfile = (function(options) {
       this.accountId = -1;
       map.forEach(function(data) {
         if (userProfile.getElementById(data[1])) {
-          userProfile.getElementById(data[1]).value = '';
+          var element = userProfile.getElementById(data[1]);
+          element.value = '';
+          element['originalValue'] = '';
         }
       });
       userProfile.getElementById('state').value = 'MN';
@@ -99,12 +104,13 @@ var userProfile = (function(options) {
       return member;
     },
 
-    serialize: function() {
+    serializeUpdate: function() {
       var output = [];
       map.forEach(function(data) {
-        if (userProfile.getElementById(data[1])) {
-          if (userProfile.getElementById(data[1]).value) {
-            var v = encodeURI(userProfile.getElementById(data[1]).value);
+        var element = userProfile.getElementById(data[1]);
+        if (element) {
+          if (element.value != element.originalValue) {
+            var v = encodeURI(element.value);
             output.push(data[0] + '=' + v);
           }
         }
@@ -163,8 +169,12 @@ var userProfile = (function(options) {
       if (!userProfile.validateForm()) {
         return;
       }
+      var data = userProfile.serializeUpdate();
+      if (data.length == 0) {
+        alertbox('Nothing updated.');
+        return;
+      }
       showSpinner();
-      var data = userProfile.serialize();
       var method = 'POST';
       var uri = 'member';
       if (this.accountId > 0) {
@@ -180,7 +190,14 @@ var userProfile = (function(options) {
           } else {
             alertbox('Member data updated');
             basicBackendRequest('POST', 'profile', 'reloadProfile=1',
-              function() { hideSpinner();}, function() {hideSpinner();});
+              function() {
+                hideSpinner();
+                location.reload();
+              },
+              function() {
+                hideSpinner();
+                location.reload();
+              });
           }
         })
         .catch(function(response) {
