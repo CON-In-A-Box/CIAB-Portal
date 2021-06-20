@@ -3,6 +3,12 @@
 /*.
     require_module 'standard';
 .*/
+require __DIR__."/../vendor/autoload.php";
+
+if (is_file(__DIR__.'/../.env')) {
+    $dotenv = Dotenv\Dotenv::create(__DIR__.'/../');
+    $dotenv->load();
+}
 
 require_once(__DIR__."/../functions/functions.inc");
 require_once(__DIR__."/neon_members_lib.inc");
@@ -48,4 +54,5 @@ function do_Neon_import()
 
 verify_single_process(basename(__FILE__));
 
+initializeApplication();
 do_Neon_import();
