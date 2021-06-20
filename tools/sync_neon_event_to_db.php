@@ -3,6 +3,12 @@
 /*.
     require_module 'standard';
 .*/
+require __DIR__."/../vendor/autoload.php";
+
+if (is_file(__DIR__.'/../.env')) {
+    $dotenv = Dotenv\Dotenv::create(__DIR__.'/../');
+    $dotenv->load();
+}
 
 require_once(__DIR__."/../functions/functions.inc");
 require_once(__DIR__."/neon_event_lib.inc");
@@ -141,4 +147,5 @@ for ($i = 0; $i < count($argv); ++$i) {
     }
 }
 
+initializeApplication();
 do_event_Neon_import($historical);

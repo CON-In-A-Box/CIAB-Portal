@@ -175,6 +175,8 @@ function initializeApplication()
         $db = new DB;
         _config_from_Database();
 
+        global $Neon; // TODO: Deglobalize or remove Neon support
+
         // Include NeonCRM for DB calls via API
         if (array_key_exists('NEONID', $GLOBALS) &&
             array_key_exists('NEONKEY', $GLOBALS) &&
