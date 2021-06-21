@@ -232,7 +232,7 @@ abstract class BaseController
         $this->api_type = $api_type;
         $this->container = $container;
         $this->chain = [];
-        $this->includes = [];
+        $this->includes = null;
 
         if (array_key_exists('Neon', $GLOBALS)) {
             \loadDefinedFields();
@@ -320,12 +320,16 @@ abstract class BaseController
 
     public function handleListType(Request $request, Response $response, array $output, array $data, array $params, int $code = 200)
     {
-        $cleandata = array_values($data);
-        $short = $request->getQueryParam('short_response', false);
-        if (!boolval($short)) {
-            foreach ($cleandata as $index => $entry) {
-                $this->processIncludes($request, $response, $params, $cleandata[$index]);
+        if ($this->includes !== null) {
+            $cleandata = array_values($data);
+            $short = $request->getQueryParam('short_response', false);
+            if (!boolval($short)) {
+                foreach ($cleandata as $index => $entry) {
+                    $this->processIncludes($request, $response, $params, $cleandata[$index]);
+                }
             }
+        } else {
+            $cleandata = $data;
         }
         return $this->listResponse($request, $response, $output, $cleandata, $code);
 
@@ -334,9 +338,11 @@ abstract class BaseController
 
     public function handleResourceType(Request $request, Response $response, $data, array $params, $code = 200)
     {
-        $short = $request->getQueryParam('short_response', false);
-        if (!boolval($short)) {
-            $this->processIncludes($request, $response, $params, $data);
+        if ($this->includes !== null) {
+            $short = $request->getQueryParam('short_response', false);
+            if (!boolval($short)) {
+                $this->processIncludes($request, $response, $params, $data);
+            }
         }
         return $this->jsonResponse($request, $response, $data, $code);
 
@@ -567,8 +573,10 @@ abstract class BaseController
 
     public function processIncludes(Request $request, Response $response, $params, &$data, array $history = [])
     {
-        foreach ($this->includes as $target) {
-            $target->process($request, $response, $this->container, $params, $data, $history);
+        if ($this->includes !== null) {
+            foreach ($this->includes as $target) {
+                $target->process($request, $response, $this->container, $params, $data, $history);
+            }
         }
 
     }
