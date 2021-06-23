@@ -203,7 +203,7 @@ function printDivisionMember($pos, $div, $position, $rbacpos)
         $perm = "concom.modify.$div.$rbacpos";
         if (\ciab\RBAC::havePermission($perm)) {
             echo '<div class="UI-table-cell-no-border">';
-            echo '<input type="button" class="UI-redbutton" onclick= "editMember(\''.$kName.'\', \''.$tmp[2].'\', \''.$div.'\', \''.$position.'\', \''.$tmp[1].'\', \''.$positions.'\');" value="Edit">';
+            echo '<input type="button" class="UI-redbutton" onclick= "editMember('.MyPDO::quote($kName).', '.MyPDO::quote($tmp[2]).', '.MyPDO::quote($div).', '.MyPDO::quote($position).', '.MyPDO::quote($tmp[1]).', '.MyPDO::quote($positions).');" value="Edit">';
             echo '</div>';
         }
         echo "</div>\n";
@@ -249,7 +249,7 @@ function printDepartmentMember(
         $perm = "concom.modify.$kdep.$pos";
         if (\ciab\RBAC::havePermission($perm)) {
             echo '<div class="UI-table-cell-no-border">';
-            echo '<input type="button" class="UI-redbutton" onclick= "editMember(\''.$kName.'\', \''.$tmp[2].'\', \''.$kdep.'\', \''.$pos.'\', \''.$tmp[1].'\', \''.$positions.'\');" value="Edit">';
+            echo '<input type="button" class="UI-redbutton" onclick= "editMember('.MyPDO::quote($kName).', '.MyPDO::quote($tmp[2]).', '.MyPDO::quote($kdep).', '.MyPDO::quote($pos).', '.MyPDO::quote($tmp[1]).', '.MyPDO::quote($positions).');" value="Edit">';
             echo '</div>';
         }
         echo "</div>\n";
