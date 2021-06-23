@@ -183,6 +183,8 @@ function initializeApplication()
             !empty($GLOBALS['NEONID']) &&
             !empty($GLOBALS['NEONKEY'])) {
             require_once(__DIR__."/neon.inc");
+        } else {
+            unset($GLOBALS['Neon']);
         }
 
         global $MODULESDIR; // TODO: Deglobalize this
