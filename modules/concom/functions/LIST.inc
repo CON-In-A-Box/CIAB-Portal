@@ -140,10 +140,10 @@ SQL;
             foreach ($users['users'] as $user) {
                 if (array_key_exists($user['Id'], $db_staff)) {
                     foreach ($db_staff[$user['Id']] as $entry_key => $entry) {
-                        $db_staff[$user['Id']][$entry_key]['First Name'] = $user['First Name'];
-                        $db_staff[$user['Id']][$entry_key]['Last Name'] = $user['Last Name'];
-                        $db_staff[$user['Id']][$entry_key]['Full Name'] = $user['First Name'].'&nbsp;'.$user['Last Name'];
-                        $db_staff[$user['Id']][$entry_key]['Email'] = $user['Email'];
+                        $db_staff[$user['Id']][$entry_key]['First Name'] = htmlspecialchars_decode($user['First Name'], ENT_QUOTES);
+                        $db_staff[$user['Id']][$entry_key]['Last Name'] = htmlspecialchars_decode($user['Last Name'], ENT_QUOTES);
+                        $db_staff[$user['Id']][$entry_key]['Full Name'] = htmlspecialchars_decode($user['First Name'].'&nbsp;'.$user['Last Name'], ENT_QUOTES);
+                        $db_staff[$user['Id']][$entry_key]['Email'] = htmlspecialchars_decode($user['Email'], ENT_QUOTES);
                     }
                 }
             }
