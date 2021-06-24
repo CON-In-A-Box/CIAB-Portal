@@ -242,6 +242,16 @@ class MemberTest extends CiabTestCase
         $this->assertEquals($data->preferred_first_name, 'tee');
         $this->assertEquals($data->preferred_last_name, 'Micky');
 
+        $data = $this->runSuccessJsonRequest(
+            'PUT',
+            '/member/'.$userdata->id,
+            null,
+            ['preferred_first_name' => 'a&#39;d',
+            'preferred_last_name' => 'b&#39;c']
+        );
+        $this->assertEquals($data->first_name, 'a\'d');
+        $this->assertEquals($data->last_name, 'b\'c');
+
         $data = $this->runRequest('PUT', '/member/'.$userdata->id, null, ['birthdate' => 'not a date'], 400);
         $data = $this->runRequest('PUT', '/member/'.$userdata->id, null, ['deceased' => 'not a boolean'], 400);
         $data = $this->runRequest('PUT', '/member/'.$userdata->id, null, ['do_not_contact' => 'not a boolean'], 400);
