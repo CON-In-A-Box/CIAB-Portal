@@ -665,7 +665,11 @@ abstract class BaseController
         };
 
         foreach ($params as $key => $val) {
-            $ret[$paramsToColumns[$key]] = $val;
+            if (is_string($val)) {
+                $ret[$paramsToColumns[$key]] = htmlspecialchars_decode($val, ENT_QUOTES);
+            } else {
+                $ret[$paramsToColumns[$key]] = $val;
+            }
         }
 
         if (empty($ret)) {
