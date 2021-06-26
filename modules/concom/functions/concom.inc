@@ -747,6 +747,8 @@ function delete_position($id)
     DB::run($sql);
     $sql = "DELETE FROM `EmailListAccess` WHERE `DepartmentID` = $id";
     DB::run($sql);
+    $sql = "UPDATE `Departments` SET `FallbackID` = NULL WHERE `FallbackID` = $id";
+    DB::run($sql);
     $sql = <<<SQL
         UPDATE
             `Departments`
@@ -765,7 +767,8 @@ function delete_position($id)
                     Name = 'Historical Placeholder'
                 LIMIT
                     1
-            )
+            ),
+            `FallbackID` = NULL
         WHERE
             `DepartmentID` = $id;
 SQL;
