@@ -4,16 +4,14 @@
     require_module 'standard';
 .*/
 
-require_once(__DIR__."/../functions.inc");
-require_once(__DIR__."/../database.inc");
+require_once(__DIR__."/../../../functions/functions.inc");
+require_once(__DIR__."/../../../functions/database.inc");
 
 $meetings = [];
 
 
-function _loadCustomFields()
+function _loadCustomFields($neon)
 {
-    global $Neon;
-
     $fields = [];
     $fields['definedFields'] = [];
 
@@ -24,7 +22,7 @@ function _loadCustomFields()
     'searchCriteria.component' => "Account",
         ],
         ];
-    $result = $Neon->go($request);
+    $result = $neon->go($request);
     if (isset($result['operationResult']) && $result['operationResult'] == 'SUCCESS') {
         $fields['definedFields']['customField'] = $result['customFields']['customField'];
         foreach ($result['customFields']['customField'] as $val) {
@@ -38,11 +36,11 @@ function _loadCustomFields()
 }
 
 
-function _import_meetings()
+function _import_meetings($neon)
 {
     global $meetings;
 
-    $fields = _loadCustomFields();
+    $fields = _loadCustomFields($neon);
     $event = current_eventID();
 
     foreach ($fields['definedFields']['customField'] as $field) {
@@ -86,9 +84,9 @@ function _find_meeting($meeting)
 }
 
 
-function _import_attendance()
+function _import_attendance($neon)
 {
-    global $Neon, $meetings;
+    global $meetings;
 
     $mt = search_definedFields('Official Meeting Attendance');
     $conComFieldId = search_definedFields('CVGConCom Current Position');
@@ -112,7 +110,7 @@ function _import_attendance()
         'sortDirection' => 'ASC',
         ],
         ];
-        $result = $Neon->search($search);
+        $result = $neon->search($search);
 
         if (isset($result['operationResult']) && $result['operationResult'] == 'SUCCESS') {
             $runPage = $result['pages'];
@@ -162,9 +160,9 @@ SQL;
 }
 
 
-function to_180501()
+function to_180501($neon)
 {
-    _import_meetings();
-    _import_attendance();
+    _import_meetings($neon);
+    _import_attendance($neon);
 
 }

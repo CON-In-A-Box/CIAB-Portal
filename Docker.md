@@ -25,7 +25,7 @@ The goal here is to try to get a development environment on a machine that may n
 
 1. Now you have configured an admin email address with a password. You can log into the image using that email address and password and you have a functioning base install of Con-in-a-box!
 
-1. If you have a local install with no Neon backend you can fill in a dummy event with people and everything to get started with by loading <http://localhost:8080/test/populate_event.php>
+1. If you have a local install with no CRM backend you can fill in a dummy event with people and everything to get started with by loading <http://localhost:8080/test/populate_event.php>
 
 1. If you want to fill the database with dummy volunteer data then you can use the php script by loading <http://localhost:8080/test/populate_volunteer.php>
 

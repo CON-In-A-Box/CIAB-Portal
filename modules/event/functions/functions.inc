@@ -6,9 +6,7 @@
 .*/
 
 require_once($FUNCTIONDIR."/database.inc");
-if (array_key_exists('Neon', $GLOBALS)) {
-    require_once($FUNCTIONDIR."/update/from_neon_to_152.inc");
-}
+require_once($BACKEND."/CRM.inc");
 
 
 function _event_details($id)
@@ -289,41 +287,10 @@ SQL;
 }
 
 
-function _get_event_from_Date($eventdate)
-{
-    $date = new DateTime($eventdate);
-    $cycle = _get_cycleID($date);
-    $sql = "SELECT EventID FROM Events WHERE AnnualCycleID = '$cycle';";
-    $result = load_table($sql);
-    if ($result) {
-        $event = $result[0]['EventID'];
-        return $event;
-    }
-    return null;
-
-}
-
-
 function import_meetings()
 {
-    foreach ($_SESSION['definedFields']['customField'] as $field) {
-        if ($field['fieldName'] == 'Official Meeting Attendance') {
-            foreach ($field['fieldOptions']['fieldOption'] as $meet) {
-                $data = explode(' - ', $meet['name']);
-                $id = $meet['id'];
-                $date = $data[0];
-                $name = $data[1];
-                $event = _get_event_from_Date($date);
-                $sql = <<<SQL
-                    INSERT IGNORE INTO `OfficialMeetings`
-                    SET  MeetingID = $id,
-                         Date = '$date',
-                         EventID = $event,
-                         Name = '$name';
-SQL;
-                DB::run($sql);
-            }
-        }
+    if (\ciab\CRM::hasEvents()) {
+        \ciab\CRM::importMeetings();
     }
 
 }
@@ -331,8 +298,8 @@ SQL;
 
 function import_events()
 {
-    if (array_key_exists('Neon', $GLOBALS)) {
-        _Neon_import_events();
+    if (\ciab\CRM::hasEvents()) {
+        \ciab\CRM::importEvents();
     }
 
 }

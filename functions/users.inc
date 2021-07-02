@@ -5,295 +5,7 @@
     require_module 'json';
 .*/
 
-/*********************************/
-/* Neon migration path functions */
-/*********************************/
-
-
-function _quote($value)
-{
-    if ($value === null || $value === '') {
-        return 'NULL';
-    } else {
-        return MyPDO::quote($value);
-    }
-
-}
-
-
-function _duplicate_email($aid, $email)
-{
-    $sql = <<<SQL
-        SELECT *
-        FROM `Members`
-        WHERE `AccountID` != $aid AND
-              `Email` = '$email'
-        ORDER BY `AccountID` ASC
-SQL;
-    $result = \DB::run($sql);
-    $data = $result->fetchAll();
-    if (empty($data)) {
-        return null;
-    }
-    return $data[0]['AccountID'];
-
-}
-
-
-function _memberDBfromList($person)
-{
-    $aid = $person['Account ID'];
-    $fn = _quote($person['First Name']);
-    $ln = _quote($person['Last Name']);
-    $mn = _quote($person['Middle Name']);
-    $su = _quote($person['Suffix']);
-    $existing = _duplicate_email($aid, $person['Email 1']);
-    if ($existing !== null) {
-        $em1 = 'NULL';
-        $dep = $existing;
-    } else {
-        $em1 = _quote($person['Email 1']);
-        $dep = 'NULL';
-    }
-    $em2 = _quote($person['Email 2']);
-    $em3 = _quote($person['Email 3']);
-    $ph1 = _quote($person['Phone 1 Full Number (F)']);
-    $ph2 = _quote($person['Phone 2 Full Number (F)']);
-    $al1 = _quote($person['Address Line 1']);
-    $al2 = _quote($person['Address Line 2']);
-    $ac = _quote($person['City']);
-    $ast = _quote($person['State']);
-    $az = _quote($person['Zip Code']);
-    $azs = _quote($person['Zip Code Suffix']);
-    $aco = _quote($person['Country']);
-    $ap = _quote($person['Province']);
-    $dc = ($person['Deceased'] === 'Yes') ? 'true' : 'false';
-    $dnc = ($person['Do Not Contact'] === 'Yes') ? 'true' : 'false';
-    $eoo = ($person['Email Opt-Out'] === 'Yes') ? 'true' : 'false';
-    if ($person['DOB Month']) {
-        $time = strtotime($person['DOB Month'].'/'.$person['DOB Day'].'/'.$person['DOB Year']);
-        $dob = _quote(date('Y-m-d', $time));
-    } else {
-        $dob = 'NULL';
-    }
-    $gn = _quote($person['Gender']);
-    $pfn = _quote($person['Preferred First Name']);
-    $pln = _quote($person['Preferred Last Name']);
-    $li = _quote($person['Account Login Name']);
-    if ($person['CVGConCom Publish Phone'] === null) {
-        $dph = 'NULL';
-    } else {
-        $dph = $person['CVGConCom Publish Phone'];
-    }
-
-    $sql = <<<SQL
-        INSERT INTO `Members` (AccountID, FirstName, MiddleName, LastName,
-            Suffix, Email, Email2, Email3, Phone, Phone2,
-            AddressLine1, AddressLine2, AddressCity,
-            AddressState, AddressZipCode, AddressZipCodeSuffix,
-            AddressCountry, AddressProvince, PreferredFirstName,
-            PreferredLastName, Login, Deceased, DoNotContact, EmailOptOut,
-            Birthdate, Gender, DisplayPhone, dependentOnID)
-        VALUES ($aid, $fn, $mn,$ln,
-                $su, $em1, $em2, $em3, $ph1, $ph2,
-                $al1, $al2, $ac,
-                $ast, $az, $azs,
-                $aco, $ap, $pfn,
-                $pln, $li, $dc, $dnc, $eoo,
-               $dob, $gn, $dph, $dep)
-        ON DUPLICATE KEY UPDATE
-            FirstName=$fn, MiddleName=$mn, LastName=$ln, Suffix=$su,
-            Email2=$em2, Email3=$em3, Phone=$ph1, Phone2=$ph2,
-            AddressLine1=$al1, AddressLine2=$al2, AddressCity=$ac,
-            AddressState=$ast, AddressZipCode=$az,
-            AddressZipCodeSuffix=$azs, AddressCountry=$aco,
-            AddressProvince=$ap, PreferredFirstName=$pfn,
-            PreferredLastName=$pln, Login=$li, Deceased=$dc,
-            DoNotContact=$dnc, EmailOptOut=$eoo,
-            Birthdate=$dob, Gender=$gn, DisplayPhone=$dph;
-
-SQL;
-    return $sql;
-
-}
-
-
-function neon_importAccountListToDB($results)
-{
-    if (!array_key_exists('_MAX_SQL_LENGTH', $GLOBALS)) {
-        $sql = "SHOW VARIABLES LIKE 'max_allowed_packet';";
-        $result = \DB::run($sql);
-        $value = $result->fetch();
-        $GLOBALS['_MAX_SQL_LENGTH'] = intval($value['Value']) / 300;
-    }
-
-    $sql = "";
-    if (isset($results['operationResult']) && $results['operationResult'] == 'SUCCESS') {
-        foreach ($results['searchResults'] as $val) {
-            $line = _memberDBfromList($val);
-            if (strlen($sql) + strlen($line) >= $GLOBALS['_MAX_SQL_LENGTH']) {
-                \DB::run($sql);
-                $sql = $line;
-            } else {
-                $sql .= $line;
-            }
-        }
-    }
-    try {
-        if (!empty($sql)) {
-            \DB::run($sql);
-        }
-    } catch (exception $e) {
-        error_log($e->getMessage());
-        error_log($sql);
-    }
-
-}
-
-
-function neon_getContactId($accountId)
-{
-    // Refresh Account info from Neon to verify update
-    $request = [
-    'method' => 'account/retrieveIndividualAccount',
-    'parameters' => [
-    'accountId' => $accountId,
-      ],
-    ];
-
-    $result = $GLOBALS['Neon']->go($request);
-    if (isset($result['operationResult']) && $result['operationResult'] == 'SUCCESS') {
-        return $result['individualAccount']['primaryContact']['contactId'];
-    }
-    return null;
-
-}
-
-
-function _neon_parse_user($result, $additional_fields)
-{
-    $user = array();
-
-    $user['Id'] = $result['Account ID'];
-    if (!empty($result['Preferred First Name'])) {
-        $user['First Name'] = $result['Preferred First Name'];
-    } else {
-        $user['First Name'] = $result['First Name'];
-    }
-    if (!empty($result['Preferred Last Name'])) {
-        $user['Last Name'] = $result['Preferred Last Name'];
-    } else {
-        $user['Last Name'] = $result['Last Name'];
-    }
-    if (class_exists('\\concom\\POSITION') && method_exists('\\concom\\POSITION', 'getConComPosition')) {
-        $value = concom\POSITION::getConComPosition($user['Id']);
-        if (!empty($value)) {
-            $user['ConCom'] = $value;
-        }
-    }
-    if (!empty($result['Email 1'])) {
-        $user['Email'] = $result['Email 1'];
-    }
-    if (!empty($additional_fields)) {
-        foreach ($additional_fields as $field) {
-            $user[$field] = $result[$field];
-        }
-    }
-
-    return $user;
-
-}
-
-
-function _neon_lookup_user($criteria, $single_result = false, $additional_fields = array(), $page = 1, & $output = null)
-{
-    $preferredFirstName = search_definedFields('Preferred First Name');
-    $preferredLastName = search_definedFields('Preferred Last Name');
-    $cvgConComPhoneDisplay = search_definedFields('CVGConCom Publish Phone');
-
-    $additional_fields = str_replace(['AddressCity', 'AddressState'], ['City', 'State'], $additional_fields);
-
-    $search = [
-    'method' => 'account/listAccounts',
-    'columns' => [
-    'standardFields' => ['Account ID', 'First Name', 'Last Name', 'Middle Name', 'Suffix', 'City', 'State', 'Email 1', 'Email 2', 'Email 3', 'Phone 1 Full Number (F)', 'Phone 2 Full Number (F)', 'Address Type', 'Address Line 1', 'Address Line 2', 'Zip Code', 'Zip Code Suffix', 'Country', 'Province', 'Account Login Name', 'Deceased', 'Do Not Contact', 'Email Opt-Out', 'DOB Day', 'DOB Month', 'DOB Year', 'Gender'],
-    'customFields' => [$preferredFirstName, $preferredLastName, $cvgConComPhoneDisplay],
-    ],
-    'criteria' => $criteria,
-    'page' => [
-    'currentPage' => $page,
-    'pageSize' => 200,
-    'sortColumn' => 'Account ID',
-    'sortDirection' => 'ASC',
-    ],
-    ];
-    if (!empty($additional_fields)) {
-        foreach ($additional_fields as $field) {
-            if (!in_array($field, $search['columns']['standardFields'])) {
-                $search['columns']['standardFields'][] = $field;
-            }
-        }
-    }
-    $results = $GLOBALS['Neon']->search($search);
-
-    neon_importAccountListToDB($results);
-
-    if (isset($results['operationResult']) && $results['operationResult'] == 'SUCCESS') {
-        if ($single_result && $results['page']['totalResults'] > 1) {
-            return array('code' => '409 Conflict', 'users' => array());
-        } else {
-            if ($output === null) {
-                $output = ['code' => null, 'users' => array()];
-            }
-            foreach ($results['searchResults'] as $val) {
-                $user = _neon_parse_user($val, $additional_fields);
-                array_push($output['users'], $user);
-            }
-            if ($results['page']['totalPage'] > $page) {
-                return _neon_lookup_user($criteria, $single_result, $additional_fields, $page + 1, $output);
-            } else {
-                return $output;
-            }
-        }
-    }
-    return array('code' => '404 Not Found', 'users' => array());
-
-}
-
-
-function neon_createUser($email, $firstName, $lastName)
-{
-    loadDefinedFields();
-
-    $output = lookup_users_by_email($email, false);
-    if (count($output['users']) !== 0) {
-        return null;
-    }
-
-    // Formulate the update
-    $request = [
-    'method' => 'account/createIndividualAccount',
-    'parameters' => [
-    'originDetail' => $GLOBALS['NEONID'],
-    'individualAccount.primaryContact.firstName' => $firstName,
-    'individualAccount.primaryContact.lastName' => $lastName,
-    'individualAccount.primaryContact.email1' => $email,
-    ],
-    ];
-
-    $result = $GLOBALS['Neon']->go1($request);
-
-    if (isset($result['operationResult']) && $result['operationResult'] == 'SUCCESS') {
-        return $result['accountId'];
-    }
-    return null;
-
-}
-
-
-/*************************************/
-/* END Neon migration path functions */
-/*************************************/
+require_once(__DIR__."/../backends/CRM.inc");
 
 
 function _parse_user($result, $additional_fields)
@@ -353,10 +65,8 @@ function _lookup_user($criteria, $single_result = false, $fields = array())
 
 function lookup_users_by_ids($ids, $fields = array())
 {
-    if (array_key_exists('Neon', $GLOBALS)) {
-        loadDefinedFields();
-        $str = "('".implode("', '", $ids)."')";
-        return _neon_lookup_user([['Account ID', 'IN_RANGE', $str]], false);
+    if (\ciab\CRM::active()) {
+        return \ciab\CRM::lookupUsersByIds($ids, false, $fields);
     }
     $str = implode(", ", $ids);
     return _lookup_user("AccountId IN ($str)", false, $fields);
@@ -367,9 +77,8 @@ function lookup_users_by_ids($ids, $fields = array())
 function lookup_user_by_id($id, $fields = array())
 {
     $id = trim($id);
-    if (array_key_exists('Neon', $GLOBALS)) {
-        loadDefinedFields();
-        return _neon_lookup_user([['Account ID', 'EQUAL', $id]], true);
+    if (\ciab\CRM::active()) {
+        return \ciab\CRM::lookupUsersByIds($id, true, $fields);
     }
     return _lookup_user("AccountID = $id", true, $fields);
 
@@ -379,14 +88,8 @@ function lookup_user_by_id($id, $fields = array())
 function lookup_users_by_email($email, $single = true, $substring = false, $fields = array())
 {
     $email = trim($email);
-    if (array_key_exists('Neon', $GLOBALS)) {
-        loadDefinedFields();
-        if ($substring) {
-            $operator = 'CONTAIN';
-        } else {
-            $operator = 'EQUAL';
-        }
-        return _neon_lookup_user([['Email', $operator, $email]], $single);
+    if (\ciab\CRM::active()) {
+        return \ciab\CRM::lookupUsersByEmail($email, $single, $substring, $fields);
     }
     if ($substring) {
         return _lookup_user("Email LIKE '%$email%'", $single, $fields);
@@ -454,32 +157,8 @@ function merge_results($result1, $result2)
 function lookup_users_by_name($name, $single = false, $substring = false, $fields = array())
 {
     $name = trim(preg_replace('/\s+/', ' ', $name));
-    if (array_key_exists('Neon', $GLOBALS)) {
-        loadDefinedFields();
-        if ($substring) {
-            $names = explode(" ", $name);
-            if (count($names) < 2) {
-                $result = _neon_lookup_user([['First Name', 'CONTAIN', $name]], $single);
-                $result2 = _neon_lookup_user([['Last Name', 'CONTAIN', $name]], $single);
-                return merge_results($result, $result2);
-            } else {
-                return _neon_lookup_user(
-                    [['First Name', 'EQUAL', $names[0]],
-                                     ['Last Name', 'CONTAIN', $names[1]]],
-                    $single
-                );
-            }
-        } else {
-            $names = explode(" ", $name);
-            if (count($names) != 2) {
-                return ['code' => '400 Bad Request', 'users' => array()];
-            }
-            return _neon_lookup_user(
-                [['First Name', 'EQUAL', $names[0]],
-                                 ['Last Name', 'EQUAL', $names[1]]],
-                $single
-            );
-        }
+    if (\ciab\CRM::active()) {
+        return \ciab\CRM::lookupUsersByName($name, $single, $substring, false, $fields);
     }
     $names = explode(" ", $name);
     $i2 = 1;
@@ -502,75 +181,8 @@ function lookup_users_by_name($name, $single = false, $substring = false, $field
 function lookup_users_by_pref_name($name, $single = false, $substring = false, $fields = array())
 {
     $name = trim(preg_replace('/\s+/', ' ', $name));
-    if (array_key_exists('Neon', $GLOBALS)) {
-        loadDefinedFields();
-        $preferredFirstName = search_definedFields('Preferred First Name');
-        $preferredLastName = search_definedFields('Preferred Last Name');
-        if ($substring) {
-            $names = explode(" ", $name);
-            if (count($names) < 2) {
-                $result = _neon_lookup_user([[$preferredFirstName, 'CONTAIN', $name]], $single);
-                $result2 = _neon_lookup_user([[$preferredLastName, 'CONTAIN', $name]], $single);
-                return merge_results($result, $result2);
-            } else {
-                $result = _neon_lookup_user(
-                    [[$preferredFirstName, 'EQUAL', $names[0]],
-                     [$preferredLastName, 'CONTAIN', $names[1]]
-                    ],
-                    $single
-                );
-                $result2 = _neon_lookup_user(
-                    [['First Name', 'EQUAL', $names[0]],
-                     [$preferredLastName, 'CONTAIN', $names[1]]
-                    ],
-                    $single
-                );
-                $result = merge_results($result, $result2);
-                $result2 = _neon_lookup_user(
-                    [['First Name', 'EQUAL', $names[0]],
-                     ['Last Name', 'CONTAIN', $names[1]]
-                    ],
-                    $single
-                );
-                $result = merge_results($result, $result2);
-                $result2 = _neon_lookup_user(
-                    [[$preferredFirstName, 'EQUAL', $names[0]],
-                     ['Last Name', 'CONTAIN', $names[1]]
-                    ],
-                    $single
-                );
-                $result = merge_results($result, $result2);
-                return $result;
-            }
-        } else {
-            $names = explode(" ", $name);
-            if (count($names) != 2) {
-                return ['code' => '400 Bad Request', 'users' => array()];
-            }
-
-            /* We have to do a few searchs due to Neon stupidity */
-            $output = _neon_lookup_user(
-                [[$preferredFirstName, 'EQUAL', $names[0]],
-                 [$preferredLastName, 'EQUAL', $names[1]]],
-                $single
-            );
-            if (count($output['users']) != 0) {
-                return $output;
-            }
-            $output = _neon_lookup_user(
-                [[$preferredFirstName, 'EQUAL', $names[0]],
-                 ['Last Name', 'EQUAL', $names[1]]],
-                $single
-            );
-            if (count($output['users']) != 0) {
-                return $output;
-            }
-            return _neon_lookup_user(
-                [['First Name', 'EQUAL', $names[0]],
-                 [$preferredLastName, 'EQUAL', $names[1]]],
-                $single
-            );
-        }
+    if (\ciab\CRM::active()) {
+        return \ciab\CRM::lookupUsersByName($name, $single, $substring, true, $fields);
     }
     $names = explode(" ", $name);
     $i2 = 1;
@@ -691,33 +303,10 @@ function lookup_users_by_key($key, $single = true, $badgename = true, $substring
 
 function lookup_users_by_name_email($first, $last, $email, $fields, $single_user = false, $substring = false)
 {
-    $criteria = array();
-    if (array_key_exists('Neon', $GLOBALS)) {
-        loadDefinedFields();
-        if ($first) {
-            if ($substring) {
-                array_push($criteria, ['First Name', 'CONTAIN', $first]);
-            } else {
-                array_push($criteria, ['First Name', 'EQUAL', $first]);
-            }
-        }
-        if ($last) {
-            if ($substring) {
-                array_push($criteria, ['Last Name', 'CONTAIN', $last]);
-            } else {
-                array_push($criteria, ['Last Name', 'EQUAL', $last]);
-            }
-        }
-        if ($email) {
-            if ($substring) {
-                array_push($criteria, ['Email', 'CONTAIN', $email]);
-            } else {
-                array_push($criteria, ['Email', 'EQUAL', $email]);
-            }
-        }
-
-        return _neon_lookup_user($criteria, $single_user);
+    if (\ciab\CRM::active()) {
+        return \ciab\CRM::lookupUsersByNameEmail($first, $last, $email, $fields, $single_user, $substring);
     }
+    $criteria = array();
     if ($first) {
         if ($substring) {
             array_push($criteria, "FirstName LIKE '%$first%'");
@@ -751,13 +340,8 @@ function lookup_user_by_login($user, $substring = false, $fields = array())
 {
     $output = lookup_users_by_email($user, false, $substring, $fields);
     if (count($output['users']) == 0) {
-        if (array_key_exists('Neon', $GLOBALS)) {
-            loadDefinedFields();
-            if ($substring) {
-                $output = _neon_lookup_user([['Account Login Name', 'CONTAIN', $user]], false);
-            } else {
-                $output = _neon_lookup_user([['Account Login Name', 'EQUAL', $user]], false);
-            }
+        if (\ciab\CRM::active()) {
+            $output = \ciab\CRM::lookupUserByLogin($user, $substring, $fields);
         } else {
             if ($substring) {
                 $output = _lookup_user("Login LIKE '%$user%'", false, $fields);
@@ -803,82 +387,6 @@ function listCountries()
     }
 
     return $countries;
-
-}
-
-
-function neon_updateAccount($updateData)
-{
-    global $_SESSION;
-
-    $updateData['contactId'] = neon_getContactId($updateData['accountId']);
-
-    // Formulate the update
-    $request = [
-    'method' => 'account/updateIndividualAccount',
-    'parameters' => [
-    'individualAccount.accountId' => $updateData['accountId'],
-    'individualAccount.primaryContact.contactId' => $updateData['contactId'],
-    'individualAccount.primaryContact.firstName' => $updateData['firstName'],
-    'individualAccount.primaryContact.middleName' => $updateData['middleName'],
-    'individualAccount.primaryContact.lastName' => $updateData['lastName'],
-    'individualAccount.primaryContact.suffix' => $updateData['suffix'],
-    'individualAccount.primaryContact.email1' => $updateData['email1'],
-    'individualAccount.primaryContact.email2' => $updateData['email2'],
-    'individualAccount.primaryContact.email3' => $updateData['email3'],
-    'individualAccount.primaryContact.phone1' => $updateData['phone1'],
-    'individualAccount.primaryContact.phone2' => $updateData['phone2'],
-    'individualAccount.primaryContact.addresses.address.addressType.Name' => 'Home',
-    'individualAccount.primaryContact.addresses.address.addressId' => $updateData['addressId'],
-    'individualAccount.primaryContact.addresses.address.isPrimaryAddress' => 'true',
-    'individualAccount.primaryContact.addresses.address.addressLine1' => $updateData['addressLine1'],
-    'individualAccount.primaryContact.addresses.address.addressLine2' => $updateData['addressLine2'],
-    'individualAccount.primaryContact.addresses.address.addressLine3' => '',
-    'individualAccount.primaryContact.addresses.address.addressLine4' => '',
-    'individualAccount.primaryContact.addresses.address.city' => $updateData['city'],
-    'individualAccount.primaryContact.addresses.address.state.code' => $updateData['state'],
-    'individualAccount.primaryContact.addresses.address.zipCode' => $updateData['zipCode'],
-    'individualAccount.primaryContact.addresses.address.zipCodeSuffix' => $updateData['zipPlus4'],
-    'individualAccount.primaryContact.addresses.address.country.id' => $updateData['country'],
-    'individualAccount.primaryContact.addresses.address.province' => $updateData['province'],
-    ],
-    ];
-
-    $preferredFirstName = search_definedFields('Preferred First Name');
-    $preferredLastName = search_definedFields('Preferred Last Name');
-    $cvgConComPhoneDisplay = search_definedFields('CVGConCom Publish Phone');
-
-    // add custom field data, watch for updated fields, if empty, drop them to clear them from Neon
-
-    $key = 0;
-    if (!empty($updateData['preferredFirstName'])) {
-        $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldId['.$key.']'] = $preferredFirstName;
-        $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldOptionId['.$key.']'] = '';
-        $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldValue['.$key.']'] = $updateData['preferredFirstName'];
-        $key++;
-    }
-    if (!empty($updateData['preferredLastName'])) {
-        $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldId['.$key.']'] = $preferredLastName;
-        $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldOptionId['.$key.']'] = '';
-        $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldValue['.$key.']'] = $updateData['preferredLastName'];
-        $key++;
-    }
-    if (!empty($updateData['conComDisplayPhone'])) {
-        $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldId['.$key.']'] = $cvgConComPhoneDisplay;
-        $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldOptionId['.$key.']'] = '';
-        $request['parameters']['individualAccount.customFieldDataList.customFieldData.fieldValue['.$key.']'] = $updateData['conComDisplayPhone'];
-    }
-
-    /* Password setting */
-    if (!empty($updateData['password'])) {
-        if (empty($updateData['login'])) {
-            $updateData['login'] = $updateData['email1'];
-        }
-        $request['parameters']['individualAccount.login.username'] = $updateData['login'];
-        $request['parameters']['individualAccount.login.password'] = $updateData['password'];
-    }
-
-    return $GLOBALS['Neon']->go1($request);
 
 }
 
@@ -950,9 +458,8 @@ function updateAccount($updateData, $accountId)
 
     \DB::run($sql);
 
-    if (array_key_exists('Neon', $GLOBALS)) {
-        loadDefinedFields();
-        neon_updateAccount($updateData);
+    if (\ciab\CRM::active()) {
+        \ciab\CRM::updateAccount($updateData);
     }
 
 }

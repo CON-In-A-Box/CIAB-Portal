@@ -234,10 +234,6 @@ abstract class BaseController
         $this->chain = [];
         $this->includes = null;
 
-        if (array_key_exists('Neon', $GLOBALS)) {
-            \loadDefinedFields();
-        }
-
         $modules = $container->get('settings')['modules'];
         foreach ($modules as $module) {
             if (class_exists($module)) {

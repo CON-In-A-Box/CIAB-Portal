@@ -17,7 +17,7 @@ https://www.pivotaltracker.com/n/projects/2469125
 
 # Overview
 
-CIAB is presently designed to run on a apache web server accessing a [mySQL](https://www.mysql.com/) and [Neon](https://www.neoncrm.com/) back ends.  The present road map is to move away from Neon and rely completely on mySQL for all data storage. However at this time Neon is used for member/attendee information.
+CIAB is presently designed to run on a apache web server accessing a [mySQL](https://www.mysql.com/) and [Neon CRM](https://www.neoncrm.com/) back ends.  The CRM is not required and new CRM back end engines are in the plan to be written.  The system operates cleanly with no CRM as well.
 
 The vision is to have a core set of functionality and then optional modules that can be enabled/disabled or replaced based on the needs of the given event.
 
@@ -85,11 +85,15 @@ It recommend you make use of some githooks that are also defined in .githooks wh
 
 The code is also monitored by [SonarCloud](https://sonarcloud.io/dashboard?id=CON-In-A-Box_CIAB-Portal). That is a great place to find first issues or things to work on. Once the code has become clean there it will start becoming a manditory check for pull requests as well. 
 
+# CRM backend
+
+* There is a facility to specify a CRM backend to track users and events. This is likely in connection to a registration system. The current system defines [Neon CRM](https://www.neoncrm.com/) but new backends can be written as integration with other CRM systems are required.
+
+* The system operates fully without any CRM defined as a fully self standing system as well. 
+
 # Next Steps
 
-* The current goal is to fully move off of Neon and host the whole backend on the mySQL database. This would involve migrating from Neon, replacing all the functionality as well as finding a way to safely and securely do credit card processing for event registration.
-
-* Additionally we want to continue to expand the cross-event structure to try to encourage other events to use this tool. We believe ti can be very power and helpful for many events and would like our work to be welcome in as many places as it fits.  This likely involves making it easier to skin the site and pull out many of the CONvergence assumptions and making them configurable based on the event. 
+* Additionally we want to continue to expand the cross-event structure to try to encourage other events to use this tool. We believe it can be very power and helpful for many events and would like our work to be welcome in as many places as it fits.  This likely involves making it easier to skin the site and pull out many of the CONvergence assumptions and making them configurable based on the event. 
 
 # How you can help!
 
