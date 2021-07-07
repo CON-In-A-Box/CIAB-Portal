@@ -21,15 +21,9 @@ function reloadFromNeon() {
 
 function newMeeting() {
   var today = new Date();
-  var dd = today.getDate();
-  var mm = today.getMonth() + 1;
+  var dd = ('0' + today.getDate()).slice(-2);
+  var mm = ('0' + (today.getMonth() + 1)).slice(-2);
   var yyyy = today.getFullYear();
-  if (dd < 10) {
-    dd = '0' + dd;
-  }
-  if (mm < 10) {
-    mm = '0' + mm;
-  }
   document.getElementById('meet_id').value = -1;
   document.getElementById('meet_name').value = 'New Meeting';
   document.getElementById('meet_date').value = yyyy + '-' + mm + '-' + dd;
@@ -77,6 +71,16 @@ function deleteMeeting(name, id) {
 
 function newCycle() {
   document.getElementById('cycle_id').value = -1;
+
+  var day = new Date(document.getElementById('last_cycle').value);
+  var dd = ('0' + (day.getDate() + 2)).slice(-2);
+  var dd2 = ('0' + (day.getDate() + 1)).slice(-2);
+  var mm = ('0' + (day.getMonth() + 1)).slice(-2);
+  var yyyy = day.getFullYear();
+  var yyyy2 = day.getFullYear() + 1;
+
+  document.getElementById('cycle_from').value = yyyy + '-' + mm + '-' + dd;
+  document.getElementById('cycle_to').value = yyyy2 + '-' + mm + '-' + dd2;
   showSidebar('edit_cycle');
 }
 
@@ -264,8 +268,8 @@ function doImport() {
 
 function editCycle(data) {
   document.getElementById('cycle_id').value = data.id;
-  document.getElementById('cycle_from').value = data.DateFrom;
-  document.getElementById('cycle_to').value = data.DateTo;
+  document.getElementById('cycle_from').value = data.date_from;
+  document.getElementById('cycle_to').value = data.date_to;
   showSidebar('edit_cycle');
 }
 
@@ -277,9 +281,10 @@ function loadEvents() {
       var result = JSON.parse(response.responseText);
       if (result.data.length > 0) {
         var sorted = result.data.sort(function(a,b) {
-          return b.id - a.id;
+          return Date.parse(b.date_from) - Date.parse(a.date_from);
         });
         var table = document.getElementById('cycle_list');
+        document.getElementById('last_cycle').value = sorted[0].date_to;
         sorted.forEach(function(data) {
           var line = document.createElement('DIV');
           line.classList.add('UI-table-row');
@@ -296,8 +301,8 @@ function loadEvents() {
           f.appendChild(document.createTextNode(data.date_to));
           line.appendChild(f);
 
-          var to = new Date(data.DateTo);
-          var from  = new Date(data.DateFrom);
+          var to = new Date(data.date_to);
+          var from  = new Date(data.date_from);
           var today = new Date();
           f = document.createElement('DIV');
           f.classList.add('UI-table-cell');

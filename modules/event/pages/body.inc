@@ -32,6 +32,7 @@ require_once __DIR__.'/../functions/functions.inc'
                         onclick='newCycle()'>Add New Cycle</button>
                 </div>
 
+                <input class="UI-hiddeninput" id="last_cycle">
                 <div id="cycle_list" class="UI-table-all">
                   <div class="UI-table-header">
                     <div class="UI-table-row">
@@ -126,11 +127,9 @@ foreach ($events as $event) {
         <div>
             <input class="UI-hiddeninput" id="cycle_id" value='-1' readonly>
             <label class='UI-label' for='cycle_from'>From:</label>
-            <input class="UI-input" type="date" id="cycle_from"
-                value="<?php echo date('Y-m-d', strtotime($last_cycle['To']." +1 days"));?>">
+            <input class="UI-input" type="date" id="cycle_from" value="">
             <label class='UI-label' for='cycle_to'>To:</label>
-            <input class="UI-input" type="date" id="cycle_to"
-                value="<?php echo date('Y-m-d', strtotime($last_cycle['To']." +1 years"));?>">
+            <input class="UI-input" type="date" id="cycle_to" value="">
         </div>
         <hr>
         <div class='UI-center'>
