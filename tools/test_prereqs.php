@@ -16,6 +16,8 @@ $db = MyPDO::instance();
 $delete = Delete::new($db);
 $delete->from('Announcements')->perform();
 $delete->from('Authentication')->perform();
+$delete->from('MeetingAttendance')->perform();
+$delete->from('OfficialMeetings')->perform();
 $delete->from('ConComList')->perform();
 $delete->from('Registrations')->perform();
 $delete->from('BadgeTypes')->perform();

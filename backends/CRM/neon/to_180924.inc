@@ -4,15 +4,15 @@
     require_module 'standard';
 .*/
 
-require_once(__DIR__."/../functions.inc");
-require_once(__DIR__."/../database.inc");
+require_once(__DIR__."/../../../functions/functions.inc");
+require_once(__DIR__."/../../../functions/database.inc");
 
 
 function _getEvent($year)
 {
     $date = "$year-1-1";
     $sql = "SELECT EventID FROM Events WHERE DateTo > '$date' LIMIT 1;";
-    $result = DB::run($sql);
+    $result = \DB::run($sql);
     $value = $result->fetch();
     if ($value) {
         return $value['EventID'];
@@ -22,10 +22,8 @@ function _getEvent($year)
 }
 
 
-function _HistoricalListBuildSearch($page, $did)
+function _HistoricalListBuildSearch($neon, $page, $did)
 {
-    global $Neon;
-
     $conComFieldId = search_definedFields('CVGConCom Years Served');
     $criteria = '(';
     $year = intval(date("Y"));
@@ -51,7 +49,7 @@ function _HistoricalListBuildSearch($page, $did)
     ],
     ];
     $data = [];
-    $result = $Neon->search($search);
+    $result = $neon->search($search);
 
     if (isset($result['operationResult']) && $result['operationResult'] == 'SUCCESS') {
         $data['pages'] = $result['page']['totalPage'];
@@ -77,18 +75,18 @@ function _insertHistorical($data)
     $sql .= implode(", ", $data);
     $sql .= ';';
 
-    DB::run($sql);
+    \DB::run($sql);
 
 }
 
 
-function _build_HistoricalConComList($did)
+function _build_HistoricalConComList($neon, $did)
 {
     echo '<h2>Historical Current ConCom.</h2>';
     $i = 1;
     $runPage = 1;
     while ($i <= $runPage) {
-        $result = _HistoricalListBuildSearch($i, $did);
+        $result = _HistoricalListBuildSearch($neon, $i, $did);
         if (count($result['list'])) {
             _insertHistorical($result['list']);
             echo '<p> Processed '.count($result['list']).'</p>';
@@ -101,11 +99,11 @@ function _build_HistoricalConComList($did)
 }
 
 
-function to_180924()
+function to_180924($neon)
 {
     $did = null;
     $sql = "SELECT `DepartmentID` FROM `Departments` WHERE Name = 'Historical Placeholder'";
-    $result = DB::run($sql);
+    $result = \DB::run($sql);
     $value = $result->fetch();
     if ($value) {
         $did = $value['DepartmentID'];
@@ -126,13 +124,13 @@ function to_180924()
         FROM `Departments`
         WHERE Name = 'Historical Placeholder';
 SQL;
-        $result = DB::run($sql);
+        $result = \DB::run($sql);
         $value = $result->fetch();
         $did = $value['DepartmentID'];
     }
 
     print "<h2> db update </h2>";
 
-    _build_HistoricalConComList($did);
+    _build_HistoricalConComList($neon, $did);
 
 }

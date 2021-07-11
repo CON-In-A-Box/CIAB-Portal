@@ -1,5 +1,6 @@
 <?php
-require_once __DIR__.'/../functions/functions.inc'
+require_once __DIR__.'/../functions/functions.inc';
+require_once $BACKEND.'/CRM.inc';
 ?>
 
 <script>
@@ -68,16 +69,16 @@ require_once __DIR__.'/../functions/functions.inc'
             </div>
         </div>
 <?php
-if (array_key_exists('Neon', $GLOBALS)) {
+if (\ciab\CRM::hasEvents()) {
 ?>
-        <div id="neon_content" class="EVENT-content">
-            <button onclick="expandSection('neon')" class="EVENT-section-bar">
-                <span id="neon_button">Neon<span> <em id="neon_arrow" class="fas fa-caret-up"></em>
+        <div id="crm_content" class="EVENT-content">
+            <button onclick="expandSection('crm')" class="EVENT-section-bar">
+                <span id="crm_button">CRM<span> <em id="crm_arrow" class="fas fa-caret-up"></em>
             </button>
-            <div id="neon" class="UI-container UI-margin UI-hide UI-show">
+            <div id="crm" class="UI-container UI-margin UI-hide UI-show">
                 <div class="UI-container UI-margin UI-center">
                     <button id='reload' class='UI-redbutton'
-                        onclick='reloadFromNeon()'>Reload From Neon</button>
+                        onclick='reloadFromCRM()'>Reload From CRM</button>
                 </div>
             </div>
         </div>

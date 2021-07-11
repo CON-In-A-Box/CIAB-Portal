@@ -4,14 +4,12 @@
     require_module 'standard';
 .*/
 
-require_once(__DIR__."/../functions.inc");
-require_once(__DIR__."/../database.inc");
+require_once(__DIR__."/../../../functions/functions.inc");
+require_once(__DIR__."/../../../functions/database.inc");
 
 
-function _ConComListBuildSearch($page)
+function _ConComListBuildSearch($page, $neon)
 {
-    global $Neon;
-
     $conComFieldId = search_definedFields('CVGConCom Current Position');
     $preferredFirstName = search_definedFields('Preferred First Name');
     $preferredLastName = search_definedFields('Preferred Last Name');
@@ -32,7 +30,7 @@ function _ConComListBuildSearch($page)
     'sortDirection' => 'ASC',
     ],
     ];
-    $result = $Neon->search($search);
+    $result = $neon->search($search);
 
     if (isset($result['operationResult']) && $result['operationResult'] == 'SUCCESS') {
         $data['pages'] = $result['page']['totalPage'];
@@ -89,7 +87,7 @@ function _new_cycle($cycle)
     $from = $cycle->From;
     $to = $cycle->To;
     $sql = "INSERT INTO `AnnualCycles` (`AnnualCycleID`, `DateFrom`, `DateTo`) VALUES (NULL, '$from', '$to')";
-    DB::run($sql);
+    \DB::run($sql);
 
 }
 
@@ -116,13 +114,13 @@ function _advance_cycles()
 }
 
 
-function _ConComListBuild()
+function _ConComListBuild($neon)
 {
     $fullConComList[] = [];
     $i = 1;
     $runPage = 1;
     while ($i <= $runPage) {
-        $result = _ConComListBuildSearch($i);
+        $result = _ConComListBuildSearch($i, $neon);
         $tmp = array_merge_recursive($fullConComList, $result['list']);
         $fullConComList = $tmp;
         unset($tmp);
@@ -135,11 +133,11 @@ function _ConComListBuild()
 }
 
 
-function _build_ConComList()
+function _build_ConComList($neon)
 {
     $event = current_eventID();
 
-    $data = _ConComListBuild();
+    $data = _ConComListBuild($neon);
     print '<div id="update_staff" class="UI-container">';
     foreach ($data as $line) {
         if (!empty($line['Account ID'])) {
@@ -147,7 +145,7 @@ function _build_ConComList()
                 $id = 1;
             } else {
                 $sql = "SELECT COALESCE(PositionID, 0) as PositionID FROM ConComPositions WHERE Name = '".$line['Position']."';";
-                $result = DB::run($sql);
+                $result = \DB::run($sql);
                 $value = $result->fetch();
                 if ($value) {
                     $id = $value['PositionID'];
@@ -158,7 +156,7 @@ function _build_ConComList()
             }
 
             $sql = "SELECT DepartmentID FROM Departments WHERE Name = '".$line['Department']."';";
-            $result = DB::run($sql);
+            $result = \DB::run($sql);
             $value = $result->fetch();
             if ($value) {
                 $did = $value['DepartmentID'];
@@ -169,7 +167,7 @@ function _build_ConComList()
 
             /* Do we have this record already? If so then DB is god */
             $sql = "SELECT AccountID FROM ConComList WHERE AccountID = ".$line['Account ID']." AND DepartmentID = ".$did." AND PositionID = ".$id.";";
-            $result = DB::run($sql);
+            $result = \DB::run($sql);
             $value = $result->fetch();
             if ($value) {
                 print '<span>Record for '.$line['First Name'].' '.$line['Last Name'].'('.$line['Account ID'].') as '.$line['Department'].' '.$line['Position'].' already exists. Skip Import from Neon.</span><br>';
@@ -182,7 +180,7 @@ function _build_ConComList()
                 $sql = "INSERT INTO ConComList (AccountID, DepartmentID, PositionID, EventID) VALUES (".$line['Account ID'].", ".$did.", ".$id.", $event);";
             }
             try {
-                DB::run($sql);
+                \DB::run($sql);
                 print '<span style="color:green">Imported '.$line['First Name'].' '.$line['Last Name'].'('.$line['Account ID'].') as '.$line['Department'].' '.$line['Position'].' from Neon.</span><br>';
             } catch (Exception $e) {
                 print '<span style="color:red">FAILED Import '.$line['First Name'].' '.$line['Last Name'].'('.$line['Account ID'].') as '.$line['Department'].' '.$line['Position'].' from Neon.</span><br>';
@@ -195,10 +193,8 @@ function _build_ConComList()
 }
 
 
-function lookup_events($page = 1, $output = null, $all = true)
+function lookup_events($neon, $page = 1, $output = null, $all = true)
 {
-    global $Neon;
-
     $search = [
     'method' => 'event/listEvents',
     'columns' => [
@@ -209,7 +205,7 @@ function lookup_events($page = 1, $output = null, $all = true)
     'pageSize' => 200,
       ],
     ];
-    $results = $Neon->search($search);
+    $results = $neon->search($search);
 
     if (isset($results['operationResult']) && $results['operationResult'] == 'SUCCESS') {
         if ($output === null) {
@@ -219,7 +215,7 @@ function lookup_events($page = 1, $output = null, $all = true)
             array_push($output['events'], $val);
         }
         if ($all && $results['page']['totalPage'] > $page) {
-            return lookup_events($page + 1, $output);
+            return lookup_events($neon, $page + 1, $output);
         } else {
             return $output;
         }
@@ -229,10 +225,8 @@ function lookup_events($page = 1, $output = null, $all = true)
 }
 
 
-function _Neon_import_badges($event)
+function _Neon_import_badges($neon, $event)
 {
-    global $Neon;
-
     $search = [
     'method' => 'event/listEventTickets',
     'parameters' => [
@@ -241,7 +235,7 @@ function _Neon_import_badges($event)
     'page.pageSize' => 200,
       ],
     ];
-    $results = $Neon->go($search);
+    $results = $neon->go($search);
 
     $tickets = [];
 
@@ -251,11 +245,11 @@ function _Neon_import_badges($event)
             $name = $ticket['ticketName'];
             $cost = $ticket['fee'];
             $sql = "SELECT BadgeTypeID FROM `BadgeTypes` WHERE BadgeTypeID = $id;";
-            $result = DB::run($sql);
+            $result = \DB::run($sql);
             $values = $result->fetch();
             if ($values === false) {
                 $sql = "INSERT INTO `BadgeTypes` (BadgeTypeID, EventID, Name, Cost, AvailableFrom, AvailableTo) VALUES ($id, $event, '$name', $cost, '0000-00-00', '0000-00-00');";
-                DB::run($sql);
+                \DB::run($sql);
             }
         }
     }
@@ -267,7 +261,7 @@ function _get_cycleID($eventdate)
 {
     $year = $eventdate->format("Y-m-d");
     $sql = "SELECT AnnualCycleID FROM AnnualCycles WHERE DateTo > '$year';";
-    $result = DB::run($sql);
+    $result = \DB::run($sql);
     $value = $result->fetch();
     if ($value) {
         $_currentYear = $value['AnnualCycleID'];
@@ -278,9 +272,9 @@ function _get_cycleID($eventdate)
 }
 
 
-function _Neon_import_events()
+function _Neon_import_events($neon)
 {
-    $events = lookup_events(1, null, true);
+    $events = lookup_events($neon, 1, null, true);
     if ($events) {
         // Drop Events we do not care about.
         foreach ($events['events'] as $key => $evt) {
@@ -306,19 +300,19 @@ function _Neon_import_events()
             $evt['AnnualCycleID'] = $cycle;
             $id = $evt['Event ID'];
             $sql = "SELECT EventID FROM `Events` WHERE EventID = $id;";
-            $result = DB::run($sql);
+            $result = \DB::run($sql);
             $values = $result->fetch();
             if ($values === false) {
                 $sql = "INSERT INTO `Events` (EventID, EventName, AnnualCycleID, DateFrom, DateTo) VALUES ($id, '$name', $cycle, '$from', '$to');";
-                DB::run($sql);
+                \DB::run($sql);
                 $sql = "SELECT EventID FROM `Events` ORDER BY EventID DESC LIMIT 1;";
-                $result = DB::run($sql);
+                $result = \DB::run($sql);
                 $value = $result->fetch();
                 $eventID = $value['EventID'];
             } else {
                 $eventID = $values['EventID'];
             }
-            _Neon_import_badges($eventID);
+            _Neon_import_badges($neon, $eventID);
             $events['events'][$key]['MySQLEventID'] = $eventID;
         }
     }
@@ -328,10 +322,10 @@ function _Neon_import_events()
 }
 
 
-function from_neon_to_152()
+function from_neon_to_152($neon)
 {
     _advance_cycles();
-    _Neon_import_events();
-    _build_ConComList();
+    _Neon_import_events($neon);
+    _build_ConComList($neon);
 
 }
