@@ -353,6 +353,26 @@ function loadEvents() {
     .catch(function() {
       hideSpinner();
     });
+
+  apiRequest('GET', 'event', 'max_results=all')
+    .then(function(response) {
+      console.log(response);
+      var result = JSON.parse(response.responseText);
+
+      var select = document.getElementById('meet_event');
+      var select2 = document.getElementById('import_from');
+
+      result.data.forEach(function(data) {
+        var e = document.createElement('OPTION');
+        e.value = data.id;
+        e.innerHTML = data.name;
+        select.appendChild(e);
+        e = document.createElement('OPTION');
+        e.value = data.id;
+        e.innerHTML = data.name;
+        select2.appendChild(e);
+      });
+    });
 }
 
 if (window.addEventListener) {

@@ -305,28 +305,6 @@ function import_events()
 }
 
 
-function select_events()
-{
-    $sql = <<<SQL
-        SELECT
-            `EventID`,
-            `EventName`
-        FROM
-            `Events`
-        ORDER BY
-            `DateFrom` DESC
-SQL;
-
-    $values = [
-    'Id' => 'EventID',
-    'Name' => 'EventName',
-    ];
-    $data = load_table($sql, $values);
-    return $data;
-
-}
-
-
 function save_meeting($meeting)
 {
     $date = $meeting->Date;
