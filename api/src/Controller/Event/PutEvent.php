@@ -2,12 +2,18 @@
 /*.
     require_module 'standard';
 .*/
-
 /**
- *  @OA\Post(
+ *  @OA\Put(
  *      tags={"events"},
  *      path="/event",
- *      summary="Adds a new event",
+ *      summary="Modifies an existing event.",
+ *      @OA\Parameter(
+ *          description="Id of the event",
+ *          in="path",
+ *          name="id",
+ *          required=true,
+ *          @OA\Schema(type="integer")
+ *      ),
  *      @OA\RequestBody(
  *          @OA\MediaType(
  *              mediaType="multipart/form-data",
@@ -30,7 +36,7 @@
  *          )
  *      ),
  *      @OA\Response(
- *          response=201,
+ *          response=200,
  *          description="OK"
  *      ),
  *      @OA\Response(
@@ -38,11 +44,8 @@
  *          ref="#/components/responses/401"
  *      ),
  *      @OA\Response(
- *          response=400,
- *          description="Cycle not found in the system which contains event dates.",
- *          @OA\JsonContent(
- *              ref="#/components/schemas/error"
- *          )
+ *          response=404,
+ *          ref="#/components/responses/event_not_found"
  *      ),
  *      security={{"ciab_auth":{}}}
  *  )
@@ -52,35 +55,36 @@ namespace App\Controller\Event;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
-use Atlas\Query\Insert;
+use Atlas\Query\Update;
 
-class PostEvent extends BaseEvent
+class PutEvent extends BaseEvent
 {
 
 
     public function buildResource(Request $request, Response $response, $params): array
     {
-        $permissions = ['api.post.event'];
+        $permissions = ['api.put.event'];
         $this->checkPermissions($permissions);
 
-        $required = ['date_from', 'date_to', 'name'];
-        $body = $this->buildPutPostBody($request, $response, $params, $required, null);
+        $event = $this->getEvent($params['id']);
+        $body = $this->buildPutPostBody($request, $response, $params, [], $event);
 
-        $insert = Insert::new($this->container->db);
-        $insert->into('Events')->columns(BaseEvent::insertPayloadFromParams($body));
-        $insert->perform();
-        $id = $insert->getLastInsertId();
+        Update::new($this->container->db)
+            ->table('Events')
+            ->columns(BaseEvent::insertPayloadFromParams($body, false))
+            ->whereEquals(['EventID' => $params['id']])
+            ->perform();
 
         $target = new \App\Controller\Event\GetEvent($this->container);
-        $data = $target->buildResource($request, $response, ['id' => $id])[1];
+        $data = $target->buildResource($request, $response, ['id' => $params['id']])[1];
         return [
         \App\Controller\BaseController::RESOURCE_TYPE,
         $target->arrayResponse($request, $response, $data),
-        201
+        200
         ];
 
     }
 
 
-    /* end PostEvent */
+    /* end PutEvent */
 }
