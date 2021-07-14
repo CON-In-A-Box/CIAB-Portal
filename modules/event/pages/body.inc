@@ -96,14 +96,7 @@ if (\ciab\CRM::hasEvents()) {
             <label class='UI-label' for='meet_name'>Meeting Name:</label>
             <input class="UI-input" id="meet_name" value='New Meeting'>
             <label class='UI-label' for='meet_event'>Event:</label>
-            <select class="UI-input" id="meet_event">
-<?php
-$events = select_events();
-foreach ($events as $event) {
-    print "<option value=".$event['Id'].">".$event['Name']."</option>\n";
-}
-?>
-            </select>
+            <select class="UI-input" id="meet_event"> </select>
             <label class='UI-label' for='meet_date'>Date:</label>
             <input class="UI-input" type="date" id="meet_date"
                 value="<?php echo date('Y-m-d');?>">
@@ -211,14 +204,7 @@ foreach ($events as $event) {
         <div>
             <input class="UI-hiddeninput" id="concom_event_id" value='-1' readonly>
             <label class='UI-label' for='event_from'>From:</label>
-            <select class="UI-input" id="import_from">
-<?php
-$events = select_events();
-foreach ($events as $event) {
-    print "<option value=".$event['Id'].">".$event['Name']."</option>\n";
-}
-?>
-            </select>
+            <select class="UI-input" id="import_from"> </select>
         </div>
         <hr>
         <div class='UI-center'>

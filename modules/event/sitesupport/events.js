@@ -192,6 +192,7 @@ function saveEvent() {
   var To = document.getElementById('event_to').value;
   var From = document.getElementById('event_from').value;
   var name = document.getElementById('event_name').value;
+  var id = document.getElementById('event_id').value;
   if (From === '') {
     alertbox('Event "From" date missing');
     return;
@@ -202,20 +203,36 @@ function saveEvent() {
     alertbox('Event "Name" missing');
     return;
   }
+
+  var method = 'POST';
+  var target = 'event';
+  if (id != -1) {
+    method = 'PUT';
+    target += '/' + id;
+  }
+
   confirmbox(
     'Confirm Event',
     'Save Event "' + name + '" ?').then(function() {
-    var data = {
-      'Id': document.getElementById('event_id').value,
-      'Name': document.getElementById('event_name').value,
-      'To': document.getElementById('event_to').value,
-      'From': document.getElementById('event_from').value,
-    };
-    var param = btoa(JSON.stringify(data));
-    basicEventRequest('event=' + param, function() {
-      hideSidebar();
-      location.reload();
-    });
+
+    var data = 'name=' + document.getElementById('event_name').value + '&date_from=' + document.getElementById('event_from').value +
+    '&' + 'date_to=' + document.getElementById('event_to').value;
+
+    showSpinner();
+    apiRequest(method, target, data).then(
+      function() {
+        hideSidebar();
+        location.reload();
+      })
+      .catch(function(response) {
+        if (response instanceof Error) { throw response; }
+        var result = JSON.parse(response.responseText);
+        alertbox('Save Event Failed', result.status);
+        hideSpinner();
+      })
+      .finally(function() {
+        hideSpinner();
+      });
   });
 }
 
@@ -232,9 +249,12 @@ function deleteEvent(id, name) {
   confirmbox(
     'Confirms Event Deletion',
     'Delete event \'' + name + '\' ?').then(function() {
-    basicEventRequest('deleteEvent=' + id, function() {
+    showSpinner();
+    apiRequest('DELETE', '/event/' + id, null).then(function() {
       hideSidebar();
       location.reload();
+    }).catch(function() {
+      hideSpinner();
     });
   });
 }
@@ -332,6 +352,26 @@ function loadEvents() {
     })
     .catch(function() {
       hideSpinner();
+    });
+
+  apiRequest('GET', 'event', 'max_results=all')
+    .then(function(response) {
+      console.log(response);
+      var result = JSON.parse(response.responseText);
+
+      var select = document.getElementById('meet_event');
+      var select2 = document.getElementById('import_from');
+
+      result.data.forEach(function(data) {
+        var e = document.createElement('OPTION');
+        e.value = data.id;
+        e.innerHTML = data.name;
+        select.appendChild(e);
+        e = document.createElement('OPTION');
+        e.value = data.id;
+        e.innerHTML = data.name;
+        select2.appendChild(e);
+      });
     });
 }
 

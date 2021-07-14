@@ -305,28 +305,6 @@ function import_events()
 }
 
 
-function select_events()
-{
-    $sql = <<<SQL
-        SELECT
-            `EventID`,
-            `EventName`
-        FROM
-            `Events`
-        ORDER BY
-            `DateFrom` DESC
-SQL;
-
-    $values = [
-    'Id' => 'EventID',
-    'Name' => 'EventName',
-    ];
-    $data = load_table($sql, $values);
-    return $data;
-
-}
-
-
 function save_meeting($meeting)
 {
     $date = $meeting->Date;
@@ -419,56 +397,6 @@ SQL;
         `BadgeTypeID` = $id
 SQL;
     }
-    DB::run($sql);
-
-}
-
-
-function save_event($event)
-{
-    $id = $event->Id;
-    $name = MyPDO::quote($event->Name);
-    $from = $event->From;
-    $to = $event->To;
-
-    $cycle_to = lookup_cycleID($to);
-    $cycle_from = lookup_cycleID($from);
-    if ($cycle_to != $cycle_from) {
-        header("HTTP/1.0 404");
-        return;
-    }
-
-    if ($id == -1) {
-        $sql = <<<SQL
-    INSERT INTO `Events` (
-        `EventID`, `AnnualCycleID`, `DateFrom`, `DateTo`, `EventName`
-    )
-    VALUES
-        (
-            NULL, '$cycle_from', '$from', '$to', $name
-        )
-SQL;
-    } else {
-        $sql = <<<SQL
-    UPDATE
-        `Events`
-    SET
-        `DateFrom` = '$from',
-        `DateTo` = '$to',
-        `AnnualCycleID` = $cycle_from,
-        `EventName` = $name
-    WHERE
-        `EventID` = $id
-SQL;
-    }
-    DB::run($sql);
-
-}
-
-
-function delete_event($id)
-{
-    $sql = "DELETE FROM `Events` WHERE `EventID` = $id;";
     DB::run($sql);
 
 }
