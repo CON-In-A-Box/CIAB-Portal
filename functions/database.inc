@@ -356,6 +356,13 @@ SQL;
     }
 
 
+    public static function instance()
+    {
+        return MyPDO::instance();
+
+    }
+
+
    /* end */
 }
 

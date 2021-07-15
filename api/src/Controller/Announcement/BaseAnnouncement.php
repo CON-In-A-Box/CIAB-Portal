@@ -106,6 +106,8 @@ use App\Controller\IncludeResource;
 abstract class BaseAnnouncement extends BaseController
 {
 
+    use \App\Controller\TraitScope;
+
     protected static $columnsToAttributes = [
     '"announcement"' => 'type',
     'AnnouncementID' => 'id',
@@ -119,8 +121,8 @@ abstract class BaseAnnouncement extends BaseController
 
     public function __construct(Container $container)
     {
-        parent::__construct('deadline', $container);
-        \ciab\RBAC::customizeRBAC(array($this, 'customizeAnnouncementRBAC'));
+        parent::__construct('announcement', $container);
+        \ciab\RBAC::customizeRBAC('\App\Controller\Announcement\BaseAnnouncement::customizeAnnouncementRBAC');
 
         $this->includes = [
         new IncludeResource(
@@ -153,45 +155,27 @@ abstract class BaseAnnouncement extends BaseController
     }
 
 
-    protected function filterAnnouncements($data)
-    {
-        if (!\ciab\RBAC::havePermission('api.get.announcement.all')) {
-            foreach ($data as $index => $target) {
-                if ($target['scope'] >= 2) {
-                    if (!\ciab\RBAC::havePermission('api.get.announcement.'.$target['department'])) {
-                        unset($data[$index]);
-                    }
-                } elseif ($target['scope'] == 1) {
-                    if (!\ciab\RBAC::havePermission('api.get.announcement.staff')) {
-                        unset($data[$index]);
-                    }
-                }
-            }
-        }
-
-        return $data;
-
-    }
-
-
-    public function customizeAnnouncementRBAC($instance)
+    public static function customizeAnnouncementRBAC($instance, $database)
     {
         $positions = [];
-        $select = Select::new($this->container->db);
-        $select->columns('PositionID, Name')->from('ConComPositions')->orderBy('`PositionID` ASC');
-        $values = $select->fetchAll();
+        $values = Select::new($database)
+            ->columns('PositionID', 'Name')
+            ->from('ConComPositions')
+            ->orderBy('`PositionID` ASC')
+            ->fetchAll();
         foreach ($values as $value) {
             $positions[intval($value['PositionID'])] = $value['Name'];
         }
 
-        $select = Select::new($this->container->db);
-        $select->columns('DepartmentID')->from('Departments');
-        $values = $select->fetchAll();
+        $values = Select::new($database)
+            ->columns('DepartmentID')
+            ->from('Departments')
+            ->fetchAll();
         foreach ($values as $value) {
+            $perm_get = 'api.get.announcement.'.$value['DepartmentID'];
             $perm_del = 'api.delete.announcement.'.$value['DepartmentID'];
             $perm_pos = 'api.post.announcement.'.$value['DepartmentID'];
             $perm_put = 'api.put.announcement.'.$value['DepartmentID'];
-            $perm_read = 'api.get.announcement.'.$value['DepartmentID'];
             $target_h = $value['DepartmentID'].'.'.array_keys($positions)[0];
             $target_r = $value['DepartmentID'].'.'.end(array_keys($positions));
             try {
@@ -200,7 +184,7 @@ abstract class BaseAnnouncement extends BaseController
                 $role->addPermission($perm_pos);
                 $role->addPermission($perm_put);
                 $role = $instance->getRole($target_r);
-                $role->addPermission($perm_read);
+                $role->addPermission($perm_get);
             } catch (Exception\InvalidArgumentException $e) {
                 error_log($e);
             }

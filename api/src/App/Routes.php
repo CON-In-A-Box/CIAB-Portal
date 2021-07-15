@@ -24,8 +24,6 @@ function setupAPIRoutes(App $app, $authMiddleware)
             $app->get('[/[{id}]]', 'App\Controller\Member\GetMember');
             $app->put('/{id}', 'App\Controller\Member\PutMember');
             $app->put('/{id}/password', 'App\Controller\Member\PutPassword');
-            $app->get('/{id}/deadlines', 'App\Controller\Member\ListDeadlines');
-            $app->get('/{id}/announcements', 'App\Controller\Announcement\ListMemberAnnouncements');
             $app->get('/{id}/configuration[/{key}]', 'App\Controller\Member\GetConfiguration');
             $app->put('/{id}/configuration', 'App\Controller\Member\PutConfiguration');
         }
@@ -37,7 +35,7 @@ function setupAPIRoutes(App $app, $authMiddleware)
             $app->get('[/]', 'App\Controller\Department\ListDepartments');
             $app->get('/{name}', 'App\Controller\Department\GetDepartment');
             $app->get('/{name}/children', 'App\Controller\Department\GetDepartmentChildren');
-            $app->get('/{name}/deadlines', 'App\Controller\Department\ListDeadlines');
+            $app->get('/{name}/deadlines', 'App\Controller\Deadline\ListDepartmentDeadlines');
             $app->post('/{name}/deadline', 'App\Controller\Deadline\PostDeadline');
             $app->get('/{name}/announcements', 'App\Controller\Announcement\ListDepartmentAnnouncements');
             $app->post('/{name}/announcement', 'App\Controller\Announcement\PostAnnouncement');
@@ -47,14 +45,9 @@ function setupAPIRoutes(App $app, $authMiddleware)
     $app->group(
         '/deadline',
         function () use ($app, $authMiddleware) {
-            /* GET
-                /deadline/{id} */
+            $app->get('[/]', 'App\Controller\Deadline\ListMemberDeadlines');
             $app->get('/{id}', 'App\Controller\Deadline\GetDeadline');
-            /* PUT
-                /deadline/{id}?[Department={dept}]&[Deadline={date}]&[Note={text}]*/
             $app->put('/{id}', 'App\Controller\Deadline\PutDeadline');
-            /* DELETE
-                /deadline/{id} */
             $app->delete('/{id}', 'App\Controller\Deadline\DeleteDeadline');
         }
     )->add(new \App\Middleware\CiabMiddleware($app))->add($authMiddleware);
@@ -84,6 +77,7 @@ function setupAPIRoutes(App $app, $authMiddleware)
     $app->group(
         '/announcement',
         function () use ($app, $authMiddleware) {
+            $app->get('[/]', 'App\Controller\Announcement\ListMemberAnnouncements');
             $app->get('/{id}', 'App\Controller\Announcement\GetAnnouncement');
             $app->put('/{id}', 'App\Controller\Announcement\PutAnnouncement');
             $app->delete('/{id}', 'App\Controller\Announcement\DeleteAnnouncement');

@@ -254,7 +254,7 @@ var deadlinePage = (function(options) {
     loadDeadlines: function() {
       showSpinner();
       apiRequest('GET',
-        'member/current/deadlines',
+        '/deadline',
         'max_results=all')
         .then(function(response) {
           var result = JSON.parse(response.responseText);

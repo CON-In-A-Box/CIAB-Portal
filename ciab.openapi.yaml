@@ -138,25 +138,12 @@ paths:
       security:
         -
           ciab_auth: []
-  '/member/{id}/announcements':
+  /announcement:
     get:
       tags:
         - members
-      summary: 'Lists announcements for a given member'
+      summary: 'Lists announcements for the current member'
       parameters:
-        -
-          name: id
-          in: path
-          description: 'The id or login of the member'
-          required: true
-          schema:
-            oneOf:
-              -
-                description: 'Member login'
-                type: string
-              -
-                description: 'Member id'
-                type: integer
         -
           $ref: '#/components/parameters/short_response'
         -
@@ -477,6 +464,67 @@ paths:
       security:
         -
           ciab_auth: []
+  '/department/{id}/deadlines':
+    get:
+      tags:
+        - departments
+      summary: 'Lists deadlines for a given department'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'The id or name of the department'
+          required: true
+          schema:
+            oneOf:
+              -
+                description: 'Department id'
+                type: integer
+              -
+                description: 'Department name'
+                type: string
+        -
+          $ref: '#/components/parameters/short_response'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/deadline_list'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/department_not_found'
+      security:
+        -
+          ciab_auth: []
+  /deadline:
+    get:
+      tags:
+        - members
+      summary: 'Lists deadlines for the current member'
+      parameters:
+        -
+          $ref: '#/components/parameters/short_response'
+        -
+          $ref: '#/components/parameters/max_results'
+        -
+          $ref: '#/components/parameters/page_token'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/deadline_list'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/member_not_found'
+      security:
+        -
+          ciab_auth: []
   '/department/{id}/deadline':
     post:
       tags:
@@ -506,6 +554,8 @@ paths:
                   format: date
                 note:
                   type: string
+                scope:
+                  type: integer
               type: object
       responses:
         '201':
@@ -586,41 +636,6 @@ paths:
                 $ref: '#/components/schemas/department_list'
         '401':
           $ref: '#/components/responses/401'
-      security:
-        -
-          ciab_auth: []
-  '/department/{id}/deadlines':
-    get:
-      tags:
-        - departments
-      summary: 'Lists deadlines for a given department'
-      parameters:
-        -
-          name: id
-          in: path
-          description: 'The id or name of the department'
-          required: true
-          schema:
-            oneOf:
-              -
-                description: 'Department id'
-                type: integer
-              -
-                description: 'Department name'
-                type: string
-        -
-          $ref: '#/components/parameters/short_response'
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/deadline_list'
-        '401':
-          $ref: '#/components/responses/401'
-        '404':
-          $ref: '#/components/responses/department_not_found'
       security:
         -
           ciab_auth: []
@@ -1122,45 +1137,6 @@ paths:
                 type: object
         '404':
           $ref: '#/components/responses/member_not_found'
-  '/member/{id}/deadlines':
-    get:
-      tags:
-        - members
-      summary: 'Lists deadlines for a given member'
-      parameters:
-        -
-          name: id
-          in: path
-          description: 'The id or login of the member'
-          required: true
-          schema:
-            oneOf:
-              -
-                description: 'Member login'
-                type: string
-              -
-                description: 'Member id'
-                type: integer
-        -
-          $ref: '#/components/parameters/short_response'
-        -
-          $ref: '#/components/parameters/max_results'
-        -
-          $ref: '#/components/parameters/page_token'
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/deadline_list'
-        '401':
-          $ref: '#/components/responses/401'
-        '404':
-          $ref: '#/components/responses/member_not_found'
-      security:
-        -
-          ciab_auth: []
   '/member/{email}/password':
     post:
       tags:
@@ -3079,6 +3055,17 @@ components:
         note:
           description: 'Note about the deadline.'
           type: string
+        scope:
+          description: 'The scope of the deadline'
+          type: integer
+        posted_by:
+          description: 'The member who created the deadline'
+          oneOf:
+            -
+              $ref: '#/components/schemas/member'
+            -
+              description: 'Member Id'
+              type: integer
       type: object
     deadline_list:
       properties:

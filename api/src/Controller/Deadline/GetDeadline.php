@@ -52,7 +52,8 @@ class GetDeadline extends BaseDeadline
     {
         parent::__construct($container);
         $this->includes = [
-        new IncludeResource('\App\Controller\Department\GetDepartment', 'name', 'department')
+        new IncludeResource('\App\Controller\Department\GetDepartment', 'name', 'department'),
+        new IncludeResource('\App\Controller\Member\GetMember', 'id', 'posted_by')
         ];
 
     }
@@ -60,16 +61,17 @@ class GetDeadline extends BaseDeadline
 
     public function buildResource(Request $request, Response $response, $params): array
     {
-        $select = Select::new($this->container->db);
-        $select->columns(...BaseDeadline::selectMapping());
-        $select->from('Deadlines')->whereEquals(['DeadlineID' => $params['id']]);
-        $deadline = $select->fetchOne();
+        $deadline = Select::new($this->container->db)
+            ->columns(...BaseDeadline::selectMapping())
+            ->from('Deadlines')
+            ->whereEquals(['DeadlineID' => $params['id']])
+            ->fetchOne();
         if (empty($deadline)) {
             throw new NotFoundException('Deadline Not Found');
         }
-        $permissions = ['api.get.deadline.'.$deadline['department'],
-        'api.get.deadline.all'];
-        $this->checkPermissions($permissions);
+
+        $this->verifyScope($deadline);
+
         return [
         \App\Controller\BaseController::RESOURCE_TYPE,
         $deadline

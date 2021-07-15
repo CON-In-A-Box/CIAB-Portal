@@ -67,13 +67,14 @@ class ListDepartmentAnnouncements extends BaseAnnouncement
     public function buildResource(Request $request, Response $response, $args): array
     {
         $department = $this->getDepartment($args['name']);
-        $select = Select::new($this->container->db);
-        $select->columns(...BaseAnnouncement::selectMapping());
-        $select->from('Announcements')->whereEquals(['DepartmentID' => $department['id']]);
-        $select->orderBy('`PostedOn` ASC');
-        $data = $select->fetchAll();
+        $data = Select::new($this->container->db)
+            ->columns(...BaseAnnouncement::selectMapping())
+            ->from('Announcements')
+            ->whereEquals(['DepartmentID' => $department['id']])
+            ->orderBy('`PostedOn` ASC')
+            ->fetchAll();
 
-        $data = $this->filterAnnouncements($data);
+        $data = $this->filterScope($data);
 
         $output = array();
         $output['type'] = 'announcement_list';

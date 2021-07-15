@@ -5,26 +5,8 @@
 /**
  *  @OA\Get(
  *      tags={"members"},
- *      path="/member/{id}/announcements",
- *      summary="Lists announcements for a given member",
- *      @OA\Parameter(
- *          description="The id or login of the member",
- *          in="path",
- *          name="id",
- *          required=true,
- *          @OA\Schema(
- *              oneOf = {
- *                  @OA\Schema(
- *                      description="Member login",
- *                      type="string"
- *                  ),
- *                  @OA\Schema(
- *                      description="Member id",
- *                      type="integer"
- *                  )
- *              }
- *          )
- *      ),
+ *      path="/announcement",
+ *      summary="Lists announcements for the current member",
  *      @OA\Parameter(
  *          ref="#/components/parameters/short_response",
  *      ),
@@ -65,31 +47,13 @@ class ListMemberAnnouncements extends BaseAnnouncement
 
     public function buildResource(Request $request, Response $response, $params): array
     {
-        $user = $this->getMember($request, $params['id'])[0]['id'];
-        $select = Select::new($this->container->db);
+        $data = Select::new($this->container->db)
+            ->columns(...BaseAnnouncement::selectMapping())
+            ->from('Announcements')
+            ->orderBy('`PostedOn` ASC')
+            ->fetchAll();
 
-        $sub1 = $select->subselect()->columns('COUNT(AccountID)')->from('ConComList')->whereEquals(['AccountID' => $user]);
-        $sub2a = $select->subselect()->columns('DepartmentID')->from('ConComList')->whereEquals(['AccountID' => $user]);
-        $sub2 = $select->subselect()->columns('DepartmentID')->from('Departments')->where('ParentDepartmentID IN ', $sub2a);
-
-        $select->columns(...BaseAnnouncement::selectMapping());
-        $select->from('Announcements');
-        $select->whereEquals(['Scope' => 0]);
-        $select->orWhere('(');
-        $select->catWhere('Scope = 1 AND ');
-        $select->catWhere('DepartmentID IN ', $sub1);
-        $select->catWhere(')');
-        $select->orWhere('(');
-        $select->catWhere('Scope = 2 AND (');
-        $select->catWhere('DepartmentID IN ', $sub1);
-        $select->catWhere(') OR ( DepartmentID IN', $sub2);
-        $select->catWhere(')');
-        $select->catWhere(')');
-        $select->orderBy('`PostedOn` ASC');
-
-        $data = $select->fetchAll();
-
-        $data = $this->filterAnnouncements($data);
+        $data = $this->filterScope($data);
 
         $output = array();
         $output['type'] = 'announcement_list';

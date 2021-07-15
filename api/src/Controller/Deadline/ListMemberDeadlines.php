@@ -5,26 +5,8 @@
 /**
  *  @OA\Get(
  *      tags={"members"},
- *      path="/member/{id}/deadlines",
- *      summary="Lists deadlines for a given member",
- *      @OA\Parameter(
- *          description="The id or login of the member",
- *          in="path",
- *          name="id",
- *          required=true,
- *          @OA\Schema(
- *              oneOf = {
- *                  @OA\Schema(
- *                      description="Member login",
- *                      type="string"
- *                  ),
- *                  @OA\Schema(
- *                      description="Member id",
- *                      type="integer"
- *                  )
- *              }
- *          )
- *      ),
+ *      path="/deadline",
+ *      summary="Lists deadlines for the current member",
  *      @OA\Parameter(
  *          ref="#/components/parameters/short_response",
  *      ),
@@ -53,7 +35,7 @@
  *  )
  **/
 
-namespace App\Controller\Member;
+namespace App\Controller\Deadline;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
@@ -61,7 +43,7 @@ use Slim\Container;
 use Atlas\Query\Select;
 use App\Controller\IncludeResource;
 
-class ListDeadlines extends \App\Controller\Deadline\BaseDeadline
+class ListMemberDeadlines extends BaseDeadline
 {
 
 
@@ -69,7 +51,8 @@ class ListDeadlines extends \App\Controller\Deadline\BaseDeadline
     {
         parent::__construct($container);
         $this->includes = [
-        new IncludeResource('\App\Controller\Department\GetDepartment', 'name', 'department')
+        new IncludeResource('\App\Controller\Department\GetDepartment', 'name', 'department'),
+        new IncludeResource('\App\Controller\Member\GetMember', 'id', 'posted_by')
         ];
 
     }
@@ -77,23 +60,12 @@ class ListDeadlines extends \App\Controller\Deadline\BaseDeadline
 
     public function buildResource(Request $request, Response $response, $params): array
     {
-        if (array_key_exists('id', $params)) {
-            $user = $this->getMember($request, $params['id'])[0]['id'];
-        } else {
-            $user = $request->getAttribute('oauth2-token')['user_id'];
-        }
-
-        $select = Select::new($this->container->db);
-        $select->columns(...\App\Controller\Deadline\BaseDeadline::selectMapping());
-        $select->from('Deadlines');
-
-        $sub1 = $select->subselect()->columns('DepartmentID')->from('ConComList')->whereEquals(['AccountID' => $user]);
-        $sub2 = $select->subselect()->columns('DepartmentID')->from('Departments')->where('`ParentDepartmentID` IN ', $sub1);
-
-        $select->where('DepartmentID IN ', $sub1);
-        $select->orWhere('DepartmentID IN ', $sub1);
-        $select->orderBy('`Deadline` ASC');
-        $data = $select->fetchAll();
+        $data = Select::new($this->container->db)
+            ->columns(...BaseDeadline::selectMapping())
+            ->from('Deadlines')
+            ->orderBy('`Deadline` ASC')
+            ->fetchAll();
+        $data = $this->filterScope($data);
         $output = array();
         $output['type'] = 'deadline_list';
         return [
@@ -104,5 +76,5 @@ class ListDeadlines extends \App\Controller\Deadline\BaseDeadline
     }
 
 
-    /* end ListDeadlines */
+    /* end ListMemberDeadlines */
 }

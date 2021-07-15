@@ -37,7 +37,11 @@
  *                  @OA\Property(
  *                      property="note",
  *                      type="string"
- *                  )
+ *                  ),
+ *                  @OA\Property(
+ *                      property="scope",
+ *                      type="integer"
+ *                  ),
  *              )
  *          )
  *      ),
@@ -77,6 +81,10 @@ class PostDeadline extends BaseDeadline
 
         $required = ['deadline', 'note'];
         $body = $this->checkRequiredBody($request, $required);
+        if (!array_key_exists('scope', $body)) {
+            $body['scope'] = 2;
+        }
+        $body['posted_by'] = $request->getAttribute('oauth2-token')['user_id'];
 
         $date = strtotime($body['deadline']);
         if ($date == false) {
