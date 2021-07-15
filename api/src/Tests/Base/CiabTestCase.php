@@ -36,9 +36,12 @@ abstract class CiabTestCase extends TestCase
     static protected $login = 'allfather@oneeye.com';
 
     /**
-     * @var string
+     * @var array[string]
      */
-    static protected $unpriv_login = 'loki@oneeye.com';
+    static protected $unpriv_logins = array(
+        'loki@oneeye.com',
+        'frigga@oneeye.com'
+    );
 
     /**
      * @var string
@@ -86,9 +89,9 @@ abstract class CiabTestCase extends TestCase
     protected $token;
 
     /**
-     * @var object
+     * @var array[]
      */
-    protected $unpriv_token;
+    protected $unpriv_tokens;
 
     /**
      * @var array[string]
@@ -178,8 +181,10 @@ abstract class CiabTestCase extends TestCase
             $this->token = $this->createToken(self::$login);
 
             if ($this->setupUnpriv) {
-                $this->createTestingAccount(self::$unpriv_login);
-                $this->unpriv_token = $this->createToken(self::$unpriv_login);
+                foreach (self::$unpriv_logins as $login) {
+                    $this->createTestingAccount($login);
+                    $this->unpriv_tokens[] = $this->createToken($login);
+                }
             }
         }
 
@@ -307,9 +312,10 @@ abstract class CiabTestCase extends TestCase
         string $uri,
         array $serverParams = null,
         array $body = null,
-        int $code = null
+        int $code = null,
+        int $loginIndex = 0
     ) {
-        return $this->runRequest($method, $uri, $serverParams, $body, $code, $this->unpriv_token);
+        return $this->runRequest($method, $uri, $serverParams, $body, $code, $this->unpriv_tokens[$loginIndex]);
 
     }
 
@@ -332,9 +338,10 @@ abstract class CiabTestCase extends TestCase
         string $uri,
         array $params = null,
         array $body = null,
-        int $code = 200
+        int $code = 200,
+        int $loginIndex = 0
     ) {
-        return $this->runSuccessRequest($method, $uri, $params, $body, $code, $this->unpriv_token);
+        return $this->runSuccessRequest($method, $uri, $params, $body, $code, $this->unpriv_tokens[$loginIndex]);
 
     }
 
@@ -360,9 +367,10 @@ abstract class CiabTestCase extends TestCase
         string $uri,
         array $params = null,
         array $body = null,
-        int $code = 200
+        int $code = 200,
+        int $loginIndex = 0
     ) {
-        return $this->runSuccessJsonRequest($method, $uri, $params, $body, $code, $this->unpriv_token);
+        return $this->runSuccessJsonRequest($method, $uri, $params, $body, $code, $this->unpriv_tokens[$loginIndex]);
 
     }
 
