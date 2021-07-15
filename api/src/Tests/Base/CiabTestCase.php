@@ -33,12 +33,12 @@ abstract class CiabTestCase extends TestCase
     /**
      * @var string
      */
-    static protected $login = 'allfather@oneeye.com';
+    protected static $login = 'allfather@oneeye.com';
 
     /**
      * @var array[string]
      */
-    static protected $unpriv_logins = array(
+    protected static $unpriv_logins = array(
         'loki@oneeye.com',
         'frigga@oneeye.com'
     );
@@ -46,12 +46,12 @@ abstract class CiabTestCase extends TestCase
     /**
      * @var string
      */
-    static protected $password = 'Sleipnir';
+    protected static $password = 'Sleipnir';
 
     /**
      * @var string
      */
-    static protected $client = 'ciab';
+    protected static $client = 'ciab';
 
     /**
      * @var Container

@@ -11,6 +11,8 @@ class RBAC
 
     protected static $instance = null;
 
+    protected static $custom = array();
+
 
     protected function __construct()
     {
@@ -41,6 +43,13 @@ class RBAC
     {
         if (self::$instance !== null) {
             self::$instance = null;
+            if (!empty(self::$custom)) {
+                if (self::instance() !== null) {
+                    foreach (self::$custom as $entry) {
+                        return self::instance()->customizeRBAC($entry);
+                    }
+                }
+            }
         }
 
     }
@@ -74,6 +83,7 @@ class RBAC
     public static function customizeRBAC($entry)
     {
         if (self::instance() !== null) {
+            self::$custom[] = $entry;
             return self::instance()->customizeRBAC($entry);
         }
 
