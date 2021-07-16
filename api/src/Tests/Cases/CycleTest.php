@@ -31,6 +31,7 @@ class CycleTest extends CiabTestCase
         if ($this->cycle != null) {
             $this->runRequest('DELETE', '/cycle/'.$this->cycle->id, null, null, 204);
         }
+        parent::tearDown();
 
     }
 
