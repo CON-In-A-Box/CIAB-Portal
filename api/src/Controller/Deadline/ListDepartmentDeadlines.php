@@ -47,7 +47,7 @@
  *  )
  **/
 
-namespace App\Controller\Department;
+namespace App\Controller\Deadline;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
@@ -55,7 +55,7 @@ use Atlas\Query\Select;
 use App\Controller\NotFoundException;
 use App\Controller\IncludeResource;
 
-class ListDeadlines extends \App\Controller\Deadline\BaseDeadline
+class ListDepartmentDeadlines extends BaseDeadline
 {
 
 
@@ -63,7 +63,8 @@ class ListDeadlines extends \App\Controller\Deadline\BaseDeadline
     {
         parent::__construct($container);
         $this->includes = [
-        new IncludeResource('\App\Controller\Department\GetDepartment', 'name', 'department')
+        new IncludeResource('\App\Controller\Department\GetDepartment', 'name', 'department'),
+        new IncludeResource('\App\Controller\Member\GetMember', 'id', 'posted_by')
         ];
 
     }
@@ -72,15 +73,13 @@ class ListDeadlines extends \App\Controller\Deadline\BaseDeadline
     public function buildResource(Request $request, Response $response, $params): array
     {
         $department = $this->getDepartment($params['name']);
-        $permissions = ['api.get.deadline.all',
-        'api.get.deadline.'.$department['id']];
-        $this->checkPermissions($permissions);
+        $data = Select::new($this->container->db)
+            ->columns(...BaseDeadline::selectMapping())
+            ->from('Deadlines')->whereEquals(['DepartmentID' => $department['id']])
+            ->orderBy('`Deadline` ASC')
+            ->fetchAll();
 
-        $select = Select::new($this->container->db);
-        $select->columns(...\App\Controller\Deadline\BaseDeadline::selectMapping());
-        $select->from('Deadlines')->whereEquals(['DepartmentID' => $department['id']]);
-        $select->orderBy('`Deadline` ASC');
-        $data = $select->fetchAll();
+        $data = $this->filterScope($data);
 
         $output = array();
         $output['type'] = 'deadline_list';
@@ -92,5 +91,5 @@ class ListDeadlines extends \App\Controller\Deadline\BaseDeadline
     }
 
 
-    /* end ListDeadlines */
+    /* end ListDepartmentDeadlines */
 }

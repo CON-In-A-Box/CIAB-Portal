@@ -16,8 +16,7 @@ abstract class AnnouncementPermission extends BasePermission
     public function __construct(Container $container)
     {
         parent::__construct($container, 'announcement', ['put', 'post', 'delete']);
-        $announce = new \App\Controller\Announcement\GetAnnouncement($container);
-        \ciab\RBAC::customizeRBAC(array($announce, 'customizeAnnouncementRBAC'));
+        \ciab\RBAC::customizeRBAC('\App\Controller\Announcement\BaseAnnouncement\customizeAnnouncementRBAC');
 
     }
 

@@ -129,6 +129,7 @@ class PostStaffMembership extends BaseStaff
         $event = $this->getEvent($event)['id'];
         $insert->column('EventID', $event);
         $insert->perform();
+        \ciab\RBAC::reload();
 
         $target = new GetStaffMembership($this->container);
         $data = $target->buildResource($request, $response, ['id' => $insert->getLastInsertId()])[1];

@@ -303,7 +303,7 @@ var announcementPage = (function(options) {
     loadAnnouncements: function() {
       showSpinner();
       apiRequest('GET',
-        'member/current/announcements',
+        '/announcement',
         'max_results=all')
         .then(function(response) {
           var result = JSON.parse(response.responseText);
