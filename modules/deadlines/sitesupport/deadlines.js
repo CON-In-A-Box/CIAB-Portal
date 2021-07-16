@@ -81,6 +81,7 @@ var deadlinePage = (function(options) {
       var date = document.getElementById('deadline_date').value;
       var note = document.getElementById('deadline_note').value;
       var dept = document.getElementById('department_dropdown_select').value;
+      var scope = document.getElementById('scope_drop').value;
       confirmbox('Update Deadline', 'Confirm update of this deadline').then(
         function() {
           showSpinner();
@@ -91,7 +92,7 @@ var deadlinePage = (function(options) {
             path = 'department/' + dept + '/deadline';
           }
           apiRequest(method, path,
-            'deadline=' + date + '&note=' + encodeURI(note) + '&department=' +
+            'scope=' + scope + '&deadline=' + date + '&note=' + encodeURI(note) + '&department=' +
             dept)
             .then(function() {
               location.reload();
@@ -140,6 +141,24 @@ var deadlinePage = (function(options) {
       f.id = 'deadline-' + data2.id + '-note';
       f.appendChild(document.createTextNode(data2.note));
       line.appendChild(f);
+
+      f = document.createElement('DIV');
+      f.classList.add('UI-table-cell');
+      f.id = 'deadline-' + data2.id + '-scope';
+      if (data2.scope >= 2)
+      {
+        f.appendChild(document.createTextNode('Department Only'));
+      }
+      else if (data2.scope >= 1)
+      {
+        f.appendChild(document.createTextNode('All ConCom'));
+      }
+      else
+      {
+        f.appendChild(document.createTextNode('Convention Wide'));
+      }
+      line.appendChild(f);
+
       f = document.createElement('DIV');
       f.setAttribute('name', 'deadline-table-modify-' + data2.department.id);
       f.classList.add('UI-table-cell');
@@ -168,6 +187,10 @@ var deadlinePage = (function(options) {
       f = document.createElement('DIV');
       f.classList.add('UI-table-cell');
       f.appendChild(document.createTextNode('Deadline'));
+      line.appendChild(f);
+      f = document.createElement('DIV');
+      f.classList.add('UI-table-cell');
+      f.appendChild(document.createTextNode('Scope'));
       line.appendChild(f);
       f = document.createElement('DIV');
       f.setAttribute('name', 'deadline-table-modify-' + dept.id);

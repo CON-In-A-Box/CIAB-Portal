@@ -12,8 +12,8 @@ $DB_tables = [
 'DepartmentID' => 'INT UNSIGNED NOT NULL',
 'Deadline' => 'DATE NOT NULL',
 'Note' => 'TEXT NOT NULL',
-'Scope' => 'INT UNSIGNED NOT NULL',
-'PostedBy' => 'INT UNSIGNED NOT NULL'
+'Scope' => 'INT UNSIGNED',
+'PostedBy' => 'INT UNSIGNED'
     ]
 
 ];
