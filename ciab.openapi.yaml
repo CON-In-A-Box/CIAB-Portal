@@ -141,7 +141,7 @@ paths:
   /announcement:
     get:
       tags:
-        - members
+        - announcements
       summary: 'Lists announcements for the current member'
       parameters:
         -
@@ -502,7 +502,7 @@ paths:
   /deadline:
     get:
       tags:
-        - members
+        - deadlines
       summary: 'Lists deadlines for the current member'
       parameters:
         -

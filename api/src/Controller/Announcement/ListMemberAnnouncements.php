@@ -4,7 +4,7 @@
 .*/
 /**
  *  @OA\Get(
- *      tags={"members"},
+ *      tags={"announcements"},
  *      path="/announcement",
  *      summary="Lists announcements for the current member",
  *      @OA\Parameter(

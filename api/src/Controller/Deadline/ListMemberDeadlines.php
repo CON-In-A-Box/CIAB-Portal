@@ -4,7 +4,7 @@
 .*/
 /**
  *  @OA\Get(
- *      tags={"members"},
+ *      tags={"deadlines"},
  *      path="/deadline",
  *      summary="Lists deadlines for the current member",
  *      @OA\Parameter(
