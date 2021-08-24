@@ -6,14 +6,10 @@
 /**
  *  @OA\Get(
  *      tags={"registration"},
- *      path="/registration/open/{event}",
+ *      path="/registration/open",
  *      summary="Returns if event registration is open or not..",
  *      @OA\Parameter(
- *          description="Event ID",
- *          in="path",
- *          name="event",
- *          required=true,
- *          @OA\Schema(type="integer")
+ *          ref="#/components/parameters/event",
  *      ),
  *      @OA\Response(
  *          response=200,
@@ -41,33 +37,6 @@
  *          ref="#/components/responses/event_not_found"
  *      )
  *  )
- *
- *  @OA\Get(
- *      tags={"registration"},
- *      path="/registration/open",
- *      summary="Returns if current event registration is open or not..",
- *      @OA\Response(
- *          response=200,
- *          description="Event registration open status",
- *          @OA\JsonContent(
- *              @OA\Property(
- *                  property="type",
- *                  type="string",
- *                  enum={"registration"}
- *              ),
- *              @OA\Property(
- *                  property="event",
- *                  type="integer",
- *                  description="event Id"
- *              ),
- *              @OA\Property(
- *                  property="open",
- *                  type="boolean",
- *                  description="Is registration open"
- *              )
- *          )
- *      )
- *  )
  **/
 
 namespace App\Modules\registration\Controller;
@@ -86,17 +55,7 @@ class GetOpen extends BaseRegistration
 
     public function buildResource(Request $request, Response $response, $args): array
     {
-        if (array_key_exists('event', $args)) {
-            $event = $args['event'];
-        } else {
-            $event = 'current';
-        }
-        $event = $this->getEvent($event)['id'];
-
-        if (!$event) {
-            throw new NotFoundException('Event not found');
-        }
-
+        $event = $this->getEventId($request);
         $data = Select::new($this->container->db)
             ->columns('*')
             ->from('Events')

@@ -7,36 +7,15 @@
  *  @OA\Get(
  *      tags={"registration"},
  *      path="/registration/ticket/printqueue",
- *      summary="Get the current print queue for badges for the current event.",
+ *      summary="Get the current print queue for badges for the event.",
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/event",
+ *      ),
  *      @OA\Parameter(
  *          ref="#/components/parameters/max_results",
  *      ),
  *      @OA\Parameter(
  *          ref="#/components/parameters/page_token",
- *      ),
- *      @OA\Response(
- *          response=200,
- *          description="OK",
- *          @OA\JsonContent(
- *           ref="#/components/schemas/print_queue"
- *          )
- *      ),
- *      @OA\Response(
- *          response=401,
- *          ref="#/components/responses/401"
- *      ),
- *      security={{"ciab_auth":{}}}
- *  )
- *
- *  @OA\Get(
- *      tags={"registration"},
- *      path="/registration/ticket/printqueue/{event}",
- *      summary="Get the current print queue for badges for the given event.",
- *      @OA\Parameter(
- *          description="Event being queried.",
- *          in="path",
- *          name="event",
- *          required=true
  *      ),
  *      @OA\Response(
  *          response=200,
@@ -70,17 +49,12 @@ class PrintQueue extends BaseTicket
 
     public function buildResource(Request $request, Response $response, $params): array
     {
+        $event = $this->getEventId($request);
         $select = Select::new($this->container->db);
         $select->columns(...PrintQueue::selectMapping())
             ->from('Registrations')
-            ->where('`PrintRequested` IS NOT NULL');
-        if (array_key_exists('event', $params)) {
-            $event = $params['event'];
-        } else {
-            $event = 'current';
-        }
-        $event = $this->getEvent($event)['id'];
-        $select->whereEquals(['EventID' => $event]);
+            ->where('`PrintRequested` IS NOT NULL')
+            ->whereEquals(['EventID' => $event]);
 
         $data = $select->fetchAll();
         $tickets = [];

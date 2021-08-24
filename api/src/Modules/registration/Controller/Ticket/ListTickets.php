@@ -33,122 +33,16 @@
  *
  *  @OA\Get(
  *      tags={"registration"},
- *      path="/registration/ticket/list/unclaimed/{event}",
+ *      path="/registration/ticket/list/unclaimed",
  *      summary="Gets all unclaimed tickets for an event",
  *      @OA\Parameter(
- *          description="Id of the event",
- *          in="path",
- *          name="event",
- *          required=true,
- *          @OA\Schema(type="integer")
+ *          ref="#/components/parameters/event",
  *      ),
  *      @OA\Parameter(
  *          ref="#/components/parameters/show_void",
  *      ),
  *      @OA\Parameter(
  *          ref="#/components/parameters/show_checked_in",
- *      ),
- *      @OA\Parameter(
- *          ref="#/components/parameters/short_response",
- *      ),
- *      @OA\Parameter(
- *          ref="#/components/parameters/max_results",
- *      ),
- *      @OA\Parameter(
- *          ref="#/components/parameters/page_token",
- *      ),
- *      @OA\Response(
- *          response=200,
- *          description="Tickets found",
- *          @OA\JsonContent(
- *           ref="#/components/schemas/ticket_list"
- *          ),
- *      ),
- *      @OA\Response(
- *          response=401,
- *          ref="#/components/responses/401"
- *      ),
- *      @OA\Response(
- *          response=404,
- *          ref="#/components/responses/event_not_found"
- *      ),
- *      security={{"ciab_auth":{}}}
- *  )
- *
- *  @OA\Get(
- *      tags={"registration"},
- *      path="/registration/ticket/list/unclaimed",
- *      summary="Gets unclaimed tickets the current event",
- *      @OA\Parameter(
- *          ref="#/components/parameters/show_void",
- *      ),
- *      @OA\Parameter(
- *          ref="#/components/parameters/show_checked_in",
- *      ),
- *      @OA\Parameter(
- *          ref="#/components/parameters/short_response",
- *      ),
- *      @OA\Parameter(
- *          ref="#/components/parameters/max_results",
- *      ),
- *      @OA\Parameter(
- *          ref="#/components/parameters/page_token",
- *      ),
- *      @OA\Response(
- *          response=200,
- *          description="Tickets found",
- *          @OA\JsonContent(
- *           ref="#/components/schemas/ticket_list"
- *          ),
- *      ),
- *      @OA\Response(
- *          response=401,
- *          ref="#/components/responses/401"
- *      ),
- *      @OA\Response(
- *          response=404,
- *          ref="#/components/responses/event_not_found"
- *      ),
- *      security={{"ciab_auth":{}}}
- *  )
- *
- *  @OA\Get(
- *      tags={"registration"},
- *      path="/registration/ticket/list/{member}/{event}",
- *      summary="Gets tickets for an event for a member",
- *      @OA\Parameter(
- *          description="The member",
- *          in="path",
- *          name="member",
- *          required=true,
- *          @OA\Schema(
- *              oneOf = {
- *                  @OA\Schema(
- *                      description="Member email",
- *                      type="string"
- *                  ),
- *                  @OA\Schema(
- *                      description="Member id",
- *                      type="integer"
- *                  )
- *              }
- *          )
- *      ),
- *      @OA\Parameter(
- *          description="Id of the event",
- *          in="path",
- *          name="event",
- *          required=true,
- *          @OA\Schema(type="integer")
- *      ),
- *      @OA\Parameter(
- *          ref="#/components/parameters/show_void",
- *      ),
- *      @OA\Parameter(
- *          ref="#/components/parameters/show_checked_in",
- *      ),
- *      @OA\Parameter(
- *          ref="#/components/parameters/show_picked_up",
  *      ),
  *      @OA\Parameter(
  *          ref="#/components/parameters/short_response",
@@ -180,7 +74,7 @@
  *  @OA\Get(
  *      tags={"registration"},
  *      path="/registration/ticket/list/{member}",
- *      summary="Gets tickets for a member for the current event",
+ *      summary="Gets tickets for an event for a member",
  *      @OA\Parameter(
  *          description="The member",
  *          in="path",
@@ -198,6 +92,9 @@
  *                  )
  *              }
  *          )
+ *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/event",
  *      ),
  *      @OA\Parameter(
  *          ref="#/components/parameters/show_void",
@@ -238,7 +135,10 @@
  *  @OA\Get(
  *      tags={"registration"},
  *      path="/registration/ticket/list",
- *      summary="Gets tickets for the current member for the current event",
+ *      summary="Gets tickets for the current member for the event",
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/event",
+ *      ),
  *      @OA\Parameter(
  *          ref="#/components/parameters/show_void",
  *      ),
@@ -323,9 +223,8 @@ class ListTickets extends BaseTicketInclude
                 ->catWhere(' OR BadgesPickedUp IS NULL');
         }
         $select->catWhere(') ');
-        if (array_key_exists('event', $params)) {
-            $select->whereEquals(['EventID' => $params['event']]);
-        }
+        $event = $this->getEventId($request);
+        $select->whereEquals(['EventID' => $event]);
         $query = $request->getQueryParams();
         if (!array_key_exists('show_void', $query) || !boolval($query['show_void'])) {
             $select->whereEquals(['VoidDate' => null]);
