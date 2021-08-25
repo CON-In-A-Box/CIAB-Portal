@@ -24,7 +24,7 @@
  *              type="array",
  *              @OA\Items(
  *                  type="string",
- *                  enum={"all","email","id","legal_name","name","badge"}
+ *                  enum={"all","email","id","legal_name","name","badge", "badge_id"}
  *              )
  *          ),
  *          style="simple",
@@ -36,6 +36,9 @@
  *          name="partial",
  *          required=false,
  *          @OA\Schema(type="boolean")
+ *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/event",
  *      ),
  *      @OA\Parameter(
  *          ref="#/components/parameters/max_results",
@@ -88,7 +91,7 @@ class FindMembers extends BaseMember
         }
         $from = $request->getQueryParam('from', 'all');
         if ($from == 'all') {
-            $from = "email,id,legal_name,name,badge";
+            $from = "email,id,legal_name,name,badge,badge_id";
         }
         $from = explode(',', trim($from));
         $p = $request->getQueryParam('partial', 'false');
@@ -163,6 +166,7 @@ class FindMembers extends BaseMember
             }
         }
         if (in_array('badge', $from)) {
+            $event = $this->getEventID($request);
             $sub = $select->subselect()
                 ->columns('AccountID')
                 ->from('Registrations');
@@ -171,6 +175,15 @@ class FindMembers extends BaseMember
             } else {
                 $sub->orWhere('BadgeName = ', $q);
             }
+            $sub->andWhere('EventID = ', $event);
+            $select->orWhere('AccountID IN ', $sub);
+        }
+        if (in_array('badge_id', $from)) {
+            $event = $this->getEventID($request);
+            $sub = $select->subselect()
+                ->columns('AccountID')
+                ->from('Registrations')
+                ->whereEquals(['BadgeID' => $q, 'EventID' => $event]);
             $select->orWhere('AccountID IN ', $sub);
         }
 

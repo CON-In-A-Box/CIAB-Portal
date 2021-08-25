@@ -73,13 +73,20 @@ class RegistrationTest extends CiabTestCase
         $this->runRequest('POST', '/registration/ticket', null, ['member' => self::$login, 'ticket_type' => $type->id, 'badge_dependent_on' => '-1'], 404);
         $this->runRequest('POST', '/registration/ticket', null, ['member' => self::$login, 'ticket_type' => $type->id, 'registered_by' => '-1'], 404);
 
-        $this->ticket = $this->runSuccessJsonRequest('POST', '/registration/ticket', null, ['member' => self::$login, 'ticket_type' => $type->id], 201);
+        $this->ticket = $this->runSuccessJsonRequest('POST', '/registration/ticket', null, ['member' => self::$login, 'ticket_type' => $type->id, 'badge_id' => '999'], 201);
 
         $data = $this->runSuccessJsonRequest('GET', '/registration/ticket/'.$this->ticket->id);
         $this->assertIncludes($data, 'event');
         $this->assertIncludes($data, 'registered_by');
         $this->assertIncludes($data, 'ticket_type');
         $this->assertIncludes($data, 'member');
+        $this->assertEquals($data->badge_id, '999');
+
+        $data = $this->runSuccessJsonRequest('GET', '/member/find', ['q' => '999', 'from' => 'badge_id']);
+        $this->assertEquals($data->type, 'member_list');
+        $this->assertNotEmpty($data->data);
+        $this->assertEquals(count($data->data), 1);
+        $this->assertEquals($data->data[0]->id, 1000);
 
         /* PUT */
 
@@ -92,6 +99,12 @@ class RegistrationTest extends CiabTestCase
         $this->assertEquals($data->badge_name, 'badggy');
         $this->assertEquals($data->emergency_contact, 'Mars');
         $this->assertEquals($data->note, 'something important');
+
+        $data = $this->runSuccessJsonRequest('GET', '/member/find', ['q' => 'badggy', 'from' => 'badge']);
+        $this->assertEquals($data->type, 'member_list');
+        $this->assertNotEmpty($data->data);
+        $this->assertEquals(count($data->data), 1);
+        $this->assertEquals($data->data[0]->id, 1000);
 
         $this->runRequest('GET', '/registration/ticket/list/-1', null, null, 404);
         $this->runSuccessJsonRequest('GET', '/registration/ticket/list');

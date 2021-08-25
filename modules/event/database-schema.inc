@@ -42,6 +42,7 @@ $event_DB_tables = [
 'Registrations' => [
 'RegistrationID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
 'AccountID' => 'INT UNSIGNED NOT NULL',
+'BadgeID' => 'VARCHAR(10)',
 'BadgeDependentOnID' => 'INT UNSIGNED',
 'BadgeName' => 'VARCHAR(100)',
 'BadgesPickedUp' => 'INT UNSIGNED',
