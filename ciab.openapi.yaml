@@ -863,6 +863,8 @@ paths:
           schema:
             type: boolean
         -
+          $ref: '#/components/parameters/event'
+        -
           $ref: '#/components/parameters/max_results'
         -
           $ref: '#/components/parameters/page_token'
@@ -2011,6 +2013,8 @@ paths:
           multipart/form-data:
             schema:
               properties:
+                badge_id:
+                  type: string
                 badge_name:
                   type: string
                 emergency_contact:
@@ -2347,6 +2351,8 @@ paths:
                 ticket_type:
                   type: string
                 badge_dependent_on:
+                  type: string
+                badge_id:
                   type: string
                 badge_name:
                   type: string
@@ -3304,6 +3310,9 @@ components:
             -
               description: 'Member Id'
               type: integer
+        badge_id:
+          description: 'The badge number of unique distinguishing ID'
+          type: string
         badge_name:
           type: string
         badges_picked_up:

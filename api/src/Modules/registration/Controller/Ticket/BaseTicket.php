@@ -34,6 +34,11 @@
  *          }
  *      ),
  *      @OA\Property(
+ *          property="badge_id",
+ *          type="string",
+ *          description="The badge number of unique distinguishing ID"
+ *      ),
+ *      @OA\Property(
  *          property="badge_name",
  *          type="string",
  *      ),
@@ -317,6 +322,7 @@ abstract class BaseTicket extends BaseRegistration
     'RegistrationID' => 'id' ,
     'AccountID' => 'member',
     'BadgeDependentOnID' => 'badge_dependent_on',
+    'BadgeID' => 'badge_id',
     'BadgeName' => 'badge_name',
     'BadgesPickedUp' => 'badges_picked_up',
     'BadgeTypeID' => 'ticket_type',
@@ -441,6 +447,31 @@ abstract class BaseTicket extends BaseRegistration
             throw new NotFoundException('Registration Not Found');
         }
         return $data;
+
+    }
+
+
+    protected function verifyBadgeID($id, $badge, $event = null)
+    {
+        if ($event == null) {
+            $data = Select::new($this->container->db)
+                ->columns('EventID')
+                ->from('Registrations')
+                ->whereEquals(['RegistrationID' => $id])
+                ->fetchOne();
+            if (!$data) {
+                throw new NotFoundException('Registration Not Found');
+            }
+            $event = $data['EventID'];
+        }
+        $data = Select::new($this->container->db)
+            ->columns('RegistrationID')
+            ->from('Registrations')
+            ->whereEquals(['EventID' => $event, 'BadgeID' => $badge])
+            ->fetchOne();
+        if (!empty($data) && $data['RegistrationID'] != $id) {
+            throw new ConflictException('Badge ID already assigned');
+        }
 
     }
 

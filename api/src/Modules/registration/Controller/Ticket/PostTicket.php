@@ -31,6 +31,10 @@
  *                      type="string",
  *                  ),
  *                  @OA\Property(
+ *                      property="badge_id",
+ *                      type="string",
+ *                  ),
+ *                  @OA\Property(
  *                      property="badge_name",
  *                      type="string",
  *                  ),
@@ -106,6 +110,10 @@ class PostTicket extends BaseTicketInclude
             $body['registered_by'] = $this->getMember($request, $body['registered_by'])[0]['id'];
         } else {
             $body['registered_by'] = $member;
+        }
+
+        if (array_key_exists('badge_id', $body)) {
+            $this->verifyBadgeId(null, $body['badge_id'], $body['event']);
         }
 
         $insert = Insert::new($this->container->db)
