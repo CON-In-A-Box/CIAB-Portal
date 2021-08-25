@@ -1880,19 +1880,14 @@ paths:
       security:
         -
           ciab_auth: []
-  '/registration/open/{event}':
+  /registration/open:
     get:
       tags:
         - registration
       summary: 'Returns if event registration is open or not..'
       parameters:
         -
-          name: event
-          in: path
-          description: 'Event ID'
-          required: true
-          schema:
-            type: integer
+          $ref: '#/components/parameters/event'
       responses:
         '200':
           description: 'Event registration open status'
@@ -1906,22 +1901,6 @@ paths:
                 type: object
         '404':
           $ref: '#/components/responses/event_not_found'
-  /registration/open:
-    get:
-      tags:
-        - registration
-      summary: 'Returns if current event registration is open or not..'
-      responses:
-        '200':
-          description: 'Event registration open status'
-          content:
-            application/json:
-              schema:
-                properties:
-                  type: { type: string, enum: [registration] }
-                  event: { description: 'event Id', type: integer }
-                  open: { description: 'Is registration open', type: boolean }
-                type: object
   /registration/admin:
     get:
       tags:
@@ -2110,7 +2089,7 @@ paths:
       security:
         -
           ciab_auth: []
-  '/registration/ticket/type/{id}/{event}':
+  '/registration/ticket/type/{id}':
     get:
       tags:
         - registration
@@ -2124,12 +2103,7 @@ paths:
           schema:
             type: integer
         -
-          name: event
-          in: path
-          description: 'Id of the event'
-          required: true
-          schema:
-            type: integer
+          $ref: '#/components/parameters/event'
         -
           $ref: '#/components/parameters/short_response'
       responses:
@@ -2146,41 +2120,14 @@ paths:
       security:
         -
           ciab_auth: []
-  '/registration/ticket/type/{id}':
-    get:
-      tags:
-        - registration
-      summary: 'Gets a ticket type for the current event'
-      parameters:
-        -
-          name: id
-          in: path
-          description: 'Id of the ticket type'
-          required: true
-          schema:
-            type: integer
-        -
-          $ref: '#/components/parameters/short_response'
-      responses:
-        '200':
-          description: 'Ticket type found'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ticket_type'
-        '401':
-          $ref: '#/components/responses/401'
-        '404':
-          $ref: '#/components/responses/ticket_not_found'
-      security:
-        -
-          ciab_auth: []
   /registration/ticket/type:
     get:
       tags:
         - registration
-      summary: 'List all ticket types for the current event'
+      summary: 'List all ticket types for the event'
       parameters:
+        -
+          $ref: '#/components/parameters/event'
         -
           $ref: '#/components/parameters/max_results'
         -
@@ -2199,105 +2146,18 @@ paths:
       security:
         -
           ciab_auth: []
-  '/registration/ticket/list/unclaimed/{event}':
+  /registration/ticket/list/unclaimed:
     get:
       tags:
         - registration
       summary: 'Gets all unclaimed tickets for an event'
       parameters:
         -
-          name: event
-          in: path
-          description: 'Id of the event'
-          required: true
-          schema:
-            type: integer
+          $ref: '#/components/parameters/event'
         -
           $ref: '#/components/parameters/show_void'
         -
           $ref: '#/components/parameters/show_checked_in'
-        -
-          $ref: '#/components/parameters/short_response'
-        -
-          $ref: '#/components/parameters/max_results'
-        -
-          $ref: '#/components/parameters/page_token'
-      responses:
-        '200':
-          description: 'Tickets found'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ticket_list'
-        '401':
-          $ref: '#/components/responses/401'
-        '404':
-          $ref: '#/components/responses/event_not_found'
-      security:
-        -
-          ciab_auth: []
-  /registration/ticket/list/unclaimed:
-    get:
-      tags:
-        - registration
-      summary: 'Gets unclaimed tickets the current event'
-      parameters:
-        -
-          $ref: '#/components/parameters/show_void'
-        -
-          $ref: '#/components/parameters/show_checked_in'
-        -
-          $ref: '#/components/parameters/short_response'
-        -
-          $ref: '#/components/parameters/max_results'
-        -
-          $ref: '#/components/parameters/page_token'
-      responses:
-        '200':
-          description: 'Tickets found'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ticket_list'
-        '401':
-          $ref: '#/components/responses/401'
-        '404':
-          $ref: '#/components/responses/event_not_found'
-      security:
-        -
-          ciab_auth: []
-  '/registration/ticket/list/{member}/{event}':
-    get:
-      tags:
-        - registration
-      summary: 'Gets tickets for an event for a member'
-      parameters:
-        -
-          name: member
-          in: path
-          description: 'The member'
-          required: true
-          schema:
-            oneOf:
-              -
-                description: 'Member email'
-                type: string
-              -
-                description: 'Member id'
-                type: integer
-        -
-          name: event
-          in: path
-          description: 'Id of the event'
-          required: true
-          schema:
-            type: integer
-        -
-          $ref: '#/components/parameters/show_void'
-        -
-          $ref: '#/components/parameters/show_checked_in'
-        -
-          $ref: '#/components/parameters/show_picked_up'
         -
           $ref: '#/components/parameters/short_response'
         -
@@ -2322,7 +2182,7 @@ paths:
     get:
       tags:
         - registration
-      summary: 'Gets tickets for a member for the current event'
+      summary: 'Gets tickets for an event for a member'
       parameters:
         -
           name: member
@@ -2337,6 +2197,8 @@ paths:
               -
                 description: 'Member id'
                 type: integer
+        -
+          $ref: '#/components/parameters/event'
         -
           $ref: '#/components/parameters/show_void'
         -
@@ -2367,8 +2229,10 @@ paths:
     get:
       tags:
         - registration
-      summary: 'Gets tickets for the current member for the current event'
+      summary: 'Gets tickets for the current member for the event'
       parameters:
+        -
+          $ref: '#/components/parameters/event'
         -
           $ref: '#/components/parameters/show_void'
         -
@@ -2538,35 +2402,14 @@ paths:
     get:
       tags:
         - registration
-      summary: 'Get the current print queue for badges for the current event.'
+      summary: 'Get the current print queue for badges for the event.'
       parameters:
+        -
+          $ref: '#/components/parameters/event'
         -
           $ref: '#/components/parameters/max_results'
         -
           $ref: '#/components/parameters/page_token'
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/print_queue'
-        '401':
-          $ref: '#/components/responses/401'
-      security:
-        -
-          ciab_auth: []
-  '/registration/ticket/printqueue/{event}':
-    get:
-      tags:
-        - registration
-      summary: 'Get the current print queue for badges for the given event.'
-      parameters:
-        -
-          name: event
-          in: path
-          description: 'Event being queried.'
-          required: true
       responses:
         '200':
           description: OK
@@ -2743,12 +2586,7 @@ paths:
           schema:
             type: integer
         -
-          name: event
-          in: query
-          description: 'Event id being querried, if empty then current event'
-          required: false
-          schema:
-            type: integer
+          $ref: '#/components/parameters/event'
         -
           $ref: '#/components/parameters/short_response'
         -
@@ -2786,6 +2624,8 @@ paths:
           required: true
           schema:
             type: integer
+        -
+          $ref: '#/components/parameters/event'
         -
           $ref: '#/components/parameters/max_results'
         -
@@ -2837,12 +2677,7 @@ paths:
       summary: 'List staff all departments'
       parameters:
         -
-          name: event
-          in: query
-          description: 'Event id being querried, if empty then current event'
-          required: false
-          schema:
-            type: integer
+          $ref: '#/components/parameters/event'
         -
           $ref: '#/components/parameters/short_response'
         -
@@ -3790,6 +3625,14 @@ components:
         enum:
           - 0
           - 1
+    event:
+      name: short_response
+      in: query
+      description: 'Target event ID for query. If not specified defaults to the current event'
+      required: false
+      style: form
+      schema:
+        type: integer
     show_void:
       name: show_void
       in: query

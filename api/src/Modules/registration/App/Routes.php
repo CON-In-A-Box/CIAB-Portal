@@ -5,7 +5,7 @@
 
 function setupRegistrationAPI($app, $authMiddleware)
 {
-    $app->get('/registration/open[/{event}]', 'App\Modules\registration\Controller\GetOpen');
+    $app->get('/registration/open', 'App\Modules\registration\Controller\GetOpen');
 
     $app->group(
         '/registration',
@@ -21,10 +21,10 @@ function setupRegistrationAPI($app, $authMiddleware)
             $app->group(
                 '/ticket',
                 function () use ($app, $authMiddleware) {
-                    $app->get('/list[/{member}[/{event}]]', 'App\Modules\registration\Controller\Ticket\ListTickets');
-                    $app->get('/type[/{id}[/{event}]]', 'App\Modules\registration\Controller\Ticket\GetTicketTypes');
+                    $app->get('/list[/{member}]', 'App\Modules\registration\Controller\Ticket\ListTickets');
+                    $app->get('/type[/{id}]', 'App\Modules\registration\Controller\Ticket\GetTicketTypes');
                     $app->put('/printqueue/claim/{id}', 'App\Modules\registration\Controller\Ticket\PrintQueueClaim');
-                    $app->get('/printqueue[/{event}]', 'App\Modules\registration\Controller\Ticket\PrintQueue');
+                    $app->get('/printqueue', 'App\Modules\registration\Controller\Ticket\PrintQueue');
                     $app->get('/{id}', 'App\Modules\registration\Controller\Ticket\GetTicket');
                     $app->put('/{id}/checkin', 'App\Modules\registration\Controller\Ticket\CheckinTicket');
                     $app->put('/{id}/lost', 'App\Modules\registration\Controller\Ticket\LostTicket');

@@ -15,6 +15,9 @@
  *          @OA\Schema(type="integer")
  *      ),
  *      @OA\Parameter(
+ *          ref="#/components/parameters/event",
+ *      ),
+ *      @OA\Parameter(
  *          ref="#/components/parameters/max_results",
  *      ),
  *      @OA\Parameter(
@@ -91,7 +94,8 @@ class GetMemberPosition extends BaseStaff
             }
             $user = $id;
         }
-        $data = $this->selectStaff(null, null, $user);
+        $event = $this->getEventId($request);
+        $data = $this->selectStaff($event, null, $user);
         return [
         \App\Controller\BaseController::LIST_TYPE,
         $data,

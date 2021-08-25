@@ -72,6 +72,18 @@
  *      )
  *  )
  *
+ *  @OA\Parameter(
+ *      parameter="event",
+ *      description="Target event ID for query. If not specified defaults to the current event",
+ *      in="query",
+ *      name="short_response",
+ *      required=false,
+ *      style="form",
+ *      @OA\Schema(
+ *          type="integer",
+ *      )
+ *  )
+ *
  *  @OA\Schema(
  *      schema="resource_list",
  *      @OA\Property(
@@ -585,6 +597,14 @@ abstract class BaseController
         $request = Request::createFromEnvironment($env);
         $response = new Response();
         return $event->buildResource($request, $response, ['id' => $id])[1];
+
+    }
+
+
+    protected function getEventId(Request $request)
+    {
+        $event = $request->getQueryParam('event', 'current');
+        return $this->getEvent($event)['id'];
 
     }
 
