@@ -23,6 +23,10 @@
  *              mediaType="multipart/form-data",
  *              @OA\Schema(
  *                  @OA\Property(
+ *                      property="badge_id",
+ *                      type="string",
+ *                  ),
+ *                  @OA\Property(
  *                      property="badge_name",
  *                      type="string",
  *                  ),
@@ -92,6 +96,10 @@ class PutTicket extends BaseTicketInclude
         }
         if (array_key_exists('emergency_contact', $body)) {
             $set['EmergencyContact'] = $body['emergency_contact'];
+        }
+        if (array_key_exists('badge_id', $body)) {
+            $this->verifyBadgeId($id, $body['badge_id']);
+            $set['BadgeID'] = $body['badge_id'];
         }
 
         if (array_key_exists('note', $body)) {
