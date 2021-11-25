@@ -546,56 +546,23 @@ function attendance_report($event = null)
 
     return <<<SQL
         SELECT
-            DISTINCT a.`AccountID`,
-            me.`Email`,
-            (
-                SELECT
-                    COUNT(DISTINCT `MeetingID`)
-                FROM
-                    MeetingAttendance AS b
-                WHERE
-                    b.AccountID = a.AccountID
-                    AND b.MeetingID IN (
-                        SELECT
-                            `MeetingID`
-                        FROM
-                            `OfficialMeetings`
-                        WHERE
-                            `EventID` = '$event'
-                    )
-            ) AS `Count`,
-            (
-                SELECT
-                    GROUP_CONCAT(
-                        DISTINCT (
-                            SELECT
-                                `Name`
-                            FROM
-                                OfficialMeetings AS n
-                            WHERE
-                                n.`MeetingID` = m.`MeetingID`
-                                AND n.`EventID` = '$event'
-                        ) SEPARATOR ', '
-                    )
-                FROM
-                    `MeetingAttendance` AS m
-                WHERE
-                    `AccountID` = a.`AccountID`
-            ) AS Attendance
-        FROM
-            `ConComList` AS a
-        INNER JOIN `Members` me USING(AccountID)
-        WHERE
-            `EventID` = '$event'
-            AND DepartmentID NOT IN (
-                SELECT
-                    `DepartmentID`
-                FROM
-                    `Departments`
-                WHERE
-                    `Name` = 'Historical Placeholder'
-            )
-       ORDER BY `Count` DESC
+            AccountID,
+            Email,
+            COUNT(Name) as Count,
+            GROUP_CONCAT(Name SEPARATOR ', ') as Meetings
+        FROM (
+            SELECT ma.AccountID as AccountID,
+                   m.Email as Email,
+                   om.Name as Name,
+                   om.Date as Date
+            FROM MeetingAttendance AS ma
+            INNER JOIN OfficialMeetings AS om ON ma.MeetingID = om.MeetingID
+            INNER JOIN Members AS m ON ma.AccountID = m.AccountID
+            WHERE `EventID` = '$event'
+            ORDER BY Date ASC
+        ) AS attendees
+        GROUP BY AccountID
+        ORDER BY Count DESC
 SQL;
 
 }
@@ -608,55 +575,23 @@ function cycle_attendance_report($cycle = null)
 
     return <<<SQL
         SELECT
-            DISTINCT a.`AccountID`,
-            me.`Email`,
-            (
-                SELECT
-                    COUNT(DISTINCT `MeetingID`)
-                FROM
-                    MeetingAttendance AS b
-                WHERE
-                    b.AccountID = a.AccountID
-                    AND b.MeetingID IN (
-                        SELECT
-                            `MeetingID`
-                        FROM
-                            `OfficialMeetings`
-                        WHERE
-                            `Date` >= '$dateFrom' AND `Date` <= '$dateTo'
-                    )
-            ) AS `Count`,
-            (
-                SELECT
-                    GROUP_CONCAT(
-                        DISTINCT (
-                            SELECT
-                                `Name`
-                            FROM
-                                OfficialMeetings AS n
-                            WHERE
-                                n.`MeetingID` = m.`MeetingID`
-                                AND n.`Date` >= '$dateFrom' AND n.`Date` <= '$dateTo'
-                        ) SEPARATOR ', '
-                    )
-                FROM
-                    `MeetingAttendance` AS m
-                WHERE
-                    `AccountID` = a.`AccountID`
-            ) AS Attendance
-        FROM
-            `ConComList` AS a
-        INNER JOIN `Members` me USING(AccountID)
-        WHERE
-            DepartmentID NOT IN (
-                SELECT
-                    `DepartmentID`
-                FROM
-                    `Departments`
-                WHERE
-                    `Name` = 'Historical Placeholder'
-            )
-       ORDER BY `Count` DESC
+            AccountID,
+            Email,
+            COUNT(Name) as Count,
+            GROUP_CONCAT(Name SEPARATOR ', ') as Meetings
+        FROM (
+            SELECT ma.AccountID as AccountID,
+                   m.Email as Email,
+                   om.Name as Name,
+                   om.Date as Date
+            FROM MeetingAttendance AS ma
+            INNER JOIN OfficialMeetings AS om ON ma.MeetingID = om.MeetingID
+            INNER JOIN Members AS m ON ma.AccountID = m.AccountID
+            WHERE Date >= '$dateFrom' AND Date <= '$dateTo'
+            ORDER BY Date ASC
+        ) AS attendees
+        GROUP BY AccountID
+        ORDER BY Count DESC
 SQL;
 
 }
