@@ -8,6 +8,7 @@ const DB_HOST = 'DBHOST';
 const DB_USER = 'DBUSER';
 const DB_NAME = 'DBNAME';
 const DB_PASS = 'DBPASS';
+const DB_PORT = 'DBPORT';
 const NEW_NEONID = 'NEW_NEONID';
 const NEW_NEONKEY = 'NEW_NEONKEY';
 const NEW_NEONBETA = 'NEW_NEONBETA';
@@ -93,7 +94,7 @@ if (!empty($_POST)) {
     DB_USER   => FILTER_SANITIZE_SPECIAL_CHARS,
     DB_NAME   => FILTER_SANITIZE_SPECIAL_CHARS,
     DB_PASS   => FILTER_SANITIZE_SPECIAL_CHARS,
-    DB_PASS   => FILTER_SANITIZE_SPECIAL_CHARS,
+    DB_PORT   => FILTER_SANITIZE_SPECIAL_CHARS,
 
     NEW_NEONID        => FILTER_SANITIZE_SPECIAL_CHARS,
     NEW_NEONKEY       => FILTER_SANITIZE_SPECIAL_CHARS,
@@ -120,6 +121,7 @@ if (!empty($_POST)) {
     $DBUSER = $updateData[DB_USER];
     $DBNAME = $updateData[DB_NAME];
     $DBPASS = $updateData[DB_PASS];
+    $DBPORT = $updateData[DB_PORT];
 
     $NEW_NEONID = $updateData[NEW_NEONID];
     $NEW_NEONKEY = $updateData[NEW_NEONKEY];
@@ -400,6 +402,18 @@ require(__DIR__.'/pages/base/body_begin.inc');
                 echo VALUE_EQ.$_ENV[DB_PASS];
             } elseif ($tried) {
                 echo UI_PROBLEM;
+            }
+            ?>">
+        </div>
+        <div class="UI-pad-bottom">
+            <label>Database Port:</label> <br>
+            <input type="text" name="DBPORT" class="UI-input <?php
+            if ($updateData != null && strlen($updateData[DB_PORT])) {
+                echo VALUE_EQ.$updateData[DB_PORT];
+            } elseif (isset($_ENV[DB_PORT])) {
+                echo VALUE_EQ.$_ENV[DB_PORT];
+            } else {
+                echo VALUE_EQ."3306";
             }
             ?>">
         </div>

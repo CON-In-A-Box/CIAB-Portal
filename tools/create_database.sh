@@ -35,10 +35,12 @@ PASSWORD=$(cat /dev/urandom | env LC_CTYPE=C tr -dc a-zA-Z0-9 | head -c 16;)
 POSTFIX=$(cat /dev/urandom | env LC_CTYPE=C tr -dc a-zA-Z0-9 | head -c 4;)
 CON_DB='ciab_'${POSTFIX}
 USER='ciab-dev-'${POSTFIX}
+PORT=3306
 
 echo "DBUSER=\"${USER}\"" > .env;
 echo "DBNAME=\"${CON_DB}\"">> .env;
 echo "DBPASS=\"${PASSWORD}\"">> .env;
+echo "DBPORT=\"${PORT}\"">> .env;
 
 
 mysql -h localhost -u root "-p${DB_ROOT_PASSWORD}" -A -e " \

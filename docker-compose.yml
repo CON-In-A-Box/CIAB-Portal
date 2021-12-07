@@ -11,10 +11,11 @@ services:
       - .:/var/www/html/
     environment:
         # To more nearly simulate Production, comment all but `DOCKER` out and rely on `.env`
-        DBHOST: 'mysql'
+        DBHOST: 'mysql:${DBPORT:-3306}'
         DBNAME: ${DBNAME}
         DBPASS: ${DBPASS}
         DBUSER: ${DBUSER}
+        DBPORT: ${DBPORT:-3306}
         TEST_DBNAME: ${TEST_DBNAME}
         DB_BACKEND: ${DB_BACKEND}
         API_SERVER: "http://apache"
@@ -47,8 +48,11 @@ services:
       MYSQL_DATABASE: ${DBNAME}
       MYSQL_PASSWORD: ${DBPASS}
       MYSQL_USER: ${DBUSER}
+      MYSQL_TCP_PORT: ${DBPORT:-3306}
     ports:
-      - "3306:3306"
+      - "${DBPORT:-3306}:${DBPORT:-3306}"
+    expose:
+      - ${DBPORT:-3306}
     volumes:
       - mysql:/var/lib/mysql
   mailcatcher:
