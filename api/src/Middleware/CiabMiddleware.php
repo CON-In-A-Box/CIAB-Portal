@@ -16,6 +16,9 @@ class CiabMiddleware
 
     public function __invoke(Request $request, Response $response, $next)
     {
+        if (isset($_SESSION)) {
+            unset($_SESSION['IS_ADMIN']);
+        }
         $user = $request->getAttribute('oauth2-token')['user_id'];
         if (!empty($user)) {
             \loadAccount($user);

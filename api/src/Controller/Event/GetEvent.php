@@ -41,6 +41,7 @@ namespace App\Controller\Event;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
+use Atlas\Query\Select;
 
 use App\Controller\NotFoundException;
 
@@ -50,11 +51,24 @@ class GetEvent extends BaseEvent
 
     public function buildResource(Request $request, Response $response, $params): array
     {
-        $event = $this->getEvent($params['id']);
-        $this->id = $event['id'];
+        $select = Select::new($this->container->db);
+        $select->columns(...BaseEvent::selectMapping());
+        $select->from('Events');
+        if ($params['id'] == 'current') {
+            $select->where('`DateTo` >= NOW()');
+            $select->orderBy('DateFrom ASC LIMIT 1');
+        } else {
+            $select->whereEquals(['EventID' => $params['id']]);
+        }
+        $data = $select->fetchOne();
+        if (empty($data)) {
+            throw new NotFoundException("Event '{$params['id']}' Not Found");
+        }
+        $this->id = $data['id'];
+
         return [
         \App\Controller\BaseController::RESOURCE_TYPE,
-        $event
+        $data
         ];
 
     }

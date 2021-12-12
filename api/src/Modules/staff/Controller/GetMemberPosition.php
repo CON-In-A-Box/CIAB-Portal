@@ -15,10 +15,13 @@
  *          @OA\Schema(type="integer")
  *      ),
  *      @OA\Parameter(
- *          ref="#/components/parameters/maxResults",
+ *          ref="#/components/parameters/event",
  *      ),
  *      @OA\Parameter(
- *          ref="#/components/parameters/pageToken",
+ *          ref="#/components/parameters/max_results",
+ *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/page_token",
  *      ),
  *      @OA\Parameter(
  *          ref="#/components/parameters/short_response",
@@ -46,10 +49,10 @@
  *      path="/member/staff_membership/",
  *      summary="Gets staff positions for the current member",
  *      @OA\Parameter(
- *          ref="#/components/parameters/maxResults",
+ *          ref="#/components/parameters/max_results",
  *      ),
  *      @OA\Parameter(
- *          ref="#/components/parameters/pageToken",
+ *          ref="#/components/parameters/page_token",
  *      ),
  *      @OA\Response(
  *          response=200,
@@ -75,32 +78,24 @@ namespace App\Modules\staff\Controller;
 use Slim\Http\Request;
 use Slim\Http\Response;
 use App\Controller\PermissionDeniedException;
-use App\Controller\NotFoundException;
 
 class GetMemberPosition extends BaseStaff
 {
 
 
-    public function buildResource(Request $request, Response $response, $args): array
+    public function buildResource(Request $request, Response $response, $params): array
     {
         $user = $request->getAttribute('oauth2-token')['user_id'];
-        if (array_key_exists('id', $args)) {
-            $data = \lookup_users_by_key($args['id']);
-            if (empty($data['users'])) {
-                if (empty($data['error'])) {
-                    $error = 'No Members Found';
-                } else {
-                    $error = $data['error'];
-                }
-                throw new NotFoundException($error);
-            }
-            if ($data['users'][0]['Id'] != $user &&
+        if (array_key_exists('id', $params)) {
+            $id = $this->getMember($request, $params['id'])[0]['id'];
+            if ($id != $user &&
                 !\ciab\RBAC::havePermission('api.get.staff')) {
                 throw new PermissionDeniedException();
             }
-            $user = $data['users'][0]['Id'];
+            $user = $id;
         }
-        $data = $this->selectStaff(null, null, $user);
+        $event = $this->getEventId($request);
+        $data = $this->selectStaff($event, null, $user);
         return [
         \App\Controller\BaseController::LIST_TYPE,
         $data,

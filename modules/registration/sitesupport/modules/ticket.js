@@ -4,12 +4,17 @@
 
 /* jshint browser: true */
 /* jshint -W097 */
+/* jshint esversion: 6 */
 /* globals apiRequest, showSpinner, hideSpinner, alertbox */
 
 export class RegTicket {
 
   constructor(data) {
     this.data = data;
+  }
+
+  display() {
+    /* Override me! */
   }
 
   emailMe() {
@@ -23,21 +28,20 @@ export class RegTicket {
       .catch(function(response) {
         hideSpinner();
         if (response instanceof Error) { throw response; }
-      })
+      });
   }
 
   pickupBadge() {
     showSpinner();
     apiRequest('PUT', 'registration/ticket/' + this.data.id + '/pickup','')
-      .then(function(response) {
-        location.reload();
+      .then(function() {
+        location.assign('/index.php?Function=main');
         hideSpinner();
-        console.log(response);
       })
       .catch(function(response) {
         hideSpinner();
         if (response instanceof Error) { throw response; }
-      })
+      });
   }
 
   lostBadge() {
@@ -46,19 +50,20 @@ export class RegTicket {
       .then(function() {
         hideSpinner();
         alertbox('Badge has been re-printed!',
-          'Please visit registration to claim your new badge.');
+          'Please visit registration to claim your new badge.')
+          .then(() => location.assign('/index.php?Function=main'));
       })
       .catch(function(response) {
         hideSpinner();
         if (response instanceof Error) { throw response; }
-      })
+      });
   }
 
   updateBadge() {
     showSpinner();
     apiRequest('PUT', 'registration/ticket/' + this.data.id,
-      'badgeName=' + this.data.badgeName +
-      '&contact=' + this.data.emergencyContact)
+      'badge_name=' + this.data.badge_name +
+      '&emergency_contact=' + this.data.emergency_contact)
       .then(function() {
         hideSpinner();
         location.reload();
@@ -66,7 +71,7 @@ export class RegTicket {
       .catch(function(response) {
         hideSpinner();
         if (response instanceof Error) { throw response; }
-      })
+      });
   }
 
 }

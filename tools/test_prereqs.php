@@ -16,6 +16,8 @@ $db = MyPDO::instance();
 $delete = Delete::new($db);
 $delete->from('Announcements')->perform();
 $delete->from('Authentication')->perform();
+$delete->from('MeetingAttendance')->perform();
+$delete->from('OfficialMeetings')->perform();
 $delete->from('ConComList')->perform();
 $delete->from('Registrations')->perform();
 $delete->from('BadgeTypes')->perform();
@@ -23,6 +25,7 @@ $delete->from('VolunteerHours')->perform();
 $delete->from('HourRedemptions')->perform();
 $delete->from('Events')->perform();
 $delete->from('AnnualCycles')->perform();
+$delete->from('AccountConfiguration')->perform();
 $delete->from('Members')->perform();
 
 $select = Select::new($db);
@@ -34,26 +37,32 @@ $val['Value'] = '1000,'.$val['Value'];
 $update = Update::new($db);
 $update->table('Configuration')->columns($val)->whereEquals(['Field' => 'ADMINACCOUNTS'])->perform();
 
+$from = strtotime('-1 month');
+$to = strtotime('+1 year');
+
 $insert = Insert::new($db);
 $insert->into('AnnualCycles')->columns([
-    'DateFrom' => date('Y-m-d', strtotime('1 October 2020')),
-    'DateTo' => date('Y-m-d', strtotime('30 September 2021'))
+    'DateFrom' => date('Y-m-d', $from),
+    'DateTo' => date('Y-m-d', $to)
 ])->perform();
 $cycleId = $insert->getLastInsertId();
+
+$from = strtotime('-1 day');
+$to = strtotime('+1 day');
 
 $insert = Insert::new($db);
 $insert->into('Events')->columns([
     'AnnualCycleID' => $cycleId,
-    'DateFrom' => date('Y-m-d', strtotime('3 July 2021')),
-    'DateTo' => date('Y-m-d', strtotime('8 July 2021')),
+    'DateFrom' => date('Y-m-d', $from),
+    'DateTo' => date('Y-m-d', $to),
     'EventName' => 'AsgardCon'
 ])->perform();
 $eventId = $insert->getLastInsertId();
 
 $insert = Insert::new($db);
 $insert->into('BadgeTypes')->columns([
-    'AvailableFrom' => date('Y-m-d', strtotime('3 July 2021')),
-    'AvailableTo' => date('Y-m-d', strtotime('8 July 2021')),
+    'AvailableFrom' => date('Y-m-d', $from),
+    'AvailableTo' => date('Y-m-d', $to),
     'Cost' => 0,
     'Name' => 'A Badge',
     'EventID' => $eventId

@@ -34,10 +34,10 @@
  *          ref="#/components/parameters/short_response",
  *      ),
  *      @OA\Parameter(
- *          ref="#/components/parameters/maxResults",
+ *          ref="#/components/parameters/max_results",
  *      ),
  *      @OA\Parameter(
- *          ref="#/components/parameters/pageToken",
+ *          ref="#/components/parameters/page_token",
  *      ),
  *      @OA\Response(
  *          response=200,
@@ -58,6 +58,7 @@ namespace App\Controller\Event;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
+use Atlas\Query\Select;
 
 use App\Controller\InvalidParameterException;
 
@@ -83,31 +84,22 @@ class ListEvents extends BaseEvent
             }
         }
 
+        $select = Select::new($this->container->db);
+        $select->columns(...BaseEvent::selectMapping());
+        $select->from('Events');
 
-        $sql = "SELECT * FROM `Events`";
         if ($begin !== null) {
-            $sql .= " WHERE `DateFrom` >= '".date("Y-m-d", $begin)."'";
+            $select->where("`DateFrom` >= '".date("Y-m-d", $begin)."'");
         }
         if ($end !== null) {
-            if ($begin === null) {
-                $sql .= " WHERE";
-            } else {
-                $sql .= " AND";
-            }
-            $sql .= " DateTo <= '".date("Y-m-d", $end)."'";
+            $select->where("`DateTo` <= '".date("Y-m-d", $end)."'");
         }
-        $sth = $this->container->db->prepare($sql);
-        $sth->execute();
-        $events = $sth->fetchAll();
+        $events = $select->fetchAll();
         $output = array();
         $output['type'] = 'event_list';
-        $data = array();
-        foreach ($events as $entry) {
-            $data[] = $this->processEvent($entry);
-        }
         return [
         \App\Controller\BaseController::LIST_TYPE,
-        $data,
+        $events,
         $output];
 
     }

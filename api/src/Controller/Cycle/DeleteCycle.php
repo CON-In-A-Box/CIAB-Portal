@@ -36,6 +36,7 @@ namespace App\Controller\Cycle;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
+use Atlas\Query\Delete;
 
 class DeleteCycle extends BaseCycle
 {
@@ -43,12 +44,13 @@ class DeleteCycle extends BaseCycle
 
     public function buildResource(Request $request, Response $response, $params): array
     {
-        $this->getCycle($params);
+        $this->getCycle($request, $response, $params);
         $permissions = ['api.delete.cycle'];
         $this->checkPermissions($permissions);
 
-        $sth = $this->container->db->prepare("DELETE FROM `AnnualCycles` WHERE `AnnualCycleID` = ".$params['id'].";");
-        $sth->execute();
+        $delete = Delete::new($this->container->db);
+        $result = $delete->from('AnnualCycles')->whereEquals(['AnnualCycleID' => $params['id']])->perform();
+
         return [
         \App\Controller\BaseController::RESOURCE_TYPE,
         [null],

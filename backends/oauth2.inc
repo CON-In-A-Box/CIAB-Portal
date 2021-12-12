@@ -6,8 +6,10 @@ require_once __DIR__."/oauth2_pdo.inc";
 
 function setupOAUTH2()
 {
-    $dotenv = Dotenv\Dotenv::create(dirname(__DIR__));
-    $dotenv->load();
+    if (is_file(dirname(__DIR__).'/.env')) {
+        $dotenv = Dotenv\Dotenv::create(dirname(__DIR__));
+        $dotenv->load();
+    }
 
     $dsn      = "mysql:dbname=${_ENV['DBNAME']};host=${_ENV['DBHOST']}";
 

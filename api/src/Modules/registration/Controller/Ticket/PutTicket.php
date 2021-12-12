@@ -23,11 +23,15 @@
  *              mediaType="multipart/form-data",
  *              @OA\Schema(
  *                  @OA\Property(
- *                      property="badgeName",
+ *                      property="badge_id",
  *                      type="string",
  *                  ),
  *                  @OA\Property(
- *                      property="contact",
+ *                      property="badge_name",
+ *                      type="string",
+ *                  ),
+ *                  @OA\Property(
+ *                      property="emergency_contact",
  *                      type="string",
  *                  ),
  *                  @OA\Property(
@@ -67,6 +71,7 @@ namespace App\Modules\registration\Controller\Ticket;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
+use Atlas\Query\Update;
 
 use App\Controller\ConflictException;
 use App\Controller\InvalidParameterException;
@@ -86,28 +91,32 @@ class PutTicket extends BaseTicketInclude
         }
         $set = [];
 
-        if (array_key_exists('badgeName', $body)) {
-            $set[] = '`BadgeName` = '.\MyPDO::quote($body['badgeName']);
+        if (array_key_exists('badge_name', $body)) {
+            $set['BadgeName'] = $body['badge_name'];
         }
-        if (array_key_exists('contact', $body)) {
-            $set[] = '`EmergencyContact` = '.\MyPDO::quote($body['contact']);
+        if (array_key_exists('emergency_contact', $body)) {
+            $set['EmergencyContact'] = $body['emergency_contact'];
+        }
+        if (array_key_exists('badge_id', $body)) {
+            $this->verifyBadgeId($id, $body['badge_id']);
+            $set['BadgeID'] = $body['badge_id'];
         }
 
         if (array_key_exists('note', $body)) {
-            $set[] = '`Note` = '.\MyPDO::quote($body['note']);
+            $set['Note'] = $body['note'];
         }
 
         if (empty($set)) {
             throw new InvalidParameterException('Understood Parameter missing.');
         }
 
-        $setStr = implode(', ', $set);
 
-        $sql = "UPDATE `Registrations` SET $setStr WHERE RegistrationID = $id";
-
-        $sth = $this->container->db->prepare($sql);
-        $sth->execute();
-        if ($sth->rowCount() == 0) {
+        $result = Update::new($this->container->db)
+            ->table('Registrations')
+            ->columns($set)
+            ->whereEquals(['RegistrationID' => $id])
+            ->perform();
+        if ($result->rowCount() == 0) {
             throw new ConflictException('Could not update');
         }
 

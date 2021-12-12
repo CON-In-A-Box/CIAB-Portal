@@ -8,6 +8,7 @@ const DB_HOST = 'DBHOST';
 const DB_USER = 'DBUSER';
 const DB_NAME = 'DBNAME';
 const DB_PASS = 'DBPASS';
+const DB_PORT = 'DBPORT';
 const NEW_NEONID = 'NEW_NEONID';
 const NEW_NEONKEY = 'NEW_NEONKEY';
 const NEW_NEONBETA = 'NEW_NEONBETA';
@@ -93,7 +94,7 @@ if (!empty($_POST)) {
     DB_USER   => FILTER_SANITIZE_SPECIAL_CHARS,
     DB_NAME   => FILTER_SANITIZE_SPECIAL_CHARS,
     DB_PASS   => FILTER_SANITIZE_SPECIAL_CHARS,
-    DB_PASS   => FILTER_SANITIZE_SPECIAL_CHARS,
+    DB_PORT   => FILTER_SANITIZE_SPECIAL_CHARS,
 
     NEW_NEONID        => FILTER_SANITIZE_SPECIAL_CHARS,
     NEW_NEONKEY       => FILTER_SANITIZE_SPECIAL_CHARS,
@@ -120,6 +121,7 @@ if (!empty($_POST)) {
     $DBUSER = $updateData[DB_USER];
     $DBNAME = $updateData[DB_NAME];
     $DBPASS = $updateData[DB_PASS];
+    $DBPORT = $updateData[DB_PORT];
 
     $NEW_NEONID = $updateData[NEW_NEONID];
     $NEW_NEONKEY = $updateData[NEW_NEONKEY];
@@ -154,11 +156,17 @@ if (!empty($_POST)) {
             }
 
             $myfile = fopen(ENV_FILE, "w");
+            if ($NEW_NEONKEY || $NEW_NEONID) {
+                $crm = 'CRM_BACKEND=neon.inc';
+            } else {
+                $crm = '# CRM_BACKEND=none.inc';
+            }
             fwrite($myfile, <<<DONE
 # CON-In-A-Box Site Config (module)
 # Setup via web page
 
 DB_BACKEND=mysqlpdo.inc
+$crm
 
 # DBConfig, passwords, etc
 # Do not share this info
@@ -397,20 +405,32 @@ require(__DIR__.'/pages/base/body_begin.inc');
             }
             ?>">
         </div>
+        <div class="UI-pad-bottom">
+            <label>Database Port:</label> <br>
+            <input type="text" name="DBPORT" class="UI-input <?php
+            if ($updateData != null && strlen($updateData[DB_PORT])) {
+                echo VALUE_EQ.$updateData[DB_PORT];
+            } elseif (isset($_ENV[DB_PORT])) {
+                echo VALUE_EQ.$_ENV[DB_PORT];
+            } else {
+                echo VALUE_EQ."3306";
+            }
+            ?>">
+        </div>
     </div>
 
-    <div id="neon_content" class="UI-margin">
-        <button type="button" class="UI-event-dropdown-bar" onclick="expandSection('neon')">
-            <span>Neon CRM Data (Optional)</span> <em id="neon_arrow" class="fas fa-caret-down"></em>
+    <div id="crm_content" class="UI-margin">
+        <button type="button" class="UI-event-dropdown-bar" onclick="expandSection('crm')">
+            <span>Neon CRM Data (Optional)</span> <em id="crm_arrow" class="fas fa-caret-down"></em>
         </button>
 
-        <div id="neon" class="UI-container UI-padding UI-adminborder UI-hide">
+        <div id="crm" class="UI-container UI-padding UI-adminborder UI-hide">
             <div class="UI-orange UI-configure-info-panel">
-                Use of NEON is optional. Define BOTH keys if NEON is in use.
+                Use of Neon CRM is optional. Define BOTH keys if Neon CRM is in use.
             </div>
 
             <div>
-                <label>Neon Key:</label> <br>
+                <label>Neon CRM Key:</label> <br>
                 <input type="text" name="NEW_NEONKEY" class="UI-input <?php
                 if ($updateData != null && strlen($updateData[NEW_NEONKEY])) {
                     echo VALUE_EQ.$updateData[NEW_NEONKEY];
@@ -420,7 +440,7 @@ require(__DIR__.'/pages/base/body_begin.inc');
                 ?>" placeholder="<example: bbbbbccccdddfae12341aabbccddeeff>">
                 </br>
 
-                <label>Neon ID:</label> <br>
+                <label>Neon CRM ID:</label> <br>
                 <input type="text" name="NEW_NEONID" class="UI-input <?php
                 if ($updateData != null && strlen($updateData[NEW_NEONID])) {
                     echo VALUE_EQ.$updateData[NEW_NEONID];
@@ -441,7 +461,7 @@ require(__DIR__.'/pages/base/body_begin.inc');
                 </br>
 
                 <div class="w3-orange w3-panel w3-padding-16">
-                If you are importing from NEON put a comma seperated list of user IDs of the primary admins here. If we do not find an '@' in the entry we will just add the contents here as the admin Ids being imported.
+                If you are importing from CRM put a comma seperated list of user IDs of the primary admins here. If we do not find an '@' in the entry we will just add the contents here as the admin Ids being imported.
                 </div>
                 <label>Admin User IDs (comma seperated):</label> <br>
                 <input type="text" name="NEW_ADMINACCOUNTS" class="UI-input <?php
@@ -521,7 +541,7 @@ require(__DIR__.'/pages/base/body_begin.inc');
         </div>
     </div>
 
-    <div class="UI-event-sectionbar UI-margin">Admin Configuration (Required, If not using Neon)</div>
+    <div class="UI-event-sectionbar UI-margin">Admin Configuration (Required, If not using CRM)</div>
     <div class="UI-configure-panel UI-border UI-margin">
         <div class="UI-pad-bottom">
             <label>Admin Email: <span class="UI-configure-note">Account will be created</span></label> <br>

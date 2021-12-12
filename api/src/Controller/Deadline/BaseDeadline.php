@@ -43,6 +43,24 @@
  *          property="note",
  *          type="string",
  *          description="Note about the deadline."
+ *      ),
+ *      @OA\Property(
+ *          property="scope",
+ *          type="integer",
+ *          description="The scope of the deadline"
+ *      ),
+ *      @OA\Property(
+ *          property="posted_by",
+ *          description="The member who created the deadline",
+ *          oneOf={
+ *              @OA\Schema(
+ *                  ref="#/components/schemas/member"
+ *              ),
+ *              @OA\Schema(
+ *                  type="integer",
+ *                  description="Member Id"
+ *              )
+ *          }
  *      )
  *  )
  *
@@ -80,66 +98,74 @@ namespace App\Controller\Deadline;
 use Slim\Container;
 use Slim\Http\Request;
 use Slim\Http\Response;
+use Atlas\Query\Select;
 use App\Controller\BaseController;
+use App\Controller\IncludeResource;
 
 abstract class BaseDeadline extends BaseController
 {
+
+    use \App\Controller\TraitScope;
+
+    protected static $columnsToAttributes = [
+    '"deadline"' => 'type',
+    'DeadlineID' => 'id',
+    'DepartmentID' => 'department',
+    'Deadline' => 'deadline',
+    'Note' => 'note',
+    'Scope' => 'scope',
+    'PostedBy' => 'posted_by'
+    ];
 
 
     public function __construct(Container $container)
     {
         parent::__construct('deadline', $container);
-        \ciab\RBAC::customizeRBAC(array($this, 'customizeDeadlineRBAC'));
+        \ciab\RBAC::customizeRBAC('\App\Controller\Deadline\BaseDeadline::customizeDeadlineRBAC');
 
     }
 
 
-    public function buildDeadline(Request $request, Response $response, $id, $dept, $deadline, $note)
-    {
-        $output = array();
-        $output['type'] = 'deadline';
-        $output['id'] = $id;
-        $output['department'] = $dept;
-        $output['deadline'] = $deadline;
-        $output['note'] = $note;
-        return $output;
-
-    }
-
-
-    public function customizeDeadlineRBAC($instance)
+    public static function customizeDeadlineRBAC($instance, $database)
     {
         $positions = [];
-        $sql = "SELECT `PositionID`, `Name` FROM `ConComPositions` ORDER BY `PositionID` ASC";
-        $result = $this->container->db->prepare($sql);
-        $result->execute();
-        $value = $result->fetch();
-        while ($value !== false) {
+        $values = Select::new($database)
+            ->columns('PositionID', 'Name')
+            ->from('ConComPositions')
+            ->orderBy('`PositionID` ASC')
+            ->fetchAll();
+        foreach ($values as $value) {
             $positions[intval($value['PositionID'])] = $value['Name'];
-            $value = $result->fetch();
         }
 
-        $result = $this->container->db->prepare("SELECT `DepartmentID` FROM `Departments`");
-        $result->execute();
-        $value = $result->fetch();
-        while ($value !== false) {
+        $values = Select::new($database)
+            ->columns('DepartmentID')
+            ->from('Departments')
+            ->fetchAll();
+        foreach ($values as $value) {
             $perm_get = 'api.get.deadline.'.$value['DepartmentID'];
             $perm_del = 'api.delete.deadline.'.$value['DepartmentID'];
             $perm_pos = 'api.post.deadline.'.$value['DepartmentID'];
             $perm_put = 'api.put.deadline.'.$value['DepartmentID'];
-            $target_l = $value['DepartmentID'].'.'.end(array_keys($positions));
             $target_h = $value['DepartmentID'].'.'.array_keys($positions)[0];
+            $target_r = $value['DepartmentID'].'.'.end(array_keys($positions));
             try {
-                $role = $instance->getRole($target_l);
-                $role->addPermission($perm_get);
                 $role = $instance->getRole($target_h);
                 $role->addPermission($perm_del);
                 $role->addPermission($perm_pos);
                 $role->addPermission($perm_put);
+                $role = $instance->getRole($target_r);
+                $role->addPermission($perm_get);
             } catch (Exception\InvalidArgumentException $e) {
                 error_log($e);
             }
-            $value = $result->fetch();
+        }
+
+        try {
+            $role = $instance->getRole('all.staff');
+            $role->addPermission('api.get.deadline.staff');
+        } catch (Exception\InvalidArgumentException $e) {
+            error_log($e);
         }
 
     }

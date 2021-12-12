@@ -7,7 +7,9 @@ use App\Tests\Base\CiabTestCase;
 class AnnouncementTest extends CiabTestCase
 {
 
-    private $aid = array();
+    private $target;
+
+    private $position;
 
 
     protected function addAnnouncement($scope): string
@@ -22,9 +24,9 @@ class AnnouncementTest extends CiabTestCase
             'POST',
             '/department/1/announcement',
             null,
-            ['Scope' => $scope,
-             'Text' => 'testing',
-             'Email' => 1],
+            ['scope' => $scope,
+             'text' => 'testing',
+             'email' => 1],
             201
         );
 
@@ -36,13 +38,13 @@ class AnnouncementTest extends CiabTestCase
             if ($target == null && !in_array($item->id, $initial_ids)) {
                 $target = $item->id;
                 $this->assertIncludes($item, 'department');
-                $this->assertIncludes($item, 'postedBy');
+                $this->assertIncludes($item, 'posted_by');
                 unset($item->department);
-                unset($item->postedBy);
+                unset($item->posted_by);
                 $this->assertEquals([
                     'type' => 'announcement',
                     'id' => $target,
-                    'postedOn' => $item->postedOn,
+                    'posted_on' => $item->posted_on,
                     'scope' => "$scope",
                     'text' => 'testing',
                 ], (array)$item);
@@ -69,57 +71,154 @@ class AnnouncementTest extends CiabTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        for ($i = 0; $i < 4; $i ++) {
-            $this->aid[$i] = $this->addAnnouncement($i);
-        }
+        $this->target = $this->addAnnouncement(0);
+        $id = $this->testing_accounts[0];
+        $this->position = $this->runSuccessJsonRequest('POST', "/member/$id/staff_membership", null, ['Department' => '1', 'Position' => '3', 'Note' => 'PHPUnit Testing'], 201);
 
     }
 
 
     protected function tearDown(): void
     {
+        $this->runRequest('DELETE', '/announcement/'.$this->target, null, null, 204);
+        $this->runRequest('DELETE', '/staff_membership/'.$this->position->id, null, null, 204);
+
         parent::tearDown();
-        foreach ($this->aid as $target) {
-            $this->runSuccessRequest('DELETE', '/announcement/'.$target, null, null, 204);
-        }
 
     }
 
 
-    public function testAnnounce(): void
+    public function provider(): array
     {
-        $data = $this->runSuccessJsonRequest(
-            'GET',
-            '/department/1/announcements'
-        );
-        $this->assertNotEmpty($data->data);
-        $this->assertIncludes($data->data[0], 'department');
-        $this->assertIncludes($data->data[0], 'postedBy');
+        return [
+            /* Loki, concom member, same department */
+        [1, 0, 0, true],
+        [1, 1, 0, true],
+        [1, 2, 0, true],
+            /* Loki, concom member, other department*/
+        [4, 0, 0, true],
+        [4, 1, 0, true],
+        [4, 2, 0, false],
+            /* Frigga , normal member */
+        [1, 0, 1, true],
+        [1, 1, 1, false],
+        [1, 2, 1, false],
+            /* Thor, Admin member, other department */
+        [4, 0, null, true],
+        [5, 1, null, true],
+        [6, 2, null, true],
+        ];
 
-        $this->runSuccessRequest(
+    }
+
+
+    /**
+     * @test
+     * @dataProvider provider
+     **/
+    public function testAnnouncmentScope($department, $scope, $account, $result): void
+    {
+        if ($account === null) {
+            $id = 1000;
+        } else {
+            $id = $this->testing_accounts[$account];
+        }
+
+        $this->runRequest(
             'PUT',
-            '/announcement/'.$this->aid[1],
+            '/announcement/'.$this->target,
             null,
-            ['Department' => 2,
-             'Text' => 'New Message',
-             'Scope' => 1]
+            ['department' => $department,
+             'scope' => $scope ],
+            200
         );
 
-        $data = $this->runSuccessJsonRequest(
-            'GET',
-            '/announcement/'.$this->aid[1]
-        );
-        $this->assertSame($data->text, 'New Message');
-        $this->assertIncludes($data, 'department');
-        $this->assertIncludes($data, 'postedBy');
 
-        $data = $this->runSuccessJsonRequest(
-            'GET',
-            '/member/1000/announcements'
-        );
-        $this->assertNotEmpty($data->data);
-        $this->assertIncludes($data->data[0], 'department');
-        $this->assertIncludes($data->data[0], 'postedBy');
+        /* check member access */
+
+        if ($account === null) {
+            $data = $this->RunSuccessJsonRequest(
+                'GET',
+                "/announcement"
+            );
+        } else {
+            $data = $this->NPRunSuccessJsonRequest(
+                'GET',
+                "/announcement",
+                null,
+                null,
+                200,
+                $account
+            );
+        }
+        $found = false;
+        foreach ($data->data as $entry) {
+            if ($entry->id == $this->target) {
+                $found = true;
+            }
+        }
+        if ($result) {
+            $this->assertTrue($found);
+            $this->assertNotEmpty($data->data);
+        } else {
+            $this->assertFalse($found);
+        }
+
+        /* check department access */
+
+        if ($account === null) {
+            $data = $this->RunSuccessJsonRequest(
+                'GET',
+                "/department/$department/announcements"
+            );
+        } else {
+            $data = $this->NPRunSuccessJsonRequest(
+                'GET',
+                "/department/$department/announcements",
+                null,
+                null,
+                200,
+                $account
+            );
+        }
+        $found = false;
+        foreach ($data->data as $entry) {
+            if ($entry->id == $this->target) {
+                $found = true;
+            }
+        }
+        if ($result) {
+            $this->assertTrue($found);
+            $this->assertNotEmpty($data->data);
+        } else {
+            $this->assertFalse($found);
+        }
+
+        /* check direct access */
+
+        if ($result) {
+            $code = 200;
+        } else {
+            $code = 403;
+        }
+        if ($account === null) {
+            $this->RunSuccessJsonRequest(
+                'GET',
+                "/announcement/{$this->target}",
+                null,
+                null,
+                $code
+            );
+        } else {
+            $this->NPRunSuccessJsonRequest(
+                'GET',
+                "/announcement/{$this->target}",
+                null,
+                null,
+                $code,
+                $account
+            );
+        }
 
     }
 
@@ -134,15 +233,15 @@ class AnnouncementTest extends CiabTestCase
             404
         );
 
-        $this->runRequest('PUT', '/announcement/'.$this->aid[2], null, null, 400);
+        $this->runRequest('PUT', '/announcement/'.$this->target, null, null, 400);
 
         $this->runRequest('PUT', '/announcement/-1', null, null, 404);
 
         $this->runRequest(
             'PUT',
-            '/announcement/'.$this->aid[2],
+            '/announcement/'.$this->target,
             null,
-            ['Department' => -1],
+            ['department' => -1],
             404
         );
 
@@ -152,9 +251,9 @@ class AnnouncementTest extends CiabTestCase
             'POST',
             '/department/-1/announcement',
             null,
-            ['Scope' => 2,
-             'Text' => 'testing',
-             'Email' => 0],
+            ['scope' => 2,
+             'text' => 'testing',
+             'email' => 0],
             404
         );
 
@@ -162,8 +261,8 @@ class AnnouncementTest extends CiabTestCase
             'POST',
             '/department/1/announcement',
             null,
-            ['Text' => 'testing',
-             'Email' => 0],
+            ['text' => 'testing',
+             'email' => 0],
             400
         );
 
@@ -171,8 +270,8 @@ class AnnouncementTest extends CiabTestCase
             'POST',
             '/department/1/announcement',
             null,
-            ['Scope' => 2,
-             'Email' => 0],
+            ['scope' => 2,
+             'email' => 0],
             400
         );
 

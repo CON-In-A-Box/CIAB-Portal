@@ -19,10 +19,11 @@ abstract class BaseTicketInclude extends BaseTicket
     {
         parent::__construct($container);
         $this->includes = [
-        new IncludeResource('\App\Modules\registration\Controller\Ticket\GetTicketTypes', 'id', 'ticketType'),
+        new IncludeResource('\App\Modules\registration\Controller\Ticket\GetTicketTypes', 'id', 'ticket_type'),
         new IncludeResource('\App\Controller\Member\GetMember', 'id', 'member'),
-        new IncludeResource('\App\Controller\Member\GetMember', 'id', 'registeredBy'),
-        new IncludeResource('\App\Controller\Member\GetMember', 'id', 'badgeDependentOn'),
+        new IncludeResource('\App\Controller\Member\GetMember', 'id', 'registered_by'),
+        new IncludeResource('\App\Controller\Member\GetMember', 'id', 'badge_dependent_on'),
+        new IncludeResource('\App\Controller\Member\GetMember', 'id', 'void_by'),
         new IncludeResource('\App\Controller\Event\GetEvent', 'id', 'event')
         ];
 

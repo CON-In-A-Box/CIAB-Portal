@@ -9,27 +9,21 @@
 /* exported doImport, importConcom, deleteEvent, newEvent, saveEvent,
             editEvent, saveBadge, editBadge, newBadge, deleteBadge,
             expandEvent, saveCycle, newCycle, deleteMeeting,
-            saveMeeting, editMeeting, newMeeting, reloadFromNeon */
+            saveMeeting, editMeeting, newMeeting, reloadFromCRM */
 
 function basicEventRequest(parameter, finish) {
   basicBackendRequest('POST', 'event', parameter, finish);
 }
 
-function reloadFromNeon() {
-  window.location = 'index.php?Function=event&reloadFromNeon=1';
+function reloadFromCRM() {
+  window.location = 'index.php?Function=event&reloadFromCRM=1';
 }
 
 function newMeeting() {
   var today = new Date();
-  var dd = today.getDate();
-  var mm = today.getMonth() + 1;
+  var dd = ('0' + today.getDate()).slice(-2);
+  var mm = ('0' + (today.getMonth() + 1)).slice(-2);
   var yyyy = today.getFullYear();
-  if (dd < 10) {
-    dd = '0' + dd;
-  }
-  if (mm < 10) {
-    mm = '0' + mm;
-  }
   document.getElementById('meet_id').value = -1;
   document.getElementById('meet_name').value = 'New Meeting';
   document.getElementById('meet_date').value = yyyy + '-' + mm + '-' + dd;
@@ -77,6 +71,16 @@ function deleteMeeting(name, id) {
 
 function newCycle() {
   document.getElementById('cycle_id').value = -1;
+
+  var day = new Date(document.getElementById('last_cycle').value);
+  var dd = ('0' + (day.getDate() + 2)).slice(-2);
+  var dd2 = ('0' + (day.getDate() + 1)).slice(-2);
+  var mm = ('0' + (day.getMonth() + 1)).slice(-2);
+  var yyyy = day.getFullYear();
+  var yyyy2 = day.getFullYear() + 1;
+
+  document.getElementById('cycle_from').value = yyyy + '-' + mm + '-' + dd;
+  document.getElementById('cycle_to').value = yyyy2 + '-' + mm + '-' + dd2;
   showSidebar('edit_cycle');
 }
 
@@ -95,8 +99,8 @@ function saveCycle() {
     target += '/' + id;
   }
   confirmbox(title, msg).then(function() {
-    var data = 'From=' + document.getElementById('cycle_from').value + '&' +
-      'To=' + document.getElementById('cycle_to').value;
+    var data = 'date_from=' + document.getElementById('cycle_from').value +
+    '&' + 'date_to=' + document.getElementById('cycle_to').value;
     apiRequest(method, target, data).then(function() {
       location.reload();
     })
@@ -188,6 +192,7 @@ function saveEvent() {
   var To = document.getElementById('event_to').value;
   var From = document.getElementById('event_from').value;
   var name = document.getElementById('event_name').value;
+  var id = document.getElementById('event_id').value;
   if (From === '') {
     alertbox('Event "From" date missing');
     return;
@@ -198,20 +203,36 @@ function saveEvent() {
     alertbox('Event "Name" missing');
     return;
   }
+
+  var method = 'POST';
+  var target = 'event';
+  if (id != -1) {
+    method = 'PUT';
+    target += '/' + id;
+  }
+
   confirmbox(
     'Confirm Event',
     'Save Event "' + name + '" ?').then(function() {
-    var data = {
-      'Id': document.getElementById('event_id').value,
-      'Name': document.getElementById('event_name').value,
-      'To': document.getElementById('event_to').value,
-      'From': document.getElementById('event_from').value,
-    };
-    var param = btoa(JSON.stringify(data));
-    basicEventRequest('event=' + param, function() {
-      hideSidebar();
-      location.reload();
-    });
+
+    var data = 'name=' + document.getElementById('event_name').value + '&date_from=' + document.getElementById('event_from').value +
+    '&' + 'date_to=' + document.getElementById('event_to').value;
+
+    showSpinner();
+    apiRequest(method, target, data).then(
+      function() {
+        hideSidebar();
+        location.reload();
+      })
+      .catch(function(response) {
+        if (response instanceof Error) { throw response; }
+        var result = JSON.parse(response.responseText);
+        alertbox('Save Event Failed', result.status);
+        hideSpinner();
+      })
+      .finally(function() {
+        hideSpinner();
+      });
   });
 }
 
@@ -228,9 +249,12 @@ function deleteEvent(id, name) {
   confirmbox(
     'Confirms Event Deletion',
     'Delete event \'' + name + '\' ?').then(function() {
-    basicEventRequest('deleteEvent=' + id, function() {
+    showSpinner();
+    apiRequest('DELETE', '/event/' + id, null).then(function() {
       hideSidebar();
       location.reload();
+    }).catch(function() {
+      hideSpinner();
     });
   });
 }
@@ -264,22 +288,23 @@ function doImport() {
 
 function editCycle(data) {
   document.getElementById('cycle_id').value = data.id;
-  document.getElementById('cycle_from').value = data.DateFrom;
-  document.getElementById('cycle_to').value = data.DateTo;
+  document.getElementById('cycle_from').value = data.date_from;
+  document.getElementById('cycle_to').value = data.date_to;
   showSidebar('edit_cycle');
 }
 
 function loadEvents() {
   showSpinner();
-  apiRequest('GET', 'cycle', 'maxResults=all')
+  apiRequest('GET', 'cycle', 'max_results=all')
     .then(function(response) {
       hideSpinner();
       var result = JSON.parse(response.responseText);
       if (result.data.length > 0) {
         var sorted = result.data.sort(function(a,b) {
-          return b.id - a.id;
+          return Date.parse(b.date_from) - Date.parse(a.date_from);
         });
         var table = document.getElementById('cycle_list');
+        document.getElementById('last_cycle').value = sorted[0].date_to;
         sorted.forEach(function(data) {
           var line = document.createElement('DIV');
           line.classList.add('UI-table-row');
@@ -289,15 +314,15 @@ function loadEvents() {
           line.appendChild(f);
           f = document.createElement('DIV');
           f.classList.add('UI-table-cell');
-          f.appendChild(document.createTextNode(data.DateFrom));
+          f.appendChild(document.createTextNode(data.date_from));
           line.appendChild(f);
           f = document.createElement('DIV');
           f.classList.add('UI-table-cell');
-          f.appendChild(document.createTextNode(data.DateTo));
+          f.appendChild(document.createTextNode(data.date_to));
           line.appendChild(f);
 
-          var to = new Date(data.DateTo);
-          var from  = new Date(data.DateFrom);
+          var to = new Date(data.date_to);
+          var from  = new Date(data.date_from);
           var today = new Date();
           f = document.createElement('DIV');
           f.classList.add('UI-table-cell');
@@ -327,6 +352,26 @@ function loadEvents() {
     })
     .catch(function() {
       hideSpinner();
+    });
+
+  apiRequest('GET', 'event', 'max_results=all')
+    .then(function(response) {
+      console.log(response);
+      var result = JSON.parse(response.responseText);
+
+      var select = document.getElementById('meet_event');
+      var select2 = document.getElementById('import_from');
+
+      result.data.forEach(function(data) {
+        var e = document.createElement('OPTION');
+        e.value = data.id;
+        e.innerHTML = data.name;
+        select.appendChild(e);
+        e = document.createElement('OPTION');
+        e.value = data.id;
+        e.innerHTML = data.name;
+        select2.appendChild(e);
+      });
     });
 }
 

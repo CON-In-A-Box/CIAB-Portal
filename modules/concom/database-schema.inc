@@ -9,7 +9,7 @@ namespace concom;
 $concom_DB_tables = [
 'ConComList' => [
 'ListRecordID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
-'AccountID' => 'INT UNSIGNED NOT NULL', // Taken from NeonCRM Currently
+'AccountID' => 'INT UNSIGNED NOT NULL',
 'DepartmentID' => 'INT UNSIGNED NOT NULL',
 'EventID' => 'INT UNSIGNED NOT NULL',
 'Note' => 'VARCHAR(100)',

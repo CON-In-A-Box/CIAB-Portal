@@ -10,16 +10,16 @@ var userProfile = (function(options) {
   'use strict';
 
   const map = [
-    ['id', 'badgeNumber'], ['email', 'email1'], ['legalFirstName', 'firstName'],
-    ['legalLastName', 'lastName'], ['middleName', 'middleName'],
-    ['suffix', 'suffix'], ['email2', 'email2'], ['email3', 'email3'],
-    ['phone1', 'phone1'], ['phone2', 'phone2'],
-    ['addressLine1', 'addressLine1'], ['addressLine2', 'addressLine2'],
-    ['city', 'city'], ['state', 'state'], ['zipCode', 'zipCode'],
-    ['zipPlus4', 'zipPlus4'], ['countryName', 'countryName'],
-    ['province', 'province'], ['preferredFirstName', 'preferredFirstName'],
-    ['preferredLastName', 'preferredLastName'],
-    ['conComDisplayPhone', 'conComDisplayPhone'],
+    ['id', 'badgeNumber'], ['email', 'email1'],
+    ['legal_first_name', 'firstName'], ['legal_last_name', 'lastName'],
+    ['middle_name', 'middleName'], ['suffix', 'suffix'], ['email2', 'email2'],
+    ['email3', 'email3'], ['phone', 'phone1'], ['phone2', 'phone2'],
+    ['address_line1', 'addressLine1'], ['address_line2', 'addressLine2'],
+    ['city', 'city'], ['state', 'state'], ['zip_code', 'zipCode'],
+    ['zip_plus4', 'zipPlus4'], ['country', 'countryName'],
+    ['province', 'province'], ['preferred_first_name', 'preferredFirstName'],
+    ['preferred_last_name', 'preferredLastName'],
+    ['concom_display_phone', 'conComDisplayPhone'],
   ];
 
   var accountId;
@@ -32,7 +32,8 @@ var userProfile = (function(options) {
       updateButtonText: 'Update Profile',
       inlineUpdateButton: true,
       panes: ['name', 'prefName', 'badge', 'emailAll', 'phone', 'addr'],
-      onChange: null
+      onChange: null,
+      noTitleBlock: false
     }, options);
 
   return {
@@ -65,11 +66,14 @@ var userProfile = (function(options) {
       this.accountId = member['id'];
       map.forEach(function(data) {
         if (userProfile.getElementById(data[1])) {
+          var element = userProfile.getElementById(data[1]);
           if (data[0] in member && member[data[0]]) {
-            userProfile.getElementById(data[1]).value = member[data[0]];
+            element.value = member[data[0]];
+            element['originalValue'] = member[data[0]];
           } else {
             if (userProfile.getElementById(data[1]).nodeName == 'INPUT') {
-              userProfile.getElementById(data[1]).value = '';
+              element.value = '';
+              element['originalValue'] = '';
             }
           }
         }
@@ -80,7 +84,9 @@ var userProfile = (function(options) {
       this.accountId = -1;
       map.forEach(function(data) {
         if (userProfile.getElementById(data[1])) {
-          userProfile.getElementById(data[1]).value = '';
+          var element = userProfile.getElementById(data[1]);
+          element.value = '';
+          element['originalValue'] = '';
         }
       });
       userProfile.getElementById('state').value = 'MN';
@@ -98,12 +104,13 @@ var userProfile = (function(options) {
       return member;
     },
 
-    serialize: function() {
+    serializeUpdate: function() {
       var output = [];
       map.forEach(function(data) {
-        if (userProfile.getElementById(data[1])) {
-          if (userProfile.getElementById(data[1]).value) {
-            var v = encodeURI(userProfile.getElementById(data[1]).value);
+        var element = userProfile.getElementById(data[1]);
+        if (element) {
+          if (element.value != element.originalValue) {
+            var v = encodeURI(element.value);
             output.push(data[0] + '=' + v);
           }
         }
@@ -162,8 +169,12 @@ var userProfile = (function(options) {
       if (!userProfile.validateForm()) {
         return;
       }
+      var data = userProfile.serializeUpdate();
+      if (data.length == 0) {
+        alertbox('Nothing updated.');
+        return;
+      }
       showSpinner();
-      var data = userProfile.serialize();
       var method = 'POST';
       var uri = 'member';
       if (this.accountId > 0) {
@@ -179,7 +190,14 @@ var userProfile = (function(options) {
           } else {
             alertbox('Member data updated');
             basicBackendRequest('POST', 'profile', 'reloadProfile=1',
-              function() { hideSpinner();}, function() {hideSpinner();});
+              function() {
+                hideSpinner();
+                location.reload();
+              },
+              function() {
+                hideSpinner();
+                location.reload();
+              });
           }
         })
         .catch(function(response) {
@@ -357,8 +375,9 @@ var userProfile = (function(options) {
   </div>
   <div class="UI-container">
     <input class="UI-input" id="${prefix}email1" name="email1" placeholder=
-    "Primary Email and Login (Required)" type="text" value=""
+    "Email Address (Required)" type="email" value=""
     onchange="userProfile.onChange(this);">
+
   </div>
 </div>
 `;
@@ -511,8 +530,18 @@ ${settings.updateButtonText}</button>
 </div>
 `;
 
-      var form = [ titleBlock ];
+      var form = [];
 
+      if (!settings.noTitleBlock) {
+        form.push(titleBlock);
+      }
+
+      if (settings.panes.includes('emailPrimary')) {
+        form.push(emailPrimaryBlock);
+      }
+      if (settings.panes.includes('emailAll')) {
+        form.push(emailAllBlock);
+      }
       if (settings.panes.includes('name')) {
         form.push(nameBlock);
       }
@@ -521,12 +550,6 @@ ${settings.updateButtonText}</button>
       }
       if (settings.panes.includes('badge')) {
         form.push(badgeBlock);
-      }
-      if (settings.panes.includes('emailPrimary')) {
-        form.push(emailPrimaryBlock);
-      }
-      if (settings.panes.includes('emailAll')) {
-        form.push(emailAllBlock);
       }
       if (settings.panes.includes('phone')) {
         form.push(phoneBlock);

@@ -21,7 +21,7 @@
  *          description="announcement ID"
  *      ),
  *      @OA\Property(
- *          property="postedOn",
+ *          property="posted_on",
  *          type="string",
  *          format="date",
  *          description="Date the announcement was first posted"
@@ -40,7 +40,7 @@
  *          }
  *      ),
  *      @OA\Property(
- *          property="postedBy",
+ *          property="posted_by",
  *          description="The member who created the announcement",
  *          oneOf={
  *              @OA\Schema(
@@ -98,6 +98,7 @@ namespace App\Controller\Announcement;
 use Slim\Container;
 use Slim\Http\Request;
 use Slim\Http\Response;
+use Atlas\Query\Select;
 use App\Controller\BaseController;
 use App\Controller\NotFoundException;
 use App\Controller\IncludeResource;
@@ -105,17 +106,29 @@ use App\Controller\IncludeResource;
 abstract class BaseAnnouncement extends BaseController
 {
 
+    use \App\Controller\TraitScope;
+
+    protected static $columnsToAttributes = [
+    '"announcement"' => 'type',
+    'AnnouncementID' => 'id',
+    'DepartmentID' => 'department',
+    'PostedOn' => 'posted_on',
+    'PostedBy' => 'posted_by',
+    'Scope' => 'scope',
+    'Text' => 'text'
+    ];
+
 
     public function __construct(Container $container)
     {
-        parent::__construct('deadline', $container);
-        \ciab\RBAC::customizeRBAC(array($this, 'customizeAnnouncementRBAC'));
+        parent::__construct('announcement', $container);
+        \ciab\RBAC::customizeRBAC('\App\Controller\Announcement\BaseAnnouncement::customizeAnnouncementRBAC');
 
         $this->includes = [
         new IncludeResource(
             '\App\Controller\Member\GetMember',
             'id',
-            'postedBy'
+            'posted_by'
         ),
         new IncludeResource(
             '\App\Controller\Department\GetDepartment',
@@ -129,61 +142,59 @@ abstract class BaseAnnouncement extends BaseController
 
     public function getAnnouncement($id)
     {
-        $sth = $this->container->db->prepare("SELECT * FROM `Announcements` WHERE `AnnouncementID` = $id");
-        $sth->execute();
-        $announce = $sth->fetchAll();
+        $select = Select::new($this->container->db);
+        $select->columns(...BaseAnnouncement::selectMapping());
+        $select->from('Announcements');
+        $select->whereEquals(['AnnouncementID' => $id]);
+        $announce = $select->fetchOne();
         if (empty($announce)) {
             throw new NotFoundException('Announcement Not Found');
         }
-        return $announce[0];
+        return $announce;
 
     }
 
 
-    public function buildAnnouncement(Request $request, Response $response, $id, $dept, $posted, $poster, $scope, $text)
-    {
-        $output = array();
-        $output['type'] = 'announcement';
-        $output['id'] = $id;
-        $output['department'] = $dept;
-        $output['postedOn'] = $posted;
-        $output['postedBy'] = $poster;
-        $output['scope'] = $scope;
-        $output['text'] = $text;
-        return $output;
-
-    }
-
-
-    public function customizeAnnouncementRBAC($instance)
+    public static function customizeAnnouncementRBAC($instance, $database)
     {
         $positions = [];
-        $sql = "SELECT `PositionID`, `Name` FROM `ConComPositions` ORDER BY `PositionID` ASC";
-        $result = $this->container->db->prepare($sql);
-        $result->execute();
-        $value = $result->fetch();
-        while ($value !== false) {
+        $values = Select::new($database)
+            ->columns('PositionID', 'Name')
+            ->from('ConComPositions')
+            ->orderBy('`PositionID` ASC')
+            ->fetchAll();
+        foreach ($values as $value) {
             $positions[intval($value['PositionID'])] = $value['Name'];
-            $value = $result->fetch();
         }
 
-        $result = $this->container->db->prepare("SELECT `DepartmentID` FROM `Departments`");
-        $result->execute();
-        $value = $result->fetch();
-        while ($value !== false) {
+        $values = Select::new($database)
+            ->columns('DepartmentID')
+            ->from('Departments')
+            ->fetchAll();
+        foreach ($values as $value) {
+            $perm_get = 'api.get.announcement.'.$value['DepartmentID'];
             $perm_del = 'api.delete.announcement.'.$value['DepartmentID'];
             $perm_pos = 'api.post.announcement.'.$value['DepartmentID'];
             $perm_put = 'api.put.announcement.'.$value['DepartmentID'];
             $target_h = $value['DepartmentID'].'.'.array_keys($positions)[0];
+            $target_r = $value['DepartmentID'].'.'.end(array_keys($positions));
             try {
                 $role = $instance->getRole($target_h);
                 $role->addPermission($perm_del);
                 $role->addPermission($perm_pos);
                 $role->addPermission($perm_put);
+                $role = $instance->getRole($target_r);
+                $role->addPermission($perm_get);
             } catch (Exception\InvalidArgumentException $e) {
                 error_log($e);
             }
-            $value = $result->fetch();
+        }
+
+        try {
+            $role = $instance->getRole('all.staff');
+            $role->addPermission('api.get.announcement.staff');
+        } catch (Exception\InvalidArgumentException $e) {
+            error_log($e);
         }
 
     }

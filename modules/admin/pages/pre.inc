@@ -13,6 +13,7 @@ if (!\ciab\RBAC::havePermission("site.admin")) {
 require_once($FUNCTIONDIR.'/session.inc');
 require_once($FUNCTIONDIR.'/database.inc');
 require_once($FUNCTIONDIR.'/authentication.inc');
+require_once($BACKEND.'/CRM.inc');
 
 
 function delete_files($target)
@@ -66,17 +67,17 @@ if (!empty($_REQUEST)) {
     }
 
     if (isset($updateData['updateMemberships'])) {
-        require($BASEDIR.'/tools/sync_neon_event_to_db.php');
+        \ciab\CRM::importPeople();
     }
 
     if (isset($updateData['hook_action'])) {
         if ($updateData['hook_action'] == "install") {
-            neon_registerWebhook(
+            \ciab\CRM::registerWebhook(
                 $updateData['hook_url'],
                 $updateData['hook_name']
             );
         } else {
-            neon_removeWebhook();
+            \ciab\CRM::removeWebhook();
         }
         goSite('/index.php?Function=admin');
     }

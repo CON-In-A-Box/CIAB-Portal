@@ -29,7 +29,7 @@ class ListStores extends BaseStore
     public function buildResource(Request $request, Response $response, $args): array
     {
         $select = Select::new($this->container->db);
-        $stores = $select->columns(...self::selectMapping())->from('Stores')->fetchAll();
+        $stores = $select->columns(...BaseStore::selectMapping())->from('Stores')->fetchAll();
 
         $output = array();
         $output['type'] = 'stores_list';

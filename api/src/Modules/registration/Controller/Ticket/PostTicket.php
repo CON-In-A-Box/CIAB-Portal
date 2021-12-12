@@ -23,23 +23,27 @@
  *                      type="string",
  *                  ),
  *                  @OA\Property(
- *                      property="ticketType",
+ *                      property="ticket_type",
  *                      type="string",
  *                  ),
  *                  @OA\Property(
- *                      property="dependOn",
+ *                      property="badge_dependent_on",
  *                      type="string",
  *                  ),
  *                  @OA\Property(
- *                      property="badgeName",
+ *                      property="badge_id",
  *                      type="string",
  *                  ),
  *                  @OA\Property(
- *                      property="contact",
+ *                      property="badge_name",
  *                      type="string",
  *                  ),
  *                  @OA\Property(
- *                      property="registeredBy",
+ *                      property="emergency_contact",
+ *                      type="string",
+ *                  ),
+ *                  @OA\Property(
+ *                      property="registered_by",
  *                      type="string",
  *                  )
  *              )
@@ -68,6 +72,7 @@ namespace App\Modules\registration\Controller\Ticket;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
+use Atlas\Query\Insert;
 
 use App\Controller\InvalidParameterException;
 use App\Controller\ConflictException;
@@ -81,66 +86,47 @@ class PostTicket extends BaseTicketInclude
         $permissions = ['api.registration.ticket.post'];
         $this->checkPermissions($permissions);
 
-        $body = $request->getParsedBody();
-        if ($body && array_key_exists('member', $body)) {
-            $member = $body['member'];
-        } else {
-            throw new InvalidParameterException('Required \'member\' parameter not present');
-        }
-        $data = $this->findMember($request, $response, $body, 'member');
-        $member = $data['id'];
+        $required = ['member', 'ticket_type'];
+        $body = $this->checkRequiredBody($request, $required);
+
+        $member = $this->getMember($request, $body['member'])[0]['id'];
+        $body['member'] = $member;
 
         if (array_key_exists('event', $body)) {
             $event = $body['event'];
         } else {
             $event = 'current';
         }
-        $event = $this->getEvent($event)['id'];
+        $body['event'] = $this->getEvent($event)['id'];
 
-
-        if (array_key_exists('ticketType', $body)) {
-            $type = $body['ticketType'];
-        } else {
-            throw new InvalidParameterException('Required \'ticketType\' parameter not present');
-        }
         $target = new GetTicketTypes($this->container);
-        $target->buildResource($request, $response, ['id' => $type])[1];
+        $target->buildResource($request, $response, ['id' => $body['ticket_type']])[1];
 
-        if (array_key_exists('dependOn', $body)) {
-            $data = $this->findMember($request, $response, $body, 'dependOn');
-            $depend = $data['id'];
-        } else {
-            $depend = 'NULL';
+        if (array_key_exists('badge_dependent_on', $body)) {
+            $body['badge_dependent_on'] = $this->getMember($request, $body['badge_dependent_on'])[0]['id'];
         }
 
-        if (array_key_exists('badgeName', $body)) {
-            $badgeName = \MyPDO::quote($body['badgeName']);
+        if (array_key_exists('registered_by', $body)) {
+            $body['registered_by'] = $this->getMember($request, $body['registered_by'])[0]['id'];
         } else {
-            $badgeName = 'NULL';
+            $body['registered_by'] = $member;
         }
 
-        if (array_key_exists('contact', $body)) {
-            $contact = \MyPDO::quote($body['contact']);
-        } else {
-            $contact = 'NULL';
+        if (array_key_exists('badge_id', $body)) {
+            $this->verifyBadgeId(null, $body['badge_id'], $body['event']);
         }
 
-        if (array_key_exists('registeredBy', $body)) {
-            $data = $this->findMember($request, $response, $body, 'registeredBy');
-            $regBy = $data['id'];
-        } else {
-            $regBy = $member;
-        }
-
-        $sql = "INSERT INTO Registrations(AccountId, BadgeDependentOnID, BadgeName, BadgeTypeID, EmergencyContact, EventID, RegisteredByID, RegistrationDate) VALUES ($member, $depend, $badgeName, $type, $contact, $event, $regBy, NOW())";
-        $sth = $this->container->db->prepare($sql);
-        $sth->execute();
-        if ($sth->rowCount() == 0) {
+        $insert = Insert::new($this->container->db)
+            ->into('Registrations')
+            ->columns(BaseTicket::insertPayloadFromParams($body, false))
+            ->set('RegistrationDate', 'NOW()');
+        $result = $insert->perform();
+        if ($result->rowCount() == 0) {
             throw new ConflictException('Could not update');
         }
 
         $target = new GetTicket($this->container);
-        $data = $target->buildResource($request, $response, ['id' => $this->container->db->lastInsertId()])[1];
+        $data = $target->buildResource($request, $response, ['id' => $insert->getLastInsertId()])[1];
         return [
         \App\Controller\BaseController::RESOURCE_TYPE,
         $target->arrayResponse($request, $response, $data),

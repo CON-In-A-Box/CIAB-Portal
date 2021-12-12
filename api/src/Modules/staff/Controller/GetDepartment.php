@@ -16,20 +16,16 @@
  *          @OA\Schema(type="integer")
  *      ),
  *      @OA\Parameter(
- *          description="Event id being querried, if empty then current event",
- *          in="query",
- *          name="event",
- *          required=false,
- *          @OA\Schema(type="integer")
+ *          ref="#/components/parameters/event",
  *      ),
  *      @OA\Parameter(
  *          ref="#/components/parameters/short_response",
  *      ),
  *      @OA\Parameter(
- *          ref="#/components/parameters/maxResults",
+ *          ref="#/components/parameters/max_results",
  *      ),
  *      @OA\Parameter(
- *          ref="#/components/parameters/pageToken",
+ *          ref="#/components/parameters/page_token",
  *      ),
  *      @OA\Response(
  *          response=200,
@@ -67,10 +63,8 @@ class GetDepartment extends BaseStaff
     {
         $permissions = ['api.get.staff'];
         $this->checkPermissions($permissions);
-        $data = $this->selectStaff(
-            $request->getQueryParam('event'),
-            $params['id']
-        );
+        $event = $this->getEventId($request);
+        $data = $this->selectStaff($event, $params['id']);
         return [
         \App\Controller\BaseController::LIST_TYPE,
         $data,

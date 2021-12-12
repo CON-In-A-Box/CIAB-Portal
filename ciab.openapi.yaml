@@ -121,9 +121,9 @@ paths:
         -
           $ref: '#/components/parameters/short_response'
         -
-          $ref: '#/components/parameters/maxResults'
+          $ref: '#/components/parameters/max_results'
         -
-          $ref: '#/components/parameters/pageToken'
+          $ref: '#/components/parameters/page_token'
       responses:
         '200':
           description: OK
@@ -138,31 +138,18 @@ paths:
       security:
         -
           ciab_auth: []
-  '/member/{id}/announcements':
+  /announcement:
     get:
       tags:
-        - members
-      summary: 'Lists announcements for a given member'
+        - announcements
+      summary: 'Lists announcements for the current member'
       parameters:
-        -
-          name: id
-          in: path
-          description: 'The id or login of the member'
-          required: true
-          schema:
-            oneOf:
-              -
-                description: 'Member login'
-                type: string
-              -
-                description: 'Member id'
-                type: integer
         -
           $ref: '#/components/parameters/short_response'
         -
-          $ref: '#/components/parameters/maxResults'
+          $ref: '#/components/parameters/max_results'
         -
-          $ref: '#/components/parameters/pageToken'
+          $ref: '#/components/parameters/page_token'
       responses:
         '200':
           description: OK
@@ -201,9 +188,9 @@ paths:
           multipart/form-data:
             schema:
               properties:
-                Text:
+                text:
                   type: string
-                Scope:
+                scope:
                   type: integer
               type: object
       responses:
@@ -264,11 +251,11 @@ paths:
           multipart/form-data:
             schema:
               properties:
-                From:
+                date_from:
                   type: string
                   format: date
                   nullable: true
-                To:
+                date_to:
                   type: string
                   format: date
                   nullable: true
@@ -340,9 +327,9 @@ paths:
             type: string
             format: date
         -
-          $ref: '#/components/parameters/maxResults'
+          $ref: '#/components/parameters/max_results'
         -
-          $ref: '#/components/parameters/pageToken'
+          $ref: '#/components/parameters/page_token'
       responses:
         '200':
           description: OK
@@ -366,10 +353,10 @@ paths:
           multipart/form-data:
             schema:
               properties:
-                From:
+                date_from:
                   type: string
                   format: date
-                To:
+                date_to:
                   type: string
                   format: date
               type: object
@@ -437,11 +424,11 @@ paths:
           multipart/form-data:
             schema:
               properties:
-                Deadline:
+                deadline:
                   type: string
                   format: date
                   nullable: true
-                Note:
+                note:
                   type: string
                   nullable: true
               type: object
@@ -477,6 +464,67 @@ paths:
       security:
         -
           ciab_auth: []
+  '/department/{id}/deadlines':
+    get:
+      tags:
+        - departments
+      summary: 'Lists deadlines for a given department'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'The id or name of the department'
+          required: true
+          schema:
+            oneOf:
+              -
+                description: 'Department id'
+                type: integer
+              -
+                description: 'Department name'
+                type: string
+        -
+          $ref: '#/components/parameters/short_response'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/deadline_list'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/department_not_found'
+      security:
+        -
+          ciab_auth: []
+  /deadline:
+    get:
+      tags:
+        - deadlines
+      summary: 'Lists deadlines for the current member'
+      parameters:
+        -
+          $ref: '#/components/parameters/short_response'
+        -
+          $ref: '#/components/parameters/max_results'
+        -
+          $ref: '#/components/parameters/page_token'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/deadline_list'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/member_not_found'
+      security:
+        -
+          ciab_auth: []
   '/department/{id}/deadline':
     post:
       tags:
@@ -501,11 +549,13 @@ paths:
           multipart/form-data:
             schema:
               properties:
-                Deadline:
+                deadline:
                   type: string
                   format: date
-                Note:
+                note:
                   type: string
+                scope:
+                  type: integer
               type: object
       responses:
         '201':
@@ -574,9 +624,9 @@ paths:
         -
           $ref: '#/components/parameters/short_response'
         -
-          $ref: '#/components/parameters/maxResults'
+          $ref: '#/components/parameters/max_results'
         -
-          $ref: '#/components/parameters/pageToken'
+          $ref: '#/components/parameters/page_token'
       responses:
         '200':
           description: OK
@@ -589,41 +639,6 @@ paths:
       security:
         -
           ciab_auth: []
-  '/department/{id}/deadlines':
-    get:
-      tags:
-        - departments
-      summary: 'Lists deadlines for a given department'
-      parameters:
-        -
-          name: id
-          in: path
-          description: 'The id or name of the department'
-          required: true
-          schema:
-            oneOf:
-              -
-                description: 'Department id'
-                type: integer
-              -
-                description: 'Department name'
-                type: string
-        -
-          $ref: '#/components/parameters/short_response'
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/deadline_list'
-        '401':
-          $ref: '#/components/responses/401'
-        '404':
-          $ref: '#/components/responses/department_not_found'
-      security:
-        -
-          ciab_auth: []
   /department:
     get:
       tags:
@@ -633,9 +648,9 @@ paths:
         -
           $ref: '#/components/parameters/short_response'
         -
-          $ref: '#/components/parameters/maxResults'
+          $ref: '#/components/parameters/max_results'
         -
-          $ref: '#/components/parameters/pageToken'
+          $ref: '#/components/parameters/page_token'
       responses:
         '200':
           description: OK
@@ -726,9 +741,9 @@ paths:
         -
           $ref: '#/components/parameters/short_response'
         -
-          $ref: '#/components/parameters/maxResults'
+          $ref: '#/components/parameters/max_results'
         -
-          $ref: '#/components/parameters/pageToken'
+          $ref: '#/components/parameters/page_token'
       responses:
         '200':
           description: OK
@@ -741,6 +756,42 @@ paths:
       security:
         -
           ciab_auth: []
+    put:
+      tags:
+        - events
+      summary: 'Modifies an existing event.'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Id of the event'
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                date_from:
+                  type: string
+                  format: date
+                date_to:
+                  type: string
+                  format: date
+                name:
+                  type: string
+              type: object
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/event_not_found'
+      security:
+        -
+          ciab_auth: []
     post:
       tags:
         - events
@@ -750,13 +801,13 @@ paths:
           multipart/form-data:
             schema:
               properties:
-                From:
+                date_from:
                   type: string
                   format: date
-                To:
+                date_to:
                   type: string
                   format: date
-                Name:
+                name:
                   type: string
               type: object
       responses:
@@ -787,9 +838,36 @@ paths:
           schema:
             type: string
         -
-          $ref: '#/components/parameters/maxResults'
+          name: from
+          in: query
+          description: 'Comma seperated list of attributes to be searched, default = ''all'''
+          required: false
+          style: simple
+          explode: false
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - all
+                - email
+                - id
+                - legal_name
+                - name
+                - badge
         -
-          $ref: '#/components/parameters/pageToken'
+          name: partial
+          in: query
+          description: 'Allow partial matches, default is false'
+          required: false
+          schema:
+            type: boolean
+        -
+          $ref: '#/components/parameters/event'
+        -
+          $ref: '#/components/parameters/max_results'
+        -
+          $ref: '#/components/parameters/page_token'
       responses:
         '200':
           description: 'Member(s) found'
@@ -864,9 +942,9 @@ paths:
                 description: 'Member id'
                 type: integer
         -
-          $ref: '#/components/parameters/maxResults'
+          $ref: '#/components/parameters/max_results'
         -
-          $ref: '#/components/parameters/pageToken'
+          $ref: '#/components/parameters/page_token'
       responses:
         '200':
           description: OK
@@ -1061,45 +1139,6 @@ paths:
                 type: object
         '404':
           $ref: '#/components/responses/member_not_found'
-  '/member/{id}/deadlines':
-    get:
-      tags:
-        - members
-      summary: 'Lists deadlines for a given member'
-      parameters:
-        -
-          name: id
-          in: path
-          description: 'The id or login of the member'
-          required: true
-          schema:
-            oneOf:
-              -
-                description: 'Member login'
-                type: string
-              -
-                description: 'Member id'
-                type: integer
-        -
-          $ref: '#/components/parameters/short_response'
-        -
-          $ref: '#/components/parameters/maxResults'
-        -
-          $ref: '#/components/parameters/pageToken'
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/deadline_list'
-        '401':
-          $ref: '#/components/responses/401'
-        '404':
-          $ref: '#/components/responses/member_not_found'
-      security:
-        -
-          ciab_auth: []
   '/member/{email}/password':
     post:
       tags:
@@ -1236,6 +1275,44 @@ paths:
       security:
         -
           ciab_auth: []
+  /payment/:
+    post:
+      tags:
+        - payments
+      summary: 'Start a new payment'
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                success:
+                  type: string
+                  format: url
+                cancel:
+                  type: string
+                  format: url
+                cart:
+                  type: array
+                  items: {  }
+              type: object
+      responses:
+        '201':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/payment'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          description: 'Payment Processor Not Found.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+      security:
+        -
+          ciab_auth: []
   '/permissions/method/{resource}':
     get:
       tags:
@@ -1255,9 +1332,9 @@ paths:
         -
           $ref: '#/components/parameters/short_response'
         -
-          $ref: '#/components/parameters/maxResults'
+          $ref: '#/components/parameters/max_results'
         -
-          $ref: '#/components/parameters/pageToken'
+          $ref: '#/components/parameters/page_token'
       responses:
         '200':
           description: 'Permissions found'
@@ -1303,9 +1380,9 @@ paths:
         -
           $ref: '#/components/parameters/short_response'
         -
-          $ref: '#/components/parameters/maxResults'
+          $ref: '#/components/parameters/max_results'
         -
-          $ref: '#/components/parameters/pageToken'
+          $ref: '#/components/parameters/page_token'
       responses:
         '200':
           description: 'Permissions found'
@@ -1364,9 +1441,9 @@ paths:
         -
           $ref: '#/components/parameters/short_response'
         -
-          $ref: '#/components/parameters/maxResults'
+          $ref: '#/components/parameters/max_results'
         -
-          $ref: '#/components/parameters/pageToken'
+          $ref: '#/components/parameters/page_token'
       responses:
         '200':
           description: 'Permissions found'
@@ -1413,9 +1490,9 @@ paths:
         -
           $ref: '#/components/parameters/short_response'
         -
-          $ref: '#/components/parameters/maxResults'
+          $ref: '#/components/parameters/max_results'
         -
-          $ref: '#/components/parameters/pageToken'
+          $ref: '#/components/parameters/page_token'
       responses:
         '200':
           description: 'Permissions found'
@@ -1474,9 +1551,9 @@ paths:
         -
           $ref: '#/components/parameters/short_response'
         -
-          $ref: '#/components/parameters/maxResults'
+          $ref: '#/components/parameters/max_results'
         -
-          $ref: '#/components/parameters/pageToken'
+          $ref: '#/components/parameters/page_token'
       responses:
         '200':
           description: 'Permissions found'
@@ -1654,9 +1731,9 @@ paths:
       summary: 'Get all configuration settings for the site'
       parameters:
         -
-          $ref: '#/components/parameters/maxResults'
+          $ref: '#/components/parameters/max_results'
         -
-          $ref: '#/components/parameters/pageToken'
+          $ref: '#/components/parameters/page_token'
       responses:
         '200':
           description: OK
@@ -1758,9 +1835,9 @@ paths:
       summary: 'Get all configuration settings for registration'
       parameters:
         -
-          $ref: '#/components/parameters/maxResults'
+          $ref: '#/components/parameters/max_results'
         -
-          $ref: '#/components/parameters/pageToken'
+          $ref: '#/components/parameters/page_token'
       responses:
         '200':
           description: OK
@@ -1805,19 +1882,14 @@ paths:
       security:
         -
           ciab_auth: []
-  '/registration/open/{event}':
+  /registration/open:
     get:
       tags:
         - registration
       summary: 'Returns if event registration is open or not..'
       parameters:
         -
-          name: event
-          in: path
-          description: 'Event ID'
-          required: true
-          schema:
-            type: integer
+          $ref: '#/components/parameters/event'
       responses:
         '200':
           description: 'Event registration open status'
@@ -1831,22 +1903,6 @@ paths:
                 type: object
         '404':
           $ref: '#/components/responses/event_not_found'
-  /registration/open:
-    get:
-      tags:
-        - registration
-      summary: 'Returns if current event registration is open or not..'
-      responses:
-        '200':
-          description: 'Event registration open status'
-          content:
-            application/json:
-              schema:
-                properties:
-                  type: { type: string, enum: [registration] }
-                  event: { description: 'event Id', type: integer }
-                  open: { description: 'Is registration open', type: boolean }
-                type: object
   /registration/admin:
     get:
       tags:
@@ -1913,7 +1969,7 @@ paths:
           schema:
             type: integer
         -
-          name: showVoid
+          name: show_void
           in: query
           description: 'Show voided tickets as well.'
           required: false
@@ -1957,9 +2013,11 @@ paths:
           multipart/form-data:
             schema:
               properties:
-                badgeName:
+                badge_id:
                   type: string
-                contact:
+                badge_name:
+                  type: string
+                emergency_contact:
                   type: string
                 note:
                   type: string
@@ -2035,7 +2093,7 @@ paths:
       security:
         -
           ciab_auth: []
-  '/registration/ticket/type/{id}/{event}':
+  '/registration/ticket/type/{id}':
     get:
       tags:
         - registration
@@ -2049,12 +2107,7 @@ paths:
           schema:
             type: integer
         -
-          name: event
-          in: path
-          description: 'Id of the event'
-          required: true
-          schema:
-            type: integer
+          $ref: '#/components/parameters/event'
         -
           $ref: '#/components/parameters/short_response'
       responses:
@@ -2071,45 +2124,18 @@ paths:
       security:
         -
           ciab_auth: []
-  '/registration/ticket/type/{id}':
-    get:
-      tags:
-        - registration
-      summary: 'Gets a ticket type for the current event'
-      parameters:
-        -
-          name: id
-          in: path
-          description: 'Id of the ticket type'
-          required: true
-          schema:
-            type: integer
-        -
-          $ref: '#/components/parameters/short_response'
-      responses:
-        '200':
-          description: 'Ticket type found'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ticket_type'
-        '401':
-          $ref: '#/components/responses/401'
-        '404':
-          $ref: '#/components/responses/ticket_not_found'
-      security:
-        -
-          ciab_auth: []
   /registration/ticket/type:
     get:
       tags:
         - registration
-      summary: 'List all ticket types for the current event'
+      summary: 'List all ticket types for the event'
       parameters:
         -
-          $ref: '#/components/parameters/maxResults'
+          $ref: '#/components/parameters/event'
         -
-          $ref: '#/components/parameters/pageToken'
+          $ref: '#/components/parameters/max_results'
+        -
+          $ref: '#/components/parameters/page_token'
         -
           $ref: '#/components/parameters/short_response'
       responses:
@@ -2124,7 +2150,39 @@ paths:
       security:
         -
           ciab_auth: []
-  '/registration/ticket/list/{member}/{event}':
+  /registration/ticket/list/unclaimed:
+    get:
+      tags:
+        - registration
+      summary: 'Gets all unclaimed tickets for an event'
+      parameters:
+        -
+          $ref: '#/components/parameters/event'
+        -
+          $ref: '#/components/parameters/show_void'
+        -
+          $ref: '#/components/parameters/show_checked_in'
+        -
+          $ref: '#/components/parameters/short_response'
+        -
+          $ref: '#/components/parameters/max_results'
+        -
+          $ref: '#/components/parameters/page_token'
+      responses:
+        '200':
+          description: 'Tickets found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ticket_list'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/event_not_found'
+      security:
+        -
+          ciab_auth: []
+  '/registration/ticket/list/{member}':
     get:
       tags:
         - registration
@@ -2144,55 +2202,19 @@ paths:
                 description: 'Member id'
                 type: integer
         -
-          name: event
-          in: path
-          description: 'Id of the event'
-          required: true
-          schema:
-            type: integer
+          $ref: '#/components/parameters/event'
+        -
+          $ref: '#/components/parameters/show_void'
+        -
+          $ref: '#/components/parameters/show_checked_in'
+        -
+          $ref: '#/components/parameters/show_picked_up'
         -
           $ref: '#/components/parameters/short_response'
         -
-          $ref: '#/components/parameters/maxResults'
+          $ref: '#/components/parameters/max_results'
         -
-          $ref: '#/components/parameters/pageToken'
-      responses:
-        '200':
-          description: 'Tickets found'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ticket_list'
-        '401':
-          $ref: '#/components/responses/401'
-        '404':
-          $ref: '#/components/responses/event_not_found'
-      security:
-        -
-          ciab_auth: []
-  '/registration/ticket/list/{member}':
-    get:
-      tags:
-        - registration
-      summary: 'Gets tickets for a member for the current event'
-      parameters:
-        -
-          name: member
-          in: path
-          description: 'The member'
-          required: true
-          schema:
-            oneOf:
-              -
-                description: 'Member email'
-                type: string
-              -
-                description: 'Member id'
-                type: integer
-        -
-          $ref: '#/components/parameters/maxResults'
-        -
-          $ref: '#/components/parameters/pageToken'
+          $ref: '#/components/parameters/page_token'
       responses:
         '200':
           description: 'Tickets found'
@@ -2211,12 +2233,22 @@ paths:
     get:
       tags:
         - registration
-      summary: 'Gets tickets for the current member for the current event'
+      summary: 'Gets tickets for the current member for the event'
       parameters:
         -
-          $ref: '#/components/parameters/maxResults'
+          $ref: '#/components/parameters/event'
         -
-          $ref: '#/components/parameters/pageToken'
+          $ref: '#/components/parameters/show_void'
+        -
+          $ref: '#/components/parameters/show_checked_in'
+        -
+          $ref: '#/components/parameters/show_picked_up'
+        -
+          $ref: '#/components/parameters/short_response'
+        -
+          $ref: '#/components/parameters/max_results'
+        -
+          $ref: '#/components/parameters/page_token'
         -
           $ref: '#/components/parameters/short_response'
       responses:
@@ -2316,15 +2348,17 @@ paths:
                   type: string
                 event:
                   type: string
-                ticketType:
+                ticket_type:
                   type: string
-                dependOn:
+                badge_dependent_on:
                   type: string
-                badgeName:
+                badge_id:
                   type: string
-                contact:
+                badge_name:
                   type: string
-                registeredBy:
+                emergency_contact:
+                  type: string
+                registered_by:
                   type: string
               type: object
       responses:
@@ -2357,6 +2391,65 @@ paths:
       responses:
         '200':
           description: OK
+        '401':
+          $ref: '#/components/responses/401'
+        '409':
+          description: 'Update Conflict'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '404':
+          $ref: '#/components/responses/ticket_not_found'
+      security:
+        -
+          ciab_auth: []
+  /registration/ticket/printqueue:
+    get:
+      tags:
+        - registration
+      summary: 'Get the current print queue for badges for the event.'
+      parameters:
+        -
+          $ref: '#/components/parameters/event'
+        -
+          $ref: '#/components/parameters/max_results'
+        -
+          $ref: '#/components/parameters/page_token'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/print_queue'
+        '401':
+          $ref: '#/components/responses/401'
+      security:
+        -
+          ciab_auth: []
+  '/registration/ticket/printqueue/claim/{id}':
+    put:
+      tags:
+        - registration
+      summary: 'Claim and clear a job from the print queue.'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Id of the ticket'
+          required: true
+          schema:
+            type: integer
+        -
+          $ref: '#/components/parameters/short_response'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ticket'
         '401':
           $ref: '#/components/responses/401'
         '409':
@@ -2499,18 +2592,13 @@ paths:
           schema:
             type: integer
         -
-          name: event
-          in: query
-          description: 'Event id being querried, if empty then current event'
-          required: false
-          schema:
-            type: integer
+          $ref: '#/components/parameters/event'
         -
           $ref: '#/components/parameters/short_response'
         -
-          $ref: '#/components/parameters/maxResults'
+          $ref: '#/components/parameters/max_results'
         -
-          $ref: '#/components/parameters/pageToken'
+          $ref: '#/components/parameters/page_token'
       responses:
         '200':
           description: OK
@@ -2543,9 +2631,11 @@ paths:
           schema:
             type: integer
         -
-          $ref: '#/components/parameters/maxResults'
+          $ref: '#/components/parameters/event'
         -
-          $ref: '#/components/parameters/pageToken'
+          $ref: '#/components/parameters/max_results'
+        -
+          $ref: '#/components/parameters/page_token'
         -
           $ref: '#/components/parameters/short_response'
       responses:
@@ -2569,9 +2659,9 @@ paths:
       summary: 'Gets staff positions for the current member'
       parameters:
         -
-          $ref: '#/components/parameters/maxResults'
+          $ref: '#/components/parameters/max_results'
         -
-          $ref: '#/components/parameters/pageToken'
+          $ref: '#/components/parameters/page_token'
       responses:
         '200':
           description: 'Member staff positions found'
@@ -2589,22 +2679,17 @@ paths:
   /department/staff/:
     get:
       tags:
-        - staff
+        - departments
       summary: 'List staff all departments'
       parameters:
         -
-          name: event
-          in: query
-          description: 'Event id being querried, if empty then current event'
-          required: false
-          schema:
-            type: integer
+          $ref: '#/components/parameters/event'
         -
           $ref: '#/components/parameters/short_response'
         -
-          $ref: '#/components/parameters/maxResults'
+          $ref: '#/components/parameters/max_results'
         -
-          $ref: '#/components/parameters/pageToken'
+          $ref: '#/components/parameters/page_token'
       responses:
         '200':
           description: OK
@@ -2684,7 +2769,7 @@ components:
         id:
           description: 'announcement ID'
           type: integer
-        postedOn:
+        posted_on:
           description: 'Date the announcement was first posted'
           type: string
           format: date
@@ -2696,7 +2781,7 @@ components:
             -
               description: 'Department Id'
               type: integer
-        postedBy:
+        posted_by:
           description: 'The member who created the announcement'
           oneOf:
             -
@@ -2750,8 +2835,8 @@ components:
           description: 'List of resources'
           type: array
           items: {  }
-        nextPageToken:
-          description: 'If present, the `pageToken` for the next page of results'
+        next_page_token:
+          description: 'If present, the `page_token` for the next page of results'
           type: integer
       type: object
     cycle:
@@ -2763,11 +2848,11 @@ components:
         id:
           description: 'cycle Id'
           type: integer
-        dateFrom:
+        date_from:
           description: 'cycle start date'
           type: string
           format: date
-        dateTo:
+        date_to:
           description: 'cycle ending date'
           type: string
           format: date
@@ -2811,6 +2896,17 @@ components:
         note:
           description: 'Note about the deadline.'
           type: string
+        scope:
+          description: 'The scope of the deadline'
+          type: integer
+        posted_by:
+          description: 'The member who created the deadline'
+          oneOf:
+            -
+              $ref: '#/components/schemas/member'
+            -
+              description: 'Member Id'
+              type: integer
       type: object
     deadline_list:
       properties:
@@ -2847,7 +2943,7 @@ components:
             -
               description: 'Department Id'
               type: integer
-        childCount:
+        child_count:
           description: 'Number of child departments'
           type: integer
         fallback:
@@ -2896,11 +2992,11 @@ components:
             -
               description: 'Cycle Id'
               type: integer
-        dateFrom:
+        date_from:
           description: 'Date the event starts'
           type: string
           format: date
-        dateTo:
+        date_to:
           description: 'Date the event ends'
           type: string
           format: date
@@ -2938,22 +3034,22 @@ components:
           $ref: '#/components/schemas/member_body'
     member_body:
       properties:
-        firstName:
+        first_name:
           description: 'Members preferred first name'
           type: string
-        lastName:
+        last_name:
           description: 'Members preferred last name'
           type: string
         email:
           description: 'Members primary email'
           type: string
-        legalFirstName:
+        legal_first_name:
           description: 'Members legal first name.'
           type: string
-        legalLastName:
+        legal_last_name:
           description: 'Members legal last name.'
           type: string
-        middleName:
+        middle_name:
           description: 'Member''s middle name.'
           type: string
         suffix:
@@ -2965,16 +3061,16 @@ components:
         email3:
           description: 'Member''s third email'
           type: string
-        phone1:
+        phone:
           description: 'Member''s primary phone'
           type: string
         phone2:
           description: 'Member''s secondary phone'
           type: string
-        addressLine1:
+        address_line1:
           description: 'Member''s address line 1'
           type: string
-        addressLine2:
+        address_line2:
           description: 'Member''s address line 2'
           type: string
         city:
@@ -2983,41 +3079,41 @@ components:
         state:
           description: 'Member''s address state'
           type: string
-        zipCode:
+        zip_code:
           description: 'Member''s Address Zip code.'
           type: string
-        zipPlus4:
+        zip_plus4:
           description: 'Member''s Address Zip code suffix'
           type: string
-        countryName:
+        country:
           description: 'Member''s Address country.'
           type: string
         province:
           description: 'Member''s Address province.'
           type: string
-        preferredFirstName:
+        preferred_first_name:
           description: 'Member''s Preferred First Name.'
           type: string
-        preferredLastName:
+        preferred_last_name:
           description: 'Member''s Preferred Last Name.'
           type: string
-        Deceased:
+        deceased:
           description: 'Is member deceased.'
           type: boolean
-        DoNotContact:
+        do_not_contact:
           description: 'Do not contact member.'
           type: boolean
-        EmailOptOut:
+        email_optout:
           description: 'Do not mass email member.'
           type: boolean
-        Birthdate:
+        birthdate:
           description: 'Member''s birth date.'
           type: string
           format: date
-        Gender:
+        gender:
           description: 'Member''s preferred gender string.'
           type: string
-        conComDisplayPhone:
+        concom_display_phone:
           description: 'If Concom display phone on list.'
           type: boolean
       type: object
@@ -3046,6 +3142,13 @@ components:
       allOf:
         -
           $ref: '#/components/schemas/resource_list'
+    payment:
+      properties:
+        type:
+          type: string
+          enum:
+            - payment
+      type: object
     permission_entry:
       properties:
         type:
@@ -3065,7 +3168,7 @@ components:
       type: object
     permission_subdata:
       properties:
-        departmentId:
+        department:
           description: 'Id for the target department'
           type: integer
       type: object
@@ -3130,19 +3233,23 @@ components:
       type: object
     log_entry:
       properties:
-        LogEntryID:
+        type:
+          type: string
+          enum:
+            - log_entry
+        id:
           description: 'Entry ID'
           type: string
-        AccountID:
+        account:
           description: 'Member account generating the log'
           type: string
-        Function:
+        function:
           description: 'Function generating the log'
           type: string
-        Query:
+        query:
           description: 'The query string being logged'
           type: string
-        Date:
+        date:
           description: 'When the log entry was generated'
           type: string
           format: date-time
@@ -3195,7 +3302,7 @@ components:
             - ticket
         id:
           type: integer
-        badgeDependentOn:
+        badge_dependent_on:
           description: 'Member badge is dependent on'
           oneOf:
             -
@@ -3203,12 +3310,15 @@ components:
             -
               description: 'Member Id'
               type: integer
-        badgeName:
+        badge_id:
+          description: 'The badge number of unique distinguishing ID'
           type: string
-        badgesPickedUp:
+        badge_name:
+          type: string
+        badges_picked_up:
           description: 'The number of times this badge has been printed and picked up'
           type: integer
-        emergencyContact:
+        emergency_contact:
           type: string
         event:
           description: 'Event the badge is for'
@@ -3218,7 +3328,7 @@ components:
             -
               description: 'Event Id'
               type: integer
-        registeredBy:
+        registered_by:
           description: 'Member who create the ticket'
           oneOf:
             -
@@ -3226,27 +3336,27 @@ components:
             -
               description: 'Member Id'
               type: integer
-        registrationDate:
+        registration_date:
           type: string
           format: date
-        boardingPassGenerated:
+        boarding_pass_generated:
           type: string
           format: date
-        printRequested:
+        print_requested:
           type: string
           format: date
-        lastPrintedDate:
+        last_printed_date:
           type: string
           format: date
-        printRequestIp:
+        print_request_ip:
           type: string
           format: ip
         note:
           type: string
-        voidDate:
+        void_date:
           type: string
           format: date
-        voidBy:
+        void_by:
           description: 'Member who voided the ticket'
           oneOf:
             -
@@ -3254,9 +3364,9 @@ components:
             -
               description: 'Member Id'
               type: integer
-        voidReason:
+        void_reason:
           type: string
-        ticketType:
+        ticket_type:
           description: 'Type of the ticket'
           oneOf:
             -
@@ -3291,16 +3401,16 @@ components:
               type: integer
         name:
           type: string
-        avaliableFrom:
+        avaliable_from:
           type: string
           format: date
-        avaliableTo:
+        avaliable_to:
           type: string
           format: date
         cost:
           type: number
           format: float
-        backgroundImage:
+        background_image:
           type: string
       type: object
     ticket_type_list:
@@ -3327,6 +3437,40 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ticket'
+      type: object
+      allOf:
+        -
+          $ref: '#/components/schemas/resource_list'
+    print_job:
+      properties:
+        type:
+          type: string
+          enum:
+            - print_job
+        id:
+          type: integer
+        method:
+          type: string
+          enum:
+            - claim
+        request:
+          type: string
+          enum:
+            - PUT
+        href:
+          type: string
+      type: object
+    print_queue:
+      properties:
+        type:
+          type: string
+          enum:
+            - print_queue
+        data:
+          description: 'List of queued print jobs'
+          type: array
+          items:
+            $ref: '#/components/schemas/print_job'
       type: object
       allOf:
         -
@@ -3420,6 +3564,12 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/error'
+    payment_not_found:
+      description: 'Payment Processor not found.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/error'
     permission_not_found:
       description: 'Permission not found in the system.'
       content:
@@ -3451,8 +3601,8 @@ components:
           schema:
             $ref: '#/components/schemas/error'
   parameters:
-    maxResults:
-      name: maxResults
+    max_results:
+      name: max_results
       in: query
       description: 'Maximum members of the list per page or ''all'' (default 100).'
       required: false
@@ -3465,8 +3615,8 @@ components:
             type: string
             enum:
               - all
-    pageToken:
-      name: pageToken
+    page_token:
+      name: page_token
       in: query
       description: 'Starting page of results.'
       required: false
@@ -3479,6 +3629,44 @@ components:
       description: 'Do not include sub-resource structures, only Ids.'
       required: false
       style: form
+      schema:
+        type: integer
+        enum:
+          - 0
+          - 1
+    event:
+      name: short_response
+      in: query
+      description: 'Target event ID for query. If not specified defaults to the current event'
+      required: false
+      style: form
+      schema:
+        type: integer
+    show_void:
+      name: show_void
+      in: query
+      description: 'Show voided tickets as well.'
+      required: false
+      schema:
+        type: integer
+        enum:
+          - 0
+          - 1
+    show_checked_in:
+      name: checked_in
+      in: query
+      description: 'Show/exclude checked in'
+      required: false
+      schema:
+        type: integer
+        enum:
+          - 0
+          - 1
+    show_picked_up:
+      name: picked_up
+      in: query
+      description: 'Show/exclude picked up'
+      required: false
       schema:
         type: integer
         enum:
@@ -3513,6 +3701,9 @@ tags:
   -
     name: members
     description: 'Features around members of events'
+  -
+    name: payments
+    description: 'Features around payments'
   -
     name: permissions
     description: 'Querying and checking permissions in the API'

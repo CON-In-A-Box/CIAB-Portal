@@ -61,7 +61,8 @@ function updateBadge() {
   var data = JSON.parse(atob(_badgeData));
   var name = document.getElementById('badge_name').value;
   showSpinner();
-  apiRequest('PUT', 'registration/ticket/' +  data['RegID'],'badgeName=' + name)
+  apiRequest('PUT', 'registration/ticket/' +  data['RegID'],'badge_name=' +
+             name)
     .then(function() {
       hideSpinner();
       location.reload();

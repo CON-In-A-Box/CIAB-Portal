@@ -19,7 +19,7 @@ class CycleTest extends CiabTestCase
             'POST',
             '/cycle',
             null,
-            ['From' => $when, 'To' => $to],
+            ['date_from' => $when, 'date_to' => $to],
             201
         );
 
@@ -31,6 +31,7 @@ class CycleTest extends CiabTestCase
         if ($this->cycle != null) {
             $this->runRequest('DELETE', '/cycle/'.$this->cycle->id, null, null, 204);
         }
+        parent::tearDown();
 
     }
 
@@ -49,7 +50,7 @@ class CycleTest extends CiabTestCase
             'POST',
             '/cycle',
             null,
-            ['From' => $when, 'To' => $to],
+            ['date_from' => $when, 'date_to' => $to],
             201
         );
 
@@ -95,8 +96,8 @@ class CycleTest extends CiabTestCase
             'PUT',
             '/cycle/'.$target,
             null,
-            ['From' => $when,
-             'To' => $to]
+            ['date_from' => $when,
+             'date_to' => $to]
         );
 
         $this->runRequest('DELETE', '/cycle/'.$target, null, null, 204);
@@ -149,7 +150,7 @@ class CycleTest extends CiabTestCase
             'POST',
             '/cycle',
             null,
-            ['From' => $when, 'To' => 'not-a-date'],
+            ['date_from' => $when, 'date_to' => 'not-a-date'],
             400
         );
 
@@ -157,7 +158,7 @@ class CycleTest extends CiabTestCase
             'POST',
             '/cycle',
             null,
-            ['To' => $to, 'From' => 'not-a-date'],
+            ['date_to' => $to, 'date_from' => 'not-a-date'],
             400
         );
 
@@ -165,11 +166,11 @@ class CycleTest extends CiabTestCase
             'POST',
             '/cycle',
             null,
-            ['From' => $when],
+            ['date_from' => $when],
             400
         );
 
-        $this->runRequest('POST', '/cycle', ['To' => $to], null, 400);
+        $this->runRequest('POST', '/cycle', ['date_to' => $to], null, 400);
         $this->runRequest('DELETE', '/cycle/-1', null, null, 404);
         $this->runRequest('DELETE', '/cycle/'.$target, null, null, 204);
 

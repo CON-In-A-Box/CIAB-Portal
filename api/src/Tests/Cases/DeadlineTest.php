@@ -11,10 +11,6 @@ class DeadlineTest extends CiabTestCase
 
     private $position;
 
-    private $cycle;
-
-    private $event;
-
 
     protected function setUp(): void
     {
@@ -31,8 +27,8 @@ class DeadlineTest extends CiabTestCase
             'POST',
             '/department/1/deadline',
             null,
-            ['Deadline' => $when,
-             'Note' => 'testing'],
+            ['deadline' => $when,
+             'note' => 'testing'],
             201
         );
 
@@ -43,35 +39,38 @@ class DeadlineTest extends CiabTestCase
             if ($target == null && !in_array($item->id, $initial_ids)) {
                 $target = $item->id;
                 $this->assertIncludes($item, 'department');
+                $this->assertEquals($item->posted_by->id, '1000');
+                $this->assertEquals($item->department->id, '1');
                 unset($item->department);
+                unset($item->posted_by);
                 $this->assertSame([
                     'type' => 'deadline',
                     'id' => $target,
                     'deadline' => "$when",
-                    'note' => 'testing'
+                    'note' => 'testing',
+                    'scope' => '2'
                 ], (array)$item);
             }
         }
 
         $data = $this->runSuccessJsonRequest('GET', '/deadline/'.$target);
         $this->assertIncludes($data, 'department');
+        $this->assertEquals($data->posted_by->id, '1000');
+        $this->assertEquals($data->department->id, '1');
         unset($data->department);
+        unset($data->posted_by);
         $this->assertSame([
             'type' => 'deadline',
             'id' => $target,
             'deadline' => "$when",
-            'note' => 'testing'
+            'note' => 'testing',
+            'scope' => '2'
         ], (array)$data);
 
         $this->target = $target;
 
-        $when = date('Y-m-d', strtotime('+1998 years'));
-        $to = date('Y-m-d', strtotime('+2002 years'));
-        $this->cycle = $this->runSuccessJsonRequest('POST', '/cycle', null, ['From' => $when, 'To' => $to], 201);
-        $when = date('Y-m-d', strtotime('+1999 years'));
-        $to = date('Y-m-d', strtotime('+1999 years'));
-        $this->event = $this->runSuccessJsonRequest('POST', '/event', null, ['From' => $when, 'To' => $to, 'Name' => 'PHPTest-a-con'], 201);
-        $this->position = $this->runSuccessJsonRequest('POST', '/member/1000/staff_membership', null, ['Department' => '1', 'Position' => '1', 'Note' => 'PHPUnit Testing', 'Event' => $this->event->id], 201);
+        $id = $this->testing_accounts[0];
+        $this->position = $this->runSuccessJsonRequest('POST', "/member/$id/staff_membership", null, ['Department' => '1', 'Position' => '3', 'Note' => 'PHPUnit Testing'], 201);
 
     }
 
@@ -80,8 +79,6 @@ class DeadlineTest extends CiabTestCase
     {
         $this->runRequest('DELETE', '/deadline/'.$this->target, null, null, 204);
         $this->runRequest('DELETE', '/staff_membership/'.$this->position->id, null, null, 204);
-        $this->runRequest('DELETE', '/event/'.$this->event->id, null, null, 204);
-        $this->runRequest('DELETE', '/cycle/'.$this->cycle->id, null, null, 204);
 
         parent::tearDown();
 
@@ -100,7 +97,7 @@ class DeadlineTest extends CiabTestCase
 
         $data = $this->runSuccessJsonRequest(
             'GET',
-            '/member/1000/deadlines'
+            '/deadline'
         );
         $this->assertNotEmpty($data->data);
         $this->assertIncludes($data->data[0], 'department');
@@ -110,9 +107,9 @@ class DeadlineTest extends CiabTestCase
             'PUT',
             '/deadline/'.$this->target,
             null,
-            ['Department' => 2,
-             'Note' => 'New Message',
-             'Deadline' => "$when" ],
+            ['department' => 2,
+             'note' => 'New Message',
+             'deadline' => "$when" ],
             200
         );
 
@@ -126,7 +123,141 @@ class DeadlineTest extends CiabTestCase
     }
 
 
-    public function testAnnounceErrors(): void
+    public function provider(): array
+    {
+        return [
+            /* Loki, concom member, same department */
+        [1, 0, 0, true],
+        [1, 1, 0, true],
+        [1, 2, 0, true],
+            /* Loki, concom member, other department*/
+        [4, 0, 0, true],
+        [4, 1, 0, true],
+        [4, 2, 0, false],
+            /* Frigga , normal member */
+        [1, 0, 1, true],
+        [1, 1, 1, false],
+        [1, 2, 1, false],
+            /* Thor, Admin member, other department */
+        [4, 0, null, true],
+        [5, 1, null, true],
+        [6, 2, null, true],
+        ];
+
+    }
+
+
+    /**
+     * @test
+     * @dataProvider provider
+     **/
+    public function testDeadlineScope($department, $scope, $account, $result): void
+    {
+        if ($account === null) {
+            $id = 1000;
+        } else {
+            $id = $this->testing_accounts[$account];
+        }
+        $this->runRequest(
+            'PUT',
+            '/deadline/'.$this->target,
+            null,
+            ['department' => $department,
+             'scope' => $scope ],
+            200
+        );
+
+
+        /* check member access */
+
+        if ($account === null) {
+            $data = $this->RunSuccessJsonRequest(
+                'GET',
+                "/deadline"
+            );
+        } else {
+            $data = $this->NPRunSuccessJsonRequest(
+                'GET',
+                "/deadline",
+                null,
+                null,
+                200,
+                $account
+            );
+        }
+        $found = false;
+        foreach ($data->data as $entry) {
+            if ($entry->id == $this->target) {
+                $found = true;
+            }
+        }
+        if ($result) {
+            $this->assertTrue($found);
+            $this->assertNotEmpty($data->data);
+        } else {
+            $this->assertFalse($found);
+        }
+
+        /* check department access */
+
+        if ($account === null) {
+            $data = $this->RunSuccessJsonRequest(
+                'GET',
+                "/department/$department/deadlines"
+            );
+        } else {
+            $data = $this->NPRunSuccessJsonRequest(
+                'GET',
+                "/department/$department/deadlines",
+                null,
+                null,
+                200,
+                $account
+            );
+        }
+        $found = false;
+        foreach ($data->data as $entry) {
+            if ($entry->id == $this->target) {
+                $found = true;
+            }
+        }
+        if ($result) {
+            $this->assertTrue($found);
+            $this->assertNotEmpty($data->data);
+        } else {
+            $this->assertFalse($found);
+        }
+
+        /* check direct access */
+
+        if ($result) {
+            $code = 200;
+        } else {
+            $code = 403;
+        }
+        if ($account === null) {
+            $this->RunSuccessJsonRequest(
+                'GET',
+                "/deadline/{$this->target}",
+                null,
+                null,
+                $code
+            );
+        } else {
+            $this->NPRunSuccessJsonRequest(
+                'GET',
+                "/deadline/{$this->target}",
+                null,
+                null,
+                $code,
+                $account
+            );
+        }
+
+    }
+
+
+    public function testDeadlineErrors(): void
     {
         $this->runRequest('GET', '/department/-1/deadlines', null, null, 404);
         $this->runRequest('GET', '/deadline/-1', null, null, 404);
@@ -137,7 +268,7 @@ class DeadlineTest extends CiabTestCase
             'PUT',
             '/deadline/'.$this->target,
             null,
-            ['Department' => -1],
+            ['department' => -1],
             404
         );
 
@@ -145,7 +276,15 @@ class DeadlineTest extends CiabTestCase
             'PUT',
             '/deadline/'.$this->target,
             null,
-            ['Deadline' => "not-a-date"],
+            ['nothing' => -1, 'we' => 1, 'Known' => 2],
+            400
+        );
+
+        $this->runRequest(
+            'PUT',
+            '/deadline/'.$this->target,
+            null,
+            ['deadline' => "not-a-date"],
             400
         );
 
@@ -154,7 +293,7 @@ class DeadlineTest extends CiabTestCase
             'PUT',
             '/deadline/'.$this->target,
             null,
-            ['Deadline' => "$when"],
+            ['deadline' => "$when"],
             400
         );
 
@@ -165,7 +304,7 @@ class DeadlineTest extends CiabTestCase
             'POST',
             '/department/-1/deadline',
             null,
-            ['Deadline' => $when, 'Note' => 'testing'],
+            ['deadline' => $when, 'note' => 'testing'],
             404
         );
 
@@ -173,7 +312,7 @@ class DeadlineTest extends CiabTestCase
             'POST',
             '/department/1/deadline',
             null,
-            ['Note' => 'testing'],
+            ['note' => 'testing'],
             400
         );
 
@@ -181,7 +320,7 @@ class DeadlineTest extends CiabTestCase
             'POST',
             '/department/1/deadline',
             null,
-            ['Deadline' => "$when"],
+            ['deadline' => "$when"],
             400
         );
 
@@ -189,7 +328,7 @@ class DeadlineTest extends CiabTestCase
             'POST',
             '/department/1/deadline',
             null,
-            ['Deadline' => "not-a-date", 'Note' => 'testing'],
+            ['deadline' => "not-a-date", 'note' => 'testing'],
             400
         );
 
@@ -198,7 +337,7 @@ class DeadlineTest extends CiabTestCase
             'POST',
             '/department/1/deadline',
             null,
-            ['Deadline' => "$when", 'Note' => 'testing'],
+            ['deadline' => "$when", 'note' => 'testing'],
             400
         );
 

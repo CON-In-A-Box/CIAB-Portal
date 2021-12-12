@@ -21,7 +21,7 @@
  *          type="integer",
  *      ),
  *      @OA\Property(
- *          property="badgeDependentOn",
+ *          property="badge_dependent_on",
  *          description="Member badge is dependent on",
  *          oneOf={
  *              @OA\Schema(
@@ -34,16 +34,21 @@
  *          }
  *      ),
  *      @OA\Property(
- *          property="badgeName",
+ *          property="badge_id",
+ *          type="string",
+ *          description="The badge number of unique distinguishing ID"
+ *      ),
+ *      @OA\Property(
+ *          property="badge_name",
  *          type="string",
  *      ),
  *      @OA\Property(
- *          property="badgesPickedUp",
+ *          property="badges_picked_up",
  *          type="integer",
  *          description="The number of times this badge has been printed and picked up"
  *      ),
  *      @OA\Property(
- *          property="emergencyContact",
+ *          property="emergency_contact",
  *          type="string",
  *      ),
  *      @OA\Property(
@@ -60,7 +65,7 @@
  *          }
  *      ),
  *      @OA\Property(
- *          property="registeredBy",
+ *          property="registered_by",
  *          description="Member who create the ticket",
  *          oneOf={
  *              @OA\Schema(
@@ -73,27 +78,27 @@
  *          }
  *      ),
  *      @OA\Property(
- *          property="registrationDate",
+ *          property="registration_date",
  *          type="string",
  *          format="date",
  *      ),
  *      @OA\Property(
- *          property="boardingPassGenerated",
+ *          property="boarding_pass_generated",
  *          type="string",
  *          format="date",
  *      ),
  *      @OA\Property(
- *          property="printRequested",
+ *          property="print_requested",
  *          type="string",
  *          format="date",
  *      ),
  *      @OA\Property(
- *          property="lastPrintedDate",
+ *          property="last_printed_date",
  *          type="string",
  *          format="date",
  *      ),
  *      @OA\Property(
- *          property="printRequestIp",
+ *          property="print_request_ip",
  *          type="string",
  *          format="ip",
  *      ),
@@ -102,12 +107,12 @@
  *          type="string",
  *      ),
  *      @OA\Property(
- *          property="voidDate",
+ *          property="void_date",
  *          type="string",
  *          format="date",
  *      ),
  *      @OA\Property(
- *          property="voidBy",
+ *          property="void_by",
  *          description="Member who voided the ticket",
  *          oneOf={
  *              @OA\Schema(
@@ -120,11 +125,11 @@
  *          }
  *      ),
  *      @OA\Property(
- *          property="voidReason",
+ *          property="void_reason",
  *          type="string",
  *      ),
  *      @OA\Property(
- *          property="ticketType",
+ *          property="ticket_type",
  *          description="Type of the ticket",
  *          oneOf={
  *              @OA\Schema(
@@ -180,12 +185,12 @@
  *          type="string",
  *      ),
  *      @OA\Property(
- *          property="avaliableFrom",
+ *          property="avaliable_from",
  *          type="string",
  *          format="date",
  *      ),
  *      @OA\Property(
- *          property="avaliableTo",
+ *          property="avaliable_to",
  *          type="string",
  *          format="date",
  *      ),
@@ -195,7 +200,7 @@
  *          format="float",
  *      ),
  *      @OA\Property(
- *          property="backgroundImage",
+ *          property="background_image",
  *          type="string",
  *      )
  *  )
@@ -238,6 +243,54 @@
  *      )
  *  )
  *
+ *  @OA\Schema(
+ *      schema="print_job",
+ *      @OA\Property(
+ *          property="type",
+ *          type="string",
+ *          enum={"print_job"}
+ *      ),
+ *      @OA\Property(
+ *          property="id",
+ *          type="integer"
+ *      ),
+ *      @OA\Property(
+ *          property="method",
+ *          type="string",
+ *          enum={"claim"}
+ *      ),
+ *      @OA\Property(
+ *          property="request",
+ *          type="string",
+ *          enum={"PUT"}
+ *      ),
+ *      @OA\Property(
+ *          property="href",
+ *          type="string"
+ *      )
+ *  )
+ *
+ *  @OA\Schema(
+ *      schema="print_queue",
+ *      allOf = {
+ *          @OA\Schema(ref="#/components/schemas/resource_list")
+ *      },
+ *      @OA\Property(
+ *          property="type",
+ *          type="string",
+ *          enum={"print_queue"}
+ *      ),
+ *      @OA\Property(
+ *          property="data",
+ *          type="array",
+ *          description="List of queued print jobs",
+ *          @OA\Items(
+ *              ref="#/components/schemas/print_job"
+ *          )
+ *      )
+ *  )
+ *
+ *
  *   @OA\Response(
  *      response="ticket_not_found",
  *      description="Ticket not found in the system.",
@@ -252,6 +305,8 @@ namespace App\Modules\registration\Controller\Ticket;
 use Slim\Container;
 use Slim\Http\Request;
 use Slim\Http\Response;
+use Atlas\Query\Select;
+use Atlas\Query\Update;
 use App\Modules\registration\Controller\BaseRegistration;
 use App\Controller\PermissionDeniedException;
 use App\Controller\NotFoundException;
@@ -262,6 +317,29 @@ abstract class BaseTicket extends BaseRegistration
 
     public $id = 0;
 
+    protected static $columnsToAttributes = [
+    '"ticket"' => 'type',
+    'RegistrationID' => 'id' ,
+    'AccountID' => 'member',
+    'BadgeDependentOnID' => 'badge_dependent_on',
+    'BadgeID' => 'badge_id',
+    'BadgeName' => 'badge_name',
+    'BadgesPickedUp' => 'badges_picked_up',
+    'BadgeTypeID' => 'ticket_type',
+    'EmergencyContact' => 'emergency_contact',
+    'EventID' => 'event',
+    'RegisteredByID' => 'registered_by',
+    'RegistrationDate' => 'registration_date',
+    'BoardingPassGenerated' => 'boarding_pass_generated',
+    'PrintRequested' => 'print_requested' ,
+    'LastPrintedDate' => 'last_printed_date',
+    'PrintRequestIp' => 'print_request_ip',
+    'Note' => 'note',
+    'VoidDate' => 'void_date',
+    'VoidBy' => 'void_by',
+    'VoidReason' => 'void_reason'
+    ];
+
 
     public function __construct(Container $container)
     {
@@ -270,45 +348,18 @@ abstract class BaseTicket extends BaseRegistration
     }
 
 
-    public function buildTicket($base, $ticket)
-    {
-        $ticket['type'] = 'ticket';
-        foreach ($base as $key => $value) {
-            if (!ctype_lower($key[0])) {
-                $ticket[lcfirst($key)] = $value;
-                unset($ticket[$key]);
-                $key = lcfirst($key);
-            }
-            $key2 = str_replace('ID', '', $key);
-            if ($key2 != $key) {
-                $ticket[$key2] = $value;
-                unset($ticket[$key]);
-            }
-        }
-        $ticket['ticketType'] = $ticket['badgeType'];
-        unset($ticket['badgeType']);
-        $ticket['id'] = $ticket['registration'];
-        unset($ticket['registration']);
-        $ticket['member'] = $ticket['account'];
-        unset($ticket['account']);
-
-        return $ticket;
-
-    }
-
-
     public function getAccount($id, Request $request, Response $response, $permission)
     {
         $user = $request->getAttribute('oauth2-token')['user_id'];
-
-        $sql = "SELECT `AccountID` FROM `Registrations` WHERE `RegistrationID` = $id";
-        $sth = $this->container->db->prepare($sql);
-        $sth->execute();
-        $data = $sth->fetchAll();
+        $data = Select::new($this->container->db)
+            ->columns('AccountID')
+            ->from('Registrations')
+            ->whereEquals(['RegistrationID' => $id])
+            ->fetchOne();
         if (!$data) {
             throw new NotFoundException('Registration Not Found');
         }
-        $aid = $data[0]['AccountID'];
+        $aid = $data['AccountID'];
 
         if ($user != $aid && $permission &&
             !\ciab\RBAC::havePermission($permission)) {
@@ -323,21 +374,23 @@ abstract class BaseTicket extends BaseRegistration
     public function printBadge($request, $id)
     {
         $ip = \MyPDO::quote($_SERVER['REMOTE_ADDR']);
-        $sql = "UPDATE `Registrations` SET `PrintRequested` = NOW(), `PrintRequestIp` = $ip  WHERE `RegistrationID` = $id AND `VoidDate` IS NULL";
-        $sth = $this->container->db->prepare($sql);
-        $sth->execute();
+        Update::new($this->container->db)
+            ->table('Registrations')
+            ->columns(['PrintRequestIp' => $ip])
+            ->set('PrintRequested', 'NOW()')
+            ->whereEquals(['RegistrationID' => $id, 'VoidDate' => null])
+            ->perform();
 
     }
 
 
-    protected function updateTicket($request, $response, $params, $rbac, $sql, $error, $getResult = true)
+    protected function updateTicket($request, $response, $params, $rbac, $db_request, $error, $getResult = true)
     {
         if ($rbac) {
             $this->checkPermissions([$rbac]);
         }
-        $sth = $this->container->db->prepare($sql);
-        $sth->execute();
-        if ($sth->rowCount() == 0) {
+        $result = $db_request->perform();
+        if ($result->rowCount() == 0) {
             throw new ConflictException($error);
         }
 
@@ -357,7 +410,7 @@ abstract class BaseTicket extends BaseRegistration
     }
 
 
-    protected function updateAndPrintTicket($request, $response, $params, $id, $rbac, $sql, $error)
+    protected function updateAndPrintTicket($request, $response, $params, $id, $rbac, $db_request, $error)
     {
         $this->getAccount($id, $request, $response, $rbac);
 
@@ -369,7 +422,7 @@ abstract class BaseTicket extends BaseRegistration
             $response,
             $params,
             null,
-            $sql,
+            $db_request,
             $error,
             false
         );
@@ -385,14 +438,40 @@ abstract class BaseTicket extends BaseRegistration
 
     protected function verifyTicket($id)
     {
-        $sql = "SELECT * FROM `Registrations` WHERE `RegistrationID` = $id AND `VoidDate` IS NULL";
-        $sth = $this->container->db->prepare($sql);
-        $sth->execute();
-        $data = $sth->fetch();
+        $data = Select::new($this->container->db)
+            ->columns('*')
+            ->from('Registrations')
+            ->whereEquals(['RegistrationID' => $id, 'VoidDate' => null])
+            ->fetchOne();
         if (!$data) {
             throw new NotFoundException('Registration Not Found');
         }
         return $data;
+
+    }
+
+
+    protected function verifyBadgeId($reg_id, $badge_id, $event_id = null)
+    {
+        if ($event_id == null) {
+            $data = Select::new($this->container->db)
+                ->columns('EventID')
+                ->from('Registrations')
+                ->whereEquals(['RegistrationID' => $reg_id])
+                ->fetchOne();
+            if (!$data) {
+                throw new NotFoundException('Registration Not Found');
+            }
+            $event_id = $data['EventID'];
+        }
+        $data = Select::new($this->container->db)
+            ->columns('RegistrationID')
+            ->from('Registrations')
+            ->whereEquals(['EventID' => $event_id, 'BadgeID' => $badge_id])
+            ->fetchOne();
+        if (!empty($data) && $data['RegistrationID'] != $reg_id) {
+            throw new ConflictException('Badge ID already assigned');
+        }
 
     }
 

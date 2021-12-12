@@ -44,12 +44,25 @@ require_once __DIR__.'/../../../../backends/email.inc';
 use Slim\Http\Request;
 use Slim\Http\Response;
 use Slim\Views;
+use Atlas\Query\Select;
+use Atlas\Query\Insert;
+use Atlas\Query\Update;
 
 class PostPassword extends BaseMember
 {
 
+    protected static $columnsToAttributes = [
+    'AccountID' => 'AccountID',
+    'OneTime' => 'OneTime',
+    'OneTimeExpires' => 'OneTimeExpires',
+    'Authentication' => 'Authentication',
+    'LastLogin' => 'LastLogin',
+    'Expires' => 'Expires',
+    'FailedAttempts' => 'FailedAttempts'
+    ];
 
-    private static function getId($valLength = 40)
+
+    private static function getId($valLength = 40): string
     {
         $result = '';
         $moduleLength = 40;
@@ -74,50 +87,36 @@ class PostPassword extends BaseMember
             $duration = '+60 minutes';
         }
 
-        $user = $data['id'];
-        $email = $data['email'];
-        $code = PostPassword::getId();
-        $oneexpired = date('Y-m-d H:i', strtotime($duration));
-        $newauth = $code;
-        $auth = 'NULL';
-        $last = 'NULL';
-        $realexpires = 'NULL';
-        $exists = false;
-
-        $sql = "SELECT * FROM  `Authentication` WHERE AccountID = $user;";
-        $result = $this->container->db->prepare($sql);
-        $result->execute();
-        $value = $result->fetch();
-        if ($value !== false) {
-            if (!empty($value['Authentication'])) {
-                $auth = "'".$value['Authentication']."'";
-            }
-            if (!empty($value['LastLogin'])) {
-                $last = "'".$value['LastLogin']."'";
-            }
-            if (!empty($value['Expires'])) {
-                $realexpires = "'".$value['Expires']."'";
-            }
+        $select = Select::new($this->container->db);
+        $select->columns('*')->from('Authentication')->whereEquals(['AccountID' => $data['id']]);
+        $values = $select->fetchOne();
+        if ($values !== null) {
+            $modify = Update::new($this->container->db);
+            $modify->table('Authentication');
+            $modify->whereEquals(['AccountID' => $data['id']]);
             $exists = true;
+        } else {
+            $modify = Insert::new($this->container->db);
+            $modify->into('Authentication');
+            $values['Authentication'] = null;
+            $values['Expires'] = null;
+            $values['LastLogin'] = null;
+            $exists = false;
         }
-
-        $sql = <<<SQL
-            REPLACE INTO `Authentication`
-            SET AccountID = $user,
-                OneTime = '$newauth',
-                OneTimeExpires= '$oneexpired',
-                Authentication = $auth,
-                LastLogin = $last,
-                Expires = $realexpires,
-                FailedAttempts = 0;
-SQL;
-        $this->container->db->prepare($sql)->execute();
+        $email = $data['email'];
+        $values['AccountID'] = $data['id'];
+        $code = PostPassword::getId();
+        $values['OneTime'] = $code;
+        $values['OneTimeExpires'] = date('Y-m-d H:i', strtotime($duration));
+        $values['FailedAttempts'] = 0;
+        $modify->columns(PostPassword::insertPayloadFromParams($values, false));
+        $modify->perform();
 
         $name = 'Member';
-        if (array_key_exists('firstName', $data)) {
-            $name = $data['firstName'];
-        } elseif (array_key_exists('lastName', $data)) {
-            $name = $data['lastName'];
+        if (array_key_exists('first_name', $data)) {
+            $name = $data['first_name'];
+        } elseif (array_key_exists('last_name', $data)) {
+            $name = $data['last_name'];
         }
 
         $phpView = new Views\PhpRenderer(__DIR__.'/../../Templates', [
@@ -125,7 +124,7 @@ SQL;
             'con' => $CONSITENAME,
             'code' => urlencode($code),
             'url' => $BASEURL.'?Function=recovery',
-            'expire' => $oneexpired,
+            'expire' => $values['OneTimeExpires'],
             'email' => urlencode($email)
         ]);
         if ($exists) {
@@ -148,10 +147,10 @@ SQL;
     }
 
 
-    public function buildResource(Request $request, Response $response, $args): array
+    public function buildResource(Request $request, Response $response, $params): array
     {
-        $data = $this->findMember($request, $response, $args, 'email');
-        $this->resetPassword($response, $data);
+        $data = $this->getMember($request, $params['email']);
+        $this->resetPassword($response, $data[0]);
         return [
         \App\Controller\BaseController::RESOURCE_TYPE,
         [null],

@@ -4,35 +4,17 @@
 .*/
 /**
  *  @OA\Get(
- *      tags={"members"},
- *      path="/member/{id}/announcements",
- *      summary="Lists announcements for a given member",
- *      @OA\Parameter(
- *          description="The id or login of the member",
- *          in="path",
- *          name="id",
- *          required=true,
- *          @OA\Schema(
- *              oneOf = {
- *                  @OA\Schema(
- *                      description="Member login",
- *                      type="string"
- *                  ),
- *                  @OA\Schema(
- *                      description="Member id",
- *                      type="integer"
- *                  )
- *              }
- *          )
- *      ),
+ *      tags={"announcements"},
+ *      path="/announcement",
+ *      summary="Lists announcements for the current member",
  *      @OA\Parameter(
  *          ref="#/components/parameters/short_response",
  *      ),
  *      @OA\Parameter(
- *          ref="#/components/parameters/maxResults",
+ *          ref="#/components/parameters/max_results",
  *      ),
  *      @OA\Parameter(
- *          ref="#/components/parameters/pageToken",
+ *          ref="#/components/parameters/page_token",
  *      ),
  *      @OA\Response(
  *          response=200,
@@ -57,75 +39,24 @@ namespace App\Controller\Announcement;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
+use Atlas\Query\Select;
 
 class ListMemberAnnouncements extends BaseAnnouncement
 {
 
 
-    public function buildResource(Request $request, Response $response, $args): array
+    public function buildResource(Request $request, Response $response, $params): array
     {
-        $user = $this->findMemberId($request, $response, $args, 'id');
-        $user = $user['id'];
-        $sth = $this->container->db->prepare(<<<SQL
-            SELECT
-                *
-            FROM
-                `Announcements`
-            WHERE
-                `Scope` = 0 OR
-                `Scope` = 1 AND (
-                    SELECT
-                        COUNT(AccountID)
-                    FROM
-                        `ConComList`
-                    WHERE
-                        `AccountID`  = '$user'
-                ) > 0 OR
-                `Scope` = 2 AND (
-                `DepartmentID` IN(
-                SELECT
-                    `DepartmentID`
-                FROM
-                    `ConComList`
-                WHERE
-                    `AccountID` = '$user'
-            ) OR `DepartmentID` IN(
-                SELECT
-                    `DepartmentID`
-                FROM
-                    `Departments`
-                WHERE
-                    `ParentDepartmentID` IN(
-                    SELECT
-                        `DepartmentID`
-                    FROM
-                        `ConComList`
-                    WHERE
-                        `AccountID` = '$user'
-                )
-            ))
-            ORDER BY `PostedOn` ASC
-SQL
-        );
-        $sth->execute();
-        $todos = $sth->fetchAll();
+        $data = Select::new($this->container->db)
+            ->columns(...BaseAnnouncement::selectMapping())
+            ->from('Announcements')
+            ->orderBy('`PostedOn` ASC')
+            ->fetchAll();
+
+        $data = $this->filterScope($data);
+
         $output = array();
-        $output['type'] = 'announce_list';
-        $data = array();
-        foreach ($todos as $entry) {
-            $announce = new \App\Controller\Announcement\GetAnnouncement($this->container);
-            $result = $this->buildAnnouncement(
-                $request,
-                $response,
-                $entry['AnnouncementID'],
-                $entry['DepartmentID'],
-                $entry['PostedOn'],
-                $entry['PostedBy'],
-                $entry['Scope'],
-                $entry['Text']
-            );
-            $data[] = $announce->arrayResponse($request, $response, $result);
-        }
+        $output['type'] = 'announcement_list';
         return [
         \App\Controller\BaseController::LIST_TYPE,
         $data,

@@ -81,6 +81,7 @@ var deadlinePage = (function(options) {
       var date = document.getElementById('deadline_date').value;
       var note = document.getElementById('deadline_note').value;
       var dept = document.getElementById('department_dropdown_select').value;
+      var scope = document.getElementById('scope_drop').value;
       confirmbox('Update Deadline', 'Confirm update of this deadline').then(
         function() {
           showSpinner();
@@ -91,7 +92,7 @@ var deadlinePage = (function(options) {
             path = 'department/' + dept + '/deadline';
           }
           apiRequest(method, path,
-            'Deadline=' + date + '&Note=' + encodeURI(note) + '&Department=' +
+            'scope=' + scope + '&deadline=' + date + '&note=' + encodeURI(note) + '&department=' +
             dept)
             .then(function() {
               location.reload();
@@ -140,6 +141,24 @@ var deadlinePage = (function(options) {
       f.id = 'deadline-' + data2.id + '-note';
       f.appendChild(document.createTextNode(data2.note));
       line.appendChild(f);
+
+      f = document.createElement('DIV');
+      f.classList.add('UI-table-cell');
+      f.id = 'deadline-' + data2.id + '-scope';
+      if (data2.scope >= 2)
+      {
+        f.appendChild(document.createTextNode('Department Only'));
+      }
+      else if (data2.scope >= 1)
+      {
+        f.appendChild(document.createTextNode('All ConCom'));
+      }
+      else
+      {
+        f.appendChild(document.createTextNode('Convention Wide'));
+      }
+      line.appendChild(f);
+
       f = document.createElement('DIV');
       f.setAttribute('name', 'deadline-table-modify-' + data2.department.id);
       f.classList.add('UI-table-cell');
@@ -168,6 +187,10 @@ var deadlinePage = (function(options) {
       f = document.createElement('DIV');
       f.classList.add('UI-table-cell');
       f.appendChild(document.createTextNode('Deadline'));
+      line.appendChild(f);
+      f = document.createElement('DIV');
+      f.classList.add('UI-table-cell');
+      f.appendChild(document.createTextNode('Scope'));
       line.appendChild(f);
       f = document.createElement('DIV');
       f.setAttribute('name', 'deadline-table-modify-' + dept.id);
@@ -254,8 +277,8 @@ var deadlinePage = (function(options) {
     loadDeadlines: function() {
       showSpinner();
       apiRequest('GET',
-        'member/current/deadlines',
-        'maxResults=all')
+        '/deadline',
+        'max_results=all')
         .then(function(response) {
           var result = JSON.parse(response.responseText);
           if (result.data.length > 0) {
@@ -267,7 +290,7 @@ var deadlinePage = (function(options) {
           }
           apiRequest('GET',
             'permissions/method/deadline',
-            'maxResults=all')
+            'max_results=all')
             .then(function(response) {
               result = JSON.parse(response.responseText);
               var havePost = false;
@@ -275,11 +298,11 @@ var deadlinePage = (function(options) {
               if (result.data.length > 0) {
                 result.data.forEach(function(data) {
                   if (data.allowed) {
-                    permissions[data.subdata.departmentId + '_' +
+                    permissions[data.subdata.department + '_' +
                                   data.subtype] = data;
                     if (data.subtype == 'deadline_post') {
                       var sect = 'deadline-block-' +
-                                 data.subdata.departmentId;
+                                 data.subdata.department;
                       var block = document.getElementById(sect);
                       if (block !== null) {
                         var button = block.getElementsByTagName('button');
@@ -298,7 +321,7 @@ var deadlinePage = (function(options) {
                     if (data.subtype == 'deadline_delete' ||
                           data.subtype == 'deadline_put') {
                       var line = 'deadline-table-modify-' +
-                            data.subdata.departmentId;
+                            data.subdata.department;
                       var cells = document.getElementsByName(line);
                       cells.forEach(function(cell) {
                         cell.classList.remove('UI-hide');

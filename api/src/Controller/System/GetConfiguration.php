@@ -40,10 +40,10 @@
  *      path="/admin/configuration",
  *      summary="Get all configuration settings for the site",
  *      @OA\Parameter(
- *          ref="#/components/parameters/maxResults",
+ *          ref="#/components/parameters/max_results",
  *      ),
  *      @OA\Parameter(
- *          ref="#/components/parameters/pageToken",
+ *          ref="#/components/parameters/page_token",
  *      ),
  *      @OA\Response(
  *          response=200,
@@ -68,6 +68,7 @@ namespace App\Controller\System;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
+use Atlas\Query\Select;
 
 class GetConfiguration extends BaseSystem
 {
@@ -76,39 +77,38 @@ class GetConfiguration extends BaseSystem
     use \App\Controller\TraitConfiguration;
 
 
-    public function buildResource(Request $request, Response $response, $args): array
+    protected function buildExtendedConfQuery(&$select, $params)
+    {
+        $union = $select->union();
+        $union->columns(
+            'Field',
+            "'Configuration' as TargetTable",
+            'null as Type',
+            'null as InitialValue',
+            'null as Description',
+            'Value'
+        )->from(
+            'Configuration'
+        )->where(
+            '`Field` NOT IN ',
+            $union->subselect()->columns('Field')->from('ConfigurationField')->whereEquals(['TargetTable' => 'Configuration'])
+        );
+
+        if (array_key_exists('key', $params)) {
+            $union->whereEquals(['Field' => $params['key']]);
+        }
+
+    }
+
+
+    public function buildResource(Request $request, Response $response, $params): array
     {
         $permissions = ['api.get.configuration'];
         $this->checkPermissions($permissions);
 
         $user = $request->getAttribute('oauth2-token')['user_id'];
 
-        $sql = <<<SQL
-            UNION
-            SELECT
-                `Field`,
-                'Configuration' as TargetTable,
-                null as Type,
-                null as InitialValue,
-                null as Description,
-                Value
-            FROM
-                `Configuration`
-            WHERE
-                `Field` NOT IN (
-                SELECT
-                    `Field`
-                FROM
-                    `ConfigurationField`
-                WHERE
-                    TargetTable = 'Configuration'
-            )
-SQL;
-        if (array_key_exists('key', $args)) {
-            $sql .= " AND `Field` = '{$args['key']}'";
-        }
-
-        $result = $this->getConfiguration($args, 'Configuration', null, $sql);
+        $result = $this->getConfiguration($params, 'Configuration');
         foreach ($result as $index => $entry) {
             if (array_key_exists($entry['field'], $_ENV)) {
                 unset($result[$index]);

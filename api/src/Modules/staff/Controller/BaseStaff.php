@@ -140,12 +140,8 @@ abstract class BaseStaff extends BaseController
     }
 
 
-    protected function selectStaff($event = null, $department = null, $member = null)
+    protected function selectStaff($event, $department = null, $member = null)
     {
-        if ($event === null) {
-            $event = $this->getEvent('current')['id'];
-        }
-
         $select = Select::new($this->container->db);
 
         $historical = $select->subselect()->columns(

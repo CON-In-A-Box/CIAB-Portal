@@ -12,12 +12,12 @@
  *              mediaType="multipart/form-data",
  *              @OA\Schema(
  *                  @OA\Property(
- *                      property="From",
+ *                      property="date_from",
  *                      type="string",
  *                      format="date"
  *                  ),
  *                  @OA\Property(
- *                      property="To",
+ *                      property="date_to",
  *                      type="string",
  *                      format="date"
  *                  ),
@@ -50,6 +50,7 @@ namespace App\Controller\Cycle;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
+use Atlas\Query\Insert;
 
 use App\Controller\InvalidParameterException;
 
@@ -61,33 +62,26 @@ class PostCycle extends BaseCycle
     {
         $permissions = ['api.post.cycle'];
         $this->checkPermissions($permissions);
+        $required = ['date_from', 'date_to'];
+        $body = $this->checkRequiredBody($request, $required);
+        try {
+            $from = date_format(new \DateTime($body['date_from']), 'Y-m-d');
+        } catch (\Exception $e) {
+            throw new InvalidParameterException('Required \'date_from\' parameter not valid');
+        }
+        try {
+            $to = date_format(new \DateTime($body['date_to']), 'Y-m-d');
+        } catch (\Exception $e) {
+            throw new InvalidParameterException('Required \'date_to\' parameter not valid');
+        }
 
-        $body = $request->getParsedBody();
-        if (empty($body)) {
-            throw new InvalidParameterException('Required body not present');
-        }
-        if (!array_key_exists('From', $body)) {
-            throw new InvalidParameterException('Required \'From\' parameter not present');
-        }
-        if (!array_key_exists('To', $body)) {
-            throw new InvalidParameterException('Required \'To\' parameter not present');
-        }
-        try {
-            $from = date_format(new \DateTime($body['From']), 'Y-m-d');
-        } catch (\Exception $e) {
-            throw new InvalidParameterException('Required \'From\' parameter not valid');
-        }
-        try {
-            $to = date_format(new \DateTime($body['To']), 'Y-m-d');
-        } catch (\Exception $e) {
-            throw new InvalidParameterException('Required \'To\' parameter not valid');
-        }
-        $sql = "INSERT INTO `AnnualCycles` (`AnnualCycleID`, `DateFrom`, `DateTo`) VALUES (NULL, '$from', '$to')";
-        $sth = $this->container->db->prepare($sql);
-        $sth->execute();
+        $insert = Insert::new($this->container->db);
+        $insert->into('AnnualCycles')->columns(BaseCycle::insertPayloadFromParams($body));
+        $insert->perform();
+        $id = $insert->getLastInsertId();
 
         $target = new \App\Controller\Cycle\GetCycle($this->container);
-        $data = $target->buildResource($request, $response, ['id' => $this->container->db->lastInsertId()])[1];
+        $data = $target->buildResource($request, $response, ['id' => $id])[1];
         return [
         \App\Controller\BaseController::RESOURCE_TYPE,
         $target->arrayResponse($request, $response, $data),

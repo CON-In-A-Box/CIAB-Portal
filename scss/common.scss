@@ -251,7 +251,7 @@
 }
 
 .UI-table-heading .UI-table-row:first-of-type {
-    @extend .UI-bold !important;
+    @extend .UI-bold;
     font-size:125% !important;
 }
 
@@ -552,6 +552,13 @@
     @extend .UI-container;
     @extend .UI-cell;
     @extend .w3-mobile;
+}
+
+/* Hide it entirely if the screen is narrow*/
+@media screen and (max-width: 630px) {
+    .UI-page-title {
+        display: none;
+    }
 }
 
 .UI-recovery-text-block {

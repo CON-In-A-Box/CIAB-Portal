@@ -6,7 +6,7 @@
 /**
  *  @OA\Get(
  *      tags={"registration"},
- *      path="/registration/ticket/type/{id}/{event}",
+ *      path="/registration/ticket/type/{id}",
  *      summary="Gets a ticket type for an event",
  *      @OA\Parameter(
  *          description="Id of the ticket type",
@@ -16,11 +16,7 @@
  *          @OA\Schema(type="integer")
  *      ),
  *      @OA\Parameter(
- *          description="Id of the event",
- *          in="path",
- *          name="event",
- *          required=true,
- *          @OA\Schema(type="integer")
+ *          ref="#/components/parameters/event",
  *      ),
  *      @OA\Parameter(
  *          ref="#/components/parameters/short_response",
@@ -43,47 +39,19 @@
  *      security={{"ciab_auth":{}}}
  *  )
  *
- *  @OA\Get(
- *      tags={"registration"},
- *      path="/registration/ticket/type/{id}",
- *      summary="Gets a ticket type for the current event",
- *      @OA\Parameter(
- *          description="Id of the ticket type",
- *          in="path",
- *          name="id",
- *          required=true,
- *          @OA\Schema(type="integer")
- *      ),
- *      @OA\Parameter(
- *          ref="#/components/parameters/short_response",
- *      ),
- *      @OA\Response(
- *          response=200,
- *          description="Ticket type found",
- *          @OA\JsonContent(
- *           ref="#/components/schemas/ticket_type"
- *          ),
- *      ),
- *      @OA\Response(
- *          response=401,
- *          ref="#/components/responses/401"
- *      ),
- *      @OA\Response(
- *          response=404,
- *          ref="#/components/responses/ticket_not_found"
- *      ),
- *      security={{"ciab_auth":{}}}
- *  )
  *
  *  @OA\Get(
  *      tags={"registration"},
  *      path="/registration/ticket/type",
- *      summary="List all ticket types for the current event",
+ *      summary="List all ticket types for the event",
  *      @OA\Parameter(
- *          ref="#/components/parameters/maxResults",
+ *          ref="#/components/parameters/event",
  *      ),
  *      @OA\Parameter(
- *          ref="#/components/parameters/pageToken",
+ *          ref="#/components/parameters/max_results",
+ *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/page_token",
  *      ),
  *      @OA\Parameter(
  *          ref="#/components/parameters/short_response",
@@ -107,11 +75,23 @@ namespace App\Modules\registration\Controller\Ticket;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
+use Atlas\Query\Select;
 use App\Controller\IncludeResource;
 use App\Controller\NotFoundException;
 
 class GetTicketTypes extends BaseTicket
 {
+
+    protected static $columnsToAttributes = [
+    '"ticket_type"' => 'type',
+    'BadgeTypeID' => 'id',
+    'EventID' => 'event',
+    'AvailableFrom' => 'available_from',
+    'AvailableTo' => 'available_to',
+    'Cost' => 'cost',
+    'Name' => 'name',
+    'BackgroundImage' => 'background_image'
+    ];
 
 
     public function __construct($container)
@@ -126,33 +106,18 @@ class GetTicketTypes extends BaseTicket
 
     public function buildResource(Request $request, Response $response, $params): array
     {
-        $sql = "SELECT * FROM `BadgeTypes` ";
-        $conditional = [];
-        if (array_key_exists('event', $params)) {
-            $conditional[] = '`EventID` = '.$params['event'];
-        }
+        $event = $this->getEventId($request);
+        $select = Select::new($this->container->db)
+            ->columns(...GetTicketTypes::selectMapping())
+            ->from('BadgeTypes')
+            ->whereEquals(['EventID' => $event]);
         if (array_key_exists('id', $params)) {
-            $conditional[] = '`BadgeTypeID` = '.$params['id'];
-        }
-        if (!empty($conditional)) {
-            $sql .= 'WHERE '.implode(' AND ', $conditional);
+            $select->whereEquals(['BadgeTypeID' => $params['id']]);
         }
 
-        $sth = $this->container->db->prepare($sql);
-        $sth->execute();
-        $data = $sth->fetchAll();
-        if (empty($data)) {
+        $badges = $select->fetchAll();
+        if (empty($badges)) {
             throw new NotFoundException('Badge Type Not Found');
-        }
-        $badges = [];
-        foreach ($data as $entry) {
-            $badge = $entry;
-            $badge['id'] = $entry['BadgeTypeID'];
-            unset($badge['BadgeTypeID']);
-            $badge['event'] = $entry['EventID'];
-            unset($badge['EventID']);
-            $badge['type'] = 'ticket_type';
-            $badges[] = $badge;
         }
 
         if (count($badges) > 1) {

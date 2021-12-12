@@ -110,6 +110,9 @@ namespace App\Controller\Member;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
+use Atlas\Query\Select;
+use Atlas\Query\Insert;
+use Atlas\Query\Update;
 
 use App\Controller\PermissionDeniedException;
 use App\Controller\ConflictException;
@@ -117,6 +120,16 @@ use App\Controller\InvalidParameterException;
 
 class PutPassword extends BaseMember
 {
+
+    protected static $columnsToAttributes = [
+    'AccountID' => 'AccountID',
+    'OneTime' => 'OneTime',
+    'OneTimeExpires' => 'OneTimeExpires',
+    'Authentication' => 'Authentication',
+    'LastLogin' => 'LastLogin',
+    'Expires' => 'Expires',
+    'FailedAttempts' => 'FailedAttempts'
+    ];
 
     public $privilaged = false;
 
@@ -133,27 +146,26 @@ class PutPassword extends BaseMember
         $expires = date('Y-m-d H:i', strtotime($duration));
         $auth = \password_hash($password, PASSWORD_DEFAULT);
 
-        $last = 'NULL';
-        $sql = "SELECT * FROM  `Authentication` WHERE AccountID = '$user';";
-        $result = $this->container->db->prepare($sql);
-        $result->execute();
-        $value = $result->fetch();
-        if ($value !== false && $value['LastLogin'] !== null) {
-            $last = "'".$value['LastLogin']."'";
+        $select = Select::new($this->container->db);
+        $select->columns('*')->from('Authentication')->whereEquals(['AccountID' => $user]);
+        $values = $select->fetchOne();
+        if ($values !== null) {
+            $modify = Update::new($this->container->db);
+            $modify->table('Authentication');
+            $modify->whereEquals(['AccountID' => $user]);
+        } else {
+            $modify = Insert::new($this->container->db);
+            $modify->into('Authentication');
+            $values['AccountID'] = $user;
+            $values['LastLogin'] = null;
         }
-
-        $sql = <<<SQL
-            REPLACE INTO `Authentication`
-            SET AccountID = $user,
-                Authentication = '$auth',
-                LastLogin = $last,
-                Expires = '$expires',
-                FailedAttempts = 0,
-                OneTime = NULL,
-                OneTimeExpires = NULL;
-SQL;
-        $result = $this->container->db->prepare($sql);
-        $result->execute();
+        $values['Authentication'] = $auth;
+        $values['Expires'] = $expires;
+        $values['FailedAttempts'] = 0;
+        $values['OneTime'] = null;
+        $values['OneTimeExpires'] = null;
+        $modify->columns(PostPassword::insertPayloadFromParams($values, false));
+        $modify->perform();
 
     }
 
@@ -163,11 +175,10 @@ SQL;
         if (array_key_exists('OneTimeCode', $body)) {
             $onetime = $body['OneTimeCode'];
             $now = date('Y-m-d H:i', strtotime("now"));
-            $sql = "SELECT AccountID FROM Authentication WHERE OneTime = '$onetime' AND OneTimeExpires > '$now'";
-            $sth = $this->container->db->prepare($sql);
-            $sth->execute();
-            $result = $sth->fetchAll();
-            if (empty($result) || $accountID != $result[0]['AccountID']) {
+            $select = Select::new($this->container->db);
+            $select->columns('AccountID')->from('Authentication')->whereEquals(['OneTime' => $onetime])->where('OneTimeExpires > ', $now);
+            $result = $select->fetchOne();
+            if (empty($result) || $accountID != $result['AccountID']) {
                 throw new PermissionDeniedException();
             }
             return;
@@ -198,15 +209,15 @@ SQL;
     }
 
 
-    public function buildResource(Request $request, Response $response, $args): array
+    public function buildResource(Request $request, Response $response, $params): array
     {
-        if (array_key_exists('email', $args)) {
+        if (array_key_exists('email', $params)) {
             $index = 'email';
         } else {
             $index = 'id';
         }
-        $data = $this->findMember($request, $response, $args, $index);
-        $accountID = $data['id'];
+        $accountID = $this->getMember($request, $params[$index])[0]['id'];
+
         $body = $request->getParsedBody();
         if (empty($body)) {
             throw new InvalidParameterException('No body present');

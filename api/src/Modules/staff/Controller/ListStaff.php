@@ -5,24 +5,20 @@
 
 /**
  *  @OA\Get(
- *      tags={"staff"},
+ *      tags={"departments"},
  *      path="/department/staff/",
  *      summary="List staff all departments",
  *      @OA\Parameter(
- *          description="Event id being querried, if empty then current event",
- *          in="query",
- *          name="event",
- *          required=false,
- *          @OA\Schema(type="integer")
+ *          ref="#/components/parameters/event",
  *      ),
  *      @OA\Parameter(
  *          ref="#/components/parameters/short_response",
  *      ),
  *      @OA\Parameter(
- *          ref="#/components/parameters/maxResults",
+ *          ref="#/components/parameters/max_results",
  *      ),
  *      @OA\Parameter(
- *          ref="#/components/parameters/pageToken",
+ *          ref="#/components/parameters/page_token",
  *      ),
  *      @OA\Response(
  *          response=200,
@@ -59,11 +55,7 @@ class ListStaff extends BaseStaff
     {
         $permissions = ['api.get.staff'];
         $this->checkPermissions($permissions);
-        if (array_key_exists('event', $params)) {
-            $event = $params['event'];
-        } else {
-            $event = 'current';
-        }
+        $event = $this->getEventId($request);
         $data = $this->selectStaff($event);
         return [
         \App\Controller\BaseController::LIST_TYPE,

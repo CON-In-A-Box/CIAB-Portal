@@ -2,6 +2,8 @@
 
 namespace App\Tests\TestCase\Controller;
 
+use Atlas\Query\Delete;
+use Atlas\Query\Insert;
 use App\Tests\Base\CiabTestCase;
 
 class SystemTest extends CiabTestCase
@@ -10,15 +12,18 @@ class SystemTest extends CiabTestCase
 
     private function clear(): void
     {
-        $sql = "DELETE FROM `Configuration`  WHERE `Field` = 'phptest'";
-        $sth = $this->container->db->prepare($sql);
-        $sth->execute();
-        $sql = "DELETE FROM `Configuration`  WHERE `Field` = 'phptest2'";
-        $sth = $this->container->db->prepare($sql);
-        $sth->execute();
-        $sql = "DELETE FROM `ConfigurationField`  WHERE `Field` = 'phptest'";
-        $sth = $this->container->db->prepare($sql);
-        $sth->execute();
+        Delete::new($this->container->db)
+            ->from('Configuration')
+            ->whereEquals(['Field' => 'phptest'])
+            ->perform();
+        Delete::new($this->container->db)
+            ->from('Configuration')
+            ->whereEquals(['Field' => 'phptest2'])
+            ->perform();
+        Delete::new($this->container->db)
+            ->from('ConfigurationField')
+            ->whereEquals(['Field' => 'phptest'])
+            ->perform();
 
     }
 
@@ -78,9 +83,10 @@ class SystemTest extends CiabTestCase
 
     public function testSystemConfigValue(): void
     {
-        $sql = "INSERT INTO `ConfigurationField` (Field, TargetTable, Type, InitialValue, Description) VALUES ('phptest', 'Configuration', 'text', 'no', 'PHPTest value')";
-        $sth = $this->container->db->prepare($sql);
-        $sth->execute();
+        Insert::new($this->container->db)
+            ->into('ConfigurationField')
+            ->columns(['Field' => 'phptest', 'TargetTable' => 'Configuration', 'Type' => 'text', 'InitialValue' => 'no', 'Description' => 'PHPTest value'])
+            ->perform();
 
         $data = $this->runSuccessJsonRequest('GET', '/admin/configuration/phptest');
         $this->assertSame($data->value, 'no');
@@ -131,29 +137,35 @@ class SystemTest extends CiabTestCase
     private function systemConfigTypes($type, $default, $value, $result): void
     {
         $resource = 'phptest_'.$type;
-        $sql = "DELETE FROM `ConfigurationOption`  WHERE `Field` = '$resource'";
-        $sth = $this->container->db->prepare($sql);
-        $sth->execute();
-        $sql = "DELETE FROM `Configuration`  WHERE `Field` = '$resource'";
-        $sth = $this->container->db->prepare($sql);
-        $sth->execute();
-        $sql = "DELETE FROM `ConfigurationField`  WHERE `Field` = '$resource'";
-        $sth = $this->container->db->prepare($sql);
-        $sth->execute();
+        Delete::new($this->container->db)
+            ->from('ConfigurationOption')
+            ->whereEquals(['Field' => $resource])
+            ->perform();
+        Delete::new($this->container->db)
+            ->from('Configuration')
+            ->whereEquals(['Field' => $resource])
+            ->perform();
+        Delete::new($this->container->db)
+            ->from('ConfigurationField')
+            ->whereEquals(['Field' => $resource])
+            ->perform();
 
         if ($type != 'select') {
-            $sql = "INSERT INTO `ConfigurationField` (Field, TargetTable, Type, InitialValue, Description) VALUES ('$resource', 'Configuration', '$type', '$default', 'PHPTest value')";
-            $sth = $this->container->db->prepare($sql);
-            $sth->execute();
+            Insert::new($this->container->db)
+                ->into('ConfigurationField')
+                ->columns(['Field' => $resource, 'TargetTable' => 'Configuration', 'Type' => $type, 'InitialValue' => $default, 'Description' => 'PHPTest value'])
+                ->perform();
         } else {
-            $sql = "INSERT INTO `ConfigurationField` (Field, TargetTable, Type, InitialValue, Description) VALUES ('$resource', 'Configuration', '$type', $default[0], 'PHPTest value')";
-            $sth = $this->container->db->prepare($sql);
-            $sth->execute();
+            Insert::new($this->container->db)
+                ->into('ConfigurationField')
+                ->columns(['Field' => $resource, 'TargetTable' => 'Configuration', 'Type' => $type, 'InitialValue' => $default[0], 'Description' => 'PHPTest value'])
+                ->perform();
 
             foreach ($default as $d) {
-                $sql = "INSERT INTO `ConfigurationOption` (Field, Name) VALUES ('$resource', '$d')";
-                $sth = $this->container->db->prepare($sql);
-                $sth->execute();
+                Insert::new($this->container->db)
+                    ->into('ConfigurationOption')
+                    ->columns(['Field' => $resource, 'Name' => $d])
+                    ->perform();
             }
         }
 
@@ -164,25 +176,37 @@ class SystemTest extends CiabTestCase
             $this->assertSame($data->value, $default[0]);
         }
 
-        $this->runSuccessJsonRequest(
-            'PUT',
-            '/admin/configuration',
-            null,
-            ['Value' => "$value", 'Field' => "$resource"]
-        );
+        if ($result !== null) {
+            $this->runSuccessJsonRequest(
+                'PUT',
+                '/admin/configuration',
+                null,
+                ['Value' => "$value", 'Field' => "$resource"]
+            );
 
-        $data = $this->runSuccessJsonRequest('GET', '/admin/configuration/'.$resource);
-        $this->assertSame($data->value, $result);
-
-        $sql = "DELETE FROM `ConfigurationOption`  WHERE `Field` = '$resource'";
-        $sth = $this->container->db->prepare($sql);
-        $sth->execute();
-        $sql = "DELETE FROM `Configuration`  WHERE `Field` = '$resource'";
-        $sth = $this->container->db->prepare($sql);
-        $sth->execute();
-        $sql = "DELETE FROM `ConfigurationField`  WHERE `Field` = '$resource'";
-        $sth = $this->container->db->prepare($sql);
-        $sth->execute();
+            $data = $this->runSuccessJsonRequest('GET', '/admin/configuration/'.$resource);
+            $this->assertSame($data->value, $result);
+        } else {
+            $this->runRequest(
+                'PUT',
+                '/admin/configuration',
+                null,
+                ['Value' => "$value", 'Field' => "$resource"],
+                409
+            );
+        }
+        Delete::new($this->container->db)
+            ->from('ConfigurationOption')
+            ->whereEquals(['Field' => $resource])
+            ->perform();
+        Delete::new($this->container->db)
+            ->from('Configuration')
+            ->whereEquals(['Field' => $resource])
+            ->perform();
+        Delete::new($this->container->db)
+            ->from('ConfigurationField')
+            ->whereEquals(['Field' => $resource])
+            ->perform();
 
     }
 
@@ -196,7 +220,7 @@ class SystemTest extends CiabTestCase
         $this->systemConfigTypes('list', '1,2,3', '4,5,6', '4,5,6');
         $this->systemConfigTypes('list', '1,2,3', 'banana', 'banana');
         $this->systemConfigTypes('select', ['1','2','3'], '3', '3');
-        $this->systemConfigTypes('select', ['1','2','3'], '4', '');
+        $this->systemConfigTypes('select', ['1','2','3'], '4', null);
 
     }
 

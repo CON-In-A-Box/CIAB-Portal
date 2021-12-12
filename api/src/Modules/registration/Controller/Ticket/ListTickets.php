@@ -4,43 +4,54 @@
 .*/
 
 /**
+ *  @OA\Parameter(
+ *      parameter="show_void",
+ *      description="Show voided tickets as well.",
+ *      in="query",
+ *      name="show_void",
+ *      required=false,
+ *      @OA\Schema(type="integer", enum={0,1})
+ *  )
+ *
+ *  @OA\Parameter(
+ *      parameter="show_checked_in",
+ *      description="Show/exclude checked in",
+ *      in="query",
+ *      name="checked_in",
+ *      required=false,
+ *      @OA\Schema(type="integer", enum={0,1})
+ *  )
+ *
+ *  @OA\Parameter(
+ *      parameter="show_picked_up",
+ *      description="Show/exclude picked up",
+ *      in="query",
+ *      name="picked_up",
+ *      required=false,
+ *      @OA\Schema(type="integer", enum={0,1})
+ *  )
+ *
  *  @OA\Get(
  *      tags={"registration"},
- *      path="/registration/ticket/list/{member}/{event}",
- *      summary="Gets tickets for an event for a member",
+ *      path="/registration/ticket/list/unclaimed",
+ *      summary="Gets all unclaimed tickets for an event",
  *      @OA\Parameter(
- *          description="The member",
- *          in="path",
- *          name="member",
- *          required=true,
- *          @OA\Schema(
- *              oneOf = {
- *                  @OA\Schema(
- *                      description="Member email",
- *                      type="string"
- *                  ),
- *                  @OA\Schema(
- *                      description="Member id",
- *                      type="integer"
- *                  )
- *              }
- *          )
+ *          ref="#/components/parameters/event",
  *      ),
  *      @OA\Parameter(
- *          description="Id of the event",
- *          in="path",
- *          name="event",
- *          required=true,
- *          @OA\Schema(type="integer")
+ *          ref="#/components/parameters/show_void",
+ *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/show_checked_in",
  *      ),
  *      @OA\Parameter(
  *          ref="#/components/parameters/short_response",
  *      ),
  *      @OA\Parameter(
- *          ref="#/components/parameters/maxResults",
+ *          ref="#/components/parameters/max_results",
  *      ),
  *      @OA\Parameter(
- *          ref="#/components/parameters/pageToken",
+ *          ref="#/components/parameters/page_token",
  *      ),
  *      @OA\Response(
  *          response=200,
@@ -63,7 +74,7 @@
  *  @OA\Get(
  *      tags={"registration"},
  *      path="/registration/ticket/list/{member}",
- *      summary="Gets tickets for a member for the current event",
+ *      summary="Gets tickets for an event for a member",
  *      @OA\Parameter(
  *          description="The member",
  *          in="path",
@@ -83,10 +94,25 @@
  *          )
  *      ),
  *      @OA\Parameter(
- *          ref="#/components/parameters/maxResults",
+ *          ref="#/components/parameters/event",
  *      ),
  *      @OA\Parameter(
- *          ref="#/components/parameters/pageToken",
+ *          ref="#/components/parameters/show_void",
+ *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/show_checked_in",
+ *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/show_picked_up",
+ *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/short_response",
+ *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/max_results",
+ *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/page_token",
  *      ),
  *      @OA\Response(
  *          response=200,
@@ -109,12 +135,27 @@
  *  @OA\Get(
  *      tags={"registration"},
  *      path="/registration/ticket/list",
- *      summary="Gets tickets for the current member for the current event",
+ *      summary="Gets tickets for the current member for the event",
  *      @OA\Parameter(
- *          ref="#/components/parameters/maxResults",
+ *          ref="#/components/parameters/event",
  *      ),
  *      @OA\Parameter(
- *          ref="#/components/parameters/pageToken",
+ *          ref="#/components/parameters/show_void",
+ *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/show_checked_in",
+ *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/show_picked_up",
+ *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/short_response",
+ *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/max_results",
+ *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/page_token",
  *      ),
  *      @OA\Parameter(
  *          ref="#/components/parameters/short_response",
@@ -142,6 +183,7 @@ namespace App\Modules\registration\Controller\Ticket;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
+use Atlas\Query\Select;
 
 use App\Controller\PermissionDeniedException;
 use App\Controller\NotFoundException;
@@ -152,47 +194,66 @@ class ListTickets extends BaseTicketInclude
 
     public function buildResource(Request $request, Response $response, $params): array
     {
-        $data = $this->findMemberId($request, $response, $params, 'member');
-        $aid = $data['id'];
-
         $user = $request->getAttribute('oauth2-token')['user_id'];
+
+        if (array_key_exists('member', $params)) {
+            if ($params['member'] != 'unclaimed') {
+                $aid = $this->getMember($request, $params['member'], 'id')[0]['id'];
+            } else {
+                $aid = 'unclaimed';
+            }
+        } else {
+            $aid = $user;
+        }
+
         if ($user != $aid &&
             !\ciab\RBAC::havePermission('api.registration.ticket.list')) {
             throw new PermissionDeniedException();
         }
 
-        $sql = "SELECT * FROM `Registrations` WHERE ( `RegisteredByID` = $aid OR `AccountID` = $aid)";
-        if (array_key_exists('event', $params)) {
-            $sql .= ' AND `EventID` = '.$params['event'];
+        $select = Select::new($this->container->db)
+            ->columns(...BaseTicket::selectMapping())
+            ->from('Registrations')
+            ->where(' (');
+        if ($aid !== 'unclaimed') {
+            $select->catWhere(' RegisteredByID = ', $aid)
+                ->catWhere(' OR AccountID = ', $aid);
+        } else {
+            $select->catWhere(' BadgesPickedUp < 1')
+                ->catWhere(' OR BadgesPickedUp IS NULL');
         }
+        $select->catWhere(') ');
+        $event = $this->getEventId($request);
+        $select->whereEquals(['EventID' => $event]);
         $query = $request->getQueryParams();
-        if (!array_key_exists('showVoid', $query) || !boolval($query['showVoid'])) {
-            $sql .= " AND `VoidDate` IS NULL";
+        if (!array_key_exists('show_void', $query) || !boolval($query['show_void'])) {
+            $select->whereEquals(['VoidDate' => null]);
         }
-
-        $sth = $this->container->db->prepare($sql);
-        $sth->execute();
-        $data = $sth->fetchAll();
-        if (empty($data)) {
+        if (array_key_exists('checked_in', $query)) {
+            if (boolval($query['checked_in'])) {
+                $select->where('BoardingPassGenerated IS NOT NULL');
+            } else {
+                $select->whereEquals(['BoardingPassGenerated' => null]);
+            }
+        }
+        if (array_key_exists('picked_up', $query)) {
+            if (boolval($query['picked_up'])) {
+                $select->where('BadgesPickedUp > 0');
+            } else {
+                $select->where('BadgesPickedUp = 0');
+            }
+        }
+        $tickets = $select->fetchAll();
+        if (empty($tickets)) {
             throw new NotFoundException('Ticket Not Found');
         }
-        $tickets = [];
-        foreach ($data as $index => $ticket) {
-            $tickets[] = $this->buildTicket($data[$index], $ticket);
-        }
-        if (count($tickets) > 1) {
-            $output = ['type' => 'ticket_list'];
-            return [
-            \App\Controller\BaseController::LIST_TYPE,
-            $tickets,
-            $output
-            ];
-        } else {
-            return [
-            \App\Controller\BaseController::RESOURCE_TYPE,
-            $tickets[0]
-            ];
-        }
+
+        $output = ['type' => 'ticket_list'];
+        return [
+        \App\Controller\BaseController::LIST_TYPE,
+        $tickets,
+        $output
+        ];
 
     }
 

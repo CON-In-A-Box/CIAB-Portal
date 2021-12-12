@@ -34,13 +34,13 @@
  *          }
  *      ),
  *      @OA\Property(
- *          property="dateFrom",
+ *          property="date_from",
  *          type="string",
  *          format="date",
  *          description="Date the event starts"
  *      ),
  *      @OA\Property(
- *          property="dateTo",
+ *          property="date_to",
  *          type="string",
  *          format="date",
  *          description="Date the event ends"
@@ -88,6 +88,7 @@ use Slim\Http\Request;
 use Slim\Http\Response;
 use App\Controller\BaseController;
 use App\Controller\IncludeResource;
+use App\Controller\InvalidParameterException;
 
 abstract class BaseEvent extends BaseController
 {
@@ -97,6 +98,15 @@ abstract class BaseEvent extends BaseController
      */
     protected $id = 0;
 
+    protected static $columnsToAttributes = [
+    '"event"' => 'type',
+    'EventID' => 'id',
+    'AnnualCycleID' => 'cycle',
+    'DateFrom' => 'date_from',
+    'DateTo' => 'date_to',
+    'EventName' => 'name'
+    ];
+
 
     public function __construct(Container $container)
     {
@@ -104,6 +114,61 @@ abstract class BaseEvent extends BaseController
         $this->includes = [
         new IncludeResource('\App\Controller\Cycle\GetCycle', 'id', 'cycle')
         ];
+
+    }
+
+
+    private function handleDate($request, $response, $params, &$body, $dateName)
+    {
+        if (array_key_exists($dateName, $body)) {
+            try {
+                $body[$dateName] = date_format(new \DateTime($body[$dateName]), 'Y-m-d');
+
+                $target = new \App\Controller\Cycle\ListCycles($this->container);
+                $newrequest = $request->withQueryParams(['includesDate' => $body[$dateName]]);
+                $data = $target->buildResource($newrequest, $response, $params)[1];
+                if (empty($data)) {
+                    throw new InvalidParameterException("No existing cycle contains '$dateName'.");
+                }
+                $cycle = $data[0]['id'];
+                return $cycle;
+            } catch (\Exception $e) {
+                throw new InvalidParameterException("'$dateName' parameter not valid");
+            }
+        }
+
+        return null;
+
+    }
+
+
+    protected function buildPutPostBody($request, $response, $params, $required, $event)
+    {
+        $body = $this->checkRequiredBody($request, $required);
+        unset($body['cycle']);
+
+        if ($event) {
+            $cycle_from = $event['cycle'];
+            $cycle_to = $event['cycle'];
+        } else {
+            $cycle_from = null;
+            $cycle_to = null;
+        }
+        $cycle = $this->handleDate($request, $response, $params, $body, 'date_from');
+        if ($cycle != null) {
+            $cycle_from = $cycle;
+        }
+        $cycle = $this->handleDate($request, $response, $params, $body, 'date_to');
+        if ($cycle != null) {
+            $cycle_to = $cycle;
+        }
+        if (!$cycle_to || !$cycle_from || $cycle_to != $cycle_from) {
+            throw new InvalidParameterException("Event dates not allowed to span cycles ($cycle_from - $cycle_to).");
+        }
+
+        $body['cycle'] = $cycle_from;
+
+        return $body;
 
     }
 

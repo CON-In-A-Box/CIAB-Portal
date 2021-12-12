@@ -11,7 +11,9 @@ $DB_tables = [
 'DeadlineID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
 'DepartmentID' => 'INT UNSIGNED NOT NULL',
 'Deadline' => 'DATE NOT NULL',
-'Note' => 'TEXT NOT NULL'
+'Note' => 'TEXT NOT NULL',
+'Scope' => 'INT UNSIGNED',
+'PostedBy' => 'INT UNSIGNED'
     ]
 
 ];

@@ -3,10 +3,10 @@
     require_module 'standard';
 .*/
 
-require_once $PAGESDIR.'/base/leftnav.inc';
 require_once $FUNCTIONDIR.'/authentication.inc';
 require_once $FUNCTIONDIR."/database.inc";
 require_once $FUNCTIONDIR.'/users.inc';
+require_once $BACKEND.'/CRM.inc';
 
 const FIRST_NAME = 'firstName';
 const LAST_NAME = 'lastName';
@@ -54,8 +54,8 @@ const FIELD = 'Field';
     <div id="left_bar" class="ADMIN-center-bar">
         <form action="index.php?Function=admin" method="POST" class="form-inline">
             <fieldset>
-<?php if (array_key_exists('Neon', $GLOBALS)) { ?>
-                <legend>Basic NeonCRM Account Search</legend>
+<?php if (\ciab\CRM::active()) { ?>
+                <legend>Basic CRM Account Search</legend>
 <?php } else {?>
                 <legend>Basic Account Search</legend>
 <?php } ?>
@@ -91,22 +91,21 @@ const FIELD = 'Field';
             <input type="button" value="Set Password" class="UI-graybutton" onclick="setPassword();"/>
         </div>
         <hr>
-<?php if (array_key_exists('Neon', $GLOBALS)) { ?>
-        <input type="submit" value="Manually Update Event Memberships (LONG)" class="UI-yellowbutton"
+<?php if (\ciab\CRM::active()) { ?>
+        <input type="submit" value="Manually Update Full Event Memberships from CRM (LONG)" class="UI-yellowbutton"
                onclick="updateMemberships();"/>
         <hr>
 <?php } ?>
         <input type="submit" value="Reload without Admin Priv" class="UI-graybutton"
                onclick="removeAdmin();"/>
         <hr>
-<?php if (array_key_exists('Neon', $GLOBALS)) {
-?>
-<h2 class="UI-blue UI-center">Neon Web Hooks</h2>
+<?php if (\ciab\CRM::hasWebhooks()) { ?>
+<h2 class="UI-blue UI-center">CRM Web Hooks</h2>
 <?php
 if (isset($GLOBALS['NEON_HOOK_NAME'])) {
 ?>
     <form action="index.php?Function=admin" method="POST" class="form-inline">
-    Remove Neon Web Hooks:<br>
+    Remove CRM Web Hooks:<br>
     <input type="text" class="form-control" name="hook_url" value="
 <?php echo $GLOBALS['NEON_HOOK_URL'];?>"
         autocomplete="off" readonly/>
@@ -119,7 +118,7 @@ if (isset($GLOBALS['NEON_HOOK_NAME'])) {
 } else {
 ?>
     <form action="index.php?Function=admin" method="POST" class="form-inline">
-    Install Neon Web Hooks:<br>
+    Install CRM Web Hooks:<br>
     <input type="text" class="form-control" name="hook_url" value="<?php
     echo "http://".htmlspecialchars($_SERVER['HTTP_HOST']);?>"
         autocomplete="off"/>

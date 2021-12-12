@@ -8,27 +8,32 @@
  * @OA\Schema(
  *      schema="log_entry",
  *      @OA\Property(
- *          property="LogEntryID",
+ *          property="type",
+ *          type="string",
+ *          enum={"log_entry"}
+ *      ),
+ *      @OA\Property(
+ *          property="id",
  *          description="Entry ID",
  *          type="string"
  *      ),
  *      @OA\Property(
- *          property="AccountID",
+ *          property="account",
  *          description="Member account generating the log",
  *          type="string"
  *      ),
  *      @OA\Property(
- *          property="Function",
+ *          property="function",
  *          description="Function generating the log",
  *          type="string"
  *      ),
  *      @OA\Property(
- *          property="Query",
+ *          property="query",
  *          description="The query string being logged",
  *          type="string"
  *      ),
  *      @OA\Property(
- *          property="Date",
+ *          property="date",
  *          description="When the log entry was generated",
  *          type="string",
  *          format="date-time",
@@ -83,9 +88,19 @@ namespace App\Controller\System;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
+use Atlas\Query\Select;
 
 class GetLog extends BaseSystem
 {
+
+    protected static $columnsToAttributes = [
+    '"log_entry"' => 'type',
+    'LogEntryID' => 'id',
+    'AccountID' => 'account',
+    'Function' => 'function',
+    'Query' => 'query',
+    'Date' => 'date'
+    ];
 
 
     private function filterLog($query)
@@ -103,10 +118,10 @@ class GetLog extends BaseSystem
         $this->checkPermissions($permissions);
 
         $this->api_type = 'log';
-        $sql = "SELECT MAX(LogEntryID) as mid FROM ActivityLog;";
-        $sth = $this->container->db->prepare($sql);
-        $sth->execute();
-        $data = $sth->fetch();
+        $data = Select::new($this->container->db)
+            ->columns('MAX(LogEntryID) as mid')
+            ->from('ActivityLog')
+            ->fetchOne();
         $max = intval($data['mid']);
         $limit = 1000;
         if (array_key_exists('lines', $params)) {
@@ -114,15 +129,19 @@ class GetLog extends BaseSystem
         }
         $max = $max - $limit;
 
-        $sql = <<<SQL
-            SELECT * FROM ( SELECT * FROM ActivityLog WHERE LogEntryID > $max)   sub ORDER BY LogEntryID DESC;
-SQL;
-        $sth = $this->container->db->prepare($sql);
-        $sth->execute();
-        $data = $sth->fetchAll();
+        $select = Select::new($this->container->db);
+        $data = $select->columns(...GetLog::selectMapping())
+            ->from($select->subselect()
+                ->columns('*')
+                ->from('ActivityLog')
+                ->where('LogEntryID > ', $max)
+                ->as('sub')
+                ->getStatement())
+            ->orderBy('LogEntryID DESC')
+            ->fetchAll();
 
         foreach ($data as $idx => $line) {
-            $data[$idx]['Query'] = $this->filterLog($line['Query']);
+            $data[$idx]['query'] = $this->filterLog($line['query']);
         }
 
         $result = [];

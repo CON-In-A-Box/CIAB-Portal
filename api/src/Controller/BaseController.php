@@ -28,10 +28,10 @@
  *  )
  *
  *  @OA\Parameter(
- *      parameter="maxResults",
+ *      parameter="max_results",
  *      description="Maximum members of the list per page or 'all' (default 100).",
  *      in="query",
- *      name="maxResults",
+ *      name="max_results",
  *      required=false,
  *      style="form",
  *      @OA\Schema(
@@ -48,10 +48,10 @@
  *  )
  *
  *  @OA\Parameter(
- *      parameter="pageToken",
+ *      parameter="page_token",
  *      description="Starting page of results.",
  *      in="query",
- *      name="pageToken",
+ *      name="page_token",
  *      required=false,
  *      style="form",
  *      @OA\Schema(
@@ -72,6 +72,18 @@
  *      )
  *  )
  *
+ *  @OA\Parameter(
+ *      parameter="event",
+ *      description="Target event ID for query. If not specified defaults to the current event",
+ *      in="query",
+ *      name="short_response",
+ *      required=false,
+ *      style="form",
+ *      @OA\Schema(
+ *          type="integer",
+ *      )
+ *  )
+ *
  *  @OA\Schema(
  *      schema="resource_list",
  *      @OA\Property(
@@ -87,8 +99,8 @@
  *          )
  *      ),
  *      @OA\Property(
- *          property="nextPageToken",
- *          description="If present, the `pageToken` for the next page of results",
+ *          property="next_page_token",
+ *          description="If present, the `page_token` for the next page of results",
  *          type="integer",
  *      )
  *  )
@@ -102,6 +114,8 @@ use Exception;
 use Slim\Container;
 use Slim\Http\Response;
 use Slim\Http\Request;
+use Slim\Http\Environment;
+use Atlas\Query\Select;
 
 require_once __DIR__.'/../../../backends/RBAC.inc';
 require_once __DIR__.'/../../../modules/concom/functions/RBAC.inc';
@@ -125,6 +139,12 @@ class InvalidParameterException extends Exception
 
 
 class ConflictException extends Exception
+{
+
+}
+
+
+class InternalServerErrorException extends Exception
 {
 
 }
@@ -213,17 +233,18 @@ abstract class BaseController
     */
     protected $includes;
 
+    /**
+     * @var array[]
+    */
+    protected static $columnsToAttributes = null;
+
 
     protected function __construct(string $api_type, Container $container)
     {
         $this->api_type = $api_type;
         $this->container = $container;
         $this->chain = [];
-        $this->includes = [];
-
-        if (array_key_exists('Neon', $GLOBALS)) {
-            \loadDefinedFields();
-        }
+        $this->includes = null;
 
         $modules = $container->get('settings')['modules'];
         foreach ($modules as $module) {
@@ -265,6 +286,11 @@ abstract class BaseController
             BaseController::RESULT_TYPE,
             $this->errorResponse($request, $response, $e->getMessage(), 'Conflict', 409)
             ];
+        } catch (InternalServerErrorException $e) {
+            $result = [
+            BaseController::RESULT_TYPE,
+            $this->errorResponse($request, $response, $e->getMessage(), 'Internal Server Error', 500)
+            ];
         }
 
         if ($result === null || $result[0] === null) {
@@ -302,22 +328,29 @@ abstract class BaseController
 
     public function handleListType(Request $request, Response $response, array $output, array $data, array $params, int $code = 200)
     {
-        $short = $request->getQueryParam('short_response', false);
-        if (!boolval($short)) {
-            for ($i = 0; $i < count($data); $i++) {
-                $this->processIncludes($request, $response, $params, $data[$i]);
+        if ($this->includes !== null) {
+            $cleandata = array_values($data);
+            $short = $request->getQueryParam('short_response', false);
+            if (!boolval($short)) {
+                foreach ($cleandata as $index => $entry) {
+                    $this->processIncludes($request, $response, $params, $cleandata[$index]);
+                }
             }
+        } else {
+            $cleandata = $data;
         }
-        return $this->listResponse($request, $response, $output, $data, $code);
+        return $this->listResponse($request, $response, $output, $cleandata, $code);
 
     }
 
 
     public function handleResourceType(Request $request, Response $response, $data, array $params, $code = 200)
     {
-        $short = $request->getQueryParam('short_response', false);
-        if (!boolval($short)) {
-            $this->processIncludes($request, $response, $params, $data);
+        if ($this->includes !== null) {
+            $short = $request->getQueryParam('short_response', false);
+            if (!boolval($short)) {
+                $this->processIncludes($request, $response, $params, $data);
+            }
         }
         return $this->jsonResponse($request, $response, $data, $code);
 
@@ -411,8 +444,8 @@ abstract class BaseController
     protected function listResponse(Request $request, Response $response, $output, $data, $code = 200): Response
     {
         $len = count($data);
-        $index = intval($request->getQueryParam('pageToken', 0));
-        $maxPage = $request->getQueryParam('maxResults', 100);
+        $index = intval($request->getQueryParam('page_token', 0));
+        $maxPage = $request->getQueryParam('max_results', 100);
         $count = $maxPage;
         if (is_string($count) && strtolower($count) === 'all') {
             $count = $len;
@@ -425,7 +458,7 @@ abstract class BaseController
         }
         $output['data'] = array_slice($data, $index, $count, true);
         if ($maxPage !== 'all' and $index + $count < $len) {
-            $output['nextPageToken'] = $index + $count;
+            $output['next_page_token'] = $index + $count;
         }
 
         return $this->jsonResponse($request, $response, $output, $code);
@@ -449,53 +482,34 @@ abstract class BaseController
 
     public function getDepartment($id)
     {
-        $sql = <<<SQL
-            SELECT
-                *,
-                (
-                SELECT
-                    COUNT(DepartmentID)
-                FROM
-                    `Departments` d2
-                WHERE
-                    d2.ParentDepartmentID = d1.DepartmentID AND NOT NAME = 'Historical Placeholder'
-            ) AS childCount,
-            (
-                SELECT
-                    GROUP_CONCAT(Email)
-                FROM
-                    EMails
-                WHERE
-                    DepartmentID = d1.DepartmentID
-            ) AS email
-            FROM
-                Departments d1
-            WHERE
-SQL;
+        $select = Select::new($this->container->db);
+        $select->columns('*')
+            ->columns(
+                $select->subselect()
+                    ->columns('COUNT(DepartmentID)')
+                    ->from('`Departments` d2')
+                    ->whereEquals(['d2.ParentDepartmentID' => 'd1.DepartmentID'])
+                    ->andWhere("NOT NAME = 'Historical Placeholder'")
+                    ->as('child_count')
+                    ->getStatement()
+            )
+            ->columns(
+                $select->subselect()
+                    ->columns('GROUP_CONCAT(Email)')
+                    ->from('EMails')
+                    ->whereEquals(['DepartmentID' => 'd1.DepartmentID'])
+                    ->as('email')
+                    ->getStatement()
+            )
+            ->from('Departments d1');
         if ($id !== null) {
-            $sql .= "(DepartmentID = '$id' OR Name = '$id') AND \n";
+            $select->where("(DepartmentID = '$id' OR Name = '$id')");
         }
-        $sql .= <<<SQL
-                DepartmentID NOT IN (
-                    SELECT
-                        `DepartmentID`
-                    FROM
-                        `Departments`
-                    WHERE
-                        Name = 'Historical Placeholder'
-                )
-                AND ParentDepartmentID NOT IN (
-                    SELECT
-                        `DepartmentID`
-                    FROM
-                        `Departments`
-                    WHERE
-                        Name = 'Historical Placeholder'
-                );
-SQL;
-        $result = $this->container->db->prepare($sql);
-        $result->execute();
-        $data = $result->fetchAll();
+        $placeholders = $select->subselect()->columns('DepartmentID')->from('Departments')->whereEquals(['Name' => 'Historical Placeholder']);
+        $select->where('DepartmentID NOT IN ', $placeholders);
+        $select->where('ParentDepartmentID NOT IN ', $placeholders);
+        $data = $select->fetchAll();
+
         $final = [];
         if (empty($data)) {
             throw new NotFoundException("Department '$id' Not Found");
@@ -527,97 +541,6 @@ SQL;
             $final[] = $output;
         }
         return $final;
-
-    }
-
-
-    private static function mapMemberData($input)
-    {
-        $map = ['Id' => 'id', 'First Name' => 'firstName',
-        'Last Name' => 'lastName', 'Email' => 'email',
-        'FirstName' => 'legalFirstName', 'LastName' => 'legalLastName',
-        'MiddleName' => 'middleName', 'Suffix' => 'suffix',
-        'Email2' => 'email2', 'Email3' => 'email3', 'Phone' => 'phone1',
-        'Phone2' => 'phone2', 'AddressLine1' => 'addressLine1',
-        'AddressLine2' => 'addressLine2', 'AddressCity' => 'city',
-        'AddressState' => 'state', 'AddressZipCode' => 'zipCode',
-        'AddressZipCodeSuffix' => 'zipPlus4', 'AddressCountry' => 'countryName',
-        'AddressProvince' => 'province',
-        'PreferredFirstName' => 'preferredFirstName',
-        'PreferredLastName' => 'preferredLastName',
-        'Deceased' => 'Deceased', 'DoNotContact' => 'DoNotContact',
-        'EmailOptOut' => 'EmailOptOut', 'Birthdate' => 'Birthdate',
-        'Gender' => 'Gender', 'DisplayPhone' => 'conComDisplayPhone'];
-        $output = [];
-        foreach ($map as $inField => $outField) {
-            if (array_key_exists($inField, $input) && $input[$inField]) {
-                $output[$outField] = $input[$inField];
-            }
-        }
-        return $output;
-
-    }
-
-
-    public function findMember(
-        Request $request,
-        Response $response,
-        $args,
-        $key,
-        $fields = null
-    ) {
-        if ($fields === null) {
-            $fields = ['FirstName', 'MiddleName', 'LastName',
-            'Suffix', 'Email2', 'Email3', 'Phone', 'Phone2',
-            'AddressLine1', 'AddressLine2', 'AddressCity', 'AddressState',
-            'AddressZipCode', 'AddressZipCodeSuffix', 'AddressCountry',
-            'AddressProvince', 'PreferredFirstName', 'PreferredLastName',
-            'Deceased', 'DoNotContact', 'EmailOptOut', 'Birthdate',
-            'Gender', 'DisplayPhone'];
-        }
-        if ($args !== null && array_key_exists($key, $args)) {
-            $data = \lookup_users_by_key($args[$key], true, true, false, $fields);
-            if (empty($data['users'])) {
-                throw new NotFoundException('Member Not Found');
-            }
-            $data = BaseController::mapMemberData($data['users'][0]);
-        } else {
-            $user = $request->getAttribute('oauth2-token')['user_id'];
-            $data = \lookup_user_by_id($user, $fields);
-            $data = BaseController::mapMemberData($data['users'][0]);
-        }
-        return $data;
-
-    }
-
-
-    public function findMemberId(
-        Request $request,
-        Response $response,
-        $args,
-        $key,
-        $fields = null
-    ) {
-        if ($fields === null) {
-            $fields = ['FirstName', 'MiddleName', 'LastName',
-            'Suffix', 'Email2', 'Email3', 'Phone', 'Phone2',
-            'AddressLine1', 'AddressLine2', 'AddressCity', 'AddressState',
-            'AddressZipCode', 'AddressZipCodeSuffix', 'AddressCountry',
-            'AddressProvince', 'PreferredFirstName', 'PreferredLastName',
-            'Deceased', 'DoNotContact', 'EmailOptOut', 'Birthdate',
-            'Gender', 'DisplayPhone'];
-        }
-        if ($args !== null && array_key_exists($key, $args) && $args[$key] !== 'current') {
-            $user = $args[$key];
-        } else {
-            $user = $request->getAttribute('oauth2-token')['user_id'];
-        }
-        $data = \lookup_user_by_id($user, $fields);
-        if (empty($data['users'])) {
-            throw new NotFoundException('Member Not Found');
-        }
-        $data = BaseController::mapMemberData($data['users'][0]);
-        return $data;
 
     }
 
@@ -658,40 +581,118 @@ SQL;
 
     public function processIncludes(Request $request, Response $response, $params, &$data, array $history = [])
     {
-        foreach ($this->includes as $target) {
-            $target->process($request, $response, $this->container, $params, $data, $history);
+        if ($this->includes !== null) {
+            foreach ($this->includes as $target) {
+                $target->process($request, $response, $this->container, $params, $data, $history);
+            }
         }
-
-    }
-
-
-    protected function processEvent($item)
-    {
-        $newEvent['type'] = 'event';
-        $newEvent['id'] = $item['EventID'];
-        $newEvent['cycle'] = $item['AnnualCycleID'];
-        $newEvent['dateFrom'] = $item['DateFrom'];
-        $newEvent['dateTo'] = $item['DateTo'];
-        $newEvent['name'] = $item['EventName'];
-        return $newEvent;
 
     }
 
 
     protected function getEvent(string $id)
     {
-        if ($id == 'current') {
-            $sth = $this->container->db->prepare("SELECT * FROM `Events` WHERE `DateTo` >= NOW() ORDER BY `DateFrom` ASC LIMIT 1");
-        } else {
-            $sth = $this->container->db->prepare("SELECT * FROM `Events` WHERE `EventID` = '$id'");
+        $event = new \App\Controller\Event\GetEvent($this->container);
+        $env = Environment::mock([]);
+        $request = Request::createFromEnvironment($env);
+        $response = new Response();
+        return $event->buildResource($request, $response, ['id' => $id])[1];
+
+    }
+
+
+    protected function getEventId(Request $request)
+    {
+        $event = $request->getQueryParam('event', 'current');
+        return $this->getEvent($event)['id'];
+
+    }
+
+
+    protected function getMember(Request $request, string $id, string $from = null, bool $internal = true)
+    {
+        if ($from === null) {
+            $from = 'id,email';
         }
-        $sth->execute();
-        $data = $sth->fetchAll();
-        if (empty($data)) {
-            throw new NotFoundException("Event '$id' Not Found");
+        if ($id === 'current') {
+            $id = $request->getAttribute('oauth2-token')['user_id'];
+        }
+        $query = "q=".urlencode($id)."&from=$from";
+        $lookup = new \App\Controller\Member\FindMembers($this->container);
+        $lookup->internal = $internal;
+        $env = Environment::mock(['QUERY_STRING' => $query]);
+        $new_request = Request::createFromEnvironment($env);
+        $response = new Response();
+        return $lookup->buildResource($new_request, $response, [])[1];
+
+    }
+
+
+    protected function checkRequiredBody(Request $request, array $required_params)
+    {
+        $body = $request->getParsedBody();
+        if (empty($body)) {
+            throw new InvalidParameterException('Required body not present');
+        }
+        foreach ($required_params as $required) {
+            if (!array_key_exists($required, $body) || $body[$required] === null) {
+                throw new InvalidParameterException("Required '$required' parameter not present");
+            }
         }
 
-        return $this->processEvent($data[0]);
+        return $body;
+
+    }
+
+
+    protected static function attributesToColumns(): array
+    {
+        if (static::$columnsToAttributes !== null) {
+            return array_flip(static::$columnsToAttributes);
+        }
+        return null;
+
+    }
+
+
+    protected static function selectMapping(): array
+    {
+        if (static::$columnsToAttributes !== null) {
+            $ret = array();
+            foreach (static::$columnsToAttributes as $key => $value) {
+                $ret[] = "$key AS $value";
+            }
+            return $ret;
+        }
+        return ['*'];
+
+    }
+
+
+    public static function insertPayloadFromParams(array $params, $includeId = true): array
+    {
+        $paramsToColumns = static::attributesToColumns();
+        $params = static::filterBodyParams(array_keys($paramsToColumns), $params);
+
+        $ret = array();
+
+        if ($includeId && !array_key_exists('id', $params)) {
+            $ret[$paramsToColumns['id']] = null;
+        };
+
+        foreach ($params as $key => $val) {
+            if (is_string($val)) {
+                $ret[$paramsToColumns[$key]] = htmlspecialchars_decode($val, ENT_QUOTES);
+            } else {
+                $ret[$paramsToColumns[$key]] = $val;
+            }
+        }
+
+        if (empty($ret)) {
+            throw new InvalidParameterException("No parameters not present");
+        }
+
+        return $ret;
 
     }
 

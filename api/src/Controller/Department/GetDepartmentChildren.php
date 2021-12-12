@@ -30,10 +30,10 @@
  *          ref="#/components/parameters/short_response",
  *      ),
  *      @OA\Parameter(
- *          ref="#/components/parameters/maxResults",
+ *          ref="#/components/parameters/max_results",
  *      ),
  *      @OA\Parameter(
- *          ref="#/components/parameters/pageToken",
+ *          ref="#/components/parameters/page_token",
  *      ),
  *      @OA\Response(
  *          response=200,
@@ -54,6 +54,7 @@ namespace App\Controller\Department;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
+use Atlas\Query\Select;
 
 class GetDepartmentChildren extends BaseDepartment
 {
@@ -62,10 +63,9 @@ class GetDepartmentChildren extends BaseDepartment
     public function buildResource(Request $request, Response $response, $params): array
     {
         $id = $params['name'];
-        $sql = "SELECT DepartmentID FROM `Departments` WHERE `ParentDepartmentID` = $id";
-        $result = $this->container->db->prepare($sql);
-        $result->execute();
-        $data = $result->fetchAll();
+        $select = Select::new($this->container->db);
+        $select->columns('DepartmentID')->from('Departments')->whereEquals(['ParentDepartmentID' => $id]);
+        $data = $select->fetchAll();
         $output = [];
         foreach ($data as $entry) {
             if ($entry['DepartmentID'] != $id) {

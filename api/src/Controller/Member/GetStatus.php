@@ -43,6 +43,7 @@ namespace App\Controller\Member;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
+use Atlas\Query\Select;
 
 use App\Controller\NotFoundException;
 
@@ -61,12 +62,9 @@ class GetStatus extends BaseMember
             $max_fail = intval($MAXLOGINFAIL);
         }
 
-        $sql = <<<SQL
-            SELECT * FROM `Authentication` WHERE AccountID = $account;
-SQL;
-        $result = $this->container->db->prepare($sql);
-        $result->execute();
-        $value = $result->fetch();
+        $select = Select::new($this->container->db);
+        $select->columns('FailedAttempts', 'Expires')->from('Authentication')->whereEquals(['AccountID' => $account]);
+        $value = $select->fetchOne();
         if ($value !== false) {
             if ($value['FailedAttempts'] >= $max_fail) {
                 return AUTH_LOCKED;
@@ -84,28 +82,20 @@ SQL;
     }
 
 
-    public function buildResource(Request $request, Response $response, $args): array
+    public function buildResource(Request $request, Response $response, $params): array
     {
-        $data = \lookup_users_by_key($args['name']);
-        if (empty($data['users'])) {
-            if (empty($data['error'])) {
-                $error = 'No Members Found';
-            } else {
-                $error = $data['error'];
-            }
-            throw new NotFoundException($error);
-        }
-        if (count($data['users']) > 1) {
+        $data = $this->getMember($request, $params['name']);
+        if (count($data) > 1) {
             $error = 'Too many matches found';
             throw new NotFoundException($error);
         }
-        $data = $data['users'][0];
-        if (!array_key_exists('Id', $data)) {
+        $data = $data[0];
+        if (!array_key_exists('id', $data)) {
             $error = 'User ID not found';
             throw new NotFoundException($error);
         }
         $valid = array('type' => 'member_status',
-                       'status' => $this->verifyAccount($data['Id']));
+                       'status' => $this->verifyAccount($data['id']));
         return [
         \App\Controller\BaseController::RESOURCE_TYPE,
         $valid];
