@@ -855,6 +855,7 @@ paths:
                 - legal_name
                 - name
                 - badge
+                - badge_id
         -
           name: partial
           in: query
