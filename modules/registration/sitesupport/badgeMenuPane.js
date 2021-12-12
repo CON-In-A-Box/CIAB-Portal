@@ -52,8 +52,8 @@ var app = new Vue({
       .then(this.getEventInfo)
       .then(this.getTicketInfo)
       .catch((error) => {
+        console.log('Unable to determine open/closed status of checkin');
         console.log(error);
-        alertbox('Unable to determine open/closed status of checkin');
       });
   },
   data() {
