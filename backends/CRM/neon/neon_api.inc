@@ -22,17 +22,24 @@ class Neon
   // Abstracted HTTP request, used by other class methods
     private function apiCore($method, $parameters)
     {
-        if (isset($GLOBALS['NEONTRIAL']) && is_true($GLOBALS['NEONTRIAL'])) {
-            $url = 'https://trial.z2systems.com/neonws/services/api/'.$method;
+        $is_trial = (isset($GLOBALS['NEONTRIAL']) && is_true($GLOBALS['NEONTRIAL']));
+        $ch = curl_init();
+        if ($is_trial) {
+            if ($parameters[0] == '&') {
+                $parameters[0] = '?';
+            } elseif ($parameters[0] !== '?') {
+                $parameters = '?'.$parameters;
+            }
+            $url = 'https://trial.z2systems.com/neonws/services/api/'.$method.$parameters;
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         } else {
             $url = 'https://api.neoncrm.com/neonws/services/api/'.$method;
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $parameters);
         }
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $parameters);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    //curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // Required for WAMP only
         $result = curl_exec($ch);
         curl_close($ch);
         $result = json_decode($result, true);
