@@ -4,9 +4,9 @@
     require_module 'standard';
 .*/
 
-require_once(__DIR__."/database.inc");
-require_once(__DIR__."/functions.inc");
-require_once(__DIR__."/users.inc");
+require_once($FUNCTIONDIR."/database.inc");
+require_once($FUNCTIONDIR."/functions.inc");
+require_once($FUNCTIONDIR."/users.inc");
 
 
 function get_volunteer_hour_summary($id = null, $event = null)

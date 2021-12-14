@@ -2,7 +2,7 @@
 
 require_once(__DIR__."/../functions/functions.inc");
 require_once(__DIR__."/../functions/database.inc");
-require_once(__DIR__."/../functions/volunteer.inc");
+require_once(__DIR__."/../modules/volunteers/functions/volunteer.inc");
 
 
 function random_concom_id()

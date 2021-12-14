@@ -4,7 +4,7 @@ if (empty($_SESSION['customFields']['currConComPos'])) {
     goSite();
 }
 
-require_once $FUNCTIONDIR."/volunteer.inc";
+require_once __DIR__.'/../../functions/volunteer.inc';
 
 if (!empty($_REQUEST)) {
     // Retrieve and sanitize POST data

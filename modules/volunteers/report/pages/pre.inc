@@ -36,7 +36,7 @@ if (!empty($_REQUEST)) {
     'name'             => FILTER_SANITIZE_SPECIAL_CHARS,
     ];
 
-    require_once($FUNCTIONDIR."/volunteer.inc");
+    require_once(__DIR__.'/../../functions/volunteer.inc');
     require_once($FUNCTIONDIR."/database.inc");
 
     $updateData = filter_input_array(INPUT_GET, $arguments);
