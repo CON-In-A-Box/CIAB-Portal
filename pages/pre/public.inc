@@ -77,6 +77,7 @@ if ($token !== null) {
         $request = new Request('GET', $service_url, ['Authorization' => 'Bearer '.$token]);
         $resp = $client->send($request);
     } catch (RequestException $e) {
+        error_log('oauth token authorization failed');
         LogoutUser();
         goSite();
         exit();

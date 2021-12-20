@@ -622,6 +622,10 @@ abstract class BaseController
         $lookup->internal = $internal;
         $env = Environment::mock(['QUERY_STRING' => $query]);
         $new_request = Request::createFromEnvironment($env);
+        $new_request = $new_request->withAttribute(
+            'oauth2-token',
+            $request->getAttribute('oauth2-token')
+        );
         $response = new Response();
         return $lookup->buildResource($new_request, $response, [])[1];
 
