@@ -314,7 +314,7 @@ abstract class BaseController
             $code = 200;
         }
         if ($type == BaseController::RESULT_TYPE) {
-            if (is_a($data, 'Slim\Http\Response')) {
+            if (is_a($data, 'Slim\Http\Response') || !is_array($data)) {
                 return $data;
             } else {
                 return $this->jsonResponse($request, $response, $data, $code);
