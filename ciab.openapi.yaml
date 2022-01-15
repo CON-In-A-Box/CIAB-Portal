@@ -58,14 +58,14 @@ paths:
             schema:
               properties:
                 Department:
-                  type: integer
                   nullable: true
+                  type: integer
                 Text:
+                  nullable: true
                   type: string
-                  nullable: true
                 Scope:
-                  type: integer
                   nullable: true
+                  type: integer
               type: object
       responses:
         '200':
@@ -252,13 +252,13 @@ paths:
             schema:
               properties:
                 date_from:
+                  nullable: true
                   type: string
                   format: date
-                  nullable: true
                 date_to:
+                  nullable: true
                   type: string
                   format: date
-                  nullable: true
               type: object
       responses:
         '200':
@@ -425,12 +425,12 @@ paths:
             schema:
               properties:
                 deadline:
+                  nullable: true
                   type: string
                   format: date
-                  nullable: true
                 note:
-                  type: string
                   nullable: true
+                  type: string
               type: object
       responses:
         '200':
@@ -984,11 +984,11 @@ paths:
             schema:
               properties:
                 Field:
-                  type: string
                   nullable: false
+                  type: string
                 Value:
-                  type: string
                   nullable: false
+                  type: string
               type: object
       responses:
         '200':
@@ -1189,11 +1189,11 @@ paths:
             schema:
               properties:
                 OldPassword:
-                  type: string
                   nullable: false
+                  type: string
                 NewPassword:
-                  type: string
                   nullable: false
+                  type: string
               type: object
       responses:
         '200':
@@ -1232,11 +1232,11 @@ paths:
             schema:
               properties:
                 OneTimeCode:
-                  type: string
                   nullable: false
+                  type: string
                 NewPassword:
-                  type: string
                   nullable: false
+                  type: string
               type: object
       responses:
         '200':
@@ -1676,11 +1676,11 @@ paths:
             schema:
               properties:
                 store_slug:
-                  type: string
                   nullable: false
+                  type: string
                 name:
-                  type: string
                   nullable: false
+                  type: string
                 description:
                   type: string
               type: object
@@ -1759,11 +1759,11 @@ paths:
             schema:
               properties:
                 Field:
-                  type: string
                   nullable: false
+                  type: string
                 Value:
-                  type: string
                   nullable: false
+                  type: string
               type: object
       responses:
         '200':
@@ -1863,11 +1863,11 @@ paths:
             schema:
               properties:
                 Field:
-                  type: string
                   nullable: false
+                  type: string
                 Value:
-                  type: string
                   nullable: false
+                  type: string
               type: object
       responses:
         '200':
@@ -2734,20 +2734,20 @@ paths:
             schema:
               properties:
                 Department:
+                  nullable: false
                   description: 'Id or name of the department'
                   type: string
-                  nullable: false
                 Position:
+                  nullable: false
                   description: 'ID of the position'
                   type: integer
-                  nullable: false
                 Note:
-                  type: string
                   nullable: true
+                  type: string
                 Event:
+                  nullable: true
                   description: 'If not present, current event'
                   type: integer
-                  nullable: true
               type: object
       responses:
         '201':
@@ -2798,18 +2798,19 @@ components:
           type: string
       type: object
     announcement_list:
-      properties:
-        type:
-          type: string
-          enum:
-            - announcement_list
-        data:
-          description: 'List of announcements'
-          type: array
-          items:
-            $ref: '#/components/schemas/announcement'
       type: object
       allOf:
+        -
+          properties:
+            type:
+              type: string
+              enum:
+                - announcement_list
+            data:
+              description: 'List of announcements'
+              type: array
+              items:
+                $ref: '#/components/schemas/announcement'
         -
           $ref: '#/components/schemas/resource_list'
     error:
@@ -2859,18 +2860,19 @@ components:
           format: date
       type: object
     cycle_list:
-      properties:
-        type:
-          type: string
-          enum:
-            - cycle_list
-        data:
-          description: 'List of cycles'
-          type: array
-          items:
-            $ref: '#/components/schemas/cycle'
       type: object
       allOf:
+        -
+          properties:
+            type:
+              type: string
+              enum:
+                - cycle_list
+            data:
+              description: 'List of cycles'
+              type: array
+              items:
+                $ref: '#/components/schemas/cycle'
         -
           $ref: '#/components/schemas/resource_list'
     deadline:
@@ -2910,18 +2912,19 @@ components:
               type: integer
       type: object
     deadline_list:
-      properties:
-        type:
-          type: string
-          enum:
-            - deadline_list
-        data:
-          description: 'List of deadlines'
-          type: array
-          items:
-            $ref: '#/components/schemas/deadline'
       type: object
       allOf:
+        -
+          properties:
+            type:
+              type: string
+              enum:
+                - deadline_list
+            data:
+              description: 'List of deadlines'
+              type: array
+              items:
+                $ref: '#/components/schemas/deadline'
         -
           $ref: '#/components/schemas/resource_list'
     department:
@@ -2962,18 +2965,19 @@ components:
             type: string
       type: object
     department_list:
-      properties:
-        type:
-          type: string
-          enum:
-            - department_list
-        data:
-          description: 'List of departments'
-          type: array
-          items:
-            $ref: '#/components/schemas/department'
       type: object
       allOf:
+        -
+          properties:
+            type:
+              type: string
+              enum:
+                - department_list
+            data:
+              description: 'List of departments'
+              type: array
+              items:
+                $ref: '#/components/schemas/department'
         -
           $ref: '#/components/schemas/resource_list'
     event:
@@ -3006,31 +3010,33 @@ components:
           type: string
       type: object
     event_list:
-      properties:
-        type:
-          type: string
-          enum:
-            - event_list
-        data:
-          description: 'List of events'
-          type: array
-          items:
-            $ref: '#/components/schemas/event'
       type: object
       allOf:
         -
+          properties:
+            type:
+              type: string
+              enum:
+                - event_list
+            data:
+              description: 'List of events'
+              type: array
+              items:
+                $ref: '#/components/schemas/event'
+        -
           $ref: '#/components/schemas/resource_list'
     member:
-      properties:
-        type:
-          type: string
-          enum:
-            - member
-        id:
-          description: 'member ID'
-          type: integer
       type: object
       allOf:
+        -
+          properties:
+            type:
+              type: string
+              enum:
+                - member
+            id:
+              description: 'member ID'
+              type: integer
         -
           $ref: '#/components/schemas/member_body'
     member_body:
@@ -3129,18 +3135,19 @@ components:
           type: integer
       type: object
     member_list:
-      properties:
-        type:
-          type: string
-          enum:
-            - member_list
-        data:
-          description: 'List of members'
-          type: array
-          items:
-            $ref: '#/components/schemas/member_reference'
       type: object
       allOf:
+        -
+          properties:
+            type:
+              type: string
+              enum:
+                - member_list
+            data:
+              description: 'List of members'
+              type: array
+              items:
+                $ref: '#/components/schemas/member_reference'
         -
           $ref: '#/components/schemas/resource_list'
     payment:
@@ -3187,18 +3194,19 @@ components:
           type: string
       type: object
     permission_list:
-      properties:
-        type:
-          type: string
-          enum:
-            - permission_list
-        data:
-          description: 'List of permissions'
-          type: array
-          items:
-            $ref: '#/components/schemas/permission_entry'
       type: object
       allOf:
+        -
+          properties:
+            type:
+              type: string
+              enum:
+                - permission_list
+            data:
+              description: 'List of permissions'
+              type: array
+              items:
+                $ref: '#/components/schemas/permission_entry'
         -
           $ref: '#/components/schemas/resource_list'
     store:
@@ -3281,18 +3289,19 @@ components:
           type: string
       type: object
     configuration_list:
-      properties:
-        type:
-          type: string
-          enum:
-            - configuration_list
-        data:
-          description: 'List of configuration fields'
-          type: array
-          items:
-            $ref: '#/components/schemas/configuration'
       type: object
       allOf:
+        -
+          properties:
+            type:
+              type: string
+              enum:
+                - configuration_list
+            data:
+              description: 'List of configuration fields'
+              type: array
+              items:
+                $ref: '#/components/schemas/configuration'
         -
           $ref: '#/components/schemas/resource_list'
     ticket:
@@ -3415,31 +3424,33 @@ components:
           type: string
       type: object
     ticket_type_list:
-      properties:
-        type:
-          type: string
-          enum:
-            - ticket_type_list
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/ticket_type'
       type: object
       allOf:
         -
+          properties:
+            type:
+              type: string
+              enum:
+                - ticket_type_list
+            data:
+              type: array
+              items:
+                $ref: '#/components/schemas/ticket_type'
+        -
           $ref: '#/components/schemas/resource_list'
     ticket_list:
-      properties:
-        type:
-          type: string
-          enum:
-            - ticket_list
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/ticket'
       type: object
       allOf:
+        -
+          properties:
+            type:
+              type: string
+              enum:
+                - ticket_list
+            data:
+              type: array
+              items:
+                $ref: '#/components/schemas/ticket'
         -
           $ref: '#/components/schemas/resource_list'
     print_job:
@@ -3462,18 +3473,19 @@ components:
           type: string
       type: object
     print_queue:
-      properties:
-        type:
-          type: string
-          enum:
-            - print_queue
-        data:
-          description: 'List of queued print jobs'
-          type: array
-          items:
-            $ref: '#/components/schemas/print_job'
       type: object
       allOf:
+        -
+          properties:
+            type:
+              type: string
+              enum:
+                - print_queue
+            data:
+              description: 'List of queued print jobs'
+              type: array
+              items:
+                $ref: '#/components/schemas/print_job'
         -
           $ref: '#/components/schemas/resource_list'
     staff_entry:
@@ -3509,21 +3521,22 @@ components:
               type: integer
       type: object
     staff_list:
-      properties:
-        type:
-          type: string
-          enum:
-            - staff_list
-        event:
-          description: 'Id of the event being listed.'
-          type: integer
-        data:
-          description: 'List of staff positions'
-          type: array
-          items:
-            $ref: '#/components/schemas/staff_entry'
       type: object
       allOf:
+        -
+          properties:
+            type:
+              type: string
+              enum:
+                - staff_list
+            event:
+              description: 'Id of the event being listed.'
+              type: integer
+            data:
+              description: 'List of staff positions'
+              type: array
+              items:
+                $ref: '#/components/schemas/staff_entry'
         -
           $ref: '#/components/schemas/resource_list'
   responses:
