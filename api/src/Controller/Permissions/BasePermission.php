@@ -381,6 +381,115 @@
  *      ),
  *      security={{"ciab_auth":{}}}
  *  )
+ *
+ *  @OA\Get(
+ *      tags={"permissions"},
+ *      path="/permissions/generic/{resource}/{method}",
+ *      summary="Gets a generic permission",
+ *      @OA\Parameter(
+ *          description="Resource being queried.",
+ *          in="path",
+ *          name="resource",
+ *          required=true,
+ *          @OA\Schema(
+ *              type="string",
+ *          )
+ *      ),
+ *      @OA\Parameter(
+ *          description="Method being queried.",
+ *          in="path",
+ *          name="method",
+ *          required=true,
+ *          @OA\Schema(
+ *              type="string",
+ *              enum={"get","put","post","delete"}
+ *          )
+ *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/short_response",
+ *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/max_results",
+ *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/page_token",
+ *      ),
+ *      @OA\Response(
+ *          response=200,
+ *          description="Permissions found",
+ *          @OA\JsonContent(
+ *           ref="#/components/schemas/permission_list"
+ *          ),
+ *      ),
+ *      @OA\Response(
+ *          response=401,
+ *          ref="#/components/responses/401"
+ *      ),
+ *      @OA\Response(
+ *          response=404,
+ *          ref="#/components/responses/permission_not_found"
+ *      ),
+ *      security={{"ciab_auth":{}}}
+ *  )
+ *
+ *  @OA\Get(
+ *      tags={"permissions"},
+ *      path="/permissions/generic/{resource}/{method}/{detail}",
+ *      summary="Gets a generic permission",
+ *      @OA\Parameter(
+ *          description="Resource being queried.",
+ *          in="path",
+ *          name="resource",
+ *          required=true,
+ *          @OA\Schema(
+ *              type="string",
+ *          )
+ *      ),
+ *      @OA\Parameter(
+ *          description="Method being queried.",
+ *          in="path",
+ *          name="method",
+ *          required=true,
+ *          @OA\Schema(
+ *              type="string",
+ *              enum={"get","put","post","delete"}
+ *          )
+ *      ),
+ *      @OA\Parameter(
+ *          description="detail of the method.",
+ *          in="path",
+ *          name="detail",
+ *          required=true,
+ *          @OA\Schema(
+ *              type="string",
+ *          )
+ *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/short_response",
+ *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/max_results",
+ *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/page_token",
+ *      ),
+ *      @OA\Response(
+ *          response=200,
+ *          description="Permissions found",
+ *          @OA\JsonContent(
+ *           ref="#/components/schemas/permission_list"
+ *          ),
+ *      ),
+ *      @OA\Response(
+ *          response=401,
+ *          ref="#/components/responses/401"
+ *      ),
+ *      @OA\Response(
+ *          response=404,
+ *          ref="#/components/responses/permission_not_found"
+ *      ),
+ *      security={{"ciab_auth":{}}}
+ *  )
  **/
 
 
@@ -402,7 +511,7 @@ abstract class BasePermission extends BaseController
     protected /*. string .*/ $restype;
 
 
-    public function __construct(Container $container, string $restype, array $methods)
+    public function __construct(Container $container, string $restype, array $methods = ['get', 'put', 'post', 'delete'])
     {
         parent::__construct('permission', $container);
         $this->methods = $methods;
