@@ -5,7 +5,7 @@
 /* jshint browser: true */
 /* jshint -W097 */
 /* jshint esversion: 6 */
-/* globals apiRequest, showSpinner, hideSpinner, confirmbox, URLSearchParams */
+/* globals apiRequest, hideSpinner, confirmbox */
 
 'use strict';
 
@@ -38,7 +38,7 @@ class BoardingPass extends RegTicket {
         .catch(function(response) {
           if (response instanceof Error) { throw response; }
         });
-      }
+    }
     );
 
     if (!isOpen) {
@@ -52,7 +52,7 @@ class BoardingPass extends RegTicket {
         .catch(function(response) {
           if (response instanceof Error) { throw response; }
         });
-      }
+    }
     );
 
     return e;

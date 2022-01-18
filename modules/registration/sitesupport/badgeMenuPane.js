@@ -1,5 +1,5 @@
 /* jshint esversion: 6 */
-/* globals alertbox, apiRequest, Vue */
+/* globals apiRequest, Vue */
 
 Vue.component('badge-menu-pane', {
   props: {

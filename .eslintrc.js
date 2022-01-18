@@ -83,5 +83,15 @@ module.exports = {
         "never"
       ],
       "no-multiple-empty-lines": 2
+    },
+    overrides: [
+    {
+      files: [ "modules/registration/sitesupport/badgeMenuPane.js" ,
+               "modules/registration/sitesupport/boarding.js",
+               "modules/registration/sitesupport/checkin.js",
+               "modules/registration/sitesupport/lost.js"],
+      parserOptions: { sourceType: "module" },
     }
+  ]
+
 };
