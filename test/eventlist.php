@@ -10,7 +10,7 @@ require_once('neon.php');
 
 <body>
 
-<?
+<?php
 echo "<p>hi</p>\n";
 
 $request = [

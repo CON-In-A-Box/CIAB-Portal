@@ -10,10 +10,10 @@ namespace deadlines\panes;
 
 function deadlines()
 {
-?>
+    ?>
     <div id="deadline_pane"></div>
     <script src="modules/deadlines/sitesupport/deadlinePane.js"></script>
-<?php
+    <?php
     /* done */
 
 }

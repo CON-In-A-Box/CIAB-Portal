@@ -40,7 +40,7 @@ function _htmlsafeify($array)
 function badges($account)
 {
     global $access;
-?>
+    ?>
 <div class='UI-container event-color-secondary'>
     <div class='UI-secondary-sectionbar'>
         <strong style="margin-left: 100px;">Badges Purchased</strong>
@@ -52,98 +52,98 @@ function badges($account)
 
     <table class='UI-stripedtable'>
     <caption>Badges to the current event</caption>
-<?php
-$event = current_eventID();
-$badges = get_tickets($account, $event);
-$lines = [];
-if (!empty($badges)) {
-    foreach ($badges as $badge) {
-        $name = $badge['BadgeName'];
-        if ($name == null) {
-            $name = "<unselected>";
-        }
-        $data = [
-        'RegID' => $badge['RegistrationID'],
-        'Id' => $badge['AccountID'],
-        'Badge Name' => $name,
-        'Badge Type' => $badge['Badge'],
-        'Purchased' => $badge['RegistrationDate'],
-        'Purchaser' => $badge['RegisteredByID'],
-        'BackgroundImage' => $badge['BackgroundImage']
-        ];
-        if ($access) {
-            if (is_null($badge['BadgesPickedUp'])) {
-                $data['Print Count'] = 0;
-            } else {
-                $data['Print Count'] = $badge['BadgesPickedUp'];
+    <?php
+    $event = current_eventID();
+    $badges = get_tickets($account, $event);
+    $lines = [];
+    if (!empty($badges)) {
+        foreach ($badges as $badge) {
+            $name = $badge['BadgeName'];
+            if ($name == null) {
+                $name = "<unselected>";
             }
-        } else {
-            if ($badge['BadgesPickedUp'] > 0) {
-                $data['Picked Up'] = "Yes";
-            } else {
-                $data['Picked Up'] = "No";
-            }
-        }
-        if (array_key_exists($badge['EventName'], $lines)) {
-            $lines[$badge['EventName']][] = $data;
-        } else {
-            $lines[$badge['EventName']] = [$data];
-        }
-    }
-    ksort($lines);
-
-    foreach ($lines as $con => $names) {
-        $len = count($names[0]);
-        echo "<table class='UI-stripedtable'>\n";
-        echo "<tr><th class='UI-center event-color-primary' colspan=$len'>".$con;
-        echo " (".count($names)." badges)</th></tr>\n";
-        $keys = array_keys($names[0]);
-        unset($keys[0]);
-        unset($keys[6]);
-        echo "<tr><th>";
-        echo implode(_htmlsafeify($keys), '</th><th>');
-        echo "</th>";
-        echo "<th></th><th></th>";
-        echo "</tr>\n";
-        foreach ($names as $badge) {
-            $regid = $badge['RegID'];
-            $image = $badge['BackgroundImage'];
-            unset($badge['RegID']);
-            unset($badge['BackgroundImage']);
-            echo "<tr><td>";
-            echo implode(_htmlsafeify($badge), '</td><td> ');
-            echo "</td>";
-            $badge['RegID'] = $regid;
-            $badge['BackgroundImage'] = $image;
+            $data = [
+            'RegID' => $badge['RegistrationID'],
+            'Id' => $badge['AccountID'],
+            'Badge Name' => $name,
+            'Badge Type' => $badge['Badge'],
+            'Purchased' => $badge['RegistrationDate'],
+            'Purchaser' => $badge['RegisteredByID'],
+            'BackgroundImage' => $badge['BackgroundImage']
+            ];
             if ($access) {
-                if (isset($_COOKIE["CIAB_REGISTRATIONWORKSTATION"])) {
-                    $badge['Workstation'] = $_COOKIE["CIAB_REGISTRATIONWORKSTATION"];
+                if (is_null($badge['BadgesPickedUp'])) {
+                    $data['Print Count'] = 0;
                 } else {
-                    $badge['Workstation'] = $_SESSION['accountId'];
+                    $data['Print Count'] = $badge['BadgesPickedUp'];
                 }
-                $param = json_encode($badge);
-                $param = base64_encode($param);
-                echo "<td><input id='update' type='button' class='UI-yellowbutton' onclick='showUpdateBadge(\"".$param."\");' value ='Update Badge Info'>&nbsp;";
-                echo "<input id='refresh' type='button' onclick='printBadge(\"".$param."\");' ";
-                if ($badge['Print Count']) {
-                    echo "value ='Reprint Badge' class='UI-redbutton'>";
+            } else {
+                if ($badge['BadgesPickedUp'] > 0) {
+                    $data['Picked Up'] = "Yes";
                 } else {
-                    echo "value ='Print Badge' class='UI-eventbutton'>";
+                    $data['Picked Up'] = "No";
                 }
-                echo "</td>";
             }
-            echo "</tr>\n";
+            if (array_key_exists($badge['EventName'], $lines)) {
+                $lines[$badge['EventName']][] = $data;
+            } else {
+                $lines[$badge['EventName']] = [$data];
+            }
         }
-        echo "</table>\n";
+        ksort($lines);
+
+        foreach ($lines as $con => $names) {
+            $len = count($names[0]);
+            echo "<table class='UI-stripedtable'>\n";
+            echo "<tr><th class='UI-center event-color-primary' colspan=$len'>".$con;
+            echo " (".count($names)." badges)</th></tr>\n";
+            $keys = array_keys($names[0]);
+            unset($keys[0]);
+            unset($keys[6]);
+            echo "<tr><th>";
+            echo implode(_htmlsafeify($keys), '</th><th>');
+            echo "</th>";
+            echo "<th></th><th></th>";
+            echo "</tr>\n";
+            foreach ($names as $badge) {
+                $regid = $badge['RegID'];
+                $image = $badge['BackgroundImage'];
+                unset($badge['RegID']);
+                unset($badge['BackgroundImage']);
+                echo "<tr><td>";
+                echo implode(_htmlsafeify($badge), '</td><td> ');
+                echo "</td>";
+                $badge['RegID'] = $regid;
+                $badge['BackgroundImage'] = $image;
+                if ($access) {
+                    if (isset($_COOKIE["CIAB_REGISTRATIONWORKSTATION"])) {
+                        $badge['Workstation'] = $_COOKIE["CIAB_REGISTRATIONWORKSTATION"];
+                    } else {
+                        $badge['Workstation'] = $_SESSION['accountId'];
+                    }
+                    $param = json_encode($badge);
+                    $param = base64_encode($param);
+                    echo "<td><input id='update' type='button' class='UI-yellowbutton' onclick='showUpdateBadge(\"".$param."\");' value ='Update Badge Info'>&nbsp;";
+                    echo "<input id='refresh' type='button' onclick='printBadge(\"".$param."\");' ";
+                    if ($badge['Print Count']) {
+                        echo "value ='Reprint Badge' class='UI-redbutton'>";
+                    } else {
+                        echo "value ='Print Badge' class='UI-eventbutton'>";
+                    }
+                    echo "</td>";
+                }
+                echo "</tr>\n";
+            }
+            echo "</table>\n";
+        }
+    } else {
+        echo "<tr><th class='REG-no-entries' colspan=9>No Entries...</th></tr>\n";
     }
-} else {
-    echo "<tr><th class='REG-no-entries' colspan=9>No Entries...</th></tr>\n";
-}
-?>
+    ?>
     <tr class='event-color-secondary'><th id="placeholder" colspan=5 class='UI-center'></th></tr>
     </table>
 </div>
-<?php
+    <?php
 
 }
 
@@ -151,39 +151,39 @@ if (!empty($badges)) {
 function customer($account)
 {
     global $access;
-?>
+    ?>
 <div class='UI-container'>
     <div class='UI-event-sectionbar'>
         Attendee Data
     </div>
 
-<?php
-$event = current_eventID();
-if ($event !== null) {
-    $name = current_eventName();
-    $badges = get_tickets($account, $event);
-    $lines = [];
-    $user = lookup_user_by_id($account);
-    if (!empty($badges)) {
-        echo "<div class='UI-margin UI-center'>\n";
-        echo "<h2>'$name' badges associated with ";
-        echo "<span class='UI-red'>&nbsp;".$user["users"][0]["First Name"]." ";
-        echo $user["users"][0]["Last Name"]."&nbsp;</span>";
-        echo "</h2>";
-        echo "</div>\n";
-    } else {
-        echo "<div class='UI-margin UI-center'>\n";
-        echo "<h2>NO '$name' badges associated with ";
-        echo "<span class='UI-red'>&nbsp;".$user["users"][0]["First Name"]." ";
-        echo $user["users"][0]["Last Name"]."&nbsp;</span>";
-        echo "</h2>";
-        echo "</div>\n";
+    <?php
+    $event = current_eventID();
+    if ($event !== null) {
+        $name = current_eventName();
+        $badges = get_tickets($account, $event);
+        $lines = [];
+        $user = lookup_user_by_id($account);
+        if (!empty($badges)) {
+            echo "<div class='UI-margin UI-center'>\n";
+            echo "<h2>'$name' badges associated with ";
+            echo "<span class='UI-red'>&nbsp;".$user["users"][0]["First Name"]." ";
+            echo $user["users"][0]["Last Name"]."&nbsp;</span>";
+            echo "</h2>";
+            echo "</div>\n";
+        } else {
+            echo "<div class='UI-margin UI-center'>\n";
+            echo "<h2>NO '$name' badges associated with ";
+            echo "<span class='UI-red'>&nbsp;".$user["users"][0]["First Name"]." ";
+            echo $user["users"][0]["Last Name"]."&nbsp;</span>";
+            echo "</h2>";
+            echo "</div>\n";
+        }
     }
-}
-?>
+    ?>
         <div class='UI-rest event-color-secondary'></div>
         </div>
-<?php
+    <?php
 
 }
 
@@ -224,27 +224,27 @@ if ($access) {
     generate_console_slider("registration");
     echo '</div>';
 
-?>
+    ?>
     <div class="REG-id-div">
         <label class='UI-label UI-half' for='workstation_id'>
         Workstation ID:</label>
         <input class="UI-input UI-half" id="workstation_id" placeholder="Required for Console"
-<?php
-if (isset($_COOKIE["CIAB_REGISTRATIONWORKSTATION"])) {
-    echo " value='".htmlspecialchars($_COOKIE['CIAB_REGISTRATIONWORKSTATION'])."'";
-}
-if (in_console()) {
-    echo " readonly";
-}
-?> onchange="workstationChange()">
+    <?php
+    if (isset($_COOKIE["CIAB_REGISTRATIONWORKSTATION"])) {
+        echo " value='".htmlspecialchars($_COOKIE['CIAB_REGISTRATIONWORKSTATION'])."'";
+    }
+    if (in_console()) {
+        echo " readonly";
+    }
+    ?> onchange="workstationChange()">
     </div>
-<?php
+    <?php
 
-if (isset($uid)) {
-    echo "<div class='UI-bar-item' id='userLookup_div' data-user='$uid'> </div>\n";
-} else {
-    echo "<div class='UI-bar-item' id='userLookup_div'> </div>\n";
-}
+    if (isset($uid)) {
+        echo "<div class='UI-bar-item' id='userLookup_div' data-user='$uid'> </div>\n";
+    } else {
+        echo "<div class='UI-bar-item' id='userLookup_div'> </div>\n";
+    }
 }
 echo "</div>";
 if (isset($uid)) {

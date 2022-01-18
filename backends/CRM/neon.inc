@@ -336,7 +336,7 @@ SQL;
     }
 
 
-    private function lookupUser($criteria, $single_result = false, $additional_fields = array(), $page = 1, & $output = null)
+    private function lookupUser($criteria, $single_result = false, $additional_fields = array(), $page = 1, &$output = null)
     {
         $preferredFirstName = $this->searchDefinedFields('Preferred First Name');
         $preferredLastName = $this->searchDefinedFields('Preferred Last Name');

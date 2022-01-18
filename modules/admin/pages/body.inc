@@ -101,22 +101,22 @@ const FIELD = 'Field';
         <hr>
 <?php if (\ciab\CRM::hasWebhooks()) { ?>
 <h2 class="UI-blue UI-center">CRM Web Hooks</h2>
-<?php
-if (isset($GLOBALS['NEON_HOOK_NAME'])) {
-?>
+    <?php
+    if (isset($GLOBALS['NEON_HOOK_NAME'])) {
+        ?>
     <form action="index.php?Function=admin" method="POST" class="form-inline">
     Remove CRM Web Hooks:<br>
     <input type="text" class="form-control" name="hook_url" value="
-<?php echo $GLOBALS['NEON_HOOK_URL'];?>"
+        <?php echo $GLOBALS['NEON_HOOK_URL'];?>"
         autocomplete="off" readonly/>
     <input type="text" class="form-control" name="hook_name" value=
     "<?php echo $GLOBALS['NEON_HOOK_NAME'];?>" autocomplete="off" readonly/>
     <input type="hidden" name="hook_action" value="remove">
     <input type="submit" value="Remove Hooks" class="UI-graybutton" />
     </form>
-<?php
-} else {
-?>
+        <?php
+    } else {
+        ?>
     <form action="index.php?Function=admin" method="POST" class="form-inline">
     Install CRM Web Hooks:<br>
     <input type="text" class="form-control" name="hook_url" value="<?php
@@ -126,9 +126,9 @@ if (isset($GLOBALS['NEON_HOOK_NAME'])) {
     <input type="hidden" name="hook_action" value="install">
     <input type="submit" value="Install Hooks" class="UI-graybutton" />
     </form>
-<?php
-}
-echo '<hr>';
+        <?php
+    }
+    echo '<hr>';
 }
 ?>
 <input type="submit" value="Rebuild SCSS Style Sheets" class="UI-graybutton"
@@ -144,31 +144,31 @@ echo '<hr>';
                     <th id="EmailHeader">Email</th>
                     <th id="LocationHeader">Location</th>
                 </tr>
-                <?php foreach ($result['users'] as $r) : ?>
+            <?php foreach ($result['users'] as $r) : ?>
                     <tr>
                         <td><?php echo $r['First Name']; ?><?php echo $r['Last Name']; ?></td>
                         <td>
                             <a href="index.php?Function=admin&ID=<?php echo $r['Id']; ?>" class="UI-roundbutton">
-                                <?php echo $r['Id']; ?>
+                <?php echo $r['Id']; ?>
                             </a>
                         </td>
                         <td><?php echo $r['Email']; ?></td>
                         <td><?php echo $r['AddressCity']; ?><?php echo $r['AddressState']; ?></td>
                     </tr>
-                <?php endforeach; ?>
+            <?php endforeach; ?>
             </table>
         <?php else : ?>
             <p><?php echo $message; ?></p>
-        <?php
+            <?php
         endif;
 
-if (!empty($searchCriteria[ID])) {
-    unset($result);
-    $result = pullIndividualAccount($searchCriteria[ID]);
-    echo '<pre>';
-    print_r($result);
-    echo '</pre>';
-}
+        if (!empty($searchCriteria[ID])) {
+            unset($result);
+            $result = pullIndividualAccount($searchCriteria[ID]);
+            echo '<pre>';
+            print_r($result);
+            echo '</pre>';
+        }
         ?>
     </div> <!-- left_bar -->
     <div id="right_bar" class="UI-right UI-content UI-margin">
@@ -214,7 +214,7 @@ if (!empty($searchCriteria[ID])) {
   <pre><?php
       // A simple place for admins to do random testing.
 
-        ?></pre>
+    ?></pre>
 </div>
 <!--End Play Area-->
 

@@ -70,7 +70,7 @@ require_once $BACKEND.'/CRM.inc';
         </div>
 <?php
 if (\ciab\CRM::hasEvents()) {
-?>
+    ?>
         <div id="crm_content" class="EVENT-content">
             <button onclick="expandSection('crm')" class="EVENT-section-bar">
                 <span id="crm_button">CRM<span> <em id="crm_arrow" class="fas fa-caret-up"></em>
@@ -82,7 +82,7 @@ if (\ciab\CRM::hasEvents()) {
                 </div>
             </div>
         </div>
-<?php
+    <?php
 }
 ?>
     </div>
