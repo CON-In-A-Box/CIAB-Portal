@@ -35,7 +35,7 @@ if ($expired) {
     <hr>
 <?php
 if ($reset) {
-?>
+    ?>
     <div class='UI-container UI-border'>
         <label class="UI-label" for="email">Account Login</label>
         <input class="UI-center UI-input" id="email" readonly value="<?php echo $updateData['email'];?>"></input>
@@ -49,7 +49,7 @@ if ($reset) {
         <br>
         <button class="UI-eventbutton UI-margin" onclick="newPassword()">Reset Password</button>
     </div>
-<?php
+    <?php
 } else {
     if ($expired) {
         $body = <<<BOD
@@ -61,7 +61,7 @@ BOD;
 BOD;
     }
     echo $body."\n";
-?>
+    ?>
     <div>
         <input class="UI-center UI-input" id="email"></input>
         <button class="UI-eventbutton UI-margin" onclick="resetPassword()">Reset Password</button>

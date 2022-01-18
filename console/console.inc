@@ -71,7 +71,7 @@ function enter_console($type, $user = null)
 
 function generate_console_slider($type)
 {
-?>
+    ?>
   <div>
     <div class="UI-console-slider">
       <div class='UI-table switch-table'>
@@ -82,7 +82,7 @@ function generate_console_slider($type)
             if (is_console($type)) {
                 echo "checked";
             }
-?> onclick='toggleConsoleMode("<?php echo $type;?>");'>
+            ?> onclick='toggleConsoleMode("<?php echo $type;?>");'>
             <div class=slider></div>
             </label>
           </div>
@@ -91,10 +91,10 @@ function generate_console_slider($type)
     </div>
   </div>
 
-<?php
-echo "  <script>\n";
-echo "  var consoleMode = ".json_encode(is_console($type)).";\n";
-echo "  </script>\n";
+    <?php
+    echo "  <script>\n";
+    echo "  var consoleMode = ".json_encode(is_console($type)).";\n";
+    echo "  </script>\n";
 
 }
 

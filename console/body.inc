@@ -3,7 +3,7 @@
 require_once __DIR__.'/console.inc';
 
 if (!in_console()) {
-?>
+    ?>
 <div id="console_dlg" class="UI-modal">
   <div class="UI-modal-content">
     <div class="UI-container">
@@ -14,9 +14,9 @@ if (!in_console()) {
     </div>
   </div>
 </div>
-<?php
+    <?php
 } else {
-?>
+    ?>
 <div id="console_dlg" class="UI-modal">
   <div class="UI-modal-content">
     <div class="UI-container">
@@ -27,7 +27,7 @@ if (!in_console()) {
     </div>
   </div>
 </div>
-<?php
+    <?php
 }
 ?>
 
@@ -35,13 +35,13 @@ if (!in_console()) {
     function switchConsole(uid) {
 <?php
 if (!in_console()) {
-?>
+    ?>
         var param = 'toggleConsole=true&consoleUser='+uid;
-<?php
+    <?php
 } else {
-?>
+    ?>
         var param = 'toggleConsole=false&consoleUser='+uid;
-<?php
+    <?php
 }
 ?>
       basicBackendRequest('POST', '<?php echo $console_base;?>/console', param,

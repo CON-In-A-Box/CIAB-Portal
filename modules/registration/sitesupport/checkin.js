@@ -5,7 +5,7 @@
 /* jshint browser: true */
 /* jshint -W097 */
 /* jshint esversion: 6 */
-/* globals apiRequest, showSpinner, hideSpinner, confirmbox, URLSearchParams */
+/* globals apiRequest, showSpinner, hideSpinner, confirmbox */
 
 'use strict';
 

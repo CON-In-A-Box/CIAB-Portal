@@ -5,7 +5,7 @@
 /* jshint browser: true */
 /* jshint -W097 */
 /* jshint esversion: 6 */
-/* globals apiRequest, showSpinner, hideSpinner, confirmbox, URLSearchParams */
+/* globals apiRequest, hideSpinner, confirmbox */
 
 'use strict';
 
@@ -18,7 +18,7 @@ class LostBadge extends RegTicket {
   }
 
   display(e) {
-    var template =`
+    var template = `
     <div class="UI-container">
       <div>
         Badge&nbsp;#${this.data.member.id}&nbsp;-&nbsp;${this.data.ticket_type.name}
