@@ -11,7 +11,7 @@ if (!(isset($_SESSION['IS_ADMIN']) || $_SESSION['IS_VOLUNTEERS'])) {
     }
 }
 
-require_once $FUNCTIONDIR."/volunteer.inc";
+require_once __DIR__.'/../../functions/volunteer.inc';
 
 if (!empty($_REQUEST)) {
     // Retrieve and sanitize POST data

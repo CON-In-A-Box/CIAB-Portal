@@ -5,7 +5,7 @@
     require_module 'json';
 .*/
 
-require_once $FUNCTIONDIR.'/volunteer.inc';
+require_once __DIR__.'/../../functions/volunteer.inc';
 require_once $FUNCTIONDIR.'/users.inc';
 require_once $BASEDIR.'/console/console.inc';
 
