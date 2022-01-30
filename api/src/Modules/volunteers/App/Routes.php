@@ -25,6 +25,28 @@ function setupVolunteersAPI($app, $authMiddleware)
     )->add(new App\Middleware\CiabMiddleware($app))->add($authMiddleware);
 
     $app->group(
+        '/volunteer/rewards',
+        function () use ($app, $authMiddleware) {
+            $app->get('[/]', 'App\Modules\volunteers\Controller\Rewards\ListRewards');
+            $app->get('/{id}', 'App\Modules\volunteers\Controller\Rewards\GetReward');
+            $app->post('[/]', 'App\Modules\volunteers\Controller\Rewards\PostReward');
+            $app->put('/{id}', 'App\Modules\volunteers\Controller\Rewards\PutReward');
+            $app->delete('/{id}', 'App\Modules\volunteers\Controller\Rewards\DeleteReward');
+            $app->put('/{id}/inventory', 'App\Modules\volunteers\Controller\Rewards\PutRewardInventory');
+        }
+    )->add(new App\Middleware\CiabMiddleware($app))->add($authMiddleware);
+
+    $app->group(
+        '/volunteer/reward_group',
+        function () use ($app, $authMiddleware) {
+            $app->get('/{id}', 'App\Modules\volunteers\Controller\Rewards\GetRewardGroup');
+            $app->post('[/]', 'App\Modules\volunteers\Controller\Rewards\PostRewardGroup');
+            $app->put('/{id}', 'App\Modules\volunteers\Controller\Rewards\PutRewardGroup');
+            $app->delete('/{id}', 'App\Modules\volunteers\Controller\Rewards\DeleteRewardGroup');
+        }
+    )->add(new App\Middleware\CiabMiddleware($app))->add($authMiddleware);
+
+    $app->group(
         '/department',
         function () use ($app, $authMiddleware) {
             $app->get('/{id}/volunteer/hours', 'App\Modules\volunteers\Controller\Hours\GetDepartmentHours');

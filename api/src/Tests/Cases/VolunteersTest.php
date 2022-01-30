@@ -3,8 +3,6 @@
 namespace App\Tests\TestCase\Controller;
 
 use App\Tests\Base\CiabTestCase;
-use Atlas\Query\Insert;
-use Atlas\Query\Delete;
 
 class VolunteersTest extends CiabTestCase
 {
@@ -126,6 +124,84 @@ class VolunteersTest extends CiabTestCase
         }
 
         $this->runRequest('GET', "/volunteer/hours/".$ids[0], null, null, 404);
+
+    }
+
+
+    public function testPrizes(): void
+    {
+        $prizes = [];
+        $this->runRequest('POST', '/volunteer/rewards', null, null, 400);
+        $data = $this->runRequest('POST', '/volunteer/rewards', null, ['name' => 'Prize1'], 400);
+        $data = $this->runRequest('POST', '/volunteer/rewards', null, ['name' => 'Prize1', 'inventory' => '100'], 400);
+        $data = $this->runRequest('POST', '/volunteer/rewards', null, ['name' => 'Prize1', 'inventory' => '100', 'promo' => 0], 400);
+        $data = $this->runRequest('POST', '/volunteer/rewards', null, ['name' => 'Prize1', 'inventory' => '100', 'promo' => 0, 'value' => 'black'], 400);
+        $data = $this->runRequest('POST', '/volunteer/rewards', null, ['name' => 'Prize1', 'inventory' => 'green', 'promo' => 0, 'value' => 1.1], 400);
+        $data = $this->runSuccessJsonRequest('POST', '/volunteer/rewards', null, ['name' => 'Prize1', 'promo' => 0, 'inventory' => 100, 'value' => 1.0], 201);
+        $this->assertNotEmpty($data);
+        $id = $data->id;
+
+        $data2 = $this->runSuccessJsonRequest('GET', "/volunteer/rewards/$id");
+        $this->assertNotEmpty($data);
+        $this->assertEquals($data2, $data);
+
+        $data = $this->runRequest('PUT', "/volunteer/rewards/$id", null, ['inventory' => 'blue'], null, null, 400);
+        $data = $this->runRequest('PUT', "/volunteer/rewards/$id", null, ['value' => 'blue'], null, null, 400);
+        $data = $this->runSuccessJsonRequest('PUT', "/volunteer/rewards/$id", null, ['name' => 'Prize Alpha', 'inventory' => 5]);
+        $this->assertNotEmpty($data);
+        $this->assertEquals($data->name, 'Prize Alpha');
+        $this->assertEquals($data->inventory, 5);
+
+        $data = $this->runSuccessJsonRequest('PUT', "/volunteer/rewards/$id/inventory", null, ['difference' => 5]);
+        $this->assertNotEmpty($data);
+        $this->assertEquals($data->inventory, 10);
+
+        $data = $this->runSuccessJsonRequest('PUT', "/volunteer/rewards/$id/inventory", null, ['difference' => -2]);
+        $this->assertNotEmpty($data);
+        $this->assertEquals($data->inventory, 8);
+        $data2 = $data;
+
+        $data = $this->runSuccessJsonRequest('GET', "/volunteer/rewards");
+        $this->assertNotEmpty($data);
+        $this->assertEquals(count($data->data), 1);
+        $this->assertEquals($data->data[0], $data2);
+
+        $this->runSuccessJsonRequest('DELETE', "/volunteer/rewards/$id", null, null, 204);
+
+        /* Reward Groups */
+
+        $data = $this->runRequest('POST', '/volunteer/reward_group/', null, ['reward_limit' => 'blue'], 400);
+        $data = $this->runSuccessJsonRequest('POST', '/volunteer/reward_group/', null, ['reward_limit' => 1], 201);
+        $gid = $data->id;
+        $this->assertEquals($data->reward_limit, 1);
+
+        $data2 = $this->runSuccessJsonRequest('GET', "/volunteer/reward_group/$gid");
+        $this->assertNotEmpty($data);
+        $this->assertEquals($data, $data2);
+
+        $data = $this->runRequest('PUT', "/volunteer/reward_group/$gid", null, ['reward_limit' => 'green'], 400);
+        $data = $this->runSuccessJsonRequest('PUT', "/volunteer/reward_group/$gid", null, ['reward_limit' => '2']);
+        $this->assertNotEmpty($data);
+        $this->assertEquals($data->reward_limit, 2);
+
+        $data = $this->runSuccessJsonRequest('POST', '/volunteer/rewards', null, ['name' => 'Prize A', 'promo' => 0, 'inventory' => 100, 'value' => 1.0, 'reward_group' => $gid], 201);
+        $pid1 = $data->id;
+
+        $data = $this->runSuccessJsonRequest('POST', '/volunteer/rewards', null, ['name' => 'Prize B', 'promo' => 0, 'inventory' => 100, 'value' => 1.0, 'reward_group' => $gid], 201);
+        $pid2 = $data->id;
+
+        $data = $this->runSuccessJsonRequest('GET', "/volunteer/reward_group/$gid");
+        $this->assertNotEmpty($data);
+        $this->assertEquals(count($data->data), 2);
+
+        $this->runSuccessJsonRequest('DELETE', "/volunteer/reward_group/$gid", null, null, 204);
+
+        $data = $this->runSuccessJsonRequest('GET', "/volunteer/rewards/$pid1");
+        $this->assertNotEmpty($data);
+        $this->assertEquals($data->reward_group, null);
+
+        $this->runSuccessJsonRequest('DELETE', "/volunteer/rewards/$pid1", null, null, 204);
+        $this->runSuccessJsonRequest('DELETE', "/volunteer/rewards/$pid2", null, null, 204);
 
     }
 
