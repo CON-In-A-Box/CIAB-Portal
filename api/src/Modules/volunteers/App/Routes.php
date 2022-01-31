@@ -11,6 +11,8 @@ function setupVolunteersAPI($app, $authMiddleware)
         function () use ($app, $authMiddleware) {
             $app->get('/{id}/volunteer/hours', 'App\Modules\volunteers\Controller\Hours\GetMemberHours');
             $app->get('/{id}/volunteer/hours/summary', 'App\Modules\volunteers\Controller\Hours\GetMemberHoursSummary');
+            $app->get('/{id}/volunteer/claims', 'App\Modules\volunteers\Controller\Claims\GetMemberClaims');
+            $app->get('/{id}/volunteer/claims/summary', 'App\Modules\volunteers\Controller\Claims\GetMemberClaimsSummary');
         }
     )->add(new App\Middleware\CiabMiddleware($app))->add($authMiddleware);
 
@@ -33,6 +35,16 @@ function setupVolunteersAPI($app, $authMiddleware)
             $app->put('/{id}', 'App\Modules\volunteers\Controller\Rewards\PutReward');
             $app->delete('/{id}', 'App\Modules\volunteers\Controller\Rewards\DeleteReward');
             $app->put('/{id}/inventory', 'App\Modules\volunteers\Controller\Rewards\PutRewardInventory');
+        }
+    )->add(new App\Middleware\CiabMiddleware($app))->add($authMiddleware);
+
+    $app->group(
+        '/volunteer/claims',
+        function () use ($app, $authMiddleware) {
+            $app->get('/{id}', 'App\Modules\volunteers\Controller\Claims\GetClaim');
+            $app->post('[/]', 'App\Modules\volunteers\Controller\Claims\PostClaim');
+            $app->put('/{id}', 'App\Modules\volunteers\Controller\Claims\PutClaim');
+            $app->delete('/{id}', 'App\Modules\volunteers\Controller\Claims\DeleteClaim');
         }
     )->add(new App\Middleware\CiabMiddleware($app))->add($authMiddleware);
 

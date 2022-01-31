@@ -206,5 +206,118 @@ class VolunteersTest extends CiabTestCase
     }
 
 
+    public function testClaims(): void
+    {
+        $hours = [];
+        $claims = [];
+        $rewards = [];
+
+        $data = $this->runSuccessJsonRequest('POST', '/volunteer/rewards', null, ['name' => 'Prize1', 'promo' => 0, 'inventory' => 100, 'value' => 1.1], 201);
+        $this->assertNotEmpty($data);
+        $rewards[] = $data->id;
+
+        $data = $this->runSuccessJsonRequest('POST', '/volunteer/rewards', null, ['name' => 'Prize2', 'promo' => 0, 'inventory' => 100, 'value' => 2.2], 201);
+        $this->assertNotEmpty($data);
+        $rewards[] = $data->id;
+
+        $data = $this->runSuccessJsonRequest('POST', '/volunteer/rewards', null, ['name' => 'Prize3', 'promo' => 1, 'inventory' => 100, 'value' => 2], 201);
+        $this->assertNotEmpty($data);
+        $rewards[] = $data->id;
+
+        $this->runRequest('POST', '/volunteer/claims', null, ['member' => '1000', 'reward' => $rewards[0]], 400);
+
+        $when = date('Y-m-d h:i:s', strtotime('+4 hour'));
+        $data = $this->runSuccessJsonRequest('POST', '/volunteer/hours/', null, ['department' => '1', 'member' => '1000',  'enterer' => 1000, 'authorizer' => '1000', 'hours' => '2', 'end' => $when], 201);
+        $this->assertNotEmpty($data);
+        $hours[] = $data->id;
+
+        $this->runRequest('POST', '/volunteer/claims', null, ['member' => '1000', 'reward' => $rewards[1]], 400);
+
+        $data = $this->runSuccessJsonRequest('POST', '/volunteer/claims', null, ['member' => '1000', 'reward' => $rewards[0]], 201);
+        $this->assertNotEmpty($data);
+        $claims[] = $data;
+
+        $this->runRequest('POST', '/volunteer/claims', null, ['member' => '1000', 'reward' => $rewards[0]], 400);
+
+        $data = $this->runSuccessJsonRequest('POST', '/volunteer/claims', null, ['member' => '1000', 'reward' => $rewards[2]], 201);
+        $this->assertNotEmpty($data);
+        $claims[] = $data;
+
+        $data = $this->runSuccessJsonRequest('POST', '/volunteer/claims', null, ['member' => '1000', 'reward' => $rewards[2]], 201);
+        $this->assertNotEmpty($data);
+        $claims[] = $data;
+
+        $data = $this->runSuccessJsonRequest('PUT', "/volunteer/rewards/$rewards[2]", null, ['inventory' => 0]);
+        $this->assertNotEmpty($data);
+
+        $this->runRequest('POST', '/volunteer/claims', null, ['member' => '1000', 'reward' => $rewards[2]], 400);
+
+        $data = $this->runSuccessJsonRequest('GET', '/volunteer/claims/'.$claims[0]->id);
+        $this->assertNotEmpty($data);
+        $claims[0]->reward->inventory = 98;
+        $claims[0]->reward->claimed = 2;
+        $this->assertEquals($claims[0], $data);
+
+        $data = $this->runSuccessJsonRequest('GET', '/volunteer/claims/'.$claims[1]->id);
+        $this->assertNotEmpty($data);
+        $claims[1]->reward->inventory = 0;
+        $claims[1]->reward->claimed = 2;
+        $this->assertEquals($claims[1], $data);
+
+        $data = $this->runSuccessJsonRequest('GET', "/member/1000/volunteer/claims");
+        $this->assertNotEmpty($data);
+        $this->assertEquals(count($data->data), 3);
+
+        $data = $this->runSuccessJsonRequest('GET', "/member/1000/volunteer/claims/summary");
+        $this->assertNotEmpty($data);
+        $this->assertEquals($data->spent_hours, 1.1);
+        $this->assertEquals($data->reward_count, 3);
+
+        /* Reward Groups */
+        $data = $this->runSuccessJsonRequest('POST', '/volunteer/reward_group/', null, ['reward_limit' => 1], 201);
+        $this->assertNotEmpty($data);
+        $this->assertEquals($data->reward_limit, 1);
+        $group_id = $data->id;
+
+        $data = $this->runSuccessJsonRequest('POST', '/volunteer/rewards', null, ['name' => 'Prize4', 'promo' => 1, 'inventory' => 100, 'value' => 2, 'reward_group' => $group_id], 201);
+        $this->assertNotEmpty($data);
+        $target = $data->id;
+        $rewards[] = $data->id;
+
+        $data = $this->runSuccessJsonRequest('POST', '/volunteer/rewards', null, ['name' => 'Prize5', 'promo' => 1, 'inventory' => 100, 'value' => 2, 'reward_group' => $group_id], 201);
+        $this->assertNotEmpty($data);
+        $target2 = $data->id;
+        $rewards[] = $data->id;
+
+        $data = $this->runSuccessJsonRequest('POST', '/volunteer/claims', null, ['member' => '1000', 'reward' => $target], 201);
+        $this->assertNotEmpty($data);
+        $claims[] = $data;
+
+        $data = $this->runRequest('POST', '/volunteer/claims', null, ['member' => '1000', 'reward' => $target], 400);
+
+        $data = $this->runSuccessJsonRequest('POST', '/volunteer/rewards', null, ['name' => 'Prize5', 'promo' => 1, 'inventory' => 100, 'value' => 2, 'reward_group' => $group_id], 201);
+        $this->assertNotEmpty($data);
+        $target = $data->id;
+        $rewards[] = $data->id;
+
+        $data = $this->runRequest('POST', '/volunteer/claims', null, ['member' => '1000', 'reward' => $target], 400);
+
+        $data = $this->runSuccessJsonRequest('PUT', '/volunteer/claims/'.end($claims)->id, null, ['reward' => $target], 200);
+        $this->assertNotEmpty($data);
+
+        foreach ($claims as $claim) {
+            $this->runSuccessJsonRequest('DELETE', "/volunteer/claims/".$claim->id, null, null, 204);
+        }
+        foreach ($rewards as $id) {
+            $this->runSuccessJsonRequest('DELETE', "/volunteer/rewards/$id", null, null, 204);
+        }
+        foreach ($hours as $id) {
+            $this->runSuccessJsonRequest('DELETE', "/volunteer/hours/$id", null, null, 204);
+        }
+        $this->runSuccessJsonRequest('DELETE', "/volunteer/reward_group/$group_id", null, null, 204);
+
+    }
+
+
     /* End */
 }

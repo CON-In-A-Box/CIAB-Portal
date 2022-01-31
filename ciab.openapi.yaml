@@ -2977,6 +2977,15 @@ paths:
       parameters:
         -
           $ref: '#/components/parameters/event'
+        -
+          parameter: force
+          name: force
+          in: query
+          description: 'Force the reward addition. If not specified defaults false'
+          required: false
+          style: form
+          schema:
+            type: integer
       requestBody:
         content:
           multipart/form-data:
@@ -3020,6 +3029,15 @@ paths:
           in: path
           description: 'Id of the volunteer claim'
           required: true
+          schema:
+            type: integer
+        -
+          parameter: force
+          name: force
+          in: query
+          description: 'Force the reward addition. If not specified defaults false'
+          required: false
+          style: form
           schema:
             type: integer
       requestBody:
@@ -3659,6 +3677,41 @@ paths:
             schema:
               properties:
                 reward_limit:
+                  type: integer
+              type: object
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          description: 'Entry not found in the system.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+      security:
+        -
+          ciab_auth: []
+  '/volunteer/rewards/{id}/inventory':
+    put:
+      tags:
+        - volunteers
+      summary: 'Modifies the inventory of an existing volunteer reward'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Id of the volunteer reward'
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                difference:
                   type: integer
               type: object
       responses:
