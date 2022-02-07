@@ -2856,6 +2856,878 @@ paths:
       security:
         -
           ciab_auth: []
+  '/volunteers/claims/{id}':
+    get:
+      tags:
+        - volunteers
+      summary: 'Gets volunteer claim'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Id of the volunteer claim.'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'volunteer claim data found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/volunteer_claim'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/volunteer_claim_not_found'
+      security:
+        -
+          ciab_auth: []
+    delete:
+      tags:
+        - volunteers
+      summary: 'Deletes an existing volunteer claim'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Id of the volunteer claim'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: OK
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          description: 'Entry not found in the system.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+      security:
+        -
+          ciab_auth: []
+  '/member/{id}/volunteers/claims':
+    get:
+      tags:
+        - volunteers
+      summary: 'Gets member volunteer claims'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Id of the member.'
+          required: true
+          schema:
+            type: integer
+        -
+          $ref: '#/components/parameters/event'
+        -
+          $ref: '#/components/parameters/short_response'
+      responses:
+        '200':
+          description: 'volunteer claim data found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/volunteer_claim_list'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/volunteer_claim_not_found'
+      security:
+        -
+          ciab_auth: []
+  '/member/{id}/volunteer/claims/summary':
+    get:
+      tags:
+        - volunteers
+      summary: 'Gets member volunteer summary'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Id of the member.'
+          required: true
+          schema:
+            type: integer
+        -
+          $ref: '#/components/parameters/event'
+      responses:
+        '200':
+          description: 'Member volunteer data found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/volunteer_claim_summary'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/member_not_found'
+      security:
+        -
+          ciab_auth: []
+  /volunteer/claims:
+    post:
+      tags:
+        - volunteers
+      summary: 'Adds a new volunteer claim'
+      parameters:
+        -
+          $ref: '#/components/parameters/event'
+        -
+          parameter: force
+          name: force
+          in: query
+          description: 'Force the reward addition. If not specified defaults false'
+          required: false
+          style: form
+          schema:
+            type: integer
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                member:
+                  nullable: false
+                  description: 'Id or email of the member'
+                  type: string
+                reward:
+                  nullable: false
+                  description: 'Id of the reward'
+                  type: string
+                event:
+                  nullable: true
+                  description: 'Id of the event; current event if absent'
+                  type: string
+              type: object
+      responses:
+        '201':
+          description: OK
+        '401':
+          $ref: '#/components/responses/401'
+        '400':
+          description: 'User not found in the system.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+      security:
+        -
+          ciab_auth: []
+  '/volunteer/claims/{id}':
+    put:
+      tags:
+        - volunteers
+      summary: 'Modifies an existing volunteer claim'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Id of the volunteer claim'
+          required: true
+          schema:
+            type: integer
+        -
+          parameter: force
+          name: force
+          in: query
+          description: 'Force the reward addition. If not specified defaults false'
+          required: false
+          style: form
+          schema:
+            type: integer
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                member:
+                  nullable: true
+                  description: 'Id or email of the member'
+                  type: string
+                reward:
+                  nullable: true
+                  description: 'Id of the reward'
+                  type: string
+                event:
+                  nullable: true
+                  description: 'Id of the event'
+                  type: string
+              type: object
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          description: 'Entry not found in the system.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+      security:
+        -
+          ciab_auth: []
+  '/volunteers/hours/{id}':
+    get:
+      tags:
+        - volunteers
+      summary: 'Gets volunteer data'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Id of the volunteer record.'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'volunteer data found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/volunteer_hour_entry'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/volunteer_entry_not_found'
+      security:
+        -
+          ciab_auth: []
+    delete:
+      tags:
+        - volunteers
+      summary: 'Deletes an existing volunteer entry'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Id of the volunteer entry'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: OK
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          description: 'Entry not found in the system.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+      security:
+        -
+          ciab_auth: []
+  '/department/{id}/volunteer/hours':
+    get:
+      tags:
+        - volunteers
+      summary: 'Gets department volunteer data'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Id or name of the department'
+          required: true
+          schema:
+            oneOf:
+              -
+                description: 'Department id'
+                type: integer
+              -
+                description: 'Department name'
+                type: string
+        -
+          $ref: '#/components/parameters/event'
+        -
+          $ref: '#/components/parameters/short_response'
+      responses:
+        '200':
+          description: 'Member volunteer data found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/volunteer_hour_entry_list'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/member_not_found'
+      security:
+        -
+          ciab_auth: []
+  '/department/{id}/volunteer/hours/summary':
+    get:
+      tags:
+        - volunteers
+      summary: 'Gets department volunteer summary'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Id or name of the department'
+          required: true
+          schema:
+            oneOf:
+              -
+                description: 'Department id'
+                type: integer
+              -
+                description: 'Department name'
+                type: string
+        -
+          $ref: '#/components/parameters/event'
+        -
+          $ref: '#/components/parameters/short_response'
+      responses:
+        '200':
+          description: 'Member volunteer data found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/volunteer_hour_entry_list'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/member_not_found'
+      security:
+        -
+          ciab_auth: []
+  '/event/{id}/volunteer/hours':
+    get:
+      tags:
+        - volunteers
+      summary: 'Gets event volunteer data'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Id of the event'
+          required: true
+          schema:
+            type: integer
+        -
+          $ref: '#/components/parameters/short_response'
+      responses:
+        '200':
+          description: 'Member volunteer data found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/volunteer_hour_entry_list'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/member_not_found'
+      security:
+        -
+          ciab_auth: []
+  '/event/{id}/volunteer/hours/summary':
+    get:
+      tags:
+        - volunteers
+      summary: 'Gets member volunteer summary'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Id of the event.'
+          required: true
+          schema:
+            type: integer
+        -
+          $ref: '#/components/parameters/short_response'
+      responses:
+        '200':
+          description: 'Member volunteer data found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/volunteer_hour_entry_list'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/member_not_found'
+      security:
+        -
+          ciab_auth: []
+  '/member/{id}/volunteer/hours':
+    get:
+      tags:
+        - volunteers
+      summary: 'Gets member volunteer data'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Id of the member.'
+          required: true
+          schema:
+            type: integer
+        -
+          $ref: '#/components/parameters/event'
+        -
+          $ref: '#/components/parameters/short_response'
+      responses:
+        '200':
+          description: 'Member volunteer data found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/volunteer_hour_entry_list'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/member_not_found'
+      security:
+        -
+          ciab_auth: []
+  '/member/{id}/volunteer/hours/summary':
+    get:
+      tags:
+        - volunteers
+      summary: 'Gets member volunteer summary'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Id of the member.'
+          required: true
+          schema:
+            type: integer
+        -
+          $ref: '#/components/parameters/event'
+        -
+          $ref: '#/components/parameters/short_response'
+      responses:
+        '200':
+          description: 'Member volunteer data found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/volunteer_hour_entry_list'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/member_not_found'
+      security:
+        -
+          ciab_auth: []
+  /volunteer/hours:
+    post:
+      tags:
+        - volunteers
+      summary: 'Adds a new volunteer entry'
+      parameters:
+        -
+          $ref: '#/components/parameters/event'
+        -
+          parameter: force
+          name: force
+          in: query
+          description: 'Force the hour addition. If not specified defaults false'
+          required: false
+          style: form
+          schema:
+            type: integer
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                member:
+                  type: string
+                department:
+                  type: string
+                hours:
+                  type: string
+                authorizer:
+                  type: string
+                end:
+                  type: string
+                enterer:
+                  type: string
+                modifier:
+                  type: string
+              type: object
+      responses:
+        '201':
+          description: OK
+        '401':
+          $ref: '#/components/responses/401'
+        '400':
+          description: 'User not found in the system.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+      security:
+        -
+          ciab_auth: []
+  '/volunteer/hours/{id}':
+    put:
+      tags:
+        - volunteers
+      summary: 'Modifies an existing volunteer entry'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Id of the volunteer entry'
+          required: true
+          schema:
+            type: integer
+        -
+          parameter: force
+          name: force
+          in: query
+          description: 'Force the change. If not specified defaults 0'
+          required: false
+          style: form
+          schema:
+            type: integer
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                member:
+                  type: string
+                department:
+                  type: string
+                hours:
+                  type: string
+                authorizer:
+                  type: string
+                end:
+                  type: string
+                enterer:
+                  type: string
+                modifier:
+                  type: string
+              type: object
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          description: 'Entry not found in the system.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+      security:
+        -
+          ciab_auth: []
+  '/volunteers/rewards/{id}':
+    get:
+      tags:
+        - volunteers
+      summary: 'Gets volunteer reward data'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Id of the volunteer reward.'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'reward data found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/volunteer_reward'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/volunteer_reward_not_found'
+      security:
+        -
+          ciab_auth: []
+    delete:
+      tags:
+        - volunteers
+      summary: 'Deletes an existing volunteer reward'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Id of the volunteer reward'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: OK
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          description: 'Entry not found in the system.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+      security:
+        -
+          ciab_auth: []
+  '/volunteers/reward_group/{id}':
+    delete:
+      tags:
+        - volunteers
+      summary: 'Deletes an existing volunteer reward group'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Id of the volunteer reward group'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: OK
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          description: 'Entry not found in the system.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+      security:
+        -
+          ciab_auth: []
+  '/volunteers/rewards_group/{id}':
+    get:
+      tags:
+        - volunteers
+      summary: 'Gets volunteer reward group data'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Id of the reward group.'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'reward data found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/volunteer_reward_group'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/volunteer_reward_group_not_found'
+      security:
+        -
+          ciab_auth: []
+  /volunteers/rewards:
+    get:
+      tags:
+        - volunteers
+      summary: 'List volunteer reward data'
+      parameters:
+        -
+          name: sold_out
+          in: query
+          description: 'Show sold out items, default if false'
+          required: false
+          schema:
+            type: boolean
+        -
+          $ref: '#/components/parameters/short_response'
+        -
+          $ref: '#/components/parameters/max_results'
+        -
+          $ref: '#/components/parameters/page_token'
+      responses:
+        '200':
+          description: 'reward data found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/volunteer_reward_entry_list'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/volunteer_reward_not_found'
+      security:
+        -
+          ciab_auth: []
+  /volunteer/rewards:
+    post:
+      tags:
+        - volunteers
+      summary: 'Adds a new volunteer reward'
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                name:
+                  type: string
+                promo:
+                  type: boolean
+                reward_group:
+                  description: 'Reward Group Id'
+                  type: integer
+                inventory:
+                  type: integer
+              type: object
+      responses:
+        '201':
+          description: OK
+        '401':
+          $ref: '#/components/responses/401'
+      security:
+        -
+          ciab_auth: []
+  /volunteer/reward_group:
+    post:
+      tags:
+        - volunteers
+      summary: 'Adds a new volunteer reward group'
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                reward_limit:
+                  description: 'Number of items allowed from the group.'
+                  type: integer
+              type: object
+      responses:
+        '201':
+          description: OK
+        '401':
+          $ref: '#/components/responses/401'
+      security:
+        -
+          ciab_auth: []
+  '/volunteer/rewards/{id}':
+    put:
+      tags:
+        - volunteers
+      summary: 'Modifies an existing volunteer reward'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Id of the volunteer reward'
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                name:
+                  type: string
+                promo:
+                  type: boolean
+                reward_group:
+                  description: 'Reward Group Id'
+                  type: integer
+                inventory:
+                  type: integer
+              type: object
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          description: 'Entry not found in the system.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+      security:
+        -
+          ciab_auth: []
+  '/volunteer/reward_group/{id}':
+    put:
+      tags:
+        - volunteers
+      summary: 'Modifies an existing volunteer reward group'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Id of the volunteer reward group'
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                reward_limit:
+                  type: integer
+              type: object
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          description: 'Entry not found in the system.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+      security:
+        -
+          ciab_auth: []
+  '/volunteer/rewards/{id}/inventory':
+    put:
+      tags:
+        - volunteers
+      summary: 'Modifies the inventory of an existing volunteer reward'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Id of the volunteer reward'
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                difference:
+                  type: integer
+              type: object
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          description: 'Entry not found in the system.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+      security:
+        -
+          ciab_auth: []
 components:
   schemas:
     announcement:
@@ -3636,6 +4508,251 @@ components:
                 $ref: '#/components/schemas/staff_entry'
         -
           $ref: '#/components/schemas/resource_list'
+    volunteer_claim:
+      properties:
+        type:
+          type: string
+          enum:
+            - volunteer_claim
+        id:
+          type: integer
+        member:
+          description: 'Member badge who volunteered'
+          oneOf:
+            -
+              $ref: '#/components/schemas/member'
+            -
+              description: 'Member Id'
+              type: integer
+        event:
+          description: 'Event the badge is for'
+          oneOf:
+            -
+              $ref: '#/components/schemas/event'
+            -
+              description: 'Event Id'
+              type: integer
+        reward:
+          description: 'The Reward.'
+          oneOf:
+            -
+              $ref: '#/components/schemas/volunteer_reward'
+            -
+              description: 'Reward Id'
+              type: integer
+      type: object
+    volunteer_claim_list:
+      type: object
+      allOf:
+        -
+          properties:
+            type:
+              type: string
+              enum:
+                - volunteer_claim_list
+            data:
+              description: 'List of volunteer claims'
+              type: array
+              items:
+                $ref: '#/components/schemas/volunteer_claim'
+        -
+          $ref: '#/components/schemas/resource_list'
+    volunteer_claim_summary:
+      properties:
+        type:
+          type: string
+          enum:
+            - volunteer_claim_summary
+        reward_count:
+          type: integer
+        spent_hours:
+          type: integer
+        event:
+          description: 'Event of the claim summary'
+          oneOf:
+            -
+              $ref: '#/components/schemas/event'
+            -
+              description: 'Event Id'
+              type: integer
+      type: object
+    volunteer_hour_entry:
+      properties:
+        type:
+          type: string
+          enum:
+            - volunteer_hour_entry
+        id:
+          type: integer
+        member:
+          description: 'Member badge who volunteered'
+          oneOf:
+            -
+              $ref: '#/components/schemas/member'
+            -
+              description: 'Member Id'
+              type: integer
+        department:
+          description: 'The department of the staff position.'
+          oneOf:
+            -
+              $ref: '#/components/schemas/department'
+            -
+              description: 'departemnt Id'
+              type: integer
+        hours:
+          description: 'Actual time in entry.'
+          type: number
+        authorizer:
+          description: 'Member authorizing the entry'
+          oneOf:
+            -
+              $ref: '#/components/schemas/member'
+            -
+              description: 'Member Id'
+              type: integer
+        end:
+          description: 'Time entry ended'
+          type: string
+          format: date-time
+        enterer:
+          description: 'Member entering the entry'
+          oneOf:
+            -
+              $ref: '#/components/schemas/member'
+            -
+              description: 'Member Id'
+              type: integer
+        event:
+          description: 'Event the badge is for'
+          oneOf:
+            -
+              $ref: '#/components/schemas/event'
+            -
+              description: 'Event Id'
+              type: integer
+        modifier:
+          description: 'Time Modifier.'
+          type: number
+      type: object
+    volunteer_hour_summary:
+      properties:
+        type:
+          type: string
+          enum:
+            - volunteer_hour_summary_entry
+        entry_count:
+          type: number
+        total_hours:
+          type: number
+      type: object
+      oneOf:
+        -
+          property: member
+          description: 'Member badge who volunteered'
+          oneOf:
+            -
+              $ref: '#/components/schemas/member'
+            -
+              description: 'Member Id'
+              type: integer
+        -
+          property: department
+          description: 'The department of the staff position.'
+          oneOf:
+            -
+              $ref: '#/components/schemas/department'
+            -
+              description: 'departemnt Id'
+              type: integer
+    volunteer_hour_entry_list:
+      type: object
+      allOf:
+        -
+          properties:
+            type:
+              type: string
+              enum:
+                - volunteer_hour_entry_list
+            total_hours:
+              type: in
+            data:
+              description: 'List of volunteer hour entries'
+              type: array
+              items:
+                $ref: '#/components/schemas/volunteer_hour_entry'
+        -
+          $ref: '#/components/schemas/resource_list'
+    volunteer_hour_summary_list:
+      type: object
+      allOf:
+        -
+          properties:
+            type:
+              type: string
+              enum:
+                - volunteer_hour_summary_list
+            total_hours:
+              type: in
+            data:
+              description: 'List of volunteer hour summaries'
+              type: array
+              items:
+                $ref: '#/components/schemas/volunteer_hour_summary'
+        -
+          $ref: '#/components/schemas/resource_list'
+    volunteer_reward:
+      properties:
+        type:
+          type: string
+          enum:
+            - volunteer_reward
+        id:
+          type: integer
+        name:
+          type: string
+        promo:
+          type: boolean
+        reward_group:
+          oneOf:
+            -
+              $ref: '#/components/schemas/volunteer_reward_group'
+            -
+              description: 'Reward Group Id'
+              type: integer
+        inventory:
+          type: integer
+      type: object
+    volunteer_reward_entry_list:
+      type: object
+      allOf:
+        -
+          properties:
+            type:
+              type: string
+              enum:
+                - volunteer_reward_entry_list
+            data:
+              description: 'List of volunteer rewards'
+              type: array
+              items:
+                $ref: '#/components/schemas/volunteer_reward'
+        -
+          $ref: '#/components/schemas/resource_list'
+    volunteer_reward_group:
+      properties:
+        type:
+          type: string
+          enum:
+            - volunteer_reward_group
+        id:
+          type: integer
+        reward_limit:
+          description: 'Number of items allowed from the group.'
+          type: integer
+        rewards:
+          description: 'Items in the group.'
+      type: object
   responses:
     '401':
       description: 'User is not authenticated or not authorized for the API.'
@@ -3707,6 +4824,30 @@ components:
             $ref: '#/components/schemas/error'
     staff_not_found:
       description: 'Staff Position not found in the system.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/error'
+    volunteer_claim_not_found:
+      description: 'Volunteer claim not found in the system.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/error'
+    volunteer_entry_not_found:
+      description: 'Volunteer entry not found in the system.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/error'
+    volunteer_reward_not_found:
+      description: 'Volunteer reward not found in the system.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/error'
+    volunteer_reward_group_not_found:
+      description: 'Volunteer reward group not found in the system.'
       content:
         application/json:
           schema:
@@ -3830,6 +4971,9 @@ tags:
   -
     name: staff
     description: 'Features around event staff. (Only avalaible if the ''staff'' module is enabled)'
+  -
+    name: volunteers
+    description: 'Features around volunteers at an event'
 externalDocs:
   description: 'View us on GitHub'
   url: 'https://github.com/CON-In-A-Box/CIAB-Portal/tree/master/api/doc'

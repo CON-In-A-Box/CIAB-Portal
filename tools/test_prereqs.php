@@ -27,6 +27,9 @@ $delete->from('Events')->perform();
 $delete->from('AnnualCycles')->perform();
 $delete->from('AccountConfiguration')->perform();
 $delete->from('Members')->perform();
+$delete->from('HourRedemptions')->perform();
+$delete->from('VolunteerHours')->perform();
+$delete->from('VolunteerRewards')->perform();
 
 $select = Select::new($db);
 $select->columns('Value')->from('Configuration')->whereEquals(['Field' => 'ADMINACCOUNTS']);
