@@ -71,6 +71,14 @@ class GetMemberHoursSummary extends BaseHours
             $this->checkPermissions($permissions);
         }
 
+        $sum = $this->staffHours($request, $response, $id, $params);
+        if ($sum !== null) {
+            return [
+            \App\Controller\BaseController::LIST_TYPE,
+            [],
+            array('type' => 'volunteer_hour_entry_list', 'total_hours' => $sum)];
+        }
+
         $data = Select::new($this->container->db)
         ->columns('"volunteer_hour_summary" AS type')
         ->columns('DepartmentID AS department')

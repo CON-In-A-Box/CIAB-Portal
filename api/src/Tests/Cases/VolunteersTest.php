@@ -7,6 +7,26 @@ use App\Tests\Base\CiabTestCase;
 class VolunteersTest extends CiabTestCase
 {
 
+    protected $staff_hours = 0;
+
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $value = $this->runSuccessJsonRequest('GET', "/admin/configuration/CONCOMHOURS");
+        $this->staff_hours = $value->value;
+        $this->runSuccessJsonRequest('PUT', "/admin/configuration", null, ['Field' => 'CONCOMHOURS', 'Value' => 0]);
+
+    }
+
+
+    protected function tearDown(): void
+    {
+        $this->runSuccessJsonRequest('PUT', "/admin/configuration", null, ['Field' => 'CONCOMHOURS', 'Value' => $this->staff_hours]);
+        parent::tearDown();
+
+    }
+
 
     private function checkHourEntry($entry, $department = 1)
     {
@@ -315,6 +335,19 @@ class VolunteersTest extends CiabTestCase
             $this->runSuccessJsonRequest('DELETE', "/volunteer/hours/$id", null, null, 204);
         }
         $this->runSuccessJsonRequest('DELETE', "/volunteer/reward_group/$group_id", null, null, 204);
+
+    }
+
+
+    public function testStaff(): void
+    {
+        $this->runSuccessJsonRequest('PUT', "/admin/configuration", null, ['Field' => 'CONCOMHOURS', 'Value' => 10]);
+        $data = $this->runSuccessJsonRequest('GET', '/member/1000/volunteer/hours');
+        $this->assertEquals($data->total_hours, 10);
+        $this->runSuccessJsonRequest('PUT', "/admin/configuration", null, ['Field' => 'CONCOMHOURS', 'Value' => 20]);
+        $data = $this->runSuccessJsonRequest('GET', '/member/1000/volunteer/hours');
+        $this->assertEquals($data->total_hours, 20);
+        $this->runSuccessJsonRequest('PUT', "/admin/configuration", null, ['Field' => 'CONCOMHOURS', 'Value' => 0]);
 
     }
 

@@ -217,6 +217,7 @@ use App\Controller\IncludeResource;
 abstract class BaseHours extends BaseController
 {
     use \App\Controller\TraitScope;
+    use \App\Controller\TraitConfiguration;
 
     protected static $columnsToAttributes = [
         '"volunteer_hour_entry"' => 'type',
@@ -268,6 +269,28 @@ abstract class BaseHours extends BaseController
             return null;
         }
         return $data['id'];
+
+    }
+
+
+    protected function staffHours($request, $response, $id, $params)
+    {
+        if (class_exists('\\App\\Modules\\staff\\Controller\\GetMemberPosition')) {
+            $target = new \App\Modules\staff\Controller\GetMemberPosition($this->container);
+            $data = $target->buildResource($request, $response, ['id' => $id])[2];
+            if (!empty($data)) {
+                $config = $this->getConfiguration($params, 'Configuration');
+                foreach ($config as $entry) {
+                    if ($entry['field'] == 'CONCOMHOURS') {
+                        if ($entry['value'] > 0) {
+                            return $entry['value'];
+                        }
+                        return null;
+                    }
+                }
+            }
+        }
+        return null;
 
     }
 
