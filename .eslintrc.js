@@ -89,7 +89,8 @@ module.exports = {
       files: [ "modules/registration/sitesupport/badgeMenuPane.js" ,
                "modules/registration/sitesupport/boarding.js",
                "modules/registration/sitesupport/checkin.js",
-               "modules/registration/sitesupport/lost.js"],
+               "modules/registration/sitesupport/lost.js",
+               "modules/volunteers/sitesupport/volunteerPane.js"],
       parserOptions: { sourceType: "module" },
     }
   ]
