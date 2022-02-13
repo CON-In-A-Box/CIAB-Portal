@@ -93,20 +93,6 @@ class VolunteersTest extends CiabTestCase
         $this->assertNotEmpty($data);
         $ids[] = $data->id;
 
-        /* Overlap Fail */
-        $this->runRequest('POST', '/volunteer/hours/', null, ['department' => '1', 'member' => '1000', 'enterer' => '1000', 'authorizer' => '1000', 'hours' => '2', 'end' => $when, 'modifier' => '1'], 400);
-
-        /* Force overlap success */
-        $data = $this->runSuccessJsonRequest('POST', '/volunteer/hours/', ['force' => '1'], ['department' => '1', 'member' => '1000', 'enterer' => '1000', 'authorizer' => '1000', 'hours' => '2', 'end' => $when, 'modifier' => '1'], 201);
-        $this->assertNotEmpty($data);
-        $ids[] = $data->id;
-
-        /* Not overlap success */
-        $when = date('Y-m-d h:i:s', strtotime('+4 hour'));
-        $data = $this->runSuccessJsonRequest('POST', '/volunteer/hours/', null, ['department' => '1', 'member' => '1000', 'enterer' => '1000', 'authorizer' => '1000', 'hours' => '2', 'end' => $when, 'modifier' => '1'], 201);
-        $this->assertNotEmpty($data);
-        $ids[] = $data->id;
-
         $this->runRequest('GET', '/member/1/volunteer/hours', null, null, 404);
         $this->runRequest('GET', '/member/nobody/volunteer/hours', null, null, 404);
         $data = $this->runSuccessJsonRequest('GET', '/member/1000/volunteer/hours');
@@ -138,6 +124,52 @@ class VolunteersTest extends CiabTestCase
 
         $data = $this->runSuccessJsonRequest('PUT', "/volunteer/hours/".$ids[1], null, ['department' => '2']);
         $this->checkHourEntry($data, 2);
+
+        /* Overlap Testing */
+        $base = date('Y-m-d h:i:s', strtotime('+1 Year'));
+        $plusMin = date('Y-m-d h:i:s', strtotime('+1 Year +30 minutes'));
+        $minusMin = date('Y-m-d h:i:s', strtotime('+1 Year -30 minutes'));
+        $plusHour = date('Y-m-d h:i:s', strtotime('+1 Year +1 hour'));
+        $minusHour = date('Y-m-d h:i:s', strtotime('+1 Year -2 hours'));
+        $largeEnd = date('Y-m-d h:i:s', strtotime('+1 Year +4 hours'));
+        $subEnd = date('Y-m-d h:i:s', strtotime('+1 Year -30 minutes'));
+
+        /* Base Entry */
+        $data = $this->runSuccessJsonRequest('POST', '/volunteer/hours/', null, ['department' => '1', 'member' => '1000', 'enterer' => '1000', 'authorizer' => '1000', 'hours' => '1', 'end' => $base, 'modifier' => '1'], 201);
+        $this->assertNotEmpty($data);
+        $ids[] = $data->id;
+
+        /* Identical */
+        $this->runRequest('POST', '/volunteer/hours/', null, ['department' => '1', 'member' => '1000', 'enterer' => '1000', 'authorizer' => '1000', 'hours' => '1', 'end' => $base, 'modifier' => '1'], 400);
+
+        /* Overlap */
+        $this->runRequest('POST', '/volunteer/hours/', null, ['department' => '1', 'member' => '1000', 'enterer' => '1000', 'authorizer' => '1000', 'hours' => '1', 'end' => $plusMin, 'modifier' => '1'], 400);
+        $this->runRequest('POST', '/volunteer/hours/', null, ['department' => '1', 'member' => '1000', 'enterer' => '1000', 'authorizer' => '1000', 'hours' => '1', 'end' => $minusMin, 'modifier' => '1'], 400);
+
+        /* Superset, subset */
+        $this->runRequest('POST', '/volunteer/hours/', null, ['department' => '1', 'member' => '1000', 'enterer' => '1000', 'authorizer' => '1000', 'hours' => '8', 'end' => $largeEnd, 'modifier' => '1'], 400);
+        $this->runRequest('POST', '/volunteer/hours/', null, ['department' => '1', 'member' => '1000', 'enterer' => '1000', 'authorizer' => '1000', 'hours' => '0.1', 'end' => $subEnd, 'modifier' => '1'], 400);
+
+        /* Edges, success */
+        $data = $this->runSuccessJsonRequest('POST', '/volunteer/hours/', null, ['department' => '1', 'member' => '1000', 'enterer' => '1000', 'authorizer' => '1000', 'hours' => '1', 'end' => $plusHour, 'modifier' => '1'], 201);
+        $this->assertNotEmpty($data);
+        $ids[] = $data->id;
+
+        $data = $this->runSuccessJsonRequest('POST', '/volunteer/hours/', null, ['department' => '1', 'member' => '1000', 'enterer' => '1000', 'authorizer' => '1000', 'hours' => '1', 'end' => $minusHour, 'modifier' => '1'], 201);
+        $this->assertNotEmpty($data);
+        $ids[] = $data->id;
+
+
+        /* Force overlap success */
+        $data = $this->runSuccessJsonRequest('POST', '/volunteer/hours/', ['force' => '1'], ['department' => '1', 'member' => '1000', 'enterer' => '1000', 'authorizer' => '1000', 'hours' => '2', 'end' => $base, 'modifier' => '1'], 201);
+        $this->assertNotEmpty($data);
+        $ids[] = $data->id;
+
+        /* Not overlap success */
+        $when = date('Y-m-d h:i:s', strtotime('+4 hour'));
+        $data = $this->runSuccessJsonRequest('POST', '/volunteer/hours/', null, ['department' => '1', 'member' => '1000', 'enterer' => '1000', 'authorizer' => '1000', 'hours' => '2', 'end' => $when, 'modifier' => '1'], 201);
+        $this->assertNotEmpty($data);
+        $ids[] = $data->id;
 
         foreach ($ids as $id) {
             $this->runSuccessJsonRequest('DELETE', "/volunteer/hours/$id", null, null, 204);

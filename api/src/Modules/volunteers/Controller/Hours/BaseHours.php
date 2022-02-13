@@ -256,15 +256,14 @@ abstract class BaseHours extends BaseController
 
         $data = Select::new($this->container->db)
         ->columns('`HourEntryID` AS id')
-        ->columns('EndDateTime')
-        ->columns("SUBTIME(`EndDateTime`, SEC_TO_TIME(`ActualHours` * 3600)) AS StartTime")
-        ->columns("SUBTIME('$endtime', SEC_TO_TIME($hours * 3600)) AS CheckStartTime")
+        ->columns('UNIX_TIMESTAMP(EndDateTime) AS EndDateTime')
+        ->columns("UNIX_TIMESTAMP(STR_TO_DATE('$endtime', '%Y-%m-%d %H:%i:%s')) AS CheckEndTime")
+        ->columns("UNIX_TIMESTAMP(SUBTIME(`EndDateTime`, SEC_TO_TIME(`ActualHours` * 3600))) AS StartTime")
+        ->columns("UNIX_TIMESTAMP(SUBTIME(STR_TO_DATE('$endtime', '%Y-%m-%d %H:%i:%s'), SEC_TO_TIME($hours * 3600))) AS CheckStartTime")
         ->from('VolunteerHours')
         ->whereEquals(['AccountID' => $memberId])
-        ->having("(`CheckStartTime` <= `StartTime` AND `StartTime` <= '$endtime')")
-        ->orHaving("(`StartTime` <= '$endtime' AND '$endtime' <= `EndDateTime`)")
+        ->having("(GREATEST(`StartTime`, `CheckStartTime`) < LEAST(`EndDateTime`, `CheckEndTime`))")
         ->fetchOne();
-
         if (empty($data)) {
             return null;
         }
