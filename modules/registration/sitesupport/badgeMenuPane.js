@@ -1,51 +1,7 @@
 /* jshint esversion: 6 */
 /* globals apiRequest, Vue */
 
-Vue.component('badge-menu-pane', {
-  props: {
-    open: Boolean,
-    eventName: String,
-    tickets: Object
-  },
-  computed: {
-    canCheckIn() {
-      return this.open && this.tickets.canCheckIn.length > 0;
-    },
-    canPickUp() {
-      return this.open && this.tickets.haveBoardingPass.length > 0;
-    },
-    pickedUp() {
-      return this.open && this.tickets.pickedUp.length > 0;
-    }
-  },
-  template: `
-  <div class="UI-container event-color-primary">
-    <div class="REG-title event-color-primary">Membership Menu</div>
-    <div class="UI-container">
-      <div class="UI-table UI-table-padded">
-        <div v-if="canCheckIn" class="UI-table-row UI-white">
-          <div class="UI-table-cell"><a href="/index.php?Function=registration/checkin">Check in for {{eventName}}</a></div>
-        </div>
-        <div v-if="canPickUp" class="UI-table-row UI-white">
-          <div class="UI-table-cell"><a href="/index.php?Function=registration/boarding">Pick up badge(s) for {{eventName}}</a></div>
-        </div>
-        <div v-if="pickedUp" class="UI-table-row UI-white">
-          <div class="UI-table-cell"><a href="/index.php?Function=registration/lost">Report lost badge(s) for {{eventName}}</a></div>
-        </div>
-        <div class="UI-table-row UI-white">
-        <div class="UI-table-cell"><a href="/index.php?Function=registration/manage">Manage registration(s)</a></div>
-        </div>
-        <div class="UI-table-row UI-white">
-          <div class="UI-table-cell"><a href="/index.php?Function=profile">Manage Account</a></div>
-        </div>
-      </div>
-    </div>
-    <div class="event-color-primary">&nbsp;</div>
-  </div>
-  `
-});
-
-var app = new Vue({
+var app = Vue.createApp({
   el: '#componentland',
   created() {
     this.getCheckinStatus()
@@ -103,5 +59,51 @@ var app = new Vue({
     }
   }
 });
+
+app.component('badge-menu-pane', {
+  props: {
+    open: Boolean,
+    eventName: String,
+    tickets: Object
+  },
+  computed: {
+    canCheckIn() {
+      return this.open && this.tickets.canCheckIn.length > 0;
+    },
+    canPickUp() {
+      return this.open && this.tickets.haveBoardingPass.length > 0;
+    },
+    pickedUp() {
+      return this.open && this.tickets.pickedUp.length > 0;
+    }
+  },
+  template: `
+  <div class="UI-container event-color-primary">
+    <div class="REG-title event-color-primary">Membership Menu</div>
+    <div class="UI-container">
+      <div class="UI-table UI-table-padded">
+        <div v-if="canCheckIn" class="UI-table-row UI-white">
+          <div class="UI-table-cell"><a href="/index.php?Function=registration/checkin">Check in for {{eventName}}</a></div>
+        </div>
+        <div v-if="canPickUp" class="UI-table-row UI-white">
+          <div class="UI-table-cell"><a href="/index.php?Function=registration/boarding">Pick up badge(s) for {{eventName}}</a></div>
+        </div>
+        <div v-if="pickedUp" class="UI-table-row UI-white">
+          <div class="UI-table-cell"><a href="/index.php?Function=registration/lost">Report lost badge(s) for {{eventName}}</a></div>
+        </div>
+        <div class="UI-table-row UI-white">
+        <div class="UI-table-cell"><a href="/index.php?Function=registration/manage">Manage registration(s)</a></div>
+        </div>
+        <div class="UI-table-row UI-white">
+          <div class="UI-table-cell"><a href="/index.php?Function=profile">Manage Account</a></div>
+        </div>
+      </div>
+    </div>
+    <div class="event-color-primary">&nbsp;</div>
+  </div>
+  `
+});
+
+app.mount('#componentland');
 
 export default app;
