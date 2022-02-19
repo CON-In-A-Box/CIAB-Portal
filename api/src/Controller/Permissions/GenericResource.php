@@ -12,21 +12,20 @@ class GenericResource extends GenericPermission
 {
 
 
-    private function buildEntry($request, $method, $resourceName, $detail): array
+    protected function buildEntry($request, $method, $resourceName, $detail): array
     {
         $path = $request->getUri()->getBaseUrl();
-        $permission = 'api.'.$method.'.'.$resourceName.$detail;
-        $allowed = (\ciab\RBAC::havePermission($permissions));
-        return $this->buildBaseEntry(
-            $allowed,
-            $resourceName.$detail,
-            $method,
-            [
-            'method' => $method,
-            'href' => $path.'/'.$resourceName.'/'.$permission,
-            'request' => strtoupper($method)
-            ]
-        );
+        $permission = 'api.'.$method.'.'.$resourceName;
+        $allowed = (\ciab\RBAC::havePermission($permission));
+
+        $entry = [
+        'type' => 'permission_entry',
+        'subtype' => $permission,
+        'allowed' => $allowed,
+        'action' => null,
+        'subdata' => null
+        ];
+        return $entry;
 
     }
 
@@ -39,7 +38,11 @@ class GenericResource extends GenericPermission
         $result = array();
         $method = $args['method'];
         $resourceName = $args['resource'];
-        $detail = $args['detail'];
+        if (array_key_exists('detail', $args)) {
+            $detail = $args['detail'];
+        } else {
+            $detail = null;
+        }
         if (!in_array($method, GenericPermission::ALL_METHODS)) {
             return [
             \App\Controller\BaseController::RESULT_TYPE,
@@ -51,7 +54,10 @@ class GenericResource extends GenericPermission
                 404
             )];
         }
-        $result[] = $this->buildEntry($request, $method, $resourceName, '.'.$detail);
+        if ($detail) {
+            $resourceName .= '.'.$detail;
+        }
+        $result[] = $this->buildEntry($request, $method, $resourceName, null);
         return [
         \App\Controller\BaseController::LIST_TYPE,
         $result,

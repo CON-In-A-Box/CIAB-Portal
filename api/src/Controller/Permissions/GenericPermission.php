@@ -12,10 +12,12 @@ use Slim\Http\Response;
 abstract class GenericPermission extends BasePermission
 {
 
+    const ALL_METHODS = ['get', 'put', 'post', 'delete'];
+
 
     public function __construct(Container $container)
     {
-        parent::__construct($container);
+        parent::__construct($container, 'generic');
 
     }
 
