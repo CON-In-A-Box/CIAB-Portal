@@ -90,7 +90,9 @@ module.exports = {
                "modules/registration/sitesupport/boarding.js",
                "modules/registration/sitesupport/checkin.js",
                "modules/registration/sitesupport/lost.js",
-               "modules/volunteers/sitesupport/volunteerPane.js"],
+               "modules/volunteers/sitesupport/volunteerPane.js",
+               "modules/volunteers/report/sitesupport/hourReport.js",
+               "modules/volunteers/report/sitesupport/volunteerReport.js"],
       parserOptions: { sourceType: "module" },
     }
   ]

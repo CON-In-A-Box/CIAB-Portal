@@ -15,13 +15,15 @@ class ConcomList
 {
 
 
-    public static function listBuild()
+    public static function listBuild($event = null)
     {
         global $Departments;
 
-        $event = \current_eventID();
         if ($event === null) {
-            return array();
+            $event = \current_eventID();
+            if ($event === null) {
+                return array();
+            }
         }
         $sql = <<<SQL
     SELECT

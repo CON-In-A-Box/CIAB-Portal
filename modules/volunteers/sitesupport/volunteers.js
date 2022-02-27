@@ -10,7 +10,7 @@
            */
 /* exported processReturn, showReturn, markDelete,
             generateDerivedCSV, departmentReport, generateDeptReport,
-            minHourReport, generateHourReport, commitPrize, deletePrize,
+            minHourReport, commitPrize, deletePrize,
             showEditPrize, deleteHours, commitHours, showEditHours,
             toggleAdminMode, addPromoToCheckout, removeFromCheckout,
             processCheckout, showHideSoldOut, lookupFail, sidebarMainDiv */
@@ -472,16 +472,6 @@ function prizeGroupChange() {
     cnt.disabled = false;
     cnt.classList.remove('UI-disabled');
   }
-}
-
-function generateHourReport() {
-  var hours = document.getElementById('report_hour_min').value;
-  window.location = 'index.php?Function=volunteers/report&min_hour=' + hours;
-}
-
-function minHourReport() {
-  showSidebar('hour_report_div');
-  document.getElementById('report_hour_min').value = 30;
 }
 
 function generateDeptReport() {
