@@ -29,6 +29,9 @@ export default {
       result.data.forEach((entry) => {
         this.events.push(entry);
       });
+      if (this.selectedEvent === null) {
+        this.selectedEvent = this.events[0].id;
+      }
     },
     gotCurrentEvent(response) {
       const result = JSON.parse(response.responseText);

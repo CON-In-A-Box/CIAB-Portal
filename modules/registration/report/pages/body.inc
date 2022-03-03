@@ -2,10 +2,6 @@
 ?>
 <script>
     var sidebarMainDiv = 'main_content';
-    reportGenerationSidebar.options({
-        target: 'registration/report',
-        reportDisplay: '#report_display'
-    });
 </script>
 
 <div id="page" class="UI-continer">
@@ -17,7 +13,7 @@
     <div class="UI-rest UI-center">
       <div class='VOL-admin'>
         <div id='volunteer_admin_bar' class='VOL-admin-bar'>
-          <button id='gen_der_csv' class='UI-eventbutton' onclick='reportGenerationSidebar.open();'>Generate CSV Report</button>
+          <button id='gen_der_csv' class='UI-eventbutton' @click='$refs.rpt.open();'>Generate CSV Report</button>
         </div>
       </div>
     </div>
@@ -32,4 +28,8 @@
     </div>
     &nbsp;
   </div>
+
+  <report-generation ref=rpt target='registration/report' report-display='#report_display'>
+  </report-generation>
+
 </div>

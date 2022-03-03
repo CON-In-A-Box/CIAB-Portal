@@ -86,10 +86,14 @@ module.exports = {
     },
     overrides: [
     {
-      files: [ "modules/registration/sitesupport/badgeMenuPane.js" ,
+      files: [ "sitesupport/reportGeneration.js",
+               "modules/concom/report/sitesupport/vue.js",
+               "modules/event/report/sitesupport/vue.js",
+               "modules/registration/sitesupport/badgeMenuPane.js" ,
                "modules/registration/sitesupport/boarding.js",
                "modules/registration/sitesupport/checkin.js",
                "modules/registration/sitesupport/lost.js",
+               "modules/registration/report/sitesupport/vue.js",
                "modules/volunteers/sitesupport/volunteerPane.js",
                "modules/volunteers/report/sitesupport/hourReport.js",
                "modules/volunteers/report/sitesupport/volunteerReport.js"],
