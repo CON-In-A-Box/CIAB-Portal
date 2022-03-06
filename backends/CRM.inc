@@ -98,6 +98,37 @@ class CRM
     }
 
 
+    public static function updateAccountAPI($member)
+    {
+        $updateData = [];
+        $updateData['accountId'] = $member['id'];
+        $updateData['contactId'] = $member['id'];
+        $updateData['firstName'] = $member['legal_first_name'];
+        $updateData['middleName'] = $member['middle_name'];
+        $updateData['lastName'] = $member['legal_last_name'];
+        $updateData['suffix'] = $member['suffix'];
+        $updateData['email1'] = $member['email'];
+        $updateData['email2'] = $member['email2'];
+        $updateData['email3'] = $member['email3'];
+        $updateData['phone1'] = $member['phone'];
+        $updateData['phone2'] = $member['phone2'];
+        $updateData['addressLine1'] = $member['address_line1'];
+        $updateData['addressLine2'] = $member['address_line2'];
+        $updateData['city'] = $member['city'];
+        $updateData['state'] = $member['state'];
+        $updateData['zipCode'] = $member['zip_code'];
+        $updateData['zipPlus4'] = $member['zip_plus4'];
+        $updateData['country'] = $member['country'];
+        $updateData['province'] = $member['province'];
+        $updateData['preferredFirstName'] = $member['preferred_first_name'];
+        $updateData['preferredLastName'] = $member['preferred_last_name'];
+        $updateData['conComDisplayPhone'] = $member['concom_display_phone'];
+
+        self::instance()->updateAccount($updateData);
+
+    }
+
+
     public static function importEvents()
     {
         return self::instance()->importEvents();

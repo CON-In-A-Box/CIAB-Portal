@@ -587,6 +587,15 @@ SQL;
     }
 
 
+    private function addInfo(&$request, $neon_value, $updateData, $field)
+    {
+        if (array_key_exists($field, $updateData)) {
+            $request['parameters'][$neon_value] = $updateData[$field];
+        }
+
+    }
+
+
     public function updateAccount($updateData)
     {
         global $_SESSION;
@@ -597,32 +606,32 @@ SQL;
         $request = [
         'method' => 'account/updateIndividualAccount',
         'parameters' => [
-        'individualAccount.accountId' => $updateData['accountId'],
-        'individualAccount.primaryContact.contactId' => $updateData['contactId'],
-        'individualAccount.primaryContact.firstName' => $updateData['firstName'],
-        'individualAccount.primaryContact.middleName' => $updateData['middleName'],
-        'individualAccount.primaryContact.lastName' => $updateData['lastName'],
-        'individualAccount.primaryContact.suffix' => $updateData['suffix'],
-        'individualAccount.primaryContact.email1' => $updateData['email1'],
-        'individualAccount.primaryContact.email2' => $updateData['email2'],
-        'individualAccount.primaryContact.email3' => $updateData['email3'],
-        'individualAccount.primaryContact.phone1' => $updateData['phone1'],
-        'individualAccount.primaryContact.phone2' => $updateData['phone2'],
-        'individualAccount.primaryContact.addresses.address.addressType.Name' => 'Home',
-        'individualAccount.primaryContact.addresses.address.addressId' => $updateData['addressId'],
-        'individualAccount.primaryContact.addresses.address.isPrimaryAddress' => 'true',
-        'individualAccount.primaryContact.addresses.address.addressLine1' => $updateData['addressLine1'],
-        'individualAccount.primaryContact.addresses.address.addressLine2' => $updateData['addressLine2'],
-        'individualAccount.primaryContact.addresses.address.addressLine3' => '',
-        'individualAccount.primaryContact.addresses.address.addressLine4' => '',
-        'individualAccount.primaryContact.addresses.address.city' => $updateData['city'],
-        'individualAccount.primaryContact.addresses.address.state.code' => $updateData['state'],
-        'individualAccount.primaryContact.addresses.address.zipCode' => $updateData['zipCode'],
-        'individualAccount.primaryContact.addresses.address.zipCodeSuffix' => $updateData['zipPlus4'],
-        'individualAccount.primaryContact.addresses.address.country.id' => $updateData['country'],
-        'individualAccount.primaryContact.addresses.address.province' => $updateData['province'],
-        ],
+            'individualAccount.primaryContact.addresses.address.addressType.Name' => 'Home',
+            'individualAccount.primaryContact.addresses.address.isPrimaryAddress' => 'true',
+            'individualAccount.primaryContact.addresses.address.addressLine3' => '',
+            'individualAccount.primaryContact.addresses.address.addressLine4' => ''
+            ],
         ];
+        $this->addInfo($request, 'individualAccount.accountId', $updateData, 'accountId');
+        $this->addInfo($request, 'individualAccount.primaryContact.contactId', $updateData, 'contactId');
+        $this->addInfo($request, 'individualAccount.primaryContact.firstName', $updateData, 'firstName');
+        $this->addInfo($request, 'individualAccount.primaryContact.middleName', $updateData, 'middleName');
+        $this->addInfo($request, 'individualAccount.primaryContact.lastName', $updateData, 'lastName');
+        $this->addInfo($request, 'individualAccount.primaryContact.suffix', $updateData, 'suffix');
+        $this->addInfo($request, 'individualAccount.primaryContact.email1', $updateData, 'email1');
+        $this->addInfo($request, 'individualAccount.primaryContact.email2', $updateData, 'email2');
+        $this->addInfo($request, 'individualAccount.primaryContact.email3', $updateData, 'email3');
+        $this->addInfo($request, 'individualAccount.primaryContact.phone1', $updateData, 'phone1');
+        $this->addInfo($request, 'individualAccount.primaryContact.phone2', $updateData, 'phone2');
+        $this->addInfo($request, 'individualAccount.primaryContact.addresses.address.addressId', $updateData, 'addressId');
+        $this->addInfo($request, 'individualAccount.primaryContact.addresses.address.addressLine1', $updateData, 'addressLine1');
+        $this->addInfo($request, 'individualAccount.primaryContact.addresses.address.addressLine2', $updateData, 'addressLine2');
+        $this->addInfo($request, 'individualAccount.primaryContact.addresses.address.city', $updateData, 'city');
+        $this->addInfo($request, 'individualAccount.primaryContact.addresses.address.state.code', $updateData, 'state');
+        $this->addInfo($request, 'individualAccount.primaryContact.addresses.address.zipCode', $updateData, 'zipCode');
+        $this->addInfo($request, 'individualAccount.primaryContact.addresses.address.zipCodeSuffix', $updateData, 'zipPlus4');
+        $this->addInfo($request, 'individualAccount.primaryContact.addresses.address.country.name', $updateData, 'country');
+        $this->addInfo($request, 'individualAccount.primaryContact.addresses.address.province', $updateData, 'province');
 
         $preferredFirstName = $this->searchDefinedFields('Preferred First Name');
         $preferredLastName = $this->searchDefinedFields('Preferred Last Name');
