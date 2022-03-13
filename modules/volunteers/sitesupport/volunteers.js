@@ -6,7 +6,7 @@
 /* jshint -W097 */
 /* globals confirmbox, userId, escapeHtml, userEmail,
            groupData, checkAuthentication, adminMode, unclaimed, hoursRemain,
-           userLookup, hideSidebar, showSidebar, alertbox, basicBackendRequest
+           hideSidebar, showSidebar, alertbox, basicBackendRequest
            */
 /* exported processReturn, showReturn, markDelete,
             generateDerivedCSV, departmentReport, generateDeptReport,
@@ -25,23 +25,6 @@ var returnCart = [];
 
 function basicVolunteersRequestAdmin(parameter, finish) {
   basicBackendRequest('POST', 'volunteers/admin', parameter, finish);
-}
-
-function lookupFail(target, resp, name, code) {
-  userLookup.markFailure();
-
-  if (code == 404) {
-    document.getElementById('userLookup_message').innerHTML =
-      name + ' not found.';
-  }
-  else if (code == 409) {
-    document.getElementById('userLookup_message').innerHTML =
-      'There are too many matches.';
-  }
-  else {
-    document.getElementById('userLookup_message').innerHTML =
-      name + ' invalid name lookup.(' + code + ')';
-  }
 }
 
 function showHideSoldOut() {

@@ -1,8 +1,5 @@
 <script>
   var sidebarMainDiv = 'main_content';
-  userLookup.options({
-    handler: onLookup
-  });
 </script>
 
 <div id="page" class="UI-container">
@@ -30,10 +27,14 @@ ConComListDisplay();
       </div>
       <div class='UI-center'>
           <input class="UI-hiddeninput" id="user_id">
-          <label class='UI-label' for='userLookup_div'>
+          <label class='UI-label' for='concom_lookup'>
           <h2>Add someone to <span id='add_departemnt'></span></h2></label>
           <fieldset><legend>Search the User Database</legend>
-          <div class='UI-rest UI-center' id='userLookup_div'> </div>
+
+          <div class='UI-rest UI-center' id='concom_lookup'>
+              <lookup-user handler=onLookup></lookup-user>
+          </div>
+
           </fieldset>
           <br>
           <label class='UI-label' for='position'>Position:</label>

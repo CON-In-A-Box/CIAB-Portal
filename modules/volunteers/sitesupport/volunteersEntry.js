@@ -3,8 +3,9 @@
  */
 
 /* jshint esversion: 6 */
-/* globals apiRequest, Vue, userLookup */
-/* exported root */
+/* globals apiRequest, Vue */
+
+import lookupUser from '../../../sitesupport/lookupUser.js'
 
 var volApp = Vue.createApp({
   created() {
@@ -18,9 +19,9 @@ var volApp = Vue.createApp({
       .then(this.gotAdmin);
     const queryString = window.location.search
     const urlParams = new URLSearchParams(queryString);
-    this.uid = urlParams.get('memberId');
-    if (this.uid == '') {
-      this.uid = null;
+    this.member = urlParams.get('memberId');
+    if (this.member == '') {
+      this.member = null;
     }
     if (this.endHour < 12) {
       this.endAmPm = 'AM';
@@ -32,8 +33,7 @@ var volApp = Vue.createApp({
   },
   data() {
     return {
-      uid: null,
-      member: 0,
+      member: null,
       actualHours: 1,
       actualMinutes: 0,
       endDate: null,
@@ -68,9 +68,8 @@ var volApp = Vue.createApp({
     },
     gotMember(response) {
       const result = JSON.parse(response.responseText);
-      this.member = result.id;
-      this.enteredBy = this.member;
-      this.authorizedBy = this.member;
+      this.enteredBy = result.id;
+      this.authorizedBy = result.id;
     },
     gotAdmin(response) {
       const result = JSON.parse(response.responseText);
@@ -143,9 +142,7 @@ var volApp = Vue.createApp({
       this.checkHours();
     },
     resetForm() {
-      userLookup.clear();
-      this.uid = null;
-      document.getElementById('submit').disabled = true;
+      this.$refs.lookup.clear();
       this.lookupMessage = null;
       this.departmentsHighlight = null;
       this.message = null;
@@ -158,11 +155,8 @@ var volApp = Vue.createApp({
       this.lookupError = false;
       this.volunteerName = 'a Volunteer';
     },
-    handleResult(origin, response) {
-      var e = document.getElementById('userLookup_dropdown');
-      if (!e.classList.contains('UI-hide')) {
-        e.classList.add('UI-hide');
-      }
+    handleResult(userLookup, response) {
+      userLookup.possibleMembers = null;
       this.timeInvalid = false;
       this.message = null;
 
@@ -170,17 +164,16 @@ var volApp = Vue.createApp({
       var uid = response.Id;
       if (response.ConCom && response.ConCom.length > 0) {
         userLookup.markFailure();
-        document.getElementById('submit').disabled = true;
         this.lookupMessage = this.volunteerName + ' is on ConCom (' + uid + ')';
         this.lookupError = true;
         this.departmentsHighlight = null;
       } else {
         userLookup.clearFailure();
         userLookup.set(uid);
-        document.getElementById('submit').disabled = false;
         this.lookupMessage = this.volunteerName + ' (' + uid + ')';
         this.lookupError = false;
         this.departmentsHighlight = null;
+        this.member = uid;
 
         if ('volunteer' in response) {
           for (var i = 0, len = response.volunteer.length; i < len; i++) {
@@ -198,10 +191,9 @@ var volApp = Vue.createApp({
         }
       }
     },
-    onFail(target, resp, name, code) {
+    onFail(userLookup, target, resp, name, code) {
       userLookup.markFailure();
-      document.getElementById('submit').disabled = true;
-      this.uid = false;
+      this.member = null;
       this.volunteerName = 'a Volunteer';
 
       if (code == 404) {
@@ -279,14 +271,7 @@ var volApp = Vue.createApp({
   }
 });
 
-var root = volApp.mount('#vol-entry');
+volApp.component('lookup-user', lookupUser);
+volApp.mount('#vol-entry');
 
-userLookup.options({
-  message: 'Volunteer Badge Number, E-Mail or Full Name',
-  memberName: 'VolunteerID',
-  handler: root.handleResult,
-  fail: root.onFail,
-  needForm: false,
-  lookupTarget: 'volunteers/enter',
-  lookupParam: 'volunteerId'
-});
+export default volApp;

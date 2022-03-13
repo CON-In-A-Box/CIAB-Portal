@@ -5,7 +5,7 @@
 /* jshint browser: true */
 /* jshint -W097 */
 /* globals confirmbox, showSidebar, hideSidebar,
-           PERMISSIONS, basicBackendRequest, userLookup */
+           PERMISSIONS, basicBackendRequest*/
 /* exported drag, dragOverDivision, dragLeaveDivision, dragDropDivision,
             dragDropParent, toggleDept, savePosition, newEntry,
             deletePosition, changeEmail, editEmail, returnPosition,
@@ -497,7 +497,6 @@ function addMember(department, posData) {
     }
   });
   document.getElementById('add_button').disabled = true;
-  userLookup.clear();
   showSidebar('add_member_div');
 }
 

@@ -588,22 +588,9 @@ if (isset($_SESSION['IS_ADMIN']) || $_SESSION['IS_VOLUNTEERS']) {
 }
 ?>
 
-<script>
-    userLookup.options({
-        message: 'Volunteer Badge Number, E-Mail or Full Name',
-        urlTag: 'volunteerId',
-        fail: lookupFail,
-        });
-</script>
-
-<?php
-if (isset($uid)) {
-    echo "<div class='UI-bar-item' id='userLookup_div' data-user='$uid'> </div>\n";
-} else {
-    echo "<div class='UI-bar-item' id='userLookup_div'> </div>\n";
-}
-?>
-
+  <div id=user-lookup>
+    <lookup-user message='Volunteer Badge Number, E-Mail or Full Name' url-tag='volunteerId'> </lookup-user>
+  </div>
 </div>
 
 <div class="UI-rest UI-center">
