@@ -89,6 +89,7 @@ class FindMembers extends BaseMember
         if ($q === null) {
             throw new InvalidParameterException("'q' not present");
         }
+        $q = trim($q);
         $from = $request->getQueryParam('from', 'all');
         if ($from == 'all') {
             $from = "email,id,legal_name,name,badge,badge_id";
@@ -115,12 +116,19 @@ class FindMembers extends BaseMember
             } else {
                 $select->orWhere('Email = ', $q);
             }
+            if (\ciab\CRM::active()) {
+                \ciab\CRM::lookupUsersByEmail($q, false, $partial, array());
+            }
         }
         if (in_array('id', $from)) {
             if ($q[0] == 'A') {
-                $select->orWhere('AccountID = ', substr($q, 1));
+                $q2 = substr($q, 1);
             } else {
-                $select->orWhere('AccountID = ', $q);
+                $q2 = $q;
+            }
+            $select->orWhere('AccountID = ', $q2);
+            if (\ciab\CRM::active()) {
+                \ciab\CRM::lookupUsersByIds($q2, false, array());
             }
         }
         if (in_array('legal_name', $from)) {
@@ -131,13 +139,15 @@ class FindMembers extends BaseMember
                     $select->orWhere("LastName LIKE '%$names[1]%'");
                 }
             } else {
-                if (count($names) != 2) {
-                    throw new NotFoundException('Member Not Found');
+                if (count($names) == 2) {
+                    $select->orWhere('(');
+                    $select->catWhere("FirstName = ", $names[0]);
+                    $select->catWhere(" AND LastName = ", $names[1]);
+                    $select->catWhere(')');
                 }
-                $select->orWhere('(');
-                $select->catWhere("FirstName = ", $names[0]);
-                $select->catWhere(" AND LastName = ", $names[1]);
-                $select->catWhere(')');
+            }
+            if (\ciab\CRM::active()) {
+                \ciab\CRM::lookupUsersByName($q, false, $partial, false, array());
             }
         }
         if (in_array('name', $from)) {
@@ -153,16 +163,18 @@ class FindMembers extends BaseMember
                 $select->orWhere("PreferredFirstName LIKE '%{$names[0]}%'");
                 $select->orWhere("FirstName LIKE '%{$names[0]}%'");
             } else {
-                if (count($names) != 2) {
-                    throw new NotFoundException('Member Not Found');
+                if (count($names) == 2) {
+                    $select->orWhere('((');
+                    $select->catWhere(' PreferredFirstName = ', $names[0]);
+                    $select->catWhere(' OR FirstName = ', $names[0]);
+                    $select->catWhere(' ) AND ( ');
+                    $select->catWhere('PreferredLastName = ', $names[1]);
+                    $select->catWhere(' OR LastName = ', $names[1]);
+                    $select->catWhere(' ))');
                 }
-                $select->orWhere('((');
-                $select->catWhere(' PreferredFirstName = ', $names[0]);
-                $select->catWhere(' OR FirstName = ', $names[0]);
-                $select->catWhere(' ) AND ( ');
-                $select->catWhere('PreferredLastName = ', $names[1]);
-                $select->catWhere(' OR LastName = ', $names[1]);
-                $select->catWhere(' ))');
+            }
+            if (\ciab\CRM::active()) {
+                \ciab\CRM::lookupUsersByName($q, false, $partial, true, array());
             }
         }
         if (in_array('badge', $from)) {
@@ -185,6 +197,9 @@ class FindMembers extends BaseMember
                 ->from('Registrations')
                 ->whereEquals(['BadgeID' => $q, 'EventID' => $event]);
             $select->orWhere('AccountID IN ', $sub);
+            if (\ciab\CRM::active()) {
+                \ciab\CRM::lookupUsersByIds($q, false, array());
+            }
         }
 
         $result = $select->fetchAll();

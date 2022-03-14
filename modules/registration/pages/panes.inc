@@ -49,7 +49,7 @@ function badges()
             }
         }
         ksort($lines);
-?>
+        ?>
         <script src="modules/registration/sitesupport/registration.js"></script>
         <div class='UI-container event-color-secondary'>
 
@@ -63,28 +63,28 @@ function badges()
 
         <table class='UI-stripedtable'>
         <caption>Badges to the events</caption>
-<?php
-foreach ($lines as $con => $names) {
-    $colspan = count($names[0]);
-    echo "<table class='UI-stripedtable'>\n";
-    echo "<tr><th class='UI-center event-color-primary' colspan='$colspan'>".$con;
-    echo " (".count($names)." badges)</th></tr>\n";
-    $keys = array_keys($names[0]);
-    echo "<tr><th>";
-    echo implode(_htmlsafeify($keys), '</th><th>');
-    echo "</th></tr>\n";
-    foreach ($names as $badge) {
-        echo "<tr><td>";
-        echo implode(_htmlsafeify($badge), '</td><td> ');
-        echo "</td></tr>\n";
-    }
-    echo "</table>\n";
-}
-?>
+        <?php
+        foreach ($lines as $con => $names) {
+            $colspan = count($names[0]);
+            echo "<table class='UI-stripedtable'>\n";
+            echo "<tr><th class='UI-center event-color-primary' colspan='$colspan'>".$con;
+            echo " (".count($names)." badges)</th></tr>\n";
+            $keys = array_keys($names[0]);
+            echo "<tr><th>";
+            echo implode(_htmlsafeify($keys), '</th><th>');
+            echo "</th></tr>\n";
+            foreach ($names as $badge) {
+                echo "<tr><td>";
+                echo implode(_htmlsafeify($badge), '</td><td> ');
+                echo "</td></tr>\n";
+            }
+            echo "</table>\n";
+        }
+        ?>
         <tr class='event-color-secondary'><th id="placeholder" colspan=5 class='UI-center'></th></tr>
         </table>
         </div>
-<?php
+        <?php
     }
 
 }

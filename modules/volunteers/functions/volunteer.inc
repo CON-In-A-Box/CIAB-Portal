@@ -4,9 +4,9 @@
     require_module 'standard';
 .*/
 
-require_once(__DIR__."/database.inc");
-require_once(__DIR__."/functions.inc");
-require_once(__DIR__."/users.inc");
+require_once($FUNCTIONDIR."/database.inc");
+require_once($FUNCTIONDIR."/functions.inc");
+require_once($FUNCTIONDIR."/users.inc");
 
 
 function get_volunteer_hour_summary($id = null, $event = null)
@@ -605,7 +605,7 @@ SQL;
     if (class_exists('\\concom\\ConcomList') &&
         method_exists('\\concom\\ConcomList', 'listBuild') &&
         isset($ConComHours) && $ConComHours >= $required_hours) {
-        $concom = \concom\ConcomList::listBuild();
+        $concom = \concom\ConcomList::listBuild($event);
 
         foreach ($concom as $entry) {
             $members[] = $entry['Account ID'];
@@ -613,7 +613,9 @@ SQL;
         }
     }
 
-    $users = lookup_users_by_ids($members);
+    if (!empty($members)) {
+        $users = lookup_users_by_ids($members);
+    }
 
     $report = [];
     foreach ($users['users'] as $user) {

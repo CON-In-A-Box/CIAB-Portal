@@ -38,8 +38,8 @@ going to be accessed. Setup an OAuth 'Client ID' of type <strong>other</strong>.
                 <div><label class='UI-label'>Enter Code Here:</label><input class="UI-input" id="code">
                     <button id="set_code" class="UI-eventbutton" onclick='authCode()'>Enter</button>
                 </div>
-                <?php
-                exit();
+            <?php
+            exit();
         }
 
         if (!isset($G_ROOTFOLDER) || $G_ROOTFOLDER === "") {
@@ -76,7 +76,7 @@ going to be accessed. Setup an OAuth 'Client ID' of type <strong>other</strong>.
                     <th id="fileHeader" class="event-color-primary UI-center">File</th>
                     <th id="lastModifiedHeader" class="event-color-primary UI-center">Last Modified</th>
                 </tr>
-                <?php
+            <?php
         }
         ?>
             </table>

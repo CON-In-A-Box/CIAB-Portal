@@ -144,7 +144,6 @@ function randomPass()
 function load()
 {
   document.getElementById('tmp_passwd').value = randomPass();
-  document.getElementsByName('hook_name')[0].value = randomPass();
 }
 
 if (window.addEventListener) {

@@ -124,7 +124,7 @@ $base_menus[] = array(
 echo build_menus($base_menus, $base_styles, $resp_styles);
 
 if ($console === null) {
-?>
+    ?>
     <a class="UI-main-bar-pancake"
       href="javascript:void(0)"
       onclick="myMenuBar()">

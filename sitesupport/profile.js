@@ -33,7 +33,8 @@ var userProfile = (function(options) {
       inlineUpdateButton: true,
       panes: ['name', 'prefName', 'badge', 'emailAll', 'phone', 'addr'],
       onChange: null,
-      noTitleBlock: false
+      noTitleBlock: false,
+      readonly: false
     }, options);
 
   return {
@@ -89,9 +90,13 @@ var userProfile = (function(options) {
           element['originalValue'] = '';
         }
       });
-      userProfile.getElementById('state').value = 'MN';
-      userProfile.getElementById('countryName').value =
-        'United States of America';
+      if (userProfile.getElementById('state')) {
+        userProfile.getElementById('state').value = 'MN';
+      }
+      if (userProfile.getElementById('countryName')) {
+        userProfile.getElementById('countryName').value =
+          'United States of America';
+      }
     },
 
     getMember: function() {
@@ -166,59 +171,68 @@ var userProfile = (function(options) {
     },
 
     updateAccount: function() {
-      if (!userProfile.validateForm()) {
-        return;
-      }
-      var data = userProfile.serializeUpdate();
-      if (data.length == 0) {
-        alertbox('Nothing updated.');
-        return;
-      }
-      showSpinner();
-      var method = 'POST';
-      var uri = 'member';
-      if (this.accountId > 0) {
-        method = 'PUT';
-        uri = 'member/' + this.accountId;
-      }
-      apiRequest(method, uri, data)
-        .then(function() {
-          if (method == 'POST') {
-            alertbox('Account Created, email sent').then(function() {
-              window.location = '/index.php?Function=public';
-            });
-          } else {
-            alertbox('Member data updated');
-            basicBackendRequest('POST', 'profile', 'reloadProfile=1',
-              function() {
-                hideSpinner();
-                location.reload();
-              },
-              function() {
-                hideSpinner();
-                location.reload();
+      var accountId = this.accountId;
+      return new Promise(function(resolve, reject) {
+        if (!userProfile.validateForm()) {
+          reject(this);
+          return;
+        }
+        var data = userProfile.serializeUpdate();
+        if (data.length == 0) {
+          alertbox('Nothing updated.');
+          reject(this);
+          return;
+        }
+        var method = 'POST';
+        var uri = 'member';
+        if (accountId > 0) {
+          method = 'PUT';
+          uri = 'member/' + accountId;
+        }
+        apiRequest(method, uri, data)
+          .then(function(response) {
+            if (method == 'POST') {
+              alertbox('Account Created, email sent').then(function() {
+                window.location = '/index.php?Function=public';
               });
-          }
-        })
+            } else {
+              alertbox('Member data updated');
+              basicBackendRequest('POST', 'profile', 'reloadProfile=1',
+                function() {}, function() {});
+            }
+            resolve(response);
+          })
+          .catch(function(response) {
+            if (response instanceof Error) { throw response; }
+            console.log(response);
+            var email = userProfile.getElementById('email1').value;
+            if (response.status == 409) {
+              if (email) {
+                alertbox('Account with the email \'' + email +
+                             '\' already exists!');
+              } else {
+                alertbox('Email for account invalid, please retry!');
+              }
+              userProfile.getElementById('email1').value = '';
+            }
+            else if (response.status != 200) {
+              if (email) {
+                alertbox('Account Update Failed.');
+              }
+            }
+            reject(response);
+          });
+      });
+    },
+
+    doUpdate: function() {
+      showSpinner();
+      userProfile.updateAccount()
         .catch(function(response) {
           if (response instanceof Error) { throw response; }
-          console.log(response);
+        })
+        .finally(function() {
           hideSpinner();
-          var email = userProfile.getElementById('email1').value;
-          if (response.status == 409) {
-            if (email) {
-              alertbox('Account with the email \'' + email +
-                         '\' already exists!');
-            } else {
-              alertbox('Email for account invalid, please retry!');
-            }
-            userProfile.getElementById('email1').value = '';
-          }
-          else if (response.status != 200) {
-            if (email) {
-              alertbox('Account Update Failed.');
-            }
-          }
         });
     },
 
@@ -286,11 +300,17 @@ var userProfile = (function(options) {
         prefix = settings.prefix + '_';
       }
 
+      var disabled = '';
+      if (settings.readonly) {
+        disabled = 'disabled';
+        settings.inlineUpdateButton = false;
+      }
+
       var updateButton = '';
       if (settings.updateButtonText && settings.inlineUpdateButton) {
         updateButton = `
 <button class="UI-profile-update-button"
-    onclick="userProfile.updateAccount();">${settings.updateButtonText}</button>
+    onclick="userProfile.doUpdate();">${settings.updateButtonText}</button>
 `;
       }
 
@@ -309,24 +329,24 @@ var userProfile = (function(options) {
     <div class="UI-half">
       <div class="UI-twothird">
         <input class="UI-input" id="${prefix}firstName" name="firstName"
-        placeholder="First (Required)" type="text" value=""
+        placeholder="First (Required)" type="text" value="" ${disabled}
         onchange="userProfile.onChange(this);">
       </div>
       <div class="UI-third">
         <input class="UI-input" id="${prefix}middleName" name="middleName"
-        placeholder="Middle" type="text" value=""
+        placeholder="Middle" type="text" value="" ${disabled}
         onchange="userProfile.onChange(this);">
       </div>
     </div>
     <div class="UI-half">
       <div class="UI-threequarter">
         <input class="UI-input" id="${prefix}lastName" name="lastName"
-        placeholder="Last (Required)" type="text" value=""
+        placeholder="Last (Required)" type="text" value="" ${disabled}
         onchange="userProfile.onChange(this);">
       </div>
       <div class="UI-quarter">
         <input class="UI-input" id="${prefix}suffix" name="suffix"
-        placeholder="Suffix" type="text" value=""
+        placeholder="Suffix" type="text" value="" ${disabled}
         onchange="userProfile.onChange(this);">
       </div>
     </div>
@@ -344,12 +364,12 @@ var userProfile = (function(options) {
     <div class="UI-half">
       <input class="UI-input" id="${prefix}preferredFirstName"
       name="preferredFirstName" placeholder="First - If Different" type="text"
-      value="" onchange="userProfile.onChange(this);">
+      value="" onchange="userProfile.onChange(this);" ${disabled}>
     </div>
     <div class="UI-half">
       <input class="UI-input" id="${prefix}preferredLastName"
       name="preferredLastName" placeholder="Last - If Different" type="text"
-      value="" onchange="userProfile.onChange(this);">
+      value="" onchange="userProfile.onChange(this);" ${disabled}>
     </div>
   </div>
 </div>
@@ -375,7 +395,7 @@ var userProfile = (function(options) {
   </div>
   <div class="UI-container">
     <input class="UI-input" id="${prefix}email1" name="email1" placeholder=
-    "Email Address (Required)" type="email" value=""
+    "Email Address (Required)" type="email" value="" ${disabled}
     onchange="userProfile.onChange(this);">
 
   </div>
@@ -390,12 +410,12 @@ var userProfile = (function(options) {
   </div>
   <div class="UI-container">
     <input class="UI-input" id="${prefix}email1" name="email1" placeholder=
-    "Primary Email and Login (Required)" type="text" value=""
+    "Primary Email and Login (Required)" type="text" value="" ${disabled}
      onchange="userProfile.onChange(this);"> <input class=
     "UI-input" id="${prefix}email2" name="email2" placeholder="Secondary Email"
-    type= "text" value="" onchange="userProfile.onChange(this);">
+    type= "text" value="" onchange="userProfile.onChange(this);" ${disabled}>
     <input class="UI-input" id="${prefix}email3" name="email3"
-    placeholder="Other Email" type="text" value=""
+    placeholder="Other Email" type="text" value="" ${disabled}
     onchange="userProfile.onChange(this);">
   </div>
 </div>
@@ -409,10 +429,10 @@ var userProfile = (function(options) {
   </div>
   <div class="UI-container">
     <input class="UI-input UI-half" id="${prefix}phone1" name="phone1"
-    placeholder="Primary" type="text" value=""
+    placeholder="Primary" type="text" value="" ${disabled}
     onchange="userProfile.onChange(this);"> <input class="UI-input UI-half"
     id="${prefix}phone2" name="phone2" placeholder="Other" type="text" value=""
-    onchange="userProfile.onChange(this);">
+    onchange="userProfile.onChange(this);" ${disabled}>
   </div>
 </div>
 `;
@@ -425,14 +445,15 @@ var userProfile = (function(options) {
   </div>
   <div class="UI-container">
     <input class="UI-input UI-half" id="${prefix}phone1" name="phone1"
-    placeholder="Primary" type="text" value=""
+    placeholder="Primary" type="text" value="" ${disabled}
     onchange="userProfile.onChange(this);"> <input class="UI-input UI-half"
     id="${prefix}phone2" name="phone2" placeholder="Other" type="text" value=""
-    onchange="userProfile.onChange(this);">
+    onchange="userProfile.onChange(this);" ${disabled}>
     <div class="UI-profile-concom-div">
       <span class="UI-profile-concom-label">Display Phone number on the ConCom
       list?</span> <select class="UI-profile-concom-select" id=
-      "${prefix}conComDisplayPhone" name="conComDisplayPhone" required="">
+      "${prefix}conComDisplayPhone" name="conComDisplayPhone" required=""
+      ${disabled}>
         <option disabled selected value=""
          onchange="userProfile.onChange(this);">
           Choose
@@ -457,26 +478,27 @@ var userProfile = (function(options) {
   </div>
   <div class="UI-container">
     <input class="UI-input" id="${prefix}addressLine1" name="addressLine1"
-    placeholder="Address" type="text" value=""
-    onchange="userProfile.onChange(this);"> <input class="UI-input"
+    placeholder="Address" type="text" value="" ${disabled}
+    onchange="userProfile.onChange(this);"> <input class="UI-input" ${disabled}
     id="${prefix}addressLine2" name="addressLine2" type="text" value=""
     onchange="userProfile.onChange(this);"> <input class="UI-input UI-half"
-    id="${prefix}city" name="city" placeholder="City"
+    id="${prefix}city" name="city" placeholder="City" ${disabled}
     type="text" value="" onchange="userProfile.onChange(this);">
     <select class="UI-select UI-quarter" id="${prefix}state" name="state"
-    onchange="userProfile.expandOut(this.value, 'otherCountries')">
+    onchange="userProfile.expandOut(this.value, 'otherCountries')"
+    ${disabled}>
       <option value="" onchange="userProfile.onChange(this);">
         Foreign (Non-US/Canada)
       </option>
     </select>
     <div class="UI-profile-zip-div">
       <input class="UI-profile-zip-field" id="${prefix}zipCode" name="zipCode"
-      placeholder="Zip Code" type="text" value=""
+      placeholder="Zip Code" type="text" value="" ${disabled}
       onchange="userProfile.onChange(this);"> <input class=
       "UI-profile-zip-4-field" id="${prefix}zipPlus4" name="zipPlus4"
-      placeholder="Zip+4" type="text" value=""
+      placeholder="Zip+4" type="text" value="" ${disabled}
       onchange="userProfile.onChange(this);">
-    </div><select class="UI-select" id="${prefix}countryName"
+    </div><select class="UI-select" id="${prefix}countryName" ${disabled}
     name="countryName">
       <option value="" onchange="userProfile.onChange(this);">
         Select Country
@@ -485,7 +507,7 @@ var userProfile = (function(options) {
     <div class="UI-hide" id="${prefix}otherCountries">
       <input class="UI-profile-province-field" id="${prefix}province"
       name="province" placeholder="Province (Foreign Only)" type="text"
-      value="" onchange="userProfile.onChange(this);">
+      value="" onchange="userProfile.onChange(this);" ${disabled}>
     </div>
   </div>
 </div>
@@ -522,7 +544,7 @@ var userProfile = (function(options) {
       if (settings.updateButtonText) {
         tailBlock += `
 <button class="UI-profile-update-button-end"
-    onclick="userProfile.updateAccount();">
+    onclick="userProfile.doUpdate();">
 ${settings.updateButtonText}</button>
 `;
       }

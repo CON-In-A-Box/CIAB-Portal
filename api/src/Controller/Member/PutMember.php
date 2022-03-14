@@ -127,6 +127,10 @@ class PutMember extends BaseMember
             ->perform();
 
         $data = $this->getMember($request, $params['id'], 'id');
+        if (\ciab\CRM::active()) {
+            \ciab\CRM::updateAccountAPI($data[0]);
+        }
+
         return [
         \App\Controller\BaseController::RESOURCE_TYPE,
         $data[0]

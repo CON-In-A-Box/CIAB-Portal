@@ -60,6 +60,8 @@ function setupAPIRoutes(App $app, $authMiddleware)
             $app->get('/method/deadline[/{method}[/{department}]]', 'App\Controller\Permissions\DeadlineMethod');
             $app->get('/resource/announcement/{department}[/{method}]', 'App\Controller\Permissions\AnnouncementResource');
             $app->get('/method/announcement[/{method}[/{department}]]', 'App\Controller\Permissions\AnnouncementMethod');
+
+            $app->get('/generic/{resource}/{method}[/{detail}]', 'App\Controller\Permissions\GenericResource');
         }
     )->add(new \App\Middleware\CiabMiddleware($app))->add($authMiddleware);
 

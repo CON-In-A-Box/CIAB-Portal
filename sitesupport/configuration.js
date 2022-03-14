@@ -181,8 +181,18 @@ var settingsTable = function(options) {
           table.appendChild(new configHeader().createElement())
           if (data.type == 'configuration') {
             obj.processSetting(data);
-          } else if (data.data.length > 0) {
-            data.data.forEach(function(item) {obj.processSetting(item)});
+          } else {
+            if (typeof data.data == 'object') {
+              if (Object.keys(data.data).length > 0) {
+                for (const item in data.data) {
+                  obj.processSetting(data.data[item]);
+                }
+              }
+            } else {
+              if (data.data.length > 0) {
+                data.data.forEach(function(item) {obj.processSetting(item)});
+              }
+            }
           }
         })
         .catch(function(response) {

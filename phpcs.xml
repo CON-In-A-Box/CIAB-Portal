@@ -61,6 +61,7 @@
  <exclude-pattern>*/functions/neon.inc</exclude-pattern>
  <exclude-pattern>*/functions/externals/*neon*</exclude-pattern>
  <exclude-pattern>*/test/*neon*</exclude-pattern>
+ <exclude-pattern>*/node_modules/*</exclude-pattern>
 
   <file>./</file>
 </ruleset>

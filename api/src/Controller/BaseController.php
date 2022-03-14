@@ -238,6 +238,11 @@ abstract class BaseController
     */
     protected static $columnsToAttributes = null;
 
+    /**
+     * @var int
+    */
+    protected $currentEvent = -1;
+
 
     protected function __construct(string $api_type, Container $container)
     {
@@ -314,7 +319,7 @@ abstract class BaseController
             $code = 200;
         }
         if ($type == BaseController::RESULT_TYPE) {
-            if (is_a($data, 'Slim\Http\Response')) {
+            if (is_a($data, 'Slim\Http\Response') || !is_array($data)) {
                 return $data;
             } else {
                 return $this->jsonResponse($request, $response, $data, $code);
@@ -697,6 +702,57 @@ abstract class BaseController
         }
 
         return $ret;
+
+    }
+
+
+    public function currentEvent()
+    {
+        /* Place 1 - Look for it in the session */
+
+        if ($this->currentEvent != -1) {
+            return $this->currentEvent;
+        }
+
+        if (isset($_SESSION['CurrentEvent'])) {
+            return $_SESSION['CurrentEvent'];
+        }
+
+        /* Place 2 - try to get it from the database */
+
+        $sql = "SELECT Value FROM Configuration WHERE Field='CurrentEventID';";
+        $sth = $this->container->db->prepare($sql);
+        $sth->execute();
+        $value = $sth->fetch();
+        if ($value) {
+            $this->currentEvent = $value['CurrentEventID'];
+            return $this->currentEvent;
+        }
+
+        /* Place 3 - current calander year */
+
+        $year = date("Y-m-d");
+        $sql = "SELECT EventID FROM Events WHERE DateTo >= '$year';";
+        $sth = $this->container->db->prepare($sql);
+        $sth->execute();
+        $value = $sth->fetch();
+        if ($value) {
+            $this->currentEvent = $value['EventID'];
+            return $this->currentEvent;
+        }
+
+        /* Fallback - Last year in database*/
+
+        $sql = "SELECT EventID FROM Events ORDER BY EventID DESC LIMIT 1;";
+        $sth = $this->container->db->prepare($sql);
+        $sth->execute();
+        $value = $sth->fetch();
+        if ($value) {
+            $this->currentEvent = $value['EventID'];
+            return $this->currentEvent;
+        }
+
+        return $this->currentEvent;
 
     }
 

@@ -10,10 +10,10 @@ namespace announcements\panes;
 
 function announcements()
 {
-?>
+    ?>
     <div id="announcement_pane" class="UI-hide"></div>
     <script src="modules/announcements/sitesupport/announcementPane.js"></script>
-<?php
+    <?php
     /* done */
 
 }

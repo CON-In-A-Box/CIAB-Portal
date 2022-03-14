@@ -5,7 +5,7 @@
     require_module 'json';
 .*/
 
-require_once $FUNCTIONDIR.'/volunteer.inc';
+require_once __DIR__.'/../../functions/volunteer.inc';
 require_once $FUNCTIONDIR.'/users.inc';
 require_once $BASEDIR.'/console/console.inc';
 
@@ -562,7 +562,7 @@ if (isset($_SESSION['IS_ADMIN']) || $_SESSION['IS_VOLUNTEERS']) {
     if (!in_console() || (
             array_key_exists('VOL_ADMINKIOSK', $GLOBALS) &&
             $GLOBALS['VOL_ADMINKIOSK'])) {
-?>
+        ?>
   <div>
     <div class="VOL-admin-switch">
       <div class='UI-table switch-table'>
@@ -573,7 +573,7 @@ if (isset($_SESSION['IS_ADMIN']) || $_SESSION['IS_VOLUNTEERS']) {
             if ($admin_mode) {
                 echo "checked";
             }
-?> onclick='toggleAdminMode();'>
+            ?> onclick='toggleAdminMode();'>
               <div class=slider></div>
             </label>
           </div>
@@ -581,7 +581,7 @@ if (isset($_SESSION['IS_ADMIN']) || $_SESSION['IS_VOLUNTEERS']) {
       </div>
     </div>
   </div>
-<?php
+        <?php
     }
 
     generate_console_slider('volunteers');

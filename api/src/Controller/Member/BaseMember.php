@@ -216,6 +216,8 @@ use Slim\Http\Response;
 use App\Controller\BaseController;
 use App\Controller\NotFoundException;
 
+require_once __DIR__.'/../../../../backends/CRM.inc';
+
 abstract class BaseMember extends BaseController
 {
 
