@@ -392,6 +392,18 @@ SQL;
     }
 
 
+    private function filterUsers($user)
+    {
+        if (in_array($user['Id'], $this->set)) {
+            return false;
+        } else {
+            $this->set[] = $user['Id'];
+            return true;
+        }
+
+    }
+
+
     private function mergeResults($result1, $result2)
     {
         $this->set = array();
@@ -407,7 +419,7 @@ SQL;
 
         if ($result2['code'] === null) {
             if ($output['code'] === null) {
-                $result = array_filter($result2['users'], 'filter_users');
+                $result = array_filter($result2['users'], array($this, 'filterUsers'));
             } else {
                 $result = $result2['users'];
                 $output['code'] = null;

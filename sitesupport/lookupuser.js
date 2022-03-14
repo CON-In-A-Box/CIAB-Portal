@@ -3,7 +3,7 @@
  */
 
 /* jshint browser: true */
-/* globals escapeHtml, basicBackendRequest */
+/* globals escapeHtml, apiRequest, basicBackendRequest */
 
 var userLookup = (function(options) {
   'use strict';
@@ -17,10 +17,10 @@ var userLookup = (function(options) {
       fail: _lookupFailed,
       handler: null,
       needForm: true,
-      lookupTarget: 'functions',
-      lookupParam: 'lookupId',
       badgeName: true,
       partialMatch: false,
+      lookupTarget: null,
+      lookupParam: 'lookupId',
     }, options);
 
   function _lookupSuccess(target, response) {
@@ -137,22 +137,53 @@ var userLookup = (function(options) {
         document.getElementById('userLookup_spinner').innerHTML =
               '<i class=\'fas fa-spinner UI-spin\'></i>';
         document.getElementById('userLookup_message').innerHTML = '';
-        var parameters = settings.lookupParam + '=' + id;
-        if (settings.badgeName) {
-          parameters += '&useBadgeName=1';
+        if (settings.lookupTarget != null) {
+          var parameters = settings.lookupParam + '=' + id;
+          if (settings.badgeName) {
+            parameters += '&useBadgeName=1';
+          }
+          if (settings.partialMatch) {
+            parameters += '&partialMatch=1';
+          }
+          basicBackendRequest('GET', settings.lookupTarget, parameters,
+            function(input) {
+              var response = JSON.parse(input.responseText);
+              userLookup.clearFailure();
+              settings.success(target, response);
+            },
+            function(input) {
+              settings.fail(target, input.responseText, id, input.status);
+            });
+        } else {
+          var query = 'q=' + id;
+          if (settings.badgeName) {
+            query += '&from=all';
+          } else {
+            query += '&from=email,id,legal_name,name,badge_id';
+          }
+          if (settings.partialMatch) {
+            query += '&partial=true'
+          }
+          apiRequest('GET', 'member/find', query)
+            .then((input) => {
+              var response = JSON.parse(input.responseText);
+              userLookup.clearFailure();
+              var data = Object.values(response.data);
+              console.log(data);
+              /* existing code's paticular parameters */
+              data.forEach((item) => {
+                item['First Name'] = item.first_name;
+                item['Last Name'] = item.last_name;
+                item['Email'] = item.email;
+                item['Id'] = item.id;
+              })
+              settings.success(target, data);
+            })
+            .catch((response) => {
+              if (response instanceof Error) { throw response; }
+              settings.fail(target, response.responseText, id, response.status);
+            })
         }
-        if (settings.partialMatch) {
-          parameters += '&partialMatch=1';
-        }
-        basicBackendRequest('GET', settings.lookupTarget, parameters,
-          function(input) {
-            var response = JSON.parse(input.responseText);
-            userLookup.clearFailure();
-            settings.success(target, response);
-          },
-          function(input) {
-            settings.fail(target, input.responseText, id, input.status);
-          });
       } else {
         if (target) {
           userLookup.gotoTarget(target.href, null);
