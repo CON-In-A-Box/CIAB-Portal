@@ -2,7 +2,7 @@
 /* globals Vue */
 
 import volunteerReport from './volunteerReport.js'
-import reportGeneration from '../../../../sitesupport/reportGeneration.vue.js'
+import reportGeneration from '../../../../sitesupport/reportGeneration.js'
 
 var app = Vue.createApp({});
 app.component('volunteer-report', volunteerReport);

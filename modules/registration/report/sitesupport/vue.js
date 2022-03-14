@@ -1,7 +1,7 @@
 /* jshint esversion: 6 */
 /* globals Vue */
 
-import reportGeneration from '../../../../sitesupport/reportGeneration.vue.js'
+import reportGeneration from '../../../../sitesupport/reportGeneration.js'
 
 var app = Vue.createApp({});
 app.component('report-generation', reportGeneration);
