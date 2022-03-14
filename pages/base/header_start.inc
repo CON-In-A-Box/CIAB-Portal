@@ -8,6 +8,7 @@
 
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
 <script defer src="https://use.fontawesome.com/releases/v5.11.2/js/all.js"></script>
+<script src="https://unpkg.com/vue"></script>
 <?php
 if (!function_exists('get_console') || get_console() === null) {
     echo "<script src=\"sitesupport/common.js\"></script>\n";

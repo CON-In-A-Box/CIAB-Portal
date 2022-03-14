@@ -605,7 +605,7 @@ SQL;
     if (class_exists('\\concom\\ConcomList') &&
         method_exists('\\concom\\ConcomList', 'listBuild') &&
         isset($ConComHours) && $ConComHours >= $required_hours) {
-        $concom = \concom\ConcomList::listBuild();
+        $concom = \concom\ConcomList::listBuild($event);
 
         foreach ($concom as $entry) {
             $members[] = $entry['Account ID'];
@@ -613,7 +613,9 @@ SQL;
         }
     }
 
-    $users = lookup_users_by_ids($members);
+    if (!empty($members)) {
+        $users = lookup_users_by_ids($members);
+    }
 
     $report = [];
     foreach ($users['users'] as $user) {

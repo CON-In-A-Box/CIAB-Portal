@@ -51,13 +51,10 @@ function hour_table()
 ?>
 <script>
     var sidebarMainDiv = 'main_content';
-    reportGenerationSidebar.options({
-        target: 'volunteers/report',
-        reportDisplay: '#report_display'
-    });
 </script>
 
 <div id="page" class="UI-continer">
+
   <div id="main_content" class="UI-maincontent">
     <div class='UI-event-sectionbar'>
       <span>Volunteer Reports</span>
@@ -66,8 +63,8 @@ function hour_table()
     <div class="UI-rest UI-center">
       <div class='VOL-admin'>
         <div id='volunteer_admin_bar' class='VOL-admin-bar'>
-          <button id='min_hours' class='UI-eventbutton' onclick='minHourReport();'>Minimum Hour Report</button>
-          <button id='gen_der_csv' class='UI-eventbutton' onclick='reportGenerationSidebar.open();'>Export CSV Report</button>
+          <button id='min_hours' class='UI-eventbutton' @click='$refs.mhr.open();'>Minimum Hour Report</button>
+          <button id='gen_der_csv' class='UI-eventbutton' @click='$refs.rpt.open();'>Export CSV Report</button>
         </div>
       </div>
     </div>
@@ -120,24 +117,9 @@ function hour_table()
     </div>
   </div>
 
-  <div class='UI-sidebar-hidden UI-fixed' id='hour_report_div'>
-    <div class='UI-center'>
-      <h2 class='UI-red'>Report of all Volunteers with minimum hours or more</h2>
-    </div>
-    <div class='UI-center'>
-      <label class='UI-label' for='report_hour_min'>
-      Minimum hours:</label>
-      <input class="UI-input" id="report_hour_min">
-    </div>
-    <div class='UI-center'>
-      <button id='generate_report' class='UI-eventbutton'
-          onclick='generateHourReport();'>
-         Generate Report &lt;CSV&gt;
-      </button>
-      <button class='UI-redbutton'
-          onclick='hideSidebar();'>
-        Close
-      </button>
-    </div>
-  </div>
+  <volunteer-report ref=mhr report-display="#report_display" have-event header="Report of all Volunteers with minimum hours or more">
+  </volunteer-report>
+
+  <report-generation ref=rpt target='volunteers/report' report-display='#report_display'>
+  </report-generation>
 </div>

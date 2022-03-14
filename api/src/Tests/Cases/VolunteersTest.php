@@ -126,13 +126,26 @@ class VolunteersTest extends CiabTestCase
         $this->checkHourEntry($data, 2);
 
         /* Overlap Testing */
-        $base = date('Y-m-d h:i:s', strtotime('+1 Year'));
-        $plusMin = date('Y-m-d h:i:s', strtotime('+1 Year +30 minutes'));
-        $minusMin = date('Y-m-d h:i:s', strtotime('+1 Year -30 minutes'));
-        $plusHour = date('Y-m-d h:i:s', strtotime('+1 Year +1 hour'));
-        $minusHour = date('Y-m-d h:i:s', strtotime('+1 Year -2 hours'));
-        $largeEnd = date('Y-m-d h:i:s', strtotime('+1 Year +4 hours'));
-        $subEnd = date('Y-m-d h:i:s', strtotime('+1 Year -30 minutes'));
+        $date = new \DateTime('+1 Year');
+        $base = $date->format('Y-m-d H:i:s');
+        $newDate = clone $date;
+        $newDate->add(new \DateInterval('PT30M'));
+        $plusMin = $newDate->format('Y-m-d H:i:s');
+        $newDate = clone $date;
+        $newDate->sub(new \DateInterval('PT30M'));
+        $minusMin = $newDate->format('Y-m-d H:i:s');
+        $newDate = clone $date;
+        $newDate->add(new \DateInterval('PT1H'));
+        $plusHour = $newDate->format('Y-m-d H:i:s');
+        $newDate = clone $date;
+        $newDate->sub(new \DateInterval('PT2H'));
+        $minusHour = $newDate->format('Y-m-d H:i:s');
+        $newDate = clone $date;
+        $newDate->add(new \DateInterval('PT4H'));
+        $largeEnd = $newDate->format('Y-m-d H:i:s');
+        $newDate = clone $date;
+        $newDate->sub(new \DateInterval('PT30M'));
+        $subEnd = $newDate->format('Y-m-d H:i:s');
 
         /* Base Entry */
         $data = $this->runSuccessJsonRequest('POST', '/volunteer/hours/', null, ['department' => '1', 'member' => '1000', 'enterer' => '1000', 'authorizer' => '1000', 'hours' => '1', 'end' => $base, 'modifier' => '1'], 201);
