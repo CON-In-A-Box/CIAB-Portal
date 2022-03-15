@@ -680,7 +680,7 @@ function save_position($data)
         $sql .= " WHERE `DepartmentID` = ".$data->Id;
         DB::run($sql);
     } else {
-        $sql = "INSERT INTO `Departments`( `DepartmentID`, `Name`, `ParentDepartmentID`, `FallbackID`) SELECT NULL, $name, $parent, $fallback FROM `Departments`";
+        $sql = "INSERT INTO `Departments`( `DepartmentID`, `Name`, `ParentDepartmentID`, `FallbackID`) VALUES (NULL, $name, $parent, $fallback)";
         DB::run($sql);
         if ($data->ParentDept < 0) {
             $sql = "SELECT `DepartmentID` FROM `Departments` ORDER BY `DepartmentID` DESC LIMIT 1";
