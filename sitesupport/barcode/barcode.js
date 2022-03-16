@@ -254,8 +254,12 @@ Quagga.onProcessed(function(result) {
 
 Quagga.onDetected(function(result) {
   var code = parseInt(result.codeResult.code);
-  var codeField = document.getElementById(QuaggaApp.fieldid);
-  codeField.value = code;
-  QuaggaApp.callback(code);
+  if (QuaggaApp.fieldid !== null) {
+    var codeField = document.getElementById(QuaggaApp.fieldid);
+    codeField.value = code;
+  }
+  if (QuaggaApp.callback !== null) {
+    QuaggaApp.callback(code);
+  }
   QuaggaApp.stop();
 });

@@ -1,9 +1,12 @@
 <div id="main_content" class="UI-cell-top UI-maincontent">
   <div id="vol-entry">
     <div id="message" v-bind:class="(error)?'VOL-enter-msg-error':'VOL-enter-msg'">{{ message }}</div>
-    <form @submit.prevent="submitForm">
-      <div v-if="uid" id='userLookup_div' :data-user='uid'></div>
-      <div v-else id='userLookup_div'> </div>
+      <lookup-user ref=lookup prompt='Volunteer Badge Number, E-Mail or Full Name'
+                  handler='$handleResult'
+                  fail='$onFail'
+                  lookup-target='volunteers/enter'
+                  lookup-param='volunteerId'>
+      </lookup-user>
       <span v-bind:class="(lookupError)?'VOL-enter-error-span':'VOL-enter-id-span'">{{ lookupMessage }}</span>
 
       <div class='UI-bar'>
@@ -111,7 +114,7 @@
       <div class='UI-bar'>
         <div class="UI-bar-item">
           <div class="UI-bar">
-            <button id="submit" class="UI-eventbutton VOL-ripple-button" :disabled="uid == null">Submit Hours</button>
+            <button id="submit" class="UI-eventbutton VOL-ripple-button" :disabled="member == null" @click="submitForm()">Submit Hours</button>
             <button class="UI-secondarybutton VOL-ripple-button" type="button" @click="resetForm()">Clear Form</button>
           </div>
         </div>
@@ -124,7 +127,6 @@
           </p>
         </div>
       </div>
-    </form>
   </div>
 
   <div id='csv_import' class='UI-modal'>
