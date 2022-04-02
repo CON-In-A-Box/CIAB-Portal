@@ -74,6 +74,16 @@ __cleanupDepartments();
 
 __seedConventionDepartments();
 
+__cleanupTable('Artshow_DisplayArtPrice');
+__cleanupTable('Artshow_Art_Sale');
+__cleanupTable('Artshow_DisplayArt');
+__cleanupTable('Artshow_Print_Sale');
+__cleanupTable('Artshow_PrintShopArt');
+__cleanupTable('Artshow_Registration');
+__cleanupTable('Artshow_Artist');
+__cleanupTable('Artshow_Buyer_Invoice');
+__cleanupTable('Artshow_Buyer_Payment');
+
 $select = Select::new($db);
 $select->columns('Value')->from('Configuration')->whereEquals(['Field' => 'ADMINACCOUNTS']);
 $val = $select->fetchOne();
@@ -82,6 +92,19 @@ $val['Value'] = '1000,'.$val['Value'];
 
 $update = Update::new($db);
 $update->table('Configuration')->columns($val)->whereEquals(['Field' => 'ADMINACCOUNTS'])->perform();
+
+$select = Select::new($db);
+$select->columns('Value')->from('Artshow_Configuration')->whereEquals(['Field' => 'Artshow_SelfRegistrationClose']);
+$val = $select->fetchOne();
+if ($val == null) {
+    $val['Field'] = 'Artshow_SelfRegistrationClose';
+    $val['Value'] = '0';
+    $insert = Insert::new($db);
+    $insert->into('Artshow_Configuration')->columns($val)->perform();
+} else {
+    $val['Value'] = '0';
+    $update->table('Artshow_Configuration')->columns($val)->whereEquals(['Field' => 'Artshow_SelfRegistrationClose'])->perform();
+}
 
 $from = strtotime('-1 month');
 $to = strtotime('+1 year');
