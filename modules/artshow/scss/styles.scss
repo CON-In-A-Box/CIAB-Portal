@@ -1,0 +1,71 @@
+@import "common";
+
+.ARTSHOW-modal-content {
+    @extend .UI-modal-content;
+    width: 90%;
+}
+
+.ARTSHOW-modal-table {
+    @extend .UI-margin;
+    font-size: 0.7em !important;
+}
+
+.ARTSHOW-modal-header-row {
+    @extend .UI-table-row;
+    font-weight: bold;
+}
+
+.ARTSHOW-close-button {
+    @extend .UI-close-button;
+    @extend .UI-redbutton;
+    @extend .UI-margin;
+}
+
+.ARTSHOW-left-bar {
+    @extend .UI-sidebar-shown;
+    @extend .UI-border;
+    @extend .UI-fixed;
+    @extend .UI-padding;
+    height: 90%;
+}
+
+.ARTSHOW-main-page {
+    @extend .UI-mainsection-sidebar-shown;
+    margin-left:26%;
+    padding-left:16px;
+}
+
+.ARTSHOW-artist-list {
+    height: 80%;
+    width: 100%;
+}
+
+.ARTSHOW-profile-company-div {
+    @extend .w3-green;
+    @extend .w3-row;
+}
+
+.ARTSHOW-profile-website-div {
+    @extend .w3-purple;
+    @extend .w3-row;
+}
+
+.ARTSHOW-profile-status-div {
+    @extend .w3-orange;
+    @extend .w3-row;
+}
+
+.ARTSHOW-profile-white-div {
+    color:#000!important;
+    background-color:#fff!important
+}
+
+.ARTSHOW-mail-div {
+    @extend .w3-blue;
+    @extend .w3-row;
+}
+
+.ARTSHOW-questions-div {
+    @extend .w3-yellow;
+    @extend .w3-row;
+}
