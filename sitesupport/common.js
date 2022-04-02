@@ -6,10 +6,12 @@
 /* jshint -W097 */
 /* globals alertbox */
 /* exported escapeHtml, showSpinner, hideSpinner, urlsafeB64Encode, progressSpinner,
-            urlsafeB64Decode, basicBackendRequest, apiRequest, apiRefresh,
+            urlsafeB64Decode, basicBackendRequest, apiRequest, apiRefresh, systemDebug,
             simpleObjectToRequest */
 
 'use strict';
+
+var systemDebug = false;
 
 function escapeHtml(text) {
   var map = {
@@ -137,7 +139,7 @@ function apiRefresh() {
 }
 
 
-function apiRequest(method, target, inParameter) {
+function apiRequest(method, target, inParameter, raw) {
   return new Promise(function(resolve, reject) {
     var parameter = null;
     var xhttp = new XMLHttpRequest();
@@ -192,6 +194,9 @@ function apiRequest(method, target, inParameter) {
       var json = JSON.parse(apiAuthorization);
       xhttp.setRequestHeader('Authorization',
         json.token_type + ' ' + json.access_token);
+    }
+    if (raw) {
+      xhttp.responseType = 'blob';
     }
     xhttp.send(parameter);
   }
