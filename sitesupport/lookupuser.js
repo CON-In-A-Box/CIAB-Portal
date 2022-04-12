@@ -76,6 +76,7 @@ export default {
       }
     },
     gotoTarget(item) {
+      this.possibleMembers = null;
       if (this.handler !== undefined) {
         this.callCustomCallback('handler', [this, item]);
         return;
