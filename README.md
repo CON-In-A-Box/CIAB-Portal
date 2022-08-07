@@ -6,14 +6,9 @@ Starting as a random collection of tools to help administrate a Midwest fan run 
 
 The goal is to have a fairly generic and skin-able web portal that can be used for a variety of conventions to aid in a number of administrative tasks as well as be useful to the event attendee to get information about their account.
 
-The project is still young and we hope to have the first parts of it in actual usage for the 2018 convention year and expanding from there. 
+The project is still young and we had the first parts of it in actual usage for the 2018 convention year and expanding from there. 
 
 Additionally the push to make the project generic enough for multiple convention usage is also a work in progress. However it informs the design decisions made. 
-
-# Pivotal Tracker
-
-The project has opted to make use of Pivotal Tracker to track stories and development. Come see the project there for insight into our development targets and process.
-https://www.pivotaltracker.com/n/projects/2469125
 
 # Overview
 
