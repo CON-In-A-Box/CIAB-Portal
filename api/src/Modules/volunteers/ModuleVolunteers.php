@@ -64,6 +64,7 @@ class ModuleVolunteers extends BaseModule
             $role->addPermission('api.get.volunteer.claims');
             $role->addPermission('api.put.volunteers');
             $role->addPermission('api.delete.volunteers');
+            $role->addPermission('api.post.volunteers.admin');
         } catch (Exception\InvalidArgumentException $e) {
             error_log($e);
         }

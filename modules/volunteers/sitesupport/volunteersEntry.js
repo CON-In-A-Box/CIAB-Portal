@@ -11,8 +11,6 @@ var volApp = Vue.createApp({
   created() {
     console.log('load volunteer hours pane');
     this.setEndDate();
-    apiRequest('GET', '/department','max_results=all')
-      .then(this.gotDepartments);
     apiRequest('GET', '/member')
       .then(this.gotMember);
     apiRequest('GET', '/permissions/generic/volunteers/post/admin')
@@ -59,6 +57,13 @@ var volApp = Vue.createApp({
     }
   },
   methods: {
+    gotStaffDepartments(response) {
+      const result = JSON.parse(response.responseText);
+      result.data.forEach((entry) => {
+        this.departments[entry.department.id] = entry.department;
+      });
+      this.departmentWorked =  this.departments[Number(Object.keys(this.departments)[0])].name;
+    },
     gotDepartments(response) {
       const result = JSON.parse(response.responseText);
       result.data.forEach((entry) => {
@@ -74,6 +79,13 @@ var volApp = Vue.createApp({
     gotAdmin(response) {
       const result = JSON.parse(response.responseText);
       this.admin = result.data[0].allowed;
+      if (this.admin) {
+        apiRequest('GET', '/department','max_results=all')
+          .then(this.gotDepartments);
+      } else {
+        apiRequest('GET', '/member/staff_membership/','max_results=all')
+          .then(this.gotStaffDepartments);
+      }
     },
     async submitForm() {
       this.message = null;
@@ -94,9 +106,8 @@ var volApp = Vue.createApp({
       request += '&modifier=' + this.timeModifier;
       showSpinner();
       apiRequest('POST', '/volunteer/hours', request)
-        .then((response) => {
+        .then(() => {
           hideSpinner();
-          console.log(response.responseText);
           this.error = false;
           this.message = 'Hours Recorded';
         })
