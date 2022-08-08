@@ -170,6 +170,7 @@ var volApp = Vue.createApp({
         this.lookupMessage = this.volunteerName + ' is on ConCom (' + uid + ')';
         this.lookupError = true;
         this.departmentsHighlight = null;
+        this.member = null;
       } else {
         userLookup.clearFailure();
         userLookup.set(uid);
