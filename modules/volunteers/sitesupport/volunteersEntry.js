@@ -3,7 +3,7 @@
  */
 
 /* jshint esversion: 6 */
-/* globals apiRequest, Vue */
+/* globals apiRequest, Vue, showSpinner, hideSpinner */
 
 import lookupUser from '../../../sitesupport/lookupuser.js'
 
@@ -92,13 +92,16 @@ var volApp = Vue.createApp({
       request += '&authorizer=' + this.authorizedBy;
       request += '&enterer=' + this.enteredBy;
       request += '&modifier=' + this.timeModifier;
+      showSpinner();
       apiRequest('POST', '/volunteer/hours', request)
         .then((response) => {
+          hideSpinner();
           console.log(response.responseText);
           this.error = false;
           this.message = 'Hours Recorded';
         })
         .catch((error) => {
+          hideSpinner();
           if (error instanceof Error) { throw error; }
           this.message = 'Hour Recording Failed!!  Error: ' + error.responseText;
           this.error = true;
