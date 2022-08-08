@@ -116,12 +116,6 @@ export default {
       this.id = null;
       this.message = null;
     },
-    handleChanged() {
-      this.target = window.location.href;
-      if (this.possibleMembers !== null) {
-        this.lookupId();
-      }
-    },
     callCustomCallback(target, args) {
       if (this[target] !== undefined) {
         if (this[target][0] == '$') {
@@ -233,7 +227,7 @@ export default {
   <div class="UI-bar">
     <label class="UI-padding UI-bar-item">{{prompt}}</label>
     <div class="UI-bar">
-      <input class="UI-input UI-bar-item UI-padding" @change="handleChanged"
+      <input class="UI-input UI-bar-item UI-padding" @change="lookupId"
         @keydown="handleKeydown" placeholder="(badge #, email, Name)"
         required="" autocomplete="off"  v-model="id">
       <button type="button" class="icon-barcode button-scan UI-lookup-user-button"
