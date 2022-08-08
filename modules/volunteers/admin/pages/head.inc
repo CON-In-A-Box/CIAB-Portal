@@ -5,9 +5,9 @@
 <script src="sitesupport/barcode/barcode.js"></script>
 <script src="sitesupport/confirmbox.js"></script>
 <script src="modules/volunteers/sitesupport/volunteers.js"></script>
-<script src="sitesupport/lookupuser.js"></script>
 <script src="sitesupport/confirmbox.js"></script>
 <link rel="stylesheet" type="text/css" href="sitesupport/barcode/barcode.css" />
+<script type="module" src="modules/volunteers/admin/sitesupport/vue.js"></script>
 <style>
 .hiddenrow {
     display:none;

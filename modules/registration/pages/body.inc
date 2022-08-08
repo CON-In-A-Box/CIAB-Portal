@@ -189,13 +189,6 @@ function customer($account)
 
 
 ?>
-<script>
-    userLookup.options({
-        message: "Member Badge Number, or E-Mail or Name Partial Match",
-        partialMatch: true,
-        });
-</script>
-
 <div id="main_content" style="height:94vh;" class="REG-main-content">
   <div class="UI-event-sectionbar">
         <span>Registration
@@ -240,11 +233,7 @@ if ($access) {
     </div>
     <?php
 
-    if (isset($uid)) {
-        echo "<div class='UI-bar-item' id='userLookup_div' data-user='$uid'> </div>\n";
-    } else {
-        echo "<div class='UI-bar-item' id='userLookup_div'> </div>\n";
-    }
+    echo "<div class='UI-bar-item' id='page'>\n <lookup-user partial-match prompt='Member Badge Number, or E-Mail or Name Partial Match'>\n</lookup-user>\n </div>\n";
 }
 echo "</div>";
 if (isset($uid)) {
