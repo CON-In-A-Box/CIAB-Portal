@@ -196,7 +196,9 @@ var volApp = Vue.createApp({
             if (this.departmentsHighlight == null) {
               this.departmentsHighlight = new Array(dept['Department ID']);
             } else if (!this.departmentsHighlight.includes(dept['Department ID'])) {
-              this.departmentsHighlight.push(dept['Department ID']);
+              if (dept['Department ID'] in this.departments) {
+                this.departmentsHighlight.push(dept['Department ID']);
+              }
             }
           }
         }
