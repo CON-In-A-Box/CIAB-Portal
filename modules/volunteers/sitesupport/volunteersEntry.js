@@ -92,7 +92,8 @@ var volApp = Vue.createApp({
       var request = 'member=' + this.member;
       request += '&department=' + this.departmentWorked;
       if (this.actualMinutes > 0) {
-        request += '&hours=' + (this.actualHours + (this.actualMinutes / 60)).toString();
+        var h = parseInt(this.actualHours) + (parseInt(this.actualMinutes) / 60);
+        request += '&hours=' + h.toString();
       } else {
         request += '&hours=' + this.actualHours;
       }
