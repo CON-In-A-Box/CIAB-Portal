@@ -132,6 +132,7 @@ export default {
     },
     lookupId() {
       if (this.id) {
+        this.target = window.location.href;
         this.showSpinner = true;
         this.message = null;
         this.messageClass = null;
@@ -206,7 +207,6 @@ export default {
     handleKeydown(event) {
       this.possibleMembers = null;
       if (event.keyCode == 13) {
-        this.target = window.location.href;
         this.lookupId();
         return false;
       }
