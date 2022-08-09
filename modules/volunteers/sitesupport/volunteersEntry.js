@@ -169,6 +169,7 @@ var volApp = Vue.createApp({
       this.timeInvalid = false;
       this.lookupError = false;
       this.volunteerName = 'a Volunteer';
+      this.member = null;
     },
     handleResult(userLookup, response) {
       userLookup.possibleMembers = null;
