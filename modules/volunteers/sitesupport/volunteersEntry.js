@@ -192,6 +192,7 @@ var volApp = Vue.createApp({
         this.departmentsHighlight = null;
         this.member = uid;
 
+        /* TODO: Fix me
         if ('volunteer' in response) {
           for (var i = 0, len = response.volunteer.length; i < len; i++) {
             var dept = response.volunteer[i];
@@ -204,6 +205,7 @@ var volApp = Vue.createApp({
             }
           }
         }
+        */
         if ('volunteer' in response) {
           this.volPast = response.volunteer;
           this.checkHours();
