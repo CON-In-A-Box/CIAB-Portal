@@ -276,7 +276,7 @@ abstract class BaseHours extends BaseController
     {
         if (class_exists('\\App\\Modules\\staff\\Controller\\GetMemberPosition')) {
             $target = new \App\Modules\staff\Controller\GetMemberPosition($this->container);
-            $data = $target->buildResource($request, $response, ['id' => $id])[2];
+            $data = $target->buildResource($request, $response, ['id' => $id])[1];
             if (!empty($data)) {
                 $config = $this->getConfiguration($params, 'Configuration');
                 foreach ($config as $entry) {
