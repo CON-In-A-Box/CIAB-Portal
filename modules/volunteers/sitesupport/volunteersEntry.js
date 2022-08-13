@@ -90,7 +90,7 @@ var volApp = Vue.createApp({
     async submitForm() {
       this.message = null;
       var request = 'member=' + this.member;
-      request += '&department=' + this.departmentWorked;
+      request += '&department=' + encodeURIComponent(this.departmentWorked);
       if (this.actualMinutes > 0) {
         var h = parseInt(this.actualHours) + (parseInt(this.actualMinutes) / 60);
         request += '&hours=' + h.toString();
