@@ -51,15 +51,13 @@ class GetEvent extends BaseEvent
 
     public function buildResource(Request $request, Response $response, $params): array
     {
+        if ($params['id'] == 'current') {
+            $params['id'] = $this->currentEvent();
+        }
         $select = Select::new($this->container->db);
         $select->columns(...BaseEvent::selectMapping());
         $select->from('Events');
-        if ($params['id'] == 'current') {
-            $select->where('`DateTo` >= NOW()');
-            $select->orderBy('DateFrom ASC LIMIT 1');
-        } else {
-            $select->whereEquals(['EventID' => $params['id']]);
-        }
+        $select->whereEquals(['EventID' => $params['id']]);
         $data = $select->fetchOne();
         if (empty($data)) {
             throw new NotFoundException("Event '{$params['id']}' Not Found");

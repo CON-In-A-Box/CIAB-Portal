@@ -720,10 +720,11 @@ abstract class BaseController
 
         /* Place 2 - try to get it from the database */
 
-        $sql = "SELECT Value FROM Configuration WHERE Field='CurrentEventID';";
-        $sth = $this->container->db->prepare($sql);
-        $sth->execute();
-        $value = $sth->fetch();
+        $value = Select::new($this->container->db)
+            ->columns('Value')
+            ->from('Configuration')
+            ->whereEquals(['Field' => 'CurrentEventID'])
+            ->fetchOne();
         if ($value) {
             $this->currentEvent = $value['CurrentEventID'];
             return $this->currentEvent;
@@ -731,11 +732,12 @@ abstract class BaseController
 
         /* Place 3 - current calander year */
 
-        $year = date("Y-m-d");
-        $sql = "SELECT EventID FROM Events WHERE DateTo >= '$year';";
-        $sth = $this->container->db->prepare($sql);
-        $sth->execute();
-        $value = $sth->fetch();
+        $value = Select::new($this->container->db)
+            ->columns('EventID')
+            ->from('Events')
+            ->where('`DateTo` >= NOW()')
+            ->orderBy('DateFrom ASC LIMIT 1')
+            ->fetchOne();
         if ($value) {
             $this->currentEvent = $value['EventID'];
             return $this->currentEvent;
@@ -743,10 +745,11 @@ abstract class BaseController
 
         /* Fallback - Last year in database*/
 
-        $sql = "SELECT EventID FROM Events ORDER BY EventID DESC LIMIT 1;";
-        $sth = $this->container->db->prepare($sql);
-        $sth->execute();
-        $value = $sth->fetch();
+        $value = Select::new($this->container->db)
+            ->columns('EventID')
+            ->from('Events')
+            ->orderBy('EventID DESC LIMIT 1')
+            ->fetchOne();
         if ($value) {
             $this->currentEvent = $value['EventID'];
             return $this->currentEvent;
