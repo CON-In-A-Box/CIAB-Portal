@@ -313,9 +313,9 @@ class MemberTest extends CiabTestCase
         $this->assertNotEmpty($data->data);
         $this->assertEquals($data->data[0]->id, 1000);
 
-        $data = $this->runRequest('GET', '/member/find', ['q' => 'Od', 'partial' => 'false'], null, 404);
-
-        $data = $this->runRequest('GET', '/member/find', ['q' => 'Odin', 'from' => 'name', 'partial' => 'false'], null, 404);
+        $this->runRequest('GET', '/member/find', ['q' => 'Od', 'partial' => 'false'], null, 404);
+        $this->runRequest('GET', '/member/find', ['q' => 'Odin', 'from' => 'name', 'partial' => 'false'], null, 404);
+        $this->runRequest('GET', '/member/find', ['q' => 'Odin Allf', 'from' => 'name', 'partial' => 'false'], null, 404);
 
         $data = $this->runSuccessJsonRequest('GET', '/member/find', ['q' => 'Odin Allfather', 'from' => 'name', 'partial' => 'false']);
         $this->assertEquals($data->type, 'member_list');

@@ -171,6 +171,8 @@ class FindMembers extends BaseMember
                     $select->catWhere('PreferredLastName = ', $names[1]);
                     $select->catWhere(' OR LastName = ', $names[1]);
                     $select->catWhere(' ))');
+                } else {
+                    throw new NotFoundException('Member Not Found');
                 }
             }
             if (\ciab\CRM::active()) {
