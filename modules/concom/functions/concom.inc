@@ -487,7 +487,7 @@ function AddConComPosition($accountid, $department, $position, $note, $notify = 
         $to = getDepartmentEmails(getDivision($department))[0];
         $subject = 'ConCom Division addition to '.$department;
         $name = $user['First Name'].' '.$user['Last Name'];
-        $message = $_SESSION['fullName'].' has added '.$name." to ".$department.'.';
+        $message = $_SESSION['preferredName'].' has added '.$name." to ".$department.'.';
         \ciab\Email::mail($to, getNoReplyAddress(), $subject, $message);
         return true;
     } elseif (!$result) {
@@ -536,7 +536,7 @@ function RemoveConComPosition($accountid, $department, $position, $notify = true
             $to = getDepartmentEmails(getDivision($department))[0];
             $subject = 'ConCom Division Removal to '.$department;
             $name = $user['First Name'].' '.$user['Last Name'];
-            $message = $_SESSION['fullName'].' has removed '.$name." from ".$department.'.';
+            $message = $_SESSION['preferredName'].' has removed '.$name." from ".$department.'.';
             \ciab\Email::mail($to, getNoReplyAddress(), $subject, $message);
         }
         return true;

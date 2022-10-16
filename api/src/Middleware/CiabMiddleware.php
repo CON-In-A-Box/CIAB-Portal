@@ -19,6 +19,7 @@ class CiabMiddleware
         if (isset($_SESSION)) {
             unset($_SESSION['IS_ADMIN']);
         }
+        /* Here is where the accountId is grabbed for the API */
         $user = $request->getAttribute('oauth2-token')['user_id'];
         if (!empty($user)) {
             \loadAccount($user);

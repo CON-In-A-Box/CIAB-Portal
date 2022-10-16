@@ -122,7 +122,9 @@ SQL;
         increment_failed($account);
         return AUTH_BAD;
     } else {
-        if (\ciab\CRM::checkForUserAndPasswordMatch($user, $password) !== false) {
+        $data = \ciab\CRM::checkForUserAndPasswordMatch($user, $password);
+        if ($data !== false) {
+            /* change to account id */
             set_password($account, $password);
             return AUTH_SUCCESS;
         }
@@ -174,7 +176,7 @@ SQL;
 function doUserAndPasswordMatch($user, $password)
 {
     $results = array();
-    $value = lookup_user_by_login($user);
+    $value = \lookup_users_by_login($user);
     if (count($value) > 0) {
         foreach ($value as $entry) {
             $check = check_authentication($entry['AccountID'], $password, $user);
@@ -187,9 +189,6 @@ function doUserAndPasswordMatch($user, $password)
                     WHERE AccountId = $id;
 SQL;
                 DB::run($sql);
-                if (count($value) > 1) {
-                    $_SESSION['duplicates'] = array_column($value, 'AccountID');
-                }
                 return array("entry" => $entry, "result" => AUTH_SUCCESS);
             } else {
                 array_push($results, array("entry" => null, "result" => $check));

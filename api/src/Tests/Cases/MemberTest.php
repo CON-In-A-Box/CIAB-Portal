@@ -336,5 +336,82 @@ class MemberTest extends CiabTestCase
     }
 
 
+    public function testDuplicateMember() :void
+    {
+        Delete::new($this->container->db)
+            ->from('Members')
+            ->whereEquals(['Email' => 'phpDupUnit@unit.test'])
+            ->perform();
+
+        $insert = Insert::new($this->container->db);
+
+        $insert->into('Members')->columns([
+            'AccountID' => 8000,
+            'FirstName' => 'First',
+            'LastName' => 'User',
+            'Email' => 'phpDupUnit@unit.test',
+            'Gender' => 'Both'
+        ])->perform();
+
+        $insert->into('Members')->columns([
+            'AccountID' => 8001,
+            'FirstName' => 'Second',
+            'LastName' => 'User',
+            'Email' => 'phpDupUnit@unit.test',
+            'Gender' => 'Both'
+        ])->perform();
+
+        $auth = \password_hash('PassWord1', PASSWORD_DEFAULT);
+        $insert = Insert::new($this->container->db);
+        $insert->into('Authentication')->columns([
+            'AccountID' => 8000,
+            'Authentication' => $auth,
+            'LastLogin' => null,
+            'Expires' => date('Y-m-d', strtotime('+1 year')),
+            'FailedAttempts' => 0,
+            'OneTime' => null,
+            'OneTimeExpires' => null
+        ])->perform();
+
+        $auth = \password_hash('PassWord2', PASSWORD_DEFAULT);
+        $insert = Insert::new($this->container->db);
+        $insert->into('Authentication')->columns([
+            'AccountID' => 8001,
+            'Authentication' => $auth,
+            'LastLogin' => null,
+            'Expires' => date('Y-m-d', strtotime('+1 year')),
+            'FailedAttempts' => 0,
+            'OneTime' => null,
+            'OneTimeExpires' => null
+        ])->perform();
+
+
+        $token1 = $this->runSuccessJsonRequest('POST', '/token', null, ['grant_type' => 'password', 'username' => 'phpDupUnit@unit.test', 'password' => 'PassWord1', 'client_id' => 'ciab']);
+
+        $basedata = $this->runSuccessJsonRequest('GET', '/member', null, null, 200, $token1);
+        $this->assertSame($basedata->id, '8000');
+
+        $token2 = $this->runSuccessJsonRequest('POST', '/token', null, ['grant_type' => 'password', 'username' => 'phpDupUnit@unit.test', 'password' => 'PassWord2', 'client_id' => 'ciab']);
+
+        $basedata = $this->runSuccessJsonRequest('GET', '/member', null, null, 200, $token2);
+        $this->assertSame($basedata->id, '8001');
+
+        Delete::new($this->container->db)
+            ->from('Members')
+            ->whereEquals(['Email' => 'phpDupUnit@unit.test'])
+            ->perform();
+
+        Delete::new($this->container->db)
+            ->from('Authentication')
+            ->whereEquals(['AccountId' => '8000'])
+            ->perform();
+        Delete::new($this->container->db)
+            ->from('Authentication')
+            ->whereEquals(['AccountId' => '8001'])
+            ->perform();
+
+    }
+
+
     /* End */
 }
