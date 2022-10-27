@@ -102,7 +102,8 @@ class FindMembers extends BaseMember
             ->columns(...BaseMember::selectMapping())
             ->columns('(CASE WHEN `PreferredFirstName` IS NOT NULL THEN `PreferredFirstName` ELSE `FirstName` END) AS `first_name`')
             ->columns('(CASE WHEN `PreferredLastName` IS NOT NULL THEN `PreferredLastName` ELSE `LastName` END) AS `last_name`')
-            ->from('Members')
+            ->columns('(SELECT GROUP_CONCAT(AccountID SEPARATOR \', \') FROM `Members` m2 WHERE m2.Email = m1.Email AND NOT m2.AccountID = m1.AccountID) AS duplicates')
+            ->from('`Members` m1')
             ->orderBy('AccountID ASC');
 
         if (!$this->internal && !\ciab\RBAC::havePermission('api.get.member')) {

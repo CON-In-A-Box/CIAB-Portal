@@ -162,6 +162,11 @@
  *          property="concom_display_phone",
  *          type="boolean",
  *          description="If Concom display phone on list."
+ *      ),
+ *      @OA\Property(
+ *          property="duplicates",
+ *          type="string",
+ *          description="Comma seperated list of other account IDs with the same email address"
  *      )
  *  )
  *

@@ -390,11 +390,13 @@ class MemberTest extends CiabTestCase
 
         $basedata = $this->runSuccessJsonRequest('GET', '/member', null, null, 200, $token1);
         $this->assertSame($basedata->id, '8000');
+        $this->assertSame($basedata->duplicates, '8001');
 
         $token2 = $this->runSuccessJsonRequest('POST', '/token', null, ['grant_type' => 'password', 'username' => 'phpDupUnit@unit.test', 'password' => 'PassWord2', 'client_id' => 'ciab']);
 
         $basedata = $this->runSuccessJsonRequest('GET', '/member', null, null, 200, $token2);
         $this->assertSame($basedata->id, '8001');
+        $this->assertSame($basedata->duplicates, '8000');
 
         Delete::new($this->container->db)
             ->from('Members')
