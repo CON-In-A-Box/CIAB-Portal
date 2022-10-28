@@ -128,6 +128,7 @@ function printDepartmentHeader($section, $isDepartment, $priv = false)
         echo '<div class="UI-table-cell-no-border">Division</div>';
     }
     echo '<div class="UI-table-cell-no-border">Name</div>';
+    echo '<div class="UI-table-cell-no-border">Pronouns</div>';
     echo '<div class="UI-table-cell-no-border">Position</div>';
     if ($isDepartment) {
         echo '<div class="UI-table-cell-no-border">Email</div>';
@@ -188,6 +189,7 @@ function printDivisionMember($pos, $div, $position, $rbacpos)
         echo '<div class="UI-table-row">';
         echo '<div class="UI-table-cell-no-border">'.$div.'</div>';
         echo '<div class="UI-table-cell-no-border">'.$kName.'</div>';
+        echo '<div class="UI-table-cell-no-border">'.$tmp[3].'</div>';
         echo '<div class="UI-table-cell-no-border">'.$position.'</div>';
         echo '<div class="UI-table-cell-no-border">';
         echo $tmp[1];
@@ -227,14 +229,19 @@ function printDepartmentMember(
             echo '<div class="UI-table-cell-no-border">'.$div.'</div>';
         }
         echo '<div class="UI-table-cell-no-border">'.$kName.'</div>';
+
+        echo '<div class="UI-table-cell-no-border">'.$tmp[3].'</div>';
+
         if (!isSpecialDivision($div)) {
             echo '<div class="UI-table-cell-no-border">'.$pos.'</div>';
         }
+
         if ($div == 'Corporate Staff') {
             echo '<div class="UI-table-cell-no-border">'.getDepartmentEmails($kdep)[0].'</div>';
         } else {
             echo '<div class="UI-table-cell-no-border">'.$tmp[0].'</div>';
         }
+
         echo '<div class="UI-table-cell-no-border">';
         echo $tmp[1];
 
@@ -361,7 +368,7 @@ function ConComListDisplay()
     $printList = array();
     // Put each entry into a divisional/department mapped array
     foreach ($concomlist as $line) {
-        $printList[$line['Division']][$line['Department']][$line['Position']][$line['Full Name']] = $line['Email'].'|'.$line['Note'].'|'.$line['Account ID'];
+        $printList[$line['Division']][$line['Department']][$line['Position']][$line['Full Name']] = $line['Email'].'|'.$line['Note'].'|'.$line['Account ID'].'|'.$line['Pronouns'];
     }
 
     // Sort everything so we don't have to later
@@ -406,6 +413,7 @@ function ConComListBuild()
             'Email' => implode('<br />', getDepartmentEmails($kdep)),
             'Note' => '',
             'Account ID' => '',
+            'Pronouns' => '',
             ];
         }
     }

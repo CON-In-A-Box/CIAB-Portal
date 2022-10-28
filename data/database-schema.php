@@ -109,6 +109,7 @@ class SCHEMA
             'EmailOptOut' => 'BOOLEAN',
             'Birthdate' => 'DATE',
             'Gender' => 'VARCHAR(50)',
+            'Pronouns' => 'VARCHAR(50)',
             /* from custom fields */
             'PreferredFirstName' => 'VARCHAR(50)',
             'PreferredLastName' => 'VARCHAR(50)',

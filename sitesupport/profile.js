@@ -20,6 +20,7 @@ var userProfile = (function(options) {
     ['province', 'province'], ['preferred_first_name', 'preferredFirstName'],
     ['preferred_last_name', 'preferredLastName'],
     ['concom_display_phone', 'conComDisplayPhone'],
+    ['pronouns', 'Pronouns']
   ];
 
   var accountId;
@@ -369,6 +370,11 @@ var userProfile = (function(options) {
     <div class="UI-half">
       <input class="UI-input" id="${prefix}preferredLastName"
       name="preferredLastName" placeholder="Last - If Different" type="text"
+      value="" onchange="userProfile.onChange(this);" ${disabled}>
+    </div>
+    <div class="UI-continer">
+      <input class="UI-input" id="${prefix}Pronouns"
+      placeholder="Pronouns" type="text" name="Pronouns"
       value="" onchange="userProfile.onChange(this);" ${disabled}>
     </div>
   </div>

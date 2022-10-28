@@ -115,7 +115,8 @@ SQL;
                           'Email' => '',
                           'First Name' => $value['AccountID'],
                           'Last Name' => '',
-                          'Note' => $value['Note']);
+                          'Note' => $value['Note'],
+                          'Pronouns' => $value['Pronouns']);
                 array_push($db_staff[$value['AccountID']], $entry);
             } else {
                 $db_staff[$value['AccountID']] = [[
@@ -127,6 +128,7 @@ SQL;
                 'First Name' => $value['AccountID'],
                 'Last Name' => '',
                 'Note' => $value['Note'],
+                'Pronouns' => $value['Pronouns'],
                       ]];
             }
 
@@ -137,7 +139,7 @@ SQL;
         }
 
         if (!empty($ids)) {
-            $users = lookup_users_by_ids($ids);
+            $users = lookup_users_by_ids($ids, ['Pronouns']);
 
             foreach ($users['users'] as $user) {
                 if (array_key_exists($user['Id'], $db_staff)) {
@@ -146,6 +148,7 @@ SQL;
                         $db_staff[$user['Id']][$entry_key]['Last Name'] = htmlspecialchars_decode($user['Last Name'], ENT_QUOTES);
                         $db_staff[$user['Id']][$entry_key]['Full Name'] = htmlspecialchars_decode($user['First Name'].'&nbsp;'.$user['Last Name'], ENT_QUOTES);
                         $db_staff[$user['Id']][$entry_key]['Email'] = htmlspecialchars_decode($user['Email'], ENT_QUOTES);
+                        $db_staff[$user['Id']][$entry_key]['Pronouns'] = htmlspecialchars_decode($user['Pronouns'], ENT_QUOTES);
                     }
                 }
             }
