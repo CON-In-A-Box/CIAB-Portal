@@ -26,4 +26,30 @@ while ($value !== false) {
     $value = $result->fetch();
 }
 
+$sql = <<<SQL
+    SELECT
+        *
+    FROM
+        `AnnualCycles`
+    WHERE
+        (
+        SELECT
+            COUNT(`MeetingID`)
+        FROM
+            `OfficialMeetings`
+        WHERE
+            `Date` >= DateFrom AND `Date` <= DateTo
+    );
+SQL;
+
+$result = \DB::Run($sql);
+$value = $result->fetch();
+while ($value !== false) {
+    $reports['Cycle Attendance Report '.$value['AnnualCycleID']] = [
+    'cycle_attendance_report',
+    $value,
+    ];
+    $value = $result->fetch();
+}
+
 handle_report_request($reports);

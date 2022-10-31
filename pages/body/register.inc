@@ -1,4 +1,3 @@
-<?php require($PAGESDIR.'/base/leftnav.inc'); ?>
 <div id="main_content" class="UI-cell-top UI-maincontent">
 <h2>To check to see if you are registered for CONvergence:</h2>
 

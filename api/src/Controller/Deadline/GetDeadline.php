@@ -2,57 +2,80 @@
 /*.
     require_module 'standard';
 .*/
+/**
+ *  @OA\Get(
+ *      tags={"deadlines"},
+ *      path="/deadline/{id}",
+ *      summary="Gets a deadline",
+ *      @OA\Parameter(
+ *          description="Id of the deadline",
+ *          in="path",
+ *          name="id",
+ *          required=true,
+ *          @OA\Schema(type="integer")
+ *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/short_response",
+ *      ),
+ *      @OA\Response(
+ *          response=200,
+ *          description="Deadline found",
+ *          @OA\JsonContent(
+ *           ref="#/components/schemas/deadline"
+ *          ),
+ *      ),
+ *      @OA\Response(
+ *          response=401,
+ *          ref="#/components/responses/401"
+ *      ),
+ *      @OA\Response(
+ *          response=404,
+ *          ref="#/components/responses/deadline_not_found"
+ *      ),
+ *      security={{"ciab_auth":{}}}
+ *  )
+ **/
 
 namespace App\Controller\Deadline;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
+use Atlas\Query\Select;
+use App\Controller\NotFoundException;
+use \App\Controller\IncludeResource;
 
 class GetDeadline extends BaseDeadline
 {
 
 
-    public function buildResource(Request $request, Response $response, $args): array
+    public function __construct($container)
     {
-        $sth = $this->container->db->prepare("SELECT * FROM `Deadlines` WHERE `DeadlineID` = '".$args['id']."'");
-        $sth->execute();
-        $deadlines = $sth->fetchAll();
-        if (empty($deadlines)) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, 'Not Found', 'Deadline Not Found', 404)];
-        }
-        if (\ciab\RBAC::havePermission('api.get.deadline.'.$deadlines[0]['DepartmentID']) ||
-            \ciab\RBAC::havePermission('api.get.deadline.all')) {
-            return [
-            \App\Controller\BaseController::RESOURCE_TYPE,
-            $this->buildDeadline(
-                $request,
-                $response,
-                $deadlines[0]['DeadlineID'],
-                $deadlines[0]['DepartmentID'],
-                $deadlines[0]['Deadline'],
-                $deadlines[0]['Note']
-            )];
-        } else {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, 'Permission Denied', 'Permission Denied', 403)];
-        }
+        parent::__construct($container);
+        $this->includes = [
+        new IncludeResource('\App\Controller\Department\GetDepartment', 'name', 'department'),
+        new IncludeResource('\App\Controller\Member\GetMember', 'id', 'posted_by')
+        ];
 
     }
 
 
-    public function processIncludes(Request $request, Response $response, $args, $values, &$data)
+    public function buildResource(Request $request, Response $response, $params): array
     {
-        if (in_array('departmentId', $values)) {
-            $target = new \App\Controller\Department\GetDepartment($this->container);
-            $newargs = $args;
-            $newargs['name'] = $data['departmentId'];
-            $newdata = $target->buildResource($request, $response, $newargs)[1];
-            $target->processIncludes($request, $response, $args, $values, $newdata);
-            $data['departmentId'] = $target->arrayResponse($request, $response, $newdata);
+        $deadline = Select::new($this->container->db)
+            ->columns(...BaseDeadline::selectMapping())
+            ->from('Deadlines')
+            ->whereEquals(['DeadlineID' => $params['id']])
+            ->fetchOne();
+        if (empty($deadline)) {
+            throw new NotFoundException('Deadline Not Found');
         }
+
+        $this->verifyScope($deadline);
+
+        return [
+        \App\Controller\BaseController::RESOURCE_TYPE,
+        $deadline
+        ];
 
     }
 

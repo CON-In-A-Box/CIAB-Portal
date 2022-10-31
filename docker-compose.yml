@@ -4,15 +4,19 @@ services:
     build: './docker/php/'
     depends_on:
       - mailcatcher
+      - mysql
     networks:
       - backend
     volumes:
       - .:/var/www/html/
     environment:
-        DBHOST: 'mysql'
+        # To more nearly simulate Production, comment all but `DOCKER` out and rely on `.env`
+        DBHOST: 'mysql:${DBPORT:-3306}'
         DBNAME: ${DBNAME}
         DBPASS: ${DBPASS}
         DBUSER: ${DBUSER}
+        DBPORT: ${DBPORT:-3306}
+        TEST_DBNAME: ${TEST_DBNAME}
         DB_BACKEND: ${DB_BACKEND}
         API_SERVER: "http://apache"
         DOCKER: 1
@@ -40,10 +44,15 @@ services:
     networks:
       - backend
     environment:
-      MYSQL_RANDOM_ROOT_PASSWORD: 1
+      MYSQL_ROOT_PASSWORD: ${DBROOTPW}
       MYSQL_DATABASE: ${DBNAME}
       MYSQL_PASSWORD: ${DBPASS}
       MYSQL_USER: ${DBUSER}
+      MYSQL_TCP_PORT: ${DBPORT:-3306}
+    ports:
+      - "${DBPORT:-3306}:${DBPORT:-3306}"
+    expose:
+      - ${DBPORT:-3306}
     volumes:
       - mysql:/var/lib/mysql
   mailcatcher:
@@ -51,9 +60,18 @@ services:
     networks:
       - frontend
       - backend
-    ports: 
+    ports:
       - "1025:1025"
       - "1080:1080"
+  swagger:
+    image: swaggerapi/swagger-ui
+    networks:
+      - frontend
+    ports:
+      - "2080:8080"
+    environment:
+        URL: 'http://localhost:8080/ciab.openapi.yaml'
+        BASE_URL: '/swagger'
 networks:
   frontend:
   backend:

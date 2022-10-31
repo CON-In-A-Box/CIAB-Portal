@@ -77,14 +77,14 @@ if ($token !== null) {
         $request = new Request('GET', $service_url, ['Authorization' => 'Bearer '.$token]);
         $resp = $client->send($request);
     } catch (RequestException $e) {
+        error_log('oauth token authorization failed');
         LogoutUser();
         goSite();
         exit();
     }
     $response = json_decode($resp->getBody());
+    /* Here is where we setup the base session data based on the authorized user */
     if ($resp->getStatusCode() == 200) {
-        $_SESSION['username'] = $response->email;
-        $_SESSION['fullName'] = $response->firstName;
         $_SESSION['accountId'] = $response->id;
         $_SESSION['apiAuth'] = $token;
         loadAccount($response->id);

@@ -2,22 +2,25 @@
 
 /*.
     require_module 'standard';
+    require_module 'array';
 .*/
 
-require_once(__DIR__."/../backends/email.inc");
 require __DIR__."/../vendor/autoload.php";
 require_once(__DIR__."/locations.inc");
+
+if (is_file($BASEDIR.'/.env')) {
+    $dotenv = Dotenv\Dotenv::create($BASEDIR);
+    $dotenv->load();
+}
+
+require_once(__DIR__."/../backends/email.inc");
+require_once(__DIR__."/database.inc");
 
 // Main setup function
 $MODULENAME  = "Member Portal";
 
 // Set a Date stamp for use anywhere
 $DS             = uniqid('', true);
-
-if (is_file($BASEDIR.'/.env')) {
-    $dotenv = Dotenv\Dotenv::create($BASEDIR);
-    $dotenv->load();
-}
 
 
 function getVersion()
@@ -89,7 +92,39 @@ function _config_from_Database()
         }
     }
 
-    $sql = "SELECT * FROM Configuration;";
+    $sql = <<<SQL
+        SELECT
+            cf.*,
+            (
+                CASE WHEN a.Value IS NULL THEN cf.InitialValue ELSE a.Value
+            END
+        ) AS Value
+        FROM
+            `ConfigurationField` cf
+        LEFT JOIN `Configuration` a ON
+            a.Field = cf.Field
+        WHERE
+            cf.TargetTable = 'Configuration'
+        UNION
+        SELECT
+            Field,
+            'Configuration' as TargetTable,
+            null as Type,
+            null as InitialValue,
+            null as Description,
+            Value
+        FROM
+            `Configuration`
+        WHERE
+            Field NOT IN (
+            SELECT
+                Field
+            FROM
+                `ConfigurationField`
+            WHERE
+                TargetTable = 'Configuration'
+        )
+SQL;
     $result = DB::run($sql);
     $value = $result->fetch();
     while ($value !== false) {
@@ -119,64 +154,65 @@ function _config_from_Database()
 
     if (array_key_exists('CONHOST', $GLOBALS) &&
         !array_key_exists('CONSITENAME', $GLOBALS)) {
-        $GLOBALS['CONSITENAME'] = $GLOBALS['CONHOST']." ".$GLOBALS['MODULENAME'];
+        $GLOBALS['CONSITENAME'] = $GLOBALS['CONHOST'];
+        if (array_key_exists('MODULENAME', $GLOBALS)) {
+            $GLOBALS['CONSITENAME'] .= " ".$GLOBALS['MODULENAME'];
+        }
     }
 
 }
 
 
-// Load Site Specific info
-try {
-    if (isset($dotenv)) {
-        $dotenv->required(['DBHOST', 'DBUSER', 'DBNAME', 'DBPASS', 'DB_BACKEND']);
-    }
+function initializeApplication()
+{
+    // Load Site Specific info
+    try {
+        if (isset($dotenv)) {
+            $dotenv->required(['DBHOST', 'DBUSER', 'DBNAME', 'DBPASS', 'DB_BACKEND']);
+        }
 
-    // Include the Master Database
-    require_once(__DIR__."/database.inc");
-    $db = new DB;
-    _config_from_Database();
+        // Include the Master Database
+        $db = new DB;
+        _config_from_Database();
 
-    // Include NeonCRM for DB calls via API
-    if (array_key_exists('NEONID', $GLOBALS) &&
-        array_key_exists('NEONKEY', $GLOBALS) &&
-        !empty($GLOBALS['NEONID']) &&
-        !empty($GLOBALS['NEONKEY'])) {
-        require_once(__DIR__."/neon.inc");
-    }
+        global $MODULESDIR; // TODO: Deglobalize this
 
-    // Load the base of all active modules
-    $modules = scandir($MODULESDIR);
-    foreach ($modules as $key => $value) {
-        if (!in_array($value, array(".", ".."))) {
-            if (in_array($value, $DISABLEDMODULES)) {
-                continue;
-            }
-            if (is_dir($MODULESDIR.DIRECTORY_SEPARATOR.$value)) {
-                if (is_file($MODULESDIR.DIRECTORY_SEPARATOR.$value.DIRECTORY_SEPARATOR.'init.inc')) {
-                    require_once($MODULESDIR.DIRECTORY_SEPARATOR.$value.DIRECTORY_SEPARATOR.'init.inc');
+        // Load the base of all active modules
+        $modules = scandir($MODULESDIR);
+        foreach ($modules as $key => $value) {
+            if (!in_array($value, array(".", ".."))) {
+                if (array_key_exists('DISABLEDMODULES', $GLOBALS) &&
+                    in_array($value, $GLOBALS['DISABLEDMODULES'])) {
+                    continue;
+                }
+                if (is_dir($MODULESDIR.DIRECTORY_SEPARATOR.$value)) {
+                    if (is_file($MODULESDIR.DIRECTORY_SEPARATOR.$value.DIRECTORY_SEPARATOR.'init.inc')) {
+                        require_once($MODULESDIR.DIRECTORY_SEPARATOR.$value.DIRECTORY_SEPARATOR.'init.inc');
+                    }
                 }
             }
         }
+    } catch (RuntimeException $e) {
+        // Give a default config file
+        echo '
+        <html>
+        <head>CON-In-A-Box Site Config ('.$MODULENAME.' module)</head>
+        <body>
+        <pre>
+            SITE CONFIGURATION ERROR -- Database Environment missing or incorrect.';
+        print "\n";
+        if (array_key_exists('DBPASS', $_ENV)) {
+            $_ENV['DBPASS'] = "&lt;&lt;hidden&gt;&gt;";
+        }
+        print_r($_ENV, false);
+        print_r($e, false);
+        echo '
+        </pre>
+        </body>
+    </html>';
+        die();
     }
-} catch (RuntimeException $e) {
-    // Give a default config file
-    echo '
-    <html>
-      <head>CON-In-A-Box Site Config ('.$MODULENAME.' module)</head>
-    <body>
-      <pre>
-        SITE CONFIGURATION ERROR -- Database Environment missing or incorrect.';
-    print "\n";
-    if (array_key_exists('DBPASS', $_ENV)) {
-        $_ENV['DBPASS'] = "&lt;&lt;hidden&gt;&gt;";
-    }
-    print_r($_ENV, false);
-    print_r($e, false);
-    echo '
-      </pre>
-    </body>
-  </html>';
-    die();
+
 }
 
 
@@ -266,24 +302,14 @@ function search_definedFields($key)
 }
 
 
-function add_conf_value($field, $value)
+function set_conf_value($field, $value)
 {
     $sql = <<<SQL
         INSERT INTO `Configuration`(`Field`, `Value`)
         VALUES
-            ('$field', '$value');
-SQL;
-    DB::run($sql);
-
-}
-
-
-function set_conf_value($field, $value)
-{
-    $sql = <<<SQL
-        UPDATE `Configuration`
-        SET `Value`='$value'
-        WHERE `Field`='$field';
+            ('$field', '$value')
+        ON DUPLICATE KEY UPDATE
+        `Value`='$value'
 SQL;
     DB::run($sql);
 
@@ -349,127 +375,70 @@ function urlsafe_b64encode($string)
 }
 
 
-/*************************/
-/* Neon Helper Functions */
-/*************************/
-
-
-function loadDefinedFields()
+function get_modules()
 {
-    global $_SESSION, $ADMINACCOUNTS;
-    if (!array_key_exists('Neon', $GLOBALS)) {
-        return;
-    }
+    global $BASEDIR;
 
-    // Custom Field Data for Session - Parse it to an easy to use array
-    $request = [
-    'method' => 'common/listCustomFields',
-    'parameters' => [
-    'searchCriteria.component' => "Account",
-        ],
-        ];
-    $result = $GLOBALS['Neon']->go($request);
-    if (isset($result['operationResult']) && $result['operationResult'] == 'SUCCESS') {
-        $_SESSION['definedFields']['customField'] = $result['customFields']['customField'];
-        foreach ($result['customFields']['customField'] as $val) {
-            $_SESSION['definedFields'][$val['fieldId']] = $val['fieldName'];
-            if (isset($val['fieldOptions'])) {
-                foreach ($val['fieldOptions']['fieldOption'] as $fval) {
-                    $_SESSION['definedFields'][$fval['id']] = $fval['name'];
+    if (array_key_exists('DISABLEDMODULES', $_ENV)) {
+        $env_disabled = explode(',', $_ENV['DISABLEDMODULES']);
+    } else {
+        $env_disabled = null;
+    }
+    $disabled = $GLOBALS['DISABLEDMODULES'];
+
+    $files = glob($BASEDIR.'/modules/*', GLOB_MARK);
+    $modules = array();
+    foreach ($files as $file) {
+        if (is_dir($file)) {
+            $module = basename($file);
+            if (in_array($module, $disabled)) {
+                if ($env_disabled && in_array($module, $env_disabled)) {
+                    $modules[basename($file)] = null;
+                } else {
+                    $modules[basename($file)] = false;
                 }
-                unset($fval);
-                if ($val['fieldName'] == "Lottery Status") {
-                    foreach ($val['fieldOptions']['fieldOption'] as $fval) {
-                        $_SESSION['definedFields']['Lottery Status'][$fval['id']] = $fval['name'];
-                    }
-                    unset($fval);
-                } elseif ($val['fieldName'] == "Bed Preference") {
-                    foreach ($val['fieldOptions']['fieldOption'] as $fval) {
-                        $_SESSION['definedFields']['Bed Preference'][$fval['id']] = $fval['name'];
-                    }
-                    unset($fval);
-                } elseif ($val['fieldName'] == "Hotel Qualifier") {
-                    foreach ($val['fieldOptions']['fieldOption'] as $fval) {
-                        $_SESSION['definedFields']['Hotel Qualifier'][$fval['id']] = $fval['name'];
-                    }
-                    unset($fval);
-                }
+            } else {
+                $modules[basename($file)] = true;
+                ;
             }
         }
-        unset($val);
-    } else {
-        die("Impossible error during Defined Custom Fields Download");
     }
+    return $modules;
 
 }
 
 
-function _neon_create_webhook($url, $name, $type)
+function scan_page_dir($target)
 {
-    if (!array_key_exists('Neon', $GLOBALS)) {
-        return;
-    }
-
-    // Custom Field Data for Session - Parse it to an easy to use array
-    $request = [
-    'method' => 'webhook/createWebhook',
-    'parameters' => [
-    'webhook.webhookName' => "${name}_${type}",
-    'webhook.notifyUrl' => "$url/neon_webhook.php",
-    'webhook.eventTrigger' => $type,
-    'webhook.contentType' => 'application/json'
-        ],
-        ];
-    $result = $GLOBALS['Neon']->go($request);
-    if (isset($result['operationResult']) && $result['operationResult'] == 'SUCCESS') {
-        $hookname = substr("NH_ID_$type", 0, 14);
-        add_conf_value($hookname, $result['id']);
-        return null;
+    global $PAGESDIR;
+    $pagelist = @scandir($PAGESDIR.'/'.$target);
+    $result = [];
+    foreach ($pagelist as $path) {
+        if ($path[0] == '.') {
+            continue;
+        }
+        $result[] = explode('.', $path)[0];
     }
     return $result;
 
 }
 
 
-function neon_registerWebhook($url, $name)
+function core_pages()
 {
-    _neon_create_webhook($url, $name, 'CREATE_ACCOUNT');
-    _neon_create_webhook($url, $name, 'UPDATE_ACCOUNT');
-    add_conf_value('NEON_HOOK_NAME', $name);
-    add_conf_value('NEON_HOOK_URL', $url);
+    global $MODULESDIR;
+    $valid = ['main'];
+    $valid = array_unique(array_merge($valid, scan_page_dir('pre')), SORT_STRING);
+    $valid = array_unique(array_merge($valid, scan_page_dir('head')), SORT_STRING);
+    $valid = array_unique(array_merge($valid, scan_page_dir('body')), SORT_STRING);
 
-}
-
-
-function _neon_remove_webhook($type)
-{
-    if (!array_key_exists('Neon', $GLOBALS)) {
-        return;
+    $result = [];
+    foreach (glob($MODULESDIR.'/*', GLOB_ONLYDIR) as $path) {
+        $result[] = basename($path);
     }
 
-    $hookname = substr("NH_ID_$type", 0, 14);
-    // Custom Field Data for Session - Parse it to an easy to use array
-    $request = [
-    'method' => 'webhook/deleteWebhook',
-    'parameters' => [
-    'id' => "${GLOBALS[$hookname]}"
-        ],
-        ];
-    $result = $GLOBALS['Neon']->go($request);
-    if (isset($result['operationResult']) && $result['operationResult'] == 'SUCCESS') {
-        del_conf_value($hookname);
-        return null;
-    }
-    return $result;
+    $valid = array_unique(array_merge($valid, $result), SORT_STRING);
 
-}
-
-
-function neon_removeWebhook()
-{
-    _neon_remove_webhook('CREATE_ACCOUNT');
-    _neon_remove_webhook('UPDATE_ACCOUNT');
-    del_conf_value('NEON_HOOK_NAME');
-    del_conf_value('NEON_HOOK_URL');
+    return $valid;
 
 }

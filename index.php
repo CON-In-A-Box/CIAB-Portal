@@ -2,18 +2,28 @@
 
 /*.
     require_module 'standard';
+    require_module 'core';
 .*/
-
-// Start the session so we are ready to go no matter what we do!
-session_start();
-
-require_once __DIR__.'/functions/locations.inc';
-
 require __DIR__."/vendor/autoload.php";
+
 if (is_file(__DIR__.'/.env')) {
     $dotenv = Dotenv\Dotenv::create(__DIR__);
     $dotenv->load();
 }
+
+// Start the session so we are ready to go no matter what we do!
+session_start();
+
+$DISABLEDMODULES = array(); // TODO: Deglobalize
+
+require_once __DIR__.'/functions/locations.inc';
+
+// Load in basic functions
+require_once __DIR__.'/functions/functions.inc';
+require_once __DIR__.'/console/console.inc';
+
+
+
 
 $configure = false;
 try {
@@ -47,29 +57,31 @@ try {
     }
 }
 
-// Load in basic functions
-require_once __DIR__.'/functions/functions.inc';
-require_once __DIR__.'/kiosk/kiosk.inc';
+initializeApplication();
 
 // Divert to public page if we are not under function control
 if (empty($_REQUEST['Function'])) {
     goSite('/index.php?Function=public');
 }
 
+/*. string .*/$target = trim($_REQUEST['Function']);
+$path = explode('/', $target);
+$module = $path[0];
+
 // Enforce disabled modules
-$arr = explode('/', trim($_REQUEST['Function']));
-if (in_array($arr[0], $DISABLEDMODULES)) {
+if (in_array($module, $DISABLEDMODULES)) {
     goSite('/index.php?Function=public');
 }
 
-// Force kiosk mode to the proper module
-$mode = get_kiosk();
+// Force console mode to the proper module
+$mode = get_console();
 if ($mode !== null) {
-    if ($_REQUEST['Function'] != 'functions' && !strstr($_REQUEST['Function'], $mode)) {
+    if (strcasecmp($target, 'functions') != 0 && !strstr($target, $mode)) {
         goSite('/index.php?Function='.$mode);
     }
 }
 
+$noheader = false;
 if (!empty($_REQUEST['DeepLink'])) {
     require_once(dirname(__FILE__).'/functions/session.inc');
     if (validateDeepLink($_REQUEST['Function'], $_REQUEST['DeepLink'], $_REQUEST['Auth'])) {
@@ -80,44 +92,45 @@ if (!empty($_REQUEST['DeepLink'])) {
         // Calling a deeplink without a valid linkid or auth (or function) - fail
         goSite('/index.php?Function=public');
     }
-} elseif ($_REQUEST['Function'] == "update") {
+} elseif (strcasecmp($target, "update") == 0) {
     // Check the update process, doesn't matter if we are logged in or not.
     $noheader = true; // updates don't need statusbars or logmenus
-} elseif ($_REQUEST['Function'] == "public") {
+} elseif (strcasecmp($target, "public") == 0) {
     $noheader = true; // public pages don't need statusbars or logmenus
-} elseif ($_REQUEST['Function'] == "recovery") {
+} elseif (strcasecmp($target, "recovery") == 0) {
     $noheader = true; // public pages don't need statusbars or logmenus
-} elseif ($_REQUEST['Function'] == "create") {
+} elseif (strcasecmp($target, "create") == 0) {
     $noheader = true; // public pages don't need statusbars or logmenus
-} elseif (empty($_SESSION['username'])) {
+} elseif (!array_key_exists('accountId', $_SESSION) || empty($_SESSION['accountId'])) {
     // if no username is set and we are not calling a public page or a deeplink, redirect for login needs
     goSite('/index.php?Function=public');
 }
 
 /* Core Pages */
+$valid = core_pages();
+if (!in_array($module, $valid)) {
+    $target = 'main';
+}
 
 // Pre-header process  <process_preheader>
-if (is_file($PAGESDIR.'/pre/'.$_REQUEST['Function'].'.inc')) {
-    require($PAGESDIR.'/pre/'.$_REQUEST['Function'].'.inc');
-} elseif (is_file($MODULESDIR.'/'.$_REQUEST['Function'].'/pages/pre.inc')) {
-    require($MODULESDIR.'/'.$_REQUEST['Function'].'/pages/pre.inc');
+if (is_file($PAGESDIR.'/pre/'.$target.'.inc')) {
+    require($PAGESDIR.'/pre/'.$target.'.inc');
+} elseif (is_file($MODULESDIR.'/'.$target.'/pages/pre.inc')) {
+    require($MODULESDIR.'/'.$target.'/pages/pre.inc');
 }
 
 // Header <process_header>
 require($PAGESDIR.'/base/header_start.inc');
-if (is_file($PAGESDIR.'/head/'.$_REQUEST['Function'].'.inc')) {
-    require($PAGESDIR.'/head/'.$_REQUEST['Function'].'.inc');
-} elseif (is_file($MODULESDIR.'/'.$_REQUEST['Function'].'/pages/head.inc')) {
-    require($MODULESDIR.'/'.$_REQUEST['Function'].'/pages/head.inc');
+if (is_file($PAGESDIR.'/head/'.$target.'.inc')) {
+    require($PAGESDIR.'/head/'.$target.'.inc');
+} elseif (is_file($MODULESDIR.'/'.$target.'/pages/head.inc')) {
+    require($MODULESDIR.'/'.$target.'/pages/head.inc');
 }
 
 /* SCSS processing */
-$modules = explode('/', $_REQUEST['Function']);
-$module = $modules[0];
-
 if (is_file($MODULESDIR.'/'.$module.'/scss/styles.scss')) {
     print "<link rel='stylesheet' href='style.php/".$module."/scss/styles.scss'/>";
-} elseif ($_REQUEST['Function'] == 'main') {
+} elseif (strcasecmp($target, 'main') == 0) {
     print "<link rel='stylesheet' href='style.php/panel.scss'/>";
 } else {
     print "<link rel='stylesheet' href='style.php/styles.scss'/>";
@@ -132,10 +145,10 @@ if (empty($noheader) && empty($_REQUEST['NoHeader'])) {
     require($PAGESDIR.'/base/menubar.inc');
 }
 
-if (is_file($PAGESDIR.'/body/'.$_REQUEST['Function'].'.inc')) {
-    require($PAGESDIR.'/body/'.$_REQUEST['Function'].'.inc');
-} elseif (is_file($MODULESDIR.'/'.$_REQUEST['Function'].'/pages/body.inc')) {
-    require($MODULESDIR.'/'.$_REQUEST['Function'].'/pages/body.inc');
+if (is_file($PAGESDIR.'/body/'.$target.'.inc')) {
+    require($PAGESDIR.'/body/'.$target.'.inc');
+} elseif (is_file($MODULESDIR.'/'.$target.'/pages/body.inc')) {
+    require($MODULESDIR.'/'.$target.'/pages/body.inc');
 }
 
 // footer <process_footer>

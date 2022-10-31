@@ -4,18 +4,59 @@
 .*/
 
 require_once __DIR__."/vendor/autoload.php";
+require_once __DIR__."/functions/functions.inc";
+
+use ScssPhp\ScssPhp\Compiler;
+use ScssPhp\Server\Server;
+
+/* Functions */
+
+
+function from_db($input)
+{
+    $color = $input[0][2][0];
+    $sql = "SELECT `Value` FROM `Configuration` where `Field` = 'col.$color'";
+    $result = \DB::run($sql);
+    $value = $result->fetch();
+    if ($value !== false) {
+        return $value['Value'];
+    }
+
+    switch ($color) {
+        case 'primary':
+            return '#fff';
+        case 'prim-back':
+            return '#4CAF50';
+        case 'secondary':
+            return '#fff';
+        case 'second-back':
+            return '#2196F3';
+        default:
+            return '';
+    }
+
+}
+
 
 $resource_cache = @sys_get_temp_dir().'/scss_cache/';
 
-$scss = new scssc();
+$scss = new Compiler();
 $scss->addImportPath("scss");
-$scss->setFormatter("scss_formatter_compressed");
+$scss->setFormatter("ScssPhp\ScssPhp\Formatter\Compressed");
+
+$scss->registerFunction('db-color', 'from_db');
 
 $uri = explode("/", $_SERVER['REQUEST_URI']);
 
 if (!is_dir($resource_cache)) {
     @mkdir($resource_cache, 0777, true);
     @chmod($resource_cache, 0777);
+}
+if (!is_dir($resource_cache.'scss')) {
+    @mkdir($resource_cache.'scss', 0777, true);
+}
+if (!is_dir($resource_cache.'modules')) {
+    @mkdir($resource_cache.'modules', 0777, true);
 }
 
 $MODULESDIR = "modules";
@@ -38,7 +79,7 @@ if (count($uri) > 3) {
             }
         }
     }
-    $scss->setFormatter("scss_formatter_compressed");
+    $scss->setFormatter("ScssPhp\ScssPhp\Formatter\Compressed");
     header("Content-type: text/css");
     echo $scss->compile($source);
     exit;
@@ -47,5 +88,5 @@ if (count($uri) > 3) {
     $scss_dir = "scss";
 }
 
-$server = new scss_server($scss_dir, $scss_cache, $scss);
+$server = new Server($scss_dir, $scss_cache, $scss);
 $server->serve();

@@ -6,5 +6,25 @@
 <link rel="icon" href="images/favicon.png">
 <link rel="shortcut icon" href="images/favicon.png">
 
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/all.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
 <script defer src="https://use.fontawesome.com/releases/v5.11.2/js/all.js"></script>
+<script src="https://unpkg.com/vue"></script>
+<?php
+if (!function_exists('get_console') || get_console() === null) {
+    echo "<script src=\"sitesupport/common.js\"></script>\n";
+    echo "<script src=\"sitesupport/menubar.js\"></script>\n";
+    $base = basename($MODULESDIR);
+    $modules = scandir($MODULESDIR);
+    foreach ($modules as $key => $value) {
+        if (!in_array($value, array(".", ".."))) {
+            if (array_key_exists('DISABLEDMODULES', $GLOBALS) &&
+                in_array($value, $DISABLEDMODULES)) {
+                continue;
+            }
+            if (is_dir($MODULESDIR.DIRECTORY_SEPARATOR.$value) &&
+                is_file($MODULESDIR.DIRECTORY_SEPARATOR.$value.DIRECTORY_SEPARATOR.'import.js')) {
+                echo "<script src=\"$base/$value/import.js\"></script>\n";
+            }
+        }
+    }
+}

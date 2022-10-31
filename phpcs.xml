@@ -20,10 +20,12 @@
 
  <!-- force 4 space indents -->
  <rule ref="Generic.WhiteSpace.DisallowTabIndent"/>
+ <rule ref="PEAR.WhiteSpace.ObjectOperatorIndent"/>
 
  <rule ref="Generic.WhiteSpace.ScopeIndent">
     <properties>
       <property name="indent" value="4"/>
+      <property name="ignoreIndentationTokens" type="array" value="T_COMMENT,T_DOC_COMMENT_OPEN_TAG,T_OBJECT_OPERATOR"/>
       <property name="exact" value="true"/>
     </properties>
  </rule>
@@ -44,7 +46,6 @@
  <rule ref="Squiz.WhiteSpace.LanguageConstructSpacing"/>
  <rule ref="Squiz.WhiteSpace.LogicalOperatorSpacing"/>
  <rule ref="Squiz.WhiteSpace.MemberVarSpacing"/>
- <rule ref="Squiz.WhiteSpace.ObjectOperatorSpacing"/>
  <rule ref="Squiz.WhiteSpace.OperatorSpacing"/>
  <rule ref="Squiz.WhiteSpace.PropertyLabelSpacing"/>
  <rule ref="Squiz.WhiteSpace.ScopeClosingBrace"/>
@@ -60,6 +61,7 @@
  <exclude-pattern>*/functions/neon.inc</exclude-pattern>
  <exclude-pattern>*/functions/externals/*neon*</exclude-pattern>
  <exclude-pattern>*/test/*neon*</exclude-pattern>
+ <exclude-pattern>*/node_modules/*</exclude-pattern>
 
   <file>./</file>
 </ruleset>

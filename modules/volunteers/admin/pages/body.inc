@@ -5,11 +5,11 @@
     require_module 'json';
 .*/
 
-require_once $FUNCTIONDIR.'/volunteer.inc';
+require_once __DIR__.'/../../functions/volunteer.inc';
 require_once $FUNCTIONDIR.'/users.inc';
-require_once $BASEDIR.'/kiosk/kiosk.inc';
+require_once $BASEDIR.'/console/console.inc';
 
-kiosk_body_data();
+console_body_data();
 
 $totalHours = 0;
 $prizeData = null;
@@ -34,7 +34,7 @@ if (isset($_SESSION['IS_ADMIN']) || $_SESSION['IS_VOLUNTEERS']) {
     }
 }
 
-if ($admin_mode && in_kiosk()) {
+if ($admin_mode && in_console()) {
     if (array_key_exists('VOL_ADMINKIOSK', $GLOBALS)) {
         $admin_mode = ($GLOBALS['VOL_ADMINKIOSK'] == '1');
     } else {
@@ -559,10 +559,10 @@ echo "</div>\n"
 <div class="UI-rest UI-center">
 <?php
 if (isset($_SESSION['IS_ADMIN']) || $_SESSION['IS_VOLUNTEERS']) {
-    if (!in_kiosk() || (
+    if (!in_console() || (
             array_key_exists('VOL_ADMINKIOSK', $GLOBALS) &&
             $GLOBALS['VOL_ADMINKIOSK'])) {
-?>
+        ?>
   <div>
     <div class="VOL-admin-switch">
       <div class='UI-table switch-table'>
@@ -573,7 +573,7 @@ if (isset($_SESSION['IS_ADMIN']) || $_SESSION['IS_VOLUNTEERS']) {
             if ($admin_mode) {
                 echo "checked";
             }
-?> onclick='toggleAdminMode();'>
+            ?> onclick='toggleAdminMode();'>
               <div class=slider></div>
             </label>
           </div>
@@ -581,29 +581,16 @@ if (isset($_SESSION['IS_ADMIN']) || $_SESSION['IS_VOLUNTEERS']) {
       </div>
     </div>
   </div>
-<?php
+        <?php
     }
 
-    generate_kiosk_slider('volunteers');
+    generate_console_slider('volunteers');
 }
 ?>
 
-<script>
-    userLookup.options({
-        message: 'Volunteer Badge Number, E-Mail or Full Name',
-        urlTag: 'volunteerId',
-        fail: lookupFail,
-        });
-</script>
-
-<?php
-if (isset($uid)) {
-    echo "<div class='UI-bar-item' id='userLookup_div' data-user='$uid'> </div>\n";
-} else {
-    echo "<div class='UI-bar-item' id='userLookup_div'> </div>\n";
-}
-?>
-
+  <div id=user-lookup>
+    <lookup-user message='Volunteer Badge Number, E-Mail or Full Name' url-tag='volunteerId'> </lookup-user>
+  </div>
 </div>
 
 <div class="UI-rest UI-center">

@@ -4,7 +4,7 @@
     require_module 'standard';
 .*/
 
-require_once __DIR__."/../functions/functions.inc";
+require_once __DIR__."/../functions/locations.inc";
 
 $dry_run = true;
 
@@ -63,7 +63,7 @@ E;
         if (!$dry_run) {
             @file_put_contents($BASEDIR."/version.ini", $output);
             exec("git add $BASEDIR/version.ini");
-            exec('git commit -m "Update version.ini for '.$gitver[0].' build"');
+            exec('git commit -n -m "Update version.ini for '.$gitver[0].' build"');
         }
     }
     return $version;

@@ -14,4 +14,13 @@ return [
         ],
 'modules' => [],
     ],
+ /* An array of Vendors to load.
+  *
+  * A string will load all the files in Vendors/<vendor>  (ex. 'Zend')
+  * An associative array will only load the given files from the vendor
+  *   (ex. ['Zend' => ['Rbac.php']])
+  */
+'vendors' => [
+'Stripe'
+    ]
 ];

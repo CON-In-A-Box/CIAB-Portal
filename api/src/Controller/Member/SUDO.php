@@ -3,6 +3,45 @@
     require_module 'standard';
 .*/
 
+/**
+ *  @OA\Post(
+ *      tags={"administrative"},
+ *      path="/admin/SUDO/{id}",
+ *      summary="Convert current session to that of another member.",
+ *      @OA\Parameter(
+ *          description="The id or login of the member",
+ *          in="path",
+ *          name="id",
+ *          required=true,
+ *          @OA\Schema(
+ *              oneOf = {
+ *                  @OA\Schema(
+ *                      description="Member login",
+ *                      type="string"
+ *                  ),
+ *                  @OA\Schema(
+ *                      description="Member id",
+ *                      type="integer"
+ *                  )
+ *              }
+ *          )
+ *      ),
+ *      @OA\Response(
+ *          response=200,
+ *          description="OK"
+ *      ),
+ *      @OA\Response(
+ *          response=401,
+ *          ref="#/components/responses/401"
+ *      ),
+ *      @OA\Response(
+ *          response=404,
+ *          ref="#/components/responses/member_not_found"
+ *      ),
+ *      security={{"ciab_auth":{}}}
+ *  )
+ **/
+
 namespace App\Controller\Member;
 
 use Slim\Http\Request;
@@ -14,26 +53,16 @@ class SUDO extends BaseMember
 {
 
 
-    public function buildResource(Request $request, Response $response, $args): array
+    public function buildResource(Request $request, Response $response, $params): array
     {
         global $storage;
 
-        $data = $this->findMember($request, $response, $args, 'name');
-        if (gettype($data) === 'object') {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $data];
-        } else {
-            if (\ciab\RBAC::havePermission('admin.sudo')) {
-                $token = $request->getAttribute('oauth2-token');
-                $storage->setAccessToken($token['access_token'], $token['client_id'], $data['Id'], $token['expires']);
-                return [null];
-            } else {
-                return [
-                \App\Controller\BaseController::RESULT_TYPE,
-                $this->errorResponse($request, $response, 'Permission Denied', 'Permission Denied', 403)];
-            }
-        }
+        $id = $this->getMember($request, $params['name'])[0]['id'];
+        $permissions = ['admin.sudo'];
+        $this->checkPermissions($permissions);
+        $token = $request->getAttribute('oauth2-token');
+        $storage->setAccessToken($token['access_token'], $token['client_id'], $id, $token['expires']);
+        return [null];
 
     }
 

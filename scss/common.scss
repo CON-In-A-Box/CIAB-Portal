@@ -247,11 +247,11 @@
 }
 
 .UI-bold {
-    @extend .w3-bold;
+    font-weight: bold;
 }
 
 .UI-table-heading .UI-table-row:first-of-type {
-    @extend .UI-bold !important;
+    @extend .UI-bold;
     font-size:125% !important;
 }
 
@@ -265,20 +265,16 @@
 
 .UI-error-header {
     @extend .UI-red;
-    @extend .w3-bold;
-    @extend .w3-header;
+    @extend .UI-bold;
 }
 
 .UI-warning-header{
     @extend .UI-yellow;
-    @extend .w3-bold;
-    @extend .w3-header;
+    @extend .UI-bold;
 }
 
 .UI-label {
-    @extend .w3-label;
 }
-
 
 .UI-cell-row {
     @extend .w3-cell-row;
@@ -375,7 +371,7 @@
 .UI-icon-div {
     @extend .UI-container;
     @extend .UI-cell;
-    @extend .w3-padding-0;
+    padding: 0px 0px !important;
 }
 
 .UI-tiny {
@@ -486,7 +482,7 @@
 }
 
 .UI-profile-concom-label {
-    @extend .UI-right-align;
+    text-align: right !important;
     @extend .w3-col;
     @extend .m7;
     @extend .l6;
@@ -514,8 +510,8 @@
 }
 
 .UI-profile-zip-field {
+    text-align: right !important;
     @extend .UI-input;
-    @extend .UI-right-align;
     @extend .w3-col;
     @extend .l8;
     @extend .m7;
@@ -558,6 +554,13 @@
     @extend .w3-mobile;
 }
 
+/* Hide it entirely if the screen is narrow*/
+@media screen and (max-width: 630px) {
+    .UI-page-title {
+        display: none;
+    }
+}
+
 .UI-recovery-text-block {
     @extend .UI-center;
     @extend .UI-bold;
@@ -579,7 +582,7 @@
 
 .UI-register-start-button {
     @extend .w3-btn;
-    @extend .event-primary-color;
+    @extend .event-color-primary;
     @extend .w3-round-xlarge;
 }
 
@@ -634,7 +637,7 @@
     @extend .w3-tag;
 }
 
-.UI-kiosk-slider {
+.UI-console-slider {
     @extend .w3-show-inline-block;
     @extend .w3-left;
     @extend .event-color-secondary;
@@ -642,12 +645,13 @@
 }
 
 .UI-configure-panel {
+    padding-top: 16px !important;
+    padding-bottom: 16px !important;
     @extend .w3-panel;
-    @extend .w3-padding-16;
 }
 
 .UI-checkbox {
-    @extend .w3-checkbox;
+    @extend .w3-check;
 }
 
 .UI-configure-info-panel {
@@ -657,8 +661,9 @@
 }
 
 .UI-configure-note {
+    padding-top: 16px !important;
+    padding-bottom: 16px !important;
     @extend .UI-blue;
-    @extend .UI-padding-16;
     @extend .UI-margin;
     @extend .UI-border;
 }
@@ -707,4 +712,14 @@
 .UI-announcement-source{
     @extend .w3-opacity;
     @extend .UI-small;
+}
+
+.UI-event-dropdown-bar {
+    @extend .UI-event-sectionbar;
+    @extend .UI-button;
+    @extend .w3-block;
+}
+
+.UI-pad-bottom {
+    padding: 0px 0px 16px 0px;
 }

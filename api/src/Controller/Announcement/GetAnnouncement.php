@@ -3,6 +3,40 @@
     require_module 'standard';
 .*/
 
+/**
+ *  @OA\Get(
+ *      tags={"announcements"},
+ *      path="/announcement/{id}",
+ *      summary="Gets an announcement",
+ *      @OA\Parameter(
+ *          description="Id of the announcement",
+ *          in="path",
+ *          name="id",
+ *          required=true,
+ *          @OA\Schema(type="integer")
+ *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/short_response",
+ *      ),
+ *      @OA\Response(
+ *          response=200,
+ *          description="Announcement found",
+ *          @OA\JsonContent(
+ *           ref="#/components/schemas/announcement"
+ *          ),
+ *      ),
+ *      @OA\Response(
+ *          response=401,
+ *          ref="#/components/responses/401"
+ *      ),
+ *      @OA\Response(
+ *          response=404,
+ *          ref="#/components/responses/announce_not_found"
+ *      ),
+ *      security={{"ciab_auth":{}}}
+ *  )
+ **/
+
 namespace App\Controller\Announcement;
 
 use Slim\Http\Request;
@@ -12,35 +46,14 @@ class GetAnnouncement extends BaseAnnouncement
 {
 
 
-    public function buildResource(Request $request, Response $response, $args): array
+    public function buildResource(Request $request, Response $response, $params): array
     {
-        $sth = $this->container->db->prepare("SELECT * FROM `Announcements` WHERE `AnnouncementID` = '".$args['id']."'");
-        $sth->execute();
-        $announce = $sth->fetchAll();
-        if (empty($announce)) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, 'Not Found', 'Announcement Not Found', 404)];
-        }
+        $target = $this->getAnnouncement($params['id']);
+        $this->verifyScope($target);
         return [
         \App\Controller\BaseController::RESOURCE_TYPE,
-        $this->buildAnnouncement(
-            $request,
-            $response,
-            $announce[0]['AnnouncementID'],
-            $announce[0]['DepartmentID'],
-            $announce[0]['PostedOn'],
-            $announce[0]['PostedBy'],
-            $announce[0]['Scope'],
-            $announce[0]['Text']
-        )];
-
-    }
-
-
-    public function processIncludes(Request $request, Response $response, $args, $values, &$data)
-    {
-        return $this->baseIncludes($request, $response, $args, $values, $data);
+        $target
+        ];
 
     }
 

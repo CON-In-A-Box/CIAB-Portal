@@ -51,6 +51,76 @@ function rand_name()
 }
 
 
+function listStates()
+{
+    return array(
+        ['code' => 'AL', 'name' => 'ALABAMA'],
+        ['code' => 'AK', 'name' => 'ALASKA'],
+        ['code' => 'AS', 'name' => 'AMERICAN SAMOA'],
+        ['code' => 'AZ', 'name' => 'ARIZONA'],
+        ['code' => 'AR', 'name' => 'ARKANSAS'],
+        ['code' => 'CA', 'name' => 'CALIFORNIA'],
+        ['code' => 'CO', 'name' => 'COLORADO'],
+        ['code' => 'CT', 'name' => 'CONNECTICUT'],
+        ['code' => 'DE', 'name' => 'DELAWARE'],
+        ['code' => 'DC', 'name' => 'DISTRICT OF COLUMBIA'],
+        ['code' => 'FM', 'name' => 'FEDERATED STATES OF MICRONESIA'],
+        ['code' => 'FL', 'name' => 'FLORIDA'],
+        ['code' => 'GA', 'name' => 'GEORGIA'],
+        ['code' => 'GU', 'name' => 'GUAM GU'],
+        ['code' => 'HI', 'name' => 'HAWAII'],
+        ['code' => 'ID', 'name' => 'IDAHO'],
+        ['code' => 'IL', 'name' => 'ILLINOIS'],
+        ['code' => 'IN', 'name' => 'INDIANA'],
+        ['code' => 'IA', 'name' => 'IOWA'],
+        ['code' => 'KS', 'name' => 'KANSAS'],
+        ['code' => 'KY', 'name' => 'KENTUCKY'],
+        ['code' => 'LA', 'name' => 'LOUISIANA'],
+        ['code' => 'ME', 'name' => 'MAINE'],
+        ['code' => 'MH', 'name' => 'MARSHALL ISLANDS'],
+        ['code' => 'MD', 'name' => 'MARYLAND'],
+        ['code' => 'MA', 'name' => 'MASSACHUSETTS'],
+        ['code' => 'MI', 'name' => 'MICHIGAN'],
+        ['code' => 'MN', 'name' => 'MINNESOTA'],
+        ['code' => 'MS', 'name' => 'MISSISSIPPI'],
+        ['code' => 'MO', 'name' => 'MISSOURI'],
+        ['code' => 'MT', 'name' => 'MONTANA'],
+        ['code' => 'NE', 'name' => 'NEBRASKA'],
+        ['code' => 'NV', 'name' => 'NEVADA'],
+        ['code' => 'NH', 'name' => 'NEW HAMPSHIRE'],
+        ['code' => 'NJ', 'name' => 'NEW JERSEY'],
+        ['code' => 'NM', 'name' => 'NEW MEXICO'],
+        ['code' => 'NY', 'name' => 'NEW YORK'],
+        ['code' => 'NC', 'name' => 'NORTH CAROLINA'],
+        ['code' => 'ND', 'name' => 'NORTH DAKOTA'],
+        ['code' => 'MP', 'name' => 'NORTHERN MARIANA ISLANDS'],
+        ['code' => 'OH', 'name' => 'OHIO'],
+        ['code' => 'OK', 'name' => 'OKLAHOMA'],
+        ['code' => 'OR', 'name' => 'OREGON'],
+        ['code' => 'PW', 'name' => 'PALAU'],
+        ['code' => 'PA', 'name' => 'PENNSYLVANIA'],
+        ['code' => 'PR', 'name' => 'PUERTO RICO'],
+        ['code' => 'RI', 'name' => 'RHODE ISLAND'],
+        ['code' => 'SC', 'name' => 'SOUTH CAROLINA'],
+        ['code' => 'SD', 'name' => 'SOUTH DAKOTA'],
+        ['code' => 'TN', 'name' => 'TENNESSEE'],
+        ['code' => 'TX', 'name' => 'TEXAS'],
+        ['code' => 'UT', 'name' => 'UTAH'],
+        ['code' => 'VT', 'name' => 'VERMONT'],
+        ['code' => 'VI', 'name' => 'VIRGIN ISLANDS'],
+        ['code' => 'VA', 'name' => 'VIRGINIA'],
+        ['code' => 'WA', 'name' => 'WASHINGTON'],
+        ['code' => 'WV', 'name' => 'WEST VIRGINIA'],
+        ['code' => 'WI', 'name' => 'WISCONSIN'],
+        ['code' => 'WY', 'name' => 'WYOMING'],
+        ['code' => 'AE', 'name' => 'ARMED FORCES AFRICA \ CANADA \ EUROPE \ MIDDLE EAST'],
+        ['code' => 'AA', 'name' => 'ARMED FORCES AMERICA (EXCEPT CANADA)'],
+        ['code' => 'AP', 'name' => 'ARMED FORCES PACIFIC']
+    );
+
+}
+
+
 function rand_address()
 {
     $data = array();
@@ -85,12 +155,21 @@ function advance_cycles()
         print "Add new cycle\n";
         $last_start = date('Y-m-d', strtotime($last_start." + 365 day"));
         $last_end = date('Y-m-d', strtotime($last_end." + 365 day"));
-        $cycle = (object)[
-        'From' => $last_start,
-        'To' => $last_end
-        ];
-        new_cycle($cycle);
+        new_cycle($last_start, $last_end);
     }
+
+}
+
+
+function new_cycle($start, $end)
+{
+    print "$start - $end\n";
+    $sql = <<<SQL
+            INSERT INTO `AnnualCycles`
+                        (`AnnualCycleID`, `DateFrom`, `DateTo`)
+                        VALUES (NULL, "$start", "$end")
+SQL;
+    \DB::run($sql);
 
 }
 
@@ -155,7 +234,7 @@ function random_member()
 
     $account = createUser($email);
     $updateData['accountId'] = $account;
-    updateAccount($updateData);
+    updateAccount($updateData, $account);
 
 }
 
@@ -176,16 +255,24 @@ function populate_members()
 }
 
 
-function rand_member()
+function rand_member($count = 1)
 {
     $sql = <<<SQL
         SELECT AccountID FROM `Members`
         ORDER BY RAND()
-        LIMIT 1
+        LIMIT $count
 SQL;
     $result = DB::run($sql);
-    $value = $result->fetch();
-    return (int)($value['AccountID']);
+    if ($count == 1) {
+        $value = $result->fetch();
+        return (int)($value['AccountID']);
+    }
+    $values = $result->fetchAll();
+    $result = [];
+    foreach ($values as $v) {
+        $result[] = $v['AccountID'];
+    }
+    return $result;
 
 }
 
@@ -240,7 +327,7 @@ SQL;
 }
 
 
-function add_registration($aid, $event)
+function add_registration($aid, $bid, $event)
 {
     $accountID  = $aid;
     $type = random_badge($event);
@@ -255,7 +342,7 @@ function add_registration($aid, $event)
         )
         VALUES
             (
-                NULL, $accountID, $event, $accountID,
+                NULL, $accountID, $event, $bid,
                 NOW(), 0, $badge, $type, NULL
             );
 SQL;
@@ -273,25 +360,30 @@ function populate_registrations($event)
         return;
     }
 
-
     print "Populate Registrations\n";
 
-    $sql = "SELECT `AccountID` FROM  `ConComList`;";
+    $sql = "SELECT COUNT( DISTINCT `AccountID`) AS count FROM  `ConComList`;";
+    $result = \DB::run($sql);
+    $value = $result->fetch();
+    $count = intval($value['count']) * 2;
+    $members = rand_member($count);
+    $i = 0;
+
+    $sql = "SELECT DISTINCT `AccountID` FROM  `ConComList`;";
     $result = \DB::run($sql);
     $value = $result->fetch();
     while ($value !== false) {
-        add_registration($value['AccountID'], $event);
+        add_registration($members[$i], $value['AccountID'], $event);
+        $i++;
+        add_registration($members[$i], $value['AccountID'], $event);
+        $i++;
         $value = $result->fetch();
-    }
-
-    for ($i = 0; $i < 100; $i++) {
-        $accountID  = rand_member();
-        add_registration($accountID, $event);
     }
 
 }
 
 
+_config_from_Database();
 print "<pre>";
 if (array_key_exists('NEONID', $GLOBALS) &&
     array_key_exists('NEONKEY', $GLOBALS) &&

@@ -2,7 +2,7 @@
 
 require_once(__DIR__."/../functions/functions.inc");
 require_once(__DIR__."/../functions/database.inc");
-require_once(__DIR__."/../functions/volunteer.inc");
+require_once(__DIR__."/../modules/volunteers/functions/volunteer.inc");
 
 
 function random_concom_id()
@@ -33,13 +33,23 @@ SQL;
 }
 
 
+function clean()
+{
+    $sql = "DELETE FROM `VolunteerHours` WHERE 1";
+    DB::run($sql);
+    $sql = "DELETE FROM `HourRedemptions` WHERE 1";
+    DB::run($sql);
+    $sql = "DELETE FROM `VolunteerRewards` WHERE 1";
+    DB::run($sql);
+    $sql = "DELETE FROM `RewardGroup` WHERE 1";
+    DB::run($sql);
+
+}
+
+
 function populate_vol()
 {
     print "Populate Hours\n";
-
-    $sql = "DELETE FROM `VolunteerHours` WHERE 1";
-    DB::run($sql);
-
 
     $id = 0;
     $enterer = 0;
@@ -62,11 +72,6 @@ function populate_vol()
 function populate_prizes()
 {
     print "Populate Gifts\n";
-
-    $sql = "DELETE FROM `RewardGroup` WHERE 1";
-    DB::run($sql);
-    $sql = "DELETE FROM `VolunteerRewards` WHERE 1";
-    DB::run($sql);
 
     /* Add 5 groups */
     for ($i = 0; $i < 5; $i++) {
@@ -132,9 +137,6 @@ function populate_redeem()
 {
     print "Populate Redeem\n";
 
-    $sql = "DELETE FROM `HourRedemptions` WHERE 1";
-    DB::run($sql);
-
     $sql = <<<SQL
         SELECT AccountID FROM ConComList;
 SQL;
@@ -162,6 +164,7 @@ SQL;
 }
 
 
+clean();
 populate_vol();
 populate_prizes();
 populate_redeem();

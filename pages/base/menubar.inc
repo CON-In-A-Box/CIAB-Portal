@@ -1,5 +1,6 @@
 <?php
 require_once $BACKEND.'/asset.inc';
+require_once($BACKEND.'/RBAC.inc');
 ?>
 
 <script>
@@ -11,6 +12,12 @@ require_once $BACKEND.'/asset.inc';
       x.className = x.className.replace(" UI-show", "");
     }
   }
+
+  function logoutUser()
+  {
+    localStorage.clear();
+    window.location = 'index.php?Function=public&signout=1';
+  }
 </script>
 <div class="UI-main-bar-div">
   <div id="main_nav" class="UI-main-bar">
@@ -20,7 +27,7 @@ require_once $BACKEND.'/asset.inc';
 
 <?php
 
-require_once $BASEDIR.'/kiosk/kiosk.inc';
+require_once $BASEDIR.'/console/console.inc';
 require_once $FUNCTIONDIR.'/menus.inc';
 
 if (!isset($base_styles)) {
@@ -30,9 +37,9 @@ if (!isset($resp_styles)) {
     $resp_styles = " UI-main-responsive-bar-item";
 }
 
-$kiosk = get_kiosk();
+$console = get_console();
 
-if ($kiosk === null) {
+if ($console === null) {
     if (!isset($base_menus)) {
         $base_menus = array();
         $base_menus[] = array('base style' => '',
@@ -53,8 +60,16 @@ if ($kiosk === null) {
     }
 
     if (!isset($admin_menus)) {
-        $admin_menus = [
-        ];
+        $admin_menus = array();
+        if (\ciab\RBAC::havePermission("site.admin")) {
+            $admin_menus[] = array('base style' => 'UI-yellow',
+                 'selected style' => 'event-color-primary',
+                 'function' => 'modules',
+                 'title' => 'Website Configuration',
+                 'i class' => 'fas fa-home',
+                 'text' => 'Website Configuration',
+                 'responsive' => true);
+        }
     }
 
     if (!isset($report_menus)) {
@@ -65,7 +80,7 @@ if ($kiosk === null) {
     $modules = scandir($MODULESDIR);
     foreach ($modules as $key => $value) {
         if (!in_array($value, array(".", ".."))) {
-            if ($kiosk === null && in_array($value, $DISABLEDMODULES)) {
+            if ($console === null && in_array($value, $DISABLEDMODULES)) {
                 continue;
             }
             if (is_dir($MODULESDIR.DIRECTORY_SEPARATOR.$value)) {
@@ -84,9 +99,9 @@ if ($kiosk === null) {
         $report_menus = array();
     }
 
-    if (is_dir($MODULESDIR.DIRECTORY_SEPARATOR.$kiosk)) {
-        if (is_file($MODULESDIR.DIRECTORY_SEPARATOR.$kiosk.DIRECTORY_SEPARATOR.'pages/menubar.inc')) {
-            require_once($MODULESDIR.DIRECTORY_SEPARATOR.$kiosk.DIRECTORY_SEPARATOR.'pages/menubar.inc');
+    if (is_dir($MODULESDIR.DIRECTORY_SEPARATOR.$console)) {
+        if (is_file($MODULESDIR.DIRECTORY_SEPARATOR.$console.DIRECTORY_SEPARATOR.'pages/menubar.inc')) {
+            require_once($MODULESDIR.DIRECTORY_SEPARATOR.$console.DIRECTORY_SEPARATOR.'pages/menubar.inc');
         }
     }
 }
@@ -108,15 +123,15 @@ $base_menus[] = array(
 
 echo build_menus($base_menus, $base_styles, $resp_styles);
 
-if ($kiosk === null) {
-?>
+if ($console === null) {
+    ?>
     <a class="UI-main-bar-pancake"
       href="javascript:void(0)"
       onclick="myMenuBar()">
       <em class="fas fa-bars"></em>
     </a>
     <a class="UI-main-logout-bar-item"
-      href="index.php?Function=public&signout=1" title="Log out and Restart">
+      onclick="logoutUser();" title="Log out and Restart">
       <em class="fas fa-sign-out-alt"></em>
       Log Out
     </a>

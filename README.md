@@ -6,13 +6,13 @@ Starting as a random collection of tools to help administrate a Midwest fan run 
 
 The goal is to have a fairly generic and skin-able web portal that can be used for a variety of conventions to aid in a number of administrative tasks as well as be useful to the event attendee to get information about their account.
 
-The project is still young and we hope to have the first parts of it in actual usage for the 2018 convention year and expanding from there. 
+The project is still young and we had the first parts of it in actual usage for the 2018 convention year and expanding from there. 
 
 Additionally the push to make the project generic enough for multiple convention usage is also a work in progress. However it informs the design decisions made. 
 
 # Overview
 
-CIAB is presently designed to run on a apache web server accessing a [mySQL](https://www.mysql.com/) and [Neon](https://www.neoncrm.com/) back ends.  The present road map is to move away from Neon and rely completely on mySQL for all data storage. However at this time Neon is used for member/attendee information.
+CIAB is presently designed to run on a apache web server accessing a [mySQL](https://www.mysql.com/) and [Neon CRM](https://www.neoncrm.com/) back ends.  The CRM is not required and new CRM back end engines are in the plan to be written.  The system operates cleanly with no CRM as well.
 
 The vision is to have a core set of functionality and then optional modules that can be enabled/disabled or replaced based on the needs of the given event.
 
@@ -54,9 +54,11 @@ We know all events and Conventions do not look the same. So in order for this pa
 
 CIAB makes use of SCSS to help dynamically build style sheets to allow for skinning of the site.
 
-At present in `scss/event.scss` is where the even specific styles are generated. Values we expect to be changing from event to event should be imported there. Presently `_CONvergence.scss` is imported representing the colors and icons for CONvergence. Changing the values there should be reflected across the web pages. 
+At present in `scss/event.scss` is where the even specific styles are generated. Values we expect to be changing from event to event should be imported there. Main colors for the event are present in the configuration, and can be set on the configure_system page. 
 
 There is a basic asset library engine included in CIAB to try to manage long-lasting but event or convention specific graphical assets. This asset manager is accessed in the `Administrator->Assets` menu option.
+
+There are important templates for the back end located in `api/src/Templates`. These Templates are meant to be as generic as possible in order to be used across events. But it is very possible to modify the language and format of the template for a given event. 
 
 # First Steps
 
@@ -78,11 +80,15 @@ It recommend you make use of some githooks that are also defined in .githooks wh
 
 The code is also monitored by [SonarCloud](https://sonarcloud.io/dashboard?id=CON-In-A-Box_CIAB-Portal). That is a great place to find first issues or things to work on. Once the code has become clean there it will start becoming a manditory check for pull requests as well. 
 
+# CRM backend
+
+* There is a facility to specify a CRM backend to track users and events. This is likely in connection to a registration system. The current system defines [Neon CRM](https://www.neoncrm.com/) but new backends can be written as integration with other CRM systems are required.
+
+* The system operates fully without any CRM defined as a fully self standing system as well. 
+
 # Next Steps
 
-* The current goal is to fully move off of Neon and host the whole backend on the mySQL database. This would involve migrating from Neon, replacing all the functionality as well as finding a way to safely and securely do credit card processing for event registration.
-
-* Additionally we want to continue to expand the cross-event structure to try to encourage other events to use this tool. We believe ti can be very power and helpful for many events and would like our work to be welcome in as many places as it fits.  This likely involves making it easier to skin the site and pull out many of the CONvergence assumptions and making them configurable based on the event. 
+* Additionally we want to continue to expand the cross-event structure to try to encourage other events to use this tool. We believe it can be very power and helpful for many events and would like our work to be welcome in as many places as it fits.  This likely involves making it easier to skin the site and pull out many of the CONvergence assumptions and making them configurable based on the event. 
 
 # How you can help!
 

@@ -1,5 +1,6 @@
 <?php
-require_once __DIR__.'/../functions/functions.inc'
+require_once __DIR__.'/../functions/functions.inc';
+require_once $BACKEND.'/CRM.inc';
 ?>
 
 <script>
@@ -31,7 +32,25 @@ require_once __DIR__.'/../functions/functions.inc'
                     <button id='new_cycle' class='UI-eventbutton'
                         onclick='newCycle()'>Add New Cycle</button>
                 </div>
-<?php list_cycles() ?>
+
+                <input class="UI-hiddeninput" id="last_cycle">
+                <div id="cycle_list" class="UI-table-all">
+                  <div class="UI-table-header">
+                    <div class="UI-table-row">
+                      <div class="UI-table-cell">
+                            Id
+                      </div>
+                      <div class="UI-table-cell">
+                            From
+                      </div>
+                      <div class="UI-table-cell">
+                            To
+                      </div>
+                      <div class="UI-table-cell">
+                      </div>
+                    </div>
+                  </div>
+                </div>
             </div>
         </div>
 
@@ -50,20 +69,20 @@ require_once __DIR__.'/../functions/functions.inc'
             </div>
         </div>
 <?php
-if (array_key_exists('Neon', $GLOBALS)) {
-?>
-        <div id="neon_content" class="EVENT-content">
-            <button onclick="expandSection('neon')" class="EVENT-section-bar">
-                <span id="neon_button">Neon<span> <em id="neon_arrow" class="fas fa-caret-up"></em>
+if (\ciab\CRM::hasEvents()) {
+    ?>
+        <div id="crm_content" class="EVENT-content">
+            <button onclick="expandSection('crm')" class="EVENT-section-bar">
+                <span id="crm_button">CRM<span> <em id="crm_arrow" class="fas fa-caret-up"></em>
             </button>
-            <div id="neon" class="UI-container UI-margin UI-hide UI-show">
+            <div id="crm" class="UI-container UI-margin UI-hide UI-show">
                 <div class="UI-container UI-margin UI-center">
                     <button id='reload' class='UI-redbutton'
-                        onclick='reloadFromNeon()'>Reload From Neon</button>
+                        onclick='reloadFromCRM()'>Reload From CRM</button>
                 </div>
             </div>
         </div>
-<?php
+    <?php
 }
 ?>
     </div>
@@ -77,14 +96,7 @@ if (array_key_exists('Neon', $GLOBALS)) {
             <label class='UI-label' for='meet_name'>Meeting Name:</label>
             <input class="UI-input" id="meet_name" value='New Meeting'>
             <label class='UI-label' for='meet_event'>Event:</label>
-            <select class="UI-input" id="meet_event">
-<?php
-$events = select_events();
-foreach ($events as $event) {
-    print "<option value=".$event['Id'].">".$event['Name']."</option>\n";
-}
-?>
-            </select>
+            <select class="UI-input" id="meet_event"> </select>
             <label class='UI-label' for='meet_date'>Date:</label>
             <input class="UI-input" type="date" id="meet_date"
                 value="<?php echo date('Y-m-d');?>">
@@ -104,16 +116,14 @@ foreach ($events as $event) {
 
     <div class='UI-sidebar-hidden UI-fixed' id='edit_cycle'>
         <div class='UI-center'>
-            <h2 class='UI-red'>New Cycle Details</h2>
+            <h2 class='UI-red'>Cycle Details</h2>
         </div>
         <div>
             <input class="UI-hiddeninput" id="cycle_id" value='-1' readonly>
             <label class='UI-label' for='cycle_from'>From:</label>
-            <input class="UI-input" type="date" id="cycle_from"
-                value="<?php echo date('Y-m-d', strtotime($last_cycle['To']." +1 days"));?>">
+            <input class="UI-input" type="date" id="cycle_from" value="">
             <label class='UI-label' for='cycle_to'>To:</label>
-            <input class="UI-input" type="date" id="cycle_to"
-                value="<?php echo date('Y-m-d', strtotime($last_cycle['To']." +1 years"));?>">
+            <input class="UI-input" type="date" id="cycle_to" value="">
         </div>
         <hr>
         <div class='UI-center'>
@@ -194,14 +204,7 @@ foreach ($events as $event) {
         <div>
             <input class="UI-hiddeninput" id="concom_event_id" value='-1' readonly>
             <label class='UI-label' for='event_from'>From:</label>
-            <select class="UI-input" id="import_from">
-<?php
-$events = select_events();
-foreach ($events as $event) {
-    print "<option value=".$event['Id'].">".$event['Name']."</option>\n";
-}
-?>
-            </select>
+            <select class="UI-input" id="import_from"> </select>
         </div>
         <hr>
         <div class='UI-center'>

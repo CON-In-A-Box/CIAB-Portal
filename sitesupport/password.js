@@ -4,54 +4,10 @@
 
 /* jshint browser: true */
 /* jshint -W097 */
-/* globals alertbox, confirmbox, basicBackendRequest, apiRequest,
-           showSpinner, hideSpinner */
-/* exported changePassword, resetPassword, loginUser */
+/* globals alertbox, apiRequest, showSpinner, hideSpinner */
+/* exported resetPassword, loginUser, newPassword */
 
 'use strict';
-
-function changePassword() {
-  var current = document.getElementById('ciab_currentPassword');
-  var newPassword = document.getElementById('ciab_newPassword');
-  var again = document.getElementById('ciab_againPassword');
-  if (!current.value) {
-    alertbox('Current Password not supplied');
-    return;
-  }
-  if (!newPassword.value) {
-    alertbox('New Password not supplied');
-    return;
-  }
-  if (!again.value || again.value != newPassword.value) {
-    alertbox('New Password confirmation does not match');
-    return;
-  }
-
-  confirmbox('Proceed in changing your password?').then(function() {
-    basicBackendRequest('POST', 'profile',
-      'auth=' + current.value + '&password=' + newPassword.value,
-      function() {
-        alertbox('Password Updated').then(
-          function() {
-            location.reload();
-          }
-        );
-      },
-      function(response) {
-        if (response.status == 403) {
-          if (current.value) {
-            alertbox('Current Password Incorrect');
-          }
-          current.value = '';
-        }
-      });
-  },
-  function() {
-    current.value = '';
-    newPassword.value = '';
-    again.value = '';
-  });
-}
 
 function resetPassword() {
   var email = document.getElementById('email');
@@ -62,17 +18,56 @@ function resetPassword() {
     return;
   }
 
-  basicBackendRequest('POST', 'recovery', 'password_reset=' + email.value,
-    function() {
+  showSpinner();
+  apiRequest('POST', 'member/' + email.value + '/password', '')
+    .then(function() {
+      hideSpinner();
       alertbox('Email Sent').then(function() {
         window.location = '/index.php?Function=public';
       });
-    },
-    function() {
+    })
+    .catch(function() {
+      hideSpinner();
       if (email.value) {
-        alertbox('Account for ' + email.value + ' was not found.');
+        alertbox('Password reset for ' + email.value + ' failed.');
       }
       email.value = '';
+    });
+}
+
+
+function newPassword() {
+  var email = document.getElementById('email');
+  var code = document.getElementById('authorization');
+  var pass = document.getElementById('new_password');
+  var verify = document.getElementById('confirm_password');
+
+  if (!pass.value) {
+    alertbox('Please enter your new password.');
+    return;
+  }
+
+  if (pass.value !== verify.value) {
+    alertbox('Password and confirmation do not match.');
+    return;
+  }
+
+  showSpinner();
+  apiRequest('PUT', 'member/' + email.value + '/password/recovery',
+    'OneTimeCode=' + code.value + '&NewPassword=' + pass.value)
+    .then(function() {
+      hideSpinner();
+      alertbox('Password Reset.').then(function() {
+        window.location = '/index.php?Function=public';
+      });
+    })
+    .catch(function(response) {
+      hideSpinner();
+      if (response instanceof Error) { throw response; }
+      if (email.value) {
+        alertbox('Password reset for ' + email.value + ' failed:' +
+                 response.responseText);
+      }
     });
 }
 
@@ -105,7 +100,9 @@ function loginUser(userEntry, passwordEntry)
         auth.token_type + ' ' + auth.access_token);
       myxhttp.send();
     })
-    .catch(function() {
+    .catch(function(response) {
+      if (response instanceof Error) { throw response; }
+      localStorage.clear();
       apiRequest('GET', 'member/' + username + '/status' , null)
         .then(function(result) {
           var failure = JSON.parse(result.responseText);

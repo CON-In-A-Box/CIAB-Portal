@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xml:lang="en">
+<head>
+<title>Beginning the check-in process</title>
+</head>
+<body>
+<div>
+<p>Greetings <?=$name?>,</p>
+<p>Thank you for beginning the check-in process for <?=$event?>!</p>
+<p><?=$instructions?></p>
+<table style="width: 100%;" border="4">
+<caption>Boarding Pass</caption>
+<tbody>
+<tr><th></th></tr>
+<tr>
+<td style="text-align: center;">Boarding Pass for <?=$event?></td>
+</tr>
+<tr>
+<td style="text-align: center;">Badge #<?=$badgeNumber?> - <?=$badgeType?></td>
+</tr>
+<tr>
+<td style="text-align: center;"><?=$fullName?></td>
+</tr>
+</tbody>
+</table>
+<br>
+<form action="<?=$checkin?>">
+<input type="submit" value="Badge Picked Up" />
+</form>
+<br>
+<p>Thank you,</p>
+<p><?=$event?> Staff</p>
+</div>
+</body>
+</html>

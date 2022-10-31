@@ -56,7 +56,7 @@ function urlsafeB64Decode(data) {
 function basicBackendRequest(method, target, parameter, success, failure) {
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
+    if (this.readyState == 4 && [200, 201, 204].includes(this.status)) {
       success(this);
       hideSpinner();
     } else if (this.readyState == 4) {
@@ -109,10 +109,14 @@ function apiRequest(method, target, inParameter) {
     var parameter = null;
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 200) {
+      if (this.readyState == 4 && [200, 201, 204].includes(this.status)) {
         resolve(this);
       } else if (this.readyState == 4) {
         if (this.status == 401) {
+          if (!this.responseText) {
+            reject(this);
+            return;
+          }
           var json = JSON.parse(this.responseText);
           if (json.error == 'invalid_token') {
             var refresh = apiRefresh();
@@ -120,16 +124,18 @@ function apiRequest(method, target, inParameter) {
               apiRequest(method, target, inParameter)
                 .then(resolve)
                 .catch(reject);
-            });
+            })
+              .catch(reject);
             return;
           }
         }
         reject(this);
       }
     };
-    var url = 'api/' + target;
+    var url = window.location.protocol + '//' + window.location.host + '/api/' +
+              target;
     if (method == 'GET') {
-      if (inParameter !== null) {
+      if (inParameter) {
         if (url.indexOf('?') != -1) {
           url += '&' + inParameter;
         } else {

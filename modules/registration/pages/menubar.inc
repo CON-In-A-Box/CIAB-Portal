@@ -4,7 +4,7 @@
     require_module 'standard';
 .*/
 
-require_once $BASEDIR.'/kiosk/kiosk.inc';
+require_once $BASEDIR.'/console/console.inc';
 require_once __DIR__.'/../functions/events.inc';
 
 if (in_registration()) {
@@ -16,10 +16,10 @@ if (in_registration()) {
      'text' => 'Member Registration',
      'responsive' => true);
 
-    generate_kiosk_menus('registration');
+    generate_console_menus('registration');
 }
 
-if (\ciab\RBAC::havePermission("registration.reports")) {
+if (!in_console() && \ciab\RBAC::havePermission("registration.reports")) {
     $report_menus[] = array('base style' => 'UI-yellow',
      'selected style' => 'event-color-primary',
      'function' => 'registration/report',

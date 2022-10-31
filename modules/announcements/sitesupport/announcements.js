@@ -31,7 +31,7 @@ var announcementPage = (function(options) {
         .value = dataset.ciabAnnouncementDepartment;
 
       var canEdit = Object.prototype.hasOwnProperty.call(permissions,
-        dataset.ciabAnnouncementDepartment + '_announcement_put');
+        dataset.ciabAnnouncementDepartment + '_announcement_post');
       var canDelete = Object.prototype.hasOwnProperty.call(permissions,
         dataset.ciabAnnouncementDepartment + '_announcement_delete');
 
@@ -66,6 +66,7 @@ var announcementPage = (function(options) {
                 location.reload();
               })
               .catch(function(response) {
+                if (response instanceof Error) { throw response; }
                 var data = JSON.parse(response.responseText);
                 hideSpinner();
                 alertbox('Delete Failed', data.status);
@@ -79,27 +80,54 @@ var announcementPage = (function(options) {
       var text = document.getElementById('announcement_text').value;
       var dept = document.getElementById('department_dropdown_select').value;
       var scope = document.getElementById('scope_drop').value;
-      confirmbox('Update Announcement', 'Confirm update of this announcement')
+      var email = (document.getElementById('announcement_email').checked ?
+        1 : 0);
+      var message = 'Confirm update of this announcement';
+      if (email && id == -1) {
+        if (scope == '0') {
+          message += '<div class="UI-border UI-margin UI-red"> ' +
+          '<span class="UI-bold">' +
+          '<em>WARNING</em>: This will also email EVERY member that has EVER ' +
+          'registered for the event!</span></div>';
+        }
+        else if (scope == '1') {
+          message += '<div class="UI-border UI-margin UI-yellow"> ' +
+          '<span class="UI-bold">This will also email ' +
+          'EVERY member of the event staff</span>';
+        }
+        else if (scope == '2') {
+          var d = document.getElementById('department_dropdown_select');
+          message += '<div class="UI-border UI-margin"> ' +
+          '<span>This will also email every member of the \'' +
+          d.options[d.selectedIndex].text + '\' Department</span>';
+        }
+      }
+      confirmbox('Update Announcement', message)
         .then(
           function() {
             showSpinner();
-            var method = 'POST';
+            var method = 'PUT';
+            var path = 'announcement/' + id;
             if (id == -1) {
-              method = 'PUT';
-              id = dept;
+              method = 'POST';
+              path = 'department/' + dept + '/announcement';
             }
-            apiRequest(method, 'announcement/' + id,
-              'Scope=' + scope + '&Text=' + encodeURI(text) + '&Department=' +
-              dept)
+            apiRequest(method, path,
+              'scope=' + scope + '&text=' + encodeURI(text) + '&department=' +
+              dept + '&email=' + email)
               .then(function() {
                 location.reload();
               })
               .catch(function(response) {
+                if (response instanceof Error) { throw response; }
                 var data = JSON.parse(response.responseText);
                 hideSpinner();
                 alertbox('Update Failed', data.status);
               });
-          });
+          })
+        .catch(function(response) {
+          if (response instanceof Error) { throw response; }
+        });
     },
 
     displayAnnouncements: function(cache) {
@@ -124,14 +152,14 @@ var announcementPage = (function(options) {
       f = document.createElement('DIV');
       f.classList.add('UI-table-cell');
       f.id = 'announcement-' + data2.id + '-posted';
-      f.appendChild(document.createTextNode(data2.postedOn));
+      f.appendChild(document.createTextNode(data2.posted_on));
       line.appendChild(f);
 
       f = document.createElement('DIV');
       f.classList.add('UI-table-cell');
       f.id = 'announcement-' + data2.id + '-poster';
-      var name = data2.postedBy.firstName + ' ' + data2.postedBy.lastName +
-        ' (' + data2.postedBy.email + ')';
+      var name = data2.posted_by.first_name + ' ' + data2.posted_by.last_name +
+        ' (' + data2.posted_by.email + ')';
       f.appendChild(document.createTextNode(name));
       line.appendChild(f);
 
@@ -154,14 +182,14 @@ var announcementPage = (function(options) {
 
       f = document.createElement('DIV');
       f.setAttribute('name', 'announcement-table-modify-' +
-        data2.departmentId.id);
+        data2.department.id);
       f.classList.add('UI-table-cell');
       f.classList.add('UI-center');
       f.classList.add('UI-hide');
       var button = document.createElement('button');
       button.innerHTML = '<i class="fas fa-calendar-check"></i>';
       button.dataset.ciabAnnouncementId = data2.id;
-      button.dataset.ciabAnnouncementDepartment = data2.departmentId.id;
+      button.dataset.ciabAnnouncementDepartment = data2.department.id;
       button.onclick = announcementPage.openEdit;
       button.classList.add('UI-button');
       f.appendChild(button);
@@ -207,6 +235,7 @@ var announcementPage = (function(options) {
     newAnnouncement: function() {
       var dataset = this.dataset;
       document.getElementById('announcement_text').value = '';
+      document.getElementById('announcement_email').checked = false;
       if (dataset.ciabAnnouncementDepartment) {
         document.getElementById('department_dropdown_select')
           .value = dataset.ciabAnnouncementDepartment;
@@ -254,28 +283,28 @@ var announcementPage = (function(options) {
     buildAnnouncementBlock: function(cache, result, data) {
       var table;
       var rc;
-      var dept = cache[parseInt(data.departmentId.id)];
+      var dept = cache[parseInt(data.department.id)];
       if (!dept) {
-        rc = announcementPage.emptyAnnouncementBlock(data.departmentId);
+        rc = announcementPage.emptyAnnouncementBlock(data.department);
         table = rc[1];
-        cache[parseInt(data.departmentId.id)] = rc;
+        cache[parseInt(data.department.id)] = rc;
       } else {
-        rc = cache[parseInt(data.departmentId.id)];
+        rc = cache[parseInt(data.department.id)];
         table = rc[1];
       }
       announcementPage.addAnnouncement(table, data);
     },
 
     filter: function(dept) {
-      var id = dept.id.id.toString() + '_announcement_put';
+      var id = dept.id.toString() + '_announcement_post';
       return Object.prototype.hasOwnProperty.call(permissions, id);
     },
 
     loadAnnouncements: function() {
       showSpinner();
       apiRequest('GET',
-        'member/announcements/',
-        'maxResults=all&include=departmentId,postedBy')
+        '/announcement',
+        'max_results=all')
         .then(function(response) {
           var result = JSON.parse(response.responseText);
           if (result.data.length > 0) {
@@ -287,19 +316,19 @@ var announcementPage = (function(options) {
           }
           apiRequest('GET',
             'permissions/method/announcement',
-            'maxResults=all')
+            'max_results=all')
             .then(function(response) {
               result = JSON.parse(response.responseText);
-              var havePut = false;
+              var havePost = false;
               permissions = {};
               if (result.data.length > 0) {
                 result.data.forEach(function(data) {
                   if (data.allowed) {
-                    permissions[data.subdata.departmentId + '_' +
+                    permissions[data.subdata.department + '_' +
                                   data.subtype] = data;
-                    if (data.subtype == 'announcement_put') {
+                    if (data.subtype == 'announcement_post') {
                       var sect = 'announcement-block-' +
-                                 data.subdata.departmentId;
+                                 data.subdata.department;
                       var block = document.getElementById(sect);
                       if (block !== null) {
                         var button = block.getElementsByTagName('button');
@@ -307,8 +336,8 @@ var announcementPage = (function(options) {
                           button[0].classList.remove('UI-hide');
                         }
                       }
-                      if (!havePut) {
-                        havePut = true;
+                      if (!havePost) {
+                        havePost = true;
                         var add = document.getElementById(
                           'announcement-sectionbar-add');
                         add.classList.remove('UI-hide');
@@ -316,9 +345,9 @@ var announcementPage = (function(options) {
                       }
                     }
                     if (data.subtype == 'announcement_delete' ||
-                          data.subtype == 'announcement_post') {
+                          data.subtype == 'announcement_put') {
                       var line = 'announcement-table-modify-' +
-                            data.subdata.departmentId;
+                            data.subdata.department;
                       var cells = document.getElementsByName(line);
                       cells.forEach(function(cell) {
                         cell.classList.remove('UI-hide');
@@ -335,11 +364,13 @@ var announcementPage = (function(options) {
               );
               hideSpinner();
             })
-            .catch(function() {
+            .catch(function(response) {
+              if (response instanceof Error) { throw response; }
               hideSpinner();
             });
         })
         .catch(function(response) {
+          if (response instanceof Error) { throw response; }
           var target = document.getElementById('headline_section');
           target.innerHTML = response.responseText;
           hideSpinner();

@@ -26,6 +26,15 @@
             &nbsp;
             <label class="UI-label" for="deadline_note">Note: </label>
             <input class="UI-input UI-padding" type="text" id="deadline_note">
+            &nbsp;
+            <div class="UI-padding">
+                <label class="UI-label" for="scope_drop">Audience: </label>
+                <select id="scope_drop">
+                    <option value=2>This Department Only</option>
+                    <option value=1>All ConCom</option>
+                    <option value=0>Convention Wide (All Attendees)</option>
+                </select>
+            </div>
         </div>
         <div class="UI-center">
             <button class="UI-eventbutton UI-margin UI-hide" id="save_event_button"

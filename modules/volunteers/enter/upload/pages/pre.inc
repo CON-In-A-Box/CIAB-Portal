@@ -17,7 +17,7 @@ if (!(isset($_SESSION['IS_ADMIN']) || !($concom === null))) {
     goSite();
 }
 
-require_once($FUNCTIONDIR."/volunteer.inc");
+require_once(__DIR__.'/../../../functions/volunteer.inc');
 
 $response = array();
 

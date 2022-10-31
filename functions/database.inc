@@ -2,16 +2,67 @@
 
 /*.
     require_module 'standard';
+    require_module 'json';
 .*/
 
 // Currently, this database class is set for the MySQL PDO filter/backend. Future version will expand it to be agnostic
 
+require_once(__DIR__.'/locations.inc');
 require_once($BACKEND.'/'.$_ENV['DB_BACKEND']); // MyPDO Definition used
 require_once($BASEDIR.'/data/database-schema.php');
-require_once(__DIR__.'/locations.inc');
 
 class DB
 {
+
+    private static $MODULE_TABLES = array();
+
+    private static $MODULE_FOREIGNKEYS = array();
+
+    private static $MODULE_PRIMARYKEYS = array();
+
+    private static $MODULE_INDEX = array();
+
+    /**
+     * @var array
+     */
+    private $schema;
+
+    /**
+     * @var boolean
+     */
+    private $loaded = false;
+
+
+    public static function addTables(array $tables): array
+    {
+        self::$MODULE_TABLES = array_merge(self::$MODULE_TABLES, $tables);
+        return self::$MODULE_TABLES;
+
+    }
+
+
+    public static function addForeignKeys(array $fks): array
+    {
+        self::$MODULE_FOREIGNKEYS = array_merge(self::$MODULE_FOREIGNKEYS, $fks);
+        return self::$MODULE_FOREIGNKEYS;
+
+    }
+
+
+    public static function addPrimaryKeys(array $pks): array
+    {
+        self::$MODULE_PRIMARYKEYS = array_merge(self::$MODULE_PRIMARYKEYS, $pks);
+        return self::$MODULE_PRIMARYKEYS;
+
+    }
+
+
+    public static function addIndexes(array $indexes): array
+    {
+        self::$MODULE_INDEX = array_merge(self::$MODULE_INDEX, $indexes);
+        return self::$MODULE_INDEX;
+
+    }
 
 
     private static function verifyDB()
@@ -81,7 +132,7 @@ SQL;
     }
 
 
-    private static function buildMissingTables()
+    private function buildMissingTables()
     {
         // This function cannot call the run function as we don't know if the activitylog table is created
         // Besides, this is maintenance, not user log tracking
@@ -96,7 +147,7 @@ SQL;
             }
         }
         // Verify every table we need exists, if not, create.
-        foreach (SCHEMA::$DB_tables as $table => $fields) {
+        foreach ($this->schema['tables'] as $table => $fields) {
             if (in_array($table, $arr)) {
                 // Table exists
                 // Capture a list of fields already in the table
@@ -130,11 +181,18 @@ SQL;
                     $sql_data = file_get_contents($DATADIR.'/DBSeed/'.$table.'.sql');
                     MyPDO::instance()->query($sql_data);
                 }
+                $modules = glob($GLOBALS['MODULESDIR'].'/*/DBSeed/'.$table.'.sql');
+                if (is_array($modules) && !empty($modules)) {
+                    foreach ($modules as $module) {
+                        $sql_data = @file_get_contents($module);
+                        MyPDO::instance()->query($sql_data);
+                    }
+                }
             }
         }
 
         //Verify primary keys
-        foreach (SCHEMA::$DB_primaryKeys as $table => $keys) {
+        foreach ($this->schema['primaryKeys'] as $table => $keys) {
             $query = "SHOW KEYS FROM `$table` WHERE Key_name = 'PRIMARY';";
             $result = MyPDO::instance()->query($query);
             $value = $result->fetch();
@@ -146,14 +204,14 @@ SQL;
 
         // Capture a list of all Constraints (Foreign Keys)
         $build = "SELECT TABLE_NAME, COLUMN_NAME FROM information_schema.KEY_COLUMN_USAGE";
-        $build .= " WHERE TABLE_SCHEMA = '".$GLOBALS['DBNAME']."' AND CONSTRAINT_NAME <> 'PRIMARY';";
+        $build .= " WHERE TABLE_SCHEMA = '".$_ENV['DBNAME']."' AND CONSTRAINT_NAME <> 'PRIMARY';";
         $result = MyPDO::instance()->query($build);
         $arr = [];
         foreach ($result as $value) {
             $arr[] = $value['TABLE_NAME'].":".$value['COLUMN_NAME'];
         }
         // Verify every foreign key we need exists, if not, create.
-        foreach (SCHEMA::$DB_foreignKeys as $table => $fields) {
+        foreach ($this->schema['foreignKeys'] as $table => $fields) {
             foreach ($fields as $column => $referto) {
                 $lookfor = $table.":".$column;
                 if (!in_array($lookfor, $arr)) {
@@ -164,32 +222,76 @@ SQL;
             }
         }
 
-        //  Create index
-        foreach (SCHEMA::$DB_index as $table => $keys) {
-            $build = "SHOW INDEX FROM `".$table."`;";
+        // Manage indexes
+        foreach ($this->schema['index'] as $table => $indexes) {
+            $build = "SHOW INDEXES FROM `".$table."`;";
             $result = mypdo::instance()->query($build);
-            $arr = [];
+            $current_indexes = [];
             foreach ($result as $value) {
-                $arr[] = $value['Column_name'];
+                $current_indexes[] = $value['Key_name'];
             }
 
-            $keys  = array_diff($keys, $arr);
-            if (count($keys)) {
-                $build = "alter table ".$table;
-                $build .= " ADD INDEX (`".implode("`, `", $keys)."`);";
-                MyPDO::instance()->query($build);
+            $desired_indexes = array_keys($indexes);
+            $indexes_to_add = array_diff($desired_indexes, $current_indexes);
+
+            foreach ($indexes_to_add as $index_to_add) {
+                $columns = $indexes[$index_to_add];
+                $sql = "CREATE INDEX ".$index_to_add." ON ".$table." (`".implode("`, `", $columns)."`);";
+                $result = MyPDO::instance()->query($sql);
+                if ($result->errorCode() != '00000') {
+                    error_log("Index update failed for ${table} ${index_to_add}: $result->errorCode()");
+                }
             }
         }
 
     }
 
 
+    public function loadModules()
+    {
+        if ($this->loaded) {
+            return;
+        }
+        if (array_key_exists('MODULESDIR', $GLOBALS) &&
+            !empty($GLOBALS['MODULESDIR'])) {
+            try {
+                $modules = scandir($GLOBALS['MODULESDIR']);
+                foreach ($modules as $key => $value) {
+                    if (!in_array($value, array(".", ".."))) {
+                        if (is_dir($GLOBALS['MODULESDIR'].DIRECTORY_SEPARATOR.$value)) {
+                            if (is_file($GLOBALS['MODULESDIR'].DIRECTORY_SEPARATOR.$value.DIRECTORY_SEPARATOR.'database-schema.inc')) {
+                                require_once($GLOBALS['MODULESDIR'].DIRECTORY_SEPARATOR.$value.DIRECTORY_SEPARATOR.'database-schema.inc');
+                            }
+                        }
+                    }
+                }
+            } catch (RuntimeException $e) {
+                error_log("ERROR!!! Database Schema import failed: ".$e);
+            }
+        }
+
+        $this->schema['tables'] = array_merge($this->schema['tables'], self::$MODULE_TABLES);
+        $this->schema['foreignKeys'] = array_merge($this->schema['foreignKeys'], self::$MODULE_FOREIGNKEYS);
+        $this->schema['primaryKeys'] = array_merge($this->schema['primaryKeys'], self::$MODULE_PRIMARYKEYS);
+        $this->schema['index'] = array_merge($this->schema['index'], self::$MODULE_INDEX);
+        $this->loaded = true;
+
+    }
+
+
     public function __construct()
     {
+        $this->schema = array();
+        $this->schema['tables'] = SCHEMA::$DB_tables;
+        $this->schema['foreignKeys'] = SCHEMA::$DB_foreignKeys;
+        $this->schema['primaryKeys'] = SCHEMA::$DB_primaryKeys;
+        $this->schema['index'] = SCHEMA::$DB_index;
+        $this->loadModules();
         $oldMD5 = DB::getRecordedDBSchemaMD5();
-        $currentMD5 = md5_file($GLOBALS['BASEDIR'].'/data/database-schema.php');
+        $currentMD5 = md5(json_encode($this->schema));
+
         if ($oldMD5 != $currentMD5) {
-            DB::buildMissingTables();
+            $this->buildMissingTables();
             $sql = <<<SQL
                 REPLACE INTO Configuration
                     (`Value`, `Field`)
@@ -215,7 +317,7 @@ SQL;
         if (substr(ltrim($sql), 0, 6) !== "SELECT") {
             // Prepare a log entry for this query
             $logMessage = MyPDO::instance()->prepare('INSERT INTO ActivityLog (AccountID, Function, Query) VALUES (:account, :function, :query);');
-        
+
             if (empty($_SESSION['accountId'])) {
                 $account = 0;
             } else {
@@ -250,6 +352,13 @@ SQL;
         $stmt = MyPDO::instance()->prepare($sql);
         $stmt->execute($args);
         return $stmt;
+
+    }
+
+
+    public static function instance()
+    {
+        return MyPDO::instance();
 
     }
 
@@ -383,16 +492,22 @@ function current_eventID()
 
 function current_eventName()
 {
-    global $_currentEventName;
+    global $_currentEventName, $CONHOST;
 
     if ($_currentEventName === null) {
         $event = current_eventID();
         $sql = "SELECT `EventName` FROM Events WHERE EventID=$event;";
-        $result = DB::run($sql);
-        $value = $result->fetch();
-        if ($value) {
-            $_currentEventName = $value['EventName'];
-            return $_currentEventName;
+        try {
+            $result = DB::run($sql);
+            $value = $result->fetch();
+            if ($value) {
+                $_currentEventName = $value['EventName'];
+                return $_currentEventName;
+            } else {
+                return $CONHOST;
+            }
+        } catch (PDOException $e) {
+            return $CONHOST;
         }
     }
     return $_currentEventName;

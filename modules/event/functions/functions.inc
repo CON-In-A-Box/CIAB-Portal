@@ -6,9 +6,7 @@
 .*/
 
 require_once($FUNCTIONDIR."/database.inc");
-if (array_key_exists('Neon', $GLOBALS)) {
-    require_once($FUNCTIONDIR."/update/from_neon_to_152.inc");
-}
+require_once($BACKEND."/CRM.inc");
 
 
 function _event_details($id)
@@ -289,41 +287,10 @@ SQL;
 }
 
 
-function _get_event_from_Date($eventdate)
-{
-    $date = new DateTime($eventdate);
-    $cycle = _get_cycleID($date);
-    $sql = "SELECT EventID FROM Events WHERE AnnualCycleID = '$cycle';";
-    $result = load_table($sql);
-    if ($result) {
-        $event = $result[0]['EventID'];
-        return $event;
-    }
-    return null;
-
-}
-
-
 function import_meetings()
 {
-    foreach ($_SESSION['definedFields']['customField'] as $field) {
-        if ($field['fieldName'] == 'Official Meeting Attendance') {
-            foreach ($field['fieldOptions']['fieldOption'] as $meet) {
-                $data = explode(' - ', $meet['name']);
-                $id = $meet['id'];
-                $date = $data[0];
-                $name = $data[1];
-                $event = _get_event_from_Date($date);
-                $sql = <<<SQL
-                    INSERT IGNORE INTO `OfficialMeetings`
-                    SET  MeetingID = $id,
-                         Date = '$date',
-                         EventID = $event,
-                         Name = '$name';
-SQL;
-                DB::run($sql);
-            }
-        }
+    if (\ciab\CRM::hasEvents()) {
+        \ciab\CRM::importMeetings();
     }
 
 }
@@ -331,31 +298,9 @@ SQL;
 
 function import_events()
 {
-    if (array_key_exists('Neon', $GLOBALS)) {
-        _Neon_import_events();
+    if (\ciab\CRM::hasEvents()) {
+        \ciab\CRM::importEvents();
     }
-
-}
-
-
-function select_events()
-{
-    $sql = <<<SQL
-        SELECT
-            `EventID`,
-            `EventName`
-        FROM
-            `Events`
-        ORDER BY
-            `DateFrom` DESC
-SQL;
-
-    $values = [
-    'Id' => 'EventID',
-    'Name' => 'EventName',
-    ];
-    $data = load_table($sql, $values);
-    return $data;
 
 }
 
@@ -396,50 +341,6 @@ SQL;
 function delete_meeting($id)
 {
     $sql = "DELETE FROM `OfficialMeetings` WHERE `MeetingID` = $id;";
-    DB::run($sql);
-
-}
-
-
-function list_cycles()
-{
-    global $last_cycle;
-
-    $sql = <<<SQL
-        SELECT
-            *
-        FROM
-            `AnnualCycles`
-        ORDER BY
-            `DateFrom` DESC
-SQL;
-
-    $values = [
-    'Id' => 'AnnualCycleID',
-    'From' => 'DateFrom',
-    'To' => 'DateTo',
-    ];
-    $data = load_table($sql, $values);
-    $keys = array_keys($values);
-    print "<table class='UI-stripedtable UI-padding'>\n";
-    print "<tr><th>".implode('</th><th>', $keys)."</th></tr>\n";
-    $last_cycle = null;
-    foreach ($data as $entry) {
-        if ($last_cycle === null) {
-            $last_cycle = $entry;
-        }
-        print "<tr><td>".implode('</td><td>', $entry)."</td></tr>\n";
-    }
-    print "</table>\n";
-
-}
-
-
-function new_cycle($cycle)
-{
-    $from = $cycle->From;
-    $to = $cycle->To;
-    $sql = "INSERT INTO `AnnualCycles` (`AnnualCycleID`, `DateFrom`, `DateTo`) VALUES (NULL, '$from', '$to')";
     DB::run($sql);
 
 }
@@ -501,56 +402,6 @@ SQL;
 }
 
 
-function save_event($event)
-{
-    $id = $event->Id;
-    $name = MyPDO::quote($event->Name);
-    $from = $event->From;
-    $to = $event->To;
-
-    $cycle_to = lookup_cycleID($to);
-    $cycle_from = lookup_cycleID($from);
-    if ($cycle_to != $cycle_from) {
-        header("HTTP/1.0 404");
-        return;
-    }
-
-    if ($id == -1) {
-        $sql = <<<SQL
-    INSERT INTO `Events` (
-        `EventID`, `AnnualCycleID`, `DateFrom`, `DateTo`, `EventName`
-    )
-    VALUES
-        (
-            NULL, '$cycle_from', '$from', '$to', $name
-        )
-SQL;
-    } else {
-        $sql = <<<SQL
-    UPDATE
-        `Events`
-    SET
-        `DateFrom` = '$from',
-        `DateTo` = '$to',
-        `AnnualCycleID` = $cycle_from,
-        `EventName` = $name
-    WHERE
-        `EventID` = $id
-SQL;
-    }
-    DB::run($sql);
-
-}
-
-
-function delete_event($id)
-{
-    $sql = "DELETE FROM `Events` WHERE `EventID` = $id;";
-    DB::run($sql);
-
-}
-
-
 function duplicate_concom($to, $from)
 {
     $sql = <<<SQL
@@ -590,56 +441,52 @@ function attendance_report($event = null)
 
     return <<<SQL
         SELECT
-            DISTINCT a.`AccountID`,
-            me.`Email`,
-            (
-                SELECT
-                    COUNT(DISTINCT `MeetingID`)
-                FROM
-                    MeetingAttendance AS b
-                WHERE
-                    b.AccountID = a.AccountID
-                    AND b.MeetingID IN (
-                        SELECT
-                            `MeetingID`
-                        FROM
-                            `OfficialMeetings`
-                        WHERE
-                            `EventID` = '$event'
-                    )
-            ) AS `Count`,
-            (
-                SELECT
-                    GROUP_CONCAT(
-                        DISTINCT (
-                            SELECT
-                                `Name`
-                            FROM
-                                OfficialMeetings AS n
-                            WHERE
-                                n.`MeetingID` = m.`MeetingID`
-                                AND n.`EventID` = '$event'
-                        ) SEPARATOR ', '
-                    )
-                FROM
-                    `MeetingAttendance` AS m
-                WHERE
-                    `AccountID` = a.`AccountID`
-            ) AS Attendance
-        FROM
-            `ConComList` AS a
-        INNER JOIN `Members` me USING(AccountID)
-        WHERE
-            `EventID` = '$event'
-            AND DepartmentID NOT IN (
-                SELECT
-                    `DepartmentID`
-                FROM
-                    `Departments`
-                WHERE
-                    `Name` = 'Historical Placeholder'
-            )
-       ORDER BY `Count` DESC
+            AccountID,
+            Email,
+            COUNT(Name) as Count,
+            GROUP_CONCAT(Name SEPARATOR ', ') as Meetings
+        FROM (
+            SELECT ma.AccountID as AccountID,
+                   m.Email as Email,
+                   om.Name as Name,
+                   om.Date as Date
+            FROM MeetingAttendance AS ma
+            INNER JOIN OfficialMeetings AS om ON ma.MeetingID = om.MeetingID
+            INNER JOIN Members AS m ON ma.AccountID = m.AccountID
+            WHERE `EventID` = '$event'
+            ORDER BY Date ASC
+        ) AS attendees
+        GROUP BY AccountID
+        ORDER BY Count DESC
+SQL;
+
+}
+
+
+function cycle_attendance_report($cycle = null)
+{
+    $dateFrom = $cycle['DateFrom'];
+    $dateTo = $cycle['DateTo'];
+
+    return <<<SQL
+        SELECT
+            AccountID,
+            Email,
+            COUNT(Name) as Count,
+            GROUP_CONCAT(Name SEPARATOR ', ') as Meetings
+        FROM (
+            SELECT ma.AccountID as AccountID,
+                   m.Email as Email,
+                   om.Name as Name,
+                   om.Date as Date
+            FROM MeetingAttendance AS ma
+            INNER JOIN OfficialMeetings AS om ON ma.MeetingID = om.MeetingID
+            INNER JOIN Members AS m ON ma.AccountID = m.AccountID
+            WHERE Date >= '$dateFrom' AND Date <= '$dateTo'
+            ORDER BY Date ASC
+        ) AS attendees
+        GROUP BY AccountID
+        ORDER BY Count DESC
 SQL;
 
 }

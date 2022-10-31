@@ -12,5 +12,7 @@ services:
       - frontend
       - backend
     environment:
+        PMA_HOST: db
         PMA_USER: ${DBUSER}
         PMA_PASSWORD: ${DBPASS}
+        PMA_PORT: ${DBPORT:-3306}

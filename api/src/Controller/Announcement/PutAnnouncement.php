@@ -3,56 +3,95 @@
     require_module 'standard';
 .*/
 
+/**
+ *  @OA\Put(
+ *      tags={"announcements"},
+ *      path="/announcement/{id}",
+ *      summary="Updates a announcement",
+ *      @OA\Parameter(
+ *          description="Id of the announcement",
+ *          in="path",
+ *          name="id",
+ *          required=true,
+ *          @OA\Schema(type="integer")
+ *      ),
+ *      @OA\RequestBody(
+ *          @OA\MediaType(
+ *              mediaType="multipart/form-data",
+ *              @OA\Schema(
+ *                  @OA\Property(
+ *                      property="Department",
+ *                      type="integer",
+ *                      nullable=true
+ *                  ),
+ *                  @OA\Property(
+ *                      property="Text",
+ *                      type="string",
+ *                      nullable=true
+ *                  ),
+ *                  @OA\Property(
+ *                      property="Scope",
+ *                      type="integer",
+ *                      nullable=true
+ *                  )
+ *              )
+ *          )
+ *      ),
+ *      @OA\Response(
+ *          response=200,
+ *          description="OK"
+ *      ),
+ *      @OA\Response(
+ *          response=401,
+ *          ref="#/components/responses/401"
+ *      ),
+ *      @OA\Response(
+ *          response=404,
+ *          ref="#/components/responses/department_not_found"
+ *      ),
+ *      security={{"ciab_auth":{}}}
+ *  )
+ **/
+
 namespace App\Controller\Announcement;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
-
-require_once __DIR__.'/../../../../functions/users.inc';
+use Atlas\Query\Update;
+use App\Controller\InvalidParameterException;
 
 class PutAnnouncement extends BaseAnnouncement
 {
 
 
-    public function buildResource(Request $request, Response $response, $args): array
+    public function buildResource(Request $request, Response $response, $params): array
     {
-        $department = $this->getDepartment($args['dept']);
-        if ($department === null) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse(
-                $request,
-                $response,
-                'Not Found',
-                'Department \''.$args['dept'].'\' Not Found',
-                404
-            )];
-        }
-        if (\ciab\RBAC::havePermission('api.put.announcement.'.$department['id']) ||
-            \ciab\RBAC::havePermission('api.put.announcement.all')) {
-            $body = $request->getParsedBody();
-            if (!array_key_exists('Scope', $body)) {
-                return [
-                \App\Controller\BaseController::RESULT_TYPE,
-                $this->errorResponse($request, $response, 'Required \'Scope\' parameter not present', 'Missing Parameter', 400)];
-            }
-            if (!array_key_exists('Text', $body)) {
-                return [
-                \App\Controller\BaseController::RESULT_TYPE,
-                $this->errorResponse($request, $response, 'Required \'Text\' parameter not present', 'Missing Parameter', 400)];
-            }
+        $target = $this->getAnnouncement($params['id']);
+        $department = $target['department'];
 
-            $user = $this->findMember($request, $response, null, null);
-            $member = $user['Id'];
+        $permissions = ['api.put.announcement.all',
+        'api.put.announcement.'.$department];
+        $this->checkPermissions($permissions);
 
-            $sth = $this->container->db->prepare("INSERT INTO `Announcements` (DepartmentID, PostedBy, PostedOn, Scope, Text) VALUES ({$department['id']}, $member, now(), '{$body['Scope']}', '{$body['Text']}')");
-            $sth->execute();
-            return [null];
-        } else {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, 'Permission Denied', 'Permission Denied', 403)];
+        $body = $request->getParsedBody();
+        if (empty($body)) {
+            throw new InvalidParameterException('No update parameter present');
         }
+
+        if (array_key_exists('department', $body)) {
+            $department = $this->getDepartment($body['department'])['id'];
+            $permissions = ['api.put.announcement.all',
+            'api.put.announcement.'.$department];
+            $this->checkPermissions($permissions);
+            $body['department'] = $department;
+        }
+
+        $update = Update::new($this->container->db);
+        $update->table('Announcements');
+        $update->columns(BaseAnnouncement::insertPayloadFromParams($body, false));
+        $update->whereEquals(['AnnouncementID' => $params['id']]);
+        $update->perform();
+        return [null];
 
     }
 

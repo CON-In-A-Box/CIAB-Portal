@@ -2,63 +2,110 @@
 /*.
     require_module 'standard';
 .*/
+/**
+ *  @OA\Put(
+ *      tags={"deadlines"},
+ *      path="/deadline/{id}",
+ *      summary="Updates a deadline",
+ *      @OA\Parameter(
+ *          description="Id of the deadline",
+ *          in="path",
+ *          name="id",
+ *          required=true,
+ *          @OA\Schema(type="integer")
+ *      ),
+ *      @OA\RequestBody(
+ *          @OA\MediaType(
+ *              mediaType="multipart/form-data",
+ *              @OA\Schema(
+ *                  @OA\Property(
+ *                      property="deadline",
+ *                      type="string",
+ *                      format="date",
+ *                      nullable=true
+ *                  ),
+ *                  @OA\Property(
+ *                      property="note",
+ *                      type="string",
+ *                      nullable=true
+ *                  )
+ *              )
+ *          )
+ *      ),
+ *      @OA\Response(
+ *          response=200,
+ *          description="OK"
+ *      ),
+ *      @OA\Response(
+ *          response=401,
+ *          ref="#/components/responses/401"
+ *      ),
+ *      @OA\Response(
+ *          response=404,
+ *          ref="#/components/responses/deadline_not_found"
+ *      ),
+ *      security={{"ciab_auth":{}}}
+ *  )
+ **/
 
 namespace App\Controller\Deadline;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
+use Atlas\Query\Update;
+use Atlas\Query\Select;
+use App\Controller\NotFoundException;
+use App\Controller\InvalidParameterException;
 
 class PutDeadline extends BaseDeadline
 {
 
 
-    public function buildResource(Request $request, Response $response, $args): array
+    public function buildResource(Request $request, Response $response, $params): array
     {
-        $department = $this->getDepartment($args['dept']);
-        if ($department === null) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse(
-                $request,
-                $response,
-                'Not Found',
-                'Department \''.$args['dept'].'\' Not Found',
-                404
-            )];
+        $select = Select::new($this->container->db);
+        $select->columns('*')->from('Deadlines')->whereEquals(['DeadlineID' => $params['id']]);
+        $target = $select->fetchOne();
+        if (empty($target)) {
+            throw new NotFoundException('Deadline Not Found');
         }
-        if (\ciab\RBAC::havePermission('api.put.deadline.'.$department['id']) ||
-            \ciab\RBAC::havePermission('api.put.deadline.all')) {
-            $body = $request->getParsedBody();
-            if (!array_key_exists('Deadline', $body)) {
-                return [
-                \App\Controller\BaseController::RESULT_TYPE,
-                $this->errorResponse($request, $response, 'Required \'Deadline\' parameter not present', 'Missing Parameter', 400)];
-            }
-            if (!array_key_exists('Note', $body)) {
-                return [
-                \App\Controller\BaseController::RESULT_TYPE,
-                $this->errorResponse($request, $response, 'Required \'Note\' parameter not present', 'Missing Parameter', 400)];
-            }
-            $date = strtotime($body['Deadline']);
+
+        $department = $target['DepartmentID'];
+        $permissions = ['api.put.deadline.'.$department,
+        'api.put.deadline.all'];
+        $this->checkPermissions($permissions);
+
+        $body = $request->getParsedBody();
+        if (!$body) {
+            throw new InvalidParameterException("Body required");
+        }
+
+        if (array_key_exists('department', $body)) {
+            $department = $this->getDepartment($body['department']);
+            $body['department'] = $department['id'];
+
+            $permissions = ['api.put.deadline.'.$department['id'],
+            'api.put.deadline.all'];
+            $this->checkPermissions($permissions);
+        }
+
+        if (array_key_exists('deadline', $body)) {
+            $date = strtotime($body['deadline']);
             if ($date == false) {
-                return [
-                \App\Controller\BaseController::RESULT_TYPE,
-                $this->errorResponse($request, $response, '\'Deadline\' parameter not valid \''.$body['Deadline'].'\'', 'Invalid Parameter', 400)];
+                throw new InvalidParameterException('\'deadline\' parameter not valid \''.$body['deadline'].'\'');
             }
             if ($date < strtotime('now')) {
-                return [
-                \App\Controller\BaseController::RESULT_TYPE,
-                $this->errorResponse($request, $response, '\'Deadline\' parameter in the past not valid \''.$body['Deadline'].'\'', 'Invalid Parameter', 400)];
+                throw new InvalidParameterException('\'deadline\' parameter in the past not valid \''.$body['deadline'].'\'');
             }
-            $sql_date = date("Y-m-d", $date);
-            $sth = $this->container->db->prepare("INSERT INTO `Deadlines` (DepartmentID, Deadline, Note) VALUES ({$department['id']}, '$sql_date', '{$body['Note']}')");
-            $sth->execute();
-            return [null];
-        } else {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, 'Permission Denied', 'Permission Denied', 403)];
+            $body['deadline'] = date("Y-m-d", $date);
         }
+
+        $update = Update::new($this->container->db);
+        $update->table('Deadlines');
+        $update->columns(BaseDeadline::insertPayloadFromParams($body, false));
+        $update->whereEquals(['DeadlineID' => $params['id']]);
+        $update->perform();
+        return [null];
 
     }
 

@@ -51,11 +51,11 @@ build_structure_sections();
             </div>
 <?php
 if (\ciab\RBAC::havePermission("site.concom.permissions")) {
-?>
+    ?>
             <button class='UI-redbutton UI-padding UI-margin' id='dept_rbac'>
                  Position Site Permissions (RBAC)
             </button><br>
-<?php
+    <?php
 }
 ?>
             <label class='UI-label' for='dept_count'>Staff Count:</label>

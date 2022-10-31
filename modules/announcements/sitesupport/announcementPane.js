@@ -38,9 +38,9 @@ var announcementPane = (function(options) {
       a.appendChild(document.createTextNode(data2.text));
       var s = document.createElement('SPAN');
       s.classList.add('UI-announcement-source');
-      s.appendChild(document.createTextNode('  -  ' + data2.departmentId.name));
+      s.appendChild(document.createTextNode('  -  ' + data2.department.name));
       a.appendChild(s);
-      s.appendChild(document.createTextNode(' (' + data2.postedOn + ')'));
+      s.appendChild(document.createTextNode(' (' + data2.posted_on + ')'));
       a.appendChild(s);
       f.appendChild(a);
       line.appendChild(f);
@@ -81,8 +81,8 @@ var announcementPane = (function(options) {
     load: function() {
       var frame = [ announcementPane.emptyAnnouncementBlock() ];
       apiRequest('GET',
-        'member/announcements/',
-        'maxResults=all&include=departmentId')
+        '/announcement',
+        'max_results=all')
         .then(function(response) {
           var target = document.getElementById('announcement_pane');
           var result = JSON.parse(response.responseText);

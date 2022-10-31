@@ -2,83 +2,109 @@
 /*.
     require_module 'standard';
 .*/
+/**
+ *  @OA\Post(
+ *      tags={"departments"},
+ *      path="/department/{id}/deadline",
+ *      summary="Adds a new deadline",
+ *      @OA\Parameter(
+ *          description="The id or name of the department",
+ *          in="path",
+ *          name="id",
+ *          required=true,
+ *          @OA\Schema(
+ *              oneOf = {
+ *                  @OA\Schema(
+ *                      description="Department id",
+ *                      type="integer"
+ *                  ),
+ *                  @OA\Schema(
+ *                      description="Department name",
+ *                      type="string"
+ *                  )
+ *              }
+ *          )
+ *      ),
+ *      @OA\RequestBody(
+ *          @OA\MediaType(
+ *              mediaType="multipart/form-data",
+ *              @OA\Schema(
+ *                  @OA\Property(
+ *                      property="deadline",
+ *                      type="string",
+ *                      format="date"
+ *                  ),
+ *                  @OA\Property(
+ *                      property="note",
+ *                      type="string"
+ *                  ),
+ *                  @OA\Property(
+ *                      property="scope",
+ *                      type="integer"
+ *                  ),
+ *              )
+ *          )
+ *      ),
+ *      @OA\Response(
+ *          response=201,
+ *          description="OK"
+ *      ),
+ *      @OA\Response(
+ *          response=401,
+ *          ref="#/components/responses/401"
+ *      ),
+ *      @OA\Response(
+ *          response=404,
+ *          ref="#/components/responses/department_not_found"
+ *      ),
+ *      security={{"ciab_auth":{}}}
+ *  )
+ **/
 
 namespace App\Controller\Deadline;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
+use Atlas\Query\Insert;
+use App\Controller\InvalidParameterException;
 
 class PostDeadline extends BaseDeadline
 {
 
 
-    public function buildResource(Request $request, Response $response, $args): array
+    public function buildResource(Request $request, Response $response, $params): array
     {
-        $sth = $this->container->db->prepare("SELECT * FROM `Deadlines` WHERE `DeadlineID` = '".$args['id']."'");
-        $sth->execute();
-        $deadlines = $sth->fetchAll();
-        if (empty($deadlines)) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, 'Not Found', 'Deadline Not Found', 404)];
-        }
-        $target = $deadlines[0];
+        $department = $this->getDepartment($params['name']);
+        $permissions = ['api.post.deadline.'.$department['id'],
+        'api.post.deadline.all'];
+        $this->checkPermissions($permissions);
 
-        $department = $target['DepartmentID'];
-        if (!\ciab\RBAC::havePermission('api.post.deadline.'.$department) &&
-            !\ciab\RBAC::havePermission('api.post.deadline.all')) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, 'Permission Denied', 'Permission Denied', 403)];
+        $required = ['deadline', 'note'];
+        $body = $this->checkRequiredBody($request, $required);
+        if (!array_key_exists('scope', $body)) {
+            $body['scope'] = 2;
         }
+        $body['posted_by'] = $request->getAttribute('oauth2-token')['user_id'];
 
-        $body = $request->getParsedBody();
-
-        if (array_key_exists('Department', $body)) {
-            $department = $this->getDepartment($body['Department']);
-            if ($department === null) {
-                return [
-                \App\Controller\BaseController::RESULT_TYPE,
-                $this->errorResponse(
-                    $request,
-                    $response,
-                    'Not Found',
-                    'Department \''.$body['Department'].'\' Not Found',
-                    404
-                )];
-            }
-            $target['DepartmentID'] = $department['id'];
+        $date = strtotime($body['deadline']);
+        if ($date == false) {
+            throw new InvalidParameterException('\'deadline\' parameter not valid \''.$body['deadline'].'\'');
         }
-
-        if (array_key_exists('Deadline', $body)) {
-            $date = strtotime($body['Deadline']);
-            if ($date == false) {
-                return [
-                \App\Controller\BaseController::RESULT_TYPE,
-                $this->errorResponse($request, $response, '\'Deadline\' parameter not valid \''.$body['Deadline'].'\'', 'Invalid Parameter', 400)];
-            }
-            if ($date < strtotime('now')) {
-                return [
-                \App\Controller\BaseController::RESULT_TYPE,
-                $this->errorResponse($request, $response, '\'Deadline\' parameter in the past not valid \''.$body['Deadline'].'\'', 'Invalid Parameter', 400)];
-            }
-            $target['Deadline'] = date("Y-m-d", $date);
+        if ($date < strtotime('now')) {
+            throw new InvalidParameterException('\'deadline\' parameter in the past not valid \''.$body['deadline'].'\'');
         }
-        if (array_key_exists('Note', $body)) {
-            $target['Note'] = $body['Note'];
-        }
+        $body['deadline'] = date("Y-m-d", $date);
+        $body['department'] = $department['id'];
 
-        $sth = $this->container->db->prepare(<<<SQL
-            UPDATE `Deadlines`
-            SET
-                `DepartmentID` = {$target['DepartmentID']},
-                `Deadline` = '{$target['Deadline']}',
-                `Note` = '{$target['Note']}'
-            WHERE `DeadlineID` = '{$args['id']}';
-SQL
-        );
-        $sth->execute();
-        return [null];
+        $insert = Insert::new($this->container->db);
+        $insert->into('Deadlines');
+        $insert->columns(BaseDeadline::insertPayloadFromParams($body));
+        $insert->perform();
+        return [
+        \App\Controller\BaseController::RESOURCE_TYPE,
+        [null],
+        201
+        ];
 
     }
 

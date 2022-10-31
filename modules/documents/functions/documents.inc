@@ -57,11 +57,7 @@ function verify_auth_url($client, $code)
     // Exchange authorization code for an access token.
     $accessToken = $client->fetchAccessTokenWithAuthCode($authCode);
     $value = base64_encode(json_encode($accessToken));
-    if (array_key_exists('G_CLIENT_CRED', $GLOBALS) && isset($G_CLIENT_CRED)) {
-        set_conf_value('G_CLIENT_CRED', $value);
-    } else {
-        add_conf_value('G_CLIENT_CRED', $value);
-    }
+    set_conf_value('G_CLIENT_CRED', $value);
 
 }
 

@@ -2,11 +2,42 @@
 /*.
     require_module 'standard';
 .*/
+/**
+ *  @OA\Delete(
+ *      tags={"announcements"},
+ *      path="/announcement/{id}",
+ *      summary="Deletes an announcement",
+ *      @OA\Parameter(
+ *          description="Id of the announcement",
+ *          in="path",
+ *          name="id",
+ *          required=true,
+ *          @OA\Schema(type="integer")
+ *      ),
+ *      @OA\Response(
+ *          response=204,
+ *          description="OK"
+ *      ),
+ *      @OA\Response(
+ *          response=401,
+ *          ref="#/components/responses/401"
+ *      ),
+ *      @OA\Response(
+ *          response=404,
+ *          ref="#/components/responses/announce_not_found"
+ *      ),
+ *      security={
+ *          {"ciab_auth": {}}
+ *       }
+ *  )
+ **/
 
 namespace App\Controller\Announcement;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
+use Atlas\Query\Delete;
+use App\Controller\NotFoundException;
 
 class DeleteAnnouncement extends BaseAnnouncement
 {
@@ -14,31 +45,17 @@ class DeleteAnnouncement extends BaseAnnouncement
 
     public function buildResource(Request $request, Response $response, $args): array
     {
-        $sth = $this->container->db->prepare("SELECT * FROM `Announcements` WHERE `AnnouncementID` = '".$args['id']."'");
-        $sth->execute();
-        $announce = $sth->fetchAll();
-        if (empty($announce)) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, 'Not Found', 'Announcement Not Found', 404)];
-        }
-        $target = $announce[0];
-
-        $department = $target['DepartmentID'];
-        if (!\ciab\RBAC::havePermission('api.delete.announcement.'.$department) &&
-            !\ciab\RBAC::havePermission('api.delete.announcement.all')) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, 'Permission Denied', 'Permission Denied', 403)];
-        }
-
-        $sth = $this->container->db->prepare(<<<SQL
-            DELETE FROM `Announcements`
-            WHERE `AnnouncementID` = '{$target['AnnouncementID']}';
-SQL
-        );
-        $sth->execute();
-        return [null];
+        $target = $this->getAnnouncement($args['id']);
+        $permissions = ['api.delete.announcement.all',
+        'api.delete.announcement.'.$target['department']];
+        $this->checkPermissions($permissions);
+        $delete = Delete::new($this->container->db);
+        $delete->from('Announcements')->whereEquals(['AnnouncementID' => $target['id']])->perform();
+        return [
+        \App\Controller\BaseController::RESULT_TYPE,
+        [null],
+        204
+        ];
 
     }
 

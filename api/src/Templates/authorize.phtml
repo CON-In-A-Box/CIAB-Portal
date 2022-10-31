@@ -1,0 +1,66 @@
+<?php
+require_once __DIR__.'/../../../backends/asset.inc';
+require_once __DIR__.'/../../../functions/functions.inc';
+?>
+<!DOCTYPE html>
+<html lang="en" xml:lang="en">
+<head>
+<title>Authorization Required</title>
+<link rel='stylesheet' href='../style.php/styles.scss'/>
+<script src="../sitesupport/common.js"></script>
+<script src="../sitesupport/password.js"></script>
+<script src="../sitesupport/authorize.js"></script>
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/all.css">
+<script defer src="https://use.fontawesome.com/releases/v5.11.2/js/all.js"></script>
+</head>
+<body>
+<div id="bidsheet" class="UI-modal UI-show">
+  <div class="UI-modal-content">
+
+      <img class="UI-main-bar-icon" src='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
+        alt="Event Icon" style="background-image:url('../<?php echo \ciab\Asset::load('org-icon');?>')">
+      <div class="UI-event-sectionbar UI-margin UI-padding">
+	Authorization Required
+      </div>
+      <div class='UI-adminborder UI-margin UI-padding UI-center'>
+      <p><strong><?php echo htmlentities($client_id); ?></strong> would like to access your <strong><?php print current_eventName();?></strong> account.</p>
+	<p id = "username" class="UI-hide">Welcome <em id="user">YOU</em>.</p>
+      <p>Do You Authorize <strong><?php echo htmlentities($client_id); ?></strong>?</p>
+
+	<div id="login" class="UI-center UI-hide UI-continer UI-border UI-padding UI-margin">
+      <div id="auth_bad" class="UI-center UI-border UI-margin UI-padding UI-red UI-hide">
+        <h2 class="UI-error-header">Login Incorrect<br>
+          Please Try Again</h2>
+        or contact <a href="mailto:<?php echo getHelpEmail(); ?>?subject=Login Issues">
+        <?php echo getHelpEmail(); ?></a>
+      </div>
+
+          <label class="UI-label">Email Address</label>
+          <input id='login_user' name="user" type="text" class="UI-input">
+
+          <p></p>
+
+          <label class="UI-label">Password</label>
+          <input id='login_password' name="password" type="password" class="UI-input">
+
+          <p>
+            <input type="button" id='submit'  value="Login" class="UI-eventbutton" onclick="oauthAuthorize.loginUser();">
+          </p>
+	</div>
+
+
+
+      </div>
+
+	<div id="known_user" class="UI-center UI-hide">
+  <form method="post">
+      <input type="hidden" id="user_id" name="user_id">
+      <input type="submit" class='UI-eventbutton UI-margin' name="authorized" value="yes">
+      <input type="submit" class='UI-redbutton UI-margin' name="authorized" value="no">
+  </form>
+	</div>
+
+	</div>
+  </div>
+</div>
+</body>

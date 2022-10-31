@@ -4,57 +4,19 @@ if (empty($_SESSION['customFields']['currConComPos'])) {
     goSite();
 }
 
-require_once $FUNCTIONDIR."/volunteer.inc";
+require_once __DIR__.'/../../functions/volunteer.inc';
 
 if (!empty($_REQUEST)) {
     // Retrieve and sanitize POST data
     $arguments = [
-    'VolunteerID'       => FILTER_SANITIZE_NUMBER_INT,
-    'ActualHoursWorked' => FILTER_VALIDATE_FLOAT,
-    'EndDate'           => FILTER_SANITIZE_SPECIAL_CHARS,
-    'EndHours'          => FILTER_SANITIZE_SPECIAL_CHARS,
-    'EndMinutes'        => FILTER_SANITIZE_SPECIAL_CHARS,
-    'EndAMPM'           => FILTER_SANITIZE_SPECIAL_CHARS,
-    'TimeModifier'      => FILTER_VALIDATE_FLOAT,
-    'DepartmentWorked'  => FILTER_SANITIZE_SPECIAL_CHARS,
-    'EnteredBy'         => FILTER_SANITIZE_SPECIAL_CHARS,
-    'AuthorizedBy'      => FILTER_SANITIZE_SPECIAL_CHARS,
-    'volunteerId'       => FILTER_SANITIZE_SPECIAL_CHARS,
-    'useBadgeName'      => FILTER_SANITIZE_NUMBER_INT,
+    'volunteerId'       => FILTER_SANITIZE_SPECIAL_CHARS
     ];
     if (!empty($_POST)) {
         $updateData = filter_input_array(INPUT_POST, $arguments);
     } else {
         $updateData = filter_input_array(INPUT_GET, $arguments);
     }
-
-    if (!empty($updateData['VolunteerID'])
-        && !empty($updateData['ActualHoursWorked'])
-        && !empty($updateData['EndDate'])
-        && !empty($updateData['TimeModifier'])
-        && !empty($updateData['DepartmentWorked'])
-        && !empty($updateData['EnteredBy'])
-        && !empty($updateData['AuthorizedBy'])
-    ) {
-        $time = intval($updateData['EndHours']);
-        if (($updateData['EndAMPM'] == 'PM') && ($time < 12)) {
-            $time += 12;
-        }
-        $date = $updateData['EndDate'].'T'.$time.':';
-        $date .= $updateData['EndMinutes'].":00 ";
-
-        $handoff = record_volunteer_hours(
-            $updateData['VolunteerID'],
-            $updateData['ActualHoursWorked'],
-            $date,
-            $updateData['TimeModifier'],
-            $updateData['DepartmentWorked'],
-            $updateData['EnteredBy'],
-            $updateData['AuthorizedBy']
-        );
-
-        $updateComplete = ($handoff === null);
-    } elseif (!empty($updateData['volunteerId'])) {
+    if (!empty($updateData['volunteerId'])) {
         include_once $FUNCTIONDIR."/users.inc";
 
         $badge = ($updateData['useBadgeName'] == 1);
@@ -75,7 +37,6 @@ if (!empty($_REQUEST)) {
         } else {
             header("HTTP/1.0 ".$data['code']);
         }
-
         exit();
     }
 }

@@ -3,10 +3,10 @@
     require_module 'standard';
 .*/
 
-require_once $PAGESDIR.'/base/leftnav.inc';
 require_once $FUNCTIONDIR.'/authentication.inc';
-require_once __DIR__."/../functions/admin.inc";
+require_once $FUNCTIONDIR."/database.inc";
 require_once $FUNCTIONDIR.'/users.inc';
+require_once $BACKEND.'/CRM.inc';
 
 const FIRST_NAME = 'firstName';
 const LAST_NAME = 'lastName';
@@ -54,7 +54,11 @@ const FIELD = 'Field';
     <div id="left_bar" class="ADMIN-center-bar">
         <form action="index.php?Function=admin" method="POST" class="form-inline">
             <fieldset>
-                <legend>Basic NeonCRM Account Search</legend>
+<?php if (\ciab\CRM::active()) { ?>
+                <legend>Basic CRM Account Search</legend>
+<?php } else {?>
+                <legend>Basic Account Search</legend>
+<?php } ?>
                 <p>
                     <label class='UI-label'>First Name</label>
                     <input type="text" class="form-control" name="firstName"
@@ -79,55 +83,57 @@ const FIELD = 'Field';
             <input type="submit" value="Execute" class="UI-graybutton"/>
         </form>
         <hr>
-        <form action="index.php?Function=admin" method="POST" class="form-inline">
-            Set Account Temporary Password:<br>
-            <input type="text" class="form-control" name="tmp_login" value=""
-                   placeholder="<account login>" autocomplete="off"/>
-            <input type="text" class="form-control" name="tmp_passwd" value=
-            "<?php echo rppg(); ?>" autocomplete="off"/>
-            <input type="submit" value="Set Password" class="UI-graybutton"/>
-        </form>
+        <div>
+            Set Account Password:<br>
+            <input type="text" class="form-control" id="tmp_login" value=""
+                   placeholder="<account login or id>" autocomplete="off"/>
+            <input type="text" class="form-control" id="tmp_passwd" value="" autocomplete="off"/>
+            <input type="button" value="Set Password" class="UI-graybutton" onclick="setPassword();"/>
+        </div>
         <hr>
-        <input type="submit" value="Manually Update Event Memberships (LONG)" class="UI-yellowbutton"
+<?php if (\ciab\CRM::active()) { ?>
+        <input type="submit" value="Manually Update Full Event Memberships from CRM (LONG)" class="UI-yellowbutton"
                onclick="updateMemberships();"/>
         <hr>
+<?php } ?>
         <input type="submit" value="Reload without Admin Priv" class="UI-graybutton"
                onclick="removeAdmin();"/>
         <hr>
-<?php if (array_key_exists('Neon', $GLOBALS)) {
-?>
-<h2 class="UI-blue UI-center">Neon Web Hooks</h2>
-<?php
-if (isset($GLOBALS['NEON_HOOK_NAME'])) {
-?>
+<?php if (\ciab\CRM::hasWebhooks()) { ?>
+<h2 class="UI-blue UI-center">CRM Web Hooks</h2>
+    <?php
+    if (isset($GLOBALS['NEON_HOOK_NAME'])) {
+        ?>
     <form action="index.php?Function=admin" method="POST" class="form-inline">
-    Remove Neon Web Hooks:<br>
+    Remove CRM Web Hooks:<br>
     <input type="text" class="form-control" name="hook_url" value="
-<?php echo $GLOBALS['NEON_HOOK_URL'];?>"
+        <?php echo $GLOBALS['NEON_HOOK_URL'];?>"
         autocomplete="off" readonly/>
     <input type="text" class="form-control" name="hook_name" value=
     "<?php echo $GLOBALS['NEON_HOOK_NAME'];?>" autocomplete="off" readonly/>
     <input type="hidden" name="hook_action" value="remove">
     <input type="submit" value="Remove Hooks" class="UI-graybutton" />
     </form>
-<?php
-} else {
-?>
+        <?php
+    } else {
+        ?>
     <form action="index.php?Function=admin" method="POST" class="form-inline">
-    Install Neon Web Hooks:<br>
+    Install CRM Web Hooks:<br>
     <input type="text" class="form-control" name="hook_url" value="<?php
     echo "http://".htmlspecialchars($_SERVER['HTTP_HOST']);?>"
         autocomplete="off"/>
-    <input type="hidden" class="form-control" name="hook_name" value=
-    "<?php echo rppg();?>" />
+    <input type="hidden" class="form-control" name="hook_name" value="" />
     <input type="hidden" name="hook_action" value="install">
     <input type="submit" value="Install Hooks" class="UI-graybutton" />
     </form>
-<?php
-}
-echo '<hr>';
+        <?php
+    }
+    echo '<hr>';
 }
 ?>
+<input type="submit" value="Rebuild SCSS Style Sheets" class="UI-graybutton"
+       onclick="rebuildSCSS();"/>
+<hr>
 
         <?php if ($result && !$result['code']) : ?>
             <table class="table table-striped">
@@ -138,68 +144,68 @@ echo '<hr>';
                     <th id="EmailHeader">Email</th>
                     <th id="LocationHeader">Location</th>
                 </tr>
-                <?php foreach ($result['users'] as $r) : ?>
+            <?php foreach ($result['users'] as $r) : ?>
                     <tr>
                         <td><?php echo $r['First Name']; ?><?php echo $r['Last Name']; ?></td>
                         <td>
                             <a href="index.php?Function=admin&ID=<?php echo $r['Id']; ?>" class="UI-roundbutton">
-                                <?php echo $r['Id']; ?>
+                <?php echo $r['Id']; ?>
                             </a>
                         </td>
                         <td><?php echo $r['Email']; ?></td>
                         <td><?php echo $r['AddressCity']; ?><?php echo $r['AddressState']; ?></td>
                     </tr>
-                <?php endforeach; ?>
+            <?php endforeach; ?>
             </table>
         <?php else : ?>
             <p><?php echo $message; ?></p>
-        <?php
+            <?php
         endif;
 
-if (!empty($searchCriteria[ID])) {
-    unset($result);
-    $result = pullIndividualAccount($searchCriteria[ID]);
-    echo '<pre>';
-    print_r($result);
-    echo '</pre>';
-}
+        if (!empty($searchCriteria[ID])) {
+            unset($result);
+            $result = pullIndividualAccount($searchCriteria[ID]);
+            echo '<pre>';
+            print_r($result);
+            echo '</pre>';
+        }
         ?>
     </div> <!-- left_bar -->
     <div id="right_bar" class="UI-right UI-content UI-margin">
         <h2 class="UI-red UI-center">Site Configuration</h2>
-        <table class="UI-stripedtable">
-            <caption>Table for Site Configuration</caption>
-            <tr>
-                <th id="FieldHeader" class="UI-center">Field</th>
-                <th id="ValueHeader" class="UI-center">Value</th>
-                <th id="SetHeader"></th>
-            </tr>
-            <?php
-            $table = get_config();
-            foreach ($table as $line) {
-                if ($line['Source'] == 'DB') {
-                    echo "<tr><td>".$line[FIELD]."</td>\n";
-                    echo "<td><input type='text' id=config_".$line[FIELD]." value=\"".$line['Value']."\" class='UI-input'></td>\n";
-                    echo "<td><button class='UI-eventbutton' onclick='setField(\"".$line[FIELD]."\")';>Set</button></td></tr>\n";
-                } else {
-                    echo "<tr><td>".$line[FIELD]."</td>\n";
-                    echo "<td><input type='text' id=config_".$line[FIELD]." value=\"<ENVIRONMENT>\" class='UI-input UI-center' readonly></td>\n";
-                    echo "</tr>\n";
-                }
-            }
-            ?>
-            <tr>
-                <td>
+
+        <div id="settings" class="UI-table-all">
+            <div class="UI-table-row">
+                <div class="UI-table-cell UI-center">
+                </div>
+            </div>
+        </div>
+        <div class="UI-table-all">
+            <div class="UI-table-header">
+                <div class="UI-table-row">
+                  <div class="UI-table-cell">
+                    Field
+                  </div>
+                  <div class="UI-table-cell">
+                  Value
+                  </div>
+                  <div class="UI-table-cell" id="SetHeader">
+                   &nbsp;
+                  </div>
+                </div>
+            </div>
+            <div class="UI-table-row">
+                <div class="UI-table-cell">
                     <input type='text' id=new_Field value="" class='UI-input'>
-                </td>
-                <td>
+                </div>
+                <div class="UI-table-cell">
                     <input type='text' id=new_Value value="" class='UI-input'>
-                </td>
-                <td>
+                </div>
+                <div class="UI-table-cell">
                     <button class='UI-redbutton' onclick='addField()' ;>Add</button>
-                </td>
-            </tr>
-        </table>
+                </div>
+            </div>
+        </div>
     </div>
 </div><!--close main_content div-->
 
@@ -208,7 +214,7 @@ if (!empty($searchCriteria[ID])) {
   <pre><?php
       // A simple place for admins to do random testing.
 
-        ?></pre>
+    ?></pre>
 </div>
 <!--End Play Area-->
 
@@ -229,7 +235,7 @@ if (!empty($searchCriteria[ID])) {
 <!-- Activity log - limited to last lines, in reverse order -->
 <p></p>
 <div id="db_log_content" class="ADMIN-info-section">
-    <button class="ADMIN-button" onclick="expandSection('db_log');"><span>DB Activity Log&nbsp;</span><em
+    <button class="ADMIN-button" onclick="expandSection('db_log');getLog(1000);"><span>DB Activity Log&nbsp;</span><em
                 id="db_log_arrow" class="fas fa-caret-down"></em></button>
 
     <div id="db_log" class="ADMIN-info-parent UI-hide">
@@ -237,7 +243,22 @@ if (!empty($searchCriteria[ID])) {
             <div>
                 <button class="ADMIN-download-button" onclick="downloadLog()">Download Full Activity Log (CSV)</button>
             </div>
-            <?php dbPrintLog(1000); ?>
+            <div class="ADMIN-log-row">
+                <div class="ADMIN-log-col-date">
+                    Date
+                </div>
+                <div class="ADMIN-log-col-id">
+                    AccountID
+                </div>
+                <div class="ADMIN-log-col-function">
+                    Function
+                </div>
+                <div class="ADMIN-log-col-query">
+                    Query
+                </div>
+            </div>
+            <div id="LogEntries">
+            </div>
         </div>
     </div>
 </div>

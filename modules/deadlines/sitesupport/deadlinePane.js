@@ -53,7 +53,7 @@ var deadlinePane = (function(options) {
       f = document.createElement('DIV');
       f.classList.add('UI-table-cell');
       f.id = 'deadline-' + data2.id + '-department';
-      f.appendChild(document.createTextNode(data2.departmentId.name));
+      f.appendChild(document.createTextNode(data2.department.name));
       line.appendChild(f);
       f = document.createElement('DIV');
       f.classList.add('UI-table-cell');
@@ -139,8 +139,8 @@ var deadlinePane = (function(options) {
     load: function() {
       var frame = [ deadlinePane.emptyDeadlineBlock() ];
       apiRequest('GET',
-        'member/deadlines/',
-        'maxResults=all&include=departmentId')
+        '/deadline',
+        'max_results=all')
         .then(function(response) {
           var result = JSON.parse(response.responseText);
           if (result.data.length > 0) {

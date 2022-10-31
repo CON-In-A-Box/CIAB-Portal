@@ -3,10 +3,62 @@
     require_module 'standard';
 .*/
 
+/**
+ *  @OA\Get(
+ *      tags={"departments"},
+ *      path="/department/{id}/announcements",
+ *      summary="Lists announcements for a given department",
+ *      @OA\Parameter(
+ *          description="The id or name of the department",
+ *          in="path",
+ *          name="id",
+ *          required=true,
+ *          @OA\Schema(
+ *              oneOf = {
+ *                  @OA\Schema(
+ *                      description="Department id",
+ *                      type="integer"
+ *                  ),
+ *                  @OA\Schema(
+ *                      description="Department name",
+ *                      type="string"
+ *                  )
+ *              }
+ *          )
+ *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/short_response",
+ *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/max_results",
+ *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/page_token",
+ *      ),
+ *      @OA\Response(
+ *          response=200,
+ *          description="OK",
+ *          @OA\JsonContent(
+ *              ref="#/components/schemas/announcement_list"
+ *          )
+ *      ),
+ *      @OA\Response(
+ *          response=401,
+ *          ref="#/components/responses/401"
+ *      ),
+ *      @OA\Response(
+ *          response=404,
+ *          ref="#/components/responses/department_not_found"
+ *      ),
+ *      security={{"ciab_auth":{}}}
+ *  )
+ **/
+
 namespace App\Controller\Announcement;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
+use Atlas\Query\Select;
 
 class ListDepartmentAnnouncements extends BaseAnnouncement
 {
@@ -15,50 +67,21 @@ class ListDepartmentAnnouncements extends BaseAnnouncement
     public function buildResource(Request $request, Response $response, $args): array
     {
         $department = $this->getDepartment($args['name']);
-        if ($department === null) {
-            return [
-            \App\Controller\BaseController::RESULT_TYPE,
-            $this->errorResponse(
-                $request,
-                $response,
-                'Not Found',
-                'Department \''.$args['name'].'\' Not Found',
-                404
-            )];
-        }
-        $sth = $this->container->db->prepare(
-            "SELECT * FROM `Announcements` WHERE DepartmentID = '".$department['id']."' ORDER BY `PostedOn` ASC"
-        );
-        $sth->execute();
-        $todos = $sth->fetchAll();
+        $data = Select::new($this->container->db)
+            ->columns(...BaseAnnouncement::selectMapping())
+            ->from('Announcements')
+            ->whereEquals(['DepartmentID' => $department['id']])
+            ->orderBy('`PostedOn` ASC')
+            ->fetchAll();
+
+        $data = $this->filterScope($data);
+
         $output = array();
         $output['type'] = 'announcement_list';
-        $data = array();
-        foreach ($todos as $entry) {
-            $announce = new GetAnnouncement($this->container);
-            $result = $this->buildAnnouncement(
-                $request,
-                $response,
-                $entry['AnnouncementID'],
-                $entry['DepartmentID'],
-                $entry['PostedOn'],
-                $entry['PostedBy'],
-                $entry['Scope'],
-                $entry['Text']
-            );
-            $data[] = $announce->arrayResponse($request, $response, $result);
-        }
         return [
         \App\Controller\BaseController::LIST_TYPE,
         $data,
         $output];
-
-    }
-
-
-    public function processIncludes(Request $request, Response $response, $args, $values, &$data)
-    {
-        return $this->baseIncludes($request, $response, $args, $values, $data);
 
     }
 

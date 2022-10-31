@@ -2,98 +2,65 @@
 /*.
     require_module 'standard';
 .*/
+/**
+ *  @OA\Get(
+ *      tags={"announcements"},
+ *      path="/announcement",
+ *      summary="Lists announcements for the current member",
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/short_response",
+ *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/max_results",
+ *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/page_token",
+ *      ),
+ *      @OA\Response(
+ *          response=200,
+ *          description="OK",
+ *          @OA\JsonContent(
+ *              ref="#/components/schemas/announcement_list"
+ *          )
+ *      ),
+ *      @OA\Response(
+ *          response=401,
+ *          ref="#/components/responses/401"
+ *      ),
+ *      @OA\Response(
+ *          response=404,
+ *          ref="#/components/responses/member_not_found"
+ *      ),
+ *      security={{"ciab_auth":{}}}
+ *  )
+ **/
 
 namespace App\Controller\Announcement;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
+use Atlas\Query\Select;
 
 class ListMemberAnnouncements extends BaseAnnouncement
 {
 
 
-    public function buildResource(Request $request, Response $response, $args): array
+    public function buildResource(Request $request, Response $response, $params): array
     {
-        if (array_key_exists('name', $args)) {
-            $user = $this->findMember($request, $response, $args, 'name');
-            if ($user === null) {
-                return $this->errorResponse($request, $response, $error, 'User Not Found', 404);
-            }
-            $user = $user['Id'];
-        } else {
-            $user = $request->getAttribute('oauth2-token')['user_id'];
-        }
-        $sth = $this->container->db->prepare(<<<SQL
-            SELECT
-                *
-            FROM
-                `Announcements`
-            WHERE
-                `Scope` = 0 OR
-                `Scope` = 1 AND (
-                    SELECT
-                        COUNT(AccountID)
-                    FROM
-                        `ConComList`
-                    WHERE
-                        `AccountID`  = '$user'
-                ) > 0 OR
-                `Scope` = 2 AND (
-                `DepartmentID` IN(
-                SELECT
-                    `DepartmentID`
-                FROM
-                    `ConComList`
-                WHERE
-                    `AccountID` = '$user'
-            ) OR `DepartmentID` IN(
-                SELECT
-                    `DepartmentID`
-                FROM
-                    `Departments`
-                WHERE
-                    `ParentDepartmentID` IN(
-                    SELECT
-                        `DepartmentID`
-                    FROM
-                        `ConComList`
-                    WHERE
-                        `AccountID` = '$user'
-                )
-            ))
-            ORDER BY `PostedOn` ASC
-SQL
-        );
-        $sth->execute();
-        $todos = $sth->fetchAll();
+        $data = Select::new($this->container->db)
+            ->columns(...BaseAnnouncement::selectMapping())
+            ->from('Announcements')
+            ->orderBy('`PostedOn` ASC')
+            ->fetchAll();
+
+        $data = $this->filterScope($data);
+
         $output = array();
-        $output['type'] = 'announce_list';
-        $data = array();
-        foreach ($todos as $entry) {
-            $announce = new \App\Controller\Announcement\GetAnnouncement($this->container);
-            $result = $this->buildAnnouncement(
-                $request,
-                $response,
-                $entry['AnnouncementID'],
-                $entry['DepartmentID'],
-                $entry['PostedOn'],
-                $entry['PostedBy'],
-                $entry['Scope'],
-                $entry['Text']
-            );
-            $data[] = $announce->arrayResponse($request, $response, $result);
-        }
+        $output['type'] = 'announcement_list';
         return [
         \App\Controller\BaseController::LIST_TYPE,
         $data,
         $output];
-
-    }
-
-
-    public function processIncludes(Request $request, Response $response, $args, $values, &$data)
-    {
-        return $this->baseIncludes($request, $response, $args, $values, $data);
 
     }
 

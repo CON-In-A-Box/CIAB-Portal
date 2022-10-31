@@ -24,7 +24,7 @@ if ($secret === false) {
 }
 $branch = getenv('GITHUB_BRANCH');
 if ($branch === false) {
-    $branch = 'master';
+    $branch = 'main';
 }
 
 header('Content-Type: text/plain');

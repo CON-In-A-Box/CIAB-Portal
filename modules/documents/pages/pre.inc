@@ -19,11 +19,7 @@ if (!empty($_REQUEST)) {
 
     if (isset($updateData['setSecret'])) {
         $value = $updateData['setSecret'];
-        if (array_key_exists('G_CLIENT_SECRET', $GLOBALS)) {
-            set_conf_value('G_CLIENT_SECRET', $value);
-        } else {
-            add_conf_value('G_CLIENT_SECRET', $value);
-        }
+        set_conf_value('G_CLIENT_SECRET', $value);
         exit();
     }
 
@@ -31,11 +27,7 @@ if (!empty($_REQUEST)) {
         $value = $updateData['setFolder'];
         $result = find_folder($value);
         if ($result !== null) {
-            if (array_key_exists('G_ROOTFOLDER', $GLOBALS)) {
-                set_conf_value('G_ROOTFOLDER', $result);
-            } else {
-                add_conf_value('G_ROOTFOLDER', $result);
-            }
+            set_conf_value('G_ROOTFOLDER', $result);
         }
         exit();
     }

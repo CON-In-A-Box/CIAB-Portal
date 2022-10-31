@@ -203,7 +203,7 @@ function printDivisionMember($pos, $div, $position, $rbacpos)
         $perm = "concom.modify.$div.$rbacpos";
         if (\ciab\RBAC::havePermission($perm)) {
             echo '<div class="UI-table-cell-no-border">';
-            echo '<input type="button" class="UI-redbutton" onclick= "editMember(\''.$kName.'\', \''.$tmp[2].'\', \''.$div.'\', \''.$position.'\', \''.$tmp[1].'\', \''.$positions.'\');" value="Edit">';
+            echo '<input type="button" class="UI-redbutton" onclick= "editMember('.MyPDO::quote($kName).', '.MyPDO::quote($tmp[2]).', '.MyPDO::quote($div).', '.MyPDO::quote($position).', '.MyPDO::quote($tmp[1]).', '.MyPDO::quote($positions).');" value="Edit">';
             echo '</div>';
         }
         echo "</div>\n";
@@ -249,7 +249,7 @@ function printDepartmentMember(
         $perm = "concom.modify.$kdep.$pos";
         if (\ciab\RBAC::havePermission($perm)) {
             echo '<div class="UI-table-cell-no-border">';
-            echo '<input type="button" class="UI-redbutton" onclick= "editMember(\''.$kName.'\', \''.$tmp[2].'\', \''.$kdep.'\', \''.$pos.'\', \''.$tmp[1].'\', \''.$positions.'\');" value="Edit">';
+            echo '<input type="button" class="UI-redbutton" onclick= "editMember('.MyPDO::quote($kName).', '.MyPDO::quote($tmp[2]).', '.MyPDO::quote($kdep).', '.MyPDO::quote($pos).', '.MyPDO::quote($tmp[1]).', '.MyPDO::quote($positions).');" value="Edit">';
             echo '</div>';
         }
         echo "</div>\n";
@@ -430,7 +430,10 @@ function DumpConComList()
     }
 
     foreach ($Divisions as $div) {
-        array_push($email, getDepartmentEmails($div)[0]);
+        $divMail = getDepartmentEmails($div);
+        if (!empty($divMail)) {
+            array_push($email, $divMail[0]);
+        }
     }
 
     $email = array_unique($email);
@@ -484,7 +487,7 @@ function AddConComPosition($accountid, $department, $position, $note, $notify = 
         $to = getDepartmentEmails(getDivision($department))[0];
         $subject = 'ConCom Division addition to '.$department;
         $name = $user['First Name'].' '.$user['Last Name'];
-        $message = $_SESSION['fullName'].' has added '.$name." to ".$department.'.';
+        $message = $_SESSION['preferredName'].' has added '.$name." to ".$department.'.';
         \ciab\Email::mail($to, getNoReplyAddress(), $subject, $message);
         return true;
     } elseif (!$result) {
@@ -533,7 +536,7 @@ function RemoveConComPosition($accountid, $department, $position, $notify = true
             $to = getDepartmentEmails(getDivision($department))[0];
             $subject = 'ConCom Division Removal to '.$department;
             $name = $user['First Name'].' '.$user['Last Name'];
-            $message = $_SESSION['fullName'].' has removed '.$name." from ".$department.'.';
+            $message = $_SESSION['preferredName'].' has removed '.$name." from ".$department.'.';
             \ciab\Email::mail($to, getNoReplyAddress(), $subject, $message);
         }
         return true;
@@ -661,20 +664,23 @@ function save_position($data)
     $parent = 0;
     if ($data->ParentDept >= 0) {
         $parent = $data->ParentDept;
+    } else {
+        $parent = "MIN(DepartmentID)";
     }
     $fallback = $data->FallbackID;
     if ($fallback == -1 || empty($fallback)) {
         $fallback = "NULL";
     }
+    $name = \MyPDO::quote($data->Name);
     if ($data->Id != -1) {
         $sql = "UPDATE `Departments` SET ";
-        $sql .= " `Name` = '".$data->Name."' ";
+        $sql .= " `Name` = ".$name;
         $sql .= ", `ParentDepartmentID` = ".$parent;
         $sql .= ", `FallbackID` = ".$fallback;
         $sql .= " WHERE `DepartmentID` = ".$data->Id;
         DB::run($sql);
     } else {
-        $sql = "INSERT INTO `Departments` (`DepartmentID`, `Name`, `ParentDepartmentID`, `FallbackID`) VALUES (NULL, '".$data->Name."', ".$parent.", ".$fallback.");";
+        $sql = "INSERT INTO `Departments`( `DepartmentID`, `Name`, `ParentDepartmentID`, `FallbackID`) VALUES (NULL, $name, $parent, $fallback)";
         DB::run($sql);
         if ($data->ParentDept < 0) {
             $sql = "SELECT `DepartmentID` FROM `Departments` ORDER BY `DepartmentID` DESC LIMIT 1";
@@ -741,6 +747,8 @@ function delete_position($id)
     DB::run($sql);
     $sql = "DELETE FROM `EmailListAccess` WHERE `DepartmentID` = $id";
     DB::run($sql);
+    $sql = "UPDATE `Departments` SET `FallbackID` = NULL WHERE `FallbackID` = $id";
+    DB::run($sql);
     $sql = <<<SQL
         UPDATE
             `Departments`
@@ -759,9 +767,20 @@ function delete_position($id)
                     Name = 'Historical Placeholder'
                 LIMIT
                     1
-            )
+            ),
+            `FallbackID` = NULL
         WHERE
             `DepartmentID` = $id;
+SQL;
+    DB::run($sql);
+
+    $sql = <<<SQL
+        UPDATE
+            `Departments`
+        SET
+            `FallbackID` = NULL
+        WHERE
+            `FallbackID` = $id;
 SQL;
     DB::run($sql);
 
@@ -1065,5 +1084,71 @@ function ModifyConComPosition($accountid, $department, $position, $note)
 SQL;
     $result = \DB::run($sql);
     return $result;
+
+}
+
+
+function concom_report($event = null)
+{
+    if ($event === null) {
+        $event = \current_eventID();
+    }
+
+    return <<<SQL
+        SELECT
+            AccountID,
+            (
+            SELECT
+                `Name`
+            FROM
+                `Departments`
+            WHERE
+                `DepartmentID` = a.`DepartmentID`
+        ) AS Department,
+        (
+            SELECT
+                `Name`
+            FROM
+                `Departments`
+            WHERE
+                `DepartmentID` =(
+                SELECT
+                    `ParentDepartmentID`
+                FROM
+                    `Departments`
+                WHERE
+                    `DepartmentID` = a.`DepartmentID`
+            )
+        ) AS Division,
+        (
+            SELECT
+                `EventName`
+            FROM
+                `Events`
+            WHERE
+                `EventID` = a.`EventID`
+        ) AS EVENT,
+        (
+            SELECT
+                `Name`
+            FROM
+                `ConComPositions`
+            WHERE
+                `PositionID` = a.`PositionID`
+        ) AS POSITION,
+        (
+            SELECT
+                `Email`
+            FROM
+                `Members`
+            WHERE
+                `AccountID` = a.`AccountID`
+        ) AS Email,
+        Note
+        FROM
+            `ConComList` AS a
+        WHERE
+            `EventID` = '$event'
+SQL;
 
 }

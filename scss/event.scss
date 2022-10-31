@@ -1,4 +1,7 @@
-@import '_CONvergence';
+$primary-color: db-color('primary');
+$primary-background: db-color('prim-back');
+$secondary-color: db-color('secondary');
+$secondary-background: db-color('second-back');
 
 .event-color-primary,.event-hover-primary:hover {
     color: $primary-color!important;

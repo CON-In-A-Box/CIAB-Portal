@@ -13,20 +13,37 @@ if (!\ciab\RBAC::havePermission("site.admin")) {
 require_once($FUNCTIONDIR.'/session.inc');
 require_once($FUNCTIONDIR.'/database.inc');
 require_once($FUNCTIONDIR.'/authentication.inc');
+require_once($BACKEND.'/CRM.inc');
+
+
+function delete_files($target)
+{
+    if (is_dir($target)) {
+        $files = glob($target.'*', GLOB_MARK);
+
+        foreach ($files as $file) {
+            delete_files($file);
+        }
+
+        @rmdir($target);
+    } elseif (is_file($target)) {
+        @unlink($target);
+    }
+
+}
+
 
 if (!empty($_REQUEST)) {
     $arguments = [
     'SUDO'         => FILTER_SANITIZE_NUMBER_INT,
-    'setField'     => FILTER_SANITIZE_SPECIAL_CHARS,
     'newField'     => FILTER_SANITIZE_SPECIAL_CHARS,
     'value'        => FILTER_UNSAFE_RAW,
     'removeAdmin'  => FILTER_VALIDATE_BOOLEAN,
-    'tmp_login'    => FILTER_SANITIZE_SPECIAL_CHARS,
-    'tmp_passwd'   => FILTER_SANITIZE_SPECIAL_CHARS,
     'updateMemberships' => FILTER_VALIDATE_BOOLEAN,
     'hook_action'  => FILTER_SANITIZE_SPECIAL_CHARS,
     'hook_name'    => FILTER_SANITIZE_SPECIAL_CHARS,
     'hook_url'     => FILTER_SANITIZE_SPECIAL_CHARS,
+    'rebuildSCSS'  => FILTER_VALIDATE_BOOLEAN,
     ];
 
     $updateData = filter_input_array(INPUT_POST, $arguments);
@@ -38,15 +55,9 @@ if (!empty($_REQUEST)) {
         goSite();
     }
 
-    if (isset($updateData['setField'])) {
-        $value = base64_decode($updateData['value']);
-        set_conf_value($updateData['setField'], $value);
-        exit();
-    }
-
     if (isset($updateData['newField'])) {
         $value = base64_decode($updateData['value']);
-        add_conf_value($updateData['newField'], $value);
+        set_conf_value($updateData['newField'], $value);
         exit();
     }
 
@@ -55,43 +66,25 @@ if (!empty($_REQUEST)) {
         goSite();
     }
 
-    if (isset($updateData['tmp_login'])) {
-        if (!reset_password($updateData['tmp_login'], $updateData['tmp_passwd'])) {
-            echo "<b>Failed to find account login ".$updateData['tmp_login'];
-            echo " and so unable to set password!</b>";
-            exit();
-        } else {
-            goSite();
-        }
-    }
-
     if (isset($updateData['updateMemberships'])) {
-        require($BASEDIR.'/tools/sync_neon_event_to_db.php');
+        \ciab\CRM::importPeople();
     }
 
     if (isset($updateData['hook_action'])) {
         if ($updateData['hook_action'] == "install") {
-            $result = neon_registerWebhook(
+            \ciab\CRM::registerWebhook(
                 $updateData['hook_url'],
                 $updateData['hook_name']
             );
-            if ($result !== null) {
-                print "<pre>";
-                print (print_r($updateData, true));
-                print (print_r($result, true));
-                print "</pre>";
-                exit();
-            }
         } else {
-            $result = neon_removeWebhook();
-            if ($result !== null) {
-                print "<pre>";
-                print (print_r($result, true));
-                exit();
-                print "</pre>";
-            }
+            \ciab\CRM::removeWebhook();
         }
         goSite('/index.php?Function=admin');
+    }
+
+    if (isset($updateData['rebuildSCSS'])) {
+        delete_files(@sys_get_temp_dir().'/scss_cache');
+        goSite();
     }
 
     $arguments = [

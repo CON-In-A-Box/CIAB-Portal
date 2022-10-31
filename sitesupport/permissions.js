@@ -26,6 +26,10 @@ var PERMISSIONS = [
     description:'Able to upload and change site graphical assets'
   },
   {
+    permission:'concom.reports',
+    description:'Generate a CSV report of the ConCom Membership'
+  },
+  {
     permission:'concom.view',
     description:'View the ConCom list'
   },

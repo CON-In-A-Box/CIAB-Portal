@@ -5,9 +5,8 @@ The following methods are available to announcement resources:
 
 |Resource Method|HTTP Request|Description|module|RBAC|
 |---|---|---|---|---|
-|[add](Announcement.md#add)|PUT /announcement/{department}|Add a new announcement.|core|api.put.announcement.{department}|
 |[get](Announcement.md#get)|GET /announcement/{id}|Get details about a given announcement.|core|-|
-|[modify](Announcement.md#modify)|POST /announcement/{id}|Modify an existing announcement|core|api.post.announcement.{department}|
+|[modify](Announcement.md#modify)|PUT /announcement/{id}|Modify an existing announcement|core|api.put.announcement.{department}|
 |[delete](Announcement.md#delete)|DELETE /announcement/{id}|Delete a announcement|core|api.delete.announcement.{department}|
 
 ## Permissions
@@ -75,43 +74,6 @@ announcement_list object resources have the following available properties:
 |type|string|Always `announcement_list`.|
 |data[]|list|A list of `announcement` resources.|
 
-
-<a name="add"></a>
-## add
-Add a new announcement.
-
-### add Request
-
-```PUT /announcement/{department}?Scope={integer}&Text={text}```
-
-### add Parameters
-The following parameters are available:
-
-|Parameter|Meaning|Notes|
-|---|---|---|
-|department|Department adding the announcement.|`integer` id or `string` name|
-|Scope|Scope of the announcement.|*required*|
-|Text|Text of the announcement.|*required*|
-
-
-### add Request Body
-Do not supply a request body.
-
-### add Response
-
-Does not return a response.
-
-### add Code Samples
-Request Sample
-
-```
-curl -X PUT -H 'Authorization: Bearer e0438d90599b1c4762d12fd03db6311c9ca46729' http://localhost/api/announcement/Art%20Show?Scope=0&Text=Testing
-```
-Response Sample
-
-```
-[]
-```
 
 <a name="get"></a>
 ## get
@@ -183,7 +145,7 @@ Modify an existing announcement.
 
 ### modify Request
 
-```POST /announcement/{id}?Scope={integer}&Department={department}&Text={text}```
+```PUT /announcement/{id}?Scope={integer}&Department={department}&Text={text}```
 
 ### modify Parameters
 The following parameters are available:
@@ -207,7 +169,7 @@ Does not return a response.
 Request Sample
 
 ```
-curl -X POST -H 'Authorization: Bearer e0438d90599b1c4762d12fd03db6311c9ca46729' http://localhost/api/announcement/1/Department=Art%20Show?Scope=1&Text=Testing
+curl -X PUT -H 'Authorization: Bearer e0438d90599b1c4762d12fd03db6311c9ca46729' http://localhost/api/announcement/1/Department=Art%20Show?Scope=1&Text=Testing
 ```
 Response Sample
 
