@@ -67,7 +67,7 @@ function validateDeepLink($function, $deepLinkId, $auth)
     $implementedDeeplinks = ["concom/dumplist", "concom/pastcred"];
     if (in_array($function, $implementedDeeplinks)) {
         if ($deepLinkId == "NULL" && $auth == $GLOBALS['DUMPSECURE']) {
-            
+
             // This is an approved automation and secure code
             return true;
         } else {
