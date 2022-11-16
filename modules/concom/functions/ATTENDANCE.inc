@@ -44,11 +44,11 @@ function request_past_attendance($meeting)
     $result = \DB::run($sql);
     $deepLinkID = $result->lastInesrtID();
 
-    // Send a Deeplink email for apprivial or denial
+    // Send a Deeplink email for approvial or denial
     // ##==## TODO Enhancement - Waiting Deeplinks should parse on login for "pending work" notification
     $to = "directors@convergenceevents.org"; // ##==## Likely should be a variable for general authority
     $subject = "Past Attendance Approvial Request";
-    $message = "A member has requested credit for attending a past meeting.";
+    $message = "A member has requested credit for attending a past meeting.\n\n";
     $message .= " Please review, verify, and approve or deny.\n\n";
     $message .= $user['users'][0]['First Name']." ".$user['users'][0]['Last Name']." has claimed to be at the ";
 
@@ -57,10 +57,11 @@ function request_past_attendance($meeting)
 
     $message .= $value['Date']." meeting.\n\n";
     $message .= " Please choose to <a href='/index.php?Function=".$type."&DeepLink=".$deepLinkID;
-    $message .= "&Auth=".$auth."&approved=true'>approve</a> or ";
+    $message .= "&Auth=".$auth."&approved=true'>approve</a> \n\nor\n\n ";
     $message .= " <a href='/index.php?Function=".$type."&DeepLink=".$deepLinkID;
     $message .= "&Auth=".$auth."&approved=false'>deny</a> this request.\n\n";
-    $message .= "- This is an automated email from the signin sortal service, CON-In-A-Box. Please do not reply."
+    $message .= "- This is an automated email from the signin sortal service, CON-In-A-Box. Please do not reply.";
+    $message .= "Contact Software Development for more details."
     \ciab\Email:mail($to, getNoReplyAddress(), $subject, $message);
 
 }
