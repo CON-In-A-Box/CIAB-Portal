@@ -13,6 +13,7 @@ class Pdo implements \OAuth2\OpenID\Storage\AuthorizationCodeInterface, \OAuth2\
 
     protected $base;
 
+    protected $resultingUser = null;
 
     public function __construct($connection, $config = array())
     {
@@ -102,7 +103,11 @@ class Pdo implements \OAuth2\OpenID\Storage\AuthorizationCodeInterface, \OAuth2\
     public function checkUserCredentials($username, $password)
     {
         $ret = \doUserAndPasswordMatch($username, $password);
-        return ($ret['entry'] !== null);
+        $success = ($ret['entry'] !== null);
+        if ($success) {
+            $this->resultingUser = $ret['entry'];
+        }
+        return $success;
 
     }
 
@@ -145,7 +150,13 @@ class Pdo implements \OAuth2\OpenID\Storage\AuthorizationCodeInterface, \OAuth2\
     /* ARIC CUSTOM */
     public function getUser($username)
     {
-        $value = \lookup_user_by_login($username);
+        if ($this->resultingUser != null) {
+            return array_merge(array(
+                'user_id' => $this->resultingUser['AccountID']
+            ), [$this->resultingUser['AccountID']]);
+        }
+
+        $value = \lookup_users_by_login($username);
         if (empty($value)) {
             return false;
         }

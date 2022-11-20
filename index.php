@@ -105,7 +105,7 @@ if (!empty($_REQUEST['DeepLink'])) {
     $noheader = true; // public pages don't need statusbars or logmenus
 } elseif (strcasecmp($target, "create") == 0) {
     $noheader = true; // public pages don't need statusbars or logmenus
-} elseif (empty($_SESSION['username'])) {
+} elseif (!array_key_exists('accountId', $_SESSION) || empty($_SESSION['accountId'])) {
     // if no username is set and we are not calling a public page or a deeplink, redirect for login needs
     goSite('/index.php?Function=public');
 }

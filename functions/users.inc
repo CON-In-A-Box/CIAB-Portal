@@ -336,7 +336,7 @@ function lookup_users_by_name_email($first, $last, $email, $fields, $single_user
 }
 
 
-function lookup_user_by_login($user, $substring = false, $fields = array())
+function lookup_users_by_login($user, $substring = false, $fields = array())
 {
     $output = lookup_users_by_email($user, false, $substring, $fields);
     if (count($output['users']) == 0) {

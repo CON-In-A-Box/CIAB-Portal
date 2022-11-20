@@ -3,5 +3,5 @@
 <script src="sitesupport/confirmbox.js"></script>
 <script src="sitesupport/common.js"></script>
 <script src="sitesupport/authentication.js"></script>
-<script src="sitesupport/lookupuser.js"></script>
+<script type="module" src="console/vue.js"></script>
 <link rel="stylesheet" type="text/css" href="sitesupport/barcode/barcode.css" />

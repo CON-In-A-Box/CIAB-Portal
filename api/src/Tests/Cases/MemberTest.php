@@ -313,9 +313,9 @@ class MemberTest extends CiabTestCase
         $this->assertNotEmpty($data->data);
         $this->assertEquals($data->data[0]->id, 1000);
 
-        $data = $this->runRequest('GET', '/member/find', ['q' => 'Od', 'partial' => 'false'], null, 404);
-
-        $data = $this->runRequest('GET', '/member/find', ['q' => 'Odin', 'from' => 'name', 'partial' => 'false'], null, 404);
+        $this->runRequest('GET', '/member/find', ['q' => 'Od', 'partial' => 'false'], null, 404);
+        $this->runRequest('GET', '/member/find', ['q' => 'Odin', 'from' => 'name', 'partial' => 'false'], null, 404);
+        $this->runRequest('GET', '/member/find', ['q' => 'Odin Allf', 'from' => 'name', 'partial' => 'false'], null, 404);
 
         $data = $this->runSuccessJsonRequest('GET', '/member/find', ['q' => 'Odin Allfather', 'from' => 'name', 'partial' => 'false']);
         $this->assertEquals($data->type, 'member_list');
@@ -332,6 +332,85 @@ class MemberTest extends CiabTestCase
         $this->runRequest('GET', '/member/find', ['q' => 'Odin', 'from' => 'email'], null, 404);
 
         $this->runRequest('GET', '/member/find', ['q' => 'thiswillnotbefound'], null, 404);
+
+    }
+
+
+    public function testDuplicateMember() :void
+    {
+        Delete::new($this->container->db)
+            ->from('Members')
+            ->whereEquals(['Email' => 'phpDupUnit@unit.test'])
+            ->perform();
+
+        $insert = Insert::new($this->container->db);
+
+        $insert->into('Members')->columns([
+            'AccountID' => 8000,
+            'FirstName' => 'First',
+            'LastName' => 'User',
+            'Email' => 'phpDupUnit@unit.test',
+            'Gender' => 'Both'
+        ])->perform();
+
+        $insert->into('Members')->columns([
+            'AccountID' => 8001,
+            'FirstName' => 'Second',
+            'LastName' => 'User',
+            'Email' => 'phpDupUnit@unit.test',
+            'Gender' => 'Both'
+        ])->perform();
+
+        $auth = \password_hash('PassWord1', PASSWORD_DEFAULT);
+        $insert = Insert::new($this->container->db);
+        $insert->into('Authentication')->columns([
+            'AccountID' => 8000,
+            'Authentication' => $auth,
+            'LastLogin' => null,
+            'Expires' => date('Y-m-d', strtotime('+1 year')),
+            'FailedAttempts' => 0,
+            'OneTime' => null,
+            'OneTimeExpires' => null
+        ])->perform();
+
+        $auth = \password_hash('PassWord2', PASSWORD_DEFAULT);
+        $insert = Insert::new($this->container->db);
+        $insert->into('Authentication')->columns([
+            'AccountID' => 8001,
+            'Authentication' => $auth,
+            'LastLogin' => null,
+            'Expires' => date('Y-m-d', strtotime('+1 year')),
+            'FailedAttempts' => 0,
+            'OneTime' => null,
+            'OneTimeExpires' => null
+        ])->perform();
+
+
+        $token1 = $this->runSuccessJsonRequest('POST', '/token', null, ['grant_type' => 'password', 'username' => 'phpDupUnit@unit.test', 'password' => 'PassWord1', 'client_id' => 'ciab']);
+
+        $basedata = $this->runSuccessJsonRequest('GET', '/member', null, null, 200, $token1);
+        $this->assertSame($basedata->id, '8000');
+        $this->assertSame($basedata->duplicates, '8001');
+
+        $token2 = $this->runSuccessJsonRequest('POST', '/token', null, ['grant_type' => 'password', 'username' => 'phpDupUnit@unit.test', 'password' => 'PassWord2', 'client_id' => 'ciab']);
+
+        $basedata = $this->runSuccessJsonRequest('GET', '/member', null, null, 200, $token2);
+        $this->assertSame($basedata->id, '8001');
+        $this->assertSame($basedata->duplicates, '8000');
+
+        Delete::new($this->container->db)
+            ->from('Members')
+            ->whereEquals(['Email' => 'phpDupUnit@unit.test'])
+            ->perform();
+
+        Delete::new($this->container->db)
+            ->from('Authentication')
+            ->whereEquals(['AccountId' => '8000'])
+            ->perform();
+        Delete::new($this->container->db)
+            ->from('Authentication')
+            ->whereEquals(['AccountId' => '8001'])
+            ->perform();
 
     }
 

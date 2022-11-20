@@ -10,7 +10,9 @@ if (!in_console()) {
       <h2 class="UI-center event-color-primary"><?php echo $console_title;?></h2>
       <hr>
       <h3 class="UI-center">User operating the Console:</h3>
-      <div id="userLookup_div" class="UI-center"/>
+         <div class='UI-rest UI-center'>
+             <lookup-user handler=handleResult></lookup-user>
+         </div>
     </div>
   </div>
 </div>
@@ -23,7 +25,9 @@ if (!in_console()) {
       <h2 class="UI-center event-color-primary">Switch Console User Mode</h2>
       <hr>
       <h3 class="UI-center">User operating the Console:</h3>
-      <div id="userLookup_div" class="UI-center"/>
+       <div class='UI-rest UI-center'>
+           <lookup-user handler=handleResult></lookup-user>
+       </div>
     </div>
   </div>
 </div>
@@ -61,10 +65,6 @@ if (!in_console()) {
         var uid = item.Id;
         switchConsole(uid);
     }
-
-    userLookup.options({
-        handler: handleResult,
-    });
 
     document.getElementById('console_dlg').style.display = 'block';
 </script>

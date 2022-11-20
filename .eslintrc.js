@@ -88,6 +88,7 @@ module.exports = {
     {
       files: [ "sitesupport/reportGeneration.js",
                "sitesupport/lookupuser.js",
+               "console/vue.js",
                "modules/concom/report/sitesupport/vue.js",
                "modules/concom/sitesupport/vue.js",
                "modules/event/report/sitesupport/vue.js",

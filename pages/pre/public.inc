@@ -83,9 +83,8 @@ if ($token !== null) {
         exit();
     }
     $response = json_decode($resp->getBody());
+    /* Here is where we setup the base session data based on the authorized user */
     if ($resp->getStatusCode() == 200) {
-        $_SESSION['username'] = $response->email;
-        $_SESSION['fullName'] = $response->firstName;
         $_SESSION['accountId'] = $response->id;
         $_SESSION['apiAuth'] = $token;
         loadAccount($response->id);
