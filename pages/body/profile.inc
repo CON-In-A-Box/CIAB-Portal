@@ -31,7 +31,8 @@ if (!empty($_SESSION['customFields']['currConComPos'])) {
         'province':'<?php echo $_SESSION['accountInfo']['AddressProvince'];  ?>',
         'preferred_first_name':'<?php echo $_SESSION['accountInfo']['PreferredFirstName'];  ?>',
         'preferred_last_name':'<?php echo $_SESSION['accountInfo']['PreferredLastName'];  ?>',
-        'concom_display_phone':'<?php echo $_SESSION['accountInfo']['DisplayPhone'];  ?>'
+        'concom_display_phone':'<?php echo $_SESSION['accountInfo']['DisplayPhone'];  ?>',
+        'pronouns':'<?php echo $_SESSION['accountInfo']['Pronouns'];  ?>'
     };
 
     if (window.addEventListener) {

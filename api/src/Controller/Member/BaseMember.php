@@ -167,6 +167,11 @@
  *          property="duplicates",
  *          type="string",
  *          description="Comma seperated list of other account IDs with the same email address"
+ *      ),
+ *      @OA\Property(
+ *          property="pronouns",
+ *          type="string",
+ *          description="Prefered pronouns."
  *      )
  *  )
  *
@@ -254,7 +259,8 @@ abstract class BaseMember extends BaseController
     'Birthdate' => 'birthdate',
     'Gender' => 'gender',
     'DisplayPhone' => 'concom_display_phone',
-    'dependentOnID' => 'dependent_on'
+    'dependentOnID' => 'dependent_on',
+    'Pronouns' => 'pronouns'
     ];
 
     /**
