@@ -116,7 +116,7 @@ SQL;
                           'First Name' => $value['AccountID'],
                           'Last Name' => '',
                           'Note' => $value['Note'],
-                          'Pronouns' => $value['Pronouns']);
+                          'Pronouns' => '');
                 array_push($db_staff[$value['AccountID']], $entry);
             } else {
                 $db_staff[$value['AccountID']] = [[
@@ -128,7 +128,7 @@ SQL;
                 'First Name' => $value['AccountID'],
                 'Last Name' => '',
                 'Note' => $value['Note'],
-                'Pronouns' => $value['Pronouns'],
+                'Pronouns' => ''
                       ]];
             }
 
@@ -144,11 +144,27 @@ SQL;
             foreach ($users['users'] as $user) {
                 if (array_key_exists($user['Id'], $db_staff)) {
                     foreach ($db_staff[$user['Id']] as $entry_key => $entry) {
-                        $db_staff[$user['Id']][$entry_key]['First Name'] = htmlspecialchars_decode($user['First Name'], ENT_QUOTES);
-                        $db_staff[$user['Id']][$entry_key]['Last Name'] = htmlspecialchars_decode($user['Last Name'], ENT_QUOTES);
-                        $db_staff[$user['Id']][$entry_key]['Full Name'] = htmlspecialchars_decode($user['First Name'].'&nbsp;'.$user['Last Name'], ENT_QUOTES);
-                        $db_staff[$user['Id']][$entry_key]['Email'] = htmlspecialchars_decode($user['Email'], ENT_QUOTES);
-                        $db_staff[$user['Id']][$entry_key]['Pronouns'] = htmlspecialchars_decode($user['Pronouns'], ENT_QUOTES);
+                        if (array_key_exists('First Name', $user)) {
+                            $db_staff[$user['Id']][$entry_key]['First Name'] = htmlspecialchars_decode($user['First Name'], ENT_QUOTES);
+                        } else {
+                            $db_staff[$user['Id']][$entry_key]['First Name'] = '';
+                        }
+                        if (array_key_exists('Last Name', $user)) {
+                            $db_staff[$user['Id']][$entry_key]['Last Name'] = htmlspecialchars_decode($user['Last Name'], ENT_QUOTES);
+                        } else {
+                            $db_staff[$user['Id']][$entry_key]['Last Name'] = '';
+                        }
+                        $db_staff[$user['Id']][$entry_key]['Full Name'] = $db_staff[$user['Id']][$entry_key]['First Name'].'&nbsp;'.$db_staff[$user['Id']][$entry_key]['Last Name'];
+                        if (array_key_exists('Email', $user)) {
+                            $db_staff[$user['Id']][$entry_key]['Email'] = htmlspecialchars_decode($user['Email'], ENT_QUOTES);
+                        } else {
+                            $db_staff[$user['Id']][$entry_key]['Email'] = '';
+                        }
+                        if (array_key_exists('Pronouns', $user)) {
+                            $db_staff[$user['Id']][$entry_key]['Pronouns'] = htmlspecialchars_decode($user['Pronouns'], ENT_QUOTES);
+                        } else {
+                            $db_staff[$user['Id']][$entry_key]['Pronouns'] = '';
+                        }
                     }
                 }
             }
