@@ -6,6 +6,8 @@
 
 namespace ciab;
 
+use Atlas\Query\Select;
+
 class CRM
 {
 
@@ -45,6 +47,29 @@ class CRM
         }
 
         return self::$instance;
+
+    }
+
+
+    public static function get_account_local_data(array &$users, array $fields = array())
+    {
+        foreach ($fields as $field) {
+            if (property_exists(self::instance(), 'accountFieldsAbsent')) {
+                if (!in_array($field, self::instance()->accountFieldsAbsent)) {
+                    continue;
+                }
+            }
+            foreach ($users as $index => $user) {
+                $data = $select = Select::new(\MyPDO::instance())
+                    ->columns($field)
+                    ->from('Members')
+                    ->whereEquals(['AccountID' => $user['Id']])
+                    ->fetchOne();
+                if ($data && !empty($data[$field])) {
+                    $users[$index][$field] = $data[$field];
+                }
+            }
+        }
 
     }
 

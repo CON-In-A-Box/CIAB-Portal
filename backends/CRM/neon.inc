@@ -20,6 +20,10 @@ class CRM
 
     private $set = array();
 
+    public $accountFieldsAbsent = [
+        "Pronouns"
+    ];
+
 
     public function __construct()
     {
@@ -327,7 +331,9 @@ SQL;
         }
         if (!empty($additional_fields)) {
             foreach ($additional_fields as $field) {
-                $user[$field] = $result[$field];
+                if (!in_array($field, $this->accountFieldsAbsent)) {
+                    $user[$field] = $result[$field];
+                }
             }
         }
 
@@ -360,7 +366,8 @@ SQL;
         ];
         if (!empty($additional_fields)) {
             foreach ($additional_fields as $field) {
-                if (!in_array($field, $search['columns']['standardFields'])) {
+                if (!in_array($field, $this->accountFieldsAbsent) &&
+                    !in_array($field, $search['columns']['standardFields'])) {
                     $search['columns']['standardFields'][] = $field;
                 }
             }
@@ -383,6 +390,7 @@ SQL;
                 if ($results['page']['totalPage'] > $page) {
                     return $this->lookupUser($criteria, $single_result, $additional_fields, $page + 1, $output);
                 } else {
+                    \ciab\CRM::get_account_local_data($output['users'], $additional_fields);
                     return $output;
                 }
             }
@@ -441,7 +449,7 @@ SQL;
         } else {
             $str = "('".strval($ids)."')";
         }
-        return $this->lookupUser([['Account ID', 'IN_RANGE', $str]], $single);
+        return $this->lookupUser([['Account ID', 'IN_RANGE', $str]], $single, $fields);
 
     }
 
@@ -453,7 +461,7 @@ SQL;
         } else {
             $operator = 'EQUAL';
         }
-        return $this->lookupUser([['Email', $operator, $email]], $single);
+        return $this->lookupUser([['Email', $operator, $email]], $single, $fields);
 
     }
 
@@ -464,14 +472,15 @@ SQL;
             if ($substring) {
                 $names = explode(" ", $name);
                 if (count($names) < 2) {
-                    $result = $this->lookupUser([['First Name', 'CONTAIN', $name]], $single);
-                    $result2 = $this->lookupUser([['Last Name', 'CONTAIN', $name]], $single);
+                    $result = $this->lookupUser([['First Name', 'CONTAIN', $name]], $single, $fields);
+                    $result2 = $this->lookupUser([['Last Name', 'CONTAIN', $name]], $single, $fields);
                     return $this->mergeResults($result, $result2);
                 } else {
                     return $this->lookupUser(
                         [['First Name', 'EQUAL', $names[0]],
                                          ['Last Name', 'CONTAIN', $names[1]]],
-                        $single
+                        $single,
+                        $fields
                     );
                 }
             } else {
@@ -482,7 +491,8 @@ SQL;
                 return $this->lookupUser(
                     [['First Name', 'EQUAL', $names[0]],
                                      ['Last Name', 'EQUAL', $names[1]]],
-                    $single
+                    $single,
+                    $fields
                 );
             }
         } else {
@@ -491,35 +501,39 @@ SQL;
             if ($substring) {
                 $names = explode(" ", $name);
                 if (count($names) < 2) {
-                    $result = $this->lookupUser([[$preferredFirstName, 'CONTAIN', $name]], $single);
-                    $result2 = $this->lookupUser([[$preferredLastName, 'CONTAIN', $name]], $single);
+                    $result = $this->lookupUser([[$preferredFirstName, 'CONTAIN', $name]], $single, $fields);
+                    $result2 = $this->lookupUser([[$preferredLastName, 'CONTAIN', $name]], $single, $fields);
                     return $this->mergeResults($result, $result2);
                 } else {
                     $result = $this->lookupUser(
                         [[$preferredFirstName, 'EQUAL', $names[0]],
                          [$preferredLastName, 'CONTAIN', $names[1]]
                         ],
-                        $single
+                        $single,
+                        $fields
                     );
                     $result2 = $this->lookupUser(
                         [['First Name', 'EQUAL', $names[0]],
                          [$preferredLastName, 'CONTAIN', $names[1]]
                         ],
-                        $single
+                        $single,
+                        $fields
                     );
                     $result = $this->mergeResults($result, $result2);
                     $result2 = $this->lookupUser(
                         [['First Name', 'EQUAL', $names[0]],
                          ['Last Name', 'CONTAIN', $names[1]]
                         ],
-                        $single
+                        $single,
+                        $fields
                     );
                     $result = $this->mergeResults($result, $result2);
                     $result2 = $this->lookupUser(
                         [[$preferredFirstName, 'EQUAL', $names[0]],
                          ['Last Name', 'CONTAIN', $names[1]]
                         ],
-                        $single
+                        $single,
+                        $fields
                     );
                     $result = $this->mergeResults($result, $result2);
                     return $result;
@@ -534,7 +548,8 @@ SQL;
                 $output = $this->lookupUser(
                     [[$preferredFirstName, 'EQUAL', $names[0]],
                      [$preferredLastName, 'EQUAL', $names[1]]],
-                    $single
+                    $single,
+                    $fields
                 );
                 if (count($output['users']) != 0) {
                     return $output;
@@ -542,7 +557,8 @@ SQL;
                 $output = $this->lookupUser(
                     [[$preferredFirstName, 'EQUAL', $names[0]],
                      ['Last Name', 'EQUAL', $names[1]]],
-                    $single
+                    $single,
+                    $fields
                 );
                 if (count($output['users']) != 0) {
                     return $output;
@@ -550,7 +566,8 @@ SQL;
                 return $this->lookupUser(
                     [['First Name', 'EQUAL', $names[0]],
                      [$preferredLastName, 'EQUAL', $names[1]]],
-                    $single
+                    $single,
+                    $fields
                 );
             }
         }
@@ -583,7 +600,7 @@ SQL;
             }
         }
 
-        return $this->lookupUser($criteria, $single_user);
+        return $this->lookupUser($criteria, $single_user, $fields);
 
     }
 
@@ -591,9 +608,9 @@ SQL;
     public function lookupUserByLogin($user, $substring, $fields)
     {
         if ($substring) {
-            return $this->lookupUser([['Account Login Name', 'CONTAIN', $user]], false);
+            return $this->lookupUser([['Account Login Name', 'CONTAIN', $user]], false, $fields);
         } else {
-            return $this->lookupUser([['Account Login Name', 'EQUAL', $user]], false);
+            return $this->lookupUser([['Account Login Name', 'EQUAL', $user]], false, $fields);
         }
 
     }
