@@ -390,7 +390,7 @@ SQL;
                 if ($results['page']['totalPage'] > $page) {
                     return $this->lookupUser($criteria, $single_result, $additional_fields, $page + 1, $output);
                 } else {
-                    \ciab\CRM::get_account_local_data($output['users'], $additional_fields);
+                    \ciab\CRM::getAccountLocalData($output['users'], $additional_fields);
                     return $output;
                 }
             }

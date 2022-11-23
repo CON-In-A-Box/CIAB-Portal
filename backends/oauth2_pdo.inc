@@ -15,6 +15,7 @@ class Pdo implements \OAuth2\OpenID\Storage\AuthorizationCodeInterface, \OAuth2\
 
     protected $resultingUser = null;
 
+
     public function __construct($connection, $config = array())
     {
         $this->base = new \OAuth2\Storage\Pdo($connection, $config);

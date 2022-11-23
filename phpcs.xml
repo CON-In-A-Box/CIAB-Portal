@@ -54,6 +54,10 @@
  <rule ref="Squiz.WhiteSpace.SuperfluousWhitespace"/>
  <rule ref="Squiz.Strings.ConcatenationSpacing"/>
 
+ <rule ref="Internal.NoCodeFound">
+    <severity>0</severity>
+ </rule>
+
  <exclude-pattern>*/vendor/**</exclude-pattern>
  <exclude-pattern>*/neon/**</exclude-pattern>
  <exclude-pattern>*.js</exclude-pattern>
