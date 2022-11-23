@@ -5,7 +5,7 @@
 /* jshint esversion: 6 */
 /* globals apiRequest, Vue, showSpinner, hideSpinner */
 
-import lookupUser from '../../../sitesupport/lookupuser.js'
+import lookupUser from '../../../sitesupport/vue/lookupuser.js'
 
 var volApp = Vue.createApp({
   created() {
