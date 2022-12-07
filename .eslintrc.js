@@ -86,8 +86,7 @@ module.exports = {
     },
     overrides: [
     {
-      files: [ "sitesupport/reportGeneration.js",
-               "sitesupport/lookupuser.js",
+      files: [ "sitesupport/vue/*.js",
                "console/vue.js",
                "modules/concom/report/sitesupport/vue.js",
                "modules/concom/sitesupport/vue.js",

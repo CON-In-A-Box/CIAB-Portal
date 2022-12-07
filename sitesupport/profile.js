@@ -115,7 +115,8 @@ var userProfile = (function(options) {
       map.forEach(function(data) {
         var element = userProfile.getElementById(data[1]);
         if (element) {
-          if (element.value != element.originalValue) {
+          if (element.value != element.originalValue &&
+              (element.value && element.value.trim().length !== 0)) {
             var v = encodeURI(element.value);
             output.push(data[0] + '=' + v);
           }

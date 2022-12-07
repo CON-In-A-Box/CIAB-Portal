@@ -51,7 +51,7 @@ class CRM
     }
 
 
-    public static function get_account_local_data(array &$users, array $fields = array())
+    public static function getAccountLocalData(array &$users, array $fields = array())
     {
         foreach ($fields as $field) {
             if (property_exists(self::instance(), 'accountFieldsAbsent')) {
