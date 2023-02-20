@@ -5,7 +5,8 @@ RUN apk update \
 RUN docker-php-ext-install mysqli pdo_mysql
 RUN docker-php-ext-install gd
 RUN apk add $PHPIZE_DEPS \
-    && pecl install xdebug \
+    && pecl channel-update pecl.php.net \
+    && pecl install xdebug-2.9.0 \
     && docker-php-ext-enable xdebug
 COPY msmtprc /.msmtprc
 COPY php.ini /usr/local/etc/php/php.ini
