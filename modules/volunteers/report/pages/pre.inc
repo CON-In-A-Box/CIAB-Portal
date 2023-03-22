@@ -8,8 +8,8 @@
 require_once($BACKEND."/RBAC.inc");
 
 /* This should only be accessable from volunteer staff */
-if (!(\ciab\RBAC::havePermission("volunteers.reports") ||
-      $_SESSION['IS_VOLUNTEERS'])) {
+if (!(\ciab\RBAC::havePermission("volunteers.reports") &&
+      !$_SESSION['IS_VOLUNTEERS'])) {
     goSite();
 }
 

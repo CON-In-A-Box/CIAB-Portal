@@ -1,7 +1,5 @@
 # Con In A Box
 
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=CON-In-A-Box_CIAB-Portal&metric=alert_status)](https://sonarcloud.io/dashboard?id=CON-In-A-Box_CIAB-Portal)
-
 Starting as a random collection of tools to help administrate a Midwest fan run science fiction and fantasy convention, [CONvergence](http://www.convergence-con.org/), CIAB is evolving to be a multi-faceted web portal for convention administration. 
 
 The goal is to have a fairly generic and skin-able web portal that can be used for a variety of conventions to aid in a number of administrative tasks as well as be useful to the event attendee to get information about their account.
