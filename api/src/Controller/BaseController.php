@@ -630,6 +630,40 @@ abstract class BaseController
     }
 
 
+    public function buildStreamResource(Request $request, Response $response, $args): array
+    {
+        $output = new \App\Controller\Stream\CallbackStream(
+            function () use ($request, $response, $args) {
+                $lastEventId = intval(isset($_SERVER["HTTP_LAST_EVENT_ID"]) ? $_SERVER["HTTP_LAST_EVENT_ID"] : 0);
+                if ($lastEventId == 0) {
+                    $lastEventId = intval(isset($_GET["lastEventId"]) ? $_GET["lastEventId"] : 0);
+                }
+
+                // Padding
+                echo ":".str_repeat(" ", 2049)."\n"; // 2kB padding for IE
+                echo "retry: 2000\n";
+
+                $this->doWork($request, $response, $args, $lastEventId);
+            }
+        );
+
+        $response = $response
+            ->withBody($output)
+            ->withHeader('Content-Type', 'text/event-stream')
+            ->withHeader('Cache-Control', 'no-store')
+            ->withHeader('X-Accel-Buffering', 'no');
+
+        ob_flush();
+        flush();
+
+        return [
+            \App\Controller\BaseController::RESULT_TYPE,
+            $response
+        ];
+
+    }
+
+
     abstract public static function install($container): void;
 
 
