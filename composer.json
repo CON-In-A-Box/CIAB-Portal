@@ -32,7 +32,7 @@
     "minimum-stability": "stable",
     "require": {
         "php": ">=7.2",
-        "google/apiclient": "^2.0",
+        "google/apiclient": "^2.13.1",
         "bshaffer/oauth2-server-php": "^1.10",
         "vlucas/phpdotenv": "^3.6",
         "zendframework/zend-permissions-rbac": "^3.0",
