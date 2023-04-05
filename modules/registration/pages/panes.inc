@@ -20,6 +20,21 @@ function _htmlsafeify($array)
 }
 
 
+function registration()
+{
+    ?>
+    &nbsp;
+    <script type="module" src="/modules/registration/sitesupport/badgeMenuPane.js"></script>
+    <div id="componentland">
+        <badge-menu-pane :open="open" :event-name="eventName" :tickets="tickets">
+        </badge-menu-pane>
+    </div>
+    <?php
+    /* done */
+
+}
+
+
 function badges()
 {
     $badges = get_tickets($_SESSION['accountId']);
@@ -90,4 +105,5 @@ function badges()
 }
 
 
+$homepage_panes[] = 'registration\panes\registration';
 $homepage_panes[] = 'registration\panes\badges';
