@@ -34,11 +34,6 @@ if (isset($_SESSION['duplicates'])) {
 }
 ?>
 
-<div id="componentland">
-    <badge-menu-pane :open="open" :event-name="eventName" :tickets="tickets">
-    </badge-menu-pane>
-</div>
-
 <?php
 foreach ($homepage_panes as $drawfunc) {
     $drawfunc();
