@@ -7,6 +7,7 @@
 
 require_once(__DIR__."/../backends/CRM.inc");
 
+
 function _quote($value)
 {
     if ($value === null || $value === '') {
@@ -16,6 +17,7 @@ function _quote($value)
     }
 
 }
+
 
 function _parse_user($result, $additional_fields)
 {

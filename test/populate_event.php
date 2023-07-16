@@ -7,6 +7,7 @@ require_once(__DIR__."/../functions/authentication.inc");
 require_once(__DIR__."/../modules/event/functions/functions.inc");
 require_once(__DIR__."/../modules/concom/functions/concom.inc");
 
+
 function save_event($event)
 {
     $id = $event->Id;
@@ -47,6 +48,7 @@ SQL;
     DB::run($sql);
 
 }
+
 
 function rand_word($len)
 {
