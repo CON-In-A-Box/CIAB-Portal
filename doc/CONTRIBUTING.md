@@ -137,7 +137,7 @@ You will notice your terminal contains output. It should look like what is descr
 
 ## Installing node_modules
 
-To install the linter module for our JS code, from the project root directory in your terminal use `npm install`. This should create a `node_modules` folder with the appropriate dependencies.
+To install the linter module for our JS code, from the project root directory in your terminal run `npm install`. This should create a `node_modules` folder with the appropriate dependencies.
 
 ## Seeding the Database
 
