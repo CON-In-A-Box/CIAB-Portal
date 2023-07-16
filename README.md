@@ -92,4 +92,6 @@ The code is also monitored by [SonarCloud](https://sonarcloud.io/dashboard?id=CO
 
 We are always happy for help from other developers. Please contact us and we are happy to try to help provide direction or even submit patches and we will review them. 
 
+Additional information about contributing can be found in our [CONTRIBUTING docs](./doc/CONTRIBUTING.md).
+
 ***Thank you for your interest***
