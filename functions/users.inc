@@ -514,9 +514,9 @@ function createPassword(/*.string.*/$id, /*.string.*/$password): string
         $duration = '+1 year';
     }
 
-    $value = lookup_users_by_email($id);
+    $value = lookup_users_by_login($id);
     if (count($value)) {
-        $user = $value['users'][0]['Id'];
+        $user = $value[0]['AccountID'];
         $expires = date('Y-m-d', strtotime($duration));
         $auth = \password_hash($password, PASSWORD_DEFAULT);
         
