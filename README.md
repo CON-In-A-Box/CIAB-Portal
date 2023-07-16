@@ -90,6 +90,8 @@ The code is also monitored by [SonarCloud](https://sonarcloud.io/dashboard?id=CO
 
 # How you can help!
 
-We are always happy for help from other developers. Please contact us and we are happy to try to help provide direction or even submit patches and we will review them. 
+We are always happy for help from other developers. Please contact us and we are happy to try to help provide direction or even submit patches and we will review them.
+
+Additional information about contributing can be found in our [CONTRIBUTING docs](./CONTRIBUTING.md).
 
 ***Thank you for your interest***
