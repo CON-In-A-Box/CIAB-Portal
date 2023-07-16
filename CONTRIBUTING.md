@@ -141,17 +141,15 @@ To install the linter module for our JS code, from the project root directory in
 
 ## Seeding the Database
 
-You can navigate to `http://locahost:8000` to view a PHPMyAdmin portal that shows your database. You should see `ciab` listed as a database if you used the defaults for `.env` listed above. If you named it something else, confirm that the database exists as expected.
-
-## The Site
-
-You can navigate to `http://localhost:8080`. On your first visit, you should see a page that describes database schema updates that were run and at the bottom you should see a button labeled "Proceed". Clicking "Proceed" should direct you to a login page.
-
-You can now navigate to `http://localhost:8080/configure_system.php` to complete set up for your local development environment. Do not change any of the fields that are pre-filled, but fill in any empty form fields and click "Submit Query". You should be redirected to the login page, and you should be able to login using the email and password that you configured for the admin user on the configuration page.
-
-Once logged in, you should be able to see a page with more options and configurations available. You've successfully set up your first user and you're ready to proceed!
-
-TODO: Additional event and volunteer database population instructions
+- Navigate to `http://localhost:8000` to confirm that PHPMyAdmin portal shows your database. If you used the defaults for `.env` listed above, you should see a database named `ciab`.
+- Navigate to `http://localhost:8080`. You should see a page that describes database schema updates that were run, and at the bottom there should be a button labeled "Proceed", which you should click.
+- You should now see the login page. You can navigate to `http://localhost:8080/configure_system.php` to complete setup for your local development environment.
+  - Do not change any of the fields that have been pre-filled.
+  - Fill in any empty form fields and click "Submit Query".
+  - You should be redirected back to the login page.
+  - Verify that you can login using the email and password you provided for the admin user on the configuration page.
+- Navigate to `http://localhost:8080/test/populate_event.php` to set up an event with random members and registrations.
+  - Watch your Docker console output for `"GET /test/populate_event.php" 200`. This may take more than a minute, and you may see a Gateway Timeout displayed on your web browser.
 
 # Additional Information
 
