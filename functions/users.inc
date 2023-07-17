@@ -8,6 +8,17 @@
 require_once(__DIR__."/../backends/CRM.inc");
 
 
+function _quote($value)
+{
+    if ($value === null || $value === '') {
+        return 'NULL';
+    } else {
+        return \MyPDO::quote($value);
+    }
+
+}
+
+
 function _parse_user($result, $additional_fields)
 {
     $user = array();
@@ -514,7 +525,7 @@ function createPassword(/*.string.*/$id, /*.string.*/$password): string
         $duration = '+1 year';
     }
 
-    $value = lookup_user_by_login($id);
+    $value = lookup_users_by_login($id);
     if (count($value)) {
         $user = $value[0]['AccountID'];
         $expires = _quote(date('Y-m-d H:i', strtotime($duration)));
