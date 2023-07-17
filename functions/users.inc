@@ -7,7 +7,6 @@
 
 require_once(__DIR__."/../backends/CRM.inc");
 
-
 function _quote($value)
 {
     if ($value === null || $value === '') {
@@ -15,7 +14,6 @@ function _quote($value)
     } else {
         return \MyPDO::quote($value);
     }
-
 }
 
 
