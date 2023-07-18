@@ -143,6 +143,10 @@
  *          type="number"
  *      ),
  *      @OA\Property(
+ *          property="volunteeer_count",
+ *          type="number"
+ *      ),
+ *      @OA\Property(
  *          property="total_hours",
  *          type="number"
  *      )
@@ -161,6 +165,10 @@
  *      @OA\Property(
  *          property="total_hours",
  *          type="in",
+ *      ),
+ *      @OA\Property(
+ *          property="total_volunteers",
+ *          type="integer",
  *      ),
  *      @OA\Property(
  *          property="data",

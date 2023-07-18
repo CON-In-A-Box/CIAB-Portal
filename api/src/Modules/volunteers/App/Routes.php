@@ -71,6 +71,7 @@ function setupVolunteersAPI($app, $authMiddleware)
         function () use ($app, $authMiddleware) {
             $app->get('/{id}/volunteer/hours', 'App\Modules\volunteers\Controller\Hours\GetEventHours');
             $app->get('/{id}/volunteer/hours/summary', 'App\Modules\volunteers\Controller\Hours\GetEventHoursSummary');
+            $app->get('/{id}/volunteer/claims/summary', 'App\Modules\volunteers\Controller\Claims\GetEventClaimsSummary');
         }
     )->add(new App\Middleware\CiabMiddleware($app))->add($authMiddleware);
 

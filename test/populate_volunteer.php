@@ -5,6 +5,20 @@ require_once(__DIR__."/../functions/database.inc");
 require_once(__DIR__."/../modules/volunteers/functions/volunteer.inc");
 
 
+function random_user_id()
+{
+    $sql = <<<SQL
+        SELECT AccountID FROM Members
+        ORDER BY RAND()
+        LIMIT 1
+SQL;
+    $result = DB::run($sql);
+    $value = $result->fetch();
+    return (int)($value['AccountID']);
+
+}
+
+
 function random_concom_id()
 {
     $sql = <<<SQL
@@ -56,7 +70,7 @@ function populate_vol()
     $authorized = 0;
 
     for ($i = 0; $i < 5000; $i++) {
-        $id = random_concom_id();
+        $id = random_user_id();
         $enterer = random_concom_id();
         $authorized = random_concom_id();
         $department = random_department();

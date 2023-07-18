@@ -2909,6 +2909,35 @@ paths:
       security:
         -
           ciab_auth: []
+  '/event/{id}/volunteer/claims/summary':
+    get:
+      tags:
+        - volunteers
+      summary: 'Gets event volunteer summary'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Id of the event.'
+          required: true
+          schema:
+            type: integer
+        -
+          $ref: '#/components/parameters/event'
+      responses:
+        '200':
+          description: 'Event volunteer data found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/volunteer_claim_summary'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/member_not_found'
+      security:
+        -
+          ciab_auth: []
   '/member/{id}/volunteers/claims':
     get:
       tags:
@@ -4095,6 +4124,9 @@ components:
         duplicates:
           description: 'Comma seperated list of other account IDs with the same email address'
           type: string
+        pronouns:
+          description: 'Prefered pronouns.'
+          type: string
       type: object
     member_reference:
       properties:
@@ -4653,6 +4685,8 @@ components:
                 - volunteer_hour_summary_entry
             entry_count:
               type: number
+            volunteeer_count:
+              type: number
             total_hours:
               type: number
         -
@@ -4687,6 +4721,8 @@ components:
                 - volunteer_hour_entry_list
             total_hours:
               type: in
+            total_volunteers:
+              type: integer
             data:
               description: 'List of volunteer hour entries'
               type: array

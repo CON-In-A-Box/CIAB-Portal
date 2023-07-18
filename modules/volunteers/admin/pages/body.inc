@@ -163,108 +163,6 @@ function _printHours($hours)
 }
 
 
-function hour_table($uid)
-{
-    global $totalHours,$admin_mode,$ConComHours,$locked;
-
-    echo '<div class="UI-container UI-center event-color-primary" ';
-    echo 'style="max-height:34vh; overflow:scroll;">';
-    echo "<table class='UI-stripedtable'>";
-    echo "<tr><th class='UI-center event-color-primary' colspan=9>Hours</th></tr>\n";
-    $concom = null;
-    if (isset($uid)) {
-        $data = get_volunteer_hours_for_user($uid);
-
-        if (!isset($locked) && class_exists('\\concom\\POSITION') && method_exists('\\concom\\POSITION', 'getConComPosition')) {
-            $concom = concom\POSITION::getConComPosition($uid);
-            if (empty($concom)) {
-                $concom = null;
-            }
-        }
-
-        if ($concom) {
-            $totalHours = $ConComHours;
-        } else {
-            $totalHours = 0;
-        }
-    } else {
-        $data = get_volunteer_hour_summary();
-        $summary = get_volunteer_year_summery();
-    }
-    if (!empty($data)) {
-        echo "<tr><th>";
-        $keys = array_keys($data[0]);
-        $id_index = array_search("Department ID", $keys);
-        if ($id_index !== false) {
-            unset($keys[$id_index]);
-        }
-        $idx = array_search('EntryID', $keys);
-        if ($idx !== false) {
-            unset($keys[$idx]);
-        }
-        echo implode(_htmlsafeify($keys), '</th><th>');
-        echo "</th></tr>\n";
-        foreach ($data as $key => $record) {
-            if (isset($locked) && !in_array($record['Department ID'], $locked)) {
-                continue;
-            }
-            if (isset($uid)) {
-                if (!$concom) {
-                    if (array_key_exists('Time Modifier', $record)) {
-                        $totalHours += $record['Actual Hours'] * $record['Time Modifier'];
-                    } else {
-                        $totalHours += $record['Total Hours'];
-                    }
-                }
-            }
-            if ($uid && $admin_mode) {
-                echo "<tr class='VOL-hover-red' ";
-                $json = json_encode($record);
-                $json = base64_encode($json);
-                echo 'onclick=\'showEditHours("'.$json;
-                echo '");\'>';
-            } else {
-                echo "<tr>";
-            }
-            echo "<td>";
-            unset($record['EntryID']);
-            if ($id_index !== false) {
-                unset($record['Department ID']);
-            }
-            if (!isset($uid)) {
-                $record['Total Hours'] += 0;
-            } else {
-                $record['Actual Hours'] += 0;
-                $record['Time Modifier'] += 0;
-            }
-            echo implode(_htmlsafeify($record), '</td><td>');
-            echo "</td></tr>\n";
-        }
-    } else {
-        echo "<tr><th class='VOL-no-entries' colspan=9>No Entries...</th></tr>\n";
-    }
-    echo "<tr><th class='UI-center event-color-primary' colspan=9></th></tr>\n";
-    echo "</table>";
-    echo "</div>";
-    echo '<div class="UI-event-sectionbar">';
-    if (isset($uid)) {
-        echo "<span>Total : ";
-        _printHours($totalHours);
-        echo "</span>";
-    } elseif (!isset($locked)) {
-        echo "<span class='UI-margin'>Total Hours : ";
-        _printHours($summary['TotalHours']);
-        echo "</span>";
-        echo "<span class='UI-margin'>Total Volunteers : ".$summary['VolunteerCount']."</span>";
-        echo "<span class='UI-margin'>Total Spent Hours : ";
-        _printHours($summary['TotalHoursSpent']);
-        echo "</span>";
-    }
-    echo "</div>\n";
-
-};
-
-
 function acquireable_item($item)
 {
     global $totalHours, $hoursRemain;
@@ -532,9 +430,9 @@ function admin_bar($uid)
     echo "style='max-height:10vh; overflow:scroll;'>\n";
     echo "<div id='volunteer_admin_bar' class='VOL-admin-bar'>\n";
     echo "<button id='add_prize' class='UI-redbutton'";
-    echo "onclick='showEditPrize(null)';>Add New Gift</button>\n";
+    echo "onclick='showEditPrize(null);'>Add New Gift</button>\n";
     echo "<button id='gen_csv' class='UI-redbutton'";
-    echo "onclick='window.location.href=\"index.php?Function=volunteers/report\"';>Go To Reports</button>\n";
+    echo "onclick='window.location.href=\"index.php?Function=volunteers/report\";'>Go To Reports</button>\n";
     echo "</div>\n";
     echo "</div>\n";
 
@@ -603,7 +501,11 @@ if (isset($_SESSION['IS_ADMIN']) || $_SESSION['IS_VOLUNTEERS']) {
 if (!isset($locked)) {
     initialize($uid);
 }
-hour_table($uid);
+?>
+
+<volunteer-hour-table styles="max-height:34vh; overflow:scroll;" :footer=true></volunteer-hour-table>
+
+<?php
 if (!isset($locked)) {
     if (!$admin_mode) {
         messages($uid);

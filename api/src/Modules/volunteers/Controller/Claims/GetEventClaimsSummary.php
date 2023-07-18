@@ -6,8 +6,8 @@
 /**
  *  @OA\Get(
  *      tags={"volunteers"},
- *      path="/event/{id}/volunteer/hours/summary",
- *      summary="Gets member volunteer summary",
+ *      path="/event/{id}/volunteer/claims/summary",
+ *      summary="Gets event volunteer summary",
  *      @OA\Parameter(
  *          description="Id of the event.",
  *          in="path",
@@ -16,13 +16,13 @@
  *          @OA\Schema(type="integer")
  *      ),
  *      @OA\Parameter(
- *          ref="#/components/parameters/short_response"
+ *          ref="#/components/parameters/event"
  *      ),
  *      @OA\Response(
  *          response=200,
- *          description="Member volunteer data found",
+ *          description="Event volunteer data found",
  *          @OA\JsonContent(
- *           ref="#/components/schemas/volunteer_hour_entry_list"
+ *           ref="#/components/schemas/volunteer_claim_summary"
  *          )
  *      ),
  *      @OA\Response(
@@ -37,18 +37,27 @@
  *  )
  **/
 
-namespace App\Modules\volunteers\Controller\Hours;
+namespace App\Modules\volunteers\Controller\Claims;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
-use App\Controller\PermissionDeniedException;
 use App\Controller\NotFoundException;
 use Atlas\Query\Select;
 use App\Controller\BaseController;
 use \App\Controller\IncludeResource;
 
-class GetEventHoursSummary extends BaseHours
+class GetEventClaimsSummary extends BaseClaims
 {
+
+
+    public function __construct($container)
+    {
+        parent::__construct($container);
+        $this->includes = [
+        new IncludeResource('\App\Controller\Event\GetEvent', 'id', 'event'),
+        ];
+
+    }
 
 
     public function buildResource(Request $request, Response $response, $params): array
@@ -58,38 +67,43 @@ class GetEventHoursSummary extends BaseHours
         $id = $this->getEvent($params['id'])['id'];
 
         $data = Select::new($this->container->db)
-        ->columns('"volunteer_hour_summary" AS type')
-        ->columns('DepartmentID AS department')
-        ->columns('COUNT(HourEntryID) AS entry_count')
-        ->columns('COUNT(DISTINCT AccountID) AS volunteer_count')
-        ->columns('SUM(ActualHours * TimeModifier) AS total_hours')
-        ->from('VolunteerHours')
+        ->columns('Value')
+        ->columns('Promo')
+        ->columns('EventID as event')
+        ->from('HourRedemptions AS v')
         ->whereEquals(['EventID' => $id])
-        ->groupBy('DepartmentID')
+        ->join(
+            'LEFT',
+            'VolunteerRewards AS d',
+            'v.PrizeID = d.PrizeID'
+        )
         ->fetchAll();
 
         if (empty($data)) {
             throw new NotFoundException('Volunteer records not found');
         }
 
-        $data2 = Select::new($this->container->db)
-        ->columns('COUNT(DISTINCT AccountID) AS t')
-        ->from('VolunteerHours')
-        ->whereEquals(['EventID' => $id])
-        ->fetchAll();
-
-        $sum = 0;
+        $sum = 0.0;
         foreach ($data as $entry) {
-            $sum += $entry['total_hours'];
+            if ($entry['Promo']) {
+                continue;
+            }
+            $sum += $entry['Value'];
         }
 
+        $output = [
+            'type' => 'volunteer_user_summary',
+            'reward_count' => count($data),
+            'spent_hours' => $sum,
+            'event' => $data[0]['event']
+        ];
+
         return [
-        \App\Controller\BaseController::LIST_TYPE,
-        $data,
-        array('type' => 'volunteer_hour_entry_list', 'total_hours' => $sum, 'total_volunteer_count' => $data2[0]['t'])];
+        \App\Controller\BaseController::RESOURCE_TYPE,
+        $output];
 
     }
 
 
-    /* end GetEventHoursSummary */
+    /* end GetEventClaimsSummary */
 }

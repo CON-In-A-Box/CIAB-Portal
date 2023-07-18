@@ -100,6 +100,7 @@ module.exports = {
                "modules/volunteers/sitesupport/volunteerPane.js",
                "modules/volunteers/admin/sitesupport/vue.js",
                "modules/volunteers/sitesupport/volunteersEntry.js",
+               "modules/volunteers/sitesupport/hourTable.js",
                "modules/volunteers/report/sitesupport/hourReport.js",
                "modules/volunteers/report/sitesupport/volunteerReport.js"],
       parserOptions: { sourceType: "module" },

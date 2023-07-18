@@ -1,54 +1,3 @@
-<?php
-
-
-function _htmlsafeify($array)
-{
-    $output = [];
-    foreach ($array as $key => $value) {
-        $output[$key] = htmlspecialchars($value);
-    }
-    return $output;
-
-}
-
-
-function hour_table()
-{
-    $concom = null;
-    $data = get_volunteer_hour_summary();
-    $summary = get_volunteer_year_summery();
-    if (!empty($data)) {
-        $keys = array_keys($data[0]);
-        $id_index = array_search("Department ID", $keys);
-        if ($id_index !== false) {
-            unset($keys[$id_index]);
-        }
-        foreach ($data as $key => $record) {
-            echo "<tr class='VOL-hover-red' ";
-            echo 'onclick=\'departmentReport("'.$record['Department Worked'].'", '.$record['Department ID'].');\'';
-            echo ">";
-            echo "<td>";
-            unset($record['EntryID']);
-            if ($id_index !== false) {
-                unset($record['Department ID']);
-            }
-            if (!isset($uid)) {
-                $record['Total Hours'] += 0;
-            } else {
-                $record['Actual Hours'] += 0;
-                $record['Time Modifier'] += 0;
-            }
-            echo implode(_htmlsafeify($record), '</td><td>');
-            echo "</td></tr>\n";
-        }
-    } else {
-        echo "<tr><td class='VOL-no-entries' colspan=9>No Entries...</td></tr>\n";
-    }
-
-};
-
-
-?>
 <script>
     var sidebarMainDiv = 'main_content';
 </script>
@@ -69,20 +18,8 @@ function hour_table()
       </div>
     </div>
 
-    <div class="UI-container UI-center event-color-primary">
-      <div class='UI-tabletitle'>Hours</div>
-      <table class='UI-stripedtable' summary='Department Volunteer Summery'>
-        <tr>
-            <th id="Department">Department Worked</th>
-            <th id="Entries">Total Entries</th>
-            <th id="Volunteers">Total Volunteers</th>
-            <th id="Hours">Total Hours</th>
-        </tr>
-<?php hour_table();?>
-      </table>
-      <div class='UI-tablefooter'>&nbsp;</div>
-    </div>
-     &nbsp;
+    <volunteer-hour-table></volunteer-hour-table>
+
     <div class='UI-continer UI-padding'>
       <div class='UI-event-sectionbar'>
         <span>Report Data</span>

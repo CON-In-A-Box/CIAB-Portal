@@ -9,9 +9,9 @@
            hideSidebar, showSidebar, alertbox, basicBackendRequest
            */
 /* exported processReturn, showReturn, markDelete,
-            generateDerivedCSV, departmentReport, generateDeptReport,
+            generateDerivedCSV, generateDeptReport,
             minHourReport, commitPrize, deletePrize,
-            showEditPrize, deleteHours, commitHours, showEditHours,
+            showEditPrize, deleteHours, commitHours,
             toggleAdminMode, addPromoToCheckout, removeFromCheckout,
             processCheckout, showHideSoldOut, lookupFail, sidebarMainDiv */
 
@@ -257,32 +257,6 @@ function toggleAdminMode() {
   }
 }
 
-function showEditHours(data) {
-  showSidebar('edit_user_hour_div');
-  var item = JSON.parse(atob(data));
-  document.getElementById('edit_name').value = item.Volunteer;
-  document.getElementById('edit_hours').value = item['Actual Hours'];
-  var options = document.getElementById('edit_mod');
-  var value = parseFloat(item['Time Modifier']);
-  options.selectedIndex = 0;
-  for (var i = 0, n = options.length; i < n ; i++) {
-    if (options[i].value == value) {
-      options.selectedIndex = i;
-      break;
-    } else if (options[i].value < value) {
-      options.selectedIndex = i;
-    } else {
-      break;
-    }
-  }
-  document.getElementById('edit_enter').value = item['Entered By'];
-  document.getElementById('edit_auth').value = item['Authorized By'];
-  document.getElementById('edit_dept').value = item['Department Worked'];
-  var date = item['End Date Time'];
-  date = date.replace(/\s+/g, 'T');
-  document.getElementById('edit_end').value = date;
-  document.getElementById('edit_data').value = data;
-}
 
 function commitHours() {
   confirmbox(
@@ -291,6 +265,7 @@ function commitHours() {
     var data = document.getElementById('edit_data').value;
     var item = JSON.parse(atob(data));
 
+    item['EntryID'] = item.id;
     item['Actual Hours'] = parseFloat(
       document.getElementById('edit_hours').value);
     item['End Date Time'] = document.getElementById('edit_end').value;
@@ -310,7 +285,7 @@ function deleteHours() {
   confirmbox('DELETE Volunteer Entry?').then(function() {
     var data = document.getElementById('edit_data').value;
     var item = JSON.parse(atob(data));
-    var parameter = 'delete_hour=' + item.EntryID;
+    var parameter = 'delete_hour=' + item.id;
     basicVolunteersRequestAdmin(parameter, function() {
       location.reload();
     });
@@ -462,13 +437,6 @@ function generateDeptReport() {
   var deptid = document.getElementById('dept_data').value;
   window.location = 'index.php?Function=volunteers/report&dept_report=' +
                     deptid + '&dept_name=' + name;
-}
-
-function departmentReport(name, dept) {
-  showSidebar('department_report_div');
-  document.getElementById('dept_name').innerHTML = name;
-  document.getElementById('dept_data').value = dept;
-  document.getElementById('dept_data_name').value = name;
 }
 
 function markDelete(index, tableRow) {
