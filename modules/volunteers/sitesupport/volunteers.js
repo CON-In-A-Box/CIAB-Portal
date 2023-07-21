@@ -8,12 +8,9 @@
            groupData, checkAuthentication, adminMode, unclaimed, hoursRemain,
            hideSidebar, showSidebar, alertbox, basicBackendRequest
            */
-/* exported processReturn, showReturn, markDelete,
-            generateDerivedCSV, generateDeptReport,
-            minHourReport, commitPrize, deletePrize,
-            showEditPrize,
-            toggleAdminMode, addPromoToCheckout, removeFromCheckout,
-            processCheckout, showHideSoldOut, lookupFail, sidebarMainDiv */
+/* exported processReturn,  markDelete, generateDeptReport,
+            clearReturnCart, toggleAdminMode, addPromoToCheckout, removeFromCheckout,
+            processCheckout, sidebarMainDiv */
 
 'use strict';
 
@@ -27,20 +24,6 @@ function basicVolunteersRequestAdmin(parameter, finish) {
   basicBackendRequest('POST', 'volunteers/admin', parameter, finish);
 }
 
-function showHideSoldOut() {
-  var unhide = !(document.getElementById('soldoutcheck').checked);
-  var table = document.getElementById('prizes');
-  for (var i = 0; i < table.rows.length; i++) {
-    var row = table.rows[i];
-    if (unhide && row.className.includes(' hiddenrow')) {
-      row.className = row.className.replace(' hiddenrow', '');
-    } else if (!unhide && row.className.includes('soldoutrow')) {
-      if (row.className.indexOf(' hiddenRow') == -1) {
-        row.className += ' hiddenrow';
-      }
-    }
-  }
-}
 
 function fillReward() {
   var table = document.getElementById('reward_list');
@@ -257,145 +240,6 @@ function toggleAdminMode() {
   }
 }
 
-function showEditPrize(data) {
-  groupsNow = JSON.parse(groupData);
-  showSidebar('edit_prize_div');
-
-  var item;
-  if (!data) {
-    document.getElementById('edit_prize_title').innerHTML = 'Enter New Gift';
-    document.getElementById('delete_prize_button').style.visibility = 'hidden';
-    item = {};
-  } else {
-    document.getElementById('edit_prize_title').innerHTML = 'Edit Gift Entry';
-    document.getElementById('delete_prize_button').style.visibility = 'visible';
-    item = JSON.parse(atob(data));
-  }
-
-  var grp = document.getElementById('edit_prize_group');
-  if (grp.length == 1) {
-    var option;
-    for (var key in groupsNow) {
-      option = document.createElement('option');
-      option.text = 'Group #' + key + ' : Limit ' + groupsNow[key];
-      option.value = key;
-      grp.add(option);
-    }
-    option = document.createElement('option');
-    option.text = 'New Group';
-    option.value = 'new';
-    grp.add(option);
-  }
-
-  if (data) {
-    item = JSON.parse(atob(data));
-    document.getElementById('edit_prize_name').value = item.Name;
-    document.getElementById('edit_prize_value').value = item.Value;
-    document.getElementById('edit_prize_promo').value = item.Promo;
-    if (item.RewardGroupID) {
-      grp.value = item.RewardGroupID;
-    } else {
-      grp.value = 'none';
-    }
-    prizeGroupChange();
-
-    document.getElementById('edit_prize_count').value = item.Remaining;
-
-    document.getElementById('prize_data').value = data;
-  } else {
-    document.getElementById('edit_prize_name').value = '';
-    document.getElementById('edit_prize_value').value = 0.0;
-    document.getElementById('edit_prize_count').value = 0;
-    document.getElementById('edit_prize_promo').value = 'no';
-    grp.value = 'none';
-    prizeGroupChange();
-    document.getElementById('prize_data').value = null;
-  }
-}
-
-function deletePrize() {
-  confirmbox('DELETE Gift Entry?',
-    'WARNING!!!<br>  Only do this if NONE of this gift ' +
-    'has been distributed. <br>It will lead to corrupt ' +
-    'reward records. <br>To DELETE a gift that has been ' +
-    'rewarded set inventory to \'0\'').then(
-    function() {
-      var data = document.getElementById('prize_data').value;
-      var item = JSON.parse(atob(data));
-      var parameter = 'delete_prize=' + item.PrizeID;
-      basicVolunteersRequestAdmin(parameter, function() {
-        location.reload();
-      });
-    });
-}
-
-function commitPrize() {
-  var data = document.getElementById('prize_data').value;
-  var item = null;
-  var message = null;
-
-  if (data) {
-    message = 'Proceed with Volunteer Gift Update?';
-    item = JSON.parse(atob(data));
-  } else {
-    message = 'Proceed with Addition of new Volunteer Gift?';
-    item = {Name:'', Value:0, RewardGroupID:null, GroupLimit:0,
-      Promo:'no', TotalInventory:0, Remaining:0};
-  }
-  confirmbox('Please! double check entries!', message).then(function() {
-    item.Name = document.getElementById('edit_prize_name').value;
-    item.Value = parseFloat(document.getElementById('edit_prize_value').value);
-    var grp = document.getElementById('edit_prize_group').value;
-    if (grp === 'none') {
-      item.RewardGroupID = '';
-    } else {
-      item.RewardGroupID = grp;
-    }
-
-    item.GroupLimit = parseInt(
-      document.getElementById('edit_prize_group_count').value);
-
-    var e = document.getElementById('edit_prize_promo');
-    item.Promo = e.options[e.selectedIndex].value;
-
-    if (item.Remaining != document.getElementById('edit_prize_count').value) {
-      var amount = parseInt(item.Remaining) -
-            parseInt(document.getElementById('edit_prize_count').value);
-      if (amount !== 0) {
-        var newValue = parseInt(item.TotalInventory) - amount;
-        item.TotalInventory = newValue;
-      }
-    }
-    var parameter;
-    if (data) {
-      parameter = 'update_prize=' + JSON.stringify(item);
-    } else {
-      parameter = 'new_prize=' + JSON.stringify(item);
-    }
-    basicVolunteersRequestAdmin(parameter, function() {
-      location.reload();
-    });
-
-  });
-}
-
-function prizeGroupChange() {
-  var grp = document.getElementById('edit_prize_group').value;
-  var cnt = document.getElementById('edit_prize_group_count');
-  if (grp === 'none') {
-    cnt.disabled = true;
-    cnt.value = '';
-    cnt.classList.add('UI-disabled');
-  } else if (grp === 'new') {
-    cnt.value = 1;
-    cnt.disabled = false;
-    cnt.classList.remove('UI-disabled');
-  } else {
-    cnt.value = groupsNow[grp];
-    cnt.disabled = false;
-    cnt.classList.remove('UI-disabled');
-  }
-}
 
 function generateDeptReport() {
   var name = document.getElementById('dept_data_name').value;
@@ -431,36 +275,11 @@ function markDelete(index, tableRow) {
 
 }
 
-function showReturn(json) {
-  /* clear existing */
-  var table = document.getElementById('return_table');
-  while (table.hasChildNodes()) {
-    table.removeChild(table.firstChild);
-  }
+function clearReturnCart() {
   returnCart = [];
 
-  var prizes = JSON.parse(atob(json));
-  showSidebar('return_div');
-  for (var index in prizes) {
-    var item = prizes[index];
-    for (var i = 0; i < item.Aquired; i++) {
-      var row = table.insertRow(-1);
-      row.setAttribute('data-prizeid', item.PrizeID);
-      row.classList.add('VOL-hover-red');
-      row.setAttribute('onclick', 'markDelete(' + returnCart.length +
-        ', ' + row.rowIndex + ');');
-      var cell = row.insertCell(0);
-      cell.innerHTML = escapeHtml(item.Name);
-      cell = row.insertCell(1);
-      cell.innerHTML = Math.round(item.Value * 100) / 100;
-      var cartItem = [];
-      cartItem.item = item;
-      cartItem.Returned = false;
-      cartItem.row = row;
-      returnCart.push(cartItem);
-    }
-  }
 }
+
 
 function finishReturn() {
   var table = document.getElementById('return_list');

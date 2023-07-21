@@ -163,6 +163,41 @@ function _printHours($hours)
 }
 
 
+function hour_data($uid)
+{
+    global $totalHours, $ConComHours, $locked;
+
+    if (isset($uid)) {
+        if (!isset($locked) && class_exists('\\concom\\POSITION') && method_exists('\\concom\\POSITION', 'getConComPosition')) {
+            $concom = concom\POSITION::getConComPosition($uid);
+            if (!empty($concom)) {
+                $totalHours = $ConComHours;
+                return;
+            }
+        }
+
+        $totalHours = 0;
+        $data = get_volunteer_hours_for_user($uid);
+
+        if (!empty($data)) {
+            foreach ($data as $key => $record) {
+                if (isset($locked) && !in_array($record['Department ID'], $locked)) {
+                    continue;
+                }
+                if (!$concom) {
+                    if (array_key_exists('Time Modifier', $record)) {
+                        $totalHours += $record['Actual Hours'] * $record['Time Modifier'];
+                    } else {
+                        $totalHours += $record['Total Hours'];
+                    }
+                }
+            }
+        }
+    }
+
+}
+
+
 function acquireable_item($item)
 {
     global $totalHours, $hoursRemain;
@@ -170,201 +205,6 @@ function acquireable_item($item)
         return (round($item['Value'], 3) <= round($totalHours, 3));
     }
     return (round($item['Value'], 3) <= round($hoursRemain, 3));
-
-}
-
-
-function _prize_table_start($uid = 0, $spent = 0, $hoursRemain = 0)
-{
-    global $admin_mode;
-
-    if ($uid) {
-        echo '<div class="VOL-prize-bar">';
-        echo "<span>Spent <span id='h_spent'>";
-        _printHours($spent);
-        echo "</span>  |  ";
-        echo "<span id='h_left'>";
-        _printHours($hoursRemain);
-        echo "</span>  Left</span>";
-        echo "</div>\n";
-    }
-    echo "<div class='UI-container UI-center event-color-secondary' ";
-    if ($admin_mode && $uid) {
-        echo "style='max-height:29vh; overflow:scroll;'>\n";
-    } else {
-        echo "style='max-height:33vh; overflow:scroll;'>\n";
-    }
-    echo "<table class='UI-stripedtable'";
-    echo " id='prizes'>\n";
-    echo "<tr>";
-    echo "<th class='event-color-secondary'>";
-    if (!$admin_mode) {
-        echo "<input id='soldoutcheck' type='checkbox' class='VOL-check' ";
-        echo "onclick='showHideSoldOut()'>";
-        echo "<label class='UI-label' for='soldoutcheck'>";
-        if (isset($uid)) {
-            echo "Hide volunteer's soldout items";
-        } else {
-            echo "Hide soldout items";
-        }
-        echo "</label></th>\n";
-    }
-    echo "<th class='UI-center event-color-secondary' colspan=3>Gifts</th>";
-    echo "<th class='event-color-secondary' colspan=2></th>\n";
-    echo "<th class='event-color-secondary'>";
-    if (!$admin_mode && isset($uid)) {
-        $data = volunteer_prizes_for_user($uid);
-        $record = [];
-        foreach ($data as $key => $entry) {
-            if (!isset($entry['Aquired']) || $entry['Aquired'] == 0) {
-                continue;
-            }
-            $value = 0;
-            if ($entry['Promo'] != 'yes') {
-                $value = $entry['Value'];
-            }
-            $record[] = [ 'PrizeID' => $entry['PrizeID'],
-            'Name' => $entry['Name'],
-            'Aquired' => $entry['Aquired'],
-            'Value' => $value,
-                        ];
-        }
-        $json = json_encode($record);
-        $json = base64_encode($json);
-        echo "<input id='return_items' type='button' class='UI-orangebutton' ";
-        echo "onclick='showReturn(\"".$json."\")' value='Return Items'>";
-    }
-    echo "</th>\n";
-    echo "</tr>\n";
-
-}
-
-
-function prizes_table($uid)
-{
-    global $totalHours, $prizeData, $hoursRemain, $groupTotals;
-    global $admin_mode;
-
-    $data = $prizeData;
-
-    $group_styles  = [
-    'VOL-color-amber', 'VOL-color-aqua', 'VOL-color-brown',
-    'VOL-color-cyan', 'VOL-color-indigo', 'VOL-color-khaki',
-    'VOL-color-lime', 'VOL-color-orange', 'VOL-color-pink',
-    'VOL-color-purple', 'VOL-color-red', 'VOL-color-sand',
-    'VOL-color-teal', 'VOL-color-yellow', 'VOL-color-deep-purple',
-    'VOL-color-deep-orange', 'VOL-color-light-blue',
-    'VOL-color-light-grey', 'VOL-color-light-green'];
-
-    $last_group = null;
-    $group = 0;
-    $spent = 0;
-    if (!empty($data)) {
-        reset($data);
-        $first_key = key($data);
-        $keys = array_keys($data[$first_key]);
-        $idx = array_search('PrizeID', $keys);
-        unset($keys[$idx]);
-        if (!$admin_mode || isset($uid)) {
-            $idx = array_search('RewardGroupID', $keys);
-            unset($keys[$idx]);
-        }
-        if (isset($uid) && !array_search('Aquired', $keys)) {
-            array_push($keys, 'Aquired');
-        }
-        $idx = array_search('group_soldout', $keys);
-        unset($keys[$idx]);
-        foreach ($data as $key => $record) {
-            if (isset($uid)) {
-                if (isset($record['Aquired'])) {
-                    if ($record['Promo'] != 'yes') {
-                        $spent += $record['Aquired'] * $record['Value'];
-                    }
-                } else {
-                    $data[$key]['Aquired'] = ' ';
-                }
-            }
-        }
-        $hoursRemain = round($totalHours - $spent, 3);
-
-        _prize_table_start($uid, $spent, $hoursRemain);
-
-        echo "<tr><th>";
-        echo implode(_htmlsafeify($keys), '</th><th>');
-        echo "</th></tr>\n";
-        foreach ($data as $key => $record) {
-            if (!isset($uid) && $admin_mode) {
-                echo "<tr ";
-                echo "class='VOL-hover-red' ";
-                $json = json_encode($record);
-                $json = base64_encode($json);
-                echo 'onclick=\'showEditPrize("'.$json.'");\'';
-                echo ">";
-            } else {
-                if ($record['Remaining'] <= 0) {
-                    echo "<tr class='soldoutrow UI-red'>";
-                } elseif ($record['Promo'] == 'yes' && array_key_exists('Aquired', $record) && $record['Aquired'] > 0) {
-                    echo "<tr class='soldoutrow UI-disabled'>";
-                } elseif ($record['RewardGroupID']) {
-                    $record['GroupLimit'] = $record['Limit'];
-                    if ($last_group !== null && $last_group != $record['RewardGroupID']) {
-                        $group++;
-                    } elseif ($last_group !== null) {
-                        $record['Limit'] = '|';
-                    }
-                    if (array_key_exists('Aquired', $record) && ctype_digit($record['Aquired'])) {
-                        $index = intval($record['RewardGroupID']);
-                        $groupTotals = array_pad($groupTotals, $index + 1, 0);
-                        $groupTotals[$index] += intval($record['Aquired']);
-                    } else {
-                        $index = intval($record['RewardGroupID']);
-                        $groupTotals = array_pad($groupTotals, $index + 1, 0);
-                        $groupTotals[$index] += 0;
-                    }
-                    $last_group = $record['RewardGroupID'];
-                    $classes = $group_styles[($group % count($group_styles))];
-
-                    if (isset($record['group_soldout'])) {
-                        echo "<tr class='$classes soldoutrow UI-disabled'>";
-                    } else {
-                        echo "<tr class='$classes";
-                        if (!$admin_mode && isset($uid) && acquireable_item($record)) {
-                            echo " event-hover-primary' ";
-                            $json = json_encode($record);
-                            $json = base64_encode($json);
-                            echo 'onclick=\'addToCheckout("'.$json;
-                            echo '");\'>';
-                        } else {
-                            echo "'>";
-                        }
-                    }
-                } else {
-                    echo "<tr ";
-                    if (!$admin_mode && isset($uid) && acquireable_item($record)) {
-                        echo "class='event-hover-primary' ";
-                        $json = json_encode($record);
-                        $json = base64_encode($json);
-                        echo 'onclick=\'addToCheckout("'.$json.'");\'';
-                    }
-                    echo ">";
-                }
-                unset($record['RewardGroupID']);
-            }
-            unset($record['PrizeID']);
-            unset($record['group_soldout']);
-            unset($record['GroupLimit']);
-            echo "<td>";
-            $record['Value'] += 0;
-            echo implode(_htmlsafeify($record), '</td><td>');
-            echo "</td></tr>\n";
-        }
-    } else {
-        _prize_table_start();
-        echo "<tr><th class='VOL-no-entries' colspan=9>No Entries...</th></tr>\n";
-    }
-    echo "<tr><th class='UI-center event-color-secondary' colspan=8></th></tr>\n";
-    echo "</table>\n";
-    echo '</div>';
 
 }
 
@@ -430,7 +270,7 @@ function admin_bar($uid)
     echo "style='max-height:10vh; overflow:scroll;'>\n";
     echo "<div id='volunteer_admin_bar' class='VOL-admin-bar'>\n";
     echo "<button id='add_prize' class='UI-redbutton'";
-    echo "onclick='showEditPrize(null);'>Add New Gift</button>\n";
+    echo "@click='\$refs.edprz.show(null)'>Add New Gift</button>\n";
     echo "<button id='gen_csv' class='UI-redbutton'";
     echo "onclick='window.location.href=\"index.php?Function=volunteers/report\";'>Go To Reports</button>\n";
     echo "</div>\n";
@@ -501,9 +341,11 @@ if (isset($_SESSION['IS_ADMIN']) || $_SESSION['IS_VOLUNTEERS']) {
 if (!isset($locked)) {
     initialize($uid);
 }
+
+hour_data($uid);
 ?>
 
-<volunteer-hour-table styles="max-height:34vh; overflow:scroll;" :footer=true></volunteer-hour-table>
+<volunteer-hour-table ref=vhtbl styles="max-height:34vh; overflow:scroll;" :footer=true @hour-change="handleHourChange"></volunteer-hour-table>
 
 <?php
 if (!isset($locked)) {
@@ -512,9 +354,11 @@ if (!isset($locked)) {
     } else {
         admin_bar($uid);
     }
-    prizes_table($uid);
 }
 ?>
+
+<gift-table styles="max-height:34vh; overflow:scroll;" :footer=true v-bind:total-hours="totalHours" v-bind:hours-spent="totalSpentHours"></gift-table>
+
     </div>
 
     <div class='UI-sidebar-hidden' id='department_report_div'>
@@ -540,73 +384,7 @@ if (!isset($locked)) {
         </div>
     </div>
 
-    <div class='UI-sidebar-hidden' id='edit_prize_div'>
-        <div class='UI-center UI-red'>
-            <h2 id='edit_prize_title'>Edit Gift Entry</h2>
-        </div>
-        <div class='UI-border UI-padding'>
-          <form>
-
-            <label class='UI-label' for='edit_prize_name' class="UI-tooltip">
-                <span
-                  class="VOL-gift-label">Visible name of the item</span>
-            Name:</label>
-            <input class="UI-input" id="edit_prize_name" placeholder="<name>">
-            <label class='UI-label' for='edit_prize_value' class="UI-tooltip">
-                <span
-                  class="VOL-gift-label">Hour cost of the item</span>
-            Value:</label>
-            <input class="UI-input" id="edit_prize_value">
-            <label class='UI-label' for='edit_prize_value' class="UI-tooltip">
-                <span
-                  class="VOL-gift-label">If 'yes' this item does not cost hours but instead is free at the given hour mark. Also enforces a limit of 1.</span>
-            Promo Item:</label>
-            <select class="UI-select" id="edit_prize_promo">
-              <option value='yes'>Yes</option>
-              <option value='no'>No</option>
-            </select>
-
-            <label class='UI-label' for='edit_prize_count' class="UI-tooltip">
-                <span
-                  class="VOL-gift-label">Changing this will adjust Total items</span>
-            Inventory Remaining:</label>
-            <input class="UI-input" id="edit_prize_count">
-
-                    <label class='UI-label' for='edit_prize_group' class="UI-tooltip">
-                        <span
-                          class="VOL-gift-label">If in a group there can be only a limited total number of the items in the group claimed by the volunteer</span>
-                    Gift Group:</label>
-            <div class="VOL-gift-group-row">
-                <div class='VOL-gift-group-select'>
-                    <select class="UI-select" id="edit_prize_group"
-                     onchange="prizeGroupChange()">
-                      <option value='none'>&lt;none&gt;</option>
-                    </select>
-                </div>
-                <div class='VOL-gift-group-max'>
-                    <input class="UI-input UI-disabled" id="edit_prize_group_count" disabled placeholder="max">
-                </div>
-            </div>
-
-            <input class="UI-input UI-disabled UI-hide" id="prize_data" readonly>
-          </form>
-        </div>
-        <div class='UI-center'>
-            <button id='set_prize_button' class='UI-eventbutton'
-                onclick='commitPrize();'>
-                Commit
-            </button>
-            <button id='delete_prize_button' class='UI-secondarybutton'
-                onclick='deletePrize();'>
-                Delete
-            </button>
-            <button id='exit_prize_button' class='UI-redbutton'
-                onclick='hideSidebar();'>
-               Cancel
-            </button>
-        </div>
-    </div>
-
+    <edit-prize ref="edprz"></edit-prize>
     <edit-hours ref="edhrs"></edit-hours>
 
     <div class='UI-sidebar-hidden' id='return_div'>

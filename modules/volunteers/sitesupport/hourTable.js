@@ -20,6 +20,9 @@ export default {
       default: null
     }
   },
+  emits: [
+    'hourChange'
+  ],
   mounted() {
     showSpinner();
     this.summeryColumns = [
@@ -59,8 +62,9 @@ export default {
                 this.hours.push(entry);
               })
               this.hours.sort((a,b) => (a.department.name > b.department.name) ? 1 : -1);
-              if (this.footer) {
-                this.totalHours = result.total_hours;
+              this.totalSpentHours = 0;
+              this.totalHours = result.total_hours;
+              if (this.footer && this.user != null) {
                 apiRequest('GET', '/member/' + this.user + '/volunteer/claims/summary','max_results=all')
                   .then((response) => {
                     const result = JSON.parse(response.responseText);
@@ -68,9 +72,11 @@ export default {
                   })
                   .finally(() => {
                     hideSpinner();
+                    this.$emit('hourChange', this.totalHours, this.totalSpentHours);
                   })
               } else {
                 hideSpinner();
+                this.$emit('hourChange', this.totalHours, this.totalSpentHours);
               }
             })
         } else {
