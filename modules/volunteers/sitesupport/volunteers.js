@@ -11,7 +11,7 @@
 /* exported processReturn, showReturn, markDelete,
             generateDerivedCSV, generateDeptReport,
             minHourReport, commitPrize, deletePrize,
-            showEditPrize, deleteHours, commitHours,
+            showEditPrize,
             toggleAdminMode, addPromoToCheckout, removeFromCheckout,
             processCheckout, showHideSoldOut, lookupFail, sidebarMainDiv */
 
@@ -255,41 +255,6 @@ function toggleAdminMode() {
   } else {
     setTimeout(function() {window.location = target;}, 1000);
   }
-}
-
-
-function commitHours() {
-  confirmbox(
-    'Please! double check entries',
-    'Proceed with Volunteer Hour Update?').then(function() {
-    var data = document.getElementById('edit_data').value;
-    var item = JSON.parse(atob(data));
-
-    item['EntryID'] = item.id;
-    item['Actual Hours'] = parseFloat(
-      document.getElementById('edit_hours').value);
-    item['End Date Time'] = document.getElementById('edit_end').value;
-    var e = document.getElementById('edit_mod');
-    item['Time Modifier'] = e.options[e.selectedIndex].value;
-    item['Department Worked'] = document.getElementById('edit_dept').value;
-    item['Authorized By'] = document.getElementById('edit_auth').value;
-
-    var parameter = 'update_hour=' + JSON.stringify(item);
-    basicVolunteersRequestAdmin(parameter, function() {
-      location.reload();
-    });
-  });
-}
-
-function deleteHours() {
-  confirmbox('DELETE Volunteer Entry?').then(function() {
-    var data = document.getElementById('edit_data').value;
-    var item = JSON.parse(atob(data));
-    var parameter = 'delete_hour=' + item.id;
-    basicVolunteersRequestAdmin(parameter, function() {
-      location.reload();
-    });
-  });
 }
 
 function showEditPrize(data) {

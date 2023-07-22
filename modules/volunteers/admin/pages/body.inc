@@ -607,58 +607,7 @@ if (!isset($locked)) {
         </div>
     </div>
 
-
-    <div class='UI-sidebar-hidden' id='edit_user_hour_div'>
-        <div class='UI-center UI-red'>
-            <h2>Edit Hours Entry</h2>
-        </div>
-        <div class='UI-border UI-padding'>
-          <form>
-            <label class='UI-label' for='edit_name'>Volunteer:</label>
-            <input class="UI-input UI-disabled" id="edit_name" readonly>
-            <label class='UI-label' for='edit_hours'>Actual Hours:</label>
-            <input class="UI-input" id="edit_hours">
-            <label class='UI-label' for='edit_mod'>Time Modifier</label><br />
-            <select class="UI-select" style="width:auto" name="TimeModifier" id="edit_mod">
-              <option value=0.5>Half Time - 1 hour = 0.5 hours credit</option>
-              <option value=1 selected>Normal - 1 hour = 1 hour</option>
-              <option value=1.5>Time Plus Half - 1 hour = 1.5 hours credit</option>
-              <option value=2>Double - 1 hour = 2 hours credit</option>
-            </select>
-            <label class='UI-label' for='edit_end'>End Time:</label>
-            <input class="UI-input" type="datetime-local" id="edit_end" pattern="\d{4}-\d{2}-\d{2}T\d{2}:\d{2}">
-            <label class='UI-label' for='edit_dept'>Department</label><br />
-            <select class="UI-select" style="width:auto" name="DepartmentWorked" id="edit_dept">
-<?php
-require_once($FUNCTIONDIR."/divisional.inc");
-foreach ($Departments as $dep => $set) {
-    echo '<option value="'.$dep.'"';
-    echo '>'.htmlspecialchars($dep)."</option>\n";
-}
-?>
-            </select>
-            <label class='UI-label' for='edit_enter'>Entered By:</label>
-            <input class="UI-input UI-disabled" id="edit_enter" readonly>
-            <label class='UI-label' for='edit_auth'>Authorized By:</label>
-            <input class="UI-input" id="edit_auth">
-            <input class="UI-input UI-disabled UI-hide" id="edit_data" readonly>
-          </form>
-        </div>
-        <div class='UI-center'>
-            <button id='set_hours_button' class='UI-eventbutton'
-                onclick='commitHours();'>
-                Commit
-            </button>
-            <button id='delete_hours_button' class='UI-secondarybutton'
-                onclick='deleteHours();'>
-                Delete
-            </button>
-            <button id='exit_hours_button' class='UI-redbutton'
-                onclick='hideSidebar();'>
-               Cancel
-            </button>
-        </div>
-    </div>
+    <edit-hours ref="edhrs"></edit-hours>
 
     <div class='UI-sidebar-hidden' id='return_div'>
         <div class='UI-center'>
