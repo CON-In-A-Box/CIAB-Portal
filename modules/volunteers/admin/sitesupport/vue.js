@@ -5,6 +5,7 @@ import lookupUser from '../../../../sitesupport/vue/lookupuser.js'
 import hourTable from '../../sitesupport/hourTable.js'
 import editHours from './editHours.js'
 import editPrize from './editPrize.js'
+import processReturn from './processReturn.js'
 import departmentDropdown from '../../../../../sitesupport/vue/departmentDropdown.js'
 import giftTable from './giftTable.js'
 
@@ -38,6 +39,7 @@ app.component('lookup-user', lookupUser);
 app.component('volunteer-hour-table', adminHourTable);
 app.component('edit-hours', editHours);
 app.component('edit-prize', editPrize);
+app.component('process-return', processReturn);
 app.component('department-dropdown', departmentDropdown);
 app.component('gift-table', giftTable);
 app.mount('#main_content');

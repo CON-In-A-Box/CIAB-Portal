@@ -8,8 +8,8 @@
            groupData, checkAuthentication, adminMode, unclaimed, hoursRemain,
            hideSidebar, showSidebar, alertbox, basicBackendRequest
            */
-/* exported processReturn,  markDelete, generateDeptReport,
-            clearReturnCart, toggleAdminMode, addPromoToCheckout, removeFromCheckout,
+/* exported  generateDeptReport,
+            toggleAdminMode, addPromoToCheckout, removeFromCheckout,
             processCheckout, sidebarMainDiv */
 
 'use strict';
@@ -18,7 +18,6 @@ var checkout = [];
 var hoursSpent = 0;
 var groupsNow = [];
 var sidebarMainDiv = 'info_div';
-var returnCart = [];
 
 function basicVolunteersRequestAdmin(parameter, finish) {
   basicBackendRequest('POST', 'volunteers/admin', parameter, finish);
@@ -246,86 +245,4 @@ function generateDeptReport() {
   var deptid = document.getElementById('dept_data').value;
   window.location = 'index.php?Function=volunteers/report&dept_report=' +
                     deptid + '&dept_name=' + name;
-}
-
-function markDelete(index, tableRow) {
-  var table = document.getElementById('return_table');
-  var row = table.rows[tableRow];
-
-  if (returnCart[index].Returned) {
-    row.classList.remove('UI-yellow');
-    row.style.fontWeight = 'normal';
-    returnCart[index].Returned = false;
-  } else {
-    row.classList.add('UI-yellow');
-    row.style.fontWeight = 'bold';
-    returnCart[index].Returned = true;
-  }
-
-  var total = 0;
-  for (var index2 in returnCart) {
-    var item = returnCart[index2];
-    if (item.Returned) {
-      total += parseFloat(item.item.Value);
-    }
-  }
-
-  var hours = document.getElementById('credit_hours');
-  hours.innerHTML = Math.round(total * 100) / 100;
-
-}
-
-function clearReturnCart() {
-  returnCart = [];
-
-}
-
-
-function finishReturn() {
-  var table = document.getElementById('return_list');
-
-  while (table.hasChildNodes()) {
-    table.removeChild(table.firstChild);
-  }
-
-  var list = {};
-  returnCart.forEach(function(item) {
-    if (item.Returned) {
-      if (item.item.PrizeID in list) {
-        list[item.item.PrizeID].count += 1;
-      } else {
-        list[item.item.PrizeID] = {name: item.item.Name, count: 1};
-      }
-    }
-  });
-
-  for (var key in list) {
-    var item = list[key];
-    var row = table.insertRow(-1);
-    var cell = row.insertCell(0);
-    if (item.count > 1) {
-      var txt = item.name + ' (x' + item.count + ')';
-      cell.innerHTML = escapeHtml(txt);
-    } else {
-      cell.innerHTML = escapeHtml(item.name);
-    }
-  }
-}
-
-function processReturn() {
-  confirmbox('Confirm Gift Return',
-    'Are the returned gifts correct?').then(function() {
-    var data = [];
-    for (var index in returnCart) {
-      var item = returnCart[index];
-      if (item.Returned) {
-        data.push(item.item.PrizeID);
-      }
-    }
-    var parameter = 'refundId=' + userId + '&rewards=' + JSON.stringify(data);
-    basicVolunteersRequestAdmin(parameter, function() {
-      finishReturn();
-      document.getElementById('return_success_dlg').style.display = 'block';
-    });
-  });
 }

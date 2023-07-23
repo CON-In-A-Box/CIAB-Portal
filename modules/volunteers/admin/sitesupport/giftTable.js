@@ -1,5 +1,5 @@
 /* jshint esversion: 6 */
-/* globals apiRequest, userId, showSidebar, escapeHtml, returnCart, clearReturnCart
+/* globals apiRequest, userId,
            checkout, alertbox, groupsNow, showCheckout, updateCheckout, updateCost, adminMode */
 
 export default {
@@ -264,39 +264,7 @@ export default {
       return ' Hide soldout items';
     },
     doReturn() {
-
-      /* clear existing */
-      var table = document.getElementById('return_table');
-      while (table.hasChildNodes()) {
-        table.removeChild(table.firstChild);
-      }
-
-      clearReturnCart();
-
-      showSidebar('return_div');
-      for (var index in this.claims) {
-        var item = this.claims[index].reward;
-
-        var row = table.insertRow(-1);
-        row.setAttribute('data-prizeid', item.id);
-        row.classList.add('VOL-hover-red');
-        row.setAttribute('onclick', 'markDelete(' + returnCart.length +
-          ', ' + row.rowIndex + ');');
-        var cell = row.insertCell(0);
-        cell.innerHTML = escapeHtml(item.name);
-        cell = row.insertCell(1);
-        if (item.promo == '1') {
-          cell.innerHTML = this.printHours(0);
-        } else {
-          cell.innerHTML = this.printHours(item.value);
-        }
-        var cartItem = [];
-        cartItem.item = item;
-        cartItem.Returned = false;
-        cartItem.row = row;
-        returnCart.push(cartItem);
-      }
-
+      this.$parent.$refs.psrtn.show(this.claims);
     },
   },
   template: `
