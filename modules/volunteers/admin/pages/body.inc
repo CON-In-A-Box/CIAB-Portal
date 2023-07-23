@@ -361,29 +361,6 @@ if (!isset($locked)) {
 
     </div>
 
-    <div class='UI-sidebar-hidden' id='department_report_div'>
-        <div class='UI-center'>
-            <h2 class='UI-red'>Department Report</h2>
-        </div>
-        <hr>
-        <div>
-            <h2 id='dept_name' class='event-color-secondary'></h2>
-            <input class="UI-hiddeninput" id="dept_data" readonly>
-            <input class="UI-hiddeninput" id="dept_data_name" readonly>
-        </div>
-        <hr>
-        <div class='UI-center'>
-            <button id='generate_dept_report' class='UI-eventbutton'
-                onclick='generateDeptReport();'>
-               Generate Report &lt;CSV&gt;
-            </button>
-            <button class='UI-redbutton'
-                onclick='hideSidebar();'>
-              Close
-            </button>
-        </div>
-    </div>
-
     <edit-prize ref="edprz"></edit-prize>
     <edit-hours ref="edhrs"></edit-hours>
     <process-return ref="psrtn"></process-return>
