@@ -1,5 +1,5 @@
 /* jshint esversion: 6 */
-/* globals  showSidebar, confirmbox, basicVolunteersRequestAdmin, userId*/
+/* globals  showSidebar, confirmbox, basicVolunteersRequestAdmin */
 
 export default {
   data() {
@@ -19,7 +19,7 @@ export default {
             data.push(c.reward.id);
           }
         });
-        var parameter = 'refundId=' + userId + '&rewards=' + JSON.stringify(data);
+        var parameter = 'refundId=' + this.$parent.userId + '&rewards=' + JSON.stringify(data);
         basicVolunteersRequestAdmin(parameter, function() {
           document.getElementById('return_success_dlg').style.display = 'block';
         });

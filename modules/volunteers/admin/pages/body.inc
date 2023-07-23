@@ -263,21 +263,9 @@ function messages($uid)
 
 }
 
-
-function admin_bar($uid)
-{
-    echo "<div class='VOL-admin' ";
-    echo "style='max-height:10vh; overflow:scroll;'>\n";
-    echo "<div id='volunteer_admin_bar' class='VOL-admin-bar'>\n";
-    echo "<button id='add_prize' class='UI-redbutton'";
-    echo "@click='\$refs.edprz.show(null)'>Add New Gift</button>\n";
-    echo "<button id='gen_csv' class='UI-redbutton'";
-    echo "onclick='window.location.href=\"index.php?Function=volunteers/report\";'>Go To Reports</button>\n";
-    echo "</div>\n";
-    echo "</div>\n";
-
-}
-
+echo "<script>\n";
+echo "  var adminMode = ".json_encode($admin_mode).";\n";
+echo "</script>\n";
 
 echo '<div id="main_content" style="height:94vh;" class="VOL-main';
 if ($admin_mode) {
@@ -351,11 +339,17 @@ hour_data($uid);
 if (!isset($locked)) {
     if (!$admin_mode) {
         messages($uid);
-    } else {
-        admin_bar($uid);
     }
 }
 ?>
+
+<div v-if="isAdmin" class='VOL-admin' style='max-height:10vh; overflow:scroll;'>
+    <div id='volunteer_admin_bar' class='VOL-admin-bar'>
+    <button id='add_prize' class='UI-redbutton' @click='$refs.edprz.show(null)'>Add New Gift</button>
+    <button id='gen_csv' class='UI-redbutton' onclick='window.location.href=\"index.php?Function=volunteers/report\";'>Go To Reports</button>
+    </div>
+</div>
+
 
 <gift-table ref=gfttbl styles="max-height:34vh; overflow:scroll;" :footer=true v-bind:total-hours="totalHours" v-bind:hours-spent="totalSpentHours"></gift-table>
 
@@ -384,6 +378,5 @@ if (isset($uid)) {
     echo "  var hoursRemain = 0;\n";
     echo "  var unclaimed = [];\n";
 }
-echo "  var adminMode = ".json_encode($admin_mode).";\n";
 ?>
 </script>

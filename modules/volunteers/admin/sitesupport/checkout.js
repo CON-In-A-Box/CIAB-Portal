@@ -1,5 +1,5 @@
 /* jshint esversion: 6 */
-/* globals  showSidebar, hideSidebar, confirmbox, basicVolunteersRequestAdmin, userId, escapeHtml, alertbox
+/* globals  showSidebar, hideSidebar, confirmbox, basicVolunteersRequestAdmin, alertbox
             groupData */
 
 export default {
@@ -15,7 +15,7 @@ export default {
       var baseObj = this;
       confirmbox('Confirm Distribute Gifts',
         'Are the selected gifts correct?').then(function() {
-        var parameter = 'rewardId=' + userId + '&rewards=' +
+        var parameter = 'rewardId=' + this.$parent.userId + '&rewards=' +
           JSON.stringify(baseObj.checkout);
         basicVolunteersRequestAdmin(parameter, function() {
           document.getElementById('success_dlg').style.display = 'block';

@@ -1,5 +1,5 @@
 /* jshint esversion: 6 */
-/* globals apiRequest, showSpinner, hideSpinner, userId */
+/* globals apiRequest, showSpinner, hideSpinner */
 
 export default {
   props: {
@@ -15,10 +15,6 @@ export default {
       type: String,
       default: null
     },
-    uid: {
-      type: String,
-      default: null
-    }
   },
   emits: [
     'hourChange'
@@ -37,11 +33,6 @@ export default {
       {value:'hours', title:'Hours', source: this.hours}
     ];
 
-    if (this.uid == null && typeof userId !== 'undefined') {
-      this.user = userId;
-    } else {
-      this.user = this.uid;
-    }
     apiRequest('GET', '/department','max_results=all')
       .then((response) => {
         const result = JSON.parse(response.responseText);
@@ -52,10 +43,10 @@ export default {
 
         this.departments.sort((a,b) => (a.name > b.name) ? 1 : -1);
 
-        if (this.user != null) {
+        if (this.$parent.userId != null) {
           this.columns = this.detailColumns;
           this.records = this.hours;
-          apiRequest('GET', '/member/' + this.user + '/volunteer/hours','max_results=all')
+          apiRequest('GET', '/member/' + this.$parent.userId + '/volunteer/hours','max_results=all')
             .then((response) => {
               const result = JSON.parse(response.responseText);
               result.data.forEach((entry) => {
@@ -64,8 +55,8 @@ export default {
               this.hours.sort((a,b) => (a.department.name > b.department.name) ? 1 : -1);
               this.totalSpentHours = 0;
               this.totalHours = result.total_hours;
-              if (this.footer && this.user != null) {
-                apiRequest('GET', '/member/' + this.user + '/volunteer/claims/summary','max_results=all')
+              if (this.footer && this.$parent.userId != null) {
+                apiRequest('GET', '/member/' + this.$parent.userId + '/volunteer/claims/summary','max_results=all')
                   .then((response) => {
                     const result = JSON.parse(response.responseText);
                     this.totalSpentHours = result.spent_hours;
@@ -109,7 +100,6 @@ export default {
   },
   data() {
     return {
-      user: null,
       columns: null,
       departments: null,
       records: null,

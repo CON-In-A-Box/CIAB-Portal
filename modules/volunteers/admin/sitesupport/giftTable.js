@@ -1,13 +1,9 @@
 /* jshint esversion: 6 */
-/* globals apiRequest, userId, adminMode */
+/* globals apiRequest */
 
 export default {
   props: {
     styles: {
-      type: String,
-      default: null
-    },
-    uid: {
       type: String,
       default: null
     },
@@ -50,14 +46,8 @@ export default {
       'VOL-color-light-grey', 'VOL-color-light-green'
     ];
 
-    if (this.uid == null && typeof userId !== 'undefined') {
-      this.user = userId;
-    } else {
-      this.user = this.uid;
-    }
-
     this.columns = this.columnsBase;
-    if (this.user != null) {
+    if (this.$parent.userId != null) {
       this.columns = this.columnsUser;
     }
 
@@ -86,8 +76,8 @@ export default {
           return (parseInt(a.reward_group.id) > parseInt(b.reward_group.id) ? 1 : -1);
         });
 
-        if (this.user != null) {
-          apiRequest('GET', '/member/' + this.user + '/volunteer/claims', 'max_results=all')
+        if (this.$parent.userId != null) {
+          apiRequest('GET', '/member/' + this.$parent.userId + '/volunteer/claims', 'max_results=all')
             .then((response) => {
               const result = JSON.parse(response.responseText);
               this.claims = result.data;
@@ -117,7 +107,6 @@ export default {
   data() {
     return {
       title: 'Gifts',
-      user: null,
       columns: null,
       records: [],
       claims: [],
@@ -134,10 +123,10 @@ export default {
   },
   methods: {
     clicked(record) {
-      if (this.user == null && adminMode) {
+      if (this.$parent.userId == null && this.$parent.isAdmin) {
         this.$parent.$refs.edprz.show(record);
       }
-      else if (this.user != null && !adminMode && this.acquirable(record)) {
+      else if (this.$parent.userId != null && !this.$parent.isAdmin && this.acquirable(record)) {
         this.$parent.$refs.chkout.addToCheckout(record);
       }
     },
@@ -201,7 +190,7 @@ export default {
       if (row.inventory <= 0) {
         return 'VOL-color-red UI-disabled';
       }
-      if (this.user && !this.acquirable(row)) {
+      if (this.$parent.userId && !this.acquirable(row)) {
         base = 'UI-disabled ';
       }
       if (row.reward_group != null) {
@@ -214,7 +203,7 @@ export default {
       return base;
     },
     getSoldOutLabel() {
-      if (this.user) {
+      if (this.$parent.userId) {
         return ' Hide volunteer\'s soldout items';
       }
       return ' Hide soldout items';
@@ -233,7 +222,7 @@ export default {
             <label class='UI-label' for='soldoutcheck'>{{getSoldOutLabel()}}</label>
           </div>
           <span class='UI-center'>{{title}}</span>
-          <div v-if="user != null" class="w3-right" style="font-size:0.5em!important;">
+          <div v-if="$parent.userId != null" class="w3-right" style="font-size:0.5em!important;">
             <input id='return_items' type='button' class='UI-orangebutton' @click='doReturn' value='Return Items'>
           </div>
         </div>

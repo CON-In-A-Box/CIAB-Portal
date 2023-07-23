@@ -14,7 +14,7 @@ var adminHourTable = {
   extends: hourTable,
   methods: {
     clicked(record) {
-      if (adminMode && this.user) {
+      if (this.isAdmin && this.user) {
         this.$parent.$refs.edhrs.show(record);
       }
     }
@@ -25,8 +25,17 @@ var app = Vue.createApp({
   data() {
     return {
       totalHours: 0,
-      totalSpentHours: 0
+      totalSpentHours: 0,
+      isAdmin: false,
+      userId: null
     }
+  },
+  mounted() {
+    const searchParams = new URLSearchParams(window.location.search);
+    if (searchParams.has('volunteerId')) {
+      this.userId = searchParams.get('volunteerId');
+    }
+    this.isAdmin = adminMode;
   },
   methods: {
     handleHourChange(totalHours, totalSpentHours) {
