@@ -357,7 +357,7 @@ if (!isset($locked)) {
 }
 ?>
 
-<gift-table styles="max-height:34vh; overflow:scroll;" :footer=true v-bind:total-hours="totalHours" v-bind:hours-spent="totalSpentHours"></gift-table>
+<gift-table ref=gfttbl styles="max-height:34vh; overflow:scroll;" :footer=true v-bind:total-hours="totalHours" v-bind:hours-spent="totalSpentHours"></gift-table>
 
     </div>
 
@@ -387,46 +387,7 @@ if (!isset($locked)) {
     <edit-prize ref="edprz"></edit-prize>
     <edit-hours ref="edhrs"></edit-hours>
     <process-return ref="psrtn"></process-return>
-
-    <div class='UI-sidebar-hidden' id='checkout_div'>
-        <div class='UI-center'>
-            <h2>Items claimed now</h2>
-        </div>
-        <table class='UI-stripedtable' id='checkout_table'>
-        </table>
-        <div class="VOL-claim-hour-div">
-            <span>Hours Left: <span id="hours_left">0</span></span>
-            <br>
-            <span>Hours Spent: <span id="hours_used">0</span></span>
-        </div>
-        <div class='UI-center'>
-            <button id='checkout_button' class='UI-eventbutton'
-                onclick='processCheckout();'>
-                Distribute Items
-            </button>
-            <button id='clear_button' class='UI-redbutton'
-                onclick='clearCheckout();'>
-               Clear
-            </button>
-        </div>
-    </div>
-  </div>
-</div>
-
-<div id="success_dlg" class="UI-modal">
-  <div class="UI-modal-content">
-    <div class="UI-container">
-      <span onclick="document.getElementById('success_dlg').style.display='none';
-        location.reload();"
-      class="VOL-give-close">&times;</span>
-      <h2 class="UI-center event-color-primary">Please get the volunteer the following new gifts!</h2>
-      <hr>
-      <table class='VOL-give-gift-table' id='reward_list'>
-      </table>
-      <h2 class="UI-center UI-red">Close this window when all gifts have been claimed!</h2>
-    </div>
-  </div>
-</div>
+    <checkout ref="chkout"></checkout>
 
 <script>
 <?php

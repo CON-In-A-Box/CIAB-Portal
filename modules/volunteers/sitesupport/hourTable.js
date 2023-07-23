@@ -123,8 +123,7 @@ export default {
     /*eslint no-unused-vars: ["error", { "argsIgnorePattern": "^_" }]*/
     clicked(_record) {},
     printHours(value) {
-      var min = Math.floor((value - Math.floor(value)) * 60);
-      return Math.floor(value).toLocaleString('en-US') + ' Hours ' + min + ' Minutes ';
+      return this.$parent.printHours(value);
     },
     printNumber(value) {
       return parseInt(value).toLocaleString('en-US');

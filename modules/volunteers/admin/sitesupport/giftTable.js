@@ -1,6 +1,5 @@
 /* jshint esversion: 6 */
-/* globals apiRequest, userId,
-           checkout, alertbox, groupsNow, showCheckout, updateCheckout, updateCost, adminMode */
+/* globals apiRequest, userId, adminMode */
 
 export default {
   props: {
@@ -112,7 +111,6 @@ export default {
             });
         }
       })
-
   },
   created() {
   },
@@ -140,49 +138,8 @@ export default {
         this.$parent.$refs.edprz.show(record);
       }
       else if (this.user != null && !adminMode && this.acquirable(record)) {
-        this.addToCheckout(record);
+        this.$parent.$refs.chkout.addToCheckout(record);
       }
-    },
-    addToCheckout(item) {
-      console.log(item);
-
-      var cost = parseFloat(item.value);
-      if (item.promo == '1') {
-        var found = checkout.find(function(element) {
-          return element.id == item.id;
-        });
-        if (found) {
-          alertbox('Promo item \'' + item.name + '\' cannot be added twice');
-          return;
-        }
-        cost = 0;
-      }
-      if (this.hoursRemaining < cost) {
-        alertbox('Volunteer does not have enough hours for the ' + item.name);
-        return;
-      }
-      if (item.reward_group !=  null && groupsNow[item.reward_group.id] + 1 > item.reward_group.reward_limit) {
-        alertbox('Too many items from limited group');
-        return;
-      }
-      var count = 0;
-      for (var i = 0; i < checkout.length; i++) {
-        if (checkout[i].id == item.id) {
-          count++;
-        }
-      }
-      if (count + 1 > item.remaining) {
-        alertbox('Not enough items in inventory!');
-        return;
-      }
-
-      item.cost = cost;
-      showCheckout();
-      checkout.push(item);
-      updateCheckout();
-      updateCost(cost);
-      groupsNow[item.RewardGroupID] += 1;
-
     },
     acquirable(record) {
       if (record.reward_group != null &&
@@ -198,8 +155,7 @@ export default {
       return (parseFloat(record.value) < this.hoursRemaining);
     },
     printHours(value) {
-      var min = Math.floor((value - Math.floor(value)) * 60);
-      return Math.floor(value).toLocaleString('en-US') + ' Hours ' + min + ' Minutes ';
+      return this.$parent.printHours(value);
     },
     printNumber(value) {
       return parseInt(value).toLocaleString('en-US');
