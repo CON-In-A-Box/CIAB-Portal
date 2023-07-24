@@ -3716,6 +3716,8 @@ paths:
                   type: integer
                 inventory:
                   type: integer
+                value:
+                  type: float
               type: object
       responses:
         '200':

@@ -35,6 +35,10 @@
  *                  @OA\Property(
  *                      property="inventory",
  *                      type="integer"
+ *                  ),
+ *                  @OA\Property(
+ *                      property="value",
+ *                      type="float"
  *                  )
  *              )
  *          )
