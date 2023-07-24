@@ -182,23 +182,16 @@ function hour_data($uid)
 echo "<script>\n";
 echo "  var adminMode = ".json_encode($admin_mode).";\n";
 echo "</script>\n";
-
-echo '<div id="main_content" style="height:94vh;" class="VOL-main';
-if ($admin_mode) {
-    echo ' UI-adminborder">';
-    echo "\n";
-    echo "<div class='UI-admin-sectionbar'>\n";
-    echo "<span>Volunteer Administration</span>\n";
-} else {
-    echo '">';
-    echo "\n";
-    echo "<div class='UI-event-sectionbar'>\n";
-    echo "<span>Volunteer Management</span>\n";
-}
-echo "</div>\n"
 ?>
 
+<div id="main_content">
+  <div style="height:94vh;" :class="[isAdmin? 'UI-adminborder': '', 'VOL-main']">
+    <div :class='[isAdmin ? "UI-admin-sectionbar" : "UI-event-sectionbar"]'>
+        <span>Volunteer Administration</span>
+    </div>
+
 <div class="UI-rest UI-center">
+
 <?php
 if (isset($_SESSION['IS_ADMIN']) || $_SESSION['IS_VOLUNTEERS']) {
     if (!in_console() || (
@@ -285,6 +278,7 @@ hour_data($uid);
     <process-return ref="psrtn"></process-return>
     <checkout ref="chkout"></checkout>
 
+</div>
 <script>
 <?php
 echo "  var groupData = '".json_encode($groupTotals)."';\n";
