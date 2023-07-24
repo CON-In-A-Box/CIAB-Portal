@@ -74,7 +74,7 @@ export default {
         count += target.count;
       }
 
-      if (count + 1 > item.remaining) {
+      if (item.claimed + count > item.inventory) {
         alertbox('Not enough items in inventory!');
         return;
       }

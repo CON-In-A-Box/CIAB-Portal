@@ -184,7 +184,7 @@ export default {
       }
 
       if (column.value == 'remaining') {
-        return record['inventory'];
+        return record['inventory'] - record['claimed'];
       }
 
       if (column.value == 'limit') {
@@ -205,9 +205,13 @@ export default {
     },
     getRowStyle(row) {
       var base = '';
-      if (row.inventory <= 0) {
-        return 'VOL-color-red UI-disabled';
+      if (row.claimed >= row.inventory) {
+        if (!this.$parent.isAdmin) {
+          return 'VOL-color-red UI-disabled';
+        }
+        return 'VOL-color-red'
       }
+
       if (this.$parent.userId && !this.acquirable(row)) {
         base = 'UI-disabled ';
       }
@@ -235,7 +239,7 @@ export default {
       }
       if (this.unclaimed == null) {
         this.records.forEach((entry) => {
-          if (entry.promo == '1' && entry.inventory > 0 && this.acquirable(entry)) {
+          if (entry.promo == '1' && entry.claimed < entry.inventory && this.acquirable(entry)) {
             if (this.unclaimed == null) {
               this.unclaimed = [ entry ];
             } else {
@@ -281,7 +285,7 @@ export default {
             <div v-for="c in columns" class="UI-table-cell">{{c.title}}</div>
           </div>
           <div v-if="records" v-for="r in records" class="UI-table-row" :class="getRowStyle(r)" >
-            <div v-if="r != null && (!hideSoldOut || r.inventory > 0)" v-for="c in columns"
+            <div v-if="r != null && (!hideSoldOut || r.claimed < r.inventory)" v-for="c in columns"
               class="UI-table-cell" @click="clicked(r)">{{printValue(r, c)}}</div>
             </div>
           </div>

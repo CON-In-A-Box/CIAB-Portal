@@ -10,6 +10,7 @@ export default {
         name: null,
         value: null,
         inventory: null,
+        remaining: null,
         promo: null,
         group: null,
       },
@@ -37,6 +38,7 @@ export default {
         } else {
           this.reward_group = -1;
         }
+        this.record.remaining = this.record.inventory - this.record.claimed;
       } else {
         this.reward_group = -1;
       }
@@ -63,8 +65,10 @@ export default {
       if (this.record.id) {
         message = 'Proceed with Volunteer Gift Update?';
         item.PrizeID = this.record.id;
+        item.Remaining = parseInt(this.record.remaining);
       } else {
         message = 'Proceed with Addition of new Volunteer Gift?';
+        item.Remaining = parseInt(this.record.remaining);
       }
       var baseObj = this;
       confirmbox('Please! double check entries!', message).then(function() {
@@ -80,13 +84,12 @@ export default {
         }
         item.Promo = (baseObj.record.promo == '1') ? 'yes' : 'no';
 
-        if (item.Remaining != baseObj.record.inventory) {
-          var amount = parseInt(item.Remaining) - parseInt(baseObj.record.inventory);
-          if (amount !== 0) {
-            var newValue = parseInt(item.TotalInventory) - amount;
-            item.TotalInventory = newValue;
-          }
+        if (item.Remaining > 0 && baseObj.record.claimed > 0) {
+          item.TotalInventory = item.Remaining + baseObj.record.claimed;
+        } else {
+          item.TotalInventory = item.Remaining;
         }
+
         var parameter;
         if (baseObj.record.id) {
           parameter = 'update_prize=' + JSON.stringify(item);
@@ -143,7 +146,7 @@ export default {
               <span
                 class="VOL-gift-label">Changing this will adjust Total items</span>
           Inventory Remaining:</label>
-          <input class="UI-input" id="edit_prize_count" v-model="record.inventory">
+          <input class="UI-input" id="edit_prize_count" v-model="record.remaining">
                   <label class='UI-label UI-tooltip' for='edit_prize_group'>
                       <span
                         class="VOL-gift-label">
