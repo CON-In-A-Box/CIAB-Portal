@@ -1,5 +1,5 @@
 /* jshint esversion: 6 */
-/* globals  apiRequest, showSidebar, confirmbox, basicVolunteersRequestAdmin */
+/* globals  apiRequest, showSidebar, confirmbox, simpleObjectToRequest */
 
 export default {
   data() {
@@ -58,45 +58,31 @@ export default {
     },
     commitPrize() {
       var message;
-      var item = {Name:'', Value:0, RewardGroupID:null, GroupLimit:0,
-        Promo:'no', TotalInventory:0, Remaining:0};
+      var method;
+      var tail = '';
+      var item = {};
       if (this.record.id) {
-        message = 'Proceed with Volunteer Gift Update?';
-        item.PrizeID = this.record.id;
-        item.Remaining = parseInt(this.record.remaining);
+        message = 'Proceed with volunteer gift update?';
+        method = 'PUT';
+        tail = '/' + this.record.id;
+        item.id = this.record.id;
       } else {
-        message = 'Proceed with Addition of new Volunteer Gift?';
-        item.Remaining = parseInt(this.record.remaining);
+        message = 'Proceed with the addition of new volunteer gift?';
+        method = 'POST';
       }
-      var baseObj = this;
-      confirmbox('Please! double check entries!', message).then(function() {
-        item.Name = baseObj.record.name;
-        item.Value = parseFloat(baseObj.record.value);
-
-        if (baseObj.reward_group == -1) {
-          item.RewardGroupID = '';
-          item.GroupLimit = '';
-        } else {
-          item.RewardGroupID = baseObj.reward_group;
-          item.GroupLimit = parseInt(baseObj.reward_limit);
-        }
-        item.Promo = (baseObj.record.promo == '1') ? 'yes' : 'no';
-
-        if (item.Remaining > 0 && baseObj.record.claimed > 0) {
-          item.TotalInventory = item.Remaining + baseObj.record.claimed;
-        } else {
-          item.TotalInventory = item.Remaining;
+      confirmbox('Please! double check entries!', message).then(() => {
+        item.name = this.record.name;
+        if (this.reward_group != -1) {
+          item.reward_group = this.reward_group;
         }
 
-        var parameter;
-        if (baseObj.record.id) {
-          parameter = 'update_prize=' + JSON.stringify(item);
-        } else {
-          parameter = 'new_prize=' + JSON.stringify(item);
-        }
-        basicVolunteersRequestAdmin(parameter, function() {
-          location.reload();
-        });
+        item.promo = this.record.promo;
+        item.inventory = this.record.remaining;
+        item.value = this.record.value;
+
+        apiRequest(method, '/volunteer/rewards' + tail, simpleObjectToRequest(item))
+          .then(() => { location.reload();
+          });
       });
     },
     updateGroup() {
