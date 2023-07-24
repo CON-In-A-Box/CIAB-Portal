@@ -19,7 +19,7 @@
  *          response=200,
  *          description="reward data found",
  *          @OA\JsonContent(
- *           ref="#/components/schemas/volunteer_reward_group_list"
+ *           ref="#/components/schemas/volunteer_reward_group_prize_list"
  *          )
  *      ),
  *      @OA\Response(
@@ -72,7 +72,7 @@ class ListRewardGroup extends BaseRewardGroup
         return [
         \App\Controller\BaseController::LIST_TYPE,
         $data,
-        array('type' => 'volunteer_reward_group_list')];
+        array('type' => 'volunteer_reward_group_prize_list')];
 
     }
 

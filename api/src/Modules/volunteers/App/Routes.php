@@ -51,6 +51,7 @@ function setupVolunteersAPI($app, $authMiddleware)
     $app->group(
         '/volunteer/reward_group',
         function () use ($app, $authMiddleware) {
+            $app->get('[/]', 'App\Modules\volunteers\Controller\Rewards\ListRewardGroups');
             $app->get('/{id}', 'App\Modules\volunteers\Controller\Rewards\GetRewardGroup');
             $app->get('/{id}/list', 'App\Modules\volunteers\Controller\Rewards\ListRewardGroup');
             $app->post('[/]', 'App\Modules\volunteers\Controller\Rewards\PostRewardGroup');
