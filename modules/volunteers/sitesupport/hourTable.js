@@ -132,10 +132,18 @@ export default {
 
       if (this.records == this.departments) {
         if (record['id'] in this.hours) {
-          return this.hours[record['id']][column.value];
+          if (column.value == 'total_hours' || column.value == 'hours') {
+            return this.printHours(this.hours[record['id']][column.value]);
+          } else {
+            return this.hours[record['id']][column.value];
+          }
         }
       } else {
-        return record[column.value];
+        if (column.value == 'total_hours' || column.value == 'hours') {
+          return this.printHours(record[column.value]);
+        } else {
+          return record[column.value];
+        }
       }
 
       return 0;

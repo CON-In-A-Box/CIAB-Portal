@@ -3562,6 +3562,50 @@ paths:
       security:
         -
           ciab_auth: []
+  '/volunteers/rewards_group/{id}/list':
+    get:
+      tags:
+        - volunteers
+      summary: 'Lists the volunteer reward group data'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Id of the reward group.'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'reward data found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/volunteer_reward_group_prize_list'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/volunteer_reward_group_not_found'
+      security:
+        -
+          ciab_auth: []
+  /volunteers/rewards_group:
+    get:
+      tags:
+        - volunteers
+      summary: 'Lists the volunteer reward groups'
+      responses:
+        '200':
+          description: 'reward data found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/volunteer_reward_group_list'
+        '401':
+          $ref: '#/components/responses/401'
+      security:
+        -
+          ciab_auth: []
   /volunteers/rewards:
     get:
       tags:
@@ -4801,7 +4845,23 @@ components:
         reward_limit:
           description: 'Number of items allowed from the group.'
           type: integer
-        rewards:
+      type: object
+    volunteer_reward_group_prize_list:
+      properties:
+        type:
+          type: string
+          enum:
+            - volunteer_reward_group_prize_list
+        data:
+          description: 'Items in the group.'
+      type: object
+    volunteer_reward_group_list:
+      properties:
+        type:
+          type: string
+          enum:
+            - volunteer_reward_group_list
+        data:
           description: 'Items in the group.'
       type: object
   responses:

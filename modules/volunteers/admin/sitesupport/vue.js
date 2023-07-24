@@ -1,5 +1,5 @@
 /* jshint esversion: 6 */
-/* globals Vue, adminMode */
+/* globals Vue, apiRequest, adminMode */
 
 import lookupUser from '../../../../sitesupport/vue/lookupuser.js'
 import hourTable from '../../sitesupport/hourTable.js'
@@ -14,7 +14,7 @@ var adminHourTable = {
   extends: hourTable,
   methods: {
     clicked(record) {
-      if (this.isAdmin && this.user) {
+      if (this.$parent.isAdmin && this.$parent.userId) {
         this.$parent.$refs.edhrs.show(record);
       }
     }
@@ -27,7 +27,8 @@ var app = Vue.createApp({
       totalHours: 0,
       totalSpentHours: 0,
       isAdmin: false,
-      userId: null
+      userId: null,
+      reward_groups: null,
     }
   },
   created() {
@@ -36,6 +37,7 @@ var app = Vue.createApp({
       this.userId = searchParams.get('volunteerId');
     }
     this.isAdmin = adminMode;
+    this.reloadPrizeGroups();
   },
   methods: {
     handleHourChange(totalHours, totalSpentHours) {
@@ -45,11 +47,19 @@ var app = Vue.createApp({
     printHours(value) {
       var v = parseFloat(value);
       var min = Math.floor((v - Math.floor(v)) * 60);
+      var s = (Math.floor(v) != 1) ? 's' : '';
       if (min == 0.0) {
-        return Math.floor(v).toLocaleString('en-US') + ' Hours ';
+        return Math.floor(v).toLocaleString('en-US') + ' Hour' + s + ' ';
       } else {
-        return Math.floor(v).toLocaleString('en-US') + ' Hours ' + min + ' Minutes ';
+        return Math.floor(v).toLocaleString('en-US') + ' Hour' + s + ' ' + min + ' Minutes ';
       }
+    },
+    reloadPrizeGroups() {
+      apiRequest('GET', '/volunteer/reward_group','max_results=all')
+        .then((response) => {
+          const data = JSON.parse(response.responseText);
+          this.reward_groups = data.data;
+        })
     }
   }
 });

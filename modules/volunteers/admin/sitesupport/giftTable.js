@@ -97,7 +97,11 @@ export default {
                       record['acquired'] = 1;
                     }
                     if (record.reward_group != null) {
-                      this.groupData[record.reward_group.id] += 1;
+                      if (record.reward_group.id in this.groupCount) {
+                        this.groupCount[record.reward_group.id] += 1;
+                      } else {
+                        this.groupCount[record.reward_group.id] = 1;
+                      }
                     }
                     return false;
                   }
@@ -128,7 +132,7 @@ export default {
       hideSoldOut: true,
       hoursRemaining: 0,
       unclaimed: null,
-      groupData: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+      groupCount: [],
       loaded: false,
     }
   },
@@ -149,7 +153,7 @@ export default {
     },
     acquirable(record) {
       if (record.reward_group != null &&
-        (this.groupData[record.reward_group.id] >= record.reward_group.reward_limit)) {
+        (this.groupCount[record.reward_group.id] >= record.reward_group.reward_limit)) {
         return false;
       }
       if (record.promo == '1') {
@@ -231,9 +235,7 @@ export default {
       }
       if (this.unclaimed == null) {
         this.records.forEach((entry) => {
-          if (entry.promo == '1' && entry.inventory > 0 &&
-              (entry.reward_group && (!('acquired' in entry) || entry.acquired < entry.reward_group.reward_limit) ||
-              (entry.reward_group == null && (!('acquired' in entry) || entry.acquired == 0)))) {
+          if (entry.promo == '1' && entry.inventory > 0 && this.acquirable(entry)) {
             if (this.unclaimed == null) {
               this.unclaimed = [ entry ];
             } else {

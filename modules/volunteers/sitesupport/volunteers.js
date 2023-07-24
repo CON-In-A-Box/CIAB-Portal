@@ -4,11 +4,8 @@
 
 /* jshint browser: true */
 /* jshint -W097 */
-/* globals userId, userEmail,
-           checkAuthentication, adminMode, alertbox, basicBackendRequest
-           */
-/* exported  generateDeptReport,
-            toggleAdminMode, sidebarMainDiv , basicVolunteersRequestAdmin*/
+/* globals userEmail, checkAuthentication, adminMode, alertbox, basicBackendRequest */
+/* exported  generateDeptReport, toggleAdminMode, sidebarMainDiv , basicVolunteersRequestAdmin*/
 
 'use strict';
 
@@ -33,6 +30,11 @@ function toggleAdminMode() {
   document.cookie = 'CIAB_VOLUNTEERADMIN=;expires=Thu, 01 Jan 1970 ' +
                     '00:00:01 GMT;';
   var target = '';
+  var userId = null;
+  const searchParams = new URLSearchParams(window.location.search);
+  if (searchParams.has('volunteerId')) {
+    userId = searchParams.get('volunteerId');
+  }
   if (userId) {
     target = 'index.php?Function=volunteers/admin&volunteerId=' + userId;
   } else {

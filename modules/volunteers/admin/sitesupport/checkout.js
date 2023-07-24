@@ -1,13 +1,12 @@
 /* jshint esversion: 6 */
-/* globals  showSidebar, hideSidebar, confirmbox, basicVolunteersRequestAdmin, alertbox
-            groupData */
+/* globals  showSidebar, hideSidebar, confirmbox, basicVolunteersRequestAdmin, alertbox */
 
 export default {
   data() {
     return {
       checkout: [],
       hoursSpent: 0,
-      groupsNow: JSON.parse(groupData),
+      groupsNow: [],
     }
   },
   methods: {
@@ -23,7 +22,6 @@ export default {
           JSON.stringify(prizes);
         basicVolunteersRequestAdmin(parameter, function() {
           document.getElementById('success_dlg').style.display = 'block';
-          location.reload();
         });
       });
     },
@@ -31,12 +29,13 @@ export default {
       hideSidebar();
       this.hoursSpent = 0;
       this.checkout = [];
-      this.groupsNow = JSON.parse(groupData);
+      this.groupsNow = [];
     },
     updateCost(cost) {
       this.hoursSpent += cost;
     },
     addToCheckout(item) {
+      this.init();
       var cost = parseFloat(item.value);
       var found = false;
       var target = null;
@@ -60,9 +59,15 @@ export default {
         alertbox('Volunteer does not have enough hours for the ' + item.name);
         return;
       }
-      if (item.reward_group !=  null && this.groupsNow[item.reward_group.id] + 1 > item.reward_group.reward_limit) {
-        alertbox('Too many items from limited group');
-        return;
+      if (item.reward_group !=  null) {
+        if (!(item.reward_group.id in this.groupsNow)) {
+          this.groupsNow[item.reward_group.id] = 0;
+        } else {
+          if (this.groupsNow[item.reward_group.id] + 1 > item.reward_group.reward_limit) {
+            alertbox('Too many items from limited group');
+            return;
+          }
+        }
       }
       var count = 1;
       if (target != null) {
@@ -74,15 +79,20 @@ export default {
         return;
       }
 
-      this.show();
       if (target == null) {
         item.count = count;
         this.checkout.push(item);
       } else {
         target.count = count;
       }
+
       this.updateCost(cost);
-      this.groupsNow[item.RewardGroupID] += 1;
+
+      if (item.reward_group !== null) {
+        this.groupsNow[item.reward_group.id] += 1;
+      }
+
+      this.show();
     },
     addPromoToCheckout(unclaimed) {
       unclaimed.forEach((item) => {
@@ -102,7 +112,15 @@ export default {
         this.groupsNow[item.reward_group.id] -= 1;
       }
     },
+    init() {
+      if (this.groupsNow.length == 0) {
+        this.$parent.$refs.gfttbl.groupCount.forEach((entry, index) => {
+          this.groupsNow[index] = entry;
+        });
+      }
+    },
     show() {
+      this.init();
       showSidebar('checkout_div');
     },
     printHoursLeft() {
