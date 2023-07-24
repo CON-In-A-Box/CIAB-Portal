@@ -19,7 +19,7 @@ export default {
             data.push(c.reward.id);
           }
         });
-        var parameter = 'refundId=' + this.$parent.userId + '&rewards=' + JSON.stringify(data);
+        var parameter = 'refundId=' + objRef.$parent.userId + '&rewards=' + JSON.stringify(data);
         basicVolunteersRequestAdmin(parameter, function() {
           document.getElementById('return_success_dlg').style.display = 'block';
         });

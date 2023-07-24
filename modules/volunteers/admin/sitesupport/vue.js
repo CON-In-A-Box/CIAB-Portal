@@ -30,7 +30,7 @@ var app = Vue.createApp({
       userId: null
     }
   },
-  mounted() {
+  created() {
     const searchParams = new URLSearchParams(window.location.search);
     if (searchParams.has('volunteerId')) {
       this.userId = searchParams.get('volunteerId');

@@ -15,8 +15,12 @@ export default {
       var baseObj = this;
       confirmbox('Confirm Distribute Gifts',
         'Are the selected gifts correct?').then(function() {
-        var parameter = 'rewardId=' + this.$parent.userId + '&rewards=' +
-          JSON.stringify(baseObj.checkout);
+        var prizes = [];
+        baseObj.checkout.forEach((item) => {
+          prizes.push({'PrizeID' : item.id});
+        });
+        var parameter = 'rewardId=' + baseObj.$parent.userId + '&rewards=' +
+          JSON.stringify(prizes);
         basicVolunteersRequestAdmin(parameter, function() {
           document.getElementById('success_dlg').style.display = 'block';
           location.reload();
@@ -80,13 +84,10 @@ export default {
       this.updateCost(cost);
       this.groupsNow[item.RewardGroupID] += 1;
     },
-    addPromoToCheckout() {
-      this.unclaimed.forEach(function(item) {
-        var found = this.checkout.find(function(element) {
-          return element[0] == item.PrizeID;
-        });
-        if (!found) {
-          this.addToCheckout(item.Json);
+    addPromoToCheckout(unclaimed) {
+      unclaimed.forEach((item) => {
+        if (item.reward_group == null) {
+          this.addToCheckout(item);
         }
       });
     },

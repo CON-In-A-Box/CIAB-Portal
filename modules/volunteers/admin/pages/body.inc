@@ -144,25 +144,6 @@ function initialize($uid)
 }
 
 
-function _htmlsafeify($array)
-{
-    $output = [];
-    foreach ($array as $key => $value) {
-        $output[$key] = htmlspecialchars($value);
-    }
-    return $output;
-
-}
-
-
-function _printHours($hours)
-{
-    $min = floor(($hours - floor($hours)) * 60);
-    echo number_format(floor($hours), 0)." Hours ".$min." Minutes ";
-
-}
-
-
 function hour_data($uid)
 {
     global $totalHours, $ConComHours, $locked;
@@ -197,71 +178,6 @@ function hour_data($uid)
 
 }
 
-
-function acquireable_item($item)
-{
-    global $totalHours, $hoursRemain;
-    if ($item['Promo'] == 'yes') {
-        return (round($item['Value'], 3) <= round($totalHours, 3));
-    }
-    return (round($item['Value'], 3) <= round($hoursRemain, 3));
-
-}
-
-
-function messages($uid)
-{
-    global $prizeData, $totalHours, $unclaimed_promo;
-
-    $unclaimed_promo = [];
-    $display = false;
-    if (isset($uid)) {
-        $promo = "<ul>\n";
-        foreach ($prizeData as $key => $record) {
-            $record['Value'] += 0;
-            if ($record['Promo'] == 'yes' &&
-                $record['Remaining'] > 0 &&
-                $totalHours >= $record['Value'] &&
-                !isset($record['Aquired'])) {
-                if ($record['RewardGroupID'] !== null) {
-                    $promo .= "<li>Free Group Gift <b>".htmlspecialchars($record['Name'])."</b> (at ".$record['Value']." hours) is available and has not been acquired! <b>Pick 1 below!</b></li>\n";
-                } else {
-                    $promo .= "<li>Free Gift <b>".htmlspecialchars($record['Name'])."</b> (at ".$record['Value']." hours) is available and has not been acquired!</li>\n";
-                    $unclaimed_promo[] = $record;
-                }
-                $display = true;
-            }
-        }
-        $promo .= "</ul>\n";
-
-        if ($display) {
-            echo "<div class='VOL-messages-div' ";
-            echo "style='max-height:10vh; overflow:scroll;'>\n";
-            echo "<div id='volunteer_messages' class='VOL-messages'>\n";
-            echo $promo;
-            echo "</div>\n";
-            if ($unclaimed_promo && sizeof($unclaimed_promo)) {
-                echo "<div id='aquire_promo' class='UI-continer UI-padding UI-cell-middle'>\n";
-                echo "<button id='promo_check' class='UI-redbutton'";
-                $names = array_column($unclaimed_promo, 'Name');
-                echo "onclick=addPromoToCheckout();";
-                echo ">";
-                if ($unclaimed_promo > 1) {
-                    echo "Claim items</button>\n";
-                } else {
-                    echo "Claim item</button>\n";
-                }
-                echo "</div>\n";
-            }
-            echo "</div>\n";
-        } else {
-            echo "<hr>\n";
-        }
-    } else {
-        echo "<hr>\n";
-    }
-
-}
 
 echo "<script>\n";
 echo "  var adminMode = ".json_encode($admin_mode).";\n";
@@ -335,13 +251,23 @@ hour_data($uid);
 
 <volunteer-hour-table ref=vhtbl styles="max-height:34vh; overflow:scroll;" :footer=true @hour-change="handleHourChange"></volunteer-hour-table>
 
-<?php
-if (!isset($locked)) {
-    if (!$admin_mode) {
-        messages($uid);
-    }
-}
-?>
+<div v-if="!isAdmin && userId != null && $refs.gfttbl && $refs.gfttbl.loaded && $refs.gfttbl.getUnclaimedCount()[0] > 0" class='VOL-messages-div' style='max-height:10vh; overflow:scroll;'>
+ <div id="volunteer_messages" class="VOL-messages">
+    <ul>
+        <li v-for="u in $refs.gfttbl.getUnclaimed()">
+            <span v-if="u.reward_group">Free Group Gift </span>
+            <span v-else>Free Gift </span>
+            <b>{{u.name}}</b>
+            <span> (at {{printHours(u.value)}}) is available and has not been acquired!</span>
+            <span v-if="u.reward_group"><b> Pick 1 below!</b></span>
+        </li>
+    </ul>
+  </div>
+  <div v-if="$refs.gfttbl.getUnclaimedCount()[1] > 0" id='aquire_promo' class='UI-continer UI-padding UI-cell-middle'>
+      <button v-if="$refs.gfttbl.getUnclaimedCount()[1] > 1" id='promo_check' class='UI-redbutton' @click="$refs.chkout.addPromoToCheckout($refs.gfttbl.getUnclaimed())">Claim items</button>
+      <button v-else id='promo_check' class='UI-redbutton' @click="$refs.chkout.addPromoToCheckout($refs.gfttbl.getUnclaimed())">Claim item</button>
+   </div>
+</div>
 
 <div v-if="isAdmin" class='VOL-admin' style='max-height:10vh; overflow:scroll;'>
     <div id='volunteer_admin_bar' class='VOL-admin-bar'>
@@ -349,7 +275,6 @@ if (!isset($locked)) {
     <button id='gen_csv' class='UI-redbutton' onclick='window.location.href=\"index.php?Function=volunteers/report\";'>Go To Reports</button>
     </div>
 </div>
-
 
 <gift-table ref=gfttbl styles="max-height:34vh; overflow:scroll;" :footer=true v-bind:total-hours="totalHours" v-bind:hours-spent="totalSpentHours"></gift-table>
 

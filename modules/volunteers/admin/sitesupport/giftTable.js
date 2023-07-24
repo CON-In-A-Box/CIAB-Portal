@@ -104,9 +104,18 @@ export default {
                   return true;
                 });
               });
+              this.loaded = true;
+            })
+            .catch(() => {
+              this.loaded = true;
             });
+        } else {
+          this.loaded = true;
         }
       })
+      .catch((e) => {
+        console.log(e);
+      });
   },
   created() {
   },
@@ -118,7 +127,9 @@ export default {
       claims: [],
       hideSoldOut: true,
       hoursRemaining: 0,
+      unclaimed: null,
       groupData: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+      loaded: false,
     }
   },
   beforeUpdate() {
@@ -149,9 +160,6 @@ export default {
       }
       return (parseFloat(record.value) < this.hoursRemaining);
     },
-    printHours(value) {
-      return this.$parent.printHours(value);
-    },
     printNumber(value) {
       return parseInt(value).toLocaleString('en-US');
     },
@@ -161,7 +169,7 @@ export default {
       }
 
       if (column.value == 'value') {
-        return this.printHours(record[column.value]);
+        return this.$parent.printHours(record[column.value]);
       }
 
       if (column.value == 'promo') {
@@ -217,6 +225,38 @@ export default {
     doReturn() {
       this.$parent.$refs.psrtn.show(this.claims);
     },
+    getUnclaimed() {
+      if (!this.$parent.userId) {
+        return [];
+      }
+      if (this.unclaimed == null) {
+        this.records.forEach((entry) => {
+          if (entry.promo == '1' && entry.inventory > 0 &&
+              (entry.reward_group && (!('acquired' in entry) || entry.acquired < entry.reward_group.reward_limit) ||
+              (entry.reward_group == null && (!('acquired' in entry) || entry.acquired == 0)))) {
+            if (this.unclaimed == null) {
+              this.unclaimed = [ entry ];
+            } else {
+              this.unclaimed.push(entry);
+            }
+          }
+        });
+      }
+      return this.unclaimed;
+    },
+    getUnclaimedCount() {
+      var u = this.getUnclaimed();
+      if (u) {
+        var nonGroup = 0;
+        u.forEach((entry) => {
+          if (entry.reward_group == null) {
+            nonGroup += 1;
+          }
+        });
+        return [u.length, nonGroup];
+      }
+      return [0, 1];
+    }
   },
   template: `
   <div class="UI-container UI-center event-color-secondary" :style="styles">
