@@ -46,8 +46,14 @@ export default {
       'VOL-color-light-grey', 'VOL-color-light-green'
     ];
 
+    var userId = null;
+    const searchParams = new URLSearchParams(window.location.search);
+    if (searchParams.has('volunteerId')) {
+      userId = searchParams.get('volunteerId');
+    }
+
     this.columns = this.columnsBase;
-    if (this.$parent.userId != null) {
+    if (userId != null) {
       this.columns = this.columnsUser;
     }
 
@@ -76,8 +82,8 @@ export default {
           return (parseInt(a.reward_group.id) > parseInt(b.reward_group.id) ? 1 : -1);
         });
 
-        if (this.$parent.userId != null) {
-          apiRequest('GET', '/member/' + this.$parent.userId + '/volunteer/claims', 'max_results=all')
+        if (userId != null) {
+          apiRequest('GET', '/member/' + userId + '/volunteer/claims', 'max_results=all')
             .then((response) => {
               const result = JSON.parse(response.responseText);
               this.claims = result.data;
