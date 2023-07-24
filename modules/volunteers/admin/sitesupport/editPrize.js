@@ -1,5 +1,5 @@
 /* jshint esversion: 6 */
-/* globals  showSidebar, confirmbox, basicVolunteersRequestAdmin */
+/* globals  apiRequest, showSidebar, confirmbox, basicVolunteersRequestAdmin */
 
 export default {
   data() {
@@ -45,18 +45,16 @@ export default {
       showSidebar('edit_prize_div');
     },
     deletePrize() {
-      var baseObj = this;
       confirmbox('DELETE Gift Entry?',
         'WARNING!!!<br>  Only do this if NONE of this gift ' +
         'has been distributed. <br>It will lead to corrupt ' +
         'reward records. <br>To DELETE a gift that has been ' +
-        'rewarded set inventory to \'0\'').then(
-        function() {
-          var parameter = 'delete_prize=' + baseObj.record.id;
-          basicVolunteersRequestAdmin(parameter, function() {
+        'rewarded set inventory to \'0\'').then(() => {
+        apiRequest('DELETE', '/volunteer/rewards/' + this.record.id).
+          then(() => {
             location.reload();
           });
-        });
+      });
     },
     commitPrize() {
       var message;

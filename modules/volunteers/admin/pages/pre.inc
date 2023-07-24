@@ -23,7 +23,6 @@ if (!empty($_REQUEST)) {
     'update_hour'      => FILTER_UNSAFE_RAW,
     'delete_hour'      => FILTER_SANITIZE_SPECIAL_CHARS,
     'update_prize'     => FILTER_UNSAFE_RAW,
-    'delete_prize'     => FILTER_SANITIZE_SPECIAL_CHARS,
     'new_prize'        => FILTER_UNSAFE_RAW,
     'refundId'         => FILTER_SANITIZE_SPECIAL_CHARS,
     ];
@@ -88,13 +87,6 @@ if (!empty($_REQUEST)) {
             exit();
         } else {
             header("HTTP/1.0 401");
-            exit();
-        }
-    }
-
-    if (isset($updateData['delete_prize'])) {
-        if (isset($_SESSION['IS_ADMIN']) || $_SESSION['IS_VOLUNTEERS']) {
-            delete_volunteer_prize($updateData['delete_prize']);
             exit();
         }
     }

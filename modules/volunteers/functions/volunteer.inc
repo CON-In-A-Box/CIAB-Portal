@@ -278,17 +278,6 @@ function update_volunteer_prize(
 }
 
 
-function delete_volunteer_prize($record_id)
-{
-    $sql = <<<SQL
-        DELETE FROM `VolunteerRewards` WHERE `PrizeID` = $record_id;
-SQL;
-
-    DB::run($sql);
-
-}
-
-
 function new_volunteer_prize(
     $name,
     $value,
