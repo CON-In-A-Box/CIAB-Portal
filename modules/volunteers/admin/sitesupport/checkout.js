@@ -1,5 +1,5 @@
 /* jshint esversion: 6 */
-/* globals  showSidebar, hideSidebar, confirmbox, basicVolunteersRequestAdmin, alertbox */
+/* globals  apiRequest, showSidebar, hideSidebar, confirmbox, alertbox, showSpinner, hideSpinner */
 
 export default {
   data() {
@@ -7,21 +7,47 @@ export default {
       checkout: [],
       hoursSpent: 0,
       groupsNow: [],
+      failedList: [],
     }
   },
   methods: {
     processCheckout() {
-      var baseObj = this;
       confirmbox('Confirm Distribute Gifts',
-        'Are the selected gifts correct?').then(function() {
-        var prizes = [];
-        baseObj.checkout.forEach((item) => {
-          prizes.push({'PrizeID' : item.id});
-        });
-        var parameter = 'rewardId=' + baseObj.$parent.userId + '&rewards=' +
-          JSON.stringify(prizes);
-        basicVolunteersRequestAdmin(parameter, function() {
-          document.getElementById('success_dlg').style.display = 'block';
+        'Are the selected gifts correct?').then(() => {
+        showSpinner();
+        var prizes = [this.checkout.length, 0, 0];
+        this.checkout.forEach((item) => {
+          console.log(item);
+          for (let n = 0; n < item.count; n++) {
+            apiRequest('POST', '/volunteer/claims', 'member=' + this.$parent.userId + '&reward=' + item.id)
+              .then(() => {
+                prizes[1] += 1;
+                if (prizes[1] + prizes[2] == prizes[0]) {
+                  hideSpinner();
+                  document.getElementById('success_dlg').style.display = 'block';
+                }
+              })
+              .catch((response) => {
+                const result = JSON.parse(response.responseText);
+                if (result.code == 400) {
+                  item.failure = result.status;
+                } else {
+                  item.failure = response.responseText;
+                }
+                prizes[2] += 1;
+                this.failedList.append(item);
+                const target = this.checkout.findIndex(element => element.id === item.id);
+                if (this.checkout[target].count > 1) {
+                  this.checkout[target]['count'] -= 1;
+                } else {
+                  this.checkout.splice(target, 1);
+                }
+                if (prizes[1] + prizes[2] == prizes[0]) {
+                  hideSpinner();
+                  document.getElementById('success_dlg').style.display = 'block';
+                }
+              });
+          }
         });
       });
     },
@@ -165,10 +191,26 @@ export default {
         <span onclick="document.getElementById('success_dlg').style.display='none';
           location.reload();"
         class="VOL-give-close">&times;</span>
-        <h2 class="UI-center event-color-primary">Please get the volunteer the following new gifts!</h2>
-        <hr>
-        <table class='VOL-give-gift-table' id='reward_list'>
-        </table>
+        <div v-if="failedList.length > 0">
+          <h2 class="UI-red">The following gifts failed to distribute!
+                             Do not give them to the volunteer!</h2>
+            <div class='UI-stripedtable'>
+              <div v-for="(c, i) in failedList" class="UI-table-row">
+                <div class="UI-table-cell">{{c.name}}</div>
+                <div class="UI-table-cell">{{c.failure}}</div>
+              </div>
+            </div>
+          <hr>
+        </div>
+        <div v-if="checkout && checkout.length > 0">
+          <h2 class="UI-center event-color-primary">Please get the volunteer the following new gifts!</h2>
+          <hr>
+          <div class='UI-stripedtable'>
+            <div v-for="(c, i) in checkout" class="UI-table-row">
+              <div class="UI-table-cell">{{c.name}}<span v-if="c.count > 1"> x{{c.count}}</span></div>
+            </div>
+          </div>
+        </div>
         <h2 class="UI-center UI-red">Close this window when all gifts have been claimed!</h2>
       </div>
     </div>

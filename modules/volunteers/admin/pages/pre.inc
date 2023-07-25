@@ -16,8 +16,6 @@ require_once __DIR__.'/../../functions/volunteer.inc';
 if (!empty($_REQUEST)) {
     // Retrieve and sanitize POST data
     $arguments = [
-    'rewardId'         => FILTER_SANITIZE_SPECIAL_CHARS,
-    'rewards'          => FILTER_UNSAFE_RAW,
     'validate_login'   => FILTER_SANITIZE_SPECIAL_CHARS,
     'validate_passwd'  => FILTER_SANITIZE_ENCODED,
     'update_prize'     => FILTER_UNSAFE_RAW,
@@ -25,16 +23,6 @@ if (!empty($_REQUEST)) {
     ];
 
     $updateData = filter_input_array(INPUT_POST, $arguments);
-    if (isset($updateData['rewardId'])) {
-        $data = json_decode($updateData['rewards'], true);
-        $prizes = [];
-        foreach ($data as $prize) {
-            $prizes[] = $prize['PrizeID'];
-        }
-        award_prizes($updateData['rewardId'], $prizes);
-        echo $updateData['rewards'];
-        exit();
-    }
 
     require_once($FUNCTIONDIR."/authentication.inc");
 

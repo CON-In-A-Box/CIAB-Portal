@@ -4,16 +4,12 @@
 
 /* jshint browser: true */
 /* jshint -W097 */
-/* globals userEmail, checkAuthentication, adminMode, alertbox, basicBackendRequest */
-/* exported  generateDeptReport, toggleAdminMode, sidebarMainDiv , basicVolunteersRequestAdmin*/
+/* globals userEmail, checkAuthentication, adminMode, alertbox */
+/* exported  generateDeptReport, toggleAdminMode, sidebarMainDiv */
 
 'use strict';
 
 var sidebarMainDiv = 'info_div';
-
-function basicVolunteersRequestAdmin(parameter, finish) {
-  basicBackendRequest('POST', 'volunteers/admin', parameter, finish);
-}
 
 function enterAdmin() {
   setTimeout(location.reload(), 1000);

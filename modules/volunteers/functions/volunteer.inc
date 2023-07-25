@@ -118,29 +118,6 @@ SQL;
 }
 
 
-function award_prizes($id, $prizes, $event = null)
-{
-    if ($event === null) {
-        $event = current_eventID();
-    }
-
-    $sql = <<<SQL
-        INSERT INTO HourRedemptions
-            (AccountID, PrizeID, EventID)
-            VALUES
-SQL;
-    $stmt = [];
-    foreach ($prizes as $prize) {
-        $stmt[] = " ($id, $prize, $event)";
-    }
-    $sql .= implode(',', $stmt);
-    $sql .= ";";
-    DB::run($sql);
-    return true;
-
-}
-
-
 function update_volunteer_prize(
     $record_id,
     $name = null,
