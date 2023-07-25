@@ -1,5 +1,5 @@
 /* jshint esversion: 6 */
-/* globals  showSidebar, confirmbox, basicVolunteersRequestAdmin */
+/* globals  apiRequest, showSidebar, confirmbox */
 
 export default {
   data() {
@@ -10,18 +10,19 @@ export default {
   },
   methods: {
     processReturn() {
-      var objRef = this;
       confirmbox('Confirm Gift Return',
-        'Are the returned gifts correct?').then(function() {
-        var data = [];
-        objRef.claims.forEach((c) => {
+        'Are the returned gifts correct?').then(() => {
+        var deleted = false;
+        this.claims.forEach((c) => {
           if (c.returned) {
-            data.push(c.reward.id);
+            apiRequest('DELETE','/volunteer/claims/' + c.id)
+              .then(() => {
+                if (!deleted) {
+                  document.getElementById('return_success_dlg').style.display = 'block';
+                }
+                deleted = true;
+              });
           }
-        });
-        var parameter = 'refundId=' + objRef.$parent.userId + '&rewards=' + JSON.stringify(data);
-        basicVolunteersRequestAdmin(parameter, function() {
-          document.getElementById('return_success_dlg').style.display = 'block';
         });
       });
     },

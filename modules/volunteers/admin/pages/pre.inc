@@ -22,7 +22,6 @@ if (!empty($_REQUEST)) {
     'validate_passwd'  => FILTER_SANITIZE_ENCODED,
     'update_prize'     => FILTER_UNSAFE_RAW,
     'new_prize'        => FILTER_UNSAFE_RAW,
-    'refundId'         => FILTER_SANITIZE_SPECIAL_CHARS,
     ];
 
     $updateData = filter_input_array(INPUT_POST, $arguments);
@@ -88,15 +87,5 @@ if (!empty($_REQUEST)) {
             header("HTTP/1.0 401");
             exit();
         }
-    }
-
-    if (isset($updateData['refundId'])) {
-        $data = json_decode($updateData['rewards'], true);
-        $prizes = [];
-        foreach ($data as $prize) {
-            $prizes[] = $prize;
-        }
-        refund_prizes($updateData['refundId'], $prizes);
-        exit();
     }
 }

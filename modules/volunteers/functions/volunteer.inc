@@ -347,31 +347,6 @@ SQL;
 }
 
 
-function refund_prizes($id, $prizes, $event = null)
-{
-    if ($event === null) {
-        $event = current_eventID();
-    }
-
-    $stmt = [];
-    foreach ($prizes as $prize) {
-        $sql = <<<SQL
-            DELETE FROM
-                `HourRedemptions`
-            WHERE
-                `AccountID` = $id
-                AND EventId = $event
-                AND prizeid = $prize
-            LIMIT
-                1
-SQL;
-        DB::run($sql);
-    }
-    return true;
-
-}
-
-
 function find_overlap_hours($endtime, $hours, $uid)
 {
     $checkend = strtotime($endtime);
