@@ -6,14 +6,14 @@ jobs:
   eslint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 1
-      - name: Install modules
-        run: rm -f .yarnclean
-        run: yarn --frozen-lockfile --ignore-engines --ignore-optional --no-bin-links --non-interactive --silent --ignore-scripts --production=false
-          env:
-            PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: true
-            HUSKY_SKIP_INSTALL: true
-      - name: Run ESLint
-        run: eslint .
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - run: npm ci # or yarn install
+      - uses: sibiraj-s/action-eslint@v3
+        with:
+          extensions: 'js'
+          annotations: true
