@@ -32,6 +32,9 @@ export default {
     lookupTarget: String,
     initialId: String
   },
+  emits: [
+    'prelookup'
+  ],
   created() {
   },
   mounted() {
@@ -131,6 +134,7 @@ export default {
       }
     },
     lookupId() {
+      this.$emit('prelookup');
       if (this.id) {
         this.target = window.location.href;
         this.showSpinner = true;
