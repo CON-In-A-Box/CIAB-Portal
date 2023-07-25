@@ -18,8 +18,6 @@ if (!empty($_REQUEST)) {
     $arguments = [
     'validate_login'   => FILTER_SANITIZE_SPECIAL_CHARS,
     'validate_passwd'  => FILTER_SANITIZE_ENCODED,
-    'update_prize'     => FILTER_UNSAFE_RAW,
-    'new_prize'        => FILTER_UNSAFE_RAW,
     ];
 
     $updateData = filter_input_array(INPUT_POST, $arguments);
@@ -36,44 +34,6 @@ if (!empty($_REQUEST)) {
                 unset($_COOKIE["CIAB_VOLUNTEERADMIN"]);
                 exit();
             }
-        }
-    }
-
-    if (isset($updateData['update_prize'])) {
-        if (isset($_SESSION['IS_ADMIN']) || $_SESSION['IS_VOLUNTEERS']) {
-            $item = json_decode($updateData['update_prize']);
-            if ($item->{'RewardGroupID'} == 'new') {
-                $group = add_volunteer_prize_group($item->{'GroupLimit'});
-            } elseif ($item->{'RewardGroupID'} != '') {
-                $group = $item->{'RewardGroupID'};
-                update_volunteer_prize_group($group, $item->{'GroupLimit'});
-            } else {
-                $group = $item->{'RewardGroupID'};
-            }
-            update_volunteer_prize($item->{'PrizeID'}, $item->{'Name'}, $item->{'Value'}, ($item->{'Promo'} == 'yes'), $group, $item->{'TotalInventory'});
-            exit();
-        } else {
-            header("HTTP/1.0 401");
-            exit();
-        }
-    }
-
-    if (isset($updateData['new_prize'])) {
-        if (isset($_SESSION['IS_ADMIN']) || $_SESSION['IS_VOLUNTEERS']) {
-            $item = json_decode($updateData['new_prize']);
-            if ($item->{'RewardGroupID'} == 'new') {
-                $group = add_volunteer_prize_group($item->{'GroupLimit'});
-            } elseif ($item->{'RewardGroupID'} != '') {
-                $group = $item->{'RewardGroupID'};
-                update_volunteer_prize_group($group, $item->{'GroupLimit'});
-            } else {
-                $group = $item->{'RewardGroupID'};
-            }
-            new_volunteer_prize($item->{'Name'}, $item->{'Value'}, ($item->{'Promo'} == 'yes'), $group, $item->{'TotalInventory'});
-            exit();
-        } else {
-            header("HTTP/1.0 401");
-            exit();
         }
     }
 }
