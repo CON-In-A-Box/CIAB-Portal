@@ -115,6 +115,7 @@ class PostHours extends BaseHours
         $force = $request->getQueryParam('force', false);
         if (!$force) {
             $overlap = $this->checkOverlap(
+                $request,
                 $body['member'],
                 $body['end'],
                 $body['hours'],

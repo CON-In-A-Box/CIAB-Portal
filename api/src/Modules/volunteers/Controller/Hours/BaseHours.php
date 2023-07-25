@@ -256,10 +256,10 @@ abstract class BaseHours extends BaseController
     }
 
 
-    protected function checkOverlap($memberId, $endtime, $hours, $event = null)
+    protected function checkOverlap($request, $memberId, $endtime, $hours, $event = null)
     {
         if ($event === null) {
-            $event = $this->getEventId();
+            $event = $this->getEventId($request);
         }
 
         $data = Select::new($this->container->db)

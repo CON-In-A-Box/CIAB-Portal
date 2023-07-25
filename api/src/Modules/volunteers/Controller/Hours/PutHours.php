@@ -158,6 +158,7 @@ class PutHours extends BaseHours
                 }
 
                 $overlap = $this->checkOverlap(
+                    $request,
                     $member,
                     $end,
                     $hours
