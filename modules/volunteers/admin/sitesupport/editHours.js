@@ -1,5 +1,5 @@
 /* jshint esversion: 6 */
-/* globals apiRequest, confirmbox, basicVolunteersRequestAdmin, showSidebar */
+/* globals apiRequest, confirmbox, showSidebar, simpleObjectToRequest */
 
 export default {
   data() {
@@ -24,23 +24,22 @@ export default {
   },
   methods: {
     commitHours() {
-      var baseObj = this;
       confirmbox(
         'Please! double check entries',
-        'Proceed with Volunteer Hour Update?').then(function() {
+        'Proceed with Volunteer Hour Update?').then(() => {
         var item = {};
-        item['EntryID'] = baseObj.record.id;
-        item['Actual Hours'] = parseFloat(baseObj.record.hours);
-        item['End Date Time'] = baseObj.record.end;
-        var e = document.getElementById('edit_mod');
-        item['Time Modifier'] = e.options[e.selectedIndex].value;
-        item['Department Worked'] = baseObj.record.department.name;
-        item['Authorized By'] = baseObj.record.authorizer.id;
 
-        var parameter = 'update_hour=' + JSON.stringify(item);
-        basicVolunteersRequestAdmin(parameter, function() {
-          location.reload();
-        });
+        item['hours'] = parseFloat(this.record.hours);
+        item['end'] = this.record.end;
+        var e = document.getElementById('edit_mod');
+        item['modifier'] = e.options[e.selectedIndex].value;
+        item['department'] = this.record.department.id;
+        item['authorizer'] = this.record.authorizer.id;
+
+        apiRequest('PUT', '/volunteer/hours/' + this.record.id + '?force=1', simpleObjectToRequest(item))
+          .then(() =>  {
+            location.reload();
+          });
       });
     },
     deleteHours() {

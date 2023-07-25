@@ -20,7 +20,6 @@ if (!empty($_REQUEST)) {
     'rewards'          => FILTER_UNSAFE_RAW,
     'validate_login'   => FILTER_SANITIZE_SPECIAL_CHARS,
     'validate_passwd'  => FILTER_SANITIZE_ENCODED,
-    'update_hour'      => FILTER_UNSAFE_RAW,
     'update_prize'     => FILTER_UNSAFE_RAW,
     'new_prize'        => FILTER_UNSAFE_RAW,
     'refundId'         => FILTER_SANITIZE_SPECIAL_CHARS,
@@ -50,17 +49,6 @@ if (!empty($_REQUEST)) {
                 unset($_COOKIE["CIAB_VOLUNTEERADMIN"]);
                 exit();
             }
-        }
-    }
-
-    if (isset($updateData['update_hour'])) {
-        if (isset($_SESSION['IS_ADMIN']) || $_SESSION['IS_VOLUNTEERS']) {
-            $item = json_decode($updateData['update_hour']);
-            update_volunteer_hours($item->{'EntryID'}, null, $item->{'Actual Hours'}, $item->{'End Date Time'}, $item->{'Time Modifier'}, $item->{'Department Worked'}, null, $item->{'Authorized By'});
-            exit();
-        } else {
-            header("HTTP/1.0 401");
-            exit();
         }
     }
 
