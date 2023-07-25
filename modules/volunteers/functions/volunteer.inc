@@ -167,17 +167,6 @@ function update_volunteer_hours(
 }
 
 
-function delete_volunteer_hours($record_id)
-{
-    $sql = <<<SQL
-        DELETE FROM `VolunteerHours` WHERE `HourEntryID` = $record_id;
-SQL;
-
-    DB::run($sql);
-
-}
-
-
 function add_volunteer_prize_group($limit = 1)
 {
     $sql = "INSERT INTO `RewardGroup` (RedeemLimit) VALUES($limit);";

@@ -1,5 +1,5 @@
 /* jshint esversion: 6 */
-/* globals confirmbox, basicVolunteersRequestAdmin, showSidebar */
+/* globals apiRequest, confirmbox, basicVolunteersRequestAdmin, showSidebar */
 
 export default {
   data() {
@@ -44,13 +44,11 @@ export default {
       });
     },
     deleteHours() {
-      var baseObj = this;
-      confirmbox('DELETE Volunteer Entry?').then(function() {
-        console.log(baseObj.record);
-        var parameter = 'delete_hour=' + baseObj.record.id;
-        basicVolunteersRequestAdmin(parameter, function() {
-          location.reload();
-        });
+      confirmbox('DELETE Volunteer Entry?').then(() => {
+        apiRequest('DELETE', '/volunteer/hours/' + this.record.id)
+          .then(() => {
+            location.reload();
+          });
       });
     },
     show(record) {
