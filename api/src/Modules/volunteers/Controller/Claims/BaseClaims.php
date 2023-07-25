@@ -185,7 +185,7 @@ abstract class BaseClaims extends BaseController
         }
 
         $target = new \App\Modules\volunteers\Controller\Rewards\GetRewardGroup($this->container);
-        $group = $target->buildResource($request, $response, ['id' => $reward['reward_group']])[2];
+        $group = $target->buildResource($request, $response, ['id' => $reward['reward_group']])[1];
         if ($group['reward_limit'] == 0) {
             return;
         }
