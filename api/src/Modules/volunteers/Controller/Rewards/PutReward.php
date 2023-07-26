@@ -30,7 +30,7 @@
  *                  @OA\Property(
  *                      property="reward_group",
  *                          type="integer",
- *                          description="Reward Group Id"
+ *                          description="Reward Group Id. Remove reward group if set to -1."
  *                  ),
  *                  @OA\Property(
  *                      property="inventory",
@@ -92,6 +92,9 @@ class PutReward extends BaseReward
         }
         if (array_key_exists('value', $body) && floatval($body['value']) <= 0) {
             throw new InvalidParameterException('\'value\' parameter invalid');
+        }
+        if (array_key_exists('reward_group', $body) && intval($body['reward_group']) <= 0) {
+            $body['reward_group'] = null;
         }
 
         $insert = Update::new($this->container->db)

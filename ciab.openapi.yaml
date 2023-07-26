@@ -3712,7 +3712,7 @@ paths:
                 promo:
                   type: boolean
                 reward_group:
-                  description: 'Reward Group Id'
+                  description: 'Reward Group Id. Remove reward group if set to -1.'
                   type: integer
                 inventory:
                   type: integer
