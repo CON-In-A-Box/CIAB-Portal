@@ -72,10 +72,7 @@ export default {
       }
       confirmbox('Please! double check entries!', message).then(() => {
         item.name = this.record.name;
-        if (this.reward_group != -1) {
-          item.reward_group = this.reward_group;
-        }
-
+        item.reward_group = this.reward_group;
         item.promo = this.record.promo;
         item.inventory = this.record.remaining;
         item.value = this.record.value;
