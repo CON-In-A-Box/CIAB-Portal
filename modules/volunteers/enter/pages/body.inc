@@ -2,8 +2,8 @@
   <div id="vol-entry">
     <div id="message" v-bind:class="(error)?'VOL-enter-msg-error':'VOL-enter-msg'">{{ message }}</div>
       <lookup-user ref=lookup prompt='Volunteer Badge Number, E-Mail or Full Name'
-                  fail='$onFail'
-                  success='$onSuccess'
+                  @fail='onFail'
+                  @success='onSuccess'
                   @prelookup="handlePrelookup"
                   >
       </lookup-user>

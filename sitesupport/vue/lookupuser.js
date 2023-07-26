@@ -26,11 +26,12 @@ export default {
       type:String,
       default: 'lookupId'
     },
-    fail: String,
-    success: String,
-    handler: String,
     lookupTarget: String,
-    initialId: String
+    initialId: String,
+
+    onHandler: String,
+    onSuccess: String,
+    onFail: String,
   },
   emits: [
     'prelookup'
@@ -80,10 +81,8 @@ export default {
     },
     gotoTarget(item) {
       this.possibleMembers = null;
-      if (this.handler !== undefined) {
-        this.callCustomCallback('handler', [this, item]);
-        return;
-      }
+      this.$emit('handler', this, item);
+      if (this.$props && this.$props.onHandler) { return; }
       var newTarget = '';
       var i = this.target.indexOf(this.urlTag + '=');
       var uid = null;
@@ -119,20 +118,6 @@ export default {
       this.id = null;
       this.message = null;
     },
-    callCustomCallback(target, args) {
-      if (this[target] !== undefined) {
-        if (this[target][0] == '$') {
-          this.$parent[this[target].substring(1)](...args);
-        } else {
-          var fn = window[this[target]];
-          if (typeof fn === 'function') {
-            fn.apply(null, args);
-          } else {
-            console.log(this[target] + ' Callback Not Found');
-          }
-        }
-      }
-    },
     lookupId() {
       this.$emit('prelookup');
       if (this.id) {
@@ -152,16 +137,14 @@ export default {
             (input) => {
               var response = JSON.parse(input.responseText);
               this.clearFailure();
-              if (this.success !== undefined) {
-                this.callCustomCallback('success', [this, this.target, response]);
-              } else {
+              this.$emit('success', this, this.target, response);
+              if (!this.$props || !this.$props.onSuccess) {
                 this.lookupSuccess(response);
               }
             },
             (input) => {
-              if (this.fail !== undefined)  {
-                this.callCustomCallback('fail', [this, this.target, input.responseText, this.id, input.status]);
-              } else {
+              this.$emit('fail', this, this.target, input.responseText, this.id, input.status);
+              if (!this.$props || !this.$props.onFail) {
                 this.lookupFailed(input.responseText, this.id, input.status);
               }
             });
@@ -187,17 +170,15 @@ export default {
                 item['Email'] = item.email;
                 item['Id'] = item.id;
               })
-              if (this.success !== undefined) {
-                this.callCustomCallback('success', [this, this.target, data]);
-              } else {
+              this.$emit('success', this, this.target, data);
+              if (!this.$props || !this.$props.onSuccess) {
                 this.lookupSuccess(data);
               }
             })
             .catch((response) => {
               if (response instanceof Error) { throw response; }
-              if (this.fail !== undefined)  {
-                this.callCustomCallback('fail', [this, this.target, response.responseText, this.id, response.status]);
-              } else {
+              this.$emit('fail', this, this.target, response.responseText, this.id, response.status);
+              if (!this.$props || !this.$props.onFail) {
                 this.lookupFailed(response.responseText, this.id, response.status);
               }
             })
