@@ -60,7 +60,13 @@ export default {
       var message;
       var method;
       var tail = '';
-      var item = {};
+      var item = {
+        name: this.record.name,
+        reward_group: this.reward_group,
+        promo: this.record.promo,
+        inventory: this.record.remaining,
+        value: this.record.value
+      };
       if (this.record.id) {
         message = 'Proceed with volunteer gift update?';
         method = 'PUT';
@@ -71,12 +77,6 @@ export default {
         method = 'POST';
       }
       confirmbox('Please! double check entries!', message).then(() => {
-        item.name = this.record.name;
-        item.reward_group = this.reward_group;
-        item.promo = this.record.promo;
-        item.inventory = this.record.remaining;
-        item.value = this.record.value;
-
         apiRequest(method, '/volunteer/rewards' + tail, simpleObjectToRequest(item))
           .then(() => { location.reload();
           });

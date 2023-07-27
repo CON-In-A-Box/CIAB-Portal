@@ -34,13 +34,13 @@ export default {
       confirmbox(
         'Please! double check entries',
         'Proceed with Volunteer Hour Update?').then(() => {
-        var item = {};
-
-        item['hours'] = parseFloat(this.record.hours);
-        item['end'] = this.record.end;
-        item['modifier'] = this.record.modifier;
-        item['department'] = this.record.department.id;
-        item['authorizer'] = this.record.authorizer.id;
+        const item = {
+          hours: parseFloat(this.record.hours),
+          end: this.record.end,
+          modifier: this.record.modifier,
+          department: this.record.department.id,
+          authorizer: this.record.authorizer.id
+        };
 
         apiRequest('PUT', '/volunteer/hours/' + this.record.id + '?force=1', simpleObjectToRequest(item))
           .then(() =>  {
