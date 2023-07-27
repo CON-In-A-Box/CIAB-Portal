@@ -20,6 +20,13 @@ export default {
         },
         end: null,
       },
+      standardModifiers: [
+        { value: '0.5', name: 'Half Time'},
+        { value: '1.0', name: 'Normal'},
+        { value: '1.5', name: 'Time Plus Half'},
+        { value: '2.0', name: 'Double'}
+      ],
+      customModifier: null,
     }
   },
   methods: {
@@ -31,8 +38,7 @@ export default {
 
         item['hours'] = parseFloat(this.record.hours);
         item['end'] = this.record.end;
-        var e = document.getElementById('edit_mod');
-        item['modifier'] = e.options[e.selectedIndex].value;
+        item['modifier'] = this.record.modifier;
         item['department'] = this.record.department.id;
         item['authorizer'] = this.record.authorizer.id;
 
@@ -53,22 +59,15 @@ export default {
     show(record) {
       /* deep copy */
       this.record = JSON.parse(JSON.stringify(record));
-
-      var options = document.getElementById('edit_mod');
-      var value = parseFloat(record.modifier);
-      options.selectedIndex = 0;
-      for (var i = 0, n = options.length; i < n ; i++) {
-        if (options[i].value == value) {
-          options.selectedIndex = i;
-          break;
-        } else if (options[i].value < value) {
-          options.selectedIndex = i;
-        } else {
-          break;
-        }
+      record.end = record.end.replace(/\s+/g, 'T');
+      var checkModifier = parseFloat(record.modifier);
+      var option = this.standardModifiers.find(({ value }) => parseFloat(value) === checkModifier);
+      if (!option) {
+        this.customModifier = checkModifier.toFixed(1);
+      } else {
+        this.customModifier = null;
       }
 
-      record.end = record.end.replace(/\s+/g, 'T');
       showSidebar('edit_user_hour_div');
     },
   },
@@ -84,11 +83,11 @@ export default {
           <label class='UI-label' for='edit_hours'>Actual Hours:</label>
           <input class="UI-input" id="edit_hours" v-model="record.hours">
           <label class='UI-label' for='edit_mod'>Time Modifier</label><br />
-          <select class="UI-select" style="width:auto" name="TimeModifier" id="edit_mod">
-            <option value=0.5>Half Time - 1 hour = 0.5 hours credit</option>
-            <option value=1 selected>Normal - 1 hour = 1 hour</option>
-            <option value=1.5>Time Plus Half - 1 hour = 1.5 hours credit</option>
-            <option value=2>Double - 1 hour = 2 hours credit</option>
+          <select class="UI-select" style="width:auto" name="TimeModifier" id="edit_mod" v-model="record.modifier">
+            <option v-for="v in standardModifiers" :value=v.value>{{v.name}} - 1 hour = {{v.value}}
+            hour<span v-if="v.value != 1">s</span> credit</option>
+            <option v-if="customModifier" :value=customModifier>Custom Time - 1 hour = {{customModifier}}
+            hours credit</option>
           </select>
           <label class='UI-label' for='edit_end'>End Time:</label>
           <input class="UI-input" type="datetime-local" id="edit_end" pattern="d{4}-d{2}-d{2}Td{2}:d{2}" v-model="record.end">
