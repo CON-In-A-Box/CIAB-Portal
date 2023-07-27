@@ -81,7 +81,7 @@ export default {
           <label class='UI-label' for='edit_name'>Volunteer:</label>
           <input class="UI-input UI-disabled" v-model="record.member.first_name" readonly>
           <label class='UI-label' for='edit_hours'>Actual Hours:</label>
-          <input class="UI-input" id="edit_hours" v-model="record.hours">
+          <hour-entry-field v-model="record.hours" id="edit_hours"> </hour-entry-field>
           <label class='UI-label' for='edit_mod'>Time Modifier</label><br />
           <select class="UI-select" style="width:auto" name="TimeModifier" id="edit_mod" v-model="record.modifier">
             <option v-for="v in standardModifiers" :value=v.value>{{v.name}} - 1 hour = {{v.value}}

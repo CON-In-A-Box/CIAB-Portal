@@ -9,6 +9,7 @@ import checkout from './checkout.js'
 import processReturn from './processReturn.js'
 import departmentDropdown from '../../../../../sitesupport/vue/departmentDropdown.js'
 import giftTable from './giftTable.js'
+import hourEntryField from './hourEntryField.js'
 
 var adminHourTable = {
   extends: hourTable,
@@ -72,6 +73,7 @@ app.component('process-return', processReturn);
 app.component('checkout', checkout);
 app.component('department-dropdown', departmentDropdown);
 app.component('gift-table', giftTable);
+app.component('hour-entry-field', hourEntryField);
 app.mount('#main_content');
 
 export default app;

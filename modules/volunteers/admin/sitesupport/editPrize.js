@@ -113,7 +113,7 @@ export default {
               <span
                 class="VOL-gift-label">Hour cost of the item</span>
           Value:</label>
-          <input class="UI-input" id="edit_prize_value" v-model="record.value">
+          <hour-entry-field v-model="record.value" id="edit_prize_value"> </hour-entry-field>
           <label class='UI-label UI-tooltip' for='edit_prize_value'>
               <span
                 class="VOL-gift-label">
