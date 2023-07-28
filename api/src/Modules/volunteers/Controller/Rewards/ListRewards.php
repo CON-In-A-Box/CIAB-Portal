@@ -16,6 +16,13 @@
  *          @OA\Schema(type="boolean")
  *      ),
  *      @OA\Parameter(
+ *          description="Show retired items, default if false",
+ *          in="query",
+ *          name="retired",
+ *          required=false,
+ *          @OA\Schema(type="boolean")
+ *      ),
+ *      @OA\Parameter(
  *          ref="#/components/parameters/short_response"
  *      ),
  *      @OA\Parameter(
@@ -58,6 +65,8 @@ class ListRewards extends BaseReward
     {
         $soldout = $request->getQueryParam('sold_out', '0');
         $soldout = intval($soldout);
+        $retired = $request->getQueryParam('retired', '0');
+        $retired = intval($retired);
 
         $data = Select::new($this->container->db)
             ->columns(...BaseReward::selectMapping())
@@ -70,6 +79,11 @@ class ListRewards extends BaseReward
             $data[$index]['claimed'] = $this->getClaimed($entry['id']);
             if (!$soldout) {
                 if ($data[$index]['inventory'] == 0 || $data[$index]['claimed'] >= $data[$index]['inventory']) {
+                    unset($data[$index]);
+                }
+            }
+            if (!$retired) {
+                if (array_key_exists('retired', $data[$index]) && $data[$index]['retired']) {
                     unset($data[$index]);
                 }
             }

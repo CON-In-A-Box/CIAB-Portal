@@ -38,6 +38,10 @@
  *      @OA\Property(
  *          property="inventory",
  *          type="integer"
+ *      ),
+ *      @OA\Property(
+ *          property="retired",
+ *          type="boolean"
  *      )
  *  )
  *
@@ -88,7 +92,8 @@ abstract class BaseReward extends BaseController
         'Promo' => 'promo',
         'RewardGroupID' => 'reward_group',
         'TotalInventory' => 'inventory',
-        'Value' => 'value'
+        'Value' => 'value',
+        'Retired' => 'retired'
     ];
 
 

@@ -3485,7 +3485,8 @@ paths:
     delete:
       tags:
         - volunteers
-      summary: 'Deletes an existing volunteer reward'
+      summary: 'Deletes or marks an existing volunteer reward retired'
+      description: "If the reward has never been distributed then it is deleted from the database.\n However, if that reward has been awarded then instead the reward is marked as retired and its inventory is set to the same as claimed, so effectively zero."
       parameters:
         -
           name: id
@@ -3616,6 +3617,13 @@ paths:
           name: sold_out
           in: query
           description: 'Show sold out items, default if false'
+          required: false
+          schema:
+            type: boolean
+        -
+          name: retired
+          in: query
+          description: 'Show retired items, default if false'
           required: false
           schema:
             type: boolean
@@ -4819,6 +4827,8 @@ components:
               type: integer
         inventory:
           type: integer
+        retired:
+          type: boolean
       type: object
     volunteer_reward_entry_list:
       type: object
