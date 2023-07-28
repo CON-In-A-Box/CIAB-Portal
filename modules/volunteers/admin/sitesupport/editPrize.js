@@ -45,11 +45,20 @@ export default {
       showSidebar('edit_prize_div');
     },
     deletePrize() {
-      confirmbox('DELETE Gift Entry?',
-        'WARNING!!!<br>  Only do this if NONE of this gift ' +
-        'has been distributed. <br>It will lead to corrupt ' +
-        'reward records. <br>To DELETE a gift that has been ' +
-        'rewarded set inventory to \'0\'').then(() => {
+      let warning = `
+        <span class='UI-bold'>WARNING!!!</span><br> NONE of this gift has been distributed.<br>
+        Deleting the gift will remove all record from the system and it will not be able to be recovered.
+      `;
+      let title = 'DELETE Gift Entry?';
+      if (this.record.claimed) {
+        warning = `
+        <span class='UI-bold'>WARNING!!!</span><br>
+        This gift will have the inventory set to zero and be removed from the system interface.<br>
+        It will no longer be able to be selected for distribution, however records of previous distributions will remain.
+        `;
+        title = 'Retire Gift Entry?';
+      }
+      confirmbox(title, warning).then(() => {
         apiRequest('DELETE', '/volunteer/rewards/' + this.record.id).
           then(() => {
             location.reload();
@@ -159,7 +168,8 @@ export default {
           </button>
           <button v-if="record.id != null" class='UI-secondarybutton'
               @click='deletePrize'>
-              Delete
+              <span v-if="record.claimed==0">Delete</span>
+              <span v-else>Retire</span>
           </button>
           <button id='exit_prize_button' class='UI-redbutton'
               onclick='hideSidebar();'>
