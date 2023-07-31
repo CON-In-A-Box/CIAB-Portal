@@ -4,4 +4,4 @@
 <script src="sitesupport/common.js"></script>
 <script src="modules/volunteers/sitesupport/volhours.js"></script>
 <link rel="stylesheet" type="text/css" href="sitesupport/barcode/barcode.css" />
-<script type="module" src="modules/volunteers/sitesupport/volunteersEntry.js"></script>
+<script type="module" src="modules/volunteers/enter/sitesupport/volunteersEntry.js"></script>

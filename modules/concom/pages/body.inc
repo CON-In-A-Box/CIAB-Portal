@@ -32,7 +32,7 @@ ConComListDisplay();
           <fieldset><legend>Search the User Database</legend>
 
           <div class='UI-rest UI-center' id='concom_lookup'>
-              <lookup-user handler=onLookup></lookup-user>
+              <lookup-user @handler='onLookup'></lookup-user>
           </div>
 
           </fieldset>

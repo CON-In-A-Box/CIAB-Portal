@@ -99,7 +99,7 @@ module.exports = {
                "modules/registration/report/sitesupport/vue.js",
                "modules/volunteers/sitesupport/volunteerPane.js",
                "modules/volunteers/admin/sitesupport/*.js",
-               "modules/volunteers/sitesupport/volunteersEntry.js",
+               "modules/volunteers/enter/sitesupport/*.js",
                "modules/volunteers/sitesupport/hourTable.js",
                "modules/volunteers/report/sitesupport/hourReport.js",
                "modules/volunteers/report/sitesupport/volunteerReport.js"],

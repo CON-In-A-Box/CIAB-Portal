@@ -11,7 +11,7 @@ if (!in_console()) {
       <hr>
       <h3 class="UI-center">User operating the Console:</h3>
          <div class='UI-rest UI-center'>
-             <lookup-user handler=handleResult></lookup-user>
+             <lookup-user @handler=handleResult></lookup-user>
          </div>
     </div>
   </div>
@@ -26,7 +26,7 @@ if (!in_console()) {
       <hr>
       <h3 class="UI-center">User operating the Console:</h3>
        <div class='UI-rest UI-center'>
-           <lookup-user handler=handleResult></lookup-user>
+           <lookup-user @handler=handleResult></lookup-user>
        </div>
     </div>
   </div>
@@ -59,11 +59,6 @@ if (!in_console()) {
       if (error) {
         alertbox('Login Failed (' + error + ')');
       }
-    }
-
-    function handleResult(origin, item) {
-        var uid = item.Id;
-        switchConsole(uid);
     }
 
     document.getElementById('console_dlg').style.display = 'block';

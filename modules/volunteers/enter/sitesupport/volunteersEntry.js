@@ -5,11 +5,10 @@
 /* jshint esversion: 6 */
 /* globals apiRequest, Vue, showSpinner, hideSpinner */
 
-import lookupUser from '../../../sitesupport/vue/lookupuser.js'
+import lookupUser from '../../../../sitesupport/vue/lookupuser.js'
 
 var volApp = Vue.createApp({
   created() {
-    console.log('load volunteer hours pane');
     this.setEndDate();
     apiRequest('GET', '/member')
       .then(this.gotMember);
@@ -50,13 +49,16 @@ var volApp = Vue.createApp({
       totalHours: '1 hour',
       actualHoursWorked: 0.0,
       timeInvalid: false,
-      volPast: null,
+      history: null,
       lookupMessage: null,
       lookupError: false,
       volunteerName: 'a Volunteer'
     }
   },
   methods: {
+    handlePrelookup() {
+      showSpinner();
+    },
     gotStaffDepartments(response) {
       const result = JSON.parse(response.responseText);
       result.data.forEach((entry) => {
@@ -171,46 +173,61 @@ var volApp = Vue.createApp({
       this.volunteerName = 'a Volunteer';
       this.member = null;
     },
-    handleResult(userLookup, response) {
+    onSuccess(userLookup, target, resp) {
+      var response = resp[0];
       userLookup.possibleMembers = null;
       this.timeInvalid = false;
       this.message = null;
 
       this.volunteerName = response['First Name'] + ' ' + response['Last Name'];
-      var uid = response.Id;
-      if (response.ConCom && response.ConCom.length > 0) {
-        userLookup.markFailure();
-        this.lookupMessage = this.volunteerName + ' is on ConCom (' + uid + ')';
-        this.lookupError = true;
-        this.departmentsHighlight = null;
-        this.member = null;
-      } else {
-        userLookup.clearFailure();
-        userLookup.set(uid);
-        this.lookupMessage = this.volunteerName + ' (' + uid + ')';
-        this.lookupError = false;
-        this.departmentsHighlight = null;
-        this.member = uid;
+      var uid = response.id;
 
-        /* TODO: Fix me
-        if ('volunteer' in response) {
-          for (var i = 0, len = response.volunteer.length; i < len; i++) {
-            var dept = response.volunteer[i];
-            if (this.departmentsHighlight == null) {
-              this.departmentsHighlight = new Array(dept['Department ID']);
-            } else if (!this.departmentsHighlight.includes(dept['Department ID'])) {
-              if (dept['Department ID'] in this.departments) {
-                this.departmentsHighlight.push(dept['Department ID']);
+      apiRequest('GET', '/member/' + uid + '/staff_membership')
+        .then((concomResp) => {
+          const result = JSON.parse(concomResp.responseText);
+          response.ConCom = result.data;
+
+          if (response.ConCom && response.ConCom.length > 0) {
+            userLookup.markFailure();
+            this.lookupMessage = this.volunteerName + ' is on ConCom (' + uid + ')';
+            this.lookupError = true;
+            this.departmentsHighlight = null;
+            this.member = null;
+            hideSpinner();
+          } else {
+            userLookup.clearFailure();
+            userLookup.set(uid);
+            this.lookupMessage = this.volunteerName + ' (' + uid + ')';
+            this.lookupError = false;
+            this.departmentsHighlight = null;
+            this.member = uid;
+
+            apiRequest('GET', '/member/' + uid + '/volunteer/hours')
+              .then((volResponse) => {
+                const result = JSON.parse(volResponse.responseText);
+                this.history = result.data;
+                this.checkHours();
+              })
+              .finally(() => {
+                hideSpinner();
+              });
+
+            /* TODO: Fix me
+            if ('volunteer' in response) {
+              for (var i = 0, len = response.volunteer.length; i < len; i++) {
+                var dept = response.volunteer[i];
+                if (this.departmentsHighlight == null) {
+                  this.departmentsHighlight = new Array(dept['Department ID']);
+                } else if (!this.departmentsHighlight.includes(dept['Department ID'])) {
+                  if (dept['Department ID'] in this.departments) {
+                    this.departmentsHighlight.push(dept['Department ID']);
+                  }
+                }
               }
             }
+            */
           }
-        }
-        */
-        if ('volunteer' in response) {
-          this.volPast = response.volunteer;
-          this.checkHours();
-        }
-      }
+        })
     },
     onFail(userLookup, target, resp, name, code) {
       userLookup.markFailure();
@@ -229,6 +246,7 @@ var volApp = Vue.createApp({
         this.lookupMessage = name + ' invalid name lookup. (' + code + ')';
         this.lookupError = true;
       }
+      hideSpinner();
     },
     formatTime(time) {
       var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday',
@@ -260,7 +278,7 @@ var volApp = Vue.createApp({
       this.timeInvalid = false;
       this.message = null;
 
-      if (this.volPast && this.volPast.length) {
+      if (this.history && this.history.length) {
         var hours = Number(this.actualHours);
         var mins  = Number(this.actualMinutes);
 
@@ -269,20 +287,20 @@ var volApp = Vue.createApp({
         newBegin.setHours(newBegin.getHours() - hours);
         newBegin.setMinutes(newBegin.getMinutes() - mins);
 
-        for (var i = 0; i < this.volPast.length; i++) {
-          var _shift = this.volPast[i];
-          var _end = new Date(_shift['End Date Time']);
-          var _begin = new Date(_shift['End Date Time']);
-          _begin.setHours(_begin.getHours() - Math.floor(_shift['Actual Hours']));
+        for (var i = 0; i < this.history.length; i++) {
+          var _shift = this.history[i];
+          var _end = new Date(_shift.end);
+          var _begin = new Date(_shift.end);
+          _begin.setHours(_begin.getHours() - Math.floor(_shift.hours));
           _begin.setMinutes(_begin.getMinutes() -
-            Math.floor((_shift['Actual Hours'] % 1) * 60));
+            Math.floor((_shift.hours % 1) * 60));
 
           var  gBegin = (newBegin > _begin) ? newBegin : _begin;
           var  lEnd = (newEnd < _end) ? newEnd : _end;
 
           if (gBegin < lEnd) {
             this.timeInvalid = true;
-            this.message = 'Overlapping with ' + _shift['Department Worked'] +
+            this.message = 'Overlapping with ' + _shift.department.name +
                            ' ( ' + this.formatTime(_begin) + ' - ' + this.formatTime(_end) + ' ) ';
             break;
           }
