@@ -68,9 +68,8 @@ class ListRewards extends BaseReward
 
         foreach ($data as $index => $entry) {
             $data[$index]['claimed'] = $this->getClaimed($entry['id']);
-            $data[$index]['inventory'] = intval($entry['inventory']) - $data[$index]['claimed'];
             if (!$soldout) {
-                if ($data[$index]['inventory'] <= 0) {
+                if ($data[$index]['inventory'] == 0 || $data[$index]['claimed'] >= $data[$index]['inventory']) {
                     unset($data[$index]);
                 }
             }

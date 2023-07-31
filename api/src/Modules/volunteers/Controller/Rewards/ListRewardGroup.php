@@ -6,8 +6,8 @@
 /**
  *  @OA\Get(
  *      tags={"volunteers"},
- *      path="/volunteers/rewards_group/{id}",
- *      summary="Gets volunteer reward group data",
+ *      path="/volunteers/rewards_group/{id}/list",
+ *      summary="Lists the volunteer reward group data",
  *      @OA\Parameter(
  *          description="Id of the reward group.",
  *          in="path",
@@ -19,7 +19,7 @@
  *          response=200,
  *          description="reward data found",
  *          @OA\JsonContent(
- *           ref="#/components/schemas/volunteer_reward_group"
+ *           ref="#/components/schemas/volunteer_reward_group_prize_list"
  *          )
  *      ),
  *      @OA\Response(
@@ -42,7 +42,7 @@ use App\Controller\NotFoundException;
 use Atlas\Query\Select;
 use App\Controller\BaseController;
 
-class GetRewardGroup extends BaseRewardGroup
+class ListRewardGroup extends BaseRewardGroup
 {
 
 
@@ -58,12 +58,24 @@ class GetRewardGroup extends BaseRewardGroup
             throw new NotFoundException('Reward group not found');
         }
 
+        $data = Select::new($this->container->db)
+            ->columns(...BaseReward::selectMapping())
+            ->from('VolunteerRewards')
+            ->whereEquals(['RewardGroupID' => $params['id']])
+            ->fetchAll();
+
+        foreach ($data as $index => $entry) {
+            $data[$index]['claimed'] = $this->getClaimed($entry['id']);
+            $data[$index]['inventory'] = intval($entry['inventory']) - $data[$index]['claimed'];
+        }
+
         return [
-        \App\Controller\BaseController::RESOURCE_TYPE,
-        $output];
+        \App\Controller\BaseController::LIST_TYPE,
+        $data,
+        array('type' => 'volunteer_reward_group_prize_list')];
 
     }
 
 
-    /* end GetRewardGroup */
+    /* end ListRewardGroup */
 }

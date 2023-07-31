@@ -1,5 +1,5 @@
 /* jshint esversion: 6 */
-/* globals apiRequest, showSpinner, hideSpinner, userId */
+/* globals apiRequest, showSpinner, hideSpinner */
 
 export default {
   props: {
@@ -15,11 +15,10 @@ export default {
       type: String,
       default: null
     },
-    uid: {
-      type: String,
-      default: null
-    }
   },
+  emits: [
+    'hourChange'
+  ],
   mounted() {
     showSpinner();
     this.summeryColumns = [
@@ -34,11 +33,6 @@ export default {
       {value:'hours', title:'Hours', source: this.hours}
     ];
 
-    if (this.uid == null && typeof userId !== 'undefined') {
-      this.user = userId;
-    } else {
-      this.user = this.uid;
-    }
     apiRequest('GET', '/department','max_results=all')
       .then((response) => {
         const result = JSON.parse(response.responseText);
@@ -49,28 +43,31 @@ export default {
 
         this.departments.sort((a,b) => (a.name > b.name) ? 1 : -1);
 
-        if (this.user != null) {
+        if (this.$parent.userId != null) {
           this.columns = this.detailColumns;
           this.records = this.hours;
-          apiRequest('GET', '/member/' + this.user + '/volunteer/hours','max_results=all')
+          apiRequest('GET', '/member/' + this.$parent.userId + '/volunteer/hours','max_results=all')
             .then((response) => {
               const result = JSON.parse(response.responseText);
               result.data.forEach((entry) => {
                 this.hours.push(entry);
               })
               this.hours.sort((a,b) => (a.department.name > b.department.name) ? 1 : -1);
-              if (this.footer) {
-                this.totalHours = result.total_hours;
-                apiRequest('GET', '/member/' + this.user + '/volunteer/claims/summary','max_results=all')
+              this.totalSpentHours = 0;
+              this.totalHours = result.total_hours;
+              if (this.footer && this.$parent.userId != null) {
+                apiRequest('GET', '/member/' + this.$parent.userId + '/volunteer/claims/summary','max_results=all')
                   .then((response) => {
                     const result = JSON.parse(response.responseText);
                     this.totalSpentHours = result.spent_hours;
                   })
                   .finally(() => {
                     hideSpinner();
+                    this.$emit('hourChange', this.totalHours, this.totalSpentHours);
                   })
               } else {
                 hideSpinner();
+                this.$emit('hourChange', this.totalHours, this.totalSpentHours);
               }
             })
         } else {
@@ -103,7 +100,6 @@ export default {
   },
   data() {
     return {
-      user: null,
       columns: null,
       departments: null,
       records: null,
@@ -117,8 +113,7 @@ export default {
     /*eslint no-unused-vars: ["error", { "argsIgnorePattern": "^_" }]*/
     clicked(_record) {},
     printHours(value) {
-      var min = Math.floor((value - Math.floor(value)) * 60);
-      return Math.floor(value).toLocaleString('en-US') + ' Hours ' + min + ' Minutes ';
+      return this.$parent.printHours(value);
     },
     printNumber(value) {
       return parseInt(value).toLocaleString('en-US');
@@ -137,10 +132,18 @@ export default {
 
       if (this.records == this.departments) {
         if (record['id'] in this.hours) {
-          return this.hours[record['id']][column.value];
+          if (column.value == 'total_hours' || column.value == 'hours') {
+            return this.printHours(this.hours[record['id']][column.value]);
+          } else {
+            return this.hours[record['id']][column.value];
+          }
         }
       } else {
-        return record[column.value];
+        if (column.value == 'total_hours' || column.value == 'hours') {
+          return this.printHours(record[column.value]);
+        } else {
+          return record[column.value];
+        }
       }
 
       return 0;

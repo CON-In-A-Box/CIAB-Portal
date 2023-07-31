@@ -6,7 +6,8 @@
 /* jshint -W097 */
 /* globals alertbox */
 /* exported escapeHtml, showSpinner, hideSpinner, urlsafeB64Encode,
-            urlsafeB64Decode, basicBackendRequest, apiRequest, apiRefresh */
+            urlsafeB64Decode, basicBackendRequest, apiRequest, apiRefresh,
+            simpleObjectToRequest */
 
 'use strict';
 
@@ -20,6 +21,12 @@ function escapeHtml(text) {
   };
 
   return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+}
+
+function simpleObjectToRequest(obj) {
+  return Object.entries(obj)
+    .map(([key, value]) => (`${key}=${value}`))
+    .join('&');
 }
 
 function showSpinner() {

@@ -19,12 +19,38 @@
  *          property="reward_limit",
  *          type="integer",
  *          description="Number of items allowed from the group."
+ *      )
+ *  )
+ *
+ *
+ *  @OA\Schema(
+ *      schema="volunteer_reward_group_prize_list",
+ *      @OA\Property(
+ *          property="type",
+ *          type="string",
+ *          enum={"volunteer_reward_group_prize_list"}
  *      ),
  *      @OA\Property(
- *          property="rewards",
+ *          property="data",
  *          description="Items in the group.",
  *          @OA\Schema(
  *              ref="#/components/schemas/volunteer_reward_entry_list"
+ *          )
+ *      )
+ *  )
+ *
+ *  @OA\Schema(
+ *      schema="volunteer_reward_group_list",
+ *      @OA\Property(
+ *          property="type",
+ *          type="string",
+ *          enum={"volunteer_reward_group_list"}
+ *      ),
+ *      @OA\Property(
+ *          property="data",
+ *          description="Items in the group.",
+ *          @OA\Schema(
+ *              ref="#/components/schemas/volunteer_reward_group"
  *          )
  *      )
  *  )

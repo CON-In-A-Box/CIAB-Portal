@@ -108,14 +108,26 @@
 
 .VOL-gift-group-select {
     @extend .w3-col;
-    @extend .w3-threequarter;
+    @extend .w3-half;
     @extend .UI-padding;
 }
 
 .VOL-gift-group-max {
     @extend .w3-col;
-    @extend .w3-quarter;
+    @extend .w3-half;
     @extend .UI-padding;
+}
+
+.VOL-gift-group-max-label {
+    @extend .w3-col;
+    @extend .w3-half;
+    @extend .UI-padding;
+}
+
+.VOL-gift-group-max-input {
+    @extend .UI-input;
+    @extend .w3-col;
+    @extend .w3-half;
 }
 
 .VOL-return-hours {

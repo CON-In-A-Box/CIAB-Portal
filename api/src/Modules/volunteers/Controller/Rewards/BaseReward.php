@@ -74,6 +74,7 @@ namespace App\Modules\volunteers\Controller\Rewards;
 
 use Slim\Container;
 use App\Controller\BaseController;
+use App\Controller\IncludeResource;
 use Atlas\Query\Select;
 
 abstract class BaseReward extends BaseController
@@ -95,15 +96,20 @@ abstract class BaseReward extends BaseController
     {
         parent::__construct('volunteer_reward', $container);
 
+        $this->includes = [
+        new IncludeResource('\App\Modules\volunteers\Controller\Rewards\GetRewardGroup', 'id', 'reward_group')
+        ];
+
     }
 
 
     protected function getClaimed($id)
     {
         $data = Select::new($this->container->db)
-            ->columns('COUNT(DISTINCT PrizeID) AS claimed')
+            ->columns('COUNT(PrizeID) AS claimed')
             ->from('HourRedemptions')
-            ->whereEquals(['PrizeID', $id])
+            ->whereEquals(['PrizeID' => $id])
+            ->groupBy('PrizeID')
             ->fetchOne();
         return intval($data['claimed']);
 
