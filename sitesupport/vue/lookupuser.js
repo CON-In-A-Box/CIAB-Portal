@@ -26,12 +26,12 @@ export default {
       type:String,
       default: 'lookupId'
     },
-    lookupTarget: String,
-    initialId: String,
+    lookupTarget: [String, Function],
+    initialId: [String, Function],
 
-    onHandler: String,
-    onSuccess: String,
-    onFail: String,
+    onHandler: [String, Function],
+    onSuccess: [String, Function],
+    onFail: [String, Function],
   },
   emits: [
     'prelookup'
@@ -80,6 +80,7 @@ export default {
       }
     },
     gotoTarget(item) {
+      this.id = item.id;
       this.possibleMembers = null;
       this.$emit('handler', this, item);
       if (this.$props && this.$props.onHandler) { return; }
@@ -189,12 +190,8 @@ export default {
         }
       }
     },
-    handleKeydown(event) {
+    handleKeydown() {
       this.possibleMembers = null;
-      if (event.keyCode == 13) {
-        this.lookupId();
-        return false;
-      }
       return true;
     },
     handleBarcodeClick() {
