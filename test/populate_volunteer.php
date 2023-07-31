@@ -2,7 +2,6 @@
 
 require_once(__DIR__."/../functions/functions.inc");
 require_once(__DIR__."/../functions/database.inc");
-require_once(__DIR__."/../modules/volunteers/functions/volunteer.inc");
 
 
 function random_user_id()
@@ -61,6 +60,52 @@ function clean()
 }
 
 
+function record_volunteer_hours(
+    $id,
+    $hours,
+    $end,
+    $modifier,
+    $department,
+    $enterer,
+    $authorized,
+    $event = null
+) {
+    if ($event === null) {
+        /* Convention ... assume most recent one */
+        $event = current_eventID();
+    }
+
+    /* Get the department id from name if it is a name */
+    if (!is_int($department)) {
+        $sql = "SELECT DepartmentID FROM Departments WHERE Name = '$department';";
+        $result = DB::run($sql);
+        $value = $result->fetch();
+        if ($value) {
+            $departmentID = $value['DepartmentID'];
+        } else {
+            $departmentID = 0;
+        }
+    } else {
+        $departmentID = $department;
+    }
+
+    $sql = <<<SQL
+        INSERT INTO VolunteerHours
+            (AccountID, ActualHours, EndDateTime, TimeModifier,
+             DepartmentID, EnteredByID, AuthorizedByID, EventID)
+        VALUES ($id, $hours, '$end', $modifier, $departmentID, $enterer,
+                $authorized, $event);
+SQL;
+
+    $result = DB::run($sql);
+    if ($result === false) {
+        return PDO::errorInfo();
+    }
+    return null;
+
+}
+
+
 function populate_vol()
 {
     print "Populate Hours\n";
@@ -79,6 +124,57 @@ function populate_vol()
         $end = date("Y-m-d H:i:s");
         record_volunteer_hours($id, $hours, $end, $modifier, $department, $enterer, $authorized);
     }
+
+}
+
+
+function add_volunteer_prize_group($limit = 1)
+{
+    $sql = "INSERT INTO `RewardGroup` (RedeemLimit) VALUES($limit);";
+    $result = DB::run($sql);
+
+    $sql = "SELECT RewardGroupID FROM `RewardGroup` ORDER BY RewardGroupID DESC LIMIT 1;";
+    $result = DB::run($sql);
+    $value = $result->fetch();
+    return $value['RewardGroupID'];
+
+}
+
+
+function update_volunteer_prize_group($group_id, $limit)
+{
+    $sql = <<<SQL
+        UPDATE `RewardGroup`
+        SET RedeemLimit = $limit
+        WHERE RewardGroupID = $group_id;
+SQL;
+    DB::run($sql);
+
+}
+
+
+function new_volunteer_prize(
+    $name,
+    $value,
+    $promo,
+    $group,
+    $total
+) {
+    if ($promo) {
+        $promo = 1;
+    } else {
+        $promo = 0;
+    }
+    if ($group == null || $group == '') {
+        $group = 'NULL';
+    }
+    $name = MyPDO::quote($name);
+    $sql = <<<SQL
+            INSERT INTO `VolunteerRewards`
+                (Name, Value, Promo, RewardGroupID, TotalInventory)
+            VALUES ($name, $value, $promo, $group, $total);
+SQL;
+    DB::run($sql);
 
 }
 
@@ -143,6 +239,29 @@ function populate_prizes()
         }
         new_volunteer_prize($name, $value, $promo, $group, $inventory);
     }
+
+}
+
+
+function award_prizes($id, $prizes, $event = null)
+{
+    if ($event === null) {
+        $event = current_eventID();
+    }
+
+    $sql = <<<SQL
+        INSERT INTO HourRedemptions
+            (AccountID, PrizeID, EventID)
+            VALUES
+SQL;
+    $stmt = [];
+    foreach ($prizes as $prize) {
+        $stmt[] = " ($id, $prize, $event)";
+    }
+    $sql .= implode(',', $stmt);
+    $sql .= ";";
+    DB::run($sql);
+    return true;
 
 }
 
