@@ -32,6 +32,7 @@ $vol_DB_tables = [
 'PrizeID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
 'Name' => 'VARCHAR(50) NOT NULL',
 'Promo' => 'BOOLEAN',
+'Retired' => 'BOOLEAN',
 'RewardGroupID' => 'INT UNSIGNED',
 'TotalInventory' => 'INT NOT NULL',
 'Value' => 'DECIMAL(5,2) NOT NULL',
