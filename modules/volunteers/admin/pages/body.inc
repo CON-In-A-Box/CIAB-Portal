@@ -53,7 +53,10 @@ echo "</script>\n";
 <div id="main_content">
   <div style="height:94vh;" :class="[isAdmin? 'UI-adminborder': '', 'VOL-main']">
     <div :class='[isAdmin ? "UI-admin-sectionbar" : "UI-event-sectionbar"]'>
-        <span>Volunteer Administration</span>
+            Volunteer Administration<span v-if="userData"> ({{userData.first_name}}  {{userData.last_name}})</span>
+        <div class="VOL-clear-member">
+            <button v-if="userData" class='UI-redbutton' @click="clearMember">Clear Member</button>
+        </div>
     </div>
 
 <div class="UI-rest UI-center">
@@ -74,7 +77,7 @@ if (isset($_SESSION['IS_ADMIN']) || $_SESSION['IS_VOLUNTEERS']) {
             if ($admin_mode) {
                 echo "checked";
             }
-            ?> onclick='toggleAdminMode();'>
+            ?> @click="toggleAdminMode">
               <div class=slider></div>
             </label>
           </div>
@@ -90,7 +93,7 @@ if (isset($_SESSION['IS_ADMIN']) || $_SESSION['IS_VOLUNTEERS']) {
 ?>
 
   <div id=user-lookup>
-    <lookup-user message='Volunteer Badge Number, E-Mail or Full Name' url-tag='volunteerId'> </lookup-user>
+    <lookup-user ref='lookup' message='Volunteer Badge Number, E-Mail or Full Name' @handler='handleLookup'> </lookup-user>
   </div>
 </div>
 
@@ -120,6 +123,8 @@ if (isset($_SESSION['IS_ADMIN']) || $_SESSION['IS_VOLUNTEERS']) {
       <button v-else id='promo_check' class='UI-redbutton' @click="$refs.chkout.addPromoToCheckout($refs.gfttbl.getUnclaimed())">Claim item</button>
    </div>
 </div>
+
+<div v-else class="VOL-messages-div"> </div>
 
 <div v-if="isAdmin" class='VOL-admin' style='max-height:10vh; overflow:scroll;'>
     <div id='volunteer_admin_bar' class='VOL-admin-bar'>
