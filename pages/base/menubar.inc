@@ -147,5 +147,16 @@ echo build_menus($base_menus, $base_styles);
     </div><!--close main_nav_list div-->
   </div><!--close main_nav div-->
 </div>
-<br />
-<br />
+
+<div id="bar-spacer" class="UI-main-bar-spacer">
+    &nbsp;
+</div>
+
+<script>
+    const h = parseInt(document.getElementById('main_nav').offsetHeight);
+    document.getElementById('bar-spacer').style.height = h + 10 + 'px';
+    new ResizeObserver(function() {
+        const h = parseInt(document.getElementById('main_nav').offsetHeight);
+        document.getElementById('bar-spacer').style.height = h + 10 + 'px';
+    }).observe(main_nav);
+</script>
