@@ -16,6 +16,11 @@
  *                      property="reward_limit",
  *                      type="integer",
  *                      description="Number of items allowed from the group."
+ *                  ),
+ *                  @OA\Property(
+ *                      property="name",
+ *                      type="string",
+ *                      description="Optional name of the group."
  *                  )
  *              )
  *          )
@@ -64,9 +69,8 @@ class PostRewardGroup extends BaseRewardGroup
         $data = $target->buildResource($request, $response, ['id' => $id]);
 
         return [
-        \App\Controller\BaseController::LIST_TYPE,
+        \App\Controller\BaseController::RESOURCE_TYPE,
         $data[1],
-        $data[2],
         201
         ];
 
