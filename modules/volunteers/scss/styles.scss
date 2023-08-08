@@ -254,3 +254,8 @@
     @extend .UI-right;
     font-size:0.5em!important;
 }
+
+.VOL-prize-name-box {
+    @extend .UI-modal;
+    display: inline;
+}

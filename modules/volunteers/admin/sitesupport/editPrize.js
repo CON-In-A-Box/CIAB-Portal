@@ -1,6 +1,8 @@
 /* jshint esversion: 6 */
 /* globals  apiRequest, showSidebar, confirmbox, simpleObjectToRequest */
 
+const NEW_GROUP = -2;
+
 export default {
   data() {
     return {
@@ -14,9 +16,10 @@ export default {
         promo: null,
         group: null,
       },
-      reward_groups: [],
       reward_group: -1,
       reward_limit: null,
+      reward_name: '',
+      isEditingPrizeName: false,
     }
   },
   methods: {
@@ -28,8 +31,6 @@ export default {
         /* deep copy */
         this.record = JSON.parse(JSON.stringify(record));
       }
-
-      this.reward_groups = this.$parent.reward_groups;
 
       if (this.record) {
         if (this.record.reward_group) {
@@ -43,6 +44,7 @@ export default {
         this.reward_group = -1;
       }
       showSidebar('edit_prize_div');
+      this.updateGroup();
     },
     deletePrize() {
       let warning = `
@@ -86,25 +88,59 @@ export default {
         method = 'POST';
       }
       confirmbox('Please! double check entries!', message).then(() => {
-        apiRequest(method, '/volunteer/rewards' + tail, simpleObjectToRequest(item))
-          .then(() => { location.reload();
-          });
+        if (this.reward_group === NEW_GROUP) {
+          let params = [];
+          params.push('reward_limit=' + this.reward_limit);
+          if (this.reward_name) {
+            params.push('name=' + this.reward_name);
+          }
+          apiRequest('POST', '/volunteer/reward_group', params.join('&'))
+            .then((response) => {
+              const data = JSON.parse(response.responseText);
+              item.reward_group = data.id;
+              apiRequest(method, '/volunteer/rewards' + tail, simpleObjectToRequest(item))
+                .then(() => { location.reload(); });
+            });
+        } else {
+          if (this.reward_group > -1 && (
+            (this.reward_limit !== this.$parent.reward_groups[this.reward_group].reward_limit) ||
+            (this.reward_name && this.reward_name !== this.$parent.reward_groups[this.reward_group].name)
+          ))
+          {
+            let params = [];
+            if (this.reward_limit !== this.$parent.reward_groups[this.reward_group].reward_limit) {
+              params.push('reward_limit=' + this.reward_limit);
+            }
+            if (this.reward_name !== this.$parent.reward_groups[this.reward_group].name) {
+              if (this.reward_name) {
+                params.push('name=' + this.reward_name);
+              }
+            }
+            apiRequest('PUT', '/volunteer/reward_group/' + this.reward_group, params.join('&'))
+              .then(() => {
+                apiRequest(method, '/volunteer/rewards' + tail, simpleObjectToRequest(item))
+                  .then(() => { location.reload(); });
+              });
+          } else {
+            apiRequest(method, '/volunteer/rewards' + tail, simpleObjectToRequest(item))
+              .then(() => { location.reload(); });
+          }
+        }
       });
     },
     updateGroup() {
-      var found = false;
-      this.reward_groups.every((entry) => {
-        if (entry.id == this.reward_group) {
-          found = true;
-          this.reward_limit = entry.reward_limit;
-          return false;
+      this.reward_name = '';
+      if (this.reward_group === NEW_GROUP) {
+        this.reward_limit = 1;
+      } else {
+        if (this.$parent.reward_groups[this.reward_group]) {
+          this.reward_limit = this.$parent.reward_groups[this.reward_group].reward_limit;
+          this.reward_name = this.$parent.reward_groups[this.reward_group].name;
+        } else {
+          this.reward_limit = -1;
         }
-        return true;
-      });
-      if (!found) {
-        this.reward_limit = -1;
       }
-    },
+    }
   },
   template: `
   <div class='UI-sidebar-hidden' id='edit_prize_div'>
@@ -146,14 +182,28 @@ export default {
               <div class='VOL-gift-group-select'>
                   <select class="UI-select" id="edit_prize_group" v-model="reward_group" @change="updateGroup">
                     <option value='-1'>&lt;none&gt;</option>
-                    <option v-for="g in reward_groups" :value="g.id">
-                      Group #{{g.id}}
+                    <template v-for="g in $parent.reward_groups">
+                      <option v-if="g" :value="g.id">
+                        <template v-if="g.id == reward_group">
+                          <span v-if="reward_name">{{reward_name}}: {{g.count}} items</span>
+                          <span v-else>#{{g.id}}: {{g.count}} items</span>
+                        </template>
+                        <template v-else>
+                          <span v-if="g.name">{{g.name}}: {{g.count}} items</span>
+                          <span v-else>#{{g.id}}: {{g.count}} items</span>
+                        </template>
+                      </option>
+                    </template>
+                    <option value=-2>
+                      <span v-if="reward_group === -2 && reward_name">NEW: {{reward_name}}</span>
+                      <span v-else>&lt;New&gt;</span>
                     </option>
                   </select>
+                  <button class="UI-eventbutton" @click="isEditingPrizeName=true;"><i class="fas fa-edit w3-right"></i></button>
               </div>
               <div v-if="reward_group != -1" class='VOL-gift-group-max'>
                   <label class='UI-label VOL-gift-group-max-label' for='edit_prize_group_count'>Limit:</label>
-                  <input class="VOL-gift-group-max-input" id="edit_prize_group_count" placeholder="max"
+                  <input type=number class="VOL-gift-group-max-input" id="edit_prize_group_count" placeholder="max"
                   v-model="reward_limit">
               </div>
           </div>
@@ -176,6 +226,20 @@ export default {
              Cancel
           </button>
       </div>
+  </div>
+
+  <div class="VOL-prize-name-box" v-show="isEditingPrizeName">
+    <div class="UI-modal-content UI-container">
+      <div class='UI-container UI-padding'>
+        <h2 class="UI-red UI-center">Rename Gift Group</h2>
+      </div>
+      <div class='UI-container UI-padding'>
+        <input class="UI-input" v-model="reward_name">
+      </div>
+      <div class='UI-container UI-padding'>
+        <button class='UI-eventbutton' @click="isEditingPrizeName=false">Done</button>
+      </div>
+    </div>
   </div>
   `
 }
