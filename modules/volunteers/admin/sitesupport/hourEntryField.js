@@ -3,7 +3,7 @@
 
 export default {
   props: {
-    modelValue: String
+    modelValue: [String, Number]
   },
   emits: [
     'update:modelValue',
