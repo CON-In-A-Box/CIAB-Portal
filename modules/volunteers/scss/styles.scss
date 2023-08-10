@@ -232,3 +232,25 @@
     @extend .w3-left;
     @extend .UI-padding;
 }
+
+.VOL-prize-sold-out {
+    @extend .w3-left;
+    @extend .UI-quarter;
+    font-size:0.5em!important;
+}
+
+.VOL-prize-header {
+    @extend .UI-center;
+    @extend .UI-half;
+}
+
+.VOL-prize-return-header {
+    @extend .w3-right;
+    @extend .UI-rest;
+    font-size:0.5em!important;
+}
+
+.VOL-clear-member {
+    @extend .UI-right;
+    font-size:0.5em!important;
+}

@@ -1,5 +1,5 @@
 /* jshint esversion: 6 */
-/* globals Vue, apiRequest, adminMode */
+/* globals Vue, apiRequest, adminMode, checkAuthentication, userEmail, alertbox */
 
 import lookupUser from '../../../../sitesupport/vue/lookupuser.js'
 import hourTable from '../../sitesupport/hourTable.js'
@@ -30,12 +30,17 @@ var app = Vue.createApp({
       isAdmin: false,
       userId: null,
       reward_groups: null,
+      userData: null,
     }
   },
   created() {
     const searchParams = new URLSearchParams(window.location.search);
     if (searchParams.has('volunteerId')) {
       this.userId = searchParams.get('volunteerId');
+      apiRequest('GET','/member/' + this.userId)
+        .then((response) => {
+          this.userData = JSON.parse(response.responseText);
+        });
     }
     this.isAdmin = adminMode;
     this.reloadPrizeGroups();
@@ -61,6 +66,50 @@ var app = Vue.createApp({
           const data = JSON.parse(response.responseText);
           this.reward_groups = data.data;
         })
+    },
+    clearMember() {
+      this.userId = null;
+      this.userData = null;
+      this.$refs.vhtbl.load();
+      this.$refs.gfttbl.load();
+      this.$refs.lookup.clear();
+    },
+    enterAdmin() {
+      const searchParams = new URLSearchParams('Function=volunteers/admin');
+      if (this.userId) {
+        searchParams.append('volunteerId',this.userId);
+      }
+      const target = `index.php?${searchParams.toString()}`;
+      setTimeout(function() {window.location = target;}, 1000);
+    },
+    failAdmin(error) {
+      document.getElementById('admin_slider').checked = false;
+      if (error) {
+        alertbox('Login Failed (' + error + ')');
+      }
+    },
+    toggleAdminMode() {
+      document.cookie = 'CIAB_VOLUNTEERADMIN=;expires=Thu, 01 Jan 1970 ' +
+                        '00:00:01 GMT;';
+
+      const searchParams = new URLSearchParams('Function=volunteers/admin');
+      if (this.userId) {
+        searchParams.append('volunteerId',this.userId);
+      }
+      const target = `index.php?${searchParams.toString()}`;
+
+      if (!adminMode) {
+        checkAuthentication(userEmail, this.enterAdmin, this.failAdmin,
+          {target: 'volunteers/admin'});
+      } else {
+        setTimeout(function() {window.location = target;}, 1000);
+      }
+    },
+    handleLookup(_, item) {
+      this.userId = item.id;
+      this.userData = item;
+      this.$refs.vhtbl.load();
+      this.$refs.gfttbl.load();
     }
   }
 });
