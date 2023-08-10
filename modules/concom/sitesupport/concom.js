@@ -319,7 +319,7 @@ function processSaveEmail() {
   };
   if (document.getElementById('email_alias').value === null ||
       document.getElementById('email_alias').value === '' ||
-      typeof document.getElementById('email_alias').value == undefined) {
+      typeof document.getElementById('email_alias').value == 'undefined') {
     data.Alias = 'NULL';
   }
 
