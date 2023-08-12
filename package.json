@@ -4,9 +4,11 @@
   "devDependencies": {
     "eslint": "^7.32.0",
     "eslint-plugin-lodash": ">=1.10.1",
-    "eslint-plugin-node": ">=2.0.0"
+    "eslint-plugin-node": ">=2.0.0",
+    "jest": "^29.6.2"
   },
   "scripts": {
-    "lint": "node_modules/eslint/bin/eslint.js ."
+    "lint": "node_modules/eslint/bin/eslint.js .",
+    "test": "jest"
   }
 }
