@@ -90,6 +90,7 @@ module.exports = {
                "console/vue.js",
                "modules/concom/report/sitesupport/vue.js",
                "modules/concom/sitesupport/vue.js",
+               "modules/concom/sitesupport/division-parser.js",
                "modules/event/report/sitesupport/vue.js",
                "modules/registration/sitesupport/badgeMenuPane.js" ,
                "modules/registration/sitesupport/vue.js",
@@ -102,7 +103,9 @@ module.exports = {
                "modules/volunteers/enter/sitesupport/*.js",
                "modules/volunteers/sitesupport/hourTable.js",
                "modules/volunteers/report/sitesupport/hourReport.js",
-               "modules/volunteers/report/sitesupport/volunteerReport.js"],
+               "modules/volunteers/report/sitesupport/volunteerReport.js",
+               "test/sitesupport/modules/staff/__tests__/*.js"
+              ],
       parserOptions: { sourceType: "module" },
     }
   ]

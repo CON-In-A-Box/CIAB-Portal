@@ -1,0 +1,645 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Staff Division Parser can parse the division hierarchy 1`] = `
+[
+  {
+    "departments": [
+      {
+        "email": [
+          "activities@test-con.org",
+        ],
+        "id": "1",
+        "name": "Activities",
+      },
+      {
+        "email": [
+          "bookswap@test-con.org",
+        ],
+        "id": "105",
+        "name": "Book Swap",
+        "parent_name": "Activities",
+      },
+      {
+        "email": [
+          "sandbox@test-con.org",
+        ],
+        "id": "110",
+        "name": "Connies Quantum Sandbox",
+        "parent_name": "Activities",
+      },
+      {
+        "email": [
+          "exhibits@test-con.org",
+        ],
+        "id": "117",
+        "name": "Exhibits",
+        "parent_name": "Activities",
+      },
+      {
+        "email": [
+          "gaming@test-con.org",
+        ],
+        "id": "121",
+        "name": "Gaming",
+        "parent_name": "Activities",
+      },
+      {
+        "email": [
+          "pros@test-con.org",
+        ],
+        "id": "126",
+        "name": "Invited Participants",
+        "parent_name": "Activities",
+      },
+      {
+        "email": [
+          "programming@test-con.org",
+        ],
+        "id": "140",
+        "name": "Programming",
+        "parent_name": "Activities",
+      },
+      {
+        "email": [
+          "teens@test-con.org",
+        ],
+        "id": "149",
+        "name": "Teen Room",
+        "parent_name": "Activities",
+      },
+      {
+        "email": [],
+        "id": "160",
+        "name": "Spoken Word",
+        "parent_name": "Activities",
+      },
+    ],
+    "email": [
+      "activities@test-con.org",
+    ],
+    "id": "1",
+    "name": "Activities",
+  },
+  {
+    "departments": [
+      {
+        "email": [
+          "administration@test-con.org",
+        ],
+        "id": "2",
+        "name": "Administration",
+      },
+      {
+        "email": [
+          "archives@test-con.org",
+        ],
+        "id": "102",
+        "name": "Archives",
+        "parent_name": "Administration",
+      },
+      {
+        "email": [
+          "artshow@test-con.org",
+        ],
+        "id": "104",
+        "name": "Art Show",
+        "parent_name": "Administration",
+      },
+      {
+        "email": [
+          "guests@test-con.org",
+        ],
+        "id": "123",
+        "name": "Guests of Honor",
+        "parent_name": "Administration",
+      },
+      {
+        "email": [
+          "merchandise@test-con.org",
+        ],
+        "id": "133",
+        "name": "Merchandise",
+        "parent_name": "Administration",
+      },
+      {
+        "email": [
+          "partners@test-con.org",
+        ],
+        "id": "136",
+        "name": "Partner Management",
+        "parent_name": "Administration",
+      },
+      {
+        "email": [
+          "registration@test-con.org",
+        ],
+        "id": "142",
+        "name": "Registration",
+        "parent_name": "Administration",
+      },
+      {
+        "email": [
+          "volunteers@test-con.org",
+        ],
+        "id": "156",
+        "name": "Volunteers",
+        "parent_name": "Administration",
+      },
+    ],
+    "email": [
+      "administration@test-con.org",
+    ],
+    "id": "2",
+    "name": "Administration",
+  },
+  {
+    "departments": [
+      {
+        "email": [
+          "erac@test-con.org",
+        ],
+        "id": "3",
+        "name": "External Relations and Communications",
+      },
+      {
+        "email": [
+          "asl@test-con.org",
+          "accessibility@test-con.org",
+        ],
+        "id": "100",
+        "name": "Accessibility and Inclusion",
+        "parent_name": "External Relations and Communications",
+      },
+      {
+        "email": [
+          "artistalley@test-con.org",
+        ],
+        "id": "103",
+        "name": "Artist Alley",
+        "parent_name": "External Relations and Communications",
+      },
+      {
+        "email": [
+          "creativeservices@test-con.org",
+        ],
+        "id": "112",
+        "name": "Creative Services",
+        "parent_name": "External Relations and Communications",
+      },
+      {
+        "email": [
+          "dealers@test-con.org",
+        ],
+        "id": "114",
+        "name": "Dealers Room",
+        "parent_name": "External Relations and Communications",
+      },
+      {
+        "email": [
+          "photography@test-con.org",
+        ],
+        "id": "138",
+        "name": "Photography",
+        "parent_name": "External Relations and Communications",
+      },
+      {
+        "email": [
+          "publications@test-con.org",
+        ],
+        "id": "141",
+        "name": "Publications",
+        "parent_name": "External Relations and Communications",
+      },
+      {
+        "email": [
+          "socialmedia@test-con.org",
+        ],
+        "id": "147",
+        "name": "Social Media",
+        "parent_name": "External Relations and Communications",
+      },
+      {
+        "email": [
+          "webteam@test-con.org",
+        ],
+        "id": "157",
+        "name": "Webteam",
+        "parent_name": "External Relations and Communications",
+      },
+    ],
+    "email": [
+      "erac@test-con.org",
+    ],
+    "id": "3",
+    "name": "External Relations and Communications",
+  },
+  {
+    "departments": [
+      {
+        "email": [
+          "facilities@test-con.org",
+        ],
+        "id": "4",
+        "name": "Facilities",
+      },
+      {
+        "email": [
+          "allocations@test-con.org",
+        ],
+        "id": "101",
+        "name": "Allocations",
+        "parent_name": "Facilities",
+      },
+      {
+        "email": [
+          "decor@test-con.org",
+        ],
+        "id": "115",
+        "name": "Decor",
+        "parent_name": "Facilities",
+      },
+      {
+        "email": [
+          "dock@test-con.org",
+        ],
+        "id": "116",
+        "name": "Dock",
+        "parent_name": "Facilities",
+      },
+      {
+        "email": [
+          "hotel@test-con.org",
+        ],
+        "id": "125",
+        "name": "Hotel",
+        "parent_name": "Facilities",
+      },
+      {
+        "email": [
+          "logistics@test-con.org",
+        ],
+        "id": "128",
+        "name": "Logistics",
+        "parent_name": "Facilities",
+      },
+      {
+        "email": [
+          "childcare@test-con.org",
+        ],
+        "id": "131",
+        "name": "Meeting Childcare",
+        "parent_name": "Facilities",
+      },
+      {
+        "email": [
+          "nerfherders@test-con.org",
+        ],
+        "id": "134",
+        "name": "Nerf Herders",
+        "parent_name": "Facilities",
+      },
+      {
+        "email": [
+          "eventorders@test-con.org",
+        ],
+        "id": "143",
+        "name": "Event Orders",
+        "parent_name": "Facilities",
+      },
+      {
+        "email": [
+          "transportation@test-con.org",
+        ],
+        "id": "151",
+        "name": "Transportation",
+        "parent_name": "Facilities",
+      },
+    ],
+    "email": [
+      "facilities@test-con.org",
+    ],
+    "id": "4",
+    "name": "Facilities",
+  },
+  {
+    "departments": [
+      {
+        "email": [
+          "hospitality@test-con.org",
+        ],
+        "id": "5",
+        "name": "Hospitality",
+      },
+      {
+        "email": [
+          "cof2e2@test-con.org",
+        ],
+        "id": "109",
+        "name": "CoF2E2",
+        "parent_name": "Hospitality",
+      },
+      {
+        "email": [
+          "consuite@test-con.org",
+        ],
+        "id": "111",
+        "name": "ConSuite",
+        "parent_name": "Hospitality",
+      },
+      {
+        "email": [
+          "firstadvisors@test-con.org",
+        ],
+        "id": "119",
+        "name": "First Advisors",
+        "parent_name": "Hospitality",
+      },
+      {
+        "email": [
+          "operations@test-con.org",
+        ],
+        "id": "135",
+        "name": "Operations",
+        "parent_name": "Hospitality",
+      },
+      {
+        "email": [
+          "roomparties@test-con.org",
+        ],
+        "id": "144",
+        "name": "Room Parties",
+        "parent_name": "Hospitality",
+      },
+      {
+        "email": [
+          "smokersparadise@test-con.org",
+        ],
+        "id": "146",
+        "name": "Smokers Paradise",
+        "parent_name": "Hospitality",
+      },
+      {
+        "email": [
+          "spacelounge@test-con.org",
+        ],
+        "id": "148",
+        "name": "Space Lounge",
+        "parent_name": "Hospitality",
+      },
+      {
+        "email": [
+          "volden@test-con.org",
+        ],
+        "id": "155",
+        "name": "Volunteer Den",
+        "parent_name": "Hospitality",
+      },
+    ],
+    "email": [
+      "hospitality@test-con.org",
+    ],
+    "id": "5",
+    "name": "Hospitality",
+  },
+  {
+    "departments": [
+      {
+        "email": [
+          "productions@test-con.org",
+        ],
+        "id": "6",
+        "name": "Productions",
+      },
+      {
+        "email": [
+          "ceremonies@test-con.org",
+        ],
+        "id": "106",
+        "name": "Ceremonies",
+        "parent_name": "Productions",
+      },
+      {
+        "email": [
+          "cinemarex@test-con.org",
+        ],
+        "id": "108",
+        "name": "Cinema Rex",
+        "parent_name": "Productions",
+      },
+      {
+        "email": [
+          "cvgtv@test-con.org",
+        ],
+        "id": "113",
+        "name": "CVG-TV",
+        "parent_name": "Productions",
+      },
+      {
+        "email": [
+          "harmonic@test-con.org",
+        ],
+        "id": "124",
+        "name": "Harmonic Convergence",
+        "parent_name": "Productions",
+      },
+      {
+        "email": [
+          "mainstage@test-con.org",
+        ],
+        "id": "129",
+        "name": "MainStage",
+        "parent_name": "Productions",
+      },
+      {
+        "email": [
+          "masquerade@test-con.org",
+        ],
+        "id": "130",
+        "name": "Masquerade",
+        "parent_name": "Productions",
+      },
+      {
+        "email": [
+          "theaternippon@test-con.org",
+        ],
+        "id": "150",
+        "name": "Theater Nippon",
+        "parent_name": "Productions",
+      },
+      {
+        "email": [
+          "video@test-con.org",
+        ],
+        "id": "154",
+        "name": "Video",
+        "parent_name": "Productions",
+      },
+    ],
+    "email": [
+      "productions@test-con.org",
+    ],
+    "id": "6",
+    "name": "Productions",
+  },
+  {
+    "departments": [
+      {
+        "email": [
+          "systems@test-con.org",
+        ],
+        "id": "7",
+        "name": "Systems",
+      },
+      {
+        "email": [
+          "it@test-con.org",
+        ],
+        "id": "127",
+        "name": "IT",
+        "parent_name": "Systems",
+      },
+    ],
+    "email": [
+      "systems@test-con.org",
+    ],
+    "id": "7",
+    "name": "Systems",
+  },
+  {
+    "departments": [
+      {
+        "email": [
+          "info@test-con.org",
+        ],
+        "id": "8",
+        "name": "Committees",
+      },
+      {
+        "email": [
+          "futurevisioning@test-con.org",
+        ],
+        "id": "120",
+        "name": "Future Visioning",
+        "parent_name": "Committees",
+      },
+      {
+        "email": [
+          "guestsearch@test-con.org",
+        ],
+        "id": "122",
+        "name": "Guest Search",
+        "parent_name": "Committees",
+      },
+      {
+        "email": [
+          "memberadvocates@test-con.org",
+        ],
+        "id": "132",
+        "name": "Member Advocates",
+        "parent_name": "Committees",
+      },
+      {
+        "email": [
+          "partnersearch@test-con.org",
+        ],
+        "id": "137",
+        "name": "Partner Search",
+        "parent_name": "Committees",
+      },
+      {
+        "email": [
+          "youthprogramming@test-con.org",
+        ],
+        "id": "158",
+        "name": "Youth Programming Advisory",
+        "parent_name": "Committees",
+      },
+      {
+        "email": [
+          "transitionteam@test-con.org",
+        ],
+        "id": "159",
+        "name": "Transition Team",
+        "parent_name": "Committees",
+      },
+    ],
+    "email": [
+      "info@test-con.org",
+    ],
+    "id": "8",
+    "name": "Committees",
+  },
+  {
+    "departments": [
+      {
+        "email": [
+          "directors@test-con.org",
+        ],
+        "id": "9",
+        "name": "Corporate Staff",
+      },
+      {
+        "email": [
+          "president@test-con.org",
+        ],
+        "id": "139",
+        "name": "President",
+        "parent_name": "Corporate Staff",
+      },
+      {
+        "email": [
+          "secretary@test-con.org",
+        ],
+        "id": "145",
+        "name": "Secretary",
+        "parent_name": "Corporate Staff",
+      },
+      {
+        "email": [
+          "treasurer@test-con.org",
+        ],
+        "id": "152",
+        "name": "Treasurer",
+        "parent_name": "Corporate Staff",
+      },
+      {
+        "email": [
+          "vicepresident@test-con.org",
+        ],
+        "id": "153",
+        "name": "Vice-President",
+        "parent_name": "Corporate Staff",
+      },
+    ],
+    "email": [
+      "directors@test-con.org",
+    ],
+    "id": "9",
+    "name": "Corporate Staff",
+  },
+  {
+    "departments": [
+      {
+        "email": [
+          "cfo@test-con.org",
+        ],
+        "id": "10",
+        "name": "CFO Staff",
+      },
+      {
+        "email": [
+          "finance@test-con.org",
+        ],
+        "id": "118",
+        "name": "Finance",
+        "parent_name": "CFO Staff",
+      },
+    ],
+    "email": [
+      "cfo@test-con.org",
+    ],
+    "id": "10",
+    "name": "CFO Staff",
+  },
+]
+`;
