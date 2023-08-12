@@ -83,6 +83,12 @@ export default {
           const result = JSON.parse(response.responseText);
           this.records = result.data;
 
+          this.records.forEach((item) => {
+            if (item.reward_group) {
+              this.$parent.reward_groups[item.reward_group.id].count += 1;
+            }
+          });
+
           this.records.sort((a,b) => {
             if (a.value === b.value) {
               return ((a.name > b.name) ? 1 : -1);

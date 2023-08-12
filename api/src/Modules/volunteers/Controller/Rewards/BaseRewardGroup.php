@@ -19,6 +19,11 @@
  *          property="reward_limit",
  *          type="integer",
  *          description="Number of items allowed from the group."
+ *      ),
+ *      @OA\Property(
+ *          property="name",
+ *          type="string",
+ *          description="Optional name of the reward group."
  *      )
  *  )
  *
@@ -77,7 +82,8 @@ abstract class BaseRewardGroup extends BaseController
     protected static $columnsToAttributes = [
         '"volunteer_reward_group"' => 'type',
         'RewardGroupID' => 'id',
-        'RedeemLimit' => 'reward_limit'
+        'RedeemLimit' => 'reward_limit',
+        'Name' => 'name'
     ];
 
 

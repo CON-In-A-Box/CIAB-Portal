@@ -64,7 +64,14 @@ var app = Vue.createApp({
       apiRequest('GET', '/volunteer/reward_group','max_results=all')
         .then((response) => {
           const data = JSON.parse(response.responseText);
-          this.reward_groups = data.data;
+          this.reward_groups = [];
+          data.data.forEach((entry) => {
+            entry.name = entry.name ?? '';
+            this.reward_groups[entry.id] = {
+              ...entry,
+              count: 0
+            }
+          });
         })
     },
     clearMember() {

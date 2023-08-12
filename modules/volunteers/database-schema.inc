@@ -16,6 +16,7 @@ $vol_DB_tables = [
 'RewardGroup' => [
 'RewardGroupID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
 'RedeemLimit' => 'INT UNSIGNED',
+'Name' => 'VARCHAR(50)'
     ],
 'VolunteerHours' => [
 'HourEntryID' => 'INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',

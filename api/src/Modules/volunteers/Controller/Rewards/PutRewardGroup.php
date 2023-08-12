@@ -22,6 +22,10 @@
  *                  @OA\Property(
  *                      property="reward_limit",
  *                      type="integer"
+ *                  ),
+ *                  @OA\Property(
+ *                      property="name",
+ *                      type="string"
  *                  )
  *              )
  *          )
@@ -77,9 +81,8 @@ class PutRewardGroup extends BaseRewardGroup
         $data = $target->buildResource($request, $response, ['id' => $params['id']]);
 
         return [
-        \App\Controller\BaseController::LIST_TYPE,
+        \App\Controller\BaseController::RESOURCE_TYPE,
         $data[1],
-        $data[2],
         200
         ];
 

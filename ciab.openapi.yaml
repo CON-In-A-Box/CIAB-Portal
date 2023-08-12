@@ -3688,6 +3688,9 @@ paths:
                 reward_limit:
                   description: 'Number of items allowed from the group.'
                   type: integer
+                name:
+                  description: 'Optional name of the group.'
+                  type: string
               type: object
       responses:
         '201':
@@ -3761,6 +3764,8 @@ paths:
               properties:
                 reward_limit:
                   type: integer
+                name:
+                  type: string
               type: object
       responses:
         '200':
@@ -4857,6 +4862,9 @@ components:
         reward_limit:
           description: 'Number of items allowed from the group.'
           type: integer
+        name:
+          description: 'Optional name of the reward group.'
+          type: string
       type: object
     volunteer_reward_group_prize_list:
       properties:
