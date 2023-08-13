@@ -1,12 +1,16 @@
+const isSpecialDivision = (name) => {
+  return name === 'Committees' || name === 'Corporate Staff' || name === 'Board Departments';
+}
+
 const extractDepartment = (item) => {
   const hasParent = item.parent !== null;
 
   return {
-    id: item.id,
+    id: parseInt(item.id),
     name: item.name,
     email: item.email,
     ...hasParent && {
-      parent_name: item.parent.name
+      parentId: parseInt(item.parent.id)
     }
   }
 }
@@ -17,11 +21,12 @@ const extractDivisions = (departmentData) => {
       const mappedDivision = extractDepartment(item);
       return {
         ...mappedDivision,
+        name: isSpecialDivision(item.name) ? mappedDivision.name : `${mappedDivision.name} Division`,
         departments: [ mappedDivision ]
       }
     })
     .reduce((prev, current) => {
-      prev[current.name] = current;
+      prev[current.id] = current;
 
       return prev;
     }, {});
@@ -65,13 +70,23 @@ export const extractDivisionHierarchy = (departmentData) => {
       return extractDepartment(item);
     })
     .forEach((item) => {
-      const parentDivision = divisionHierarchy[item.parent_name];
+      const parentDivision = divisionHierarchy[item.parentId];
       if (parentDivision !== undefined) {
-        parentDivision.departments.push(item);
+        parentDivision.departments = [
+          ...parentDivision.departments,
+          item
+        ];
       }
     });
 
-  return Object.keys(divisionHierarchy).map((item) => {
+  // Sort Divisions and Departments alphabetically
+  const sortedDivisions = Object.keys(divisionHierarchy).map((item) => {
     return divisionHierarchy[item]
+  }).sort((a, b) => a.name.localeCompare(b.name));
+
+  sortedDivisions.forEach((division) => {
+    division.departments.sort((a, b) => a.name.localeCompare(b.name));
   });
+
+  return sortedDivisions;
 }

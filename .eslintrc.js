@@ -91,6 +91,8 @@ module.exports = {
                "modules/concom/report/sitesupport/vue.js",
                "modules/concom/sitesupport/vue.js",
                "modules/concom/sitesupport/division-parser.js",
+               "modules/concom/sitesupport/components/*.js",
+               "modules/concom/sitesupport/concom_v2.js",
                "modules/event/report/sitesupport/vue.js",
                "modules/registration/sitesupport/badgeMenuPane.js" ,
                "modules/registration/sitesupport/vue.js",
