@@ -66,7 +66,7 @@ var app = Vue.createApp({
           const data = JSON.parse(response.responseText);
           this.reward_groups = [];
           data.data.forEach((entry) => {
-            entry.name = entry.name ?? '';
+            entry.name = entry.name ?? null;
             this.reward_groups[entry.id] = {
               ...entry,
               count: 0
