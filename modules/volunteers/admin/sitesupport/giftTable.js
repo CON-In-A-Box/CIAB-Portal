@@ -2,22 +2,22 @@
 /* globals apiRequest */
 
 const COLUMNSBASE = [
-  {value:'name', title:'Name '},
-  {value:'promo', title:'Promotional'},
-  {value:'inventory', title:'Total Inventory'},
-  {value:'value', title:'Value '},
-  {value:'remaining', title:'Remaining'},
-  {value:'limit', title:'Limit'}
+  {value:'name', title:'Name', type: String},
+  {value:'promo', title:'Promotional', type: Number},
+  {value:'inventory', title:'Total Inventory', type: Number},
+  {value:'value', title:'Value', type: Number},
+  {value:'remaining', title:'Remaining', type: Number},
+  {value:'limit', title:'Limit', type:Number, unsortable:true}
 ];
 
 const COLUMNSUSER = [
-  {value:'name', title:'Name '},
-  {value:'promo', title:'Promotional'},
-  {value:'inventory', title:'Total Inventory'},
-  {value:'value', title:'Value '},
-  {value:'remaining', title:'Remaining'},
-  {value:'limit', title:'Limit'},
-  {value:'acquired', title:'Acquired'}
+  {value:'name', title:'Name', type: String},
+  {value:'promo', title:'Promotional', type: Number},
+  {value:'inventory', title:'Total Inventory', type: Number},
+  {value:'value', title:'Value', type: Number},
+  {value:'remaining', title:'Remaining', type: Number},
+  {value:'limit', title:'Limit', type: Number, unsortable:true},
+  {value:'acquired', title:'Acquired', type: Number, unsortable:true}
 ];
 
 const GROUPSTYLES = [
@@ -61,6 +61,8 @@ export default {
       unclaimed: null,
       groupCount: [],
       loaded: false,
+      sortColumn: null,
+      decendingSort: true
     }
   },
   beforeUpdate() {
@@ -89,25 +91,7 @@ export default {
             }
           });
 
-          this.records.sort((a,b) => {
-            if (a.value === b.value) {
-              return ((a.name > b.name) ? 1 : -1);
-            }
-            return ((parseFloat(a.value) > parseFloat(b.value)) ? 1 : -1);
-          });
-
-          this.records.sort((a,b) => {
-            if (a.reward_group !== null && b.reward_group === null) {return -1;}
-            if (b.reward_group !== null && a.reward_group === null) {return 1;}
-            if (b.reward_group === null && a.reward_group === null) {return 0;}
-            if (parseInt(b.reward_group.id) === parseInt(a.reward_group.id)) {
-              if (a.value === b.value) {
-                return ((a.name > b.name) ? 1 : -1);
-              }
-              return (parseFloat(a.value) > parseFloat(b.value)) ? 1 : -1;
-            }
-            return (parseInt(a.reward_group.id) > parseInt(b.reward_group.id) ? 1 : -1);
-          });
+          this.sortTable(COLUMNSBASE[3]);
 
           if (this.$parent.userId != null) {
             apiRequest('GET', '/member/' + this.$parent.userId + '/volunteer/claims', 'max_results=all')
@@ -181,7 +165,7 @@ export default {
         return 'no';
       }
 
-      if (column.value == 'remaining') {
+      if (column.value === 'remaining') {
         return record['inventory'] - record['claimed'];
       }
 
@@ -260,6 +244,43 @@ export default {
         return [u.length, nonGroup];
       }
       return [0, 1];
+    },
+    sortTable(column) {
+      if (column.unsortable) {
+        return;
+      }
+      if (column.value === this.sortColumn) {
+        this.decendingSort = !this.decendingSort;
+      } else {
+        this.decendingSort = false;
+      }
+      const sortDirection = this.decendingSort ? -1.0 : 1.0;
+      this.sortColumn = column.value;
+
+      this.records.sort((a,b) => {
+        let result = (parseFloat(a[column.value]) - parseFloat(b[column.value])) * sortDirection;
+        if (column.value === 'remaining') {
+          result = ((a.inventory - a.claimed) - (b.inventory - b.claimed)) * sortDirection;
+        } else if (column.type === String) {
+          result = a[column.value].localeCompare(b[column.value]) * sortDirection;
+        }
+
+        if (result === 0.0) {
+          if (a.name ===  b.name) {
+            return (parseFloat(a.value) - parseFloat(b.value)) * sortDirection;
+          }
+          return a.name.localeCompare(b.name) * sortDirection;
+        }
+        return result;
+      });
+
+      this.records.sort((a,b) => {
+        if (a.reward_group !== null && b.reward_group === null) {return -1;}
+        if (b.reward_group !== null && a.reward_group === null) {return 1;}
+        if (b.reward_group === null && a.reward_group === null) {return 0;}
+        if (parseInt(b.reward_group.id) === parseInt(a.reward_group.id)) {return 0;}
+        return parseInt(a.reward_group.id) - parseInt(b.reward_group.id);
+      });
     }
   },
   template: `
@@ -284,7 +305,17 @@ export default {
       <div class="UI-padding">
         <div class="UI-table-all">
           <div class="UI-table-row">
-            <div v-for="c in columns" class="UI-table-cell">{{c.title}}</div>
+            <div v-for="c in columns" class="UI-table-cell" @click="sortTable(c)">
+              <template v-if="sortColumn === c.value">
+                <span v-if="decendingSort">
+                  <em class="fas fa-arrow-down"></em>
+                </span>
+                <span v-else>
+                  <em class="fas fa-arrow-up"></em>
+                </span>
+              </template>
+              {{c.title}}
+            </div>
           </div>
           <div v-if="records" v-for="r in records" class="UI-table-row" :class="getRowStyle(r)" >
             <div v-if="r != null && (!hideSoldOut || r.claimed < r.inventory)" v-for="c in columns"
