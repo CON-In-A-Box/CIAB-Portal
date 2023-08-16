@@ -78,7 +78,8 @@ exports[`Staff Division Parser can parse the division hierarchy 1`] = `
       "activities@test-con.org",
     ],
     "id": 1,
-    "name": "Activities Division",
+    "name": "Activities",
+    "specialDivision": false,
   },
   {
     "departments": [
@@ -150,7 +151,8 @@ exports[`Staff Division Parser can parse the division hierarchy 1`] = `
       "administration@test-con.org",
     ],
     "id": 2,
-    "name": "Administration Division",
+    "name": "Administration",
+    "specialDivision": false,
   },
   {
     "departments": [
@@ -174,119 +176,8 @@ exports[`Staff Division Parser can parse the division hierarchy 1`] = `
       "cfo@test-con.org",
     ],
     "id": 10,
-    "name": "CFO Staff Division",
-  },
-  {
-    "departments": [
-      {
-        "email": [
-          "info@test-con.org",
-        ],
-        "id": 8,
-        "name": "Committees",
-      },
-      {
-        "email": [
-          "futurevisioning@test-con.org",
-        ],
-        "id": 120,
-        "name": "Future Visioning",
-        "parentId": 8,
-      },
-      {
-        "email": [
-          "guestsearch@test-con.org",
-        ],
-        "id": 122,
-        "name": "Guest Search",
-        "parentId": 8,
-      },
-      {
-        "email": [
-          "memberadvocates@test-con.org",
-        ],
-        "id": 132,
-        "name": "Member Advocates",
-        "parentId": 8,
-      },
-      {
-        "email": [
-          "partnersearch@test-con.org",
-        ],
-        "id": 137,
-        "name": "Partner Search",
-        "parentId": 8,
-      },
-      {
-        "email": [
-          "transitionteam@test-con.org",
-        ],
-        "id": 159,
-        "name": "Transition Team",
-        "parentId": 8,
-      },
-      {
-        "email": [
-          "youthprogramming@test-con.org",
-        ],
-        "id": 158,
-        "name": "Youth Programming Advisory",
-        "parentId": 8,
-      },
-    ],
-    "email": [
-      "info@test-con.org",
-    ],
-    "id": 8,
-    "name": "Committees",
-  },
-  {
-    "departments": [
-      {
-        "email": [
-          "directors@test-con.org",
-        ],
-        "id": 9,
-        "name": "Corporate Staff",
-      },
-      {
-        "email": [
-          "president@test-con.org",
-        ],
-        "id": 139,
-        "name": "President",
-        "parentId": 9,
-      },
-      {
-        "email": [
-          "secretary@test-con.org",
-        ],
-        "id": 145,
-        "name": "Secretary",
-        "parentId": 9,
-      },
-      {
-        "email": [
-          "treasurer@test-con.org",
-        ],
-        "id": 152,
-        "name": "Treasurer",
-        "parentId": 9,
-      },
-      {
-        "email": [
-          "vicepresident@test-con.org",
-        ],
-        "id": 153,
-        "name": "Vice-President",
-        "parentId": 9,
-      },
-    ],
-    "email": [
-      "directors@test-con.org",
-    ],
-    "id": 9,
-    "name": "Corporate Staff",
+    "name": "CFO Staff",
+    "specialDivision": false,
   },
   {
     "departments": [
@@ -367,7 +258,8 @@ exports[`Staff Division Parser can parse the division hierarchy 1`] = `
       "erac@test-con.org",
     ],
     "id": 3,
-    "name": "External Relations and Communications Division",
+    "name": "External Relations and Communications",
+    "specialDivision": false,
   },
   {
     "departments": [
@@ -455,7 +347,8 @@ exports[`Staff Division Parser can parse the division hierarchy 1`] = `
       "facilities@test-con.org",
     ],
     "id": 4,
-    "name": "Facilities Division",
+    "name": "Facilities",
+    "specialDivision": false,
   },
   {
     "departments": [
@@ -535,7 +428,8 @@ exports[`Staff Division Parser can parse the division hierarchy 1`] = `
       "hospitality@test-con.org",
     ],
     "id": 5,
-    "name": "Hospitality Division",
+    "name": "Hospitality",
+    "specialDivision": false,
   },
   {
     "departments": [
@@ -615,7 +509,8 @@ exports[`Staff Division Parser can parse the division hierarchy 1`] = `
       "productions@test-con.org",
     ],
     "id": 6,
-    "name": "Productions Division",
+    "name": "Productions",
+    "specialDivision": false,
   },
   {
     "departments": [
@@ -639,7 +534,122 @@ exports[`Staff Division Parser can parse the division hierarchy 1`] = `
       "systems@test-con.org",
     ],
     "id": 7,
-    "name": "Systems Division",
+    "name": "Systems",
+    "specialDivision": false,
+  },
+  {
+    "departments": [
+      {
+        "email": [
+          "info@test-con.org",
+        ],
+        "id": 8,
+        "name": "Committees",
+      },
+      {
+        "email": [
+          "futurevisioning@test-con.org",
+        ],
+        "id": 120,
+        "name": "Future Visioning",
+        "parentId": 8,
+      },
+      {
+        "email": [
+          "guestsearch@test-con.org",
+        ],
+        "id": 122,
+        "name": "Guest Search",
+        "parentId": 8,
+      },
+      {
+        "email": [
+          "memberadvocates@test-con.org",
+        ],
+        "id": 132,
+        "name": "Member Advocates",
+        "parentId": 8,
+      },
+      {
+        "email": [
+          "partnersearch@test-con.org",
+        ],
+        "id": 137,
+        "name": "Partner Search",
+        "parentId": 8,
+      },
+      {
+        "email": [
+          "transitionteam@test-con.org",
+        ],
+        "id": 159,
+        "name": "Transition Team",
+        "parentId": 8,
+      },
+      {
+        "email": [
+          "youthprogramming@test-con.org",
+        ],
+        "id": 158,
+        "name": "Youth Programming Advisory",
+        "parentId": 8,
+      },
+    ],
+    "email": [
+      "info@test-con.org",
+    ],
+    "id": 8,
+    "name": "Committees",
+    "specialDivision": true,
+  },
+  {
+    "departments": [
+      {
+        "email": [
+          "directors@test-con.org",
+        ],
+        "id": 9,
+        "name": "Corporate Staff",
+      },
+      {
+        "email": [
+          "president@test-con.org",
+        ],
+        "id": 139,
+        "name": "President",
+        "parentId": 9,
+      },
+      {
+        "email": [
+          "secretary@test-con.org",
+        ],
+        "id": 145,
+        "name": "Secretary",
+        "parentId": 9,
+      },
+      {
+        "email": [
+          "treasurer@test-con.org",
+        ],
+        "id": 152,
+        "name": "Treasurer",
+        "parentId": 9,
+      },
+      {
+        "email": [
+          "vicepresident@test-con.org",
+        ],
+        "id": 153,
+        "name": "Vice-President",
+        "parentId": 9,
+      },
+    ],
+    "email": [
+      "directors@test-con.org",
+    ],
+    "id": 9,
+    "name": "Corporate Staff",
+    "specialDivision": true,
   },
 ]
 `;

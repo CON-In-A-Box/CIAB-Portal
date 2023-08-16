@@ -21,7 +21,8 @@ const extractDivisions = (departmentData) => {
       const mappedDivision = extractDepartment(item);
       return {
         ...mappedDivision,
-        name: isSpecialDivision(item.name) ? mappedDivision.name : `${mappedDivision.name} Division`,
+        name: item.name,
+        specialDivision: isSpecialDivision(item.name),
         departments: [ mappedDivision ]
       }
     })
@@ -79,10 +80,17 @@ export const extractDivisionHierarchy = (departmentData) => {
       }
     });
 
-  // Sort Divisions and Departments alphabetically
   const sortedDivisions = Object.keys(divisionHierarchy).map((item) => {
     return divisionHierarchy[item]
-  }).sort((a, b) => a.name.localeCompare(b.name));
+  }).sort((a, b) => {
+    if (a.specialDivision && !b.specialDivision) {
+      return 1;
+    } else if (!a.specialDivision && b.specialDivision) {
+      return -1;
+    }
+
+    return a.name.localeCompare(b.name);
+  });
 
   sortedDivisions.forEach((division) => {
     division.departments.sort((a, b) => a.name.localeCompare(b.name));
