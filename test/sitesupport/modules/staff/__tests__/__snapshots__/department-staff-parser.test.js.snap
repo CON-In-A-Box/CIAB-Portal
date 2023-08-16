@@ -1,0 +1,77 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Department Staff Parser parses Department Staff 1`] = `
+[
+  {
+    "departmentName": "Book Swap",
+    "divisionName": "Activities",
+    "email": "copgoc@email.net",
+    "firstName": "copgoc",
+    "id": 1408,
+    "lastName": "FuaDigwaw",
+    "note": "",
+    "position": "Head",
+    "pronouns": "",
+  },
+  {
+    "departmentName": "Book Swap",
+    "divisionName": "Activities",
+    "email": "MifRowgac@email.net",
+    "firstName": "MifRowgac",
+    "id": 1093,
+    "lastName": "PakRovKitSewMoj",
+    "note": "",
+    "position": "Sub-Head",
+    "pronouns": "",
+  },
+  {
+    "departmentName": "Book Swap",
+    "divisionName": "Activities",
+    "email": "baunocKum@email.net",
+    "firstName": "baunocKum",
+    "id": 1264,
+    "lastName": "CegFaisiklaw",
+    "note": "",
+    "position": "Specialist",
+    "pronouns": "",
+  },
+]
+`;
+
+exports[`Department Staff Parser parses Division Staff 1`] = `
+[
+  {
+    "departmentName": "Activities",
+    "divisionName": "",
+    "email": "test-admin@example.com",
+    "firstName": "Test",
+    "id": 1000,
+    "lastName": "Admin",
+    "note": "",
+    "position": "Director",
+    "pronouns": "He/Him",
+  },
+  {
+    "departmentName": "Activities",
+    "divisionName": "",
+    "email": "pezgiwPuh@email.net",
+    "firstName": "pezgiwPuh",
+    "id": 1109,
+    "lastName": "setvocCab",
+    "note": "",
+    "position": "",
+    "pronouns": "",
+  },
+  {
+    "departmentName": "Activities",
+    "divisionName": "",
+    "email": "Wirtesvai@email.net",
+    "firstName": "Wirtesvai",
+    "id": 1490,
+    "lastName": "bokGedfer",
+    "note": "",
+    "position": "Support",
+    "pronouns": "",
+  },
+]
+`;
