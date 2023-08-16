@@ -1,0 +1,188 @@
+{
+  "type": "staff_list",
+  "data": [
+    {
+      "type": "staff_entry",
+      "id": "45",
+      "member": {
+        "type": "member",
+        "id": "1408",
+        "legal_first_name": "copgoc",
+        "legal_last_name": "FuaDigwaw",
+        "middle_name": null,
+        "suffix": null,
+        "email": "copgoc@email.net",
+        "email2": null,
+        "email3": null,
+        "phone": "6553422804",
+        "phone2": null,
+        "address_line1": "2319 tehNinhegLej",
+        "address_line2": null,
+        "city": "Minneapolis",
+        "state": "NY",
+        "zip_code": "20856",
+        "zip_plus4": null,
+        "country": "United Arab Emirates",
+        "province": null,
+        "preferred_first_name": null,
+        "preferred_last_name": null,
+        "deceased": null,
+        "do_not_contact": null,
+        "email_optout": null,
+        "birthdate": null,
+        "gender": null,
+        "concom_display_phone": null,
+        "dependent_on": null,
+        "pronouns": null,
+        "first_name": "copgoc",
+        "last_name": "FuaDigwaw",
+        "duplicates": null
+      },
+      "department": {
+        "id": "105",
+        "parent": {
+          "id": "1",
+          "parent": null,
+          "name": "Activities",
+          "fallback": null,
+          "child_count": "9",
+          "email": [
+            "activities@test-con.org"
+          ],
+          "type": "department"
+        },
+        "name": "Book Swap",
+        "fallback": null,
+        "child_count": "0",
+        "email": [
+          "bookswap@test-con.org"
+        ],
+        "type": "department"
+      },
+      "note": "",
+      "position": "Head"
+    },
+    {
+      "type": "staff_entry",
+      "id": "46",
+      "member": {
+        "type": "member",
+        "id": "1093",
+        "legal_first_name": "MifRowgac",
+        "legal_last_name": "PakRovKitSewMoj",
+        "middle_name": null,
+        "suffix": null,
+        "email": "MifRowgac@email.net",
+        "email2": null,
+        "email3": null,
+        "phone": "3701930864",
+        "phone2": null,
+        "address_line1": "5637 VittozGosWazHil",
+        "address_line2": null,
+        "city": "Minneapolis",
+        "state": "IL",
+        "zip_code": "26066",
+        "zip_plus4": null,
+        "country": "United Arab Emirates",
+        "province": null,
+        "preferred_first_name": null,
+        "preferred_last_name": null,
+        "deceased": null,
+        "do_not_contact": null,
+        "email_optout": null,
+        "birthdate": null,
+        "gender": null,
+        "concom_display_phone": null,
+        "dependent_on": null,
+        "pronouns": null,
+        "first_name": "MifRowgac",
+        "last_name": "PakRovKitSewMoj",
+        "duplicates": null
+      },
+      "department": {
+        "id": "105",
+        "parent": {
+          "id": "1",
+          "parent": null,
+          "name": "Activities",
+          "fallback": null,
+          "child_count": "9",
+          "email": [
+            "activities@test-con.org"
+          ],
+          "type": "department"
+        },
+        "name": "Book Swap",
+        "fallback": null,
+        "child_count": "0",
+        "email": [
+          "bookswap@test-con.org"
+        ],
+        "type": "department"
+      },
+      "note": "",
+      "position": "Sub-Head"
+    },
+    {
+      "type": "staff_entry",
+      "id": "47",
+      "member": {
+        "type": "member",
+        "id": "1264",
+        "legal_first_name": "baunocKum",
+        "legal_last_name": "CegFaisiklaw",
+        "middle_name": null,
+        "suffix": null,
+        "email": "baunocKum@email.net",
+        "email2": null,
+        "email3": null,
+        "phone": "5126188064",
+        "phone2": null,
+        "address_line1": "7236 HopSarhot",
+        "address_line2": null,
+        "city": "Minneapolis",
+        "state": "TX",
+        "zip_code": "29525",
+        "zip_plus4": null,
+        "country": "Sint Maarten (Dutch part)",
+        "province": null,
+        "preferred_first_name": null,
+        "preferred_last_name": null,
+        "deceased": null,
+        "do_not_contact": null,
+        "email_optout": null,
+        "birthdate": null,
+        "gender": null,
+        "concom_display_phone": null,
+        "dependent_on": null,
+        "pronouns": null,
+        "first_name": "baunocKum",
+        "last_name": "CegFaisiklaw",
+        "duplicates": null
+      },
+      "department": {
+        "id": "105",
+        "parent": {
+          "id": "1",
+          "parent": null,
+          "name": "Activities",
+          "fallback": null,
+          "child_count": "9",
+          "email": [
+            "activities@test-con.org"
+          ],
+          "type": "department"
+        },
+        "name": "Book Swap",
+        "fallback": null,
+        "child_count": "0",
+        "email": [
+          "bookswap@test-con.org"
+        ],
+        "type": "department"
+      },
+      "note": "",
+      "position": "Specialist"
+    }
+  ]
+}
