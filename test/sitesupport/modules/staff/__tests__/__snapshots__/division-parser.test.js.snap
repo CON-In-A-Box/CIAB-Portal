@@ -10,6 +10,7 @@ exports[`Staff Division Parser can parse the division hierarchy 1`] = `
         ],
         "id": 1,
         "name": "Activities",
+        "parentId": 1,
       },
       {
         "email": [
@@ -89,6 +90,7 @@ exports[`Staff Division Parser can parse the division hierarchy 1`] = `
         ],
         "id": 2,
         "name": "Administration",
+        "parentId": 2,
       },
       {
         "email": [
@@ -162,6 +164,7 @@ exports[`Staff Division Parser can parse the division hierarchy 1`] = `
         ],
         "id": 10,
         "name": "CFO Staff",
+        "parentId": 10,
       },
       {
         "email": [
@@ -220,6 +223,7 @@ exports[`Staff Division Parser can parse the division hierarchy 1`] = `
         ],
         "id": 3,
         "name": "External Relations and Communications",
+        "parentId": 3,
       },
       {
         "email": [
@@ -301,6 +305,7 @@ exports[`Staff Division Parser can parse the division hierarchy 1`] = `
         ],
         "id": 4,
         "name": "Facilities",
+        "parentId": 4,
       },
       {
         "email": [
@@ -382,6 +387,7 @@ exports[`Staff Division Parser can parse the division hierarchy 1`] = `
         ],
         "id": 5,
         "name": "Hospitality",
+        "parentId": 5,
       },
       {
         "email": [
@@ -487,6 +493,7 @@ exports[`Staff Division Parser can parse the division hierarchy 1`] = `
         ],
         "id": 6,
         "name": "Productions",
+        "parentId": 6,
       },
       {
         "email": [
@@ -528,6 +535,7 @@ exports[`Staff Division Parser can parse the division hierarchy 1`] = `
         ],
         "id": 7,
         "name": "Systems",
+        "parentId": 7,
       },
     ],
     "email": [
@@ -545,6 +553,7 @@ exports[`Staff Division Parser can parse the division hierarchy 1`] = `
         ],
         "id": 8,
         "name": "Committees",
+        "parentId": 8,
       },
       {
         "email": [
@@ -610,6 +619,7 @@ exports[`Staff Division Parser can parse the division hierarchy 1`] = `
         ],
         "id": 9,
         "name": "Corporate Staff",
+        "parentId": 9,
       },
       {
         "email": [
