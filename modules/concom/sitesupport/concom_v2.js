@@ -4,6 +4,7 @@
 // import staffDivisionComponent from './components/staff-division.js';
 // import departmentHeaderComponent from './components/department-header.js';
 // import departmentMemberComponent from './components/department-member.js';
+// import staffDepartmentComponent from './components/staff-department.js';
 
 const staffApp = Vue.createApp({});
 
@@ -12,6 +13,7 @@ const staffApp = Vue.createApp({});
 // staffApp.component('staff-list', staffListComponent);
 // staffApp.component('department-header', departmentHeaderComponent);
 // staffApp.component('department-member', departmentMemberComponent);
+// staffApp.component('staff-department', staffDepartmentComponent);
 
 // staffApp.mount('#staff-app');
 
