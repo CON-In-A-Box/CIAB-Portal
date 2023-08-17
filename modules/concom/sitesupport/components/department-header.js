@@ -1,11 +1,11 @@
 /* globals Vue */
 const PROPS = {
   isDepartment: Boolean,
-  departmentName: String
+  department: Object
 }
 
 const TEMPLATE = `
-  <div class="UI-table-row CONCOM-table-head" :id="'table_header_' + htmlTagFriendlyName(departmentName).value">
+  <div class="UI-table-row CONCOM-table-head" :id="'table_header_' + htmlTagFriendlyName(department).value">
     <div class="UI-table-cell-no-border" v-if="isDepartment">Department</div>
     <div class="UI-table-cell" v-if="isDepartment">Division</div>
     <div class="UI-table-cell-no-border" v-if="!isDepartment">Division</div>
@@ -18,8 +18,8 @@ const TEMPLATE = `
   </div>
 `;
 
-const htmlTagFriendlyName = (departmentName) => Vue.computed(() => {
-  return departmentName.replace(' ', '_');
+const htmlTagFriendlyName = (department) => Vue.computed(() => {
+  return department.name.replaceAll(' ', '_');
 });
 
 const INITIAL_DATA = () => {
