@@ -21,9 +21,14 @@ const extractDivisions = (departmentData) => {
       const mappedDivision = extractDepartment(item);
       return {
         ...mappedDivision,
-        name: item.name,
         specialDivision: isSpecialDivision(item.name),
-        departments: [ mappedDivision ]
+        departments: [
+          // Special case - Divisions also have a "department" sharing the same name, so technically they are their own parent.
+          {
+            ...mappedDivision,
+            parentId: mappedDivision.id
+          }
+        ]
       }
     })
     .reduce((prev, current) => {
