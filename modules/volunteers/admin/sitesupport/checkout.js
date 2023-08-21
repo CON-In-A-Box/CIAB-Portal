@@ -35,7 +35,7 @@ export default {
                   item.failure = response.responseText;
                 }
                 prizes[2] += 1;
-                this.failedList.append(item);
+                this.failedList.push(item);
                 const target = this.checkout.findIndex(element => element.id === item.id);
                 if (this.checkout[target].count > 1) {
                   this.checkout[target]['count'] -= 1;
@@ -140,8 +140,8 @@ export default {
     },
     init() {
       if (this.groupsNow.length == 0) {
-        this.$parent.$refs.gfttbl.groupCount.forEach((entry, index) => {
-          this.groupsNow[index] = entry;
+        this.$parent.$refs.gfttbl.groups.forEach((entry, index) => {
+          this.groupsNow[index] = entry.acquired;
         });
       }
     },
