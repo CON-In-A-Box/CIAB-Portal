@@ -6,7 +6,7 @@
 /**
  *  @OA\Delete(
  *      tags={"staff"},
- *      path="/staff_membership/{id}",
+ *      path="/staff/membership/{id}",
  *      summary="Deletes a staff member.",
  *      @OA\Parameter(
  *          description="Id of the position",

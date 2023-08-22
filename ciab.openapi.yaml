@@ -2625,7 +2625,7 @@ paths:
       security:
         -
           ciab_auth: []
-  '/staff_membership/{id}':
+  '/staff/membership/{id}':
     get:
       tags:
         - staff
@@ -2803,6 +2803,23 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/error'
+      security:
+        -
+          ciab_auth: []
+  /staff/positions:
+    get:
+      tags:
+        - staff
+      summary: 'List all staff position types'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/staff_position_list'
+        '401':
+          $ref: '#/components/responses/401'
       security:
         -
           ciab_auth: []
@@ -4602,6 +4619,25 @@ components:
                 $ref: '#/components/schemas/staff_entry'
         -
           $ref: '#/components/schemas/resource_list'
+    staff_position_entry:
+      properties:
+        id:
+          type: integer
+        position:
+          type: string
+      type: object
+    staff_position_list:
+      properties:
+        type:
+          type: string
+          enum:
+            - staff_position_list
+        data:
+          description: 'List of department position types'
+          type: array
+          items:
+            $ref: '#/components/schemas/staff_position_entry'
+      type: object
     volunteer_claim:
       properties:
         type:
