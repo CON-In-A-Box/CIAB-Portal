@@ -16,10 +16,11 @@ function setupStaffAPI($app, $authMiddleware)
     )->add(new App\Middleware\CiabMiddleware($app))->add($authMiddleware);
 
     $app->group(
-        '/staff_membership',
+        '/staff',
         function () use ($app, $authMiddleware) {
-            $app->get('/{id}', 'App\Modules\staff\Controller\GetStaffMembership');
-            $app->delete('/{id}', 'App\Modules\staff\Controller\DeleteStaffMembership');
+            $app->get('/membership/{id}', 'App\Modules\staff\Controller\GetStaffMembership');
+            $app->delete('/membership/{id}', 'App\Modules\staff\Controller\DeleteStaffMembership');
+            $app->get('/positions', 'App\Modules\staff\Controller\ListStaffPositions');
         }
     )->add(new App\Middleware\CiabMiddleware($app))->add($authMiddleware);
 

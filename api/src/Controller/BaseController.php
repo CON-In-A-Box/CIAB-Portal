@@ -509,10 +509,10 @@ abstract class BaseController
             ->from('Departments d1');
         if ($id !== null) {
             $select->orWhere('(')
-            ->catWhere('DepartmentID = ', $id)
-            ->catWhere(' OR ')
-            ->catWhere('Name = ', $id)
-            ->catWhere(')');
+                ->catWhere('DepartmentID = ', $id)
+                ->catWhere(' OR ')
+                ->catWhere('Name = ', $id)
+                ->catWhere(')');
         }
         $placeholders = $select->subselect()->columns('DepartmentID')->from('Departments')->whereEquals(['Name' => 'Historical Placeholder']);
         $select->where('DepartmentID NOT IN ', $placeholders);

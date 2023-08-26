@@ -17,8 +17,8 @@ class StaffTest extends CiabTestCase
         $this->runRequest('POST', '/member/1000/staff_membership', null, ['Department' => 1], 400);
         $data = $this->runSuccessJsonRequest('POST', '/member/1000/staff_membership', null, ['Department' => 1, 'Position' => 1], 201);
         $this->assertNotEmpty($data);
-        $this->runRequest('DELETE', '/staff_membership/'.$data->id, null, null, 204);
-        $this->runRequest('DELETE', '/staff_membership/-1', null, null, 404);
+        $this->runRequest('DELETE', '/staff/membership/'.$data->id, null, null, 204);
+        $this->runRequest('DELETE', '/staff/membership/-1', null, null, 404);
 
     }
 
@@ -39,7 +39,7 @@ class StaffTest extends CiabTestCase
 
         $this->runRequest('GET', '/staff_membership/-1', null, null, 404);
 
-        $data = $this->runSuccessJsonRequest('GET', '/staff_membership/'.$position->id);
+        $data = $this->runSuccessJsonRequest('GET', '/staff/membership/'.$position->id);
         $this->assertNotEmpty($data);
 
         $data = $this->runSuccessJsonRequest('GET', '/department/staff/');
@@ -48,7 +48,7 @@ class StaffTest extends CiabTestCase
         $data = $this->runSuccessJsonRequest('GET', '/department/1/staff');
         $this->assertNotEmpty($data);
 
-        $this->runRequest('DELETE', '/staff_membership/'.$position->id, null, null, 204);
+        $this->runRequest('DELETE', '/staff/membership/'.$position->id, null, null, 204);
 
     }
 
