@@ -1,15 +1,14 @@
-/* globals apiRequest */
+/* globals apiRequest, Vue */
 import { extractDivisionHierarchy } from '../division-parser.js';
 
 const TEMPLATE = `
-  <staff-division v-for="division in divisionHierarchy" :division=division 
-    :divisionHierarchy=divisionHierarchy :currentUser=currentUser></staff-division>
+  <div class="UI-maincontent">
+    <div class="UI-event-sectionbar">ConCom</div>
+    <div class="UI-maincontent">
+      <staff-division v-for="division in divisions" :division=division></staff-division>
+    </div>
+  </div>
 `;
-
-const INITIAL_DATA = {
-  divisionHierarchy: [],
-  currentUser: undefined
-};
 
 const fetchDivisionData = async() => {
   const response = await apiRequest('GET', 'department');
@@ -29,18 +28,24 @@ const fetchCurrentUser = async() => {
 
 const onMounted = async(componentInstance) => {
   const result = await fetchDivisionData();
-  componentInstance.divisionHierarchy.push(...result);
+  componentInstance.divisions.push(...result);
 
   const userResult = await fetchCurrentUser();
-  componentInstance.currentUser = {
-    ...userResult
-  };
+  componentInstance.currentUser = userResult;
 };
 
 const staffListComponent = {
   template: TEMPLATE,
-  data() {
-    return INITIAL_DATA
+  setup() {
+    const currentUser = Vue.ref({ id: null });
+    Vue.provide('currentUser', Vue.readonly(currentUser));
+
+    const divisions = Vue.ref([]);
+    Vue.provide('divisions', Vue.readonly(divisions));
+    return {
+      currentUser,
+      divisions
+    }
   },
   async mounted() {
     await onMounted(this);

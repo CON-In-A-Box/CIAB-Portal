@@ -2,7 +2,6 @@
 const PROPS = {
   staff: Object,
   isDepartment: Boolean,
-  currentUser: Object
 };
 
 const TEMPLATE = `
@@ -16,7 +15,8 @@ const TEMPLATE = `
     <p>{{staff.note}}</p>
     <p v-if="currentUser?.id === staff.id">This is you!</p>
   </div>
-  <div class="UI-table-cell-no-border"></div>
+  <div class="UI-table-cell-no-border">
+  </div>
 `;
 
 const staffFullName = (staff) => Vue.computed(() => {
@@ -50,6 +50,12 @@ const INITIAL_DATA = () => {
 const departmentMemberComponent = {
   props: PROPS,
   template: TEMPLATE,
+  setup() {
+    const currentUser = Vue.inject('currentUser');
+    return {
+      currentUser: currentUser.value
+    }
+  },
   data: INITIAL_DATA
 };
 

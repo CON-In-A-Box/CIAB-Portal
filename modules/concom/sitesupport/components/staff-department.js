@@ -3,8 +3,7 @@ import { extractDepartmentStaff } from '../department-staff-parser.js';
 
 const PROPS = {
   department: Object,
-  division: Object,
-  currentUser: Object
+  division: Object
 }
 
 const TEMPLATE = `
@@ -22,7 +21,7 @@ const TEMPLATE = `
   <div :class="tableClass(department).value">
     <department-header :isDepartment=isDepartment(department).value :department=department></department-header>
     <div class="UI-table-row" v-for="staff in departmentStaff">
-      <department-member :staff=staff :isDepartment=isDepartment(department).value :currentUser=currentUser></department-member>
+      <department-member :staff=staff :isDepartment=isDepartment(department).value></department-member>
     </div>
   </div>
 `;
