@@ -18,6 +18,7 @@ function setupStaffAPI($app, $authMiddleware)
     $app->group(
         '/staff',
         function () use ($app, $authMiddleware) {
+            $app->get('[/]', 'App\Modules\staff\Controller\ListStaff');
             $app->get('/membership/{id}', 'App\Modules\staff\Controller\GetStaffMembership');
             $app->delete('/membership/{id}', 'App\Modules\staff\Controller\DeleteStaffMembership');
             $app->get('/positions', 'App\Modules\staff\Controller\ListStaffPositions');
@@ -27,8 +28,7 @@ function setupStaffAPI($app, $authMiddleware)
     $app->group(
         '/department',
         function () use ($app, $authMiddleware) {
-            $app->get('/staff/', 'App\Modules\staff\Controller\ListStaff');
-            $app->get('/{id}/staff', 'App\Modules\staff\Controller\GetDepartment');
+            $app->get('/{id}/staff', 'App\Modules\staff\Controller\ListDepartmentStaff');
         }
     )->add(new App\Middleware\CiabMiddleware($app))->add($authMiddleware);
 
