@@ -22,6 +22,20 @@ class StaffTest extends CiabTestCase
 
     }
 
+    
+    public function testPutMembership(): void
+    {   
+        $this->runRequest('PUT', '/member/1000/staff_membership', null, null, 400);
+        $this->runRequest('PUT', '/member/-1/staff_membership', null, null, 400);
+        $this->runRequest('PUT', '/member/1000/staff_membership', null, ['Nothing' => 0], 400);
+        $this->runRequest('PUT', '/member/1000/staff_membership', null, ['Department' => -1, 'Position' => 1], 404);
+        $this->runRequest('PUT', '/member/1000/staff_membership', null, ['Department' => 1], 400);    
+        $this->runRequest('PUT', '/member/1000/staff_membership', null, ['Department' => 1, 'Position' => 1, 'Note' => 'phpunitAddedNote'], 200);
+        $data = $this->runSuccessJsonRequest('GET', '/member/1000/staff_membership');
+        $this->assertEquals($data->data[0]->position, 'Head');
+        $this->assertEquals($data->data[0]->note, 'phpunitAddedNote');
+    }
+
 
     public function testMembership(): void
     {

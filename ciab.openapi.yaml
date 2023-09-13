@@ -2738,6 +2738,45 @@ paths:
       security:
         -
           ciab_auth: []
+    put:
+      tags:
+        - members
+      summary: 'Update a staff membership for the member'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'The ID of the member'
+          required: true
+          schema:
+            description: 'Member ID'
+            type: integer
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              properties:
+                Department:
+                  nullable: false
+                  description: 'ID or name of the department'
+                  type: string
+                Position:
+                  nullable: false
+                  description: 'ID of the position'
+                  type: integer
+                Note:
+                  nullable: true
+                  description: 'Notes about member'
+                  type: string
+              type: object
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/401'
+      security:
+        -
+          ciab_auth: []
   /member/staff_membership/:
     get:
       tags:
