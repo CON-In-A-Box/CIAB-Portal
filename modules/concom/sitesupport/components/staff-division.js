@@ -1,8 +1,6 @@
 /* globals Vue */
 const PROPS = {
-  division: Object,
-  divisionHierarchy: Array,
-  currentUser: Object
+  division: Object
 };
 
 const TEMPLATE = `
@@ -11,14 +9,14 @@ const TEMPLATE = `
       <div class="UI-table-row event-color-secondary">
         <div class="UI-center UI-table-cell-no-border">{{divisionName(division).value}}</div>
         <div class="UI-center UI-table-cell-no-border">
-          <staff-section-nav :divisionContent=divisionHierarchy :id="htmlTagFriendlyName(division).value + '_nav'"></staff-section-nav>
+          <staff-section-nav :id="htmlTagFriendlyName(division).value + '_nav'"></staff-section-nav>
         </div>
         <div class="UI-table-cell-no-border">
           <template v-for="email in division.email">{{email}}<br/></template>
         </div> 
       </div>
     </div>
-    <staff-department :department=division :division=division :currentUser=currentUser></staff-department>
+    <staff-department :department=division :division=division></staff-department>
     <div class="UI-container UI-padding">
       <template v-for="department in division.departments">
         <staff-department :department=department :division=division></staff-department>

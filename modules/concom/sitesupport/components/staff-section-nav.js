@@ -1,8 +1,4 @@
 /* globals Vue */
-const PROPS = {
-  divisionContent: Array
-};
-
 const TEMPLATE = `
   <div class="CONCOM-goto-dropdown">
     Go To Section
@@ -24,8 +20,13 @@ const INITIAL_DATA = () => {
 };
 
 const sectionNavComponent = {
-  props: PROPS,
   template: TEMPLATE,
+  setup() {
+    const divisions = Vue.inject('divisions');
+    return {
+      divisionContent: divisions.value
+    }
+  },
   data: INITIAL_DATA
 };
 
