@@ -1666,6 +1666,33 @@ paths:
       security:
         -
           ciab_auth: []
+  '/member/{id}/permissions':
+    get:
+      tags:
+        - members
+      summary: 'Gets a member permissions'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Id of the member.'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Member found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/permission_list'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/member_not_found'
+      security:
+        -
+          ciab_auth: []
   '/stores/{id}':
     get:
       tags:

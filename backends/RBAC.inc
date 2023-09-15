@@ -80,6 +80,18 @@ class RBAC
     }
 
 
+    public static function getMemberPermissions(
+        /*.int.*/ $id
+    ) {
+        if (self::instance() !== null) {
+            return self::instance()->getMemberPermissions($id);
+        } else {
+            return null;
+        }
+
+    }
+
+
     public static function customizeRBAC($entry)
     {
         if (self::instance() !== null) {
