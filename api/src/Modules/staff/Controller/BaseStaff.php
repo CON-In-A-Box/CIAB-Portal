@@ -169,7 +169,7 @@ abstract class BaseStaff extends BaseController
     }
 
 
-    protected function selectStaff($event, $department = null, $member = null)
+    protected function selectStaff($event, $department = null, $member = null, $include_subdep = false)
     {
         $select = Select::new($this->container->db);
 
@@ -217,6 +217,17 @@ abstract class BaseStaff extends BaseController
         if ($department !== null) {
             $department = $this->getDepartment($department);
             $select->where('l.DepartmentID = ', $department['id']);
+            if ($include_subdep) {
+                $subdeps = $select->subselect()->columns(
+                    'DepartmentID'
+                )->from(
+                    'Departments'
+                )->where(
+                    "ParentDepartmentID = ",
+                    $department['id']
+                );
+                $select->orWhere('l.DepartmentID IN ', $subdeps);
+            }
         }
 
         if ($member !== null) {

@@ -2676,45 +2676,6 @@ paths:
       security:
         -
           ciab_auth: []
-  '/department/{id}/staff':
-    get:
-      tags:
-        - departments
-      summary: 'List staff for a department'
-      parameters:
-        -
-          name: id
-          in: path
-          description: 'Department being listed'
-          required: true
-          schema:
-            type: integer
-        -
-          $ref: '#/components/parameters/event'
-        -
-          $ref: '#/components/parameters/short_response'
-        -
-          $ref: '#/components/parameters/max_results'
-        -
-          $ref: '#/components/parameters/page_token'
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/staff_list'
-        '401':
-          $ref: '#/components/responses/401'
-        '404':
-          description: 'Event or Department not found in the system.'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/error'
-      security:
-        -
-          ciab_auth: []
   '/member/{id}/staff_membership':
     get:
       tags:
@@ -2774,7 +2735,58 @@ paths:
       security:
         -
           ciab_auth: []
-  /department/staff/:
+  '/department/{id}/staff':
+    get:
+      tags:
+        - departments
+      summary: 'List staff for a department'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Department being listed'
+          required: true
+          schema:
+            type: integer
+        -
+          parameter: subdepartments
+          name: subdepartments
+          in: query
+          description: 'include sub-departments'
+          required: false
+          style: form
+          schema:
+            type: integer
+            enum:
+              - 0
+              - 1
+        -
+          $ref: '#/components/parameters/event'
+        -
+          $ref: '#/components/parameters/short_response'
+        -
+          $ref: '#/components/parameters/max_results'
+        -
+          $ref: '#/components/parameters/page_token'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/staff_list'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          description: 'Event or Department not found in the system.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+      security:
+        -
+          ciab_auth: []
+  /staff:
     get:
       tags:
         - departments
