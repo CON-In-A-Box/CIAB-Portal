@@ -187,6 +187,31 @@ class ConComRBAC
     }
 
 
+    public static function getMemberPermissions(
+        /*.int.*/$accountId
+    ) : array {
+        $result = [];
+        if (array_key_exists('IS_ADMIN', $_SESSION) && $_SESSION['IS_ADMIN']) {
+            foreach (self::instance()->rbac->getRoles() as $role) {
+                $result = array_unique(array_merge($result, $role->getPermissions(true)));
+            }
+            return $result;
+        }
+        $positions = POSITION::getConComPosition($accountId);
+        foreach ($positions as $pos) {
+            $value = $pos['departmentId'].'.'.$pos['positionId'];
+            try {
+                $result = array_unique(array_merge($result, self::instance()->rbac->getRole(
+                    strval($role)
+                )->getPermissions($children)));
+            } catch (Exception\InvalidArgumentException $e) {
+            }
+        }
+        return $result;
+
+    }
+
+
     public static function customizeRBAC($entry)
     {
         try {

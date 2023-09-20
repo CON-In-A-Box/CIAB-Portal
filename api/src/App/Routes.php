@@ -26,6 +26,7 @@ function setupAPIRoutes(App $app, $authMiddleware)
             $app->put('/{id}/password', 'App\Controller\Member\PutPassword');
             $app->get('/{id}/configuration[/{key}]', 'App\Controller\Member\GetConfiguration');
             $app->put('/{id}/configuration', 'App\Controller\Member\PutConfiguration');
+            $app->get('/{id}/permissions', 'App\Controller\Permissions\GetMemberPermissions');
         }
     )->add(new \App\Middleware\CiabMiddleware($app))->add($authMiddleware);
 
