@@ -1,6 +1,8 @@
 const extractStaff = (staff) => {
   return {
     id: parseInt(staff.member?.id) ?? -1,
+    deptStaffId: parseInt(staff.id) ?? -1,
+    deptId: parseInt(staff.department.id) ?? -1,
     departmentName: staff.department?.name ?? '',
     divisionName: staff.department?.parent?.name,
     firstName: staff.member?.first_name ?? '',
@@ -12,7 +14,7 @@ const extractStaff = (staff) => {
   }
 };
 
-const sortAlphabetical = (staff, otherStaff) => {
+export const sortStaffByPosition = (staff, otherStaff) => {
   if (staff.position === 'Head' && otherStaff.position !== 'Head') {
     return -1;
   } else if (staff.position === 'Sub-Head' && otherStaff.position !== 'Sub-Head') {
@@ -23,6 +25,5 @@ const sortAlphabetical = (staff, otherStaff) => {
 };
 
 export const extractDepartmentStaff = (staffData) => {
-  return staffData.map((item) => extractStaff(item))
-    .sort(sortAlphabetical);
+  return staffData.map((item) => extractStaff(item));
 };

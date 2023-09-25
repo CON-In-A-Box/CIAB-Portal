@@ -2,6 +2,7 @@
 const PROPS = {
   staff: Object,
   isDepartment: Boolean,
+  canEdit: Boolean
 };
 
 const TEMPLATE = `
@@ -16,6 +17,8 @@ const TEMPLATE = `
     <p v-if="currentUser?.id === staff.id">This is you!</p>
   </div>
   <div class="UI-table-cell-no-border">
+    <button class="UI-redbutton" 
+      v-if="currentUser?.editAnyAllowed || (canEdit && currentUser?.id !== staff.id)" @click="onEditClicked">Edit</button>
   </div>
 `;
 
@@ -39,6 +42,15 @@ const staffPosition = (staff, isDepartment) => Vue.computed(() => {
   return staff.position;
 });
 
+function onEditClicked() {
+  const emittedEventData = {
+    staff: this.staff,
+    isDepartment: this.isDepartment
+  };
+
+  this.$emit('editClicked', emittedEventData);
+}
+
 const INITIAL_DATA = () => {
   return {
     staffFullName,
@@ -50,13 +62,17 @@ const INITIAL_DATA = () => {
 const departmentMemberComponent = {
   props: PROPS,
   template: TEMPLATE,
+  emits: [ 'editClicked' ],
   setup() {
     const currentUser = Vue.inject('currentUser');
     return {
-      currentUser: currentUser.value
+      currentUser
     }
   },
-  data: INITIAL_DATA
+  data: INITIAL_DATA,
+  methods: {
+    onEditClicked
+  }
 };
 
 export default departmentMemberComponent;

@@ -1,9 +1,8 @@
 /* globals Vue, apiRequest */
-import { extractDepartmentStaff } from '../department-staff-parser.js';
-
 const PROPS = {
   department: Object,
-  division: Object
+  division: Object,
+  divisionStaffMap: Object
 }
 
 const TEMPLATE = `
@@ -21,11 +20,12 @@ const TEMPLATE = `
   <div :class="tableClass(department).value">
     <department-header :isDepartment=isDepartment(department).value :department=department></department-header>
     <div class="UI-table-row" v-for="staff in departmentStaff">
-      <department-member :staff=staff :isDepartment=isDepartment(department).value></department-member>
+      <department-member :staff=staff :isDepartment=isDepartment(department).value :canEdit=canEditDept 
+        @edit-clicked="editStaffClicked"></department-member>
     </div>
   </div>
   <div class="UI-center">
-    <button class="UI-yellowbutton" @click="addStaffClicked(department, isDepartment(department).value)">Add someone to {{department.name}}</button>
+    <button class="UI-yellowbutton" @click="addStaffClicked">Add someone to {{department.name}}</button>
   </div>
 `;
 
@@ -41,14 +41,14 @@ const tableClass = (department) => Vue.computed(() => {
   return isDepartment(department) ? 'UI-table-all UI-table-heading' : 'UI-table-all';
 });
 
-const filterStaff = (componentInstance, staff) => {
-  const divisionPositions = componentInstance.staffPositions.divisionPositions.map(position => position.name);
+const filterStaff = (staff, staffPositions, department) => {
+  const divisionPositions = staffPositions.divisionPositions.map(position => position.name);
 
-  if (!isDepartment(componentInstance.department).value) {
+  if (!isDepartment(department).value) {
     return staff.filter((item) => divisionPositions.includes(item.position));
   }
 
-  if (componentInstance.department.parentId === componentInstance.department.id) {
+  if (department.parentId === department.id) {
     return staff.filter((item) => !divisionPositions.includes(item.position));
   }
 
@@ -64,40 +64,88 @@ const INITIAL_DATA = () => {
   }
 };
 
-const fetchDepartmentStaff = async(departmentId) => {
-  const response = await apiRequest('GET', `department/${departmentId}/staff`);
-  const departmentStaffData = JSON.parse(response.responseText);
+const canEditDepartmentStaff = async(department, currentUser) => {
+  // Bypass for users who have "edit any" permission, no need to check additional depts.
+  if (currentUser.editAnyAllowed) {
+    return {
+      allowed: true
+    }
+  }
 
-  return extractDepartmentStaff(departmentStaffData.data);
-};
+  const response = await apiRequest('GET', `permissions/generic/staff.${department.id}/put`);
+  const canEditData = JSON.parse(response.responseText);
 
-const onMounted = async(componentInstance) => {
-  const departmentStaff = await fetchDepartmentStaff(componentInstance.department.id);
-  const filteredStaff = filterStaff(componentInstance, departmentStaff);
-  componentInstance.departmentStaff.push(...filteredStaff);
-};
-
-function addStaffClicked(department, isDepartment) {
-  this.showSidebar = !this.showSidebar;
-  this.sidebarDept = this.showSidebar ? department : {};
-  this.sidebarDeptStaff = this.showSidebar ? this.departmentStaff : [];
-  this.sidebarDeptIsDepartment = this.showSidebar ? isDepartment : false;
+  return {
+    allowed: canEditData.data[0].allowed
+  };
 }
 
-function componentSetup() {
+const onMounted = async(componentInstance) => {
+  const [ canEditResult ] = await Promise.all([
+    canEditDepartmentStaff(componentInstance.department.id, componentInstance.currentUser)
+  ]);
+
+  componentInstance.canEditDept = canEditResult.allowed;
+};
+
+function addStaffClicked() {
+  const isDepartment = this.isDepartment(this.department).value;
+  this.updateSidebarProps(isDepartment);
+}
+
+function editStaffClicked(eventData) {
+  this.updateSidebarProps(eventData.isDepartment, eventData.staff);
+}
+
+function updateSidebarProps(isDepartment, editedStaff) {
+  this.showSidebar = !this.showSidebar;
+
+  if (this.showSidebar) {
+    this.sidebarDept = this.department;
+    this.sidebarDivision = this.division;
+    this.sidebarDeptStaff = this.departmentStaff;
+    this.sidebarDeptIsDepartment = isDepartment;
+    this.sidebarEditStaff = editedStaff ?? {};
+  } else {
+    this.sidebarDept = {};
+    this.sidebarDivision = {};
+    this.sidebarDeptStaff = [];
+    this.sidebarDeptIsDepartment = false;
+    this.sidebarEditStaff = {};
+  }
+}
+
+function componentSetup(props) {
   const staffPositions = Vue.inject('staffPositions');
   const showSidebar = Vue.inject('showSidebar');
   const sidebarDept = Vue.inject('sidebarDept');
+  const sidebarDivision = Vue.inject('sidebarDivision');
   const sidebarDeptStaff = Vue.inject('sidebarDeptStaff');
   const sidebarDeptIsDepartment = Vue.inject('sidebarDeptIsDepartment');
+  const sidebarEditStaff = Vue.inject('sidebarEditStaff');
+  const currentUser = Vue.inject('currentUser');
+
+  const departmentStaff = Vue.ref([]);
+
+  Vue.watchEffect(() => {
+    if (props.divisionStaffMap != null && Array.isArray(props.divisionStaffMap[props.department.id])) {
+      const staff = props.divisionStaffMap[props.department.id];
+      const filteredStaff = filterStaff(staff, staffPositions.value, props.department);
+      departmentStaff.value.push(...filteredStaff);
+    }
+  });
 
   return {
-    departmentStaff: Vue.ref([]),
+    departmentStaff,
+    canEditDept: Vue.ref(false),
     staffPositions: staffPositions,
     showSidebar,
     sidebarDept,
+    sidebarDivision,
     sidebarDeptStaff,
-    sidebarDeptIsDepartment
+    sidebarDeptIsDepartment,
+    sidebarEditStaff,
+    currentUser
   }
 }
 
@@ -110,7 +158,9 @@ const staffDepartmentComponent = {
     await onMounted(this);
   },
   methods: {
-    addStaffClicked
+    addStaffClicked,
+    editStaffClicked,
+    updateSidebarProps
   }
 };
 
