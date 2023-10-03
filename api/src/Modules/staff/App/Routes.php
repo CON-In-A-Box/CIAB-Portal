@@ -12,6 +12,7 @@ function setupStaffAPI($app, $authMiddleware)
             $app->get('/staff_membership/', 'App\Modules\staff\Controller\GetMemberPosition');
             $app->get('/{id}/staff_membership', 'App\Modules\staff\Controller\GetMemberPosition');
             $app->post('/{id}/staff_membership', 'App\Modules\staff\Controller\PostStaffMembership');
+            $app->put('/{id}/staff_membership', 'App\Modules\staff\Controller\PutStaffMembership');
         }
     )->add(new App\Middleware\CiabMiddleware($app))->add($authMiddleware);
 

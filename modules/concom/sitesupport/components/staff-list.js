@@ -10,8 +10,7 @@ const TEMPLATE = `
       <staff-division v-for="division in divisions" :division=division></staff-division>
     </div>
   </div>
-  <staff-sidebar v-if="showSidebar" :department=sidebarDept :isDepartment=sidebarDeptIsDepartment 
-    @sidebar-closed="closeSidebar" @sidebar-form-submitted="updateDepartment"></staff-sidebar>
+  <staff-sidebar v-if="showSidebar" @sidebar-closed="closeSidebar" @sidebar-form-submitted="updateDepartment"></staff-sidebar>
 `;
 
 const fetchDivisionData = async() => {
@@ -25,8 +24,12 @@ const fetchCurrentUser = async() => {
   const response = await apiRequest('GET', 'member');
   const memberData = JSON.parse(response.responseText);
 
+  const editAnyResponse = await apiRequest('GET', 'permissions/generic/staff.all/put');
+  const editAnyData = JSON.parse(editAnyResponse.responseText);
+
   return {
-    id: parseInt(memberData.id)
+    id: parseInt(memberData.id),
+    editAnyAllowed: editAnyData.data[0].allowed
   };
 };
 
@@ -68,7 +71,7 @@ const onMounted = async(componentInstance) => {
 };
 
 function componentSetup() {
-  const currentUser = Vue.ref({ id: null });
+  const currentUser = Vue.ref({ id: null, editAnyAllowed: false });
   Vue.provide('currentUser', Vue.readonly(currentUser));
 
   const divisions = Vue.ref([]);
@@ -83,19 +86,27 @@ function componentSetup() {
   const sidebarDept = Vue.ref({});
   Vue.provide('sidebarDept', sidebarDept);
 
+  const sidebarDivision = Vue.ref({});
+  Vue.provide('sidebarDivision', sidebarDivision);
+
   const sidebarDeptStaff = Vue.ref([]);
   Vue.provide('sidebarDeptStaff', sidebarDeptStaff);
 
   const sidebarDeptIsDepartment = Vue.ref(false);
   Vue.provide('sidebarDeptIsDepartment', sidebarDeptIsDepartment);
+
+  const sidebarEditStaff = Vue.ref({});
+  Vue.provide('sidebarEditStaff', sidebarEditStaff);
   return {
     currentUser,
     divisions,
     staffPositions,
     showSidebar,
     sidebarDept,
+    sidebarDivision,
     sidebarDeptStaff,
-    sidebarDeptIsDepartment
+    sidebarDeptIsDepartment,
+    sidebarEditStaff
   }
 }
 
@@ -105,12 +116,29 @@ const contentAreaClass = (showSidebar) => Vue.computed(() => {
 
 function closeSidebar() {
   this.showSidebar = false;
+  this.sidebarDept = {};
+  this.sidebarDeptStaff = [];
+  this.sidebarDeptIsDepartment = false;
+  this.sidebarEditStaff = {};
 }
 
 function updateDepartment(eventData) {
   if (eventData.eventType === 'added') {
     this.sidebarDeptStaff.push(eventData.staff);
+  } else if (eventData.eventType === 'updated') {
+    const updatedStaff = this.sidebarDeptStaff.find((staff) => staff.id === eventData.staff.id);
+    if (updatedStaff != null) {
+      updatedStaff.note = eventData.staff.note;
+      updatedStaff.position = eventData.staff.position;
+    }
+  } else if (eventData.eventType === 'removed') {
+    const staffIdx = this.sidebarDeptStaff.findIndex((staff) => staff.id === eventData.staff.id);
+    if (staffIdx !== -1) {
+      this.sidebarDeptStaff.splice(staffIdx, 1);
+    }
   }
+
+  this.closeSidebar();
 }
 
 const staffListComponent = {
