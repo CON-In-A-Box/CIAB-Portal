@@ -493,7 +493,7 @@ abstract class BaseController
                 $select->subselect()
                     ->columns('COUNT(DepartmentID)')
                     ->from('`Departments` d2')
-                    ->whereEquals(['d2.ParentDepartmentID' => 'd1.DepartmentID'])
+                    ->where('d2.ParentDepartmentID = d1.DepartmentID')
                     ->andWhere("NOT NAME = 'Historical Placeholder'")
                     ->as('child_count')
                     ->getStatement()
@@ -502,13 +502,17 @@ abstract class BaseController
                 $select->subselect()
                     ->columns('GROUP_CONCAT(Email)')
                     ->from('EMails')
-                    ->whereEquals(['DepartmentID' => 'd1.DepartmentID'])
+                    ->where('DepartmentID = d1.DepartmentID')
                     ->as('email')
                     ->getStatement()
             )
             ->from('Departments d1');
         if ($id !== null) {
-            $select->where("(DepartmentID = '$id' OR Name = '$id')");
+            $select->orWhere('(')
+                ->catWhere('DepartmentID = ', $id)
+                ->catWhere(' OR ')
+                ->catWhere('Name = ', $id)
+                ->catWhere(')');
         }
         $placeholders = $select->subselect()->columns('DepartmentID')->from('Departments')->whereEquals(['Name' => 'Historical Placeholder']);
         $select->where('DepartmentID NOT IN ', $placeholders);

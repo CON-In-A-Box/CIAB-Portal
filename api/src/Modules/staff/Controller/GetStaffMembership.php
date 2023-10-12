@@ -6,7 +6,7 @@
 /**
  *  @OA\Get(
  *      tags={"staff"},
- *      path="/staff_membership/{id}",
+ *      path="/staff/membership/{id}",
  *      summary="Gets staff position",
  *      @OA\Parameter(
  *          description="Id of the staff position.",

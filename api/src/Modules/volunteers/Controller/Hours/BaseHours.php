@@ -143,6 +143,10 @@
  *          type="number"
  *      ),
  *      @OA\Property(
+ *          property="volunteeer_count",
+ *          type="number"
+ *      ),
+ *      @OA\Property(
  *          property="total_hours",
  *          type="number"
  *      )
@@ -161,6 +165,10 @@
  *      @OA\Property(
  *          property="total_hours",
  *          type="in",
+ *      ),
+ *      @OA\Property(
+ *          property="total_volunteers",
+ *          type="integer",
  *      ),
  *      @OA\Property(
  *          property="data",
@@ -248,10 +256,10 @@ abstract class BaseHours extends BaseController
     }
 
 
-    protected function checkOverlap($memberId, $endtime, $hours, $event = null)
+    protected function checkOverlap($request, $memberId, $endtime, $hours, $event = null)
     {
         if ($event === null) {
-            $event = $this->getEventId();
+            $event = $this->getEventId($request);
         }
 
         $data = Select::new($this->container->db)

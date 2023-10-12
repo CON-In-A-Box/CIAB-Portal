@@ -10,7 +10,7 @@ module.exports = {
         "SharedArrayBuffer": "readonly"
     },
     "parserOptions": {
-        "ecmaVersion": 2018,
+        "ecmaVersion": 2020,
         "sourceType": "script"
     },
     "rules": {
@@ -90,6 +90,10 @@ module.exports = {
                "console/vue.js",
                "modules/concom/report/sitesupport/vue.js",
                "modules/concom/sitesupport/vue.js",
+               "modules/concom/sitesupport/division-parser.js",
+               "modules/concom/sitesupport/components/*.js",
+               "modules/concom/sitesupport/concom_v2.js",
+               "modules/concom/sitesupport/department-staff-parser.js",
                "modules/event/report/sitesupport/vue.js",
                "modules/registration/sitesupport/badgeMenuPane.js" ,
                "modules/registration/sitesupport/vue.js",
@@ -98,10 +102,13 @@ module.exports = {
                "modules/registration/sitesupport/lost.js",
                "modules/registration/report/sitesupport/vue.js",
                "modules/volunteers/sitesupport/volunteerPane.js",
-               "modules/volunteers/admin/sitesupport/vue.js",
-               "modules/volunteers/sitesupport/volunteersEntry.js",
+               "modules/volunteers/admin/sitesupport/*.js",
+               "modules/volunteers/enter/sitesupport/*.js",
+               "modules/volunteers/sitesupport/hourTable.js",
                "modules/volunteers/report/sitesupport/hourReport.js",
-               "modules/volunteers/report/sitesupport/volunteerReport.js"],
+               "modules/volunteers/report/sitesupport/volunteerReport.js",
+               "test/sitesupport/modules/staff/__tests__/*.js"
+              ],
       parserOptions: { sourceType: "module" },
     }
   ]

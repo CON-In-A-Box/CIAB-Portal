@@ -84,6 +84,35 @@
  *      )
  *  )
  *
+ *  @OA\Schema(
+ *      schema="staff_position_entry",
+ *      @OA\Property(
+ *          property="id",
+ *          type="integer"
+ *      ),
+ *      @OA\Property(
+ *          property="position",
+ *          type="string"
+ *      )
+ *  )
+ *
+ *  @OA\Schema(
+ *      schema="staff_position_list",
+ *      @OA\Property(
+ *          property="type",
+ *          type="string",
+ *          enum={"staff_position_list"}
+ *      ),
+ *      @OA\Property(
+ *          property="data",
+ *          type="array",
+ *          description="List of department position types",
+ *          @OA\Items(
+ *              ref="#/components/schemas/staff_position_entry"
+ *          )
+ *      )
+ *  )
+ *
  *   @OA\Response(
  *      response="staff_not_found",
  *      description="Staff Position not found in the system.",
@@ -140,7 +169,7 @@ abstract class BaseStaff extends BaseController
     }
 
 
-    protected function selectStaff($event, $department = null, $member = null)
+    protected function selectStaff($event, $department = null, $member = null, $include_subdep = false)
     {
         $select = Select::new($this->container->db);
 
@@ -188,6 +217,17 @@ abstract class BaseStaff extends BaseController
         if ($department !== null) {
             $department = $this->getDepartment($department);
             $select->where('l.DepartmentID = ', $department['id']);
+            if ($include_subdep) {
+                $subdeps = $select->subselect()->columns(
+                    'DepartmentID'
+                )->from(
+                    'Departments'
+                )->where(
+                    "ParentDepartmentID = ",
+                    $department['id']
+                );
+                $select->orWhere('l.DepartmentID IN ', $subdeps);
+            }
         }
 
         if ($member !== null) {

@@ -2,10 +2,10 @@
   <div id="vol-entry">
     <div id="message" v-bind:class="(error)?'VOL-enter-msg-error':'VOL-enter-msg'">{{ message }}</div>
       <lookup-user ref=lookup prompt='Volunteer Badge Number, E-Mail or Full Name'
-                  handler='$handleResult'
-                  fail='$onFail'
-                  lookup-target='volunteers/enter'
-                  lookup-param='volunteerId'>
+                  @fail='onFail'
+                  @success='onSuccess'
+                  @prelookup="handlePrelookup"
+                  >
       </lookup-user>
       <span v-bind:class="(lookupError)?'VOL-enter-error-span':'VOL-enter-id-span'">{{ lookupMessage }}</span>
 

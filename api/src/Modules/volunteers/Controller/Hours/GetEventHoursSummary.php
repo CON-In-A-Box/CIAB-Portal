@@ -61,6 +61,7 @@ class GetEventHoursSummary extends BaseHours
         ->columns('"volunteer_hour_summary" AS type')
         ->columns('DepartmentID AS department')
         ->columns('COUNT(HourEntryID) AS entry_count')
+        ->columns('COUNT(DISTINCT AccountID) AS volunteer_count')
         ->columns('SUM(ActualHours * TimeModifier) AS total_hours')
         ->from('VolunteerHours')
         ->whereEquals(['EventID' => $id])
@@ -71,6 +72,12 @@ class GetEventHoursSummary extends BaseHours
             throw new NotFoundException('Volunteer records not found');
         }
 
+        $data2 = Select::new($this->container->db)
+        ->columns('COUNT(DISTINCT AccountID) AS t')
+        ->from('VolunteerHours')
+        ->whereEquals(['EventID' => $id])
+        ->fetchAll();
+
         $sum = 0;
         foreach ($data as $entry) {
             $sum += $entry['total_hours'];
@@ -79,7 +86,7 @@ class GetEventHoursSummary extends BaseHours
         return [
         \App\Controller\BaseController::LIST_TYPE,
         $data,
-        array('type' => 'volunteer_hour_entry_list', 'total_hours' => $sum)];
+        array('type' => 'volunteer_hour_entry_list', 'total_hours' => $sum, 'total_volunteer_count' => $data2[0]['t'])];
 
     }
 

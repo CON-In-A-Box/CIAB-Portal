@@ -1,0 +1,89 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Department Staff Parser parses Department Staff 1`] = `
+[
+  {
+    "departmentName": "Book Swap",
+    "deptId": 105,
+    "deptStaffId": 45,
+    "divisionName": "Activities",
+    "email": "copgoc@email.net",
+    "firstName": "copgoc",
+    "id": 1408,
+    "lastName": "FuaDigwaw",
+    "note": "",
+    "position": "Head",
+    "pronouns": "",
+  },
+  {
+    "departmentName": "Book Swap",
+    "deptId": 105,
+    "deptStaffId": 46,
+    "divisionName": "Activities",
+    "email": "MifRowgac@email.net",
+    "firstName": "MifRowgac",
+    "id": 1093,
+    "lastName": "PakRovKitSewMoj",
+    "note": "",
+    "position": "Sub-Head",
+    "pronouns": "",
+  },
+  {
+    "departmentName": "Book Swap",
+    "deptId": 105,
+    "deptStaffId": 47,
+    "divisionName": "Activities",
+    "email": "baunocKum@email.net",
+    "firstName": "baunocKum",
+    "id": 1264,
+    "lastName": "CegFaisiklaw",
+    "note": "",
+    "position": "Specialist",
+    "pronouns": "",
+  },
+]
+`;
+
+exports[`Department Staff Parser parses Division Staff 1`] = `
+[
+  {
+    "departmentName": "Activities",
+    "deptId": 1,
+    "deptStaffId": 1,
+    "divisionName": undefined,
+    "email": "test-admin@example.com",
+    "firstName": "Test",
+    "id": 1000,
+    "lastName": "Admin",
+    "note": "",
+    "position": "Head",
+    "pronouns": "He/Him",
+  },
+  {
+    "departmentName": "Activities",
+    "deptId": 1,
+    "deptStaffId": 2,
+    "divisionName": undefined,
+    "email": "pezgiwPuh@email.net",
+    "firstName": "pezgiwPuh",
+    "id": 1109,
+    "lastName": "setvocCab",
+    "note": "",
+    "position": "Sub-Head",
+    "pronouns": "",
+  },
+  {
+    "departmentName": "Activities",
+    "deptId": 1,
+    "deptStaffId": 3,
+    "divisionName": undefined,
+    "email": "Wirtesvai@email.net",
+    "firstName": "Wirtesvai",
+    "id": 1490,
+    "lastName": "bokGedfer",
+    "note": "",
+    "position": "Specialist",
+    "pronouns": "",
+  },
+]
+`;

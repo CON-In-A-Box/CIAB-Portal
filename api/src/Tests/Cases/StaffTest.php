@@ -17,15 +17,29 @@ class StaffTest extends CiabTestCase
         $this->runRequest('POST', '/member/1000/staff_membership', null, ['Department' => 1], 400);
         $data = $this->runSuccessJsonRequest('POST', '/member/1000/staff_membership', null, ['Department' => 1, 'Position' => 1], 201);
         $this->assertNotEmpty($data);
-        $this->runRequest('DELETE', '/staff_membership/'.$data->id, null, null, 204);
-        $this->runRequest('DELETE', '/staff_membership/-1', null, null, 404);
+        $this->runRequest('DELETE', '/staff/membership/'.$data->id, null, null, 204);
+        $this->runRequest('DELETE', '/staff/membership/-1', null, null, 404);
 
+    }
+
+    
+    public function testPutMembership(): void
+    {   
+        $this->runRequest('PUT', '/member/1000/staff_membership', null, null, 400);
+        $this->runRequest('PUT', '/member/-1/staff_membership', null, null, 400);
+        $this->runRequest('PUT', '/member/1000/staff_membership', null, ['Nothing' => 0], 400);
+        $this->runRequest('PUT', '/member/1000/staff_membership', null, ['Department' => -1, 'Position' => 1], 404);
+        $this->runRequest('PUT', '/member/1000/staff_membership', null, ['Department' => 1], 400);    
+        $this->runRequest('PUT', '/member/1000/staff_membership', null, ['Department' => 1, 'Position' => 1, 'Note' => 'phpunitAddedNote'], 200);
+        $data = $this->runSuccessJsonRequest('GET', '/member/1000/staff_membership');
+        $this->assertEquals($data->data[0]->position, 'Head');
+        $this->assertEquals($data->data[0]->note, 'phpunitAddedNote');
     }
 
 
     public function testMembership(): void
     {
-        $position = $this->runSuccessJsonRequest('POST', '/member/1000/staff_membership', null, ['Department' => '2', 'Position' => '1', 'Note' => 'PHPUnit Testing'], 201);
+        $position = $this->runSuccessJsonRequest('POST', '/member/1000/staff_membership', null, ['Department' => '102', 'Position' => '1', 'Note' => 'PHPUnit Testing'], 201);
         $this->assertNotEmpty($position);
 
         $data = $this->runSuccessJsonRequest('GET', '/member/1000/staff_membership');
@@ -39,16 +53,26 @@ class StaffTest extends CiabTestCase
 
         $this->runRequest('GET', '/staff_membership/-1', null, null, 404);
 
-        $data = $this->runSuccessJsonRequest('GET', '/staff_membership/'.$position->id);
+        $data = $this->runSuccessJsonRequest('GET', '/staff/membership/'.$position->id);
         $this->assertNotEmpty($data);
 
-        $data = $this->runSuccessJsonRequest('GET', '/department/staff/');
+        $data = $this->runSuccessJsonRequest('GET', '/staff');
         $this->assertNotEmpty($data);
+        $this->assertNotEmpty($data->data);
 
-        $data = $this->runSuccessJsonRequest('GET', '/department/1/staff');
+        $data = $this->runSuccessJsonRequest('GET', '/department/102/staff');
         $this->assertNotEmpty($data);
+        $this->assertNotEmpty($data->data);
 
-        $this->runRequest('DELETE', '/staff_membership/'.$position->id, null, null, 204);
+        $data = $this->runSuccessJsonRequest('GET', '/department/2/staff');
+        $this->assertNotEmpty($data);
+        $this->assertEmpty($data->data);
+
+        $data = $this->runSuccessJsonRequest('GET', '/department/2/staff', ['subdepartments' => 1]);
+        $this->assertNotEmpty($data);
+        $this->assertNotEmpty($data->data);
+
+        $this->runRequest('DELETE', '/staff/membership/'.$position->id, null, null, 204);
 
     }
 

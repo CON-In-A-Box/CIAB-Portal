@@ -21,10 +21,41 @@
  *          description="Number of items allowed from the group."
  *      ),
  *      @OA\Property(
- *          property="rewards",
+ *          property="name",
+ *          type="string",
+ *          description="Optional name of the reward group."
+ *      )
+ *  )
+ *
+ *
+ *  @OA\Schema(
+ *      schema="volunteer_reward_group_prize_list",
+ *      @OA\Property(
+ *          property="type",
+ *          type="string",
+ *          enum={"volunteer_reward_group_prize_list"}
+ *      ),
+ *      @OA\Property(
+ *          property="data",
  *          description="Items in the group.",
  *          @OA\Schema(
  *              ref="#/components/schemas/volunteer_reward_entry_list"
+ *          )
+ *      )
+ *  )
+ *
+ *  @OA\Schema(
+ *      schema="volunteer_reward_group_list",
+ *      @OA\Property(
+ *          property="type",
+ *          type="string",
+ *          enum={"volunteer_reward_group_list"}
+ *      ),
+ *      @OA\Property(
+ *          property="data",
+ *          description="Items in the group.",
+ *          @OA\Schema(
+ *              ref="#/components/schemas/volunteer_reward_group"
  *          )
  *      )
  *  )
@@ -51,7 +82,8 @@ abstract class BaseRewardGroup extends BaseController
     protected static $columnsToAttributes = [
         '"volunteer_reward_group"' => 'type',
         'RewardGroupID' => 'id',
-        'RedeemLimit' => 'reward_limit'
+        'RedeemLimit' => 'reward_limit',
+        'Name' => 'name'
     ];
 
 

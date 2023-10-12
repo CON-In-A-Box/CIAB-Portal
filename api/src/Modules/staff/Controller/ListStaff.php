@@ -6,7 +6,7 @@
 /**
  *  @OA\Get(
  *      tags={"departments"},
- *      path="/department/staff/",
+ *      path="/staff",
  *      summary="List staff all departments",
  *      @OA\Parameter(
  *          ref="#/components/parameters/event",

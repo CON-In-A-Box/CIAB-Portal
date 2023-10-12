@@ -16,6 +16,18 @@
  *          @OA\Schema(type="integer")
  *      ),
  *      @OA\Parameter(
+ *          parameter="subdepartments",
+ *          description="include sub-departments",
+ *          in="query",
+ *          name="subdepartments",
+ *          required=false,
+ *          style="form",
+ *          @OA\Schema(
+ *              type="integer",
+ *              enum={0, 1}
+ *          )
+ *      ),
+ *      @OA\Parameter(
  *          ref="#/components/parameters/event",
  *      ),
  *      @OA\Parameter(
@@ -55,7 +67,7 @@ namespace App\Modules\staff\Controller;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
-class GetDepartment extends BaseStaff
+class ListDepartmentStaff extends BaseStaff
 {
 
 
@@ -64,7 +76,8 @@ class GetDepartment extends BaseStaff
         $permissions = ['api.get.staff'];
         $this->checkPermissions($permissions);
         $event = $this->getEventId($request);
-        $data = $this->selectStaff($event, $params['id']);
+        $sub = boolval($request->getQueryParam('subdepartments', 0));
+        $data = $this->selectStaff($event, $params['id'], null, $sub);
         return [
         \App\Controller\BaseController::LIST_TYPE,
         $data,
@@ -74,5 +87,5 @@ class GetDepartment extends BaseStaff
     }
 
 
-    /* end GetDepartment */
+    /* end ListDepartmentStaff */
 }

@@ -7,7 +7,9 @@
  *  @OA\Delete(
  *      tags={"volunteers"},
  *      path="/volunteers/rewards/{id}",
- *      summary="Deletes an existing volunteer reward",
+ *      summary="Deletes or marks an existing volunteer reward retired",
+ *      description="If the reward has never been distributed then it is deleted from the database.
+ However, if that reward has been awarded then instead the reward is marked as retired and its inventory is set to the same as claimed, so effectively zero.",
  *      @OA\Parameter(
  *          description="Id of the volunteer reward",
  *          in="path",
@@ -39,6 +41,7 @@ namespace App\Modules\volunteers\Controller\Rewards;
 use Slim\Http\Request;
 use Slim\Http\Response;
 use Atlas\Query\Delete;
+use Atlas\Query\Update;
 
 class DeleteReward extends BaseReward
 {
@@ -49,10 +52,23 @@ class DeleteReward extends BaseReward
         $permissions = ['api.delete.volunteers'];
         $this->checkPermissions($permissions);
 
-        Delete::new($this->container->db)
-            ->from('VolunteerRewards')
-            ->WhereEquals(['PrizeID' => $params['id']])
-            ->perform();
+        $target = new GetReward($this->container);
+        $data = $target->buildResource($request, $response, ['id' => $params['id']])[1];
+
+        if (intval($data['claimed']) == 0) {
+            Delete::new($this->container->db)
+                ->from('VolunteerRewards')
+                ->whereEquals(['PrizeID' => $params['id']])
+                ->perform();
+        } else {
+            Update::new($this->container->db)
+                ->table('VolunteerRewards')
+                ->columns(['Retired' => 1,
+                    'TotalInventory' => $data['claimed'],
+                    'RewardGroupID' => null])
+                ->whereEquals(['PrizeID' => $params['id']])
+                ->perform();
+        }
 
         return [
         \App\Controller\BaseController::RESOURCE_TYPE,

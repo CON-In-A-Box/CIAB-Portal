@@ -58,11 +58,9 @@ There is a basic asset library engine included in CIAB to try to manage long-las
 
 There are important templates for the back end located in `api/src/Templates`. These Templates are meant to be as generic as possible in order to be used across events. But it is very possible to modify the language and format of the template for a given event. 
 
-# First Steps
+# Contributing
 
-For a step-by-step overview of process of getting a local instance of the project setup look at [FirstSetup.md](FirstSetup.md). 
-
-If you would like and are able to use docker then you should read [Docker.md](Docker.md). That will give you a quick and easy way to get started in that way.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for information on how to get started developing locally.
 
 # Code Checking
 
@@ -86,10 +84,10 @@ The code is also monitored by [SonarCloud](https://sonarcloud.io/dashboard?id=CO
 
 # Next Steps
 
-* Additionally we want to continue to expand the cross-event structure to try to encourage other events to use this tool. We believe it can be very power and helpful for many events and would like our work to be welcome in as many places as it fits.  This likely involves making it easier to skin the site and pull out many of the CONvergence assumptions and making them configurable based on the event. 
+* Additionally we want to continue to expand the cross-event structure to try to encourage other events to use this tool. We believe it can be very powerful and helpful for many events and would like our work to be welcome in as many places as it fits.  This likely involves making it easier to skin the site and pull out many of the CONvergence assumptions and making them configurable based on the event. 
 
 # How you can help!
 
-We are always happy for help from other developers. Please contact us and we are happy to try to help provide direction or even submit patches and we will review them. 
+We are always happy for help from other developers. Please contact us and we are happy to try to help provide direction or even submit patches and we will review them.
 
 ***Thank you for your interest***

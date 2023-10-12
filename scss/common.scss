@@ -329,6 +329,10 @@
     @extend .w3-top;
 }
 
+.UI-main-bar-spacer {
+    width: 100%;
+}
+
 .UI-main-bar {
     @extend .UI-bar;
     @extend .w3-dark-grey;

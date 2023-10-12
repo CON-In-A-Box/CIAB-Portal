@@ -1666,6 +1666,33 @@ paths:
       security:
         -
           ciab_auth: []
+  '/member/{id}/permissions':
+    get:
+      tags:
+        - members
+      summary: 'Gets a member permissions'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Id of the member.'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Member found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/permission_list'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/member_not_found'
+      security:
+        -
+          ciab_auth: []
   '/stores/{id}':
     get:
       tags:
@@ -2625,7 +2652,7 @@ paths:
       security:
         -
           ciab_auth: []
-  '/staff_membership/{id}':
+  '/staff/membership/{id}':
     get:
       tags:
         - staff
@@ -2676,45 +2703,6 @@ paths:
       security:
         -
           ciab_auth: []
-  '/department/{id}/staff':
-    get:
-      tags:
-        - departments
-      summary: 'List staff for a department'
-      parameters:
-        -
-          name: id
-          in: path
-          description: 'Department being listed'
-          required: true
-          schema:
-            type: integer
-        -
-          $ref: '#/components/parameters/event'
-        -
-          $ref: '#/components/parameters/short_response'
-        -
-          $ref: '#/components/parameters/max_results'
-        -
-          $ref: '#/components/parameters/page_token'
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/staff_list'
-        '401':
-          $ref: '#/components/responses/401'
-        '404':
-          description: 'Event or Department not found in the system.'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/error'
-      security:
-        -
-          ciab_auth: []
   '/member/{id}/staff_membership':
     get:
       tags:
@@ -2750,6 +2738,45 @@ paths:
       security:
         -
           ciab_auth: []
+    put:
+      tags:
+        - members
+      summary: 'Update a staff membership for the member'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'The ID of the member'
+          required: true
+          schema:
+            description: 'Member ID'
+            type: integer
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              properties:
+                Department:
+                  nullable: false
+                  description: 'ID or name of the department'
+                  type: string
+                Position:
+                  nullable: false
+                  description: 'ID of the position'
+                  type: integer
+                Note:
+                  nullable: true
+                  description: 'Notes about member'
+                  type: string
+              type: object
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/401'
+      security:
+        -
+          ciab_auth: []
   /member/staff_membership/:
     get:
       tags:
@@ -2774,7 +2801,58 @@ paths:
       security:
         -
           ciab_auth: []
-  /department/staff/:
+  '/department/{id}/staff':
+    get:
+      tags:
+        - departments
+      summary: 'List staff for a department'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Department being listed'
+          required: true
+          schema:
+            type: integer
+        -
+          parameter: subdepartments
+          name: subdepartments
+          in: query
+          description: 'include sub-departments'
+          required: false
+          style: form
+          schema:
+            type: integer
+            enum:
+              - 0
+              - 1
+        -
+          $ref: '#/components/parameters/event'
+        -
+          $ref: '#/components/parameters/short_response'
+        -
+          $ref: '#/components/parameters/max_results'
+        -
+          $ref: '#/components/parameters/page_token'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/staff_list'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          description: 'Event or Department not found in the system.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+      security:
+        -
+          ciab_auth: []
+  /staff:
     get:
       tags:
         - departments
@@ -2803,6 +2881,23 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/error'
+      security:
+        -
+          ciab_auth: []
+  /staff/positions:
+    get:
+      tags:
+        - staff
+      summary: 'List all staff position types'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/staff_position_list'
+        '401':
+          $ref: '#/components/responses/401'
       security:
         -
           ciab_auth: []
@@ -2906,6 +3001,35 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/error'
+      security:
+        -
+          ciab_auth: []
+  '/event/{id}/volunteer/claims/summary':
+    get:
+      tags:
+        - volunteers
+      summary: 'Gets event volunteer summary'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Id of the event.'
+          required: true
+          schema:
+            type: integer
+        -
+          $ref: '#/components/parameters/event'
+      responses:
+        '200':
+          description: 'Event volunteer data found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/volunteer_claim_summary'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/member_not_found'
       security:
         -
           ciab_auth: []
@@ -3456,7 +3580,8 @@ paths:
     delete:
       tags:
         - volunteers
-      summary: 'Deletes an existing volunteer reward'
+      summary: 'Deletes or marks an existing volunteer reward retired'
+      description: "If the reward has never been distributed then it is deleted from the database.\n However, if that reward has been awarded then instead the reward is marked as retired and its inventory is set to the same as claimed, so effectively zero."
       parameters:
         -
           name: id
@@ -3533,6 +3658,50 @@ paths:
       security:
         -
           ciab_auth: []
+  '/volunteers/rewards_group/{id}/list':
+    get:
+      tags:
+        - volunteers
+      summary: 'Lists the volunteer reward group data'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Id of the reward group.'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'reward data found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/volunteer_reward_group_prize_list'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/volunteer_reward_group_not_found'
+      security:
+        -
+          ciab_auth: []
+  /volunteers/rewards_group:
+    get:
+      tags:
+        - volunteers
+      summary: 'Lists the volunteer reward groups'
+      responses:
+        '200':
+          description: 'reward data found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/volunteer_reward_group_list'
+        '401':
+          $ref: '#/components/responses/401'
+      security:
+        -
+          ciab_auth: []
   /volunteers/rewards:
     get:
       tags:
@@ -3543,6 +3712,13 @@ paths:
           name: sold_out
           in: query
           description: 'Show sold out items, default if false'
+          required: false
+          schema:
+            type: boolean
+        -
+          name: retired
+          in: query
+          description: 'Show retired items, default if false'
           required: false
           schema:
             type: boolean
@@ -3607,6 +3783,9 @@ paths:
                 reward_limit:
                   description: 'Number of items allowed from the group.'
                   type: integer
+                name:
+                  description: 'Optional name of the group.'
+                  type: string
               type: object
       responses:
         '201':
@@ -3639,10 +3818,12 @@ paths:
                 promo:
                   type: boolean
                 reward_group:
-                  description: 'Reward Group Id'
+                  description: 'Reward Group Id. Remove reward group if set to -1.'
                   type: integer
                 inventory:
                   type: integer
+                value:
+                  type: float
               type: object
       responses:
         '200':
@@ -3678,6 +3859,8 @@ paths:
               properties:
                 reward_limit:
                   type: integer
+                name:
+                  type: string
               type: object
       responses:
         '200':
@@ -4095,6 +4278,9 @@ components:
         duplicates:
           description: 'Comma seperated list of other account IDs with the same email address'
           type: string
+        pronouns:
+          description: 'Prefered pronouns.'
+          type: string
       type: object
     member_reference:
       properties:
@@ -4511,6 +4697,25 @@ components:
                 $ref: '#/components/schemas/staff_entry'
         -
           $ref: '#/components/schemas/resource_list'
+    staff_position_entry:
+      properties:
+        id:
+          type: integer
+        position:
+          type: string
+      type: object
+    staff_position_list:
+      properties:
+        type:
+          type: string
+          enum:
+            - staff_position_list
+        data:
+          description: 'List of department position types'
+          type: array
+          items:
+            $ref: '#/components/schemas/staff_position_entry'
+      type: object
     volunteer_claim:
       properties:
         type:
@@ -4653,6 +4858,8 @@ components:
                 - volunteer_hour_summary_entry
             entry_count:
               type: number
+            volunteeer_count:
+              type: number
             total_hours:
               type: number
         -
@@ -4687,6 +4894,8 @@ components:
                 - volunteer_hour_entry_list
             total_hours:
               type: in
+            total_volunteers:
+              type: integer
             data:
               description: 'List of volunteer hour entries'
               type: array
@@ -4737,6 +4946,8 @@ components:
               type: integer
         inventory:
           type: integer
+        retired:
+          type: boolean
       type: object
     volunteer_reward_entry_list:
       type: object
@@ -4765,7 +4976,26 @@ components:
         reward_limit:
           description: 'Number of items allowed from the group.'
           type: integer
-        rewards:
+        name:
+          description: 'Optional name of the reward group.'
+          type: string
+      type: object
+    volunteer_reward_group_prize_list:
+      properties:
+        type:
+          type: string
+          enum:
+            - volunteer_reward_group_prize_list
+        data:
+          description: 'Items in the group.'
+      type: object
+    volunteer_reward_group_list:
+      properties:
+        type:
+          type: string
+          enum:
+            - volunteer_reward_group_list
+        data:
           description: 'Items in the group.'
       type: object
   responses:

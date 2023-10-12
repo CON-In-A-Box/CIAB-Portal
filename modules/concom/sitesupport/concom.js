@@ -10,7 +10,7 @@
             dragDropParent, toggleDept, savePosition, newEntry,
             deletePosition, changeEmail, editEmail, returnPosition,
             deleteEmail, saveEmail, deleteAC, newAC, savePermission,
-            returnRBAC, onAdd, onLookup, addMember,
+            returnRBAC, onAdd, addMember,
             updateMember, deleteMember, editMember */
 
 var basicReload = function() {
@@ -319,7 +319,7 @@ function processSaveEmail() {
   };
   if (document.getElementById('email_alias').value === null ||
       document.getElementById('email_alias').value === '' ||
-      typeof document.getElementById('email_alias').value == undefined) {
+      typeof document.getElementById('email_alias').value == 'undefined') {
     data.Alias = 'NULL';
   }
 
@@ -476,11 +476,6 @@ function onAdd() {
     window.location.assign('index.php?Function=concom#' + department);
     window.location.reload(true);
   });
-}
-
-function onLookup(origin, item) {
-  document.getElementById('add_button').disabled = false;
-  document.getElementById('user_id').value = item.Id;
 }
 
 function addMember(department, posData) {

@@ -58,20 +58,8 @@ class GetRewardGroup extends BaseRewardGroup
             throw new NotFoundException('Reward group not found');
         }
 
-        $data = Select::new($this->container->db)
-            ->columns(...BaseReward::selectMapping())
-            ->from('VolunteerRewards')
-            ->whereEquals(['RewardGroupID' => $params['id']])
-            ->fetchAll();
-
-        foreach ($data as $index => $entry) {
-            $data[$index]['claimed'] = $this->getClaimed($entry['id']);
-            $data[$index]['inventory'] = intval($entry['inventory']) - $data[$index]['claimed'];
-        }
-
         return [
-        \App\Controller\BaseController::LIST_TYPE,
-        $data,
+        \App\Controller\BaseController::RESOURCE_TYPE,
         $output];
 
     }
