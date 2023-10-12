@@ -116,7 +116,10 @@ abstract class BaseReward extends BaseController
             ->whereEquals(['PrizeID' => $id])
             ->groupBy('PrizeID')
             ->fetchOne();
-        return intval($data['claimed']);
+        if ($data) {
+            return intval($data['claimed']);
+        }
+        return 0;
 
     }
 
