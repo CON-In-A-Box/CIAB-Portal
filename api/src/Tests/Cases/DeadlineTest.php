@@ -78,7 +78,7 @@ class DeadlineTest extends CiabTestCase
     protected function tearDown(): void
     {
         $this->runRequest('DELETE', '/deadline/'.$this->target, null, null, 204);
-        $this->runRequest('DELETE', '/staff_membership/'.$this->position->id, null, null, 204);
+        $this->runRequest('DELETE', '/staff/membership/'.$this->position->id, null, null, 204);
 
         parent::tearDown();
 
