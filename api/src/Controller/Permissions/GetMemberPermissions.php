@@ -52,6 +52,19 @@ class GetMemberPermissions extends BaseController
     }
 
 
+    public static function install($database): void
+    {
+
+    }
+
+
+    public static function permissions($database): ?array
+    {
+        return null;
+
+    }
+
+
     public function buildResource(Request $request, Response $response, $params): array
     {
         $id = null;

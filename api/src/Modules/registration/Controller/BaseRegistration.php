@@ -21,6 +21,25 @@ abstract class BaseRegistration extends BaseController
     }
 
 
+    public static function install($database): void
+    {
+
+    }
+
+
+    public static function permissions($database): ?array
+    {
+        return(['api.set.registration.configuration',
+            'api.registration.ticket.checkin', 'api.registration.ticket.delete',
+            'api.registration.ticket.email', 'api.registration.ticket.get',
+            'api.registration.ticket.list', 'api.registration.ticket.lost',
+            'api.registration.ticket.pickup', 'api.registration.ticket.post',
+            'api.registration.ticket.print', 'api.registration.ticket.put',
+            'api.registration.ticket.unvoid', 'api.registration.ticket.void' ]);
+
+    }
+
+
     protected function checkPutPermission()
     {
         $permissions = ['api.set.registration.configuration'];

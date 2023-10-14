@@ -102,5 +102,14 @@ class RBAC
     }
 
 
+    public static function registerPermissions(/*.mixed.*/$permissions)
+    {
+        if (self::instance() !== null) {
+            return self::instance()->registerPermissions($permissions);
+        }
+
+    }
+
+
     /* end class */
 }

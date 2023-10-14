@@ -120,6 +120,19 @@ abstract class BaseDepartment extends BaseController
     }
 
 
+    public static function install($database): void
+    {
+
+    }
+
+
+    public static function permissions($database): ?array
+    {
+        return null;
+
+    }
+
+
     public function getDepartment($id, $setself = true)
     {
         $output = parent::getDepartment($id);

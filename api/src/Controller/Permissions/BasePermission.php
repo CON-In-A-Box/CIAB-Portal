@@ -520,6 +520,21 @@ abstract class BasePermission extends BaseController
     }
 
 
+    public static function install($database): void
+    {
+        \ciab\RBAC::customizeRBAC('\App\Controller\Announcement\BaseAnnouncement\customizeAnnouncementRBAC');
+        \ciab\RBAC::customizeRBAC('\App\Controller\Deadline\BaseDeadline::customizeDeadlineRBAC');
+
+    }
+
+
+    public static function permissions($database): ?array
+    {
+        return null;
+
+    }
+
+
     protected function buildDeptEntry($id, $allowed, $subtype, $method, $link) : array
     {
         $entry = [

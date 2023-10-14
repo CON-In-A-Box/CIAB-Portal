@@ -142,6 +142,21 @@ abstract class BaseClaims extends BaseController
     }
 
 
+    public static function install($database): void
+    {
+
+    }
+
+
+    public static function permissions($database): ?array
+    {
+        return ['api.delete.volunteers', 'api.get.volunteer.hours',
+            'api.get.volunteer.hours', 'api.get.volunteer.claims',
+            'api.post.volunteers', 'api.put.volunteers'];
+
+    }
+
+
     protected function getReward($request, $response, $id)
     {
         $target = new \App\Modules\volunteers\Controller\Rewards\GetReward($this->container);

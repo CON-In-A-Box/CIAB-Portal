@@ -21,6 +21,7 @@ require __DIR__.'/../../App/Routes.php';
 require __DIR__.'/../../App/Dependencies.php';
 require __DIR__.'/../../App/OAuth2.php';
 require __DIR__.'/../../App/Vendors.php';
+require __DIR__.'/../../App/Install.php';
 
 require __DIR__.'/../../../../functions/functions.inc';
 require_once __DIR__.'/../../../../backends/oauth2.inc';
@@ -187,6 +188,7 @@ abstract class CiabTestCase extends TestCase
                 }
             }
         }
+        setupInstall($this->container);
 
     }
 

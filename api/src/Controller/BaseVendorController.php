@@ -47,6 +47,36 @@ abstract class BaseVendorController extends BaseController
     }
 
 
+    abstract public static function baseInstall($databas): void;
+
+
+    abstract public static function basePermissions($database): ?array;
+
+
+    public static function install($database): void
+    {
+        if (self::$instance !== null &&
+            method_exists(self::$instance, __FUNCTION__)) {
+            self::$instance->{__FUNCTION__}($database);
+        } else {
+            self::baseInstall($database);
+        }
+
+    }
+
+
+    public static function permissions($database): ?array
+    {
+        if (self::$instance !== null &&
+            method_exists(self::$instance, __FUNCTION__)) {
+            return self::$instance->{__FUNCTION__}($database);
+        } else {
+            return self::basePermissions($database);
+        }
+
+    }
+
+
     public function __invoke(Request $request, Response $response, $args)
     {
         if (self::$instance !== null &&

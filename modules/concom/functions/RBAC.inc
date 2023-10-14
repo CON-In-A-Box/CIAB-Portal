@@ -25,6 +25,11 @@ class ConComRBAC
      */
     protected $rbac = null;
 
+    /**
+     * @var Permissions
+     */
+    protected $permissions = array();
+
 
     protected function __construct()
     {
@@ -119,6 +124,9 @@ class ConComRBAC
                     $role->addPermission($value['Permission']);
                 } catch (Exception\InvalidArgumentException $e) {
                 }
+                if (!in_array($value['Permission'], self::$instance->permissions)) {
+                    self::$instance->permissions[] = $value['Permission'];
+                }
                 $value = $result->fetch();
             }
 
@@ -134,6 +142,9 @@ class ConComRBAC
         /*.mixed.*/$pos,
         /*.string.*/$name
     ) {
+        if (!in_array($name, self::$instance->permissions)) {
+            error_log("Unregistered RBAC permission ".$name);
+        }
         try {
             return self::instance()->rbac->getRole(
                 strval($pos)
@@ -149,6 +160,9 @@ class ConComRBAC
         /*.mixed.*/$accountId,
         /*.string.*/$name
     ) {
+        if (!in_array($name, self::$instance->permissions)) {
+            error_log("Unregistered RBAC permission ".$name);
+        }
         if (array_key_exists('IS_ADMIN', $_SESSION) && $_SESSION['IS_ADMIN']) {
             return true;
         }
@@ -166,6 +180,9 @@ class ConComRBAC
 
     public static function havePermission(/*.string.*/$name)
     {
+        if (!in_array($name, self::$instance->permissions)) {
+            error_log("Unregistered RBAC permission ".$name);
+        }
         return self::hasPermissions($_SESSION['accountId'], $name);
 
     }
@@ -192,10 +209,7 @@ class ConComRBAC
     ) : array {
         $result = [];
         if (array_key_exists('IS_ADMIN', $_SESSION) && $_SESSION['IS_ADMIN']) {
-            foreach (self::instance()->rbac->getRoles() as $role) {
-                $result = array_unique(array_merge($result, $role->getPermissions(true)));
-            }
-            return $result;
+            return self::$instance->permissions;
         }
         $positions = POSITION::getConComPosition($accountId);
         foreach ($positions as $pos) {
@@ -218,6 +232,23 @@ class ConComRBAC
             @\call_user_func($entry, self::instance()->rbac, \DB::instance());
         } catch (\Exception $e) {
             error_log($e);
+        }
+
+    }
+
+
+    public static function registerPermissions(/*.mixed.*/$permissions)
+    {
+        if (is_array($permissions)) {
+            foreach ($permissions as $p) {
+                if (!in_array($p, self::$instance->permissions)) {
+                    self::$instance->permissions[] = $p;
+                }
+            }
+        } else {
+            if (!in_array($permissions, self::$instance->permissions)) {
+                self::$instance->permissions[] = $permissions;
+            }
         }
 
     }

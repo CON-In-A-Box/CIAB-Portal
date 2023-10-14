@@ -256,6 +256,20 @@ abstract class BaseHours extends BaseController
     }
 
 
+    public static function install($database): void
+    {
+
+    }
+
+
+    public static function permissions($database): ?array
+    {
+        return ['api.delete.volunteers', 'api.get.volunteer.hours',
+            'api.post.volunteers', 'api.put.volunteers'];
+
+    }
+
+
     protected function checkOverlap($request, $memberId, $endtime, $hours, $event = null)
     {
         if ($event === null) {

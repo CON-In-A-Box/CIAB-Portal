@@ -764,5 +764,11 @@ abstract class BaseController
     }
 
 
+    abstract public static function install($database): void;
+
+
+    abstract public static function permissions($database): ?array;
+
+
     /* END BaseController */
 }

@@ -26,5 +26,18 @@ abstract class BaseSystem extends BaseController
     }
 
 
+    public static function install($database): void
+    {
+
+    }
+
+
+    public static function permissions($database): ?array
+    {
+        return ['api.get.log', 'api.get.configuration', 'api.put.log', 'api.put.configuration'];
+
+    }
+
+
     /* End BaseSystem */
 }

@@ -121,7 +121,43 @@ abstract class BaseDeadline extends BaseController
     public function __construct(Container $container)
     {
         parent::__construct('deadline', $container);
+
+    }
+
+
+    public static function install($database): void
+    {
         \ciab\RBAC::customizeRBAC('\App\Controller\Deadline\BaseDeadline::customizeDeadlineRBAC');
+
+    }
+
+
+    public static function permissions($database): ?array
+    {
+        $permissions = ['api.get.deadline.all', 'api.get.deadline.staff', 'api.post.deadline.all',
+                        'api.put.deadline.all', 'api.delete.deadline.all'];
+        $positions = [];
+        $values = Select::new($database)
+            ->columns('PositionID', 'Name')
+            ->from('ConComPositions')
+            ->orderBy('`PositionID` ASC')
+            ->fetchAll();
+        foreach ($values as $value) {
+            $positions[intval($value['PositionID'])] = $value['Name'];
+        }
+
+        $values = Select::new($database)
+            ->columns('DepartmentID')
+            ->from('Departments')
+            ->fetchAll();
+        foreach ($values as $value) {
+            $perm_get = 'api.get.deadline.'.$value['DepartmentID'];
+            $perm_del = 'api.delete.deadline.'.$value['DepartmentID'];
+            $perm_pos = 'api.post.deadline.'.$value['DepartmentID'];
+            $perm_put = 'api.put.deadline.'.$value['DepartmentID'];
+            $permissions = array_merge($permissions, [$perm_get, $perm_del, $perm_pos, $perm_put]);
+        }
+        return ($permissions);
 
     }
 

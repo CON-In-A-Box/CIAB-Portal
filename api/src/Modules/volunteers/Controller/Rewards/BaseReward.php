@@ -108,6 +108,19 @@ abstract class BaseReward extends BaseController
     }
 
 
+    public static function install($database): void
+    {
+
+    }
+
+
+    public static function permissions($database): ?array
+    {
+        return ['api.delete.volunteers', 'api.post.volunteers', 'api.put.volunteers'];
+
+    }
+
+
     protected function getClaimed($id)
     {
         $data = Select::new($this->container->db)

@@ -122,7 +122,6 @@ abstract class BaseAnnouncement extends BaseController
     public function __construct(Container $container)
     {
         parent::__construct('announcement', $container);
-        \ciab\RBAC::customizeRBAC('\App\Controller\Announcement\BaseAnnouncement::customizeAnnouncementRBAC');
 
         $this->includes = [
         new IncludeResource(
@@ -136,6 +135,45 @@ abstract class BaseAnnouncement extends BaseController
             'department'
         )
         ];
+
+    }
+
+
+    public static function install($database): void
+    {
+        \ciab\RBAC::customizeRBAC('\App\Controller\Announcement\BaseAnnouncement::customizeAnnouncementRBAC');
+
+    }
+
+
+    public static function permissions($database): array
+    {
+        $result = ['api.get.announcement.staff', 'api.get.announcement.all',
+            'api.post.announcement.all', 'api.delete.announcement.all',
+            'api.put.announcement.all' ];
+        $positions = [];
+        $values = Select::new($database)
+            ->columns('PositionID', 'Name')
+            ->from('ConComPositions')
+            ->orderBy('`PositionID` ASC')
+            ->fetchAll();
+        foreach ($values as $value) {
+            $positions[intval($value['PositionID'])] = $value['Name'];
+        }
+
+        $values = Select::new($database)
+            ->columns('DepartmentID')
+            ->from('Departments')
+            ->fetchAll();
+        foreach ($values as $value) {
+            $perm_get = 'api.get.announcement.'.$value['DepartmentID'];
+            $perm_del = 'api.delete.announcement.'.$value['DepartmentID'];
+            $perm_pos = 'api.post.announcement.'.$value['DepartmentID'];
+            $perm_put = 'api.put.announcement.'.$value['DepartmentID'];
+            $result = array_merge($result, [$perm_get, $perm_del, $perm_pos, $perm_put]);
+        }
+
+        return $result;
 
     }
 
