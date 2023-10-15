@@ -255,7 +255,7 @@ class VolunteersTest extends CiabTestCase
         $data = $this->runSuccessJsonRequest('POST', '/volunteer/rewards', null, ['name' => 'Prize B', 'promo' => 0, 'inventory' => 100, 'value' => 1.0, 'reward_group' => $gid], 201);
         $pid2 = $data->id;
 
-        $data = $this->runSuccessJsonRequest('GET', "/volunteer/reward_group/$gid");
+        $data = $this->runSuccessJsonRequest('GET', "/volunteer/reward_group/$gid/list");
         $this->assertNotEmpty($data);
         $this->assertEquals(count($data->data), 2);
 
@@ -319,8 +319,8 @@ class VolunteersTest extends CiabTestCase
 
         $data = $this->runSuccessJsonRequest('GET', '/volunteer/claims/'.$claims[0]->id);
         $this->assertNotEmpty($data);
-        $claims[0]->reward->inventory = 98;
-        $claims[0]->reward->claimed = 2;
+        $claims[0]->reward->inventory = 99;
+        $claims[0]->reward->claimed = 1;
         $this->assertEquals($claims[0], $data);
 
         $data = $this->runSuccessJsonRequest('GET', '/volunteer/claims/'.$claims[1]->id);
