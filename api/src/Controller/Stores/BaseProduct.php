@@ -27,7 +27,7 @@ abstract class BaseProduct extends BaseController
     }
 
 
-    public static function install($database): void
+    public static function install($container): void
     {
 
     }

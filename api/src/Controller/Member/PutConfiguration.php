@@ -85,7 +85,7 @@ class PutConfiguration extends BaseMember
         }
 
         if ($accountID != $user &&
-            !\ciab\RBAC::havePermission("api.put.member")) {
+            !$this->container->RBAC::havePermission("api.put.member")) {
             throw new PermissionDeniedException();
         }
 

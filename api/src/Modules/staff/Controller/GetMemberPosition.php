@@ -89,7 +89,7 @@ class GetMemberPosition extends BaseStaff
         if (array_key_exists('id', $params)) {
             $id = $this->getMember($request, $params['id'])[0]['id'];
             if ($id != $user &&
-                !\ciab\RBAC::havePermission('api.get.staff')) {
+                !$this->container->RBAC::havePermission('api.get.staff')) {
                 throw new PermissionDeniedException();
             }
             $user = $id;

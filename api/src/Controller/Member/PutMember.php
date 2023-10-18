@@ -105,7 +105,7 @@ class PutMember extends BaseMember
         if (!$this->privilaged) {
             $user = $request->getAttribute('oauth2-token')['user_id'];
             if ($accountID != $user &&
-                !\ciab\RBAC::havePermission("api.put.member")) {
+                !$this->container->RBAC::havePermission("api.put.member")) {
                 throw new PermissionDeniedException();
             }
         }

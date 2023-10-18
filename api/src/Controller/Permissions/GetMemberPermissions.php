@@ -52,7 +52,7 @@ class GetMemberPermissions extends BaseController
     }
 
 
-    public static function install($database): void
+    public static function install($container): void
     {
 
     }
@@ -75,7 +75,7 @@ class GetMemberPermissions extends BaseController
             $id = $request->getAttribute('oauth2-token')['user_id'];
         }
 
-        $data = \ciab\RBAC::getMemberPermissions($id);
+        $data = $this->container->RBAC::getMemberPermissions($id);
         $result = array();
         foreach ($data as $entry) {
             $result[] = [

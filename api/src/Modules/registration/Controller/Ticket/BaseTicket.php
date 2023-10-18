@@ -362,7 +362,7 @@ abstract class BaseTicket extends BaseRegistration
         $aid = $data['AccountID'];
 
         if ($user != $aid && $permission &&
-            !\ciab\RBAC::havePermission($permission)) {
+            !$this->container->RBAC::havePermission($permission)) {
             throw new PermissionDeniedException();
         }
 

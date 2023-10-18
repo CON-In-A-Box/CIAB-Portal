@@ -139,9 +139,9 @@ abstract class BaseAnnouncement extends BaseController
     }
 
 
-    public static function install($database): void
+    public static function install($container): void
     {
-        \ciab\RBAC::customizeRBAC('\App\Controller\Announcement\BaseAnnouncement::customizeAnnouncementRBAC');
+        $container->RBAC::customizeRBAC('\App\Controller\Announcement\BaseAnnouncement::customizeAnnouncementRBAC');
 
     }
 

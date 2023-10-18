@@ -48,7 +48,7 @@ function setupInstall($container): void
     if (!$data || $data['Value'] != md5(json_encode($rbac))) {
      */
     foreach ($rbac as $entry) {
-        \ciab\RBAC::registerPermissions($entry);
+        $container->RBAC::registerPermissions($entry);
     }
 
     /*
@@ -56,7 +56,7 @@ function setupInstall($container): void
      * again, in the future not run every time but only when needed
      */
     foreach ($baseClasses as $class) {
-        $class::install($container->db);
+        $class::install($container);
     }
 
     global $DISABLEDMODULES;
@@ -74,9 +74,9 @@ function setupInstall($container): void
                         foreach ($module_settings['baseControllers'] as $base) {
                             $result = $base::permissions($container->db);
                             if (!empty($result)) {
-                                \ciab\RBAC::registerPermissions(array_unique(array_merge($rbac, $result)));
+                                $container->RBAC::registerPermissions(array_unique(array_merge($rbac, $result)));
                             }
-                            $base::install($container->db);
+                            $base::install($container);
                         }
                     }
                 }

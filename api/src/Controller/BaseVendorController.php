@@ -47,19 +47,19 @@ abstract class BaseVendorController extends BaseController
     }
 
 
-    abstract public static function baseInstall($databas): void;
+    abstract public static function baseInstall($container): void;
 
 
     abstract public static function basePermissions($database): ?array;
 
 
-    public static function install($database): void
+    public static function install($container): void
     {
         if (self::$instance !== null &&
             method_exists(self::$instance, __FUNCTION__)) {
-            self::$instance->{__FUNCTION__}($database);
+            self::$instance->{__FUNCTION__}($container);
         } else {
-            self::baseInstall($database);
+            self::baseInstall($container);
         }
 
     }

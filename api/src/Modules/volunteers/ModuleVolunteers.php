@@ -17,7 +17,7 @@ class ModuleVolunteers extends BaseModule
     public function __construct($source)
     {
         parent::__construct($source);
-        \ciab\RBAC::customizeRBAC('\App\Modules\volunteers\ModuleVolunteers::customizeAnnouncementRBAC');
+        $source->getContainer()->RBAC::customizeRBAC('\App\Modules\volunteers\ModuleVolunteers::customizeAnnouncementRBAC');
 
     }
 

@@ -5,6 +5,7 @@
 
 use Psr\Container\ContainerInterface;
 use App\Handler\ApiError;
+use App\Handler\RBAC;
 use Slim\App;
 
 /* setupAPIDependencies */
@@ -28,6 +29,10 @@ function setupAPIDependencies(App $app, array $settings)
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
         return $pdo;
+    };
+
+    $container['RBAC'] = function (): RBAC {
+        return new RBAC;
     };
 
 }

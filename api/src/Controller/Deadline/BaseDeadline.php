@@ -125,9 +125,9 @@ abstract class BaseDeadline extends BaseController
     }
 
 
-    public static function install($database): void
+    public static function install($container): void
     {
-        \ciab\RBAC::customizeRBAC('\App\Controller\Deadline\BaseDeadline::customizeDeadlineRBAC');
+        $container->RBAC::customizeRBAC('\App\Controller\Deadline\BaseDeadline::customizeDeadlineRBAC');
 
     }
 
