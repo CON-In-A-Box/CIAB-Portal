@@ -81,7 +81,7 @@ class GetMemberPermissions extends BaseController
             $result[] = [
                 'type' => 'permission_entry',
                 'subtype' => $entry,
-                'allowed' => true,
+                'allowed' => 1,
                 ];
         }
 
