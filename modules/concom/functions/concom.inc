@@ -50,7 +50,7 @@ function getPositionID($position)
 }
 
 
-function conComRBAC($instance)
+function conComRBAC($rbac)
 {
     $positions = [];
     $sql = "SELECT `PositionID`, `Name` FROM `ConComPositions` ORDER BY `PositionID` ASC";
@@ -74,8 +74,7 @@ function conComRBAC($instance)
             $perm = "concom.modify.$dept_name.".$positions[$i];
             $target = "$parent.".end(array_keys($positions));
             try {
-                $role = $instance->getRole($target);
-                $role->addPermission($perm);
+                $rbac->grantPermission($target, $perm);
             } catch (Exception\InvalidArgumentException $e) {
                 error_log($e);
             }
@@ -84,8 +83,7 @@ function conComRBAC($instance)
         $target = "$department.$i";
         $perm = "concom.add.$dept_name";
         try {
-            $role = $instance->getRole($target);
-            $role->addPermission($perm);
+            $rbac->grantPermission($target, $perm);
         } catch (Exception\InvalidArgumentException $e) {
             error_log($e);
         }
@@ -97,8 +95,7 @@ function conComRBAC($instance)
                 $perm = "concom.modify.$dept_name.$target_pos";
                 $target = "$department.$i";
                 try {
-                    $role = $instance->getRole($target);
-                    $role->addPermission($perm);
+                    $rbac->grantPermission($target, $perm);
                 } catch (Exception\InvalidArgumentException $e) {
                     error_log($e);
                 }

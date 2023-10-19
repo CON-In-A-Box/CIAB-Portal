@@ -193,7 +193,7 @@ abstract class BaseAnnouncement extends BaseController
     }
 
 
-    public static function customizeAnnouncementRBAC($instance, $database)
+    public static function customizeAnnouncementRBAC($rbac, $database)
     {
         $positions = [];
         $values = Select::new($database)
@@ -217,20 +217,17 @@ abstract class BaseAnnouncement extends BaseController
             $target_h = $value['DepartmentID'].'.'.array_keys($positions)[0];
             $target_r = $value['DepartmentID'].'.'.end(array_keys($positions));
             try {
-                $role = $instance->getRole($target_h);
-                $role->addPermission($perm_del);
-                $role->addPermission($perm_pos);
-                $role->addPermission($perm_put);
-                $role = $instance->getRole($target_r);
-                $role->addPermission($perm_get);
+                $rbac->grantPermission($target_h, $perm_del);
+                $rbac->grantPermission($target_h, $perm_pos);
+                $rbac->grantPermission($target_h, $perm_put);
+                $rbac->grantPermission($target_r, $perm_get);
             } catch (Exception\InvalidArgumentException $e) {
                 error_log($e);
             }
         }
 
         try {
-            $role = $instance->getRole('all.staff');
-            $role->addPermission('api.get.announcement.staff');
+            $rbac->grantPermission('all.staff', 'api.get.announcement.staff');
         } catch (Exception\InvalidArgumentException $e) {
             error_log($e);
         }

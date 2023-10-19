@@ -113,5 +113,59 @@ class RBAC
     }
 
 
+    public static function addRole(/*.string.*/$role, /*.array.*/$parents = null)
+    {
+        if (self::instance() !== null) {
+            return self::instance()->addRole($role, $parents);
+        }
+
+    }
+
+
+    public static function removeRole(/*.string.*/$role)
+    {
+        if (self::instance() !== null) {
+            return self::instance()->removeRole($role);
+        }
+
+    }
+
+
+    public static function addRoleParents(/*.string.*/$role, /*.array.*/$parents)
+    {
+        if (self::instance() !== null) {
+            return self::instance()->addRoleParents($role, $parents);
+        }
+
+    }
+
+
+    public static function removeRoleParent(/*.string.*/$role, /*.string.*/$parent)
+    {
+        if (self::instance() !== null) {
+            return self::instance()->removeRoleParent($role, $parent);
+        }
+
+    }
+
+
+    public static function grantPermission(/*.string.*/$role, /*.string.*/$permission)
+    {
+        if (self::instance() !== null) {
+            return self::instance()->grantPermission($role, $permission);
+        }
+
+    }
+
+
+    public static function revokePermission(/*.string.*/$role, /*.string.*/$permission)
+    {
+        if (self::instance() !== null) {
+            return self::instance()->revokePermission($role, $permission);
+        }
+
+    }
+
+
     /* end class */
 }
