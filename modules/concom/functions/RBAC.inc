@@ -199,11 +199,11 @@ class ConComRBAC
         }
         $positions = POSITION::getConComPosition($accountId);
         foreach ($positions as $pos) {
-            $value = $pos['departmentId'].'.'.$pos['positionId'];
+            $role = $pos['departmentId'].'.'.$pos['positionId'];
             try {
                 $result = array_unique(array_merge($result, self::instance()->rbac->getRole(
                     strval($role)
-                )->getPermissions($children)));
+                )->getPermissions(true)));
             } catch (Exception\InvalidArgumentException $e) {
             }
         }
