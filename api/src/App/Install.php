@@ -79,6 +79,9 @@ function setupInstall($container): void
                             $base::install($container);
                         }
                     }
+                    if (method_exists($module_settings['module'], 'install')) {
+                        call_user_func(array($module_settings['module'], 'install'), $container);
+                    }
                 }
             }
         }
