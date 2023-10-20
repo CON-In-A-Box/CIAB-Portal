@@ -24,12 +24,12 @@ const fetchCurrentUser = async() => {
   const response = await apiRequest('GET', 'member');
   const memberData = JSON.parse(response.responseText);
 
-  const editAnyResponse = await apiRequest('GET', 'permissions/generic/staff.all/put');
-  const editAnyData = JSON.parse(editAnyResponse.responseText);
+  const userPermissions = await apiRequest('GET', `member/${memberData.id}/permissions?max_results=all`);
+  const permissionData = JSON.parse(userPermissions.responseText);
 
   return {
     id: parseInt(memberData.id),
-    editAnyAllowed: editAnyData.data[0].allowed
+    permissions: permissionData.data
   };
 };
 
@@ -71,7 +71,7 @@ const onMounted = async(componentInstance) => {
 };
 
 function componentSetup() {
-  const currentUser = Vue.ref({ id: null, editAnyAllowed: false });
+  const currentUser = Vue.ref({ id: null, permissions: [] });
   Vue.provide('currentUser', Vue.readonly(currentUser));
 
   const divisions = Vue.ref([]);

@@ -163,8 +163,7 @@ abstract class BaseStaff extends BaseController
 
     public static function permissions($database): ?array
     {
-        $result = ['api.delete.staff.all', 'api.get.staff', 'api.post.staff.all', 'api.put.staff.all',
-            'api.delete.staff.all'];
+        $result = ['api.get.staff', 'api.post.staff.all', 'api.put.staff.all', 'api.delete.staff.all'];
 
         $values = Select::new($database)
             ->columns('DepartmentID')
@@ -172,12 +171,25 @@ abstract class BaseStaff extends BaseController
             ->orderBy('`DepartmentID` ASC')
             ->fetchAll();
 
+        $positions = Select::new($database)
+            ->columns('PositionID')
+            ->from('ConComPositions')
+            ->orderBy('PositionID ASC')
+            ->fetchAll();
+
         foreach ($values as $value) {
-            $perm_get = 'api.get.staff.'.$value['DepartmentID'];
-            $perm_del = 'api.delete.staff.'.$value['DepartmentID'];
-            $perm_pos = 'api.post.staff.'.$value['DepartmentID'];
-            $perm_put = 'api.put.staff.'.$value['DepartmentID'];
-            $result = array_merge($result, [$perm_get, $perm_del, $perm_pos, $perm_put]);
+            $dept = $value['DepartmentID'];
+
+            $perm_post = "api.post.staff.$dept";
+            $result = array_merge($result, [$perm_post]);
+
+            // Editing members has additional position-based requirements
+            foreach ($positions as $position) {
+                $positionId = intval($position['PositionID']);
+                $perm_put = "api.put.staff.$dept.$positionId";
+                $perm_del = "api.delete.staff.$dept.$positionId";
+                $result = array_merge($result, [$perm_put, $perm_del]);
+            }
         }
 
         return $result;
