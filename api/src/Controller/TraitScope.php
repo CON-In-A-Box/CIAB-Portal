@@ -12,14 +12,14 @@ trait TraitScope
                 $data[$index]['scope'] = 2;
             }
         }
-        if (!$this->container->RBAC::havePermission("api.get.{$this->api_type}.all")) {
+        if (!$this->container->RBAC->havePermission("api.get.{$this->api_type}.all")) {
             foreach ($data as $index => $target) {
                 if ($target['scope'] >= 2) {
-                    if (!$this->container->RBAC::havePermission("api.get.{$this->api_type}.{$target['department']}")) {
+                    if (!$this->container->RBAC->havePermission("api.get.{$this->api_type}.{$target['department']}")) {
                         unset($data[$index]);
                     }
                 } elseif ($target['scope'] == 1) {
-                    if (!$this->container->RBAC::havePermission("api.get.{$this->api_type}.staff")) {
+                    if (!$this->container->RBAC->havePermission("api.get.{$this->api_type}.staff")) {
                         unset($data[$index]);
                     }
                 }

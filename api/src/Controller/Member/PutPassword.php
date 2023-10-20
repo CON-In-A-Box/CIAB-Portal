@@ -185,7 +185,7 @@ class PutPassword extends BaseMember
         }
 
         if (!$this->privilaged) {
-            if (!$this->container->RBAC::havePermission("api.put.member.password")) {
+            if (!$this->container->RBAC->havePermission("api.put.member.password")) {
                 $attribute = $request->getAttribute('oauth2-token');
                 if ($attribute) {
                     $user = $attribute['user_id'];

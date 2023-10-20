@@ -75,7 +75,7 @@ class GetMemberPermissions extends BaseController
             $id = $request->getAttribute('oauth2-token')['user_id'];
         }
 
-        $data = $this->container->RBAC::getMemberPermissions($id);
+        $data = $this->container->RBAC->getMemberPermissions($id);
         $result = array();
         foreach ($data as $entry) {
             $result[] = [
