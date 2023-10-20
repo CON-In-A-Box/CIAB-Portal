@@ -43,5 +43,18 @@ abstract class BasePayment extends BaseVendorController
     }
 
 
+    public static function baseInstall($database): void
+    {
+
+    }
+
+
+    public static function basePermissions($database): ?array
+    {
+        return null;
+
+    }
+
+
     /* End BasePayment */
 }

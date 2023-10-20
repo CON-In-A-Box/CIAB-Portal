@@ -118,6 +118,19 @@ abstract class BaseEvent extends BaseController
     }
 
 
+    public static function install($container): void
+    {
+
+    }
+
+
+    public static function permissions($database): ?array
+    {
+        return (['api.delete.event', 'api.post.event', 'api.put.event']);
+
+    }
+
+
     private function handleDate($request, $response, $params, &$body, $dateName)
     {
         if (array_key_exists($dateName, $body)) {

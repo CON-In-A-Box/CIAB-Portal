@@ -52,6 +52,19 @@ class GetMemberPermissions extends BaseController
     }
 
 
+    public static function install($container): void
+    {
+
+    }
+
+
+    public static function permissions($database): ?array
+    {
+        return null;
+
+    }
+
+
     public function buildResource(Request $request, Response $response, $params): array
     {
         $id = null;
@@ -62,13 +75,13 @@ class GetMemberPermissions extends BaseController
             $id = $request->getAttribute('oauth2-token')['user_id'];
         }
 
-        $data = \ciab\RBAC::getMemberPermissions($id);
+        $data = $this->container->RBAC::getMemberPermissions($id);
         $result = array();
         foreach ($data as $entry) {
             $result[] = [
                 'type' => 'permission_entry',
                 'subtype' => $entry,
-                'allowed' => true,
+                'allowed' => 1,
                 ];
         }
 

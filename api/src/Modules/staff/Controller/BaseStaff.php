@@ -155,6 +155,36 @@ abstract class BaseStaff extends BaseController
     }
 
 
+    public static function install($container): void
+    {
+
+    }
+
+
+    public static function permissions($database): ?array
+    {
+        $result = ['api.delete.staff.all', 'api.get.staff', 'api.post.staff.all', 'api.put.staff.all',
+            'api.delete.staff.all'];
+
+        $values = Select::new($database)
+            ->columns('DepartmentID')
+            ->from('Departments')
+            ->orderBy('`DepartmentID` ASC')
+            ->fetchAll();
+
+        foreach ($values as $value) {
+            $perm_get = 'api.get.staff.'.$value['DepartmentID'];
+            $perm_del = 'api.delete.staff.'.$value['DepartmentID'];
+            $perm_pos = 'api.post.staff.'.$value['DepartmentID'];
+            $perm_put = 'api.put.staff.'.$value['DepartmentID'];
+            $result = array_merge($result, [$perm_get, $perm_del, $perm_pos, $perm_put]);
+        }
+
+        return $result;
+
+    }
+
+
     protected function buildEntry(Request $request, $id, $dept, $member, $note, $position)
     {
         return ([

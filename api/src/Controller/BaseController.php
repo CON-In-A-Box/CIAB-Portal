@@ -117,9 +117,6 @@ use Slim\Http\Request;
 use Slim\Http\Environment;
 use Atlas\Query\Select;
 
-require_once __DIR__.'/../../../backends/RBAC.inc';
-require_once __DIR__.'/../../../modules/concom/functions/RBAC.inc';
-
 class NotFoundException extends Exception
 {
 
@@ -577,7 +574,7 @@ abstract class BaseController
     ) {
         $valid = false;
         foreach ($permissions as $perm) {
-            if (!$valid && \ciab\RBAC::havePermission($perm)) {
+            if (!$valid && $this->container->RBAC::havePermission($perm)) {
                 $valid = true;
             }
         }
@@ -762,6 +759,19 @@ abstract class BaseController
         return $this->currentEvent;
 
     }
+
+
+    public function getContainer(): Container
+    {
+        return $this->container;
+
+    }
+
+
+    abstract public static function install($container): void;
+
+
+    abstract public static function permissions($database): ?array;
 
 
     /* END BaseController */

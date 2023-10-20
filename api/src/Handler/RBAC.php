@@ -4,7 +4,9 @@
     require_module 'standard';
 .*/
 
-namespace ciab;
+namespace App\Handler;
+
+#require_once __DIR__.'/../../../modules/concom/functions/RBAC.inc';
 
 class RBAC
 {
@@ -14,13 +16,13 @@ class RBAC
     protected static $custom = array();
 
 
-    protected function __construct()
+    public function __construct()
     {
 
     }
 
 
-    protected function __clone()
+    public function __clone()
     {
 
     }

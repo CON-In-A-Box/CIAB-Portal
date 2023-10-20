@@ -276,5 +276,18 @@ abstract class BaseMember extends BaseController
     }
 
 
+    public static function install($container): void
+    {
+
+    }
+
+
+    public static function permissions($database): ?array
+    {
+        return ['api.get.member', 'admin.sudo', 'api.put.member', 'api.put.member.password'];
+
+    }
+
+
     /* End BaseMember */
 }

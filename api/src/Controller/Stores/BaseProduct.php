@@ -27,6 +27,19 @@ abstract class BaseProduct extends BaseController
     }
 
 
+    public static function install($container): void
+    {
+
+    }
+
+
+    public static function permissions($database): ?array
+    {
+        return null;
+
+    }
+
+
     protected function getProduct(array $params, Request $request, Response $response, &$error)
     {
         $select = Select::new($this->container->db);

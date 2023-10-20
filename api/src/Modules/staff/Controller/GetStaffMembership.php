@@ -83,9 +83,9 @@ class GetStaffMembership extends BaseStaff
         }
 
         $user = $request->getAttribute('oauth2-token')['user_id'];
-        if ($data[0]['id'] != $user &&
-            !\ciab\RBAC::havePermission('api.get.staff')) {
-            throw new PermissionDeniedException();
+        if ($data[0]['id'] != $user) {
+            $permissions = ['api.get.staff'];
+            $this->checkPermissions($permissions);
         }
 
         return [

@@ -25,6 +25,11 @@ class ConComRBAC
      */
     protected $rbac = null;
 
+    /**
+     * @var Permissions
+     */
+    protected $permissions = array();
+
 
     protected function __construct()
     {
@@ -39,15 +44,12 @@ class ConComRBAC
 
 
     private static function addToAll(
-        /*.Rbac.*/$rbac,
-        /*.Role.*/$staff,
+        /*.string.*/$staff,
         /*.string.*/$new_role,
         /*.string.*/$pos
     ) {
-        $role = $rbac->rbac->getRole($new_role);
-        $staff->addParent($role);
-        $target = $rbac->rbac->getRole("all.$pos");
-        $target->addParent($role);
+        self::addRoleParents($staff, [$new_role]);
+        self::addRoleParents("all.$pos", [$new_role]);
 
     }
 
@@ -57,12 +59,10 @@ class ConComRBAC
         if (self::$instance === null) {
             $rbac = new ConComRBAC();
             $rbac->rbac = new Rbac();
+            self::$instance = $rbac;
 
-            $root = new Role('admin');
-            $rbac->rbac->addRole($root);
-
-            $staff = new Role('all.staff');
-            $rbac->rbac->addRole($staff, $root);
+            self::addRole('admin');
+            self::addRole('all.staff', 'admin');
 
             $positions = [];
             $sql = "SELECT `PositionID` FROM `ConComPositions` ORDER BY `PositionID` ASC";
@@ -72,7 +72,7 @@ class ConComRBAC
             while ($value !== false) {
                 $positions[] = $value['PositionID'];
                 $new = 'all.'.$value['PositionID'];
-                $rbac->rbac->addRole($new, $parent);
+                self::addRole($new, [$parent]);
                 $parent = $new;
                 $value = $result->fetch();
             }
@@ -84,8 +84,8 @@ class ConComRBAC
                 $parent = 'admin';
                 foreach ($positions as $pos) {
                     $new = $value['DepartmentID'].'.'.$pos;
-                    $rbac->rbac->addRole($new, $parent);
-                    self::addToAll($rbac, $staff, $new, $pos);
+                    self::addRole($new, [$parent]);
+                    self::addToAll('all.staff', $new, $pos);
                     $parent = $new;
                 }
                 $value = $result->fetch();
@@ -99,8 +99,8 @@ class ConComRBAC
                 $parent = $firstparent;
                 foreach ($positions as $pos) {
                     $new = $value['DepartmentID'].'.'.$pos;
-                    $rbac->rbac->addRole($new, $parent);
-                    self::addToAll($rbac, $staff, $new, $pos);
+                    self::addRole($new, [$parent]);
+                    self::addToAll('all.staff', $new, $pos);
                     if ($parent == $firstparent) {
                         $parent = $new;
                     }
@@ -115,14 +115,14 @@ class ConComRBAC
             $retvalue = [];
             while ($value !== false) {
                 try {
-                    $role = $rbac->rbac->getRole(strval($value['Position']));
-                    $role->addPermission($value['Permission']);
+                    self::$instance->grantPermission(strval($value['Position']), $value['Permission']);
                 } catch (Exception\InvalidArgumentException $e) {
+                }
+                if (!in_array($value['Permission'], self::$instance->permissions)) {
+                    self::$instance->permissions[] = $value['Permission'];
                 }
                 $value = $result->fetch();
             }
-
-            self::$instance = $rbac;
         }
 
         return self::$instance;
@@ -134,6 +134,9 @@ class ConComRBAC
         /*.mixed.*/$pos,
         /*.string.*/$name
     ) {
+        if (!in_array($name, self::$instance->permissions)) {
+            error_log("Unregistered RBAC permission ".$name);
+        }
         try {
             return self::instance()->rbac->getRole(
                 strval($pos)
@@ -149,6 +152,9 @@ class ConComRBAC
         /*.mixed.*/$accountId,
         /*.string.*/$name
     ) {
+        if (!in_array($name, self::$instance->permissions)) {
+            error_log("Unregistered RBAC permission ".$name);
+        }
         if (array_key_exists('IS_ADMIN', $_SESSION) && $_SESSION['IS_ADMIN']) {
             return true;
         }
@@ -166,6 +172,9 @@ class ConComRBAC
 
     public static function havePermission(/*.string.*/$name)
     {
+        if (!in_array($name, self::$instance->permissions)) {
+            error_log("Unregistered RBAC permission ".$name);
+        }
         return self::hasPermissions($_SESSION['accountId'], $name);
 
     }
@@ -192,10 +201,7 @@ class ConComRBAC
     ) : array {
         $result = [];
         if (array_key_exists('IS_ADMIN', $_SESSION) && $_SESSION['IS_ADMIN']) {
-            foreach (self::instance()->rbac->getRoles() as $role) {
-                $result = array_unique(array_merge($result, $role->getPermissions(true)));
-            }
-            return $result;
+            return self::$instance->permissions;
         }
         $positions = POSITION::getConComPosition($accountId);
         foreach ($positions as $pos) {
@@ -215,10 +221,93 @@ class ConComRBAC
     public static function customizeRBAC($entry)
     {
         try {
-            @\call_user_func($entry, self::instance()->rbac, \DB::instance());
+            @\call_user_func($entry, self::instance(), \DB::instance());
         } catch (\Exception $e) {
             error_log($e);
         }
+
+    }
+
+
+    public static function registerPermissions(/*.mixed.*/$permissions)
+    {
+        if (is_array($permissions)) {
+            foreach ($permissions as $p) {
+                if (!in_array($p, self::$instance->permissions)) {
+                    self::$instance->permissions[] = $p;
+                }
+            }
+        } else {
+            if (!in_array($permissions, self::$instance->permissions)) {
+                self::$instance->permissions[] = $permissions;
+            }
+        }
+
+    }
+
+
+    public static function addRole(/*.string.*/$role, /*.array.*/$parents = null)
+    {
+        try {
+            $r = new Role($role);
+            self::instance()->rbac->addRole($r, $parents);
+        } catch (\Exception $e) {
+            error_log($e);
+        }
+
+    }
+
+
+    public static function removeRole(/*.string.*/$role)
+    {
+        /* No action in Vend/Laminas backend */
+
+    }
+
+
+    public static function addRoleParents(/*.string.*/$role, /*.array.*/$parents)
+    {
+        try {
+            $r = self::instance()->rbac->getRole($role);
+            if (!$r) {
+                self::addRole($role, $parents);
+            } else {
+                foreach($parents as $parent) {
+                    $p = self::instance()->rbac->getRole($parent);
+                    $r->addParent($p);
+                }
+            }
+        } catch (\Exception $e) {
+            error_log($e);
+        }
+
+    }
+
+
+    public static function removeRoleParent(/*.string.*/$role, /*.string.*/$parent)
+    {
+        /* No action in Vend/Laminas backend */
+
+    }
+
+
+    public static function grantPermission(/*.string.*/$role, /*.string.*/$permission)
+    {
+        try {
+            $r = self::instance()->rbac->getRole($role);
+            if ($r) {
+                $r->addPermission($permission);
+            }
+        } catch (\Exception $e) {
+            error_log($e);
+        }
+
+    }
+
+
+    public static function revokePermission(/*.string.*/$role, /*.string.*/$permission)
+    {
+        /* No action in Vend/Laminas backend */
 
     }
 
