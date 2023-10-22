@@ -272,7 +272,7 @@ class ConComRBAC
             if (!$r) {
                 self::addRole($role, $parents);
             } else {
-                foreach($parents as $parent) {
+                foreach ($parents as $parent) {
                     $p = self::instance()->rbac->getRole($parent);
                     $r->addParent($p);
                 }

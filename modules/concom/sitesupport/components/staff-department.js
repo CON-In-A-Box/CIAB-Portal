@@ -1,4 +1,4 @@
-/* globals Vue, apiRequest */
+/* globals Vue */
 const PROPS = {
   department: Object,
   division: Object,
@@ -20,12 +20,11 @@ const TEMPLATE = `
   <div :class="tableClass(department).value">
     <department-header :isDepartment=isDepartment(department).value :department=department></department-header>
     <div class="UI-table-row" v-for="staff in departmentStaff">
-      <department-member :staff=staff :isDepartment=isDepartment(department).value :canEdit=canEditDept 
-        @edit-clicked="editStaffClicked"></department-member>
+      <department-member :staff=staff :department=department @edit-clicked="editStaffClicked"></department-member>
     </div>
   </div>
   <div class="UI-center">
-    <button class="UI-yellowbutton" @click="addStaffClicked">Add someone to {{department.name}}</button>
+    <button class="UI-yellowbutton" @click="addStaffClicked" v-if="canAddDept">Add someone to {{department.name}}</button>
   </div>
 `;
 
@@ -64,29 +63,12 @@ const INITIAL_DATA = () => {
   }
 };
 
-const canEditDepartmentStaff = async(department, currentUser) => {
-  // Bypass for users who have "edit any" permission, no need to check additional depts.
-  if (currentUser.editAnyAllowed) {
-    return {
-      allowed: true
-    }
-  }
+const canAddDepartmentStaff = (departmentId, permissions) => {
+  const addAny = permissions.find((permission) => permission.subtype === 'api.post.staff.all')?.allowed === 1;
+  const addDept = permissions.find((permission) => permission.subtype === `api.post.staff.${departmentId}`)?.allowed === 1;
 
-  const response = await apiRequest('GET', `permissions/generic/staff.${department.id}/put`);
-  const canEditData = JSON.parse(response.responseText);
-
-  return {
-    allowed: canEditData.data[0].allowed
-  };
+  return addAny || addDept;
 }
-
-const onMounted = async(componentInstance) => {
-  const [ canEditResult ] = await Promise.all([
-    canEditDepartmentStaff(componentInstance.department.id, componentInstance.currentUser)
-  ]);
-
-  componentInstance.canEditDept = canEditResult.allowed;
-};
 
 function addStaffClicked() {
   const isDepartment = this.isDepartment(this.department).value;
@@ -137,7 +119,7 @@ function componentSetup(props) {
 
   return {
     departmentStaff,
-    canEditDept: Vue.ref(false),
+    canAddDept: Vue.ref(false),
     staffPositions: staffPositions,
     showSidebar,
     sidebarDept,
@@ -154,8 +136,10 @@ const staffDepartmentComponent = {
   template: TEMPLATE,
   data: INITIAL_DATA,
   setup: componentSetup,
-  async mounted() {
-    await onMounted(this);
+  mounted() {
+    const departmentId = this.department.id;
+    const permissions = this.currentUser.permissions;
+    this.canAddDept = canAddDepartmentStaff(departmentId, permissions);
   },
   methods: {
     addStaffClicked,
