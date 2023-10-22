@@ -2,22 +2,22 @@
 const DIRECTOR_POSITION_ID = 1;
 
 const TEMPLATE = `
-  <div class="UI-sidebar-shown UI-fixed">
-    <div class="UI-center">
-      <h2 class="UI-red">{{ getHeaderText(isEdit, isDepartment).value }}</h2>
+  <div class="CONCOM-list-sidebar-container">
+    <div class="CONCOM-list-sidebar-header">
+      <h2 class="CONCOM-list-sidebar-header-content">{{ getHeaderText(isEdit, isDepartment).value }}</h2>
     </div>
-    <div class="UI-center" v-if="!isEdit">
-      <label class="UI-label" for="concom_lookup">
+    <div class="CONCOM-list-sidebar-lookup-container" v-if="!isEdit">
+      <label for="concom_lookup">
         <h2>Add someone to {{ department.name }}</h2>
       </label>
       <fieldset>
         <legend>Search the User Database</legend>
-        <div class="UI-rest UI-center" id="concom_lookup">
+        <div class="CONCOM-list-sidebar-lookup-form" id="concom_lookup">
           <lookup-user @handler="onUserLookup"></lookup-user>
         </div>
       </fieldset>
       <p>
-        <label class="UI-label" for="position">Position:</label>
+        <label for="position">Position:</label>
         <select v-model="selectedPosition">
           <option disabled value="">Please select a position</option>
           <option v-for="position in availablePositions(staffPositions, isDepartment).value" :key=position.id :value=position>
@@ -28,12 +28,12 @@ const TEMPLATE = `
     </div>
     <template v-if="isEdit">
       <div>
-        <h3 class="UI-center">{{ getStaffFullName(editStaff).value }}</h3>
-        <h4 class="UI-center">{{ getStaffPosition(editStaff, isDepartment).value }} in {{ department.name }}</h4>
-        <label class="UI-label" for="user_notes">Note</label>
-        <input class="UI-input" id="user_notes" v-model="staffNote"/>
+        <h3 class="CONCOM-list-sidebar-centered-item">{{ getStaffFullName(editStaff).value }}</h3>
+        <h4 class="CONCOM-list-sidebar-centered-item">{{ getStaffPosition(editStaff, isDepartment).value }} in {{ department.name }}</h4>
+        <label for="user_notes">Note</label>
+        <input class="CONCOM-list-sidebar-input" id="user_notes" v-model="staffNote"/>
         <br/>
-        <label class="UI-label" for="user_pos">Position: </label>
+        <label for="user_pos">Position: </label>
         <select v-model="selectedPosition">
           <option v-for="position in availablePositions(staffPositions, isDepartment).value" :key=position.id :value=position>
             {{position.name}}
@@ -41,9 +41,9 @@ const TEMPLATE = `
         </select>
       </div>
     </template>
-    <div class="UI-center UI-padding">
-      <button class="UI-eventbutton" :disabled="disableForm(userId, selectedPosition).value" @click="onSubmit">OK</button>
-      <button class="UI-redbutton" v-if="isEdit" @click="onRemoveStaff">Remove</button>
+    <div class="CONCOM-list-sidebar-actions-container">
+      <button class="CONCOM-list-sidebar-actions-confirm-button" :disabled="disableForm(userId, selectedPosition).value" @click="onSubmit">OK</button>
+      <button class="CONCOM-list-sidebar-actions-modify-button" v-if="isEdit" @click="onRemoveStaff">Remove</button>
       <button :class="getCloseButtonClass(isEdit).value" @click="$emit('sidebarClosed')">Close</button>
     </div>
   </div>
@@ -63,7 +63,7 @@ const availablePositions = (staffPositions, isDepartment) => Vue.computed(() => 
 });
 
 const getCloseButtonClass = (isEdit) => Vue.computed(() => {
-  return isEdit ? 'UI-yellowbutton' : 'UI-redbutton'
+  return isEdit ? 'CONCOM-list-sidebar-actions-dismiss-button' : 'CONCOM-list-sidebar-actions-cancel-button'
 });
 
 const getHeaderText = (isEdit, isDepartment) => Vue.computed(() => {

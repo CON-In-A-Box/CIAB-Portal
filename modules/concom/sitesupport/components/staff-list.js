@@ -5,8 +5,8 @@ const SUBHEAD_POSITION_ID = 2;
 
 const TEMPLATE = `
   <div :class="contentAreaClass(showSidebar).value">
-    <div class="UI-event-sectionbar">ConCom</div>
-    <div class="UI-maincontent">
+    <div class="CONCOM-list-page-top-section">ConCom</div>
+    <div class="CONCOM-list-page-content">
       <staff-division v-for="division in divisions" :division=division></staff-division>
     </div>
   </div>
@@ -111,7 +111,7 @@ function componentSetup() {
 }
 
 const contentAreaClass = (showSidebar) => Vue.computed(() => {
-  return showSidebar ? 'UI-maincontent UI-mainsection-sidebar-shown' : 'UI-maincontent UI-rest';
+  return showSidebar ? 'CONCOM-list-page-sidebar-active' : 'CONCOM-list-page';
 });
 
 function closeSidebar() {

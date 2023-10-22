@@ -1,10 +1,11 @@
 /* globals Vue */
 const TEMPLATE = `
-  <div class="CONCOM-goto-dropdown">
+  <div class="CONCOM-list-navigation-dropdown">
     Go To Section
-    <div class="CONCOM-goto-dropdown-content">
-      <a href="#main_nav" class="UI-border">Top of Page<br/></a>
-      <a :href="'#' + htmlTagFriendlyName(division).value" class="UI-border" v-for="division in divisionContent">{{division.name}}<br/></a>
+    <div class="CONCOM-list-navigation-dropdown-contents">
+      <a href="#main_nav" class="CONCOM-list-navigation-dropdown-content-item">Top of Page<br/></a>
+      <a :href="'#' + htmlTagFriendlyName(division).value" class="CONCOM-list-navigation-dropdown-content-item" 
+        v-for="division in divisionContent">{{division.name}}<br/></a>
     </div>
   </div>
 `;

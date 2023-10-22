@@ -6,25 +6,25 @@ const PROPS = {
 }
 
 const TEMPLATE = `
-  <div class="UI-table UI-table-heading" v-if="isDepartment(department).value">
-    <div class="UI-table-row event-color-primary">
-      <div class="UI-table-cell-no-border">{{department.name}}</div>
-      <div class="UI-table-cell-no-border">
+  <div class="CONCOM-list-department-separator" v-if="isDepartment(department).value">
+    <div class="CONCOM-list-department-separator-row">
+      <div class="CONCOM-list-separator-row-column">{{department.name}}</div>
+      <div class="CONCOM-list-separator-row-column">
         <a :href="divisionNavigationRef(division).value">{{division.name}}</a>
       </div>
-      <div class="UI-table-cell-no-border">
+      <div class="CONCOM-list-separator-row-column">
         <template v-for="email in department.email">{{email}}<br/></template>
       </div>
     </div>
   </div>
   <div :class="tableClass(department).value">
     <department-header :isDepartment=isDepartment(department).value :department=department></department-header>
-    <div class="UI-table-row" v-for="staff in departmentStaff">
+    <div class="CONCOM-list-staff-container" v-for="staff in departmentStaff">
       <department-member :staff=staff :department=department @edit-clicked="editStaffClicked"></department-member>
     </div>
   </div>
-  <div class="UI-center">
-    <button class="UI-yellowbutton" @click="addStaffClicked" v-if="canAddDept">Add someone to {{department.name}}</button>
+  <div class="CONCOM-add-member-button-container">
+    <button class="CONCOM-add-member-button" @click="addStaffClicked" v-if="canAddDept">Add someone to {{department.name}}</button>
   </div>
 `;
 
@@ -37,7 +37,7 @@ const divisionNavigationRef = (division) => Vue.computed(() => {
 });
 
 const tableClass = (department) => Vue.computed(() => {
-  return isDepartment(department) ? 'UI-table-all UI-table-heading' : 'UI-table-all';
+  return isDepartment(department).value ? 'CONCOM-list-department-container' : 'CONCOM-list-division-container';
 });
 
 const filterStaff = (staff, staffPositions, department) => {

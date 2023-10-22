@@ -1,0 +1,194 @@
+@import "common";
+
+.CONCOM-list-page-sidebar-active {
+  @extend .UI-maincontent;
+  @extend .UI-mainsection-sidebar-shown;
+}
+
+.CONCOM-list-page {
+  @extend .UI-maincontent;
+  @extend .UI-rest;
+}
+
+.CONCOM-list-page-top-section {
+  @extend .UI-event-sectionbar;
+}
+
+.CONCOM-list-page-content {
+  @extend .UI-maincontent;
+}
+
+.CONCOM-list-navigation-dropdown {
+  @extend .w3-dropdown-hover;
+  @extend .event-color-secondary;
+}
+
+.CONCOM-list-navigation-dropdown-contents {
+  @extend .w3-dropdown-content;
+  @extend .event-color-secondary;
+}
+
+.CONCOM-list-navigation-dropdown-content-item {
+  @extend .UI-border;
+}
+
+.CONCOM-list-separator {
+  @extend .UI-table;
+  @extend .UI-table-heading;
+}
+
+.CONCOM-list-separator-row {
+  @extend .UI-table-row;
+}
+
+.CONCOM-list-row-column {
+  @extend .UI-table-cell-no-border;
+}
+
+.CONCOM-list-centered-row-column {
+  @extend .UI-center;
+  @extend .CONCOM-list-row-column;
+}
+
+.CONCOM-list-separator-row-column {
+  @extend .CONCOM-list-centered-row-column;
+  width: 33%;
+}
+
+.CONCOM-add-member-button-container {
+  @extend .UI-center;
+  margin: 1em auto;
+}
+
+.CONCOM-add-member-button {
+  @extend .UI-yellowbutton;
+}
+
+.CONCOM-edit-member-button {
+  @extend .UI-redbutton;
+}
+
+.CONCOM-list-division {
+  @extend .UI-container;
+  @extend .UI-padding;
+  @extend .UI-border;
+  margin: 1em auto;
+}
+
+.CONCOM-list-division-separator {
+  @extend .CONCOM-list-separator;
+}
+
+.CONCOM-list-division-separator-row {
+  @extend .CONCOM-list-separator-row;
+  @extend .event-color-secondary;
+}
+
+.CONCOM-list-department {
+  @extend .UI-container;
+  @extend .UI-padding;
+}
+
+.CONCOM-list-department-separator {
+  @extend .CONCOM-list-separator;
+}
+
+.CONCOM-list-department-separator-row {
+  @extend .CONCOM-list-separator-row;
+  @extend .event-color-primary;
+}
+
+.CONCOM-list-department-container {
+  @extend .UI-table-all;
+  @extend .UI-table-heading;
+}
+
+.CONCOM-list-division-container {
+  @extend .UI-table-all;
+}
+
+.CONCOM-list-division-header-row {
+  @extend .UI-table-row;
+  @extend .event-color-secondary;
+}
+
+.CONCOM-list-division-header-column {
+  @extend .CONCOM-list-centered-row-column;
+  width: 16.66%;
+}
+
+.CONCOM-list-department-header-row {
+  @extend .UI-table-row;
+  @extend .event-color-secondary;
+  font-size: 0.75rem;
+}
+
+.CONCOM-list-department-header-column {
+  @extend .CONCOM-list-centered-row-column;
+  width: 12.5%;
+}
+
+.CONCOM-list-staff-container {
+  @extend .UI-table-row;
+}
+
+.CONCOM-list-division-staff-column {
+  @extend .CONCOM-list-centered-row-column;
+  width: 16.66%;
+}
+
+.CONCOM-list-department-staff-column {
+  @extend .CONCOM-list-centered-row-column;
+  width: 12.5%;
+}
+
+.CONCOM-list-sidebar-container {
+  @extend .UI-sidebar-shown;
+  @extend .UI-fixed;
+}
+
+.CONCOM-list-sidebar-header {
+  @extend .UI-center;
+}
+
+.CONCOM-list-sidebar-header-content {
+  @extend .UI-red;
+}
+
+.CONCOM-list-sidebar-lookup-container {
+  @extend .UI-center;
+}
+
+.CONCOM-list-sidebar-lookup-form {
+  @extend .UI-rest;
+  @extend .UI-center;
+}
+
+.CONCOM-list-sidebar-centered-item {
+  @extend .UI-center;
+}
+
+.CONCOM-list-sidebar-input {
+  @extend .UI-input;
+}
+
+.CONCOM-list-sidebar-actions-container {
+  @extend .UI-center;
+  @extend .UI-padding;
+}
+
+.CONCOM-list-sidebar-actions-confirm-button {
+  @extend .UI-eventbutton;
+}
+
+.CONCOM-list-sidebar-actions-modify-button {
+  @extend .UI-redbutton;
+}
+
+.CONCOM-list-sidebar-actions-cancel-button {
+  @extend .UI-redbutton;
+}
+
+.CONCOM-list-sidebar-actions-dismiss-button {
+  @extend .UI-yellowbutton;
+}

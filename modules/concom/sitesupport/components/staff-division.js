@@ -6,20 +6,20 @@ const PROPS = {
 };
 
 const TEMPLATE = `
-  <div class="UI-container UI-padding UI-border">
-    <div class="UI-table UI-table-heading" :id="htmlTagFriendlyName(division).value">
-      <div class="UI-table-row event-color-secondary">
-        <div class="UI-center UI-table-cell-no-border">{{divisionName(division).value}}</div>
-        <div class="UI-center UI-table-cell-no-border">
+  <div class="CONCOM-list-division">
+    <div class="CONCOM-list-division-separator" :id="htmlTagFriendlyName(division).value">
+      <div class="CONCOM-list-division-separator-row">
+        <div class="CONCOM-list-separator-row-column">{{divisionName(division).value}}</div>
+        <div class="CONCOM-list-separator-row-column">
           <staff-section-nav :id="htmlTagFriendlyName(division).value + '_nav'"></staff-section-nav>
         </div>
-        <div class="UI-table-cell-no-border">
+        <div class="CONCOM-list-separator-row-column">
           <template v-for="email in division.email">{{email}}<br/></template>
         </div> 
       </div>
     </div>
     <staff-department :department=division :division=division :divisionStaffMap=divisionStaffMap></staff-department>
-    <div class="UI-container UI-padding">
+    <div class="CONCOM-list-department">
       <template v-for="department in division.departments">
         <staff-department :department=department :division=division :divisionStaffMap=divisionStaffMap></staff-department>
       </template>
