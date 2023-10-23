@@ -1,6 +1,5 @@
 <?php
 require_once $BACKEND.'/asset.inc';
-require_once($BACKEND.'/RBAC.inc');
 ?>
 
 <script>
@@ -61,7 +60,7 @@ if ($console === null) {
 
     if (!isset($admin_menus)) {
         $admin_menus = array();
-        if (\ciab\RBAC::havePermission("site.admin")) {
+        if (RBACApiRequest('site.admin')) {
             $admin_menus[] = array('base style' => 'UI-yellow',
                  'selected style' => 'event-color-primary',
                  'function' => 'modules',

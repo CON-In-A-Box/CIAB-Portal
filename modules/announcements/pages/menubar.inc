@@ -1,6 +1,6 @@
 <?php
-if (\ciab\RBAC::havePermission("announcement.view") ||
-    !empty($_SESSION['customFields']['currConComPos'])) {
+if (!empty($_SESSION['customFields']['currConComPos']) ||
+    RBACApiRequest('announcement.view')) {
     $base_menus[] = array('base style' => '',
          'selected style' => 'event-color-primary',
          'function' => 'announcements',

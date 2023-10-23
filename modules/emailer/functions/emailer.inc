@@ -8,7 +8,6 @@
 require_once $FUNCTIONDIR."/divisional.inc";
 require_once $FUNCTIONDIR."/database.inc";
 require_once $BACKEND."/email.inc";
-require_once($BACKEND."/RBAC.inc");
 
 class Email
 {
@@ -24,7 +23,7 @@ class Email
 
     public static function allowed()
     {
-        if (\ciab\RBAC::havePermission("site.email_lists")) {
+        if (RBACApiRequest('site.email_lists')) {
             return true;
         }
 
@@ -72,7 +71,7 @@ class Email
 
     public function canAdd()
     {
-        if (\ciab\RBAC::havePermission("site.email_lists")) {
+        if (RBACApiRequest('site.email_lists')) {
             return true;
         }
         return false;
@@ -181,7 +180,7 @@ class Email
     public function buildTo()
     {
         $response = [];
-        if (\ciab\RBAC::havePermission("site.email_lists")) {
+        if (RBACApiRequest('site.email_lists')) {
             $sql = "SELECT * FROM `EmailLists`";
             $result = \DB::run($sql);
             $value = $result->fetch();
@@ -226,7 +225,7 @@ SQL;
     public function buildEdit()
     {
         $response = [];
-        if (\ciab\RBAC::havePermission("site.email_lists")) {
+        if (RBACApiRequest('site.email_lists')) {
             $sql = "SELECT * FROM `EmailLists`";
             $result = \DB::run($sql);
             $value = $result->fetch();

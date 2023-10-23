@@ -1,7 +1,5 @@
 <?php
 
-require_once($BACKEND."/RBAC.inc");
-
 if (isset($_SESSION['IS_ADMIN'])) {
     $admin_menus[] = array('base style' => 'UI-yellow',
      'selected style' => 'event-color-primary',
@@ -12,7 +10,7 @@ if (isset($_SESSION['IS_ADMIN'])) {
      'responsive' => true);
 }
 
-if (\ciab\RBAC::havePermission("meeting.reports")) {
+if (RBACApiRequest('meeting.reports')) {
     $report_menus[] = array('base style' => 'UI-yellow',
      'selected style' => 'event-color-primary',
      'function' => 'event/report',

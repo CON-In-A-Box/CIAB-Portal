@@ -1,7 +1,6 @@
 <?php
 
 require_once($BASEDIR.'/console/console.inc');
-require_once($BACKEND."/RBAC.inc");
 
 if (!empty($_SESSION['customFields']['currConComPos'])) {
     $base_menus[] = array('base style' => '',
@@ -14,8 +13,8 @@ if (!empty($_SESSION['customFields']['currConComPos'])) {
 }
 
 if (!is_console('volunteers')) {
-    if (\ciab\RBAC::havePermission("volunteers.admin") ||
-        !empty($_SESSION['customFields']['currConComPos'])) {
+    if (!empty($_SESSION['customFields']['currConComPos']) ||
+        RBACApiRequest('volunteers.admin')) {
         $basecolor = 'UI-yellow';
         if (array_key_exists('CIAB_VOLUNTEERADMIN', $_COOKIE) &&
            $_COOKIE["CIAB_VOLUNTEERADMIN"]) {
@@ -29,8 +28,8 @@ if (!is_console('volunteers')) {
          'text' => 'Volunteers',
          'responsive' => true);
     }
-    if (\ciab\RBAC::havePermission("volunteers.reports") ||
-        $_SESSION['IS_VOLUNTEERS']) {
+    if ($_SESSION['IS_VOLUNTEERS'] ||
+        RBACApiRequest('volunteers.reports')) {
         $report_menus[] = array('base style' => 'UI-yellow',
          'selected style' => 'event-color-primary',
          'function' => 'volunteers/report',

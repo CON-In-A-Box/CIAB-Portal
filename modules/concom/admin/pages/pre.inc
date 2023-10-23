@@ -4,11 +4,8 @@
     require_module 'json';
 .*/
 
-require_once($BACKEND.'/RBAC.inc');
 
-if (!\ciab\RBAC::havePermission("site.concom.structure")) {
-    goSite();
-}
+PageAllowedByRBAC('site.concom.structure');
 
 require_once(__DIR__."/../../functions/concom.inc");
 
@@ -54,7 +51,7 @@ if (isset($updateData['email'])) {
     exit();
 }
 
-if (\ciab\RBAC::havePermission("site.concom.permissions")) {
+if (RBACApiRequest('site.concom.permissions')) {
     if (isset($updateData['deleteAC'])) {
         deleteDepartmentPermission(
             $updateData['deleteAC'],

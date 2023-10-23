@@ -1,8 +1,6 @@
 <?php
 
-require_once($BACKEND."/RBAC.inc");
-
-if (\ciab\RBAC::havePermission("site.admin")) {
+if (RBACApiRequest('site.admin')) {
     $admin_menus[] = array('base style' => 'UI-yellow',
      'selected style' => 'event-color-primary',
      'function' => 'admin',
@@ -12,7 +10,7 @@ if (\ciab\RBAC::havePermission("site.admin")) {
      'responsive' => true);
 }
 
-if (\ciab\RBAC::havePermission("asset.admin")) {
+if (RBACApiRequest('asset.admin')) {
     $admin_menus[] = array('base style' => 'UI-yellow',
      'selected style' => 'event-color-primary',
      'function' => 'admin/asset',

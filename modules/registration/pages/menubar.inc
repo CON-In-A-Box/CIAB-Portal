@@ -19,7 +19,8 @@ if (in_registration()) {
     generate_console_menus('registration');
 }
 
-if (!in_console() && \ciab\RBAC::havePermission("registration.reports")) {
+
+if (!in_console() && RBACApiRequest('registration.reports')) {
     $report_menus[] = array('base style' => 'UI-yellow',
      'selected style' => 'event-color-primary',
      'function' => 'registration/report',

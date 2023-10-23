@@ -5,12 +5,10 @@
     require_module 'json';
 .*/
 
-require_once($BACKEND."/RBAC.inc");
 
 /* This should only be accessable from volunteer staff */
-if (!(\ciab\RBAC::havePermission("volunteers.reports")) &&
-    !(boolval($_SESSION['IS_VOLUNTEERS']))) {
-    goSite();
+if (!(boolval($_SESSION['IS_VOLUNTEERS']))) {
+    PageAllowedByRBAC('volunteers.reports');
 }
 
 require_once($FUNCTIONDIR."/reports.inc");

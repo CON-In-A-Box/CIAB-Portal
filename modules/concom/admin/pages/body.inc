@@ -20,7 +20,7 @@ $deptCount = departmentDetails(current_eventID());
 <p>Double click on Divisions or Departments to change the properties</p>
 </div>
 
-<?php if (\ciab\RBAC::havePermission("site.concom.permissions")) {?>
+<?php if (RBACApiRequest('site.concom.permissions')) {?>
 <div id='all_rbac' class='UI-container UI-margin UI-center'>
     <button class='UI-redbutton UI-padding UI-margin' id='all_rbac'
             onclick='showRBAC("all");'>
@@ -50,7 +50,7 @@ build_structure_sections();
             <div class='UI-border' id="dept_email">
             </div>
 <?php
-if (\ciab\RBAC::havePermission("site.concom.permissions")) {
+if (RBACApiRequest('site.concom.permissions')) {
     ?>
             <button class='UI-redbutton UI-padding UI-margin' id='dept_rbac'>
                  Position Site Permissions (RBAC)

@@ -16,6 +16,10 @@ if (is_file($BASEDIR.'/.env')) {
 require_once(__DIR__."/../backends/email.inc");
 require_once(__DIR__."/database.inc");
 
+use \GuzzleHttp\Client;
+use \GuzzleHttp\Psr7\Request;
+use \GuzzleHttp\Exception\RequestException;
+
 // Main setup function
 $MODULENAME  = "Member Portal";
 
@@ -440,5 +444,49 @@ function core_pages()
     $valid = array_unique(array_merge($valid, $result), SORT_STRING);
 
     return $valid;
+
+}
+
+
+function RBACApiRequest($rbac)
+{
+    global $_SESSION;
+
+    $target = '/permissions/meta/'.$rbac;
+
+    if (array_key_exists('API_SERVER', $_ENV)) {
+        $url = $_ENV['API_SERVER'].'/api/'.$target;
+    } elseif (isset($WEBSERVER)) {
+        $url = $WEBSERVER.'/api/'.$target;
+    } else {
+        $url = 'http://localhost//api/'.$target;
+        ;
+    }
+    $client = new Client();
+    try {
+        $request = new Request('GET', $url, ['Authorization' => 'Bearer '.$_SESSION['apiAuth']]);
+        $response = $client->send($request);
+    } catch (RequestException $e) {
+        $response = $e->getResponse();
+        error_log('API request failed: '.$response->getBody());
+        $target = 'index.php?Function=refresh&return='.urlencode($_SERVER['REQUEST_URI']);
+        header("Location: $target");
+        return null;
+    }
+    $data = json_decode($response->getBody());
+    return $data->allowed;
+
+}
+
+
+function PageAllowedByRBAC($rbac)
+{
+    $allowed = RBACApiRequest($rbac);
+    if ($allowed === null) {
+        $target = 'index.php?Function=refresh&return='.urlencode($_SERVER['REQUEST_URI']);
+        header("Location: $target");
+    } elseif (!$allowed) {
+        goSite();
+    }
 
 }

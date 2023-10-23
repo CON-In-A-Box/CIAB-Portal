@@ -3,11 +3,7 @@
     require_module 'standard';
 .*/
 
-require_once($BACKEND."/RBAC.inc");
-
-if (!\ciab\RBAC::havePermission("site.admin")) {
-    goSite();
-}
+PageAllowedByRBAC('site.admin');
 
 if (!empty($_REQUEST)) {
     $arguments = [

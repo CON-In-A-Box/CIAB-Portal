@@ -4,7 +4,6 @@
 .*/
 
 require_once __DIR__."/../functions/emailer.inc";
-require_once($BACKEND."/RBAC.inc");
 
 $emailer = new \mailer\Email();
 ?>
@@ -166,7 +165,7 @@ foreach ($lists as $entry) {
 ?> ];
 
 <?php
-if (\ciab\RBAC::havePermission("site.email_lists")) {
+if (RBACApiRequest('site.email_lists')) {
     ?>
     document.getElementById('edit_button').classList.remove('UI-hide');
     <?php

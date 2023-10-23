@@ -6,11 +6,7 @@
     require_module 'file';
 .*/
 
-require_once($BACKEND."/RBAC.inc");
-
-if (!\ciab\RBAC::havePermission("asset.admin")) {
-    goSite();
-}
+PageAllowedByRBAC('asset.admin');
 
 require_once($FUNCTIONDIR."/database.inc");
 require_once($BACKEND.'/asset.inc');
@@ -65,7 +61,7 @@ if (isset($_GET['configuration'])) {
         } else {
             $config[$key]['source'] = 'NEW';
         }
-        if (!\ciab\RBAC::havePermission("site.admin")) {
+        if (!RBACApiRequest('site.admin')) {
             $config[$key]['readonly'] = true;
         }
     }

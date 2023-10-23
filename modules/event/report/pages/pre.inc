@@ -4,11 +4,7 @@
     require_module 'standard';
 .*/
 
-require_once($BACKEND."/RBAC.inc");
-
-if (!\ciab\RBAC::havePermission("meeting.reports")) {
-    goSite();
-}
+PageAllowedByRBAC('meeting.reports');
 
 require_once __DIR__.'/../../functions/functions.inc';
 require_once($FUNCTIONDIR."/reports.inc");

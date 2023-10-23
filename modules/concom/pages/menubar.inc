@@ -1,6 +1,6 @@
 <?php
-if (\ciab\RBAC::havePermission("concom.view") ||
-    !empty($_SESSION['customFields']['currConComPos'])) {
+if (!empty($_SESSION['customFields']['currConComPos']) ||
+    RBACApiRequest('concom.view')) {
     $base_menus[] = array('base style' => '',
          'selected style' => 'event-color-primary',
          'function' => 'concom',
@@ -10,7 +10,7 @@ if (\ciab\RBAC::havePermission("concom.view") ||
          'responsive' => true);
 }
 
-if (\ciab\RBAC::havePermission("site.concom.structure")) {
+if (RBACApiRequest('concom.structure')) {
     $admin_menus[] = array('base style' => 'UI-yellow',
          'selected style' => 'event-color-primary',
          'function' => 'concom/admin',
@@ -21,7 +21,7 @@ if (\ciab\RBAC::havePermission("site.concom.structure")) {
 }
 
 
-if (\ciab\RBAC::havePermission("concom.reports")) {
+if (RBACApiRequest('concom.reports')) {
     $report_menus[] = array('base style' => 'UI-yellow',
      'selected style' => 'event-color-primary',
      'function' => 'concom/report',

@@ -3,12 +3,8 @@
     require_module 'standard';
 .*/
 
-require_once($BACKEND."/RBAC.inc");
-
-if (!\ciab\RBAC::havePermission("site.admin")) {
-    // This is for SystemAdmins only!  Silently return to main.
-    goSite();
-}
+// This is for SystemAdmins only!  Silently return to main.
+PageAllowedByRBAC('site.admin');
 
 require_once($FUNCTIONDIR.'/session.inc');
 require_once($FUNCTIONDIR.'/database.inc');
