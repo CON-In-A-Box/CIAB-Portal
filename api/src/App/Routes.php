@@ -63,6 +63,7 @@ function setupAPIRoutes(App $app, $authMiddleware)
             $app->get('/method/announcement[/{method}[/{department}]]', 'App\Controller\Permissions\AnnouncementMethod');
 
             $app->get('/generic/{resource}/{method}[/{detail}]', 'App\Controller\Permissions\GenericResource');
+            $app->get('/meta/{permission}', 'App\Controller\Permissions\MetaResource');
         }
     )->add(new \App\Middleware\CiabMiddleware($app))->add($authMiddleware);
 

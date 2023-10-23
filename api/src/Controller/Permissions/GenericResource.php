@@ -15,7 +15,7 @@ class GenericResource extends GenericPermission
     protected function buildEntry($request, $method, $resourceName, $detail): array
     {
         $path = $request->getUri()->getBaseUrl();
-        $permission = 'api.'.$method.'.'.$resourceName;
+        $permission = ($method != 'meta') ? 'api.'.$method.'.'.$resourceName : $resourceName;
         $allowed = ($this->container->RBAC->havePermission($permission)) ? 1 : 0;
 
         $entry = [
@@ -43,7 +43,7 @@ class GenericResource extends GenericPermission
         } else {
             $detail = null;
         }
-        if (!in_array($method, GenericPermission::ALL_METHODS)) {
+        if ($method != 'meta' && !in_array($method, GenericPermission::ALL_METHODS)) {
             return [
             \App\Controller\BaseController::RESULT_TYPE,
             $this->errorResponse(
