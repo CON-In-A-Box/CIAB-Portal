@@ -38,8 +38,6 @@ const divisionName = (division) => Vue.computed(() => {
 const INITIAL_DATA = () => {
   return {
     divisionStaffMap: {},
-    htmlTagFriendlyName,
-    divisionName
   }
 };
 
@@ -72,6 +70,10 @@ const staffDivisionComponent = {
   data: INITIAL_DATA,
   async mounted() {
     await onMounted(this);
+  },
+  methods: {
+    htmlTagFriendlyName,
+    divisionName
   }
 };
 

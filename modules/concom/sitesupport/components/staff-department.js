@@ -17,10 +17,12 @@ const TEMPLATE = `
       </div>
     </div>
   </div>
-  <div :class="tableClass(department).value">
-    <department-header :isDepartment=isDepartment(department).value :department=department></department-header>
-    <div class="CONCOM-list-staff-container" v-for="staff in departmentStaff">
-      <department-member :staff=staff :department=department @edit-clicked="editStaffClicked"></department-member>
+  <div :class="tableClass(department, division).value">
+    <department-header :isDepartment=isDepartment(department).value :department=department
+      :isSpecialDivision=division.specialDivision :isCorporateDivision="isCorporateDivision(division).value"></department-header>
+    <div :class="staffContainerClass(division).value" v-for="staff in departmentStaff">
+      <department-member :staff=staff :department=department :isSpecialDivision=division.specialDivision
+        @edit-clicked="editStaffClicked"></department-member>
     </div>
   </div>
   <div class="CONCOM-add-member-button-container">
@@ -36,8 +38,20 @@ const divisionNavigationRef = (division) => Vue.computed(() => {
   return `#${division.name}`
 });
 
-const tableClass = (department) => Vue.computed(() => {
-  return isDepartment(department).value ? 'CONCOM-list-department-container' : 'CONCOM-list-division-container';
+const tableClass = (department, division) => Vue.computed(() => {
+  if (division.specialDivision) {
+    return 'CONCOM-list-special-division-container';
+  } else {
+    return isDepartment(department).value ? 'CONCOM-list-department-container' : 'CONCOM-list-division-container';
+  }
+});
+
+const staffContainerClass = (division) => Vue.computed(() => {
+  return division.specialDivision ? 'CONCOM-list-special-division-staff-container' : 'CONCOM-list-staff-container';
+});
+
+const isCorporateDivision = (division) => Vue.computed(() => {
+  return division.name === 'Corporate Staff';
 });
 
 const filterStaff = (staff, staffPositions, department) => {
@@ -52,15 +66,6 @@ const filterStaff = (staff, staffPositions, department) => {
   }
 
   return staff;
-};
-
-const INITIAL_DATA = () => {
-  return {
-    isDepartment,
-    divisionNavigationRef,
-    tableClass,
-    filterStaff
-  }
 };
 
 const canAddDepartmentStaff = (departmentId, permissions) => {
@@ -134,7 +139,6 @@ function componentSetup(props) {
 const staffDepartmentComponent = {
   props: PROPS,
   template: TEMPLATE,
-  data: INITIAL_DATA,
   setup: componentSetup,
   mounted() {
     const departmentId = this.department.id;
@@ -144,7 +148,13 @@ const staffDepartmentComponent = {
   methods: {
     addStaffClicked,
     editStaffClicked,
-    updateSidebarProps
+    updateSidebarProps,
+    isDepartment,
+    divisionNavigationRef,
+    tableClass,
+    staffContainerClass,
+    filterStaff,
+    isCorporateDivision
   }
 };
 

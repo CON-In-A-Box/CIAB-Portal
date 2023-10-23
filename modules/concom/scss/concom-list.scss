@@ -50,6 +50,11 @@
   @extend .CONCOM-list-row-column;
 }
 
+.CONCOM-list-edit-column {
+  @extend .CONCOM-list-row-column;
+  width: 5%;
+}
+
 .CONCOM-list-separator-row-column {
   @extend .CONCOM-list-centered-row-column;
   width: 33%;
@@ -107,14 +112,19 @@
   @extend .UI-table-all;
 }
 
+.CONCOM-list-special-division-container {
+  @extend .UI-table-all;
+}
+
 .CONCOM-list-division-header-row {
   @extend .UI-table-row;
   @extend .event-color-secondary;
+  @extend .UI-center;
 }
 
 .CONCOM-list-division-header-column {
   @extend .CONCOM-list-centered-row-column;
-  width: 16.66%;
+  width: 20%;
 }
 
 .CONCOM-list-department-header-row {
@@ -125,21 +135,40 @@
 
 .CONCOM-list-department-header-column {
   @extend .CONCOM-list-centered-row-column;
-  width: 12.5%;
+  width: 13.5%;
+}
+
+.CONCOM-list-special-division-header-row {
+  @extend .UI-table-row;
+  @extend .event-color-secondary;
+}
+
+.CONCOM-list-special-division-header-column {
+  @extend .CONCOM-list-centered-row-column;
+  width: 20%;
 }
 
 .CONCOM-list-staff-container {
   @extend .UI-table-row;
 }
 
+.CONCOM-list-special-division-staff-container {
+  @extend .UI-table-row;
+}
+
 .CONCOM-list-division-staff-column {
   @extend .CONCOM-list-centered-row-column;
-  width: 16.66%;
+  width: 20%;
 }
 
 .CONCOM-list-department-staff-column {
   @extend .CONCOM-list-centered-row-column;
-  width: 12.5%;
+  width: 13.5%;
+}
+
+.CONCOM-list-special-division-staff-column {
+  @extend .CONCOM-list-centered-row-column;
+  width: 20%;
 }
 
 .CONCOM-list-sidebar-container {
