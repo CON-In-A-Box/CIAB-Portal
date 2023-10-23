@@ -5,16 +5,16 @@ const PROPS = {
 }
 
 const TEMPLATE = `
-  <div class="UI-table-row CONCOM-table-head" :id="'table_header_' + htmlTagFriendlyName(department).value">
-    <div class="UI-table-cell-no-border" v-if="isDepartment">Department</div>
-    <div class="UI-table-cell" v-if="isDepartment">Division</div>
-    <div class="UI-table-cell-no-border" v-if="!isDepartment">Division</div>
-    <div class="UI-table-cell-no-border">Name</div>
-    <div class="UI-table-cell-no-border">Pronouns</div>
-    <div class="UI-table-cell-no-border">Position</div>
-    <div class="UI-table-cell-no-border" v-if="isDepartment">Email</div>
-    <div class="UI-table-cell-no-border">Note</div>
-    <div class="UI-table-cell-no-border"></div>
+  <div :class="headerClass(isDepartment).value" :id="'table_header_' + htmlTagFriendlyName(department).value">
+    <div :class="columnClass(isDepartment).value" v-if="isDepartment">Department</div>
+    <div :class="columnClass(isDepartment).value" v-if="isDepartment">Division</div>
+    <div :class="columnClass(isDepartment).value" v-if="!isDepartment">Division</div>
+    <div :class="columnClass(isDepartment).value">Name</div>
+    <div :class="columnClass(isDepartment).value">Pronouns</div>
+    <div :class="columnClass(isDepartment).value">Position</div>
+    <div :class="columnClass(isDepartment).value" v-if="isDepartment">Email</div>
+    <div :class="columnClass(isDepartment).value">Note</div>
+    <div :class="columnClass(isDepartment).value"></div>
   </div>
 `;
 
@@ -22,16 +22,22 @@ const htmlTagFriendlyName = (department) => Vue.computed(() => {
   return department.name.replaceAll(' ', '_');
 });
 
-const INITIAL_DATA = () => {
-  return {
-    htmlTagFriendlyName
-  }
-};
+const headerClass = (isDepartment) => Vue.computed(() => {
+  return isDepartment ? 'CONCOM-list-department-header-row' : 'CONCOM-list-division-header-row';
+});
+
+const columnClass = (isDepartment) => Vue.computed(() => {
+  return isDepartment ? 'CONCOM-list-department-header-column' : 'CONCOM-list-division-header-column';
+});
 
 const departmentHeaderComponent = {
   props: PROPS,
   template: TEMPLATE,
-  data: INITIAL_DATA
+  methods: {
+    htmlTagFriendlyName,
+    headerClass,
+    columnClass
+  }
 };
 
 export default departmentHeaderComponent;

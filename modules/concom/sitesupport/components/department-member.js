@@ -5,20 +5,24 @@ const PROPS = {
 };
 
 const TEMPLATE = `
-  <div class="UI-table-cell-no-border">{{staff.departmentName}}</div>
-  <div class="UI-table-cell-no-border" v-if="componentIsDept(department).value">{{ staffDivisionName(staff).value }}</div>
-  <div class="UI-table-cell-no-border">{{ staffFullName(staff).value }}</div>
-  <div class="UI-table-cell-no-border">{{staff.pronouns}}</div>
-  <div class="UI-table-cell-no-border">{{ staffPosition(staff, componentIsDept(department).value).value }}</div>
-  <div class="UI-table-cell-no-border" v-if="componentIsDept(department).value">{{staff.email}}</div>
-  <div class="UI-table-cell-no-border">
+  <div :class="columnClass(department).value">{{ staff.departmentName }}</div>
+  <div :class="columnClass(department).value" v-if="componentIsDept(department).value">{{ staffDivisionName(staff).value }}</div>
+  <div :class="columnClass(department).value">{{ staffFullName(staff).value }}</div>
+  <div :class="columnClass(department).value">{{ staff.pronouns }}</div>
+  <div :class="columnClass(department).value">{{ staffPosition(staff, componentIsDept(department).value).value }}</div>
+  <div :class="columnClass(department).value" v-if="componentIsDept(department).value">{{ staff.email }}</div>
+  <div :class="columnClass(department).value">
     <p>{{staff.note}}</p>
     <p v-if="currentUser?.id === staff.id">This is you!</p>
   </div>
-  <div class="UI-table-cell-no-border">
-    <button class="UI-redbutton" v-if="canEdit" @click="onEditClicked">Edit</button>
+  <div :class="columnClass(department).value">
+    <button class="CONCOM-edit-member-button" v-if="canEdit" @click="onEditClicked">Edit</button>
   </div>
 `;
+
+const columnClass = (department) => Vue.computed(() => {
+  return componentIsDept(department).value ? 'CONCOM-list-department-staff-column' : 'CONCOM-list-division-staff-column';
+})
 
 const staffFullName = (staff) => Vue.computed(() => {
   return `${staff.firstName} ${staff.lastName}`;
@@ -60,14 +64,6 @@ function onEditClicked() {
   this.$emit('editClicked', emittedEventData);
 }
 
-const INITIAL_DATA = () => {
-  return {
-    staffFullName,
-    staffDivisionName,
-    staffPosition
-  }
-}
-
 const departmentMemberComponent = {
   props: PROPS,
   template: TEMPLATE,
@@ -82,7 +78,6 @@ const departmentMemberComponent = {
       canEdit
     }
   },
-  data: INITIAL_DATA,
   mounted() {
     const departmentId = this.department.id;
     const permissions = this.currentUser.permissions;
@@ -94,6 +89,10 @@ const departmentMemberComponent = {
     this.canEdit = canEditDepartmentStaff(departmentId, permissions, currentStaffPosition);
   },
   methods: {
+    staffFullName,
+    staffDivisionName,
+    staffPosition,
+    columnClass,
     onEditClicked,
     componentIsDept
   }
