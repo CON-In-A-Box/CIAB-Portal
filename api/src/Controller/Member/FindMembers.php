@@ -106,7 +106,7 @@ class FindMembers extends BaseMember
             ->from('`Members` m1')
             ->orderBy('AccountID ASC');
 
-        if (!$this->internal && !$this->container->RBAC::havePermission('api.get.member')) {
+        if (!$this->internal && !$this->container->RBAC->havePermission('api.get.member')) {
             $id = $request->getAttribute('oauth2-token')['user_id'];
             $select->andWhere('AccountID = ', $id);
         }

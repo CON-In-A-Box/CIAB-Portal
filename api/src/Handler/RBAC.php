@@ -6,49 +6,40 @@
 
 namespace App\Handler;
 
-#require_once __DIR__.'/../../../modules/concom/functions/RBAC.inc';
-
 class RBAC
 {
 
-    protected static $instance = null;
+    /**
+     * @var App\Handler\RBACInstance
+     */
+    protected $instance = null;
 
-    protected static $custom = array();
+    protected $custom = array();
 
 
     public function __construct()
     {
+        $this->instance = new \App\Modules\staff\Handler\StaffRBAC();
 
     }
 
 
-    public function __clone()
+    public function install($container)
     {
-
-    }
-
-
-    public static function instance()
-    {
-        if (self::$instance === null) {
-            if (class_exists('\\concom\\ConComRBAC')) {
-                self::$instance = \concom\ConComRBAC::instance();
-            }
+        if ($this->instance !== null) {
+            return $this->instance->install($container);
         }
 
-        return self::$instance;
-
     }
 
 
-    public static function reload()
+    public function reload()
     {
-        if (self::$instance !== null) {
-            self::$instance = null;
-            if (!empty(self::$custom)) {
-                if (self::instance() !== null) {
-                    foreach (self::$custom as $entry) {
-                        return self::instance()->customizeRBAC($entry);
+        if ($this->instance !== null) {
+            if (!empty($this->custom)) {
+                if ($this->instance !== null) {
+                    foreach ($this->custom as $entry) {
+                        return $this->customizeRBAC($entry);
                     }
                 }
             }
@@ -57,10 +48,10 @@ class RBAC
     }
 
 
-    public static function havePermission(/*.string.*/ $name)
+    public function havePermission(/*.string.*/ $name)
     {
-        if (self::instance() !== null) {
-            return self::instance()->havePermission($name);
+        if ($this->instance !== null) {
+            return $this->instance->havePermission($name);
         } else {
             return (array_key_exists('IS_ADMIN', $_SESSION) &&
                     $_SESSION['IS_ADMIN']);
@@ -69,12 +60,12 @@ class RBAC
     }
 
 
-    public static function getPermissions(
+    public function getPermissions(
         /*.string.*/ $role,
         /*.bool.*/ $children = true
     ) {
-        if (self::instance() !== null) {
-            return self::instance()->getPermissions($role, $children);
+        if ($this->instance !== null) {
+            return $this->instance->getPermissions($role, $children);
         } else {
             return null;
         }
@@ -82,11 +73,22 @@ class RBAC
     }
 
 
-    public static function getMemberPermissions(
+    public function getAllPermissions()
+    {
+        if ($this->instance !== null) {
+            return $this->instance->getAllPermissions();
+        } else {
+            return null;
+        }
+
+    }
+
+
+    public function getMemberPermissions(
         /*.int.*/ $id
     ) {
-        if (self::instance() !== null) {
-            return self::instance()->getMemberPermissions($id);
+        if ($this->instance !== null) {
+            return $this->instance->getMemberPermissions($id);
         } else {
             return null;
         }
@@ -94,74 +96,76 @@ class RBAC
     }
 
 
-    public static function customizeRBAC($entry)
+    public function customizeRBAC($entry)
     {
-        if (self::instance() !== null) {
-            self::$custom[] = $entry;
-            return self::instance()->customizeRBAC($entry);
+        $param = $this;
+        try {
+            @\call_user_func($entry, $param, \DB::instance());
+        } catch (\Exception $e) {
+            error_log($e);
         }
 
     }
 
 
-    public static function registerPermissions(/*.mixed.*/$permissions)
+    public function registerPermissions(/*.mixed.*/$permissions)
     {
-        if (self::instance() !== null) {
-            return self::instance()->registerPermissions($permissions);
+        if ($this->instance !== null) {
+            return $this->instance->registerPermissions($permissions);
         }
 
     }
 
 
-    public static function addRole(/*.string.*/$role, /*.array.*/$parents = null)
+    public function addRole(/*.string.*/$role, /*.array.*/$parents = null)
     {
-        if (self::instance() !== null) {
-            return self::instance()->addRole($role, $parents);
+        if ($this->instance !== null) {
+            return $this->instance->addRole($role, $parents);
         }
 
     }
 
 
-    public static function removeRole(/*.string.*/$role)
+    public function removeRole(/*.string.*/$role)
     {
-        if (self::instance() !== null) {
-            return self::instance()->removeRole($role);
+        if ($this->instance !== null) {
+            return $this->instance->removeRole($role);
         }
 
     }
 
 
-    public static function addRoleParents(/*.string.*/$role, /*.array.*/$parents)
+    public function addRoleParents(/*.string.*/$role, /*.array.*/$parents)
     {
-        if (self::instance() !== null) {
-            return self::instance()->addRoleParents($role, $parents);
+        if ($this->instance !== null) {
+            return $this->instance->addRoleParents($role, $parents);
         }
 
     }
 
 
-    public static function removeRoleParent(/*.string.*/$role, /*.string.*/$parent)
+    public function removeRoleParent(/*.string.*/$role, /*.string.*/$parent)
     {
-        if (self::instance() !== null) {
-            return self::instance()->removeRoleParent($role, $parent);
+        if ($this->instance !== null) {
+            return $this->instance->removeRoleParent($role, $parent);
         }
 
     }
 
 
-    public static function grantPermission(/*.string.*/$role, /*.string.*/$permission)
+    public function grantPermission(/*.string.*/$role, /*.string.*/$permission)
     {
-        if (self::instance() !== null) {
-            return self::instance()->grantPermission($role, $permission);
+        if ($this->instance !== null) {
+            return $this->instance->grantPermission($role, $permission);
         }
 
     }
 
 
-    public static function revokePermission(/*.string.*/$role, /*.string.*/$permission)
+    public function revokePermission(/*.string.*/$role, /*.string.*/$permission)
     {
-        if (self::instance() !== null) {
-            return self::instance()->revokePermission($role, $permission);
+        if ($this->instance !== null) {
+            return $this->instance->revokePermission($role, $permission);
         }
 
     }

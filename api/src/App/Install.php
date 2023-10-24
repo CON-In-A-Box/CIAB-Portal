@@ -30,6 +30,8 @@ function setupInstall($container): void
     $rbac = [
     ];
 
+    $container->RBAC->install($container);
+
     foreach ($baseClasses as $class) {
         $result = $class::permissions($container->db);
         if (!empty($result)) {
@@ -48,7 +50,7 @@ function setupInstall($container): void
     if (!$data || $data['Value'] != md5(json_encode($rbac))) {
      */
     foreach ($rbac as $entry) {
-        $container->RBAC::registerPermissions($entry);
+        $container->RBAC->registerPermissions($entry);
     }
 
     /*
@@ -74,7 +76,7 @@ function setupInstall($container): void
                         foreach ($module_settings['baseControllers'] as $base) {
                             $result = $base::permissions($container->db);
                             if (!empty($result)) {
-                                $container->RBAC::registerPermissions(array_unique(array_merge($rbac, $result)));
+                                $container->RBAC->registerPermissions($result);
                             }
                             $base::install($container);
                         }

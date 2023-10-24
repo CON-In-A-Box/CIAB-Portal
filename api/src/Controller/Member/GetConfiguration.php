@@ -122,7 +122,7 @@ class GetConfiguration extends BaseMember
         } else {
             $id = $user;
         }
-        if ($user != $id && !$this->container->RBAC::havePermission("api.get.configuration")) {
+        if ($user != $id && !$this->container->RBAC->havePermission("api.get.configuration")) {
             throw new PermissionDeniedException();
         }
 

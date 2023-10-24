@@ -19,11 +19,11 @@ class ModuleStaff extends BaseModule
         parent::__construct($source);
 
     }
-    
+
 
     public function install($container)
     {
-        $container->RBAC::customizeRBAC('\App\Modules\staff\ModuleStaff::customzieStaffRBAC');
+        $container->RBAC->customizeRBAC('\App\Modules\staff\ModuleStaff::customzieStaffRBAC');
 
     }
 

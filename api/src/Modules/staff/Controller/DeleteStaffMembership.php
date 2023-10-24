@@ -74,7 +74,7 @@ class DeleteStaffMembership extends BaseStaff
             'ListRecordID = ',
             $params['id']
         )->perform();
-        $this->container->RBAC::reload();
+        $this->container->RBAC->reload();
         return [
         \App\Controller\BaseController::RESOURCE_TYPE,
         [null],

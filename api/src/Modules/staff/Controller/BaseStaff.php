@@ -213,7 +213,14 @@ abstract class BaseStaff extends BaseController
 
     protected function selectStaff($event, $department = null, $member = null, $include_subdep = false)
     {
-        $select = Select::new($this->container->db);
+        return BaseStaff::staticSelectStaff($this->container, $event, $department, $member, $include_subdep);
+
+    }
+
+
+    public static function staticSelectStaff($container, $event, $department = null, $member = null, $include_subdep = false)
+    {
+        $select = Select::new($container->db);
 
         $historical = $select->subselect()->columns(
             'DepartmentID'
@@ -236,7 +243,8 @@ abstract class BaseStaff extends BaseController
         )->columns(
             'l.ListRecordID AS id',
             'l.AccountID AS member',
-            'l.DepartmentID AS department'
+            'l.DepartmentID AS department',
+            'l.PositionID AS positionId'
         )->columns(
             'COALESCE(l.Note, "") AS note'
         )->columns(
@@ -257,7 +265,7 @@ abstract class BaseStaff extends BaseController
         );
 
         if ($department !== null) {
-            $department = $this->getDepartment($department);
+            $department = BaseController::staticGetDepartment($container, $department);
             $select->where('l.DepartmentID = ', $department['id']);
             if ($include_subdep) {
                 $subdeps = $select->subselect()->columns(
