@@ -1,23 +1,39 @@
 /* globals Vue */
 const PROPS = {
   staff: Object,
-  department: Object
+  department: Object,
+  isSpecialDivision: Boolean
 };
 
 const TEMPLATE = `
-  <div :class="columnClass(department).value">{{ staff.departmentName }}</div>
-  <div :class="columnClass(department).value" v-if="componentIsDept(department).value">{{ staffDivisionName(staff).value }}</div>
-  <div :class="columnClass(department).value">{{ staffFullName(staff).value }}</div>
-  <div :class="columnClass(department).value">{{ staff.pronouns }}</div>
-  <div :class="columnClass(department).value">{{ staffPosition(staff, componentIsDept(department).value).value }}</div>
-  <div :class="columnClass(department).value" v-if="componentIsDept(department).value">{{ staff.email }}</div>
-  <div :class="columnClass(department).value">
-    <p>{{staff.note}}</p>
-    <p v-if="currentUser?.id === staff.id">This is you!</p>
-  </div>
-  <div :class="columnClass(department).value">
-    <button class="CONCOM-edit-member-button" v-if="canEdit" @click="onEditClicked">Edit</button>
-  </div>
+  <template v-if="isSpecialDivision">
+    <div class="CONCOM-list-special-division-staff-column">{{ staff.departmentName }}</div>
+    <div class="CONCOM-list-special-division-staff-column">{{ staffFullName(staff).value }}</div>
+    <div class="CONCOM-list-special-division-staff-column">{{ staff.pronouns }}</div>
+    <div class="CONCOM-list-special-division-staff-column">{{ staff.email }}</div>
+    <div class="CONCOM-list-special-division-staff-column">
+      <p>{{staff.note}}</p>
+      <p v-if="currentUser?.id === staff.id">This is you!</p>
+    </div>
+    <div class="CONCOM-list-edit-column">
+      <button class="CONCOM-edit-member-button" v-if="canEdit" @click="onEditClicked">Edit</button>
+    </div>
+  </template>
+  <template v-else>
+    <div :class="columnClass(department).value">{{ staff.departmentName }}</div>
+    <div :class="columnClass(department).value" v-if="componentIsDept(department).value">{{ staffDivisionName(staff).value }}</div>
+    <div :class="columnClass(department).value">{{ staffFullName(staff).value }}</div>
+    <div :class="columnClass(department).value">{{ staff.pronouns }}</div>
+    <div :class="columnClass(department).value">{{ staffPosition(staff, componentIsDept(department).value).value }}</div>
+    <div :class="columnClass(department).value" v-if="componentIsDept(department).value">{{ staff.email }}</div>
+    <div :class="columnClass(department).value">
+      <p>{{staff.note}}</p>
+      <p v-if="currentUser?.id === staff.id">This is you!</p>
+    </div>
+    <div class="CONCOM-list-edit-column">
+      <button class="CONCOM-edit-member-button" v-if="canEdit" @click="onEditClicked">Edit</button>
+    </div>
+  </template>
 `;
 
 const columnClass = (department) => Vue.computed(() => {
@@ -58,7 +74,7 @@ const canEditDepartmentStaff = (departmentId, permissions, staffPosition) => {
 function onEditClicked() {
   const emittedEventData = {
     staff: this.staff,
-    isDepartment: this.isDepartment
+    isDepartment: this.componentIsDept(this.department).value
   };
 
   this.$emit('editClicked', emittedEventData);
