@@ -60,6 +60,15 @@ class RBAC
     }
 
 
+    public function positionHasPermission(
+        /*.mixed.*/$pos,
+        /*.string.*/$name
+    ) {
+        return $this->instance->positionHasPermission($pos, $name);
+
+    }
+
+
     public function getPermissions(
         /*.string.*/ $role,
         /*.bool.*/ $children = true

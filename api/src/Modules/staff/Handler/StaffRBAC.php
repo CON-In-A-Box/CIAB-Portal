@@ -68,7 +68,9 @@ class StaffRBAC implements \App\Handler\RBACInterface
             foreach ($positions as $pos) {
                 $new = $value['DepartmentID'].'.'.$pos;
                 $this->addRole($new, [$parent]);
-                $this->addToAll('all.staff', $new, $pos);
+                $this->addRoleParents('all.staff', [$new]);
+                $this->addRoleParents("all.$pos", [$new]);
+
                 $parent = $new;
             }
         }
@@ -84,10 +86,9 @@ class StaffRBAC implements \App\Handler\RBACInterface
             foreach ($positions as $pos) {
                 $new = $value['DepartmentID'].'.'.$pos;
                 $this->addRole($new, [$parent]);
-                $this->addToAll('all.staff', $new, $pos);
-                if ($parent == $firstparent) {
-                    $parent = $new;
-                }
+                $this->addRoleParents('all.staff', [$new]);
+                $this->addRoleParents("all.$pos", [$new]);
+                $parent = $new;
             }
         }
 
@@ -105,17 +106,6 @@ class StaffRBAC implements \App\Handler\RBACInterface
             }
             $this->backend->addPermission($value['Permission']);
         }
-
-    }
-
-
-    private function addToAll(
-        /*.string.*/$staff,
-        /*.string.*/$new_role,
-        /*.string.*/$pos
-    ) {
-        $this->addRoleParents($staff, [$new_role]);
-        $this->addRoleParents("all.$pos", [$new_role]);
 
     }
 
