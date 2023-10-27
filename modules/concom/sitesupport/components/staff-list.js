@@ -6,6 +6,7 @@ const SUBHEAD_POSITION_ID = 2;
 const TEMPLATE = `
   <div :class="contentAreaClass(showSidebar).value">
     <div class="CONCOM-list-page-top-section">ConCom</div>
+    <org-donut :divisions=divisions></org-donut>
     <div class="CONCOM-list-page-content">
       <staff-division v-for="division in divisions" :division=division></staff-division>
     </div>

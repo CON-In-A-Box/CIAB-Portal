@@ -7,6 +7,7 @@
 // import staffDepartmentComponent from './components/staff-department.js';
 // import staffSidebarComponent from './components/staff-sidebar.js';
 // import lookupuser from '../../../sitesupport/vue/lookupuser.js';
+// import staffDivisionVisualComponent from './components/staff-division-visual.js';
 
 const staffApp = Vue.createApp({});
 
@@ -18,6 +19,7 @@ const staffApp = Vue.createApp({});
 // staffApp.component('staff-department', staffDepartmentComponent);
 // staffApp.component('staff-sidebar', staffSidebarComponent);
 // staffApp.component('lookup-user', lookupuser);
+// staffApp.component('org-donut', staffDivisionVisualComponent);
 
 // staffApp.mount('#staff-app');
 
