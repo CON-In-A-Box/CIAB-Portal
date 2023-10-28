@@ -59,6 +59,7 @@ const fetchStaffPositions = async() => {
 }
 
 const onMounted = async(componentInstance) => {
+  componentInstance.updateLoading();
   // Make sure we have all of the data we need before allowing child component rendering.
   const [divisionResult, userResult, positionResult] = await Promise.all([
     fetchDivisionData(),
@@ -69,6 +70,7 @@ const onMounted = async(componentInstance) => {
   componentInstance.divisions.push(...divisionResult);
   componentInstance.currentUser = userResult;
   componentInstance.staffPositions = positionResult;
+  componentInstance.updateLoading();
 };
 
 function componentSetup() {
@@ -98,6 +100,9 @@ function componentSetup() {
 
   const sidebarEditStaff = Vue.ref({});
   Vue.provide('sidebarEditStaff', sidebarEditStaff);
+
+  // eslint-disable-next-line no-unused-vars
+  const { _, updateLoading } = Vue.inject('isLoading');
   return {
     currentUser,
     divisions,
@@ -107,7 +112,8 @@ function componentSetup() {
     sidebarDivision,
     sidebarDeptStaff,
     sidebarDeptIsDepartment,
-    sidebarEditStaff
+    sidebarEditStaff,
+    updateLoading
   }
 }
 
