@@ -16,6 +16,9 @@ interface RBACInterface
     public function havePermission(/*.string.*/ $name);
 
 
+    public function positionHasPermission(/*.mixed.*/$pos, /*.string.*/$name);
+
+
     public function getPermissions(/*.string.*/ $role, /*.bool.*/ $children = true);
 
 

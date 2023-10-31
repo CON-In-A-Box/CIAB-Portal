@@ -114,6 +114,7 @@ class ZendRBACBackend implements \App\Vendors\Interfaces\RBACVendor
                 foreach ($parents as $parent) {
                     $p = $this->rbac->getRole($parent);
                     $r->addParent($p);
+                    $p->addChild($r);
                 }
             }
         } catch (\Exception $e) {
