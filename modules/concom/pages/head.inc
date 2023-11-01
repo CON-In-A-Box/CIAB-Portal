@@ -7,6 +7,5 @@
 <script src="sitesupport/donut.js"></script>
 <link rel="stylesheet" type="text/css" href="sitesupport/barcode/barcode.css" />
 <link rel="stylesheet" type="text/css" href="theme.css">
-<script type="module" src="modules/concom/sitesupport/vue.js"></script>
 <script type="module" src="modules/concom/sitesupport/division-parser.js"></script>
-<script type="module" src="modules/concom/sitesupport/concom_v2.js"></script>
+<script type="module" src="modules/concom/sitesupport/concom-list.js"></script>

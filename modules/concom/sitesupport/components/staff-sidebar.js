@@ -108,6 +108,7 @@ async function onSubmit() {
 }
 
 async function editStaff(component) {
+  component.updateLoading();
   const putData = {
     Department: component.department.id,
     Position: component.selectedPosition.id,
@@ -129,9 +130,11 @@ async function editStaff(component) {
 
     component.$emit('sidebarFormSubmitted', emittedEventData);
   }
+  component.updateLoading();
 }
 
 async function addStaff(component) {
+  component.updateLoading();
   const postData = {
     Department: component.department.id,
     Position: component.selectedPosition.id
@@ -163,9 +166,11 @@ async function addStaff(component) {
       component.$emit('sidebarFormSubmitted', emittedEventData);
     }
   }
+  component.updateLoading();
 }
 
 async function onRemoveStaff() {
+  this.updateLoading();
   const staffDeleteResponse = await apiRequest('DELETE', `staff/membership/${this.deptStaffId}`);
 
   if (staffDeleteResponse.status === 204) {
@@ -177,15 +182,8 @@ async function onRemoveStaff() {
 
     this.$emit('sidebarFormSubmitted', emittedEventData);
   }
+  this.updateLoading();
 }
-
-const INITIAL_DATA = () => {
-  return {
-    userId: null,
-    deptStaffId: null,
-    selectedPosition: Vue.ref('')
-  }
-};
 
 function componentSetup() {
   const staffPositions = Vue.inject('staffPositions');
@@ -198,6 +196,9 @@ function componentSetup() {
   const isDepartment = Vue.inject('sidebarDeptIsDepartment');
   const editStaff = Vue.inject('sidebarEditStaff');
 
+  // eslint-disable-next-line no-unused-vars
+  const { _, updateLoading } = Vue.inject('isLoading');
+
   return {
     staffPositions,
     staffNote,
@@ -206,13 +207,16 @@ function componentSetup() {
     division,
     departmentStaff,
     isDepartment,
-    editStaff
+    editStaff,
+    userId: null,
+    deptStaffId: null,
+    selectedPosition: Vue.ref(''),
+    updateLoading
   }
 }
 
 const staffSidebarComponent = {
   emits: ['sidebarClosed', 'sidebarFormSubmitted'],
-  data: INITIAL_DATA,
   template: TEMPLATE,
   setup: componentSetup,
   mounted() {

@@ -54,7 +54,7 @@ class ModuleStaff extends BaseModule
 
         $positions = [];
         $values = Select::new($database)
-            ->columns('PositionID')
+            ->columns('PositionID', 'Name')
             ->from('ConComPositions')
             ->orderBy('`PositionID` ASC')
             ->fetchAll();
@@ -73,35 +73,45 @@ class ModuleStaff extends BaseModule
             $dept = $value['DepartmentID'];
 
             if ($parentDept != $dept) {
-                $targetRole = "$parentDept.".end(array_keys($positions));
-                try {
-                    $rbac->grantPermission($targetRole, "api.put.staff.$dept.1");
-                    $rbac->grantPermission($targetRole, "api.delete.staff.$dept.1");
-                } catch (Exception\InvalidArgumentException $e) {
-                    error_log($e);
-                }
-            }
+                // Grants for Dept Head - They can add members to their department
+                $deptHeadPos = reset(array_keys($positions));
+                $deptHeadRole = "$dept.$deptHeadPos";
+                self::grantPermission($rbac, $deptHeadRole, "api.post.staff.$dept");
 
-            $idx = array_keys($positions)[0];
-            try {
-                $targetRole = "$dept.$idx";
-                $rbac->grantPermission($targetRole, "api.post.staff.$dept");
-            } catch (Exception\InvalidArgumentException $e) {
-                error_log($e);
-            }
+                // Grants for Division Staff - They can add to any department within their division, and they can edit any department members within their division.
+                foreach ($positions as $directorPosId => $directorPos) {
+                    $targetRole = "$parentDept.$directorPosId";
+                    self::grantPermission($rbac, $targetRole, "api.post.staff.$dept");
 
-            foreach ($positions as $id => $position) {
-                $currId = intval($id) + 1;
-                if (array_key_exists($currId, $positions)) {
-                    $targetRole = "$dept.$idx";
-                    try {
-                        $rbac->grantPermission($targetRole, "api.put.staff.$dept.$currId");
-                        $rbac->grantPermission($targetRole, "api.delete.staff.$dept.$currId");
-                    } catch (Exception\InvalidArgumentException $e) {
-                        error_log($e);
+                    foreach ($positions as $deptPosId => $deptPos) {
+                        self::grantPermission($rbac, $targetRole, "api.put.staff.$dept.$deptPosId");
+                        self::grantPermission($rbac, $targetRole, "api.delete.staff.$dept.$deptPosId");
                     }
                 }
             }
+
+            // Grants for Division Director to edit members within their Division for positions lower than them
+            // Grants for Department Head to edit members within their Department for positions lower than them
+            $topPos = reset(array_keys($positions));
+            foreach ($positions as $id => $position) {
+                $currId = intval($id) + 1;
+                if (array_key_exists($currId, $positions)) {
+                    $targetRole = "$dept.$topPos";
+                    self::grantPermission($rbac, $targetRole, "api.put.staff.$dept.$currId");
+                    self::grantPermission($rbac, $targetRole, "api.delete.staff.$dept.$currId");
+                }
+            }
+        }
+
+    }
+
+
+    private function grantPermission($rbac, $targetRole, $permission)
+    {
+        try {
+            $rbac->grantPermission($targetRole, $permission);
+        } catch (Exception\InvalidArgumentException $e) {
+            error_log($e);
         }
 
     }
