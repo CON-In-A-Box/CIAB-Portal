@@ -6,14 +6,6 @@ exports[`Staff Division Parser can parse the division hierarchy 1`] = `
     "departments": [
       {
         "email": [
-          "activities@test-con.org",
-        ],
-        "id": 1,
-        "name": "Activities",
-        "parentId": 1,
-      },
-      {
-        "email": [
           "bookswap@test-con.org",
         ],
         "id": 105,
@@ -86,14 +78,6 @@ exports[`Staff Division Parser can parse the division hierarchy 1`] = `
     "departments": [
       {
         "email": [
-          "administration@test-con.org",
-        ],
-        "id": 2,
-        "name": "Administration",
-        "parentId": 2,
-      },
-      {
-        "email": [
           "archives@test-con.org",
         ],
         "id": 102,
@@ -160,14 +144,6 @@ exports[`Staff Division Parser can parse the division hierarchy 1`] = `
     "departments": [
       {
         "email": [
-          "cfo@test-con.org",
-        ],
-        "id": 10,
-        "name": "CFO Staff",
-        "parentId": 10,
-      },
-      {
-        "email": [
           "finance@test-con.org",
         ],
         "id": 118,
@@ -215,14 +191,6 @@ exports[`Staff Division Parser can parse the division hierarchy 1`] = `
         ],
         "id": 114,
         "name": "Dealers Room",
-        "parentId": 3,
-      },
-      {
-        "email": [
-          "erac@test-con.org",
-        ],
-        "id": 3,
-        "name": "External Relations and Communications",
         "parentId": 3,
       },
       {
@@ -301,14 +269,6 @@ exports[`Staff Division Parser can parse the division hierarchy 1`] = `
       },
       {
         "email": [
-          "facilities@test-con.org",
-        ],
-        "id": 4,
-        "name": "Facilities",
-        "parentId": 4,
-      },
-      {
-        "email": [
           "hotel@test-con.org",
         ],
         "id": 125,
@@ -379,14 +339,6 @@ exports[`Staff Division Parser can parse the division hierarchy 1`] = `
         ],
         "id": 119,
         "name": "First Advisors",
-        "parentId": 5,
-      },
-      {
-        "email": [
-          "hospitality@test-con.org",
-        ],
-        "id": 5,
-        "name": "Hospitality",
         "parentId": 5,
       },
       {
@@ -489,14 +441,6 @@ exports[`Staff Division Parser can parse the division hierarchy 1`] = `
       },
       {
         "email": [
-          "productions@test-con.org",
-        ],
-        "id": 6,
-        "name": "Productions",
-        "parentId": 6,
-      },
-      {
-        "email": [
           "theaternippon@test-con.org",
         ],
         "id": 150,
@@ -529,14 +473,6 @@ exports[`Staff Division Parser can parse the division hierarchy 1`] = `
         "name": "IT",
         "parentId": 7,
       },
-      {
-        "email": [
-          "systems@test-con.org",
-        ],
-        "id": 7,
-        "name": "Systems",
-        "parentId": 7,
-      },
     ],
     "email": [
       "systems@test-con.org",
@@ -547,14 +483,6 @@ exports[`Staff Division Parser can parse the division hierarchy 1`] = `
   },
   {
     "departments": [
-      {
-        "email": [
-          "info@test-con.org",
-        ],
-        "id": 8,
-        "name": "Committees",
-        "parentId": 8,
-      },
       {
         "email": [
           "futurevisioning@test-con.org",
@@ -613,14 +541,6 @@ exports[`Staff Division Parser can parse the division hierarchy 1`] = `
   },
   {
     "departments": [
-      {
-        "email": [
-          "directors@test-con.org",
-        ],
-        "id": 9,
-        "name": "Corporate Staff",
-        "parentId": 9,
-      },
       {
         "email": [
           "president@test-con.org",

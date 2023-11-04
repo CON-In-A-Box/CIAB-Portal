@@ -118,7 +118,7 @@ function componentSetup(props) {
     if (props.divisionStaffMap != null && Array.isArray(props.divisionStaffMap[props.department.id])) {
       const staff = props.divisionStaffMap[props.department.id];
       const filteredStaff = filterStaff(staff, staffPositions.value, props.department);
-      departmentStaff.value.push(...filteredStaff);
+      departmentStaff.value = filteredStaff;
     }
   });
 

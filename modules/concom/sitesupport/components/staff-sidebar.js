@@ -21,28 +21,32 @@ const TEMPLATE = `
         <select v-model="selectedPosition">
           <option disabled value="">Please select a position</option>
           <option v-for="position in availablePositions(staffPositions, isDepartment).value" :key=position.id :value=position>
-            {{position.name}}
+            {{position.displayValue}}
           </option>
         </select>
       </p>
     </div>
     <template v-if="isEdit">
       <div>
-        <h3 class="CONCOM-list-sidebar-centered-item">{{ getStaffFullName(editStaff).value }}</h3>
-        <h4 class="CONCOM-list-sidebar-centered-item">{{ getStaffPosition(editStaff, isDepartment).value }} in {{ department.name }}</h4>
+        <h3 class="CONCOM-list-sidebar-centered-item">{{ getStaffFullName(editedStaff).value }}</h3>
+        <h4 class="CONCOM-list-sidebar-centered-item">{{ getStaffPosition(editedStaff, isDepartment).value }} in {{ department.name }}</h4>
         <label for="user_notes">Note</label>
         <input class="CONCOM-list-sidebar-input" id="user_notes" v-model="staffNote"/>
         <br/>
         <label for="user_pos">Position: </label>
         <select v-model="selectedPosition">
           <option v-for="position in availablePositions(staffPositions, isDepartment).value" :key=position.id :value=position>
-            {{position.name}}
+            {{position.displayValue}}
           </option>
         </select>
       </div>
     </template>
+    <template v-if="staffMemberExists">
+      <p>{{ existingMember.firstName }} {{ existingMember.lastName }} already has a position in {{ department.name }}.</p>
+    </template>
     <div class="CONCOM-list-sidebar-actions-container">
-      <button class="CONCOM-list-sidebar-actions-confirm-button" :disabled="disableForm(userId, selectedPosition).value" @click="onSubmit">OK</button>
+      <button class="CONCOM-list-sidebar-actions-confirm-button" :disabled="disableForm(userId, selectedPosition, staffMemberExists).value" 
+        @click="onSubmit">OK</button>
       <button class="CONCOM-list-sidebar-actions-modify-button" v-if="isEdit" @click="onRemoveStaff">Remove</button>
       <button :class="getCloseButtonClass(isEdit).value" @click="$emit('sidebarClosed')">Close</button>
     </div>
@@ -51,13 +55,18 @@ const TEMPLATE = `
 
 const availablePositions = (staffPositions, isDepartment) => Vue.computed(() => {
   if (isDepartment) {
-    return staffPositions.departmentPositions
+    return staffPositions.departmentPositions.map(position => {
+      return {
+        ...position,
+        displayValue: position.name
+      }
+    });
   }
 
   return staffPositions.divisionPositions.map(position => {
     return {
-      id: position.id,
-      name: position.id === DIRECTOR_POSITION_ID ? 'Director' : 'Support'
+      ...position,
+      displayValue: position.id === DIRECTOR_POSITION_ID ? 'Director' : 'Support'
     }
   })
 });
@@ -91,12 +100,16 @@ const getStaffPosition = (staff, isDepartment) => Vue.computed(() => {
   return staff.position;
 });
 
-const disableForm = (userId, position) => Vue.computed(() => {
-  return userId === null || (position === '' || position?.id === null);
+const disableForm = (userId, position, staffMemberExists) => Vue.computed(() => {
+  return userId === null || (position === '' || position?.id === null) || staffMemberExists;
 });
 
 function onUserLookup(_, item) {
-  this.userId = item.Id;
+  this.userId = parseInt(item.Id);
+  this.staffMemberExists = this.departmentStaff.some((staff) => staff.id === this.userId);
+  if (this.staffMemberExists) {
+    this.existingMember = this.departmentStaff.find((staff) => staff.id === this.userId);
+  }
 }
 
 async function onSubmit() {
@@ -121,7 +134,7 @@ async function editStaff(component) {
   if (staffUpdateResponse.status === 200) {
     const emittedEventData = {
       staff: {
-        ...component.editStaff,
+        ...component.editedStaff,
         position: component.selectedPosition.name,
         note: component.staffNote
       },
@@ -175,7 +188,7 @@ async function onRemoveStaff() {
 
   if (staffDeleteResponse.status === 204) {
     const emittedEventData = {
-      staff: this.editStaff,
+      staff: this.editedStaff,
       department: this.department,
       eventType: 'removed'
     };
@@ -189,12 +202,14 @@ function componentSetup() {
   const staffPositions = Vue.inject('staffPositions');
   const staffNote = Vue.ref('');
   const isEdit = Vue.ref(false);
+  const staffMemberExists = Vue.ref(false);
+  const existingMember = Vue.ref({});
 
   const department = Vue.inject('sidebarDept');
   const division = Vue.inject('sidebarDivision');
   const departmentStaff = Vue.inject('sidebarDeptStaff');
   const isDepartment = Vue.inject('sidebarDeptIsDepartment');
-  const editStaff = Vue.inject('sidebarEditStaff');
+  const editedStaff = Vue.inject('sidebarEditStaff');
 
   // eslint-disable-next-line no-unused-vars
   const { _, updateLoading } = Vue.inject('isLoading');
@@ -203,11 +218,13 @@ function componentSetup() {
     staffPositions,
     staffNote,
     isEdit,
+    staffMemberExists,
+    existingMember,
     department,
     division,
     departmentStaff,
     isDepartment,
-    editStaff,
+    editedStaff,
     userId: null,
     deptStaffId: null,
     selectedPosition: Vue.ref(''),
@@ -220,24 +237,14 @@ const staffSidebarComponent = {
   template: TEMPLATE,
   setup: componentSetup,
   mounted() {
-    if (this.editStaff.id != null) {
-      this.userId = this.editStaff.id;
-      this.deptStaffId = this.editStaff.deptStaffId;
-      this.staffNote = this.editStaff.note;
+    if (this.editedStaff.id != null) {
+      this.userId = this.editedStaff.id;
+      this.deptStaffId = this.editedStaff.deptStaffId;
+      this.staffNote = this.editedStaff.note;
       this.isEdit = true;
 
       const availablePositions = this.availablePositions(this.staffPositions, this.isDepartment).value;
-      let positionToFind = this.editStaff.position;
-
-      if (!this.isDepartment) {
-        if (this.editStaff.position === 'Head') {
-          positionToFind = 'Director';
-        } else if (this.editStaff.position === 'Specialist') {
-          positionToFind = 'Support';
-        }
-      }
-
-      const foundPosition = availablePositions.find(position => position.name === positionToFind);
+      const foundPosition = availablePositions.find(position => position.name === this.editedStaff.position);
       this.selectedPosition = foundPosition;
     }
   },
