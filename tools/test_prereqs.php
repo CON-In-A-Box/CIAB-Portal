@@ -3,33 +3,49 @@
 require_once(__DIR__.'/../vendor/autoload.php');
 require_once(__DIR__.'/../backends/mysqlpdo.inc');
 
+/* Initializes the api */
+require_once(__DIR__.'/../api/src/App/App.php');
+
 use Atlas\Query\Delete;
 use Atlas\Query\Insert;
 use Atlas\Query\Select;
 use Atlas\Query\Update;
+
+/* Cleanup Tables */
+function __cleanupTable($table): void
+{
+    global $db;
+
+    $delete = Delete::new($db);
+    try {
+        $delete->from($table)->perform();
+    } catch (Exception $e) {
+    }
+
+}
+
 
 // create_schema.php auto-seeds some things and not others.
 // Build what we need.
 
 $db = MyPDO::instance();
 
-$delete = Delete::new($db);
-$delete->from('Announcements')->perform();
-$delete->from('Authentication')->perform();
-$delete->from('MeetingAttendance')->perform();
-$delete->from('OfficialMeetings')->perform();
-$delete->from('ConComList')->perform();
-$delete->from('Registrations')->perform();
-$delete->from('BadgeTypes')->perform();
-$delete->from('VolunteerHours')->perform();
-$delete->from('HourRedemptions')->perform();
-$delete->from('Events')->perform();
-$delete->from('AnnualCycles')->perform();
-$delete->from('AccountConfiguration')->perform();
-$delete->from('Members')->perform();
-$delete->from('HourRedemptions')->perform();
-$delete->from('VolunteerHours')->perform();
-$delete->from('VolunteerRewards')->perform();
+__cleanupTable('Announcements');
+__cleanupTable('Authentication');
+__cleanupTable('MeetingAttendance');
+__cleanupTable('OfficialMeetings');
+__cleanupTable('ConComList');
+__cleanupTable('Registrations');
+__cleanupTable('BadgeTypes');
+__cleanupTable('VolunteerHours');
+__cleanupTable('HourRedemptions');
+__cleanupTable('Events');
+__cleanupTable('AnnualCycles');
+__cleanupTable('AccountConfiguration');
+__cleanupTable('Members');
+__cleanupTable('HourRedemptions');
+__cleanupTable('VolunteerHours');
+__cleanupTable('VolunteerRewards');
 
 $select = Select::new($db);
 $select->columns('Value')->from('Configuration')->whereEquals(['Field' => 'ADMINACCOUNTS']);

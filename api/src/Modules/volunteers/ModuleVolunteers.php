@@ -9,6 +9,7 @@ use App\Modules\BaseModule;
 use Slim\Http\Request;
 use Slim\Http\Response;
 use Atlas\Query\Select;
+use App\Modules\volunteers\Database\VolunteerDBSchema;
 
 class ModuleVolunteers extends BaseModule
 {
@@ -18,6 +19,14 @@ class ModuleVolunteers extends BaseModule
     {
         parent::__construct($source);
         $source->getContainer()->RBAC->customizeRBAC('\App\Modules\volunteers\ModuleVolunteers::customizeAnnouncementRBAC');
+
+    }
+
+
+    public function databaseInstall($container)
+    {
+        $db = new VolunteerDBSchema($container->db);
+        $db->update();
 
     }
 

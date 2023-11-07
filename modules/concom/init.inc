@@ -11,12 +11,15 @@ require_once(__DIR__.'/functions/RBAC.inc');
 
 if (!isset($ConComPositions)) {
     $ConComPositions = array();
-    $sql = "SELECT * FROM ConComPositions;";
-    $result = DB::run($sql);
-    $value = $result->fetch();
-    while ($value !== false) {
-        $ConComPositions[$value['PositionID']] = $value['Name'];
+    try {
+        $sql = "SELECT * FROM ConComPositions;";
+        $result = DB::run($sql);
         $value = $result->fetch();
+        while ($value !== false) {
+            $ConComPositions[$value['PositionID']] = $value['Name'];
+            $value = $result->fetch();
+        }
+    } catch (Exception $e) {
     }
 
     if (!array_key_exists('CONCOMHOURS', $GLOBALS) || !$GLOBALS['CONCOMHOURS']) {

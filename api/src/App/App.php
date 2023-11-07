@@ -78,7 +78,7 @@ global $DISABLEDMODULES;
 $modules = scandir(__DIR__.'/../Modules');
 foreach ($modules as $key => $value) {
     if (!in_array($value, array(',', '..'))) {
-        if (in_array($value, $DISABLEDMODULES)) {
+        if (!empty($DISABLEDMODULES) && in_array($value, $DISABLEDMODULES)) {
             continue;
         }
         if (is_dir(__DIR__.'/../Modules/'.$value)) {
