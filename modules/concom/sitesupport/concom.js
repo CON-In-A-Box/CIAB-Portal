@@ -10,8 +10,7 @@
             dragDropParent, toggleDept, savePosition, newEntry,
             deletePosition, changeEmail, editEmail, returnPosition,
             deleteEmail, saveEmail, deleteAC, newAC, savePermission,
-            returnRBAC, onAdd, addMember,
-            updateMember, deleteMember, editMember */
+            returnRBAC */
 
 var basicReload = function() {
   window.location = 'index.php?Function=concom/admin';
@@ -465,90 +464,4 @@ function getFallbackOptions(id, fallback) {
     });
     dropdown.selectedIndex = i;
   });
-}
-
-function onAdd() {
-  var department = document.getElementById('add_departemnt').innerHTML;
-  var parameter = 'AddDepartment=' + department;
-  parameter += '&accountId=' + document.getElementById('user_id').value;
-  parameter += '&Position=' + document.getElementById('position').value;
-  basicBackendRequest('POST', 'concom', parameter, function() {
-    window.location.assign('index.php?Function=concom#' + department);
-    window.location.reload(true);
-  });
-}
-
-function addMember(department, posData) {
-  var positions = JSON.parse(atob(posData));
-  document.getElementById('add_departemnt').innerHTML = department;
-  var pos =  document.getElementById('position');
-  pos.innerHTML = '';
-  positions.forEach(function(d, i) {
-    if (d !== null) {
-      var option = document.createElement('option');
-      option.text = d;
-      option.value = i + 1;
-      pos.add(option);
-    }
-  });
-  document.getElementById('add_button').disabled = true;
-  showSidebar('add_member_div');
-}
-
-function updateMember() {
-  var pos = document.getElementById('user_pos');
-  var userPos = pos.options[pos.options.selectedIndex].value;
-  var parameter = 'Modify=' + document.getElementById('user_id').value;
-  parameter += '&Department=' + document.getElementById('user_div').value;
-  parameter += '&Position=' + userPos;
-  parameter += '&Note=' + document.getElementById('user_notes').value;
-  basicBackendRequest('POST', 'concom', parameter, function() {
-    hideSidebar();
-    window.location.reload(true);
-  });
-}
-
-function deleteMember() {
-  var target = document.getElementById('user_id').value;
-  var department = document.getElementById('user_div').value;
-  var position = document.getElementById('user_oldpos').value;
-
-  confirmbox(
-    'Are you sure you want to remove ' +
-    document.getElementById('user_name').innerHTML +
-    ' from ' +
-    document.getElementById('user_div').value).then(function() {
-    window.location = 'index.php?Function=concom&Remove=' + encodeURI(target) +
-        '&Department=' + encodeURI(department) + '&Position=' +
-        encodeURI(position);
-    hideSidebar();
-  });
-}
-
-function editMember(name, id, div, pos, notes, posData) {
-  document.getElementById('user_id').value = id;
-  document.getElementById('user_div').value = div;
-  document.getElementById('user_name').innerHTML = name;
-  document.getElementById('user_notes').value = notes;
-  document.getElementById('user_desc').innerHTML = pos + ' in ' + div;
-
-  var positions = JSON.parse(atob(posData));
-  var poss =  document.getElementById('user_pos');
-  poss.innerHTML = '';
-  var s = 0;
-  positions.forEach(function(d, i) {
-    if (d !== null) {
-      var option = document.createElement('option');
-      option.text = d;
-      option.value = i + 1;
-      poss.add(option);
-      if (d == pos) {
-        document.getElementById('user_oldpos').value = option.value;
-        s = poss.length - 1;
-      }
-    }
-  });
-  poss.selectedIndex = s;
-
-  showSidebar('edit_member_div');
 }
