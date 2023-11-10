@@ -9,6 +9,42 @@ use Atlas\Query\Select;
 
 /* setupInstall */
 
+function forEachModule($container, $action, $subaction = null)
+{
+    global $DISABLEDMODULES;
+
+    $modules = scandir(__DIR__.'/../Modules');
+    foreach ($modules as $key => $module) {
+        if (!in_array($module, array('.', '..'))) {
+            if (!empty($DISABLEDMODULES) && in_array($module, $DISABLEDMODULES)) {
+                continue;
+            }
+            if (is_dir(__DIR__.'/../Modules/'.$module)) {
+                if (is_file(__DIR__.'/../Modules/'.$module.'/Settings.php')) {
+                    $action($container, $module, $subaction);
+                }
+            }
+        }
+    }
+
+}
+
+
+function forEachModuleController($container, $action)
+{
+    $funct  = function ($con, $module, $action) {
+        $module_settings = include(__DIR__.'/../Modules/'.$module.'/Settings.php');
+        if (array_key_exists('baseControllers', $module_settings)) {
+            foreach ($module_settings['baseControllers'] as $base) {
+                $action($con, $base);
+            }
+        }
+    };
+
+    forEachModule($container, $funct, $action);
+
+}
+
 
 function setupInstall($container): void
 {
@@ -30,6 +66,27 @@ function setupInstall($container): void
     $rbac = [
     ];
 
+
+    /**
+     * Database Updates and such
+     **/
+    foreach ($baseClasses as $class) {
+        if (method_exists($class, 'databaseInstall')) {
+            $class::databaseInstall($container);
+        }
+    }
+
+    forEachModule($container, function ($cont, $module) {
+        $module_settings = include(__DIR__.'/../Modules/'.$module.'/Settings.php');
+        if (method_exists($module_settings['module'], 'databaseInstall')) {
+            call_user_func(array($module_settings['module'], 'databaseInstall'), $cont);
+        }
+    });
+
+
+    /**
+     * RBAC work
+     **/
     $container->RBAC->install($container);
 
     foreach ($baseClasses as $class) {
@@ -61,32 +118,19 @@ function setupInstall($container): void
         $class::install($container);
     }
 
-    global $DISABLEDMODULES;
-
-    $modules = scandir(__DIR__.'/../Modules');
-    foreach ($modules as $key => $value) {
-        if (!in_array($value, array(',', '..'))) {
-            if (in_array($value, $DISABLEDMODULES)) {
-                continue;
-            }
-            if (is_dir(__DIR__.'/../Modules/'.$value)) {
-                if (is_file(__DIR__.'/../Modules/'.$value.'/Settings.php')) {
-                    $module_settings = include(__DIR__.'/../Modules/'.$value.'/Settings.php');
-                    if (array_key_exists('baseControllers', $module_settings)) {
-                        foreach ($module_settings['baseControllers'] as $base) {
-                            $result = $base::permissions($container->db);
-                            if (!empty($result)) {
-                                $container->RBAC->registerPermissions($result);
-                            }
-                            $base::install($container);
-                        }
-                    }
-                    if (method_exists($module_settings['module'], 'install')) {
-                        call_user_func(array($module_settings['module'], 'install'), $container);
-                    }
-                }
-            }
+    forEachModuleController($container, function ($container, $base) {
+        $result = $base::permissions($container->db);
+        if (!empty($result)) {
+            $container->RBAC->registerPermissions($result);
         }
-    }
+        $base::install($container);
+    });
+
+    forEachModule($container, function ($cont, $module) {
+        $module_settings = include(__DIR__.'/../Modules/'.$module.'/Settings.php');
+        if (method_exists($module_settings['module'], 'install')) {
+            call_user_func(array($module_settings['module'], 'install'), $cont);
+        }
+    });
 
 }

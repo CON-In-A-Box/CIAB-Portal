@@ -9,6 +9,7 @@ use App\Modules\BaseModule;
 use Slim\Http\Request;
 use Slim\Http\Response;
 use Atlas\Query\Select;
+use App\Modules\staff\Database\StaffDBSchema;
 
 class ModuleStaff extends BaseModule
 {
@@ -24,6 +25,14 @@ class ModuleStaff extends BaseModule
     public function install($container)
     {
         $container->RBAC->customizeRBAC('\App\Modules\staff\ModuleStaff::customzieStaffRBAC');
+
+    }
+
+
+    public function databaseInstall($container)
+    {
+        $db = new StaffDBSchema($container->db);
+        $db->update(true);
 
     }
 

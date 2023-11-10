@@ -29,6 +29,14 @@ abstract class BaseModule
      * static public function install($container);
      */
 
+    /**
+     * Optional member
+     *
+     * The static 'installDatabase' member will be called first initialization of the system
+     *
+     * static public function installDatabase($container);
+     */
+
 
     /* End BaseModule */
 }
