@@ -22,6 +22,7 @@ const extractDivisions = (departmentData) => {
       return {
         ...mappedDivision,
         specialDivision: isSpecialDivision(item.name),
+        fallback: item.fallback != null ? parseInt(item.fallback.id) : null,
         departments: []
       }
     })
@@ -30,6 +31,44 @@ const extractDivisions = (departmentData) => {
 
       return prev;
     }, {});
+}
+
+const prepareDonutData = (divisions) => {
+  if ((divisions?.length ?? 0) === 0) {
+    return [];
+  }
+
+  const divisionMap = divisions.reduce((memo, division) => {
+    if (memo[division.id] == null) {
+      memo[division.id] = division;
+    }
+    return memo;
+  }, {});
+
+  // Fallback division data is effectively a linked list.
+  let divisionToAdd = divisions.filter((division) => division.fallback != null)?.[0];
+  let donutDivisionData = [];
+
+  let addedDivisionNames = [];
+  while (divisionToAdd?.fallback != null) {
+    donutDivisionData.push(divisionToAdd);
+    addedDivisionNames.push(divisionToAdd.name);
+
+    divisionToAdd = divisionMap[divisionToAdd.fallback];
+  }
+
+  if (divisionToAdd != null) {
+    donutDivisionData.push(divisionToAdd);
+    addedDivisionNames.push(divisionToAdd.name);
+  }
+
+  // Add remaining divisions without fallbacks
+  donutDivisionData = [
+    ...donutDivisionData,
+    ...divisions.filter((division) => division.fallback == null && !addedDivisionNames.includes(division.name))
+  ];
+
+  return donutDivisionData;
 }
 
 const remapItem = (item, idx, total) => {
@@ -155,7 +194,8 @@ export const extractDivisionHierarchy = (departmentData) => {
  * @returns
  */
 export const createDonutData = (divisions) => {
-  return divisions.map((division, idx) => {
+  const preparedData = prepareDonutData(divisions);
+  return preparedData.map((division, idx) => {
     const mappedDivision = {
       // Special Case for Divisions: dsize always 1
       ...remapItem(division, idx, 1),
@@ -173,12 +213,17 @@ export const createDonutData = (divisions) => {
       }
     });
 
+    let separatorNodeLabel = '\u{233E}';
+    if (division.fallback != null) {
+      separatorNodeLabel = '\u{2193}';
+    }
+
     return {
       nodeData: mappedDivision,
       subData: [
         {
           nodeData: {
-            label: '\u{233E}',
+            label: separatorNodeLabel,
             colorIndex: idx,
             strokeWidth: 2,
             dsize: 1,

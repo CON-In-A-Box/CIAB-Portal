@@ -70,6 +70,7 @@ exports[`Staff Division Parser can parse the division hierarchy 1`] = `
     "email": [
       "activities@test-con.org",
     ],
+    "fallback": 3,
     "id": 1,
     "name": "Activities",
     "specialDivision": false,
@@ -136,6 +137,7 @@ exports[`Staff Division Parser can parse the division hierarchy 1`] = `
     "email": [
       "administration@test-con.org",
     ],
+    "fallback": 4,
     "id": 2,
     "name": "Administration",
     "specialDivision": false,
@@ -154,6 +156,7 @@ exports[`Staff Division Parser can parse the division hierarchy 1`] = `
     "email": [
       "cfo@test-con.org",
     ],
+    "fallback": null,
     "id": 10,
     "name": "CFO Staff",
     "specialDivision": false,
@@ -229,6 +232,7 @@ exports[`Staff Division Parser can parse the division hierarchy 1`] = `
     "email": [
       "erac@test-con.org",
     ],
+    "fallback": 6,
     "id": 3,
     "name": "External Relations and Communications",
     "specialDivision": false,
@@ -311,6 +315,7 @@ exports[`Staff Division Parser can parse the division hierarchy 1`] = `
     "email": [
       "facilities@test-con.org",
     ],
+    "fallback": 7,
     "id": 4,
     "name": "Facilities",
     "specialDivision": false,
@@ -385,6 +390,7 @@ exports[`Staff Division Parser can parse the division hierarchy 1`] = `
     "email": [
       "hospitality@test-con.org",
     ],
+    "fallback": null,
     "id": 5,
     "name": "Hospitality",
     "specialDivision": false,
@@ -459,6 +465,7 @@ exports[`Staff Division Parser can parse the division hierarchy 1`] = `
     "email": [
       "productions@test-con.org",
     ],
+    "fallback": 2,
     "id": 6,
     "name": "Productions",
     "specialDivision": false,
@@ -477,6 +484,7 @@ exports[`Staff Division Parser can parse the division hierarchy 1`] = `
     "email": [
       "systems@test-con.org",
     ],
+    "fallback": 5,
     "id": 7,
     "name": "Systems",
     "specialDivision": false,
@@ -535,6 +543,7 @@ exports[`Staff Division Parser can parse the division hierarchy 1`] = `
     "email": [
       "info@test-con.org",
     ],
+    "fallback": null,
     "id": 8,
     "name": "Committees",
     "specialDivision": true,
@@ -577,6 +586,7 @@ exports[`Staff Division Parser can parse the division hierarchy 1`] = `
     "email": [
       "directors@test-con.org",
     ],
+    "fallback": null,
     "id": 9,
     "name": "Corporate Staff",
     "specialDivision": true,
