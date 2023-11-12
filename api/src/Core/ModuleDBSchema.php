@@ -62,6 +62,7 @@ abstract class ModuleDBSchema
         $currentMD5 = md5(json_encode($this->schema));
 
         if ($force || $oldMD5 != $currentMD5) {
+            $force = ($force || $oldMD5 === false);
             $this->buildMissingTables($force);
 
             if ($oldMD5 !== false) {
@@ -82,41 +83,17 @@ abstract class ModuleDBSchema
     }
 
 
-    public function addTables(array $tables)
-    {
-        $this->schema['tables'] = array_merge($this->schema['tables'], $tables);
-
-    }
-
-
-    public function addForeignKeys(array $fks)
-    {
-        $this->schema['foreignKeys'] = array_merge($this->schema['foreignKeys'], $fks);
-
-    }
-
-
-    public function addPrimaryKeys(array $pks)
-    {
-        $this->schema['primaryKeys'] = array_merge($this->schema['primaryKeys'], $pks);
-
-    }
-
-
-    public function addIndexes(array $indexes)
-    {
-        $this->schema['index'] = array_merge($this->schema['index'], $indexes);
-
-    }
-
-
     private function getRecordedDBSchemaMD5()
     {
-        $value = Select::new($this->database)
-            ->from('Configuration')
-            ->columns('Value')
-            ->whereEquals(['Field' => $this->field])
-            ->fetchOne();
+        try {
+            $value = Select::new($this->database)
+                ->from('Configuration')
+                ->columns('Value')
+                ->whereEquals(['Field' => $this->field])
+                ->fetchOne();
+        } catch (\PDOException $e) {
+            return false;
+        }
         if ($value === null) {
             return false;
         } else {
@@ -226,12 +203,17 @@ abstract class ModuleDBSchema
             if ($this->seed) {
                 foreach ($this->seed as $table => $data) {
                     foreach ($data as $entry) {
-                        if (in_array($table, $initialize)) {
+                        $check = Select::new($this->database)
+                            ->columns(array_keys($entry['index'])[0])
+                            ->from($table)
+                            ->whereEquals($entry['index'])
+                            ->fetchOne();
+                        if ($check === null) {
                             Insert::new($this->database)
                                 ->into($table)
                                 ->columns(array_merge($entry['index'], $entry['data']))
                                 ->perform();
-                        } elseif ($force) {
+                        } elseif ($force && !empty($entry['data'])) {
                             Update::new($this->database)
                                 ->table($table)
                                 ->columns($entry['data'])

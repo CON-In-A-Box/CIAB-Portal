@@ -32,7 +32,7 @@ class ModuleStaff extends BaseModule
     public function databaseInstall($container)
     {
         $db = new StaffDBSchema($container->db);
-        $db->update(true);
+        $db->update();
 
     }
 
