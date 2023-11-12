@@ -12,6 +12,10 @@ describe('Staff Division Parser', () => {
     const divisions = extractDivisionHierarchy(departmentList.data);
     const result = createDonutData(divisions);
 
+    expect(divisions.length === result.length).toEqual(true);
+
+    const fallbackDeptNames = ['Activities', 'Administration', 'External Relations and Communications',
+      'Facilities', 'Productions', 'Systems'];
     result.forEach((item, idx) => {
       // Division at top level node data.
       expect(item.nodeData.colorIndex).toEqual(idx);
@@ -27,7 +31,12 @@ describe('Staff Division Parser', () => {
       expect(arrowNode.nodeData.noRotate).toEqual(1);
       expect(arrowNode.nodeData.pieWidth).toEqual(10);
       expect(arrowNode.nodeData.strokeWidth).toEqual(2);
-      expect(arrowNode.nodeData.label).toEqual('⌾');
+
+      if (fallbackDeptNames.includes(item.nodeData.label)) {
+        expect(arrowNode.nodeData.label).toEqual('↓');
+      } else {
+        expect(arrowNode.nodeData.label).toEqual('⌾');
+      }
 
       // Departments
       arrowNode.subData.forEach((dept) => {
@@ -37,6 +46,22 @@ describe('Staff Division Parser', () => {
         expect(dept.nodeData).toHaveProperty('label');
         expect(dept.nodeData.link.includes(dept.nodeData.label.replaceAll(' ', '_'))).toEqual(true);
       });
+    });
+  });
+
+  it('can parse donut data when no fallbacks are present', () => {
+    const departmentDataNoFallbacks = departmentList.data.map((item) => {
+      return {
+        ...item,
+        fallback: null
+      }
+    });
+
+    const divisions = extractDivisionHierarchy(departmentDataNoFallbacks);
+    const result = createDonutData(divisions);
+    result.forEach((item) => {
+      const arrowNode = item.subData[0];
+      expect(arrowNode.nodeData.label).toEqual('⌾');
     });
   });
 });
