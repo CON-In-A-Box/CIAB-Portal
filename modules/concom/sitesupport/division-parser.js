@@ -50,14 +50,14 @@ const prepareDonutData = (divisions) => {
   let donutDivisionData = [];
 
   let addedDivisionNames = [];
-  while (divisionToAdd?.fallback != null) {
+  while (divisionToAdd?.fallback != null && !addedDivisionNames.includes(divisionToAdd.name)) {
     donutDivisionData.push(divisionToAdd);
     addedDivisionNames.push(divisionToAdd.name);
 
     divisionToAdd = divisionMap[divisionToAdd.fallback];
   }
 
-  if (divisionToAdd != null) {
+  if (divisionToAdd != null && !addedDivisionNames.includes(divisionToAdd.name)) {
     donutDivisionData.push(divisionToAdd);
     addedDivisionNames.push(divisionToAdd.name);
   }
