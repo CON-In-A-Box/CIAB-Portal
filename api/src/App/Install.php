@@ -70,6 +70,9 @@ function setupInstall($container): void
     /**
      * Database Updates and such
      **/
+    $dbi = new App\Database\DBSchema($container);
+    $dbi->update();
+
     foreach ($baseClasses as $class) {
         if (method_exists($class, 'databaseInstall')) {
             $class::databaseInstall($container);

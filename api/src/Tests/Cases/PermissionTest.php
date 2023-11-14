@@ -10,10 +10,10 @@ class PermissionsTest extends CiabTestCase
 
     public function testPermissions(): void
     {
-        $this->runSuccessJsonRequest('GET', '/permissions/resource/deadline/1/get');
+        $this->runSuccessJsonRequest('GET', '/permissions/resource/deadline/2/get');
         $this->runSuccessJsonRequest('GET', '/permissions/method/deadline');
 
-        $this->runSuccessJsonRequest('GET', '/permissions/resource/announcement/1/put');
+        $this->runSuccessJsonRequest('GET', '/permissions/resource/announcement/2/put');
         $this->runSuccessJsonRequest('GET', '/permissions/method/announcement');
 
         $data = $this->runSuccessJsonRequest('GET', '/member/1/permissions');
@@ -88,7 +88,7 @@ class PermissionsTest extends CiabTestCase
         $this->runRequest('DELETE', '/staff/membership/'.$staff_record->id, null, null, 204);
 
         /* parent division */
-        $staff_record = $this->runSuccessJsonRequest('POST', "/member/$id/staff_membership", null, ['Department' => 3, 'Position' => 3], 201);
+        $staff_record = $this->runSuccessJsonRequest('POST', "/member/$id/staff_membership", null, ['Department' => 4, 'Position' => 3], 201);
         $data_p3 = $this->NPRunSuccessJsonRequest('GET', "/member/$id/permissions", ['max_results' => 'all']);
         $this->assertEquals($data_p3->type, 'permission_list');
         $this->assertNotEmpty($data_p3->data);
@@ -100,7 +100,7 @@ class PermissionsTest extends CiabTestCase
             $this->assertContains($entry, $json_data_p3);
         }
 
-        $this->runSuccessRequest('PUT', "/member/$id/staff_membership", null, ['Department' => 3, 'Position' => 2], 200);
+        $this->runSuccessRequest('PUT', "/member/$id/staff_membership", null, ['Department' => 4, 'Position' => 2], 200);
         $data_p2 = $this->NPRunSuccessJsonRequest('GET', "/member/$id/permissions", ['max_results' => 'all']);
         $this->assertEquals($data_p2->type, 'permission_list');
         $this->assertNotEmpty($data_p2->data);
@@ -112,7 +112,7 @@ class PermissionsTest extends CiabTestCase
             $this->assertContains($entry, $json_data_p2);
         }
 
-        $this->runSuccessRequest('PUT', "/member/$id/staff_membership", null, ['Department' => 3, 'Position' => 1], 200);
+        $this->runSuccessRequest('PUT', "/member/$id/staff_membership", null, ['Department' => 4, 'Position' => 1], 200);
         $data_p1 = $this->NPRunSuccessJsonRequest('GET', "/member/$id/permissions", ['max_results' => 'all']);
         $this->assertEquals($data_p1->type, 'permission_list');
         $this->assertNotEmpty($data_p1->data);

@@ -25,7 +25,31 @@ function __cleanupTable($table): void
 }
 
 
-// create_schema.php auto-seeds some things and not others.
+function __cleanupDepartments(): void
+{
+    global $db;
+
+    $data = Select::new($db)->from('Departments')->columns('DepartmentID')->whereEquals(['Name' => 'Historical Placeholder'])->fetchOne();
+    $id = $data['DepartmentID'];
+
+    $update = Update::new($db);
+    $update->table('Departments')->columns(['ParentDepartmentID' => $id, 'FallbackID' => null])->where('DepartmentID != ', $id)->perform();
+
+    $delete = Delete::new($db);
+    $delete->from('Departments')->where('DepartmentID != ', $id)->perform();
+
+}
+
+
+function __seedConventionDepartments()
+{
+    global $db;
+    $sql_data = file_get_contents('test/DBSeed/Departments.sql');
+    $db->query($sql_data);
+
+}
+
+
 // Build what we need.
 
 $db = MyPDO::instance();
@@ -46,6 +70,9 @@ __cleanupTable('Members');
 __cleanupTable('HourRedemptions');
 __cleanupTable('VolunteerHours');
 __cleanupTable('VolunteerRewards');
+__cleanupDepartments();
+
+__seedConventionDepartments();
 
 $select = Select::new($db);
 $select->columns('Value')->from('Configuration')->whereEquals(['Field' => 'ADMINACCOUNTS']);
@@ -117,7 +144,7 @@ $posId = $val['PositionID'];
 $insert = Insert::new($db);
 $insert->into('ConComList')->columns([
     'AccountID' => 1000,
-    'DepartmentID' => 1,
+    'DepartmentID' => 2,
     'EventID' => $eventId,
     'PositionID' => $posId
 ])->perform();

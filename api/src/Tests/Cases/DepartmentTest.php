@@ -13,9 +13,9 @@ class DepartmentTest extends CiabTestCase
         $data = $this->runSuccessJsonRequest('GET', '/department');
         $this->assertNotEmpty($data->data);
         $data = $this->runSuccessJsonRequest('GET', '/department/Activities');
-        $data2 = $this->runSuccessJsonRequest('GET', '/department/1');
+        $data2 = $this->runSuccessJsonRequest('GET', '/department/2');
         $this->assertEquals($data, $data2);
-        $this->runSuccessJsonRequest('GET', '/department/1/children');
+        $this->runSuccessJsonRequest('GET', '/department/2/children');
         $this->runSuccessJsonRequest('GET', '/department');
         $data = $this->runSuccessJsonRequest(
             'GET',
