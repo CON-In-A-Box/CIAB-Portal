@@ -865,6 +865,7 @@ class DBSchema extends \App\Core\ModuleDBSchema
             $this->index,
             $this->seed
         );
+        $this->forceOnInstall = false;
 
     }
 
