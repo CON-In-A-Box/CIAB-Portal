@@ -1,4 +1,4 @@
-/* globals Vue, showSpinner, hideSpinner */
+/* globals Vue, showSpinner, hideSpinner, Vuetify */
 import staffListComponent from './components/staff-list.js';
 import sectionNavComponent from './components/staff-section-nav.js';
 import staffDivisionComponent from './components/staff-division.js';
@@ -13,6 +13,38 @@ function updateLoading() {
   this.isLoading = !this.isLoading;
   this.isLoading ? showSpinner() : hideSpinner();
 }
+
+const staffStandardTheme = {
+  dark: false,
+  colors: {
+    primary: '#620272',
+    secondary: '#00e500',
+    error: '#B00020',
+    info: '#2196F3',
+    success: '#4CAF50',
+    warning: '#FB8C00'
+  }
+}
+
+const vuetify = Vuetify.createVuetify({
+  theme: {
+    defaultTheme: 'staffStandardTheme',
+    themes: {
+      staffStandardTheme
+    }
+  },
+  defaults: {
+    VBtn: {
+      color: 'primary'
+    },
+    VSelect: {
+      variant: 'outlined'
+    },
+    VListItem: {
+      'color': 'white'
+    }
+  }
+});
 
 const staffApp = Vue.createApp({
   setup() {
@@ -29,7 +61,7 @@ const staffApp = Vue.createApp({
   methods: {
     updateLoading
   }
-});
+}).use(vuetify);
 
 staffApp.component('staff-division', staffDivisionComponent);
 staffApp.component('staff-section-nav', sectionNavComponent);

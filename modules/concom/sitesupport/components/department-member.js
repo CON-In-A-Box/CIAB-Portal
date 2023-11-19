@@ -16,7 +16,7 @@ const TEMPLATE = `
       <p v-if="currentUser?.id === staff.id">This is you!</p>
     </div>
     <div class="CONCOM-list-edit-column">
-      <button class="CONCOM-edit-member-button" v-if="canEdit" @click="onEditClicked">Edit</button>
+      <v-btn v-if="canEdit" @click="onEditClicked">Edit</v-btn>
     </div>
   </template>
   <template v-else>
@@ -31,7 +31,7 @@ const TEMPLATE = `
       <p v-if="currentUser?.id === staff.id">This is you!</p>
     </div>
     <div class="CONCOM-list-edit-column">
-      <button class="CONCOM-edit-member-button" v-if="canEdit" @click="onEditClicked">Edit</button>
+      <v-btn v-if="canEdit" @click="onEditClicked">Edit</v-btn>
     </div>
   </template>
 `;

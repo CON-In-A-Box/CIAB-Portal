@@ -17,13 +17,8 @@ const TEMPLATE = `
         </div>
       </fieldset>
       <p>
-        <label for="position">Position:</label>
-        <select v-model="selectedPosition">
-          <option disabled value="">Please select a position</option>
-          <option v-for="position in availablePositions(staffPositions, isDepartment).value" :key=position.id :value=position>
-            {{position.displayValue}}
-          </option>
-        </select>
+        <v-select style="margin-top: 0.5em;" label="Position" v-model="selectedPosition"
+          :items="availablePositions(staffPositions, isDepartment).value"></v-select>
       </p>
     </div>
     <template v-if="isEdit">
@@ -33,46 +28,30 @@ const TEMPLATE = `
         <label for="user_notes">Note</label>
         <input class="CONCOM-list-sidebar-input" id="user_notes" v-model="staffNote"/>
         <br/>
-        <label for="user_pos">Position: </label>
-        <select v-model="selectedPosition">
-          <option v-for="position in availablePositions(staffPositions, isDepartment).value" :key=position.id :value=position>
-            {{position.displayValue}}
-          </option>
-        </select>
+        <v-select style="margin-top: 0.5em;" label="Position" v-model="selectedPosition"
+          :items="availablePositions(staffPositions, isDepartment).value"></v-select>
       </div>
     </template>
     <template v-if="staffMemberExists">
       <p>{{ existingMember.firstName }} {{ existingMember.lastName }} already has a position in {{ department.name }}.</p>
     </template>
     <div class="CONCOM-list-sidebar-actions-container">
-      <button class="CONCOM-list-sidebar-actions-confirm-button" :disabled="disableForm(userId, selectedPosition, staffMemberExists).value" 
-        @click="onSubmit">OK</button>
-      <button class="CONCOM-list-sidebar-actions-modify-button" v-if="isEdit" @click="onRemoveStaff">Remove</button>
-      <button :class="getCloseButtonClass(isEdit).value" @click="$emit('sidebarClosed')">Close</button>
+      <v-btn variant="outlined" @click="$emit('sidebarClosed')">Close</v-btn>
+      <v-btn style="margin-left: 0.5em; color: red !important" variant="plain" v-if="isEdit" @click="onRemoveStaff">Remove</v-btn>
+      <v-btn style="margin-left: 0.5em" :disabled="disableForm(userId, selectedPosition, staffMemberExists).value" 
+        @click="onSubmit">OK</v-btn>
     </div>
   </div>
 `;
 
 const availablePositions = (staffPositions, isDepartment) => Vue.computed(() => {
-  if (isDepartment) {
-    return staffPositions.departmentPositions.map(position => {
-      return {
-        ...position,
-        displayValue: position.name
-      }
-    });
-  }
-
-  return staffPositions.divisionPositions.map(position => {
+  const positions = isDepartment ? staffPositions.departmentPositions : staffPositions.divisionPositions;
+  return positions.map((position) => {
     return {
-      ...position,
-      displayValue: position.id === DIRECTOR_POSITION_ID ? 'Director' : 'Support'
+      title: getPositionName(position, isDepartment),
+      value: { ...position }
     }
-  })
-});
-
-const getCloseButtonClass = (isEdit) => Vue.computed(() => {
-  return isEdit ? 'CONCOM-list-sidebar-actions-dismiss-button' : 'CONCOM-list-sidebar-actions-cancel-button'
+  });
 });
 
 const getHeaderText = (isEdit, isDepartment) => Vue.computed(() => {
@@ -101,7 +80,7 @@ const getStaffPosition = (staff, isDepartment) => Vue.computed(() => {
 });
 
 const disableForm = (userId, position, staffMemberExists) => Vue.computed(() => {
-  return userId === null || (position === '' || position?.id === null) || staffMemberExists;
+  return userId === null || (position.id === -1) || staffMemberExists;
 });
 
 function onUserLookup(_, item) {
@@ -227,9 +206,17 @@ function componentSetup() {
     editedStaff,
     userId: null,
     deptStaffId: null,
-    selectedPosition: Vue.ref(''),
+    selectedPosition: Vue.ref({ title: 'Please select a position', value: { id: -1 }}),
     updateLoading
   }
+}
+
+function getPositionName(position, isDepartment) {
+  if (isDepartment) {
+    return position.name;
+  }
+
+  return position.id === DIRECTOR_POSITION_ID ? 'Director' : 'Support';
 }
 
 const staffSidebarComponent = {
@@ -244,7 +231,7 @@ const staffSidebarComponent = {
       this.isEdit = true;
 
       const availablePositions = this.availablePositions(this.staffPositions, this.isDepartment).value;
-      const foundPosition = availablePositions.find(position => position.name === this.editedStaff.position);
+      const foundPosition = availablePositions.find(position => position.value.name === this.editedStaff.position);
       this.selectedPosition = foundPosition;
     }
   },
@@ -259,7 +246,7 @@ const staffSidebarComponent = {
     getHeaderText,
     getStaffFullName,
     getStaffPosition,
-    getCloseButtonClass
+    getPositionName
   }
 };
 

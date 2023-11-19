@@ -63,14 +63,6 @@
   margin: 1em auto;
 }
 
-.CONCOM-add-member-button {
-  @extend .UI-yellowbutton;
-}
-
-.CONCOM-edit-member-button {
-  @extend .UI-redbutton;
-}
-
 .CONCOM-list-division {
   @extend .UI-container;
   @extend .UI-padding;
@@ -202,20 +194,4 @@
 .CONCOM-list-sidebar-actions-container {
   @extend .UI-center;
   @extend .UI-padding;
-}
-
-.CONCOM-list-sidebar-actions-confirm-button {
-  @extend .UI-eventbutton;
-}
-
-.CONCOM-list-sidebar-actions-modify-button {
-  @extend .UI-redbutton;
-}
-
-.CONCOM-list-sidebar-actions-cancel-button {
-  @extend .UI-redbutton;
-}
-
-.CONCOM-list-sidebar-actions-dismiss-button {
-  @extend .UI-yellowbutton;
 }

@@ -26,7 +26,7 @@ const TEMPLATE = `
     </div>
   </div>
   <div class="CONCOM-add-member-button-container">
-    <button class="CONCOM-add-member-button" @click="addStaffClicked" v-if="canAddDept">Add someone to {{department.name}}</button>
+    <v-btn @click="addStaffClicked" v-if="canAddDept">Add someone to {{department.name}}</v-btn>
   </div>
 `;
 
