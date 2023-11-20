@@ -84,7 +84,7 @@ class GetMemberClaims extends BaseClaims
         $data = Select::new($this->container->db)
         ->columns(...BaseClaims::selectMapping())
         ->from('HourRedemptions')
-        ->whereEquals(['AccountID' => $id])
+        ->whereEquals(['AccountID' => $id, 'EventID' => $event])
         ->fetchAll();
 
         if (empty($data)) {
