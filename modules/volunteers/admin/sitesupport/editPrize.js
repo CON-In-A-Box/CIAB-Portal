@@ -26,6 +26,9 @@ export default {
     show(record) {
       if (!record) {
         this.title = 'Enter New Gift';
+        this.record.inventory = 0;
+        this.record.claimed = 0;
+        this.record.promo = 0;
       } else {
         this.title = 'Edit Gift Entry';
         /* deep copy */
@@ -129,6 +132,9 @@ export default {
       });
     },
     updateGroup() {
+      if (this.reward_group === -1) {
+        return;
+      }
       this.reward_name = '';
       if (this.reward_group === NEW_GROUP) {
         this.reward_limit = 1;
@@ -172,7 +178,7 @@ export default {
               <span
                 class="VOL-gift-label">Changing this will adjust Total items</span>
           Inventory Remaining:</label>
-          <input class="UI-input" id="edit_prize_count" v-model="record.remaining">
+          <input class="UI-input" type=number id="edit_prize_count" v-model="record.remaining">
                   <label class='UI-label UI-tooltip' for='edit_prize_group'>
                       <span
                         class="VOL-gift-label">
