@@ -1,5 +1,5 @@
 /* globals Vue, apiRequest */
-import { extractDepartmentStaff, sortStaffByPosition } from '../department-staff-parser.js';
+import { extractDepartmentStaff, sortStaffByPosition } from '../sitesupport/department-staff-parser.js';
 
 const PROPS = {
   division: Object
