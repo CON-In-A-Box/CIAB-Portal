@@ -12,7 +12,7 @@ function display_volunteer_pane()
 {
     ?>
     &nbsp;
-    <script type="module" src="modules/volunteers/sitesupport/volunteerPane.js"></script>
+    <script type="module" src="modules/volunteers/vue/volunteerPane.js"></script>
     <div id="vol-div">
         <vol-pane :open="open" :entries="entries" :total-hours="totalHours" :items="items" :total-spent="totalSpent">
         </vol-pane>
