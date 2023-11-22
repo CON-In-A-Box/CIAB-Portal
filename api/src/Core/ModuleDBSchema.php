@@ -34,6 +34,8 @@ abstract class ModuleDBSchema
 
     private $database = null;
 
+    protected $forceOnInstall = true;
+
 
     public function __construct(
         /*.string.*/$field,
@@ -62,7 +64,7 @@ abstract class ModuleDBSchema
         $currentMD5 = md5(json_encode($this->schema));
 
         if ($force || $oldMD5 != $currentMD5) {
-            $force = ($force || $oldMD5 === false);
+            $force = ($force || ($this->forceOnInstall && $oldMD5 === false));
             $this->buildMissingTables($force);
 
             if ($oldMD5 !== false) {
