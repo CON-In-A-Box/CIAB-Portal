@@ -1,13 +1,13 @@
 /* globals Vue, showSpinner, hideSpinner */
-import staffListComponent from './components/staff-list.js';
-import sectionNavComponent from './components/staff-section-nav.js';
-import staffDivisionComponent from './components/staff-division.js';
-import departmentHeaderComponent from './components/department-header.js';
-import departmentMemberComponent from './components/department-member.js';
-import staffDepartmentComponent from './components/staff-department.js';
-import staffSidebarComponent from './components/staff-sidebar.js';
+import staffListComponent from './staff-list.js';
+import sectionNavComponent from './staff-section-nav.js';
+import staffDivisionComponent from './staff-division.js';
+import departmentHeaderComponent from './department-header.js';
+import departmentMemberComponent from './department-member.js';
+import staffDepartmentComponent from './staff-department.js';
+import staffSidebarComponent from './staff-sidebar.js';
 import lookupuser from '../../../sitesupport/vue/lookupuser.js';
-import staffDivisionVisualComponent from './components/staff-division-visual.js';
+import staffDivisionVisualComponent from './staff-division-visual.js';
 
 function updateLoading() {
   this.isLoading = !this.isLoading;

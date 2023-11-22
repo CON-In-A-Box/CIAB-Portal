@@ -1,5 +1,5 @@
 /* globals Vue, drawDonutChart */
-import { createDonutData } from '../division-parser.js';
+import { createDonutData } from '../sitesupport/division-parser.js';
 const PROPS = {
   divisions: Array
 }

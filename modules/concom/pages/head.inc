@@ -6,4 +6,4 @@
 <link rel="stylesheet" type="text/css" href="sitesupport/barcode/barcode.css" />
 <link rel="stylesheet" type="text/css" href="theme.css">
 <script type="module" src="modules/concom/sitesupport/division-parser.js"></script>
-<script type="module" src="modules/concom/sitesupport/concom-list.js"></script>
+<script type="module" src="modules/concom/vue/concom-list.js"></script>

@@ -1,5 +1,5 @@
 /* globals apiRequest, Vue */
-import { extractDivisionHierarchy } from '../division-parser.js';
+import { extractDivisionHierarchy } from '../sitesupport/division-parser.js';
 
 const SUBHEAD_POSITION_ID = 2;
 
