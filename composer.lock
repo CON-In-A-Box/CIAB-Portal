@@ -4,8 +4,56 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ad2313467e5a7e91894a2041ff0a7f88",
+    "content-hash": "81138aa9f8b203ee2814978360172dee",
     "packages": [
+        {
+            "name": "atlas/info",
+            "version": "1.2.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/atlasphp/Atlas.Info.git",
+                "reference": "1a728f6e4e5c8cf75bd3bc46bdb257b0a216ccb5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/atlasphp/Atlas.Info/zipball/1a728f6e4e5c8cf75bd3bc46bdb257b0a216ccb5",
+                "reference": "1a728f6e4e5c8cf75bd3bc46bdb257b0a216ccb5",
+                "shasum": ""
+            },
+            "require": {
+                "atlas/pdo": "~1.0",
+                "php": ">=7.1"
+            },
+            "require-dev": {
+                "pds/composer-script-names": "^1.0",
+                "pds/skeleton": "~1.0",
+                "phpunit/phpunit": "~7.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Atlas\\Info\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Uses an Atlas.Pdo connection to discover schema information.",
+            "homepage": "https://github.com/atlasphp/Atlas.Info",
+            "keywords": [
+                "database",
+                "db",
+                "ddl",
+                "schema",
+                "sql"
+            ],
+            "support": {
+                "issues": "https://github.com/atlasphp/Atlas.Info/issues",
+                "source": "https://github.com/atlasphp/Atlas.Info/tree/1.2.1"
+            },
+            "time": "2023-08-04T02:55:03+00:00"
+        },
         {
             "name": "atlas/pdo",
             "version": "1.2.0",

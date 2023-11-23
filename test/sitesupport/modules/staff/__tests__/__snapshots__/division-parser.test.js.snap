@@ -6,14 +6,6 @@ exports[`Staff Division Parser can parse the division hierarchy 1`] = `
     "departments": [
       {
         "email": [
-          "activities@test-con.org",
-        ],
-        "id": 1,
-        "name": "Activities",
-        "parentId": 1,
-      },
-      {
-        "email": [
           "bookswap@test-con.org",
         ],
         "id": 105,
@@ -78,20 +70,13 @@ exports[`Staff Division Parser can parse the division hierarchy 1`] = `
     "email": [
       "activities@test-con.org",
     ],
+    "fallback": 3,
     "id": 1,
     "name": "Activities",
     "specialDivision": false,
   },
   {
     "departments": [
-      {
-        "email": [
-          "administration@test-con.org",
-        ],
-        "id": 2,
-        "name": "Administration",
-        "parentId": 2,
-      },
       {
         "email": [
           "archives@test-con.org",
@@ -152,20 +137,13 @@ exports[`Staff Division Parser can parse the division hierarchy 1`] = `
     "email": [
       "administration@test-con.org",
     ],
+    "fallback": 4,
     "id": 2,
     "name": "Administration",
     "specialDivision": false,
   },
   {
     "departments": [
-      {
-        "email": [
-          "cfo@test-con.org",
-        ],
-        "id": 10,
-        "name": "CFO Staff",
-        "parentId": 10,
-      },
       {
         "email": [
           "finance@test-con.org",
@@ -178,6 +156,7 @@ exports[`Staff Division Parser can parse the division hierarchy 1`] = `
     "email": [
       "cfo@test-con.org",
     ],
+    "fallback": null,
     "id": 10,
     "name": "CFO Staff",
     "specialDivision": false,
@@ -219,14 +198,6 @@ exports[`Staff Division Parser can parse the division hierarchy 1`] = `
       },
       {
         "email": [
-          "erac@test-con.org",
-        ],
-        "id": 3,
-        "name": "External Relations and Communications",
-        "parentId": 3,
-      },
-      {
-        "email": [
           "photography@test-con.org",
         ],
         "id": 138,
@@ -261,6 +232,7 @@ exports[`Staff Division Parser can parse the division hierarchy 1`] = `
     "email": [
       "erac@test-con.org",
     ],
+    "fallback": 6,
     "id": 3,
     "name": "External Relations and Communications",
     "specialDivision": false,
@@ -297,14 +269,6 @@ exports[`Staff Division Parser can parse the division hierarchy 1`] = `
         ],
         "id": 143,
         "name": "Event Orders",
-        "parentId": 4,
-      },
-      {
-        "email": [
-          "facilities@test-con.org",
-        ],
-        "id": 4,
-        "name": "Facilities",
         "parentId": 4,
       },
       {
@@ -351,6 +315,7 @@ exports[`Staff Division Parser can parse the division hierarchy 1`] = `
     "email": [
       "facilities@test-con.org",
     ],
+    "fallback": 7,
     "id": 4,
     "name": "Facilities",
     "specialDivision": false,
@@ -379,14 +344,6 @@ exports[`Staff Division Parser can parse the division hierarchy 1`] = `
         ],
         "id": 119,
         "name": "First Advisors",
-        "parentId": 5,
-      },
-      {
-        "email": [
-          "hospitality@test-con.org",
-        ],
-        "id": 5,
-        "name": "Hospitality",
         "parentId": 5,
       },
       {
@@ -433,6 +390,7 @@ exports[`Staff Division Parser can parse the division hierarchy 1`] = `
     "email": [
       "hospitality@test-con.org",
     ],
+    "fallback": null,
     "id": 5,
     "name": "Hospitality",
     "specialDivision": false,
@@ -489,14 +447,6 @@ exports[`Staff Division Parser can parse the division hierarchy 1`] = `
       },
       {
         "email": [
-          "productions@test-con.org",
-        ],
-        "id": 6,
-        "name": "Productions",
-        "parentId": 6,
-      },
-      {
-        "email": [
           "theaternippon@test-con.org",
         ],
         "id": 150,
@@ -515,6 +465,7 @@ exports[`Staff Division Parser can parse the division hierarchy 1`] = `
     "email": [
       "productions@test-con.org",
     ],
+    "fallback": 2,
     "id": 6,
     "name": "Productions",
     "specialDivision": false,
@@ -529,32 +480,17 @@ exports[`Staff Division Parser can parse the division hierarchy 1`] = `
         "name": "IT",
         "parentId": 7,
       },
-      {
-        "email": [
-          "systems@test-con.org",
-        ],
-        "id": 7,
-        "name": "Systems",
-        "parentId": 7,
-      },
     ],
     "email": [
       "systems@test-con.org",
     ],
+    "fallback": 5,
     "id": 7,
     "name": "Systems",
     "specialDivision": false,
   },
   {
     "departments": [
-      {
-        "email": [
-          "info@test-con.org",
-        ],
-        "id": 8,
-        "name": "Committees",
-        "parentId": 8,
-      },
       {
         "email": [
           "futurevisioning@test-con.org",
@@ -607,20 +543,13 @@ exports[`Staff Division Parser can parse the division hierarchy 1`] = `
     "email": [
       "info@test-con.org",
     ],
+    "fallback": null,
     "id": 8,
     "name": "Committees",
     "specialDivision": true,
   },
   {
     "departments": [
-      {
-        "email": [
-          "directors@test-con.org",
-        ],
-        "id": 9,
-        "name": "Corporate Staff",
-        "parentId": 9,
-      },
       {
         "email": [
           "president@test-con.org",
@@ -657,6 +586,7 @@ exports[`Staff Division Parser can parse the division hierarchy 1`] = `
     "email": [
       "directors@test-con.org",
     ],
+    "fallback": null,
     "id": 9,
     "name": "Corporate Staff",
     "specialDivision": true,

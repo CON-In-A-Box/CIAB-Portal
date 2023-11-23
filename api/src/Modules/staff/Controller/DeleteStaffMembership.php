@@ -49,7 +49,8 @@ class DeleteStaffMembership extends BaseStaff
     {
         $select = Select::new($this->container->db);
         $select->columns(
-            'DepartmentID'
+            'DepartmentID',
+            'PositionID'
         )->from(
             'ConComList'
         )->where(
@@ -61,10 +62,11 @@ class DeleteStaffMembership extends BaseStaff
         if (empty($record)) {
             throw new NotFoundException('Staff Membership  Record Not Found');
         }
-        $target = $record[0]['DepartmentID'];
+        $targetDept = $record[0]['DepartmentID'];
+        $targetPos = $record[0]['PositionID'];
 
         $permissions = ['api.delete.staff.all',
-        "api.delete.staff.$target"];
+        'api.delete.staff.'.$targetDept.'.'.$targetPos];
         $this->checkPermissions($permissions);
 
         $delete = Delete::new($this->container->db);
@@ -74,7 +76,7 @@ class DeleteStaffMembership extends BaseStaff
             'ListRecordID = ',
             $params['id']
         )->perform();
-        \ciab\RBAC::reload();
+        $this->container->RBAC->reload();
         return [
         \App\Controller\BaseController::RESOURCE_TYPE,
         [null],

@@ -3,6 +3,9 @@
 require_once(__DIR__.'/../vendor/autoload.php');
 require_once(__DIR__.'/../backends/mysqlpdo.inc');
 
+/* Initializes the api */
+require_once(__DIR__.'/../api/src/App/App.php');
+
 use Atlas\Query\Select;
 
 $attempt = 0;

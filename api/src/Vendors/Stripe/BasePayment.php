@@ -28,5 +28,18 @@ abstract class BasePayment extends BaseController
     }
 
 
+    public static function install($database):void
+    {
+
+    }
+
+
+    public static function permissions($database):?array
+    {
+        return null;
+
+    }
+
+
     /* End BasePayment */
 }

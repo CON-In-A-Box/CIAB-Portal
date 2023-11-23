@@ -206,9 +206,9 @@ class ListTickets extends BaseTicketInclude
             $aid = $user;
         }
 
-        if ($user != $aid &&
-            !\ciab\RBAC::havePermission('api.registration.ticket.list')) {
-            throw new PermissionDeniedException();
+        if ($user != $aid) {
+            $permissions = ['api.registration.ticket.list'];
+            $this->checkPermissions($permissions);
         }
 
         $select = Select::new($this->container->db)

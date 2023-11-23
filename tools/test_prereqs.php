@@ -3,33 +3,76 @@
 require_once(__DIR__.'/../vendor/autoload.php');
 require_once(__DIR__.'/../backends/mysqlpdo.inc');
 
+/* Initializes the api */
+require_once(__DIR__.'/../api/src/App/App.php');
+
 use Atlas\Query\Delete;
 use Atlas\Query\Insert;
 use Atlas\Query\Select;
 use Atlas\Query\Update;
 
-// create_schema.php auto-seeds some things and not others.
+/* Cleanup Tables */
+function __cleanupTable($table): void
+{
+    global $db;
+
+    $delete = Delete::new($db);
+    try {
+        $delete->from($table)->perform();
+    } catch (Exception $e) {
+    }
+
+}
+
+
+function __cleanupDepartments(): void
+{
+    global $db;
+
+    $data = Select::new($db)->from('Departments')->columns('DepartmentID')->whereEquals(['Name' => 'Historical Placeholder'])->fetchOne();
+    $id = $data['DepartmentID'];
+
+    $update = Update::new($db);
+    $update->table('Departments')->columns(['ParentDepartmentID' => $id, 'FallbackID' => null])->where('DepartmentID != ', $id)->perform();
+
+    $delete = Delete::new($db);
+    $delete->from('Departments')->where('DepartmentID != ', $id)->perform();
+
+}
+
+
+function __seedConventionDepartments()
+{
+    global $db;
+    $sql_data = file_get_contents('test/DBSeed/Departments.sql');
+    $db->query($sql_data);
+
+}
+
+
 // Build what we need.
 
 $db = MyPDO::instance();
 
-$delete = Delete::new($db);
-$delete->from('Announcements')->perform();
-$delete->from('Authentication')->perform();
-$delete->from('MeetingAttendance')->perform();
-$delete->from('OfficialMeetings')->perform();
-$delete->from('ConComList')->perform();
-$delete->from('Registrations')->perform();
-$delete->from('BadgeTypes')->perform();
-$delete->from('VolunteerHours')->perform();
-$delete->from('HourRedemptions')->perform();
-$delete->from('Events')->perform();
-$delete->from('AnnualCycles')->perform();
-$delete->from('AccountConfiguration')->perform();
-$delete->from('Members')->perform();
-$delete->from('HourRedemptions')->perform();
-$delete->from('VolunteerHours')->perform();
-$delete->from('VolunteerRewards')->perform();
+__cleanupTable('Announcements');
+__cleanupTable('Authentication');
+__cleanupTable('MeetingAttendance');
+__cleanupTable('OfficialMeetings');
+__cleanupTable('ConComList');
+__cleanupTable('Registrations');
+__cleanupTable('BadgeTypes');
+__cleanupTable('VolunteerHours');
+__cleanupTable('HourRedemptions');
+__cleanupTable('Events');
+__cleanupTable('AnnualCycles');
+__cleanupTable('AccountConfiguration');
+__cleanupTable('Members');
+__cleanupTable('HourRedemptions');
+__cleanupTable('VolunteerHours');
+__cleanupTable('VolunteerRewards');
+__cleanupDepartments();
+
+__seedConventionDepartments();
 
 $select = Select::new($db);
 $select->columns('Value')->from('Configuration')->whereEquals(['Field' => 'ADMINACCOUNTS']);
@@ -101,7 +144,7 @@ $posId = $val['PositionID'];
 $insert = Insert::new($db);
 $insert->into('ConComList')->columns([
     'AccountID' => 1000,
-    'DepartmentID' => 1,
+    'DepartmentID' => 2,
     'EventID' => $eventId,
     'PositionID' => $posId
 ])->perform();

@@ -5,7 +5,67 @@
       "id": "1",
       "parent": null,
       "name": "Activities",
-      "fallback": null,
+      "fallback": {
+        "id": "3",
+        "parent": null,
+        "name": "External Relations and Communications",
+        "fallback": {
+          "id": "6",
+          "parent": null,
+          "name": "Productions",
+          "fallback": {
+            "id": "2",
+            "parent": null,
+            "name": "Administration",
+            "fallback": {
+              "id": "4",
+              "parent": null,
+              "name": "Facilities",
+              "fallback": {
+                "id": "7",
+                "parent": null,
+                "name": "Systems",
+                "fallback": {
+                  "id": "5",
+                  "parent": null,
+                  "name": "Hospitality",
+                  "fallback": null,
+                  "child_count": "9",
+                  "email": [
+                    "hospitality@test-con.org"
+                  ],
+                  "type": "department"
+                },
+                "child_count": "2",
+                "email": [
+                  "systems@test-con.org"
+                ],
+                "type": "department"
+              },
+              "child_count": "10",
+              "email": [
+                "facilities@test-con.org"
+              ],
+              "type": "department"
+            },
+            "child_count": "8",
+            "email": [
+              "administration@test-con.org"
+            ],
+            "type": "department"
+          },
+          "child_count": "9",
+          "email": [
+            "productions@test-con.org"
+          ],
+          "type": "department"
+        },
+        "child_count": "9",
+        "email": [
+          "erac@test-con.org"
+        ],
+        "type": "department"
+      },
       "child_count": "9",
       "email": [
         "activities@test-con.org"
@@ -15,7 +75,37 @@
       "id": "2",
       "parent": null,
       "name": "Administration",
-      "fallback": null,
+      "fallback": {
+        "id": "4",
+        "parent": null,
+        "name": "Facilities",
+        "fallback": {
+          "id": "7",
+          "parent": null,
+          "name": "Systems",
+          "fallback": {
+            "id": "5",
+            "parent": null,
+            "name": "Hospitality",
+            "fallback": null,
+            "child_count": "9",
+            "email": [
+              "hospitality@test-con.org"
+            ],
+            "type": "department"
+          },
+          "child_count": "2",
+          "email": [
+            "systems@test-con.org"
+          ],
+          "type": "department"
+        },
+        "child_count": "10",
+        "email": [
+          "facilities@test-con.org"
+        ],
+        "type": "department"
+      },
       "child_count": "8",
       "email": [
         "administration@test-con.org"
@@ -25,7 +115,57 @@
       "id": "3",
       "parent": null,
       "name": "External Relations and Communications",
-      "fallback": null,
+      "fallback": {
+        "id": "6",
+        "parent": null,
+        "name": "Productions",
+        "fallback": {
+          "id": "2",
+          "parent": null,
+          "name": "Administration",
+          "fallback": {
+            "id": "4",
+            "parent": null,
+            "name": "Facilities",
+            "fallback": {
+              "id": "7",
+              "parent": null,
+              "name": "Systems",
+              "fallback": {
+                "id": "5",
+                "parent": null,
+                "name": "Hospitality",
+                "fallback": null,
+                "child_count": "9",
+                "email": [
+                  "hospitality@test-con.org"
+                ],
+                "type": "department"
+              },
+              "child_count": "2",
+              "email": [
+                "systems@test-con.org"
+              ],
+              "type": "department"
+            },
+            "child_count": "10",
+            "email": [
+              "facilities@test-con.org"
+            ],
+            "type": "department"
+          },
+          "child_count": "8",
+          "email": [
+            "administration@test-con.org"
+          ],
+          "type": "department"
+        },
+        "child_count": "9",
+        "email": [
+          "productions@test-con.org"
+        ],
+        "type": "department"
+      },
       "child_count": "9",
       "email": [
         "erac@test-con.org"
@@ -35,7 +175,27 @@
       "id": "4",
       "parent": null,
       "name": "Facilities",
-      "fallback": null,
+      "fallback": {
+        "id": "7",
+        "parent": null,
+        "name": "Systems",
+        "fallback": {
+          "id": "5",
+          "parent": null,
+          "name": "Hospitality",
+          "fallback": null,
+          "child_count": "9",
+          "email": [
+            "hospitality@test-con.org"
+          ],
+          "type": "department"
+        },
+        "child_count": "2",
+        "email": [
+          "systems@test-con.org"
+        ],
+        "type": "department"
+      },
       "child_count": "10",
       "email": [
         "facilities@test-con.org"
@@ -55,7 +215,47 @@
       "id": "6",
       "parent": null,
       "name": "Productions",
-      "fallback": null,
+      "fallback": {
+        "id": "2",
+        "parent": null,
+        "name": "Administration",
+        "fallback": {
+          "id": "4",
+          "parent": null,
+          "name": "Facilities",
+          "fallback": {
+            "id": "7",
+            "parent": null,
+            "name": "Systems",
+            "fallback": {
+              "id": "5",
+              "parent": null,
+              "name": "Hospitality",
+              "fallback": null,
+              "child_count": "9",
+              "email": [
+                "hospitality@test-con.org"
+              ],
+              "type": "department"
+            },
+            "child_count": "2",
+            "email": [
+              "systems@test-con.org"
+            ],
+            "type": "department"
+          },
+          "child_count": "10",
+          "email": [
+            "facilities@test-con.org"
+          ],
+          "type": "department"
+        },
+        "child_count": "8",
+        "email": [
+          "administration@test-con.org"
+        ],
+        "type": "department"
+      },
       "child_count": "9",
       "email": [
         "productions@test-con.org"
@@ -65,7 +265,17 @@
       "id": "7",
       "parent": null,
       "name": "Systems",
-      "fallback": null,
+      "fallback": {
+        "id": "5",
+        "parent": null,
+        "name": "Hospitality",
+        "fallback": null,
+        "child_count": "9",
+        "email": [
+          "hospitality@test-con.org"
+        ],
+        "type": "department"
+      },
       "child_count": "2",
       "email": [
         "systems@test-con.org"
@@ -107,7 +317,57 @@
         "id": "3",
         "parent": null,
         "name": "External Relations and Communications",
-        "fallback": null,
+        "fallback": {
+          "id": "6",
+          "parent": null,
+          "name": "Productions",
+          "fallback": {
+            "id": "2",
+            "parent": null,
+            "name": "Administration",
+            "fallback": {
+              "id": "4",
+              "parent": null,
+              "name": "Facilities",
+              "fallback": {
+                "id": "7",
+                "parent": null,
+                "name": "Systems",
+                "fallback": {
+                  "id": "5",
+                  "parent": null,
+                  "name": "Hospitality",
+                  "fallback": null,
+                  "child_count": "9",
+                  "email": [
+                    "hospitality@test-con.org"
+                  ],
+                  "type": "department"
+                },
+                "child_count": "2",
+                "email": [
+                  "systems@test-con.org"
+                ],
+                "type": "department"
+              },
+              "child_count": "10",
+              "email": [
+                "facilities@test-con.org"
+              ],
+              "type": "department"
+            },
+            "child_count": "8",
+            "email": [
+              "administration@test-con.org"
+            ],
+            "type": "department"
+          },
+          "child_count": "9",
+          "email": [
+            "productions@test-con.org"
+          ],
+          "type": "department"
+        },
         "child_count": "9",
         "email": [
           "erac@test-con.org"
@@ -128,7 +388,27 @@
         "id": "4",
         "parent": null,
         "name": "Facilities",
-        "fallback": null,
+        "fallback": {
+          "id": "7",
+          "parent": null,
+          "name": "Systems",
+          "fallback": {
+            "id": "5",
+            "parent": null,
+            "name": "Hospitality",
+            "fallback": null,
+            "child_count": "9",
+            "email": [
+              "hospitality@test-con.org"
+            ],
+            "type": "department"
+          },
+          "child_count": "2",
+          "email": [
+            "systems@test-con.org"
+          ],
+          "type": "department"
+        },
         "child_count": "10",
         "email": [
           "facilities@test-con.org"
@@ -148,7 +428,37 @@
         "id": "2",
         "parent": null,
         "name": "Administration",
-        "fallback": null,
+        "fallback": {
+          "id": "4",
+          "parent": null,
+          "name": "Facilities",
+          "fallback": {
+            "id": "7",
+            "parent": null,
+            "name": "Systems",
+            "fallback": {
+              "id": "5",
+              "parent": null,
+              "name": "Hospitality",
+              "fallback": null,
+              "child_count": "9",
+              "email": [
+                "hospitality@test-con.org"
+              ],
+              "type": "department"
+            },
+            "child_count": "2",
+            "email": [
+              "systems@test-con.org"
+            ],
+            "type": "department"
+          },
+          "child_count": "10",
+          "email": [
+            "facilities@test-con.org"
+          ],
+          "type": "department"
+        },
         "child_count": "8",
         "email": [
           "administration@test-con.org"
@@ -168,7 +478,57 @@
         "id": "3",
         "parent": null,
         "name": "External Relations and Communications",
-        "fallback": null,
+        "fallback": {
+          "id": "6",
+          "parent": null,
+          "name": "Productions",
+          "fallback": {
+            "id": "2",
+            "parent": null,
+            "name": "Administration",
+            "fallback": {
+              "id": "4",
+              "parent": null,
+              "name": "Facilities",
+              "fallback": {
+                "id": "7",
+                "parent": null,
+                "name": "Systems",
+                "fallback": {
+                  "id": "5",
+                  "parent": null,
+                  "name": "Hospitality",
+                  "fallback": null,
+                  "child_count": "9",
+                  "email": [
+                    "hospitality@test-con.org"
+                  ],
+                  "type": "department"
+                },
+                "child_count": "2",
+                "email": [
+                  "systems@test-con.org"
+                ],
+                "type": "department"
+              },
+              "child_count": "10",
+              "email": [
+                "facilities@test-con.org"
+              ],
+              "type": "department"
+            },
+            "child_count": "8",
+            "email": [
+              "administration@test-con.org"
+            ],
+            "type": "department"
+          },
+          "child_count": "9",
+          "email": [
+            "productions@test-con.org"
+          ],
+          "type": "department"
+        },
         "child_count": "9",
         "email": [
           "erac@test-con.org"
@@ -188,7 +548,37 @@
         "id": "2",
         "parent": null,
         "name": "Administration",
-        "fallback": null,
+        "fallback": {
+          "id": "4",
+          "parent": null,
+          "name": "Facilities",
+          "fallback": {
+            "id": "7",
+            "parent": null,
+            "name": "Systems",
+            "fallback": {
+              "id": "5",
+              "parent": null,
+              "name": "Hospitality",
+              "fallback": null,
+              "child_count": "9",
+              "email": [
+                "hospitality@test-con.org"
+              ],
+              "type": "department"
+            },
+            "child_count": "2",
+            "email": [
+              "systems@test-con.org"
+            ],
+            "type": "department"
+          },
+          "child_count": "10",
+          "email": [
+            "facilities@test-con.org"
+          ],
+          "type": "department"
+        },
         "child_count": "8",
         "email": [
           "administration@test-con.org"
@@ -208,7 +598,67 @@
         "id": "1",
         "parent": null,
         "name": "Activities",
-        "fallback": null,
+        "fallback": {
+          "id": "3",
+          "parent": null,
+          "name": "External Relations and Communications",
+          "fallback": {
+            "id": "6",
+            "parent": null,
+            "name": "Productions",
+            "fallback": {
+              "id": "2",
+              "parent": null,
+              "name": "Administration",
+              "fallback": {
+                "id": "4",
+                "parent": null,
+                "name": "Facilities",
+                "fallback": {
+                  "id": "7",
+                  "parent": null,
+                  "name": "Systems",
+                  "fallback": {
+                    "id": "5",
+                    "parent": null,
+                    "name": "Hospitality",
+                    "fallback": null,
+                    "child_count": "9",
+                    "email": [
+                      "hospitality@test-con.org"
+                    ],
+                    "type": "department"
+                  },
+                  "child_count": "2",
+                  "email": [
+                    "systems@test-con.org"
+                  ],
+                  "type": "department"
+                },
+                "child_count": "10",
+                "email": [
+                  "facilities@test-con.org"
+                ],
+                "type": "department"
+              },
+              "child_count": "8",
+              "email": [
+                "administration@test-con.org"
+              ],
+              "type": "department"
+            },
+            "child_count": "9",
+            "email": [
+              "productions@test-con.org"
+            ],
+            "type": "department"
+          },
+          "child_count": "9",
+          "email": [
+            "erac@test-con.org"
+          ],
+          "type": "department"
+        },
         "child_count": "9",
         "email": [
           "activities@test-con.org"
@@ -228,7 +678,47 @@
         "id": "6",
         "parent": null,
         "name": "Productions",
-        "fallback": null,
+        "fallback": {
+          "id": "2",
+          "parent": null,
+          "name": "Administration",
+          "fallback": {
+            "id": "4",
+            "parent": null,
+            "name": "Facilities",
+            "fallback": {
+              "id": "7",
+              "parent": null,
+              "name": "Systems",
+              "fallback": {
+                "id": "5",
+                "parent": null,
+                "name": "Hospitality",
+                "fallback": null,
+                "child_count": "9",
+                "email": [
+                  "hospitality@test-con.org"
+                ],
+                "type": "department"
+              },
+              "child_count": "2",
+              "email": [
+                "systems@test-con.org"
+              ],
+              "type": "department"
+            },
+            "child_count": "10",
+            "email": [
+              "facilities@test-con.org"
+            ],
+            "type": "department"
+          },
+          "child_count": "8",
+          "email": [
+            "administration@test-con.org"
+          ],
+          "type": "department"
+        },
         "child_count": "9",
         "email": [
           "productions@test-con.org"
@@ -248,7 +738,47 @@
         "id": "6",
         "parent": null,
         "name": "Productions",
-        "fallback": null,
+        "fallback": {
+          "id": "2",
+          "parent": null,
+          "name": "Administration",
+          "fallback": {
+            "id": "4",
+            "parent": null,
+            "name": "Facilities",
+            "fallback": {
+              "id": "7",
+              "parent": null,
+              "name": "Systems",
+              "fallback": {
+                "id": "5",
+                "parent": null,
+                "name": "Hospitality",
+                "fallback": null,
+                "child_count": "9",
+                "email": [
+                  "hospitality@test-con.org"
+                ],
+                "type": "department"
+              },
+              "child_count": "2",
+              "email": [
+                "systems@test-con.org"
+              ],
+              "type": "department"
+            },
+            "child_count": "10",
+            "email": [
+              "facilities@test-con.org"
+            ],
+            "type": "department"
+          },
+          "child_count": "8",
+          "email": [
+            "administration@test-con.org"
+          ],
+          "type": "department"
+        },
         "child_count": "9",
         "email": [
           "productions@test-con.org"
@@ -288,7 +818,67 @@
         "id": "1",
         "parent": null,
         "name": "Activities",
-        "fallback": null,
+        "fallback": {
+          "id": "3",
+          "parent": null,
+          "name": "External Relations and Communications",
+          "fallback": {
+            "id": "6",
+            "parent": null,
+            "name": "Productions",
+            "fallback": {
+              "id": "2",
+              "parent": null,
+              "name": "Administration",
+              "fallback": {
+                "id": "4",
+                "parent": null,
+                "name": "Facilities",
+                "fallback": {
+                  "id": "7",
+                  "parent": null,
+                  "name": "Systems",
+                  "fallback": {
+                    "id": "5",
+                    "parent": null,
+                    "name": "Hospitality",
+                    "fallback": null,
+                    "child_count": "9",
+                    "email": [
+                      "hospitality@test-con.org"
+                    ],
+                    "type": "department"
+                  },
+                  "child_count": "2",
+                  "email": [
+                    "systems@test-con.org"
+                  ],
+                  "type": "department"
+                },
+                "child_count": "10",
+                "email": [
+                  "facilities@test-con.org"
+                ],
+                "type": "department"
+              },
+              "child_count": "8",
+              "email": [
+                "administration@test-con.org"
+              ],
+              "type": "department"
+            },
+            "child_count": "9",
+            "email": [
+              "productions@test-con.org"
+            ],
+            "type": "department"
+          },
+          "child_count": "9",
+          "email": [
+            "erac@test-con.org"
+          ],
+          "type": "department"
+        },
         "child_count": "9",
         "email": [
           "activities@test-con.org"
@@ -328,7 +918,57 @@
         "id": "3",
         "parent": null,
         "name": "External Relations and Communications",
-        "fallback": null,
+        "fallback": {
+          "id": "6",
+          "parent": null,
+          "name": "Productions",
+          "fallback": {
+            "id": "2",
+            "parent": null,
+            "name": "Administration",
+            "fallback": {
+              "id": "4",
+              "parent": null,
+              "name": "Facilities",
+              "fallback": {
+                "id": "7",
+                "parent": null,
+                "name": "Systems",
+                "fallback": {
+                  "id": "5",
+                  "parent": null,
+                  "name": "Hospitality",
+                  "fallback": null,
+                  "child_count": "9",
+                  "email": [
+                    "hospitality@test-con.org"
+                  ],
+                  "type": "department"
+                },
+                "child_count": "2",
+                "email": [
+                  "systems@test-con.org"
+                ],
+                "type": "department"
+              },
+              "child_count": "10",
+              "email": [
+                "facilities@test-con.org"
+              ],
+              "type": "department"
+            },
+            "child_count": "8",
+            "email": [
+              "administration@test-con.org"
+            ],
+            "type": "department"
+          },
+          "child_count": "9",
+          "email": [
+            "productions@test-con.org"
+          ],
+          "type": "department"
+        },
         "child_count": "9",
         "email": [
           "erac@test-con.org"
@@ -348,7 +988,47 @@
         "id": "6",
         "parent": null,
         "name": "Productions",
-        "fallback": null,
+        "fallback": {
+          "id": "2",
+          "parent": null,
+          "name": "Administration",
+          "fallback": {
+            "id": "4",
+            "parent": null,
+            "name": "Facilities",
+            "fallback": {
+              "id": "7",
+              "parent": null,
+              "name": "Systems",
+              "fallback": {
+                "id": "5",
+                "parent": null,
+                "name": "Hospitality",
+                "fallback": null,
+                "child_count": "9",
+                "email": [
+                  "hospitality@test-con.org"
+                ],
+                "type": "department"
+              },
+              "child_count": "2",
+              "email": [
+                "systems@test-con.org"
+              ],
+              "type": "department"
+            },
+            "child_count": "10",
+            "email": [
+              "facilities@test-con.org"
+            ],
+            "type": "department"
+          },
+          "child_count": "8",
+          "email": [
+            "administration@test-con.org"
+          ],
+          "type": "department"
+        },
         "child_count": "9",
         "email": [
           "productions@test-con.org"
@@ -368,7 +1048,57 @@
         "id": "3",
         "parent": null,
         "name": "External Relations and Communications",
-        "fallback": null,
+        "fallback": {
+          "id": "6",
+          "parent": null,
+          "name": "Productions",
+          "fallback": {
+            "id": "2",
+            "parent": null,
+            "name": "Administration",
+            "fallback": {
+              "id": "4",
+              "parent": null,
+              "name": "Facilities",
+              "fallback": {
+                "id": "7",
+                "parent": null,
+                "name": "Systems",
+                "fallback": {
+                  "id": "5",
+                  "parent": null,
+                  "name": "Hospitality",
+                  "fallback": null,
+                  "child_count": "9",
+                  "email": [
+                    "hospitality@test-con.org"
+                  ],
+                  "type": "department"
+                },
+                "child_count": "2",
+                "email": [
+                  "systems@test-con.org"
+                ],
+                "type": "department"
+              },
+              "child_count": "10",
+              "email": [
+                "facilities@test-con.org"
+              ],
+              "type": "department"
+            },
+            "child_count": "8",
+            "email": [
+              "administration@test-con.org"
+            ],
+            "type": "department"
+          },
+          "child_count": "9",
+          "email": [
+            "productions@test-con.org"
+          ],
+          "type": "department"
+        },
         "child_count": "9",
         "email": [
           "erac@test-con.org"
@@ -388,7 +1118,27 @@
         "id": "4",
         "parent": null,
         "name": "Facilities",
-        "fallback": null,
+        "fallback": {
+          "id": "7",
+          "parent": null,
+          "name": "Systems",
+          "fallback": {
+            "id": "5",
+            "parent": null,
+            "name": "Hospitality",
+            "fallback": null,
+            "child_count": "9",
+            "email": [
+              "hospitality@test-con.org"
+            ],
+            "type": "department"
+          },
+          "child_count": "2",
+          "email": [
+            "systems@test-con.org"
+          ],
+          "type": "department"
+        },
         "child_count": "10",
         "email": [
           "facilities@test-con.org"
@@ -408,7 +1158,27 @@
         "id": "4",
         "parent": null,
         "name": "Facilities",
-        "fallback": null,
+        "fallback": {
+          "id": "7",
+          "parent": null,
+          "name": "Systems",
+          "fallback": {
+            "id": "5",
+            "parent": null,
+            "name": "Hospitality",
+            "fallback": null,
+            "child_count": "9",
+            "email": [
+              "hospitality@test-con.org"
+            ],
+            "type": "department"
+          },
+          "child_count": "2",
+          "email": [
+            "systems@test-con.org"
+          ],
+          "type": "department"
+        },
         "child_count": "10",
         "email": [
           "facilities@test-con.org"
@@ -428,7 +1198,67 @@
         "id": "1",
         "parent": null,
         "name": "Activities",
-        "fallback": null,
+        "fallback": {
+          "id": "3",
+          "parent": null,
+          "name": "External Relations and Communications",
+          "fallback": {
+            "id": "6",
+            "parent": null,
+            "name": "Productions",
+            "fallback": {
+              "id": "2",
+              "parent": null,
+              "name": "Administration",
+              "fallback": {
+                "id": "4",
+                "parent": null,
+                "name": "Facilities",
+                "fallback": {
+                  "id": "7",
+                  "parent": null,
+                  "name": "Systems",
+                  "fallback": {
+                    "id": "5",
+                    "parent": null,
+                    "name": "Hospitality",
+                    "fallback": null,
+                    "child_count": "9",
+                    "email": [
+                      "hospitality@test-con.org"
+                    ],
+                    "type": "department"
+                  },
+                  "child_count": "2",
+                  "email": [
+                    "systems@test-con.org"
+                  ],
+                  "type": "department"
+                },
+                "child_count": "10",
+                "email": [
+                  "facilities@test-con.org"
+                ],
+                "type": "department"
+              },
+              "child_count": "8",
+              "email": [
+                "administration@test-con.org"
+              ],
+              "type": "department"
+            },
+            "child_count": "9",
+            "email": [
+              "productions@test-con.org"
+            ],
+            "type": "department"
+          },
+          "child_count": "9",
+          "email": [
+            "erac@test-con.org"
+          ],
+          "type": "department"
+        },
         "child_count": "9",
         "email": [
           "activities@test-con.org"
@@ -508,7 +1338,67 @@
         "id": "1",
         "parent": null,
         "name": "Activities",
-        "fallback": null,
+        "fallback": {
+          "id": "3",
+          "parent": null,
+          "name": "External Relations and Communications",
+          "fallback": {
+            "id": "6",
+            "parent": null,
+            "name": "Productions",
+            "fallback": {
+              "id": "2",
+              "parent": null,
+              "name": "Administration",
+              "fallback": {
+                "id": "4",
+                "parent": null,
+                "name": "Facilities",
+                "fallback": {
+                  "id": "7",
+                  "parent": null,
+                  "name": "Systems",
+                  "fallback": {
+                    "id": "5",
+                    "parent": null,
+                    "name": "Hospitality",
+                    "fallback": null,
+                    "child_count": "9",
+                    "email": [
+                      "hospitality@test-con.org"
+                    ],
+                    "type": "department"
+                  },
+                  "child_count": "2",
+                  "email": [
+                    "systems@test-con.org"
+                  ],
+                  "type": "department"
+                },
+                "child_count": "10",
+                "email": [
+                  "facilities@test-con.org"
+                ],
+                "type": "department"
+              },
+              "child_count": "8",
+              "email": [
+                "administration@test-con.org"
+              ],
+              "type": "department"
+            },
+            "child_count": "9",
+            "email": [
+              "productions@test-con.org"
+            ],
+            "type": "department"
+          },
+          "child_count": "9",
+          "email": [
+            "erac@test-con.org"
+          ],
+          "type": "department"
+        },
         "child_count": "9",
         "email": [
           "activities@test-con.org"
@@ -548,7 +1438,37 @@
         "id": "2",
         "parent": null,
         "name": "Administration",
-        "fallback": null,
+        "fallback": {
+          "id": "4",
+          "parent": null,
+          "name": "Facilities",
+          "fallback": {
+            "id": "7",
+            "parent": null,
+            "name": "Systems",
+            "fallback": {
+              "id": "5",
+              "parent": null,
+              "name": "Hospitality",
+              "fallback": null,
+              "child_count": "9",
+              "email": [
+                "hospitality@test-con.org"
+              ],
+              "type": "department"
+            },
+            "child_count": "2",
+            "email": [
+              "systems@test-con.org"
+            ],
+            "type": "department"
+          },
+          "child_count": "10",
+          "email": [
+            "facilities@test-con.org"
+          ],
+          "type": "department"
+        },
         "child_count": "8",
         "email": [
           "administration@test-con.org"
@@ -568,7 +1488,47 @@
         "id": "6",
         "parent": null,
         "name": "Productions",
-        "fallback": null,
+        "fallback": {
+          "id": "2",
+          "parent": null,
+          "name": "Administration",
+          "fallback": {
+            "id": "4",
+            "parent": null,
+            "name": "Facilities",
+            "fallback": {
+              "id": "7",
+              "parent": null,
+              "name": "Systems",
+              "fallback": {
+                "id": "5",
+                "parent": null,
+                "name": "Hospitality",
+                "fallback": null,
+                "child_count": "9",
+                "email": [
+                  "hospitality@test-con.org"
+                ],
+                "type": "department"
+              },
+              "child_count": "2",
+              "email": [
+                "systems@test-con.org"
+              ],
+              "type": "department"
+            },
+            "child_count": "10",
+            "email": [
+              "facilities@test-con.org"
+            ],
+            "type": "department"
+          },
+          "child_count": "8",
+          "email": [
+            "administration@test-con.org"
+          ],
+          "type": "department"
+        },
         "child_count": "9",
         "email": [
           "productions@test-con.org"
@@ -588,7 +1548,27 @@
         "id": "4",
         "parent": null,
         "name": "Facilities",
-        "fallback": null,
+        "fallback": {
+          "id": "7",
+          "parent": null,
+          "name": "Systems",
+          "fallback": {
+            "id": "5",
+            "parent": null,
+            "name": "Hospitality",
+            "fallback": null,
+            "child_count": "9",
+            "email": [
+              "hospitality@test-con.org"
+            ],
+            "type": "department"
+          },
+          "child_count": "2",
+          "email": [
+            "systems@test-con.org"
+          ],
+          "type": "department"
+        },
         "child_count": "10",
         "email": [
           "facilities@test-con.org"
@@ -608,7 +1588,67 @@
         "id": "1",
         "parent": null,
         "name": "Activities",
-        "fallback": null,
+        "fallback": {
+          "id": "3",
+          "parent": null,
+          "name": "External Relations and Communications",
+          "fallback": {
+            "id": "6",
+            "parent": null,
+            "name": "Productions",
+            "fallback": {
+              "id": "2",
+              "parent": null,
+              "name": "Administration",
+              "fallback": {
+                "id": "4",
+                "parent": null,
+                "name": "Facilities",
+                "fallback": {
+                  "id": "7",
+                  "parent": null,
+                  "name": "Systems",
+                  "fallback": {
+                    "id": "5",
+                    "parent": null,
+                    "name": "Hospitality",
+                    "fallback": null,
+                    "child_count": "9",
+                    "email": [
+                      "hospitality@test-con.org"
+                    ],
+                    "type": "department"
+                  },
+                  "child_count": "2",
+                  "email": [
+                    "systems@test-con.org"
+                  ],
+                  "type": "department"
+                },
+                "child_count": "10",
+                "email": [
+                  "facilities@test-con.org"
+                ],
+                "type": "department"
+              },
+              "child_count": "8",
+              "email": [
+                "administration@test-con.org"
+              ],
+              "type": "department"
+            },
+            "child_count": "9",
+            "email": [
+              "productions@test-con.org"
+            ],
+            "type": "department"
+          },
+          "child_count": "9",
+          "email": [
+            "erac@test-con.org"
+          ],
+          "type": "department"
+        },
         "child_count": "9",
         "email": [
           "activities@test-con.org"
@@ -628,7 +1668,17 @@
         "id": "7",
         "parent": null,
         "name": "Systems",
-        "fallback": null,
+        "fallback": {
+          "id": "5",
+          "parent": null,
+          "name": "Hospitality",
+          "fallback": null,
+          "child_count": "9",
+          "email": [
+            "hospitality@test-con.org"
+          ],
+          "type": "department"
+        },
         "child_count": "2",
         "email": [
           "systems@test-con.org"
@@ -648,7 +1698,27 @@
         "id": "4",
         "parent": null,
         "name": "Facilities",
-        "fallback": null,
+        "fallback": {
+          "id": "7",
+          "parent": null,
+          "name": "Systems",
+          "fallback": {
+            "id": "5",
+            "parent": null,
+            "name": "Hospitality",
+            "fallback": null,
+            "child_count": "9",
+            "email": [
+              "hospitality@test-con.org"
+            ],
+            "type": "department"
+          },
+          "child_count": "2",
+          "email": [
+            "systems@test-con.org"
+          ],
+          "type": "department"
+        },
         "child_count": "10",
         "email": [
           "facilities@test-con.org"
@@ -668,7 +1738,47 @@
         "id": "6",
         "parent": null,
         "name": "Productions",
-        "fallback": null,
+        "fallback": {
+          "id": "2",
+          "parent": null,
+          "name": "Administration",
+          "fallback": {
+            "id": "4",
+            "parent": null,
+            "name": "Facilities",
+            "fallback": {
+              "id": "7",
+              "parent": null,
+              "name": "Systems",
+              "fallback": {
+                "id": "5",
+                "parent": null,
+                "name": "Hospitality",
+                "fallback": null,
+                "child_count": "9",
+                "email": [
+                  "hospitality@test-con.org"
+                ],
+                "type": "department"
+              },
+              "child_count": "2",
+              "email": [
+                "systems@test-con.org"
+              ],
+              "type": "department"
+            },
+            "child_count": "10",
+            "email": [
+              "facilities@test-con.org"
+            ],
+            "type": "department"
+          },
+          "child_count": "8",
+          "email": [
+            "administration@test-con.org"
+          ],
+          "type": "department"
+        },
         "child_count": "9",
         "email": [
           "productions@test-con.org"
@@ -688,7 +1798,47 @@
         "id": "6",
         "parent": null,
         "name": "Productions",
-        "fallback": null,
+        "fallback": {
+          "id": "2",
+          "parent": null,
+          "name": "Administration",
+          "fallback": {
+            "id": "4",
+            "parent": null,
+            "name": "Facilities",
+            "fallback": {
+              "id": "7",
+              "parent": null,
+              "name": "Systems",
+              "fallback": {
+                "id": "5",
+                "parent": null,
+                "name": "Hospitality",
+                "fallback": null,
+                "child_count": "9",
+                "email": [
+                  "hospitality@test-con.org"
+                ],
+                "type": "department"
+              },
+              "child_count": "2",
+              "email": [
+                "systems@test-con.org"
+              ],
+              "type": "department"
+            },
+            "child_count": "10",
+            "email": [
+              "facilities@test-con.org"
+            ],
+            "type": "department"
+          },
+          "child_count": "8",
+          "email": [
+            "administration@test-con.org"
+          ],
+          "type": "department"
+        },
         "child_count": "9",
         "email": [
           "productions@test-con.org"
@@ -708,7 +1858,27 @@
         "id": "4",
         "parent": null,
         "name": "Facilities",
-        "fallback": null,
+        "fallback": {
+          "id": "7",
+          "parent": null,
+          "name": "Systems",
+          "fallback": {
+            "id": "5",
+            "parent": null,
+            "name": "Hospitality",
+            "fallback": null,
+            "child_count": "9",
+            "email": [
+              "hospitality@test-con.org"
+            ],
+            "type": "department"
+          },
+          "child_count": "2",
+          "email": [
+            "systems@test-con.org"
+          ],
+          "type": "department"
+        },
         "child_count": "10",
         "email": [
           "facilities@test-con.org"
@@ -748,7 +1918,37 @@
         "id": "2",
         "parent": null,
         "name": "Administration",
-        "fallback": null,
+        "fallback": {
+          "id": "4",
+          "parent": null,
+          "name": "Facilities",
+          "fallback": {
+            "id": "7",
+            "parent": null,
+            "name": "Systems",
+            "fallback": {
+              "id": "5",
+              "parent": null,
+              "name": "Hospitality",
+              "fallback": null,
+              "child_count": "9",
+              "email": [
+                "hospitality@test-con.org"
+              ],
+              "type": "department"
+            },
+            "child_count": "2",
+            "email": [
+              "systems@test-con.org"
+            ],
+            "type": "department"
+          },
+          "child_count": "10",
+          "email": [
+            "facilities@test-con.org"
+          ],
+          "type": "department"
+        },
         "child_count": "8",
         "email": [
           "administration@test-con.org"
@@ -768,7 +1968,27 @@
         "id": "4",
         "parent": null,
         "name": "Facilities",
-        "fallback": null,
+        "fallback": {
+          "id": "7",
+          "parent": null,
+          "name": "Systems",
+          "fallback": {
+            "id": "5",
+            "parent": null,
+            "name": "Hospitality",
+            "fallback": null,
+            "child_count": "9",
+            "email": [
+              "hospitality@test-con.org"
+            ],
+            "type": "department"
+          },
+          "child_count": "2",
+          "email": [
+            "systems@test-con.org"
+          ],
+          "type": "department"
+        },
         "child_count": "10",
         "email": [
           "facilities@test-con.org"
@@ -808,7 +2028,37 @@
         "id": "2",
         "parent": null,
         "name": "Administration",
-        "fallback": null,
+        "fallback": {
+          "id": "4",
+          "parent": null,
+          "name": "Facilities",
+          "fallback": {
+            "id": "7",
+            "parent": null,
+            "name": "Systems",
+            "fallback": {
+              "id": "5",
+              "parent": null,
+              "name": "Hospitality",
+              "fallback": null,
+              "child_count": "9",
+              "email": [
+                "hospitality@test-con.org"
+              ],
+              "type": "department"
+            },
+            "child_count": "2",
+            "email": [
+              "systems@test-con.org"
+            ],
+            "type": "department"
+          },
+          "child_count": "10",
+          "email": [
+            "facilities@test-con.org"
+          ],
+          "type": "department"
+        },
         "child_count": "8",
         "email": [
           "administration@test-con.org"
@@ -848,7 +2098,57 @@
         "id": "3",
         "parent": null,
         "name": "External Relations and Communications",
-        "fallback": null,
+        "fallback": {
+          "id": "6",
+          "parent": null,
+          "name": "Productions",
+          "fallback": {
+            "id": "2",
+            "parent": null,
+            "name": "Administration",
+            "fallback": {
+              "id": "4",
+              "parent": null,
+              "name": "Facilities",
+              "fallback": {
+                "id": "7",
+                "parent": null,
+                "name": "Systems",
+                "fallback": {
+                  "id": "5",
+                  "parent": null,
+                  "name": "Hospitality",
+                  "fallback": null,
+                  "child_count": "9",
+                  "email": [
+                    "hospitality@test-con.org"
+                  ],
+                  "type": "department"
+                },
+                "child_count": "2",
+                "email": [
+                  "systems@test-con.org"
+                ],
+                "type": "department"
+              },
+              "child_count": "10",
+              "email": [
+                "facilities@test-con.org"
+              ],
+              "type": "department"
+            },
+            "child_count": "8",
+            "email": [
+              "administration@test-con.org"
+            ],
+            "type": "department"
+          },
+          "child_count": "9",
+          "email": [
+            "productions@test-con.org"
+          ],
+          "type": "department"
+        },
         "child_count": "9",
         "email": [
           "erac@test-con.org"
@@ -888,7 +2188,67 @@
         "id": "1",
         "parent": null,
         "name": "Activities",
-        "fallback": null,
+        "fallback": {
+          "id": "3",
+          "parent": null,
+          "name": "External Relations and Communications",
+          "fallback": {
+            "id": "6",
+            "parent": null,
+            "name": "Productions",
+            "fallback": {
+              "id": "2",
+              "parent": null,
+              "name": "Administration",
+              "fallback": {
+                "id": "4",
+                "parent": null,
+                "name": "Facilities",
+                "fallback": {
+                  "id": "7",
+                  "parent": null,
+                  "name": "Systems",
+                  "fallback": {
+                    "id": "5",
+                    "parent": null,
+                    "name": "Hospitality",
+                    "fallback": null,
+                    "child_count": "9",
+                    "email": [
+                      "hospitality@test-con.org"
+                    ],
+                    "type": "department"
+                  },
+                  "child_count": "2",
+                  "email": [
+                    "systems@test-con.org"
+                  ],
+                  "type": "department"
+                },
+                "child_count": "10",
+                "email": [
+                  "facilities@test-con.org"
+                ],
+                "type": "department"
+              },
+              "child_count": "8",
+              "email": [
+                "administration@test-con.org"
+              ],
+              "type": "department"
+            },
+            "child_count": "9",
+            "email": [
+              "productions@test-con.org"
+            ],
+            "type": "department"
+          },
+          "child_count": "9",
+          "email": [
+            "erac@test-con.org"
+          ],
+          "type": "department"
+        },
         "child_count": "9",
         "email": [
           "activities@test-con.org"
@@ -908,7 +2268,57 @@
         "id": "3",
         "parent": null,
         "name": "External Relations and Communications",
-        "fallback": null,
+        "fallback": {
+          "id": "6",
+          "parent": null,
+          "name": "Productions",
+          "fallback": {
+            "id": "2",
+            "parent": null,
+            "name": "Administration",
+            "fallback": {
+              "id": "4",
+              "parent": null,
+              "name": "Facilities",
+              "fallback": {
+                "id": "7",
+                "parent": null,
+                "name": "Systems",
+                "fallback": {
+                  "id": "5",
+                  "parent": null,
+                  "name": "Hospitality",
+                  "fallback": null,
+                  "child_count": "9",
+                  "email": [
+                    "hospitality@test-con.org"
+                  ],
+                  "type": "department"
+                },
+                "child_count": "2",
+                "email": [
+                  "systems@test-con.org"
+                ],
+                "type": "department"
+              },
+              "child_count": "10",
+              "email": [
+                "facilities@test-con.org"
+              ],
+              "type": "department"
+            },
+            "child_count": "8",
+            "email": [
+              "administration@test-con.org"
+            ],
+            "type": "department"
+          },
+          "child_count": "9",
+          "email": [
+            "productions@test-con.org"
+          ],
+          "type": "department"
+        },
         "child_count": "9",
         "email": [
           "erac@test-con.org"
@@ -928,7 +2338,37 @@
         "id": "2",
         "parent": null,
         "name": "Administration",
-        "fallback": null,
+        "fallback": {
+          "id": "4",
+          "parent": null,
+          "name": "Facilities",
+          "fallback": {
+            "id": "7",
+            "parent": null,
+            "name": "Systems",
+            "fallback": {
+              "id": "5",
+              "parent": null,
+              "name": "Hospitality",
+              "fallback": null,
+              "child_count": "9",
+              "email": [
+                "hospitality@test-con.org"
+              ],
+              "type": "department"
+            },
+            "child_count": "2",
+            "email": [
+              "systems@test-con.org"
+            ],
+            "type": "department"
+          },
+          "child_count": "10",
+          "email": [
+            "facilities@test-con.org"
+          ],
+          "type": "department"
+        },
         "child_count": "8",
         "email": [
           "administration@test-con.org"
@@ -948,7 +2388,27 @@
         "id": "4",
         "parent": null,
         "name": "Facilities",
-        "fallback": null,
+        "fallback": {
+          "id": "7",
+          "parent": null,
+          "name": "Systems",
+          "fallback": {
+            "id": "5",
+            "parent": null,
+            "name": "Hospitality",
+            "fallback": null,
+            "child_count": "9",
+            "email": [
+              "hospitality@test-con.org"
+            ],
+            "type": "department"
+          },
+          "child_count": "2",
+          "email": [
+            "systems@test-con.org"
+          ],
+          "type": "department"
+        },
         "child_count": "10",
         "email": [
           "facilities@test-con.org"
@@ -1028,7 +2488,57 @@
         "id": "3",
         "parent": null,
         "name": "External Relations and Communications",
-        "fallback": null,
+        "fallback": {
+          "id": "6",
+          "parent": null,
+          "name": "Productions",
+          "fallback": {
+            "id": "2",
+            "parent": null,
+            "name": "Administration",
+            "fallback": {
+              "id": "4",
+              "parent": null,
+              "name": "Facilities",
+              "fallback": {
+                "id": "7",
+                "parent": null,
+                "name": "Systems",
+                "fallback": {
+                  "id": "5",
+                  "parent": null,
+                  "name": "Hospitality",
+                  "fallback": null,
+                  "child_count": "9",
+                  "email": [
+                    "hospitality@test-con.org"
+                  ],
+                  "type": "department"
+                },
+                "child_count": "2",
+                "email": [
+                  "systems@test-con.org"
+                ],
+                "type": "department"
+              },
+              "child_count": "10",
+              "email": [
+                "facilities@test-con.org"
+              ],
+              "type": "department"
+            },
+            "child_count": "8",
+            "email": [
+              "administration@test-con.org"
+            ],
+            "type": "department"
+          },
+          "child_count": "9",
+          "email": [
+            "productions@test-con.org"
+          ],
+          "type": "department"
+        },
         "child_count": "9",
         "email": [
           "erac@test-con.org"
@@ -1068,7 +2578,67 @@
         "id": "1",
         "parent": null,
         "name": "Activities",
-        "fallback": null,
+        "fallback": {
+          "id": "3",
+          "parent": null,
+          "name": "External Relations and Communications",
+          "fallback": {
+            "id": "6",
+            "parent": null,
+            "name": "Productions",
+            "fallback": {
+              "id": "2",
+              "parent": null,
+              "name": "Administration",
+              "fallback": {
+                "id": "4",
+                "parent": null,
+                "name": "Facilities",
+                "fallback": {
+                  "id": "7",
+                  "parent": null,
+                  "name": "Systems",
+                  "fallback": {
+                    "id": "5",
+                    "parent": null,
+                    "name": "Hospitality",
+                    "fallback": null,
+                    "child_count": "9",
+                    "email": [
+                      "hospitality@test-con.org"
+                    ],
+                    "type": "department"
+                  },
+                  "child_count": "2",
+                  "email": [
+                    "systems@test-con.org"
+                  ],
+                  "type": "department"
+                },
+                "child_count": "10",
+                "email": [
+                  "facilities@test-con.org"
+                ],
+                "type": "department"
+              },
+              "child_count": "8",
+              "email": [
+                "administration@test-con.org"
+              ],
+              "type": "department"
+            },
+            "child_count": "9",
+            "email": [
+              "productions@test-con.org"
+            ],
+            "type": "department"
+          },
+          "child_count": "9",
+          "email": [
+            "erac@test-con.org"
+          ],
+          "type": "department"
+        },
         "child_count": "9",
         "email": [
           "activities@test-con.org"
@@ -1088,7 +2658,47 @@
         "id": "6",
         "parent": null,
         "name": "Productions",
-        "fallback": null,
+        "fallback": {
+          "id": "2",
+          "parent": null,
+          "name": "Administration",
+          "fallback": {
+            "id": "4",
+            "parent": null,
+            "name": "Facilities",
+            "fallback": {
+              "id": "7",
+              "parent": null,
+              "name": "Systems",
+              "fallback": {
+                "id": "5",
+                "parent": null,
+                "name": "Hospitality",
+                "fallback": null,
+                "child_count": "9",
+                "email": [
+                  "hospitality@test-con.org"
+                ],
+                "type": "department"
+              },
+              "child_count": "2",
+              "email": [
+                "systems@test-con.org"
+              ],
+              "type": "department"
+            },
+            "child_count": "10",
+            "email": [
+              "facilities@test-con.org"
+            ],
+            "type": "department"
+          },
+          "child_count": "8",
+          "email": [
+            "administration@test-con.org"
+          ],
+          "type": "department"
+        },
         "child_count": "9",
         "email": [
           "productions@test-con.org"
@@ -1108,7 +2718,27 @@
         "id": "4",
         "parent": null,
         "name": "Facilities",
-        "fallback": null,
+        "fallback": {
+          "id": "7",
+          "parent": null,
+          "name": "Systems",
+          "fallback": {
+            "id": "5",
+            "parent": null,
+            "name": "Hospitality",
+            "fallback": null,
+            "child_count": "9",
+            "email": [
+              "hospitality@test-con.org"
+            ],
+            "type": "department"
+          },
+          "child_count": "2",
+          "email": [
+            "systems@test-con.org"
+          ],
+          "type": "department"
+        },
         "child_count": "10",
         "email": [
           "facilities@test-con.org"
@@ -1168,7 +2798,47 @@
         "id": "6",
         "parent": null,
         "name": "Productions",
-        "fallback": null,
+        "fallback": {
+          "id": "2",
+          "parent": null,
+          "name": "Administration",
+          "fallback": {
+            "id": "4",
+            "parent": null,
+            "name": "Facilities",
+            "fallback": {
+              "id": "7",
+              "parent": null,
+              "name": "Systems",
+              "fallback": {
+                "id": "5",
+                "parent": null,
+                "name": "Hospitality",
+                "fallback": null,
+                "child_count": "9",
+                "email": [
+                  "hospitality@test-con.org"
+                ],
+                "type": "department"
+              },
+              "child_count": "2",
+              "email": [
+                "systems@test-con.org"
+              ],
+              "type": "department"
+            },
+            "child_count": "10",
+            "email": [
+              "facilities@test-con.org"
+            ],
+            "type": "department"
+          },
+          "child_count": "8",
+          "email": [
+            "administration@test-con.org"
+          ],
+          "type": "department"
+        },
         "child_count": "9",
         "email": [
           "productions@test-con.org"
@@ -1208,7 +2878,37 @@
         "id": "2",
         "parent": null,
         "name": "Administration",
-        "fallback": null,
+        "fallback": {
+          "id": "4",
+          "parent": null,
+          "name": "Facilities",
+          "fallback": {
+            "id": "7",
+            "parent": null,
+            "name": "Systems",
+            "fallback": {
+              "id": "5",
+              "parent": null,
+              "name": "Hospitality",
+              "fallback": null,
+              "child_count": "9",
+              "email": [
+                "hospitality@test-con.org"
+              ],
+              "type": "department"
+            },
+            "child_count": "2",
+            "email": [
+              "systems@test-con.org"
+            ],
+            "type": "department"
+          },
+          "child_count": "10",
+          "email": [
+            "facilities@test-con.org"
+          ],
+          "type": "department"
+        },
         "child_count": "8",
         "email": [
           "administration@test-con.org"
@@ -1228,7 +2928,57 @@
         "id": "3",
         "parent": null,
         "name": "External Relations and Communications",
-        "fallback": null,
+        "fallback": {
+          "id": "6",
+          "parent": null,
+          "name": "Productions",
+          "fallback": {
+            "id": "2",
+            "parent": null,
+            "name": "Administration",
+            "fallback": {
+              "id": "4",
+              "parent": null,
+              "name": "Facilities",
+              "fallback": {
+                "id": "7",
+                "parent": null,
+                "name": "Systems",
+                "fallback": {
+                  "id": "5",
+                  "parent": null,
+                  "name": "Hospitality",
+                  "fallback": null,
+                  "child_count": "9",
+                  "email": [
+                    "hospitality@test-con.org"
+                  ],
+                  "type": "department"
+                },
+                "child_count": "2",
+                "email": [
+                  "systems@test-con.org"
+                ],
+                "type": "department"
+              },
+              "child_count": "10",
+              "email": [
+                "facilities@test-con.org"
+              ],
+              "type": "department"
+            },
+            "child_count": "8",
+            "email": [
+              "administration@test-con.org"
+            ],
+            "type": "department"
+          },
+          "child_count": "9",
+          "email": [
+            "productions@test-con.org"
+          ],
+          "type": "department"
+        },
         "child_count": "9",
         "email": [
           "erac@test-con.org"
@@ -1288,7 +3038,67 @@
         "id": "1",
         "parent": null,
         "name": "Activities",
-        "fallback": null,
+        "fallback": {
+          "id": "3",
+          "parent": null,
+          "name": "External Relations and Communications",
+          "fallback": {
+            "id": "6",
+            "parent": null,
+            "name": "Productions",
+            "fallback": {
+              "id": "2",
+              "parent": null,
+              "name": "Administration",
+              "fallback": {
+                "id": "4",
+                "parent": null,
+                "name": "Facilities",
+                "fallback": {
+                  "id": "7",
+                  "parent": null,
+                  "name": "Systems",
+                  "fallback": {
+                    "id": "5",
+                    "parent": null,
+                    "name": "Hospitality",
+                    "fallback": null,
+                    "child_count": "9",
+                    "email": [
+                      "hospitality@test-con.org"
+                    ],
+                    "type": "department"
+                  },
+                  "child_count": "2",
+                  "email": [
+                    "systems@test-con.org"
+                  ],
+                  "type": "department"
+                },
+                "child_count": "10",
+                "email": [
+                  "facilities@test-con.org"
+                ],
+                "type": "department"
+              },
+              "child_count": "8",
+              "email": [
+                "administration@test-con.org"
+              ],
+              "type": "department"
+            },
+            "child_count": "9",
+            "email": [
+              "productions@test-con.org"
+            ],
+            "type": "department"
+          },
+          "child_count": "9",
+          "email": [
+            "erac@test-con.org"
+          ],
+          "type": "department"
+        },
         "child_count": "9",
         "email": [
           "activities@test-con.org"

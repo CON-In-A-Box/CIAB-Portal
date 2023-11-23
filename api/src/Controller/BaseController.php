@@ -117,9 +117,6 @@ use Slim\Http\Request;
 use Slim\Http\Environment;
 use Atlas\Query\Select;
 
-require_once __DIR__.'/../../../backends/RBAC.inc';
-require_once __DIR__.'/../../../modules/concom/functions/RBAC.inc';
-
 class NotFoundException extends Exception
 {
 
@@ -487,7 +484,14 @@ abstract class BaseController
 
     public function getDepartment($id)
     {
-        $select = Select::new($this->container->db);
+        return BaseController::staticGetDepartment($this->container, $id);
+
+    }
+
+
+    public static function staticGetDepartment($container, $id)
+    {
+        $select = Select::new($container->db);
         $select->columns('*')
             ->columns(
                 $select->subselect()
@@ -577,7 +581,7 @@ abstract class BaseController
     ) {
         $valid = false;
         foreach ($permissions as $perm) {
-            if (!$valid && \ciab\RBAC::havePermission($perm)) {
+            if (!$valid && $this->container->RBAC->havePermission($perm)) {
                 $valid = true;
             }
         }
@@ -601,7 +605,14 @@ abstract class BaseController
 
     protected function getEvent(string $id)
     {
-        $event = new \App\Controller\Event\GetEvent($this->container);
+        return BaseController::staticGetEvent($this->container, $id);
+
+    }
+
+
+    public static function staticGetEvent($container, string $id)
+    {
+        $event = new \App\Controller\Event\GetEvent($container);
         $env = Environment::mock([]);
         $request = Request::createFromEnvironment($env);
         $response = new Response();
@@ -762,6 +773,19 @@ abstract class BaseController
         return $this->currentEvent;
 
     }
+
+
+    public function getContainer(): Container
+    {
+        return $this->container;
+
+    }
+
+
+    abstract public static function install($container): void;
+
+
+    abstract public static function permissions($database): ?array;
 
 
     /* END BaseController */

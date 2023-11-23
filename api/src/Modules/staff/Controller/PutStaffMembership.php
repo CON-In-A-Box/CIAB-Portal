@@ -78,7 +78,9 @@ class PutStaffMembership extends BaseStaff
         $this->checkRequiredBody($request, $required);
 
         $department = $this->getDepartment($body['Department']);
-        $permissions = ['api.put.staff.'.$department['id'], 'api.put.staff.all'];
+        $departmentId = $department['id'];
+        $position = $body['Position'];
+        $permissions = ['api.put.staff.'.$departmentId.'.'.$position, 'api.put.staff.all'];
         $this->checkPermissions($permissions);
 
         $update = Update::new($this->container->db)

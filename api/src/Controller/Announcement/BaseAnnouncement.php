@@ -122,7 +122,6 @@ abstract class BaseAnnouncement extends BaseController
     public function __construct(Container $container)
     {
         parent::__construct('announcement', $container);
-        \ciab\RBAC::customizeRBAC('\App\Controller\Announcement\BaseAnnouncement::customizeAnnouncementRBAC');
 
         $this->includes = [
         new IncludeResource(
@@ -136,6 +135,45 @@ abstract class BaseAnnouncement extends BaseController
             'department'
         )
         ];
+
+    }
+
+
+    public static function install($container): void
+    {
+        $container->RBAC->customizeRBAC('\App\Controller\Announcement\BaseAnnouncement::customizeAnnouncementRBAC');
+
+    }
+
+
+    public static function permissions($database): array
+    {
+        $result = ['api.get.announcement.staff', 'api.get.announcement.all',
+            'api.post.announcement.all', 'api.delete.announcement.all',
+            'api.put.announcement.all' ];
+        $positions = [];
+        $values = Select::new($database)
+            ->columns('PositionID', 'Name')
+            ->from('ConComPositions')
+            ->orderBy('`PositionID` ASC')
+            ->fetchAll();
+        foreach ($values as $value) {
+            $positions[intval($value['PositionID'])] = $value['Name'];
+        }
+
+        $values = Select::new($database)
+            ->columns('DepartmentID')
+            ->from('Departments')
+            ->fetchAll();
+        foreach ($values as $value) {
+            $perm_get = 'api.get.announcement.'.$value['DepartmentID'];
+            $perm_del = 'api.delete.announcement.'.$value['DepartmentID'];
+            $perm_pos = 'api.post.announcement.'.$value['DepartmentID'];
+            $perm_put = 'api.put.announcement.'.$value['DepartmentID'];
+            $result = array_merge($result, [$perm_get, $perm_del, $perm_pos, $perm_put]);
+        }
+
+        return $result;
 
     }
 
@@ -155,7 +193,7 @@ abstract class BaseAnnouncement extends BaseController
     }
 
 
-    public static function customizeAnnouncementRBAC($instance, $database)
+    public static function customizeAnnouncementRBAC($rbac, $database)
     {
         $positions = [];
         $values = Select::new($database)
@@ -179,20 +217,17 @@ abstract class BaseAnnouncement extends BaseController
             $target_h = $value['DepartmentID'].'.'.array_keys($positions)[0];
             $target_r = $value['DepartmentID'].'.'.end(array_keys($positions));
             try {
-                $role = $instance->getRole($target_h);
-                $role->addPermission($perm_del);
-                $role->addPermission($perm_pos);
-                $role->addPermission($perm_put);
-                $role = $instance->getRole($target_r);
-                $role->addPermission($perm_get);
+                $rbac->grantPermission($target_h, $perm_del);
+                $rbac->grantPermission($target_h, $perm_pos);
+                $rbac->grantPermission($target_h, $perm_put);
+                $rbac->grantPermission($target_r, $perm_get);
             } catch (Exception\InvalidArgumentException $e) {
                 error_log($e);
             }
         }
 
         try {
-            $role = $instance->getRole('all.staff');
-            $role->addPermission('api.get.announcement.staff');
+            $rbac->grantPermission('all.staff', 'api.get.announcement.staff');
         } catch (Exception\InvalidArgumentException $e) {
             error_log($e);
         }

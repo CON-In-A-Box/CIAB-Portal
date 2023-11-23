@@ -57,12 +57,14 @@ require __DIR__.'/Dependencies.php';
 require __DIR__.'/Routes.php';
 require __DIR__.'/OAuth2.php';
 require __DIR__.'/Vendors.php';
+require __DIR__.'/Install.php';
 
 $settings = require __DIR__.'/Settings.php';
 $app = new \Slim\App($settings);
 $container = $app->getContainer();
 setupAPIDependencies($app, $settings);
 setupAPIVendors($settings);
+setupInstall($container);
 $oauth = setupOAUTH2();
 $server = $oauth[0];
 $storage = $oauth[1];
@@ -76,7 +78,7 @@ global $DISABLEDMODULES;
 $modules = scandir(__DIR__.'/../Modules');
 foreach ($modules as $key => $value) {
     if (!in_array($value, array(',', '..'))) {
-        if (in_array($value, $DISABLEDMODULES)) {
+        if (!empty($DISABLEDMODULES) && in_array($value, $DISABLEDMODULES)) {
             continue;
         }
         if (is_dir(__DIR__.'/../Modules/'.$value)) {

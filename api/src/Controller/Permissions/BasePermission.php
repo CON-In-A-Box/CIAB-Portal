@@ -520,12 +520,27 @@ abstract class BasePermission extends BaseController
     }
 
 
+    public static function install($container): void
+    {
+        $container->RBAC->customizeRBAC('\App\Controller\Announcement\BaseAnnouncement\customizeAnnouncementRBAC');
+        $container->RBAC->customizeRBAC('\App\Controller\Deadline\BaseDeadline::customizeDeadlineRBAC');
+
+    }
+
+
+    public static function permissions($database): ?array
+    {
+        return null;
+
+    }
+
+
     protected function buildDeptEntry($id, $allowed, $subtype, $method, $link) : array
     {
         $entry = [
         'type' => 'permission_entry',
         'subtype' => $subtype.'_'.$method,
-        'allowed' => $allowed,
+        'allowed' => ($allowed) ? 1 : 0,
         'action' => $link
         ];
         $entry['subdata'] = [
@@ -552,8 +567,8 @@ abstract class BasePermission extends BaseController
         $path = $request->getUri()->getBaseUrl();
         if (array_key_exists('department', $params)) {
             $data = $this->getDepartment($params['department']);
-            $allowed = (\ciab\RBAC::havePermission("api.$methodArg.{$this->restype}.${data['id']}") ||
-                        \ciab\RBAC::havePermission("api.$methodArg.{$this->restype}.all"));
+            $allowed = ($this->container->RBAC->havePermission("api.$methodArg.{$this->restype}.${data['id']}") ||
+                        $this->container->RBAC->havePermission("api.$methodArg.{$this->restype}.all")) ? 1 : 0;
             ;
             $result = $this->buildDeptEntry(
                 $data['id'],
@@ -578,8 +593,8 @@ abstract class BasePermission extends BaseController
             }
             foreach ($methods as $method) {
                 foreach ($Departments as $key => $data) {
-                    $allowed = (\ciab\RBAC::havePermission("api.$method.{$this->restype}.${data['id']}") ||
-                                \ciab\RBAC::havePermission("api.$method.{$this->restype}.all"));
+                    $allowed = ($this->container->RBAC->havePermission("api.$method.{$this->restype}.${data['id']}") ||
+                                $this->container->RBAC->havePermission("api.$method.{$this->restype}.all")) ? 1 : 0;
                     ;
                     if ($allowed) {
                         $result = $this->buildDeptEntry(
@@ -609,8 +624,8 @@ abstract class BasePermission extends BaseController
     protected function buildEntry($request, $id, $method, $restype): array
     {
         $path = $request->getUri()->getBaseUrl();
-        $allowed = (\ciab\RBAC::havePermission("api.$method.$restype.$id") ||
-                    \ciab\RBAC::havePermission("api.$method.$restype.all"));
+        $allowed = ($this->container->RBAC->havePermission("api.$method.$restype.$id") ||
+                    $this->container->RBAC->havePermission("api.$method.$restype.all")) ? 1 : 0;
         ;
         return $this->buildDeptEntry(
             $id,

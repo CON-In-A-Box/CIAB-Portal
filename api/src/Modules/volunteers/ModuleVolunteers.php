@@ -9,6 +9,7 @@ use App\Modules\BaseModule;
 use Slim\Http\Request;
 use Slim\Http\Response;
 use Atlas\Query\Select;
+use App\Modules\volunteers\Database\VolunteerDBSchema;
 
 class ModuleVolunteers extends BaseModule
 {
@@ -17,7 +18,15 @@ class ModuleVolunteers extends BaseModule
     public function __construct($source)
     {
         parent::__construct($source);
-        \ciab\RBAC::customizeRBAC('\App\Modules\volunteers\ModuleVolunteers::customizeAnnouncementRBAC');
+        $source->getContainer()->RBAC->customizeRBAC('\App\Modules\volunteers\ModuleVolunteers::customizeAnnouncementRBAC');
+
+    }
+
+
+    public function databaseInstall($container)
+    {
+        $db = new VolunteerDBSchema($container->db);
+        $db->update();
 
     }
 
@@ -36,11 +45,10 @@ class ModuleVolunteers extends BaseModule
     }
 
 
-    public function customizeAnnouncementRBAC($instance, $database)
+    public function customizeAnnouncementRBAC($rbac, $database)
     {
-        $role = $instance->getRole('all.staff');
-        $role->addPermission('api.post.volunteers');
-        $role->addPermission('api.get.volunteer.hours');
+        $rbac->grantPermission('all.staff', 'api.post.volunteers');
+        $rbac->grantPermission('all.staff', 'api.get.volunteer.hours');
 
         $positions = [];
         $values = Select::new($database)
@@ -60,11 +68,10 @@ class ModuleVolunteers extends BaseModule
 
         $target_h = $values['DepartmentID'].'.'.array_keys($positions)[0];
         try {
-            $role = $instance->getRole($target_h);
-            $role->addPermission('api.get.volunteer.claims');
-            $role->addPermission('api.put.volunteers');
-            $role->addPermission('api.delete.volunteers');
-            $role->addPermission('api.post.volunteers.admin');
+            $rbac->grantPermission($target_h, 'api.get.volunteer.claims');
+            $rbac->grantPermission($target_h, 'api.put.volunteer.claims');
+            $rbac->grantPermission($target_h, 'api.delete.volunteer.claims');
+            $rbac->grantPermission($target_h, 'api.post.volunteers.admin');
         } catch (Exception\InvalidArgumentException $e) {
             error_log($e);
         }

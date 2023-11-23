@@ -72,6 +72,10 @@ class PostReward extends BaseReward
             throw new InvalidParameterException('Required \'value\' parameter invalid');
         }
 
+        if (array_key_exists('reward_group', $body) && intval($body['reward_group']) <= 0) {
+            $body['reward_group'] = null;
+        }
+
         $insert = Insert::new($this->container->db)
             ->into('VolunteerRewards')
             ->columns(BaseReward::insertPayloadFromParams($body, false));

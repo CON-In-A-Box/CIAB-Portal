@@ -121,12 +121,48 @@ abstract class BaseDeadline extends BaseController
     public function __construct(Container $container)
     {
         parent::__construct('deadline', $container);
-        \ciab\RBAC::customizeRBAC('\App\Controller\Deadline\BaseDeadline::customizeDeadlineRBAC');
 
     }
 
 
-    public static function customizeDeadlineRBAC($instance, $database)
+    public static function install($container): void
+    {
+        $container->RBAC->customizeRBAC('\App\Controller\Deadline\BaseDeadline::customizeDeadlineRBAC');
+
+    }
+
+
+    public static function permissions($database): ?array
+    {
+        $permissions = ['api.get.deadline.all', 'api.get.deadline.staff', 'api.post.deadline.all',
+                        'api.put.deadline.all', 'api.delete.deadline.all'];
+        $positions = [];
+        $values = Select::new($database)
+            ->columns('PositionID', 'Name')
+            ->from('ConComPositions')
+            ->orderBy('`PositionID` ASC')
+            ->fetchAll();
+        foreach ($values as $value) {
+            $positions[intval($value['PositionID'])] = $value['Name'];
+        }
+
+        $values = Select::new($database)
+            ->columns('DepartmentID')
+            ->from('Departments')
+            ->fetchAll();
+        foreach ($values as $value) {
+            $perm_get = 'api.get.deadline.'.$value['DepartmentID'];
+            $perm_del = 'api.delete.deadline.'.$value['DepartmentID'];
+            $perm_pos = 'api.post.deadline.'.$value['DepartmentID'];
+            $perm_put = 'api.put.deadline.'.$value['DepartmentID'];
+            $permissions = array_merge($permissions, [$perm_get, $perm_del, $perm_pos, $perm_put]);
+        }
+        return ($permissions);
+
+    }
+
+
+    public static function customizeDeadlineRBAC($rbac, $database)
     {
         $positions = [];
         $values = Select::new($database)
@@ -150,20 +186,17 @@ abstract class BaseDeadline extends BaseController
             $target_h = $value['DepartmentID'].'.'.array_keys($positions)[0];
             $target_r = $value['DepartmentID'].'.'.end(array_keys($positions));
             try {
-                $role = $instance->getRole($target_h);
-                $role->addPermission($perm_del);
-                $role->addPermission($perm_pos);
-                $role->addPermission($perm_put);
-                $role = $instance->getRole($target_r);
-                $role->addPermission($perm_get);
+                $rbac->grantPermission($target_h, $perm_del);
+                $rbac->grantPermission($target_h, $perm_pos);
+                $rbac->grantPermission($target_h, $perm_put);
+                $rbac->grantPermission($target_r, $perm_get);
             } catch (Exception\InvalidArgumentException $e) {
                 error_log($e);
             }
         }
 
         try {
-            $role = $instance->getRole('all.staff');
-            $role->addPermission('api.get.deadline.staff');
+            $rbac->grantPermission('all.staff', 'api.get.deadline.staff');
         } catch (Exception\InvalidArgumentException $e) {
             error_log($e);
         }

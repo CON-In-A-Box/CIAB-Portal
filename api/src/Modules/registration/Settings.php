@@ -5,5 +5,8 @@
 
 return [
 'setupRoutes' => 'setupRegistrationAPI',
-'module' => 'App\\Modules\\registration\\ModuleRegistration'
+'module' => 'App\\Modules\\registration\\ModuleRegistration',
+'baseControllers' => [
+    'App\Modules\registration\Controller\BaseRegistration'
+]
 ];

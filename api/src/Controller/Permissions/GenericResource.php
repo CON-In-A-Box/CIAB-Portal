@@ -16,7 +16,7 @@ class GenericResource extends GenericPermission
     {
         $path = $request->getUri()->getBaseUrl();
         $permission = 'api.'.$method.'.'.$resourceName;
-        $allowed = (\ciab\RBAC::havePermission($permission));
+        $allowed = ($this->container->RBAC->havePermission($permission)) ? 1 : 0;
 
         $entry = [
         'type' => 'permission_entry',

@@ -22,13 +22,8 @@ const extractDivisions = (departmentData) => {
       return {
         ...mappedDivision,
         specialDivision: isSpecialDivision(item.name),
-        departments: [
-          // Special case - Divisions also have a "department" sharing the same name, so technically they are their own parent.
-          {
-            ...mappedDivision,
-            parentId: mappedDivision.id
-          }
-        ]
+        fallback: item.fallback != null ? parseInt(item.fallback.id) : null,
+        departments: []
       }
     })
     .reduce((prev, current) => {
@@ -37,6 +32,53 @@ const extractDivisions = (departmentData) => {
       return prev;
     }, {});
 }
+
+const prepareDonutData = (divisions) => {
+  if ((divisions?.length ?? 0) === 0) {
+    return [];
+  }
+
+  const divisionMap = divisions.reduce((memo, division) => {
+    if (memo[division.id] == null) {
+      memo[division.id] = division;
+    }
+    return memo;
+  }, {});
+
+  // Fallback division data is effectively a linked list.
+  let divisionToAdd = divisions.filter((division) => division.fallback != null)?.[0];
+  let donutDivisionData = [];
+
+  let addedDivisionNames = [];
+  while (divisionToAdd?.fallback != null && !addedDivisionNames.includes(divisionToAdd.name)) {
+    donutDivisionData.push(divisionToAdd);
+    addedDivisionNames.push(divisionToAdd.name);
+
+    divisionToAdd = divisionMap[divisionToAdd.fallback];
+  }
+
+  if (divisionToAdd != null && !addedDivisionNames.includes(divisionToAdd.name)) {
+    donutDivisionData.push(divisionToAdd);
+    addedDivisionNames.push(divisionToAdd.name);
+  }
+
+  // Add remaining divisions without fallbacks
+  donutDivisionData = [
+    ...donutDivisionData,
+    ...divisions.filter((division) => division.fallback == null && !addedDivisionNames.includes(division.name))
+  ];
+
+  return donutDivisionData;
+}
+
+const remapItem = (item, idx, total) => {
+  return {
+    label: item.name,
+    colorIndex: idx,
+    link: `index.php?Function=concom#table_header_${item.name.replaceAll(' ', '_')}`,
+    dsize: (1 / total)
+  }
+};
 
 /**
  *
@@ -102,4 +144,95 @@ export const extractDivisionHierarchy = (departmentData) => {
   });
 
   return sortedDivisions;
+}
+
+/**
+ * Takes the sorted division data and creates the necessary structure to render our organizational hierarchy donut.
+ *
+ * Data is returned in the following format:
+ *
+ * {
+ *   "nodeData": {
+ *     "label": "Activities",
+ *     "colorIndex": 0,
+ *     "link": "index.php?function=concom#Activities",
+ *     "dsize": 1,
+ *     "strokeWidth": 3
+ *   },
+ *   "subData": [
+ *     {
+ *       "nodeData": {
+ *         "label": "arrow":,
+ *         "colorIndex": 0,
+ *         "strokeWidth": 2,
+ *         "dsize": 1,
+ *         "noRotate": 1,
+ *         "pieWidth": 10
+ *       },
+ *       "subData": [
+ *          {
+ *            "nodeData": {
+ *              "label": "Book Swap",
+ *              "colorIndex": 0,
+ *              "link": "index.php?function=concom#Book_Swap",
+ *              "dsize": 0.125,
+ *              "strokeWidth": 1
+ *            }
+ *          }
+ *       ]
+ *     }
+ *   ]
+ * }
+ *
+ * "label" is the name of the division or department, except for the arrow
+ * "colorIndex" is the color index to use when rendering, departments should match with their division
+ * "link" is the link on the ConCom List page to navigate to a section
+ * "dsize" is the area allocated to a rendered division or department. If there are 8 departments,
+ *   then each department should have a value equal to 1/8
+ * "strokeWidth" is the line width on the rendered section area
+ * @param {*} divisions
+ * @returns
+ */
+export const createDonutData = (divisions) => {
+  const preparedData = prepareDonutData(divisions);
+  return preparedData.map((division, idx) => {
+    const mappedDivision = {
+      // Special Case for Divisions: dsize always 1
+      ...remapItem(division, idx, 1),
+      strokeWidth: 3
+    };
+
+    // If for some reason we have additional staff in the "department" that is really the division, we don't want to double up.
+    const filteredDivisionDepts = division.departments.filter((department) => department.id !== division.id);
+    const mappedDepartments = filteredDivisionDepts.map((department) => {
+      return {
+        nodeData: {
+          ...remapItem(department, idx, filteredDivisionDepts.length),
+          strokeWidth: 1
+        }
+      }
+    });
+
+    let separatorNodeLabel = '\u{233E}';
+    if (division.fallback != null) {
+      separatorNodeLabel = '\u{2193}';
+    }
+
+    return {
+      nodeData: mappedDivision,
+      subData: [
+        {
+          nodeData: {
+            label: separatorNodeLabel,
+            colorIndex: idx,
+            strokeWidth: 2,
+            dsize: 1,
+            noRotate: 1,
+            pieWidth: 10
+          },
+          subData: mappedDepartments
+        }
+      ]
+    }
+  });
 }

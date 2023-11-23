@@ -94,6 +94,19 @@ abstract class BaseRewardGroup extends BaseController
     }
 
 
+    public static function install($container): void
+    {
+
+    }
+
+
+    public static function permissions($database): ?array
+    {
+        return null;
+
+    }
+
+
     protected function getClaimed($id)
     {
         $data = Select::new($this->container->db)

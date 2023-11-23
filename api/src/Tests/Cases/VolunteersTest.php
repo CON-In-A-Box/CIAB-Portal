@@ -28,7 +28,7 @@ class VolunteersTest extends CiabTestCase
     }
 
 
-    private function checkHourEntry($entry, $department = 1)
+    private function checkHourEntry($entry, $department = 2)
     {
         $this->assertEquals($entry->type, 'volunteer_hour_entry');
         $this->assertEquals($entry->member->id, 1000);
@@ -47,7 +47,7 @@ class VolunteersTest extends CiabTestCase
         if (property_exists($entry, 'member')) {
             $this->assertEquals($entry->member->id, 1000);
         } else {
-            $this->assertEquals($entry->department->id, 1);
+            $this->assertEquals($entry->department->id, 2);
         }
         return ($entry->total_hours);
 
@@ -73,23 +73,23 @@ class VolunteersTest extends CiabTestCase
 
         $when = date('Y-m-d h:i:s', strtotime('+2 hour'));
         $this->runRequest('POST', '/volunteer/hours/', null, null, 400);
-        $this->runRequest('POST', '/volunteer/hours/', null, ['department' => '1'], 400);
-        $this->runRequest('POST', '/volunteer/hours/', null, ['department' => '1', 'member' => '1000'], 400);
-        $this->runRequest('POST', '/volunteer/hours/', null, ['department' => '1', 'member' => '1000',  'enterer' => 1000], 400);
-        $this->runRequest('POST', '/volunteer/hours/', null, ['department' => '1', 'member' => '1000',  'enterer' => 1000, 'authorizer' => '1000'], 400);
-        $this->runRequest('POST', '/volunteer/hours/', null, ['department' => '1', 'member' => '1000',  'enterer' => 1000, 'authorizer' => '1000', 'hours' => '2'], 400);
-        $this->runRequest('POST', '/volunteer/hours/', null, ['department' => '1', 'member' => '1000',  'enterer' => 1000, 'authorizer' => '1000', 'hours' => 'alphebet'], 400);
-        $this->runRequest('POST', '/volunteer/hours/', null, ['department' => '1', 'member' => '1000',  'enterer' => 1000, 'authorizer' => '1000', 'hours' => 2, 'end' => 'gigglypoof'], 400);
+        $this->runRequest('POST', '/volunteer/hours/', null, ['department' => '2'], 400);
+        $this->runRequest('POST', '/volunteer/hours/', null, ['department' => '2', 'member' => '1000'], 400);
+        $this->runRequest('POST', '/volunteer/hours/', null, ['department' => '2', 'member' => '1000',  'enterer' => 1000], 400);
+        $this->runRequest('POST', '/volunteer/hours/', null, ['department' => '2', 'member' => '1000',  'enterer' => 1000, 'authorizer' => '1000'], 400);
+        $this->runRequest('POST', '/volunteer/hours/', null, ['department' => '2', 'member' => '1000',  'enterer' => 1000, 'authorizer' => '1000', 'hours' => '2'], 400);
+        $this->runRequest('POST', '/volunteer/hours/', null, ['department' => '2', 'member' => '1000',  'enterer' => 1000, 'authorizer' => '1000', 'hours' => 'alphebet'], 400);
+        $this->runRequest('POST', '/volunteer/hours/', null, ['department' => '2', 'member' => '1000',  'enterer' => 1000, 'authorizer' => '1000', 'hours' => 2, 'end' => 'gigglypoof'], 400);
         $this->runRequest('POST', '/volunteer/hours/', null, ['department' => 'Spaz', 'member' => 1000,  'enterer' => 1000, 'authorizer' => 1000, 'hours' => 2, 'end' => $when], 404);
-        $this->runRequest('POST', '/volunteer/hours/', null, ['department' => 1, 'member' => 'asdf',  'enterer' => 1000, 'authorizer' => 1000, 'hours' => 2, 'end' => $when], 404);
-        $this->runRequest('POST', '/volunteer/hours/', null, ['department' => 1, 'member' => '1000',  'enterer' => -1, 'authorizer' => 1000, 'hours' => 2, 'end' => $when], 404);
-        $this->runRequest('POST', '/volunteer/hours/', null, ['department' => 1, 'member' => '1000',  'enterer' => 1000, 'authorizer' => 'hello', 'hours' => 2, 'end' => $when], 404);
+        $this->runRequest('POST', '/volunteer/hours/', null, ['department' => 2, 'member' => 'asdf',  'enterer' => 1000, 'authorizer' => 1000, 'hours' => 2, 'end' => $when], 404);
+        $this->runRequest('POST', '/volunteer/hours/', null, ['department' => 2, 'member' => '1000',  'enterer' => -1, 'authorizer' => 1000, 'hours' => 2, 'end' => $when], 404);
+        $this->runRequest('POST', '/volunteer/hours/', null, ['department' => 2, 'member' => '1000',  'enterer' => 1000, 'authorizer' => 'hello', 'hours' => 2, 'end' => $when], 404);
 
-        $data = $this->runSuccessJsonRequest('POST', '/volunteer/hours/', null, ['department' => '1', 'member' => '1000',  'enterer' => 1000, 'authorizer' => '1000', 'hours' => '2', 'end' => $when], 201);
+        $data = $this->runSuccessJsonRequest('POST', '/volunteer/hours/', null, ['department' => '2', 'member' => '1000',  'enterer' => 1000, 'authorizer' => '1000', 'hours' => '2', 'end' => $when], 201);
         $this->assertNotEmpty($data);
         $ids[] = $data->id;
 
-        $data = $this->runSuccessJsonRequest('POST', '/volunteer/hours/', null, ['department' => '1', 'member' => '1000', 'enterer' => '1000', 'authorizer' => '1000', 'hours' => '1.2', 'end' => date('Y-m-d h:i:s', strtotime('-2 hour')), 'modifier' => '2.5'], 201);
+        $data = $this->runSuccessJsonRequest('POST', '/volunteer/hours/', null, ['department' => '2', 'member' => '1000', 'enterer' => '1000', 'authorizer' => '1000', 'hours' => '1.2', 'end' => date('Y-m-d h:i:s', strtotime('-2 hour')), 'modifier' => '2.5'], 201);
         $this->assertNotEmpty($data);
         $ids[] = $data->id;
 
@@ -103,10 +103,10 @@ class VolunteersTest extends CiabTestCase
         $this->assertEquals(count($data->data), 1);
         $this->checkHourList($data, $ids, 'checkHourSummaryEntry');
 
-        $data = $this->runSuccessJsonRequest('GET', '/department/1/volunteer/hours');
+        $data = $this->runSuccessJsonRequest('GET', '/department/2/volunteer/hours');
         $this->checkHourList($data, $ids, 'checkHourEntry');
 
-        $data = $this->runSuccessJsonRequest('GET', '/department/1/volunteer/hours/summary');
+        $data = $this->runSuccessJsonRequest('GET', '/department/2/volunteer/hours/summary');
         $this->checkHourList($data, $ids, 'checkHourSummaryEntry');
 
         $data = $this->runSuccessJsonRequest('GET', '/department/Activities/volunteer/hours/summary');
@@ -148,39 +148,39 @@ class VolunteersTest extends CiabTestCase
         $subEnd = $newDate->format('Y-m-d H:i:s');
 
         /* Base Entry */
-        $data = $this->runSuccessJsonRequest('POST', '/volunteer/hours/', null, ['department' => '1', 'member' => '1000', 'enterer' => '1000', 'authorizer' => '1000', 'hours' => '1', 'end' => $base, 'modifier' => '1'], 201);
+        $data = $this->runSuccessJsonRequest('POST', '/volunteer/hours/', null, ['department' => '2', 'member' => '1000', 'enterer' => '1000', 'authorizer' => '1000', 'hours' => '1', 'end' => $base, 'modifier' => '1'], 201);
         $this->assertNotEmpty($data);
         $ids[] = $data->id;
 
         /* Identical */
-        $this->runRequest('POST', '/volunteer/hours/', null, ['department' => '1', 'member' => '1000', 'enterer' => '1000', 'authorizer' => '1000', 'hours' => '1', 'end' => $base, 'modifier' => '1'], 400);
+        $this->runRequest('POST', '/volunteer/hours/', null, ['department' => '2', 'member' => '1000', 'enterer' => '1000', 'authorizer' => '1000', 'hours' => '1', 'end' => $base, 'modifier' => '1'], 400);
 
         /* Overlap */
-        $this->runRequest('POST', '/volunteer/hours/', null, ['department' => '1', 'member' => '1000', 'enterer' => '1000', 'authorizer' => '1000', 'hours' => '1', 'end' => $plusMin, 'modifier' => '1'], 400);
-        $this->runRequest('POST', '/volunteer/hours/', null, ['department' => '1', 'member' => '1000', 'enterer' => '1000', 'authorizer' => '1000', 'hours' => '1', 'end' => $minusMin, 'modifier' => '1'], 400);
+        $this->runRequest('POST', '/volunteer/hours/', null, ['department' => '2', 'member' => '1000', 'enterer' => '1000', 'authorizer' => '1000', 'hours' => '1', 'end' => $plusMin, 'modifier' => '1'], 400);
+        $this->runRequest('POST', '/volunteer/hours/', null, ['department' => '2', 'member' => '1000', 'enterer' => '1000', 'authorizer' => '1000', 'hours' => '1', 'end' => $minusMin, 'modifier' => '1'], 400);
 
         /* Superset, subset */
-        $this->runRequest('POST', '/volunteer/hours/', null, ['department' => '1', 'member' => '1000', 'enterer' => '1000', 'authorizer' => '1000', 'hours' => '8', 'end' => $largeEnd, 'modifier' => '1'], 400);
-        $this->runRequest('POST', '/volunteer/hours/', null, ['department' => '1', 'member' => '1000', 'enterer' => '1000', 'authorizer' => '1000', 'hours' => '0.1', 'end' => $subEnd, 'modifier' => '1'], 400);
+        $this->runRequest('POST', '/volunteer/hours/', null, ['department' => '2', 'member' => '1000', 'enterer' => '1000', 'authorizer' => '1000', 'hours' => '8', 'end' => $largeEnd, 'modifier' => '1'], 400);
+        $this->runRequest('POST', '/volunteer/hours/', null, ['department' => '2', 'member' => '1000', 'enterer' => '1000', 'authorizer' => '1000', 'hours' => '0.1', 'end' => $subEnd, 'modifier' => '1'], 400);
 
         /* Edges, success */
-        $data = $this->runSuccessJsonRequest('POST', '/volunteer/hours/', null, ['department' => '1', 'member' => '1000', 'enterer' => '1000', 'authorizer' => '1000', 'hours' => '1', 'end' => $plusHour, 'modifier' => '1'], 201);
+        $data = $this->runSuccessJsonRequest('POST', '/volunteer/hours/', null, ['department' => '2', 'member' => '1000', 'enterer' => '1000', 'authorizer' => '1000', 'hours' => '1', 'end' => $plusHour, 'modifier' => '1'], 201);
         $this->assertNotEmpty($data);
         $ids[] = $data->id;
 
-        $data = $this->runSuccessJsonRequest('POST', '/volunteer/hours/', null, ['department' => '1', 'member' => '1000', 'enterer' => '1000', 'authorizer' => '1000', 'hours' => '1', 'end' => $minusHour, 'modifier' => '1'], 201);
+        $data = $this->runSuccessJsonRequest('POST', '/volunteer/hours/', null, ['department' => '2', 'member' => '1000', 'enterer' => '1000', 'authorizer' => '1000', 'hours' => '1', 'end' => $minusHour, 'modifier' => '1'], 201);
         $this->assertNotEmpty($data);
         $ids[] = $data->id;
 
 
         /* Force overlap success */
-        $data = $this->runSuccessJsonRequest('POST', '/volunteer/hours/', ['force' => '1'], ['department' => '1', 'member' => '1000', 'enterer' => '1000', 'authorizer' => '1000', 'hours' => '2', 'end' => $base, 'modifier' => '1'], 201);
+        $data = $this->runSuccessJsonRequest('POST', '/volunteer/hours/', ['force' => '1'], ['department' => '2', 'member' => '1000', 'enterer' => '1000', 'authorizer' => '1000', 'hours' => '2', 'end' => $base, 'modifier' => '1'], 201);
         $this->assertNotEmpty($data);
         $ids[] = $data->id;
 
         /* Not overlap success */
         $when = date('Y-m-d h:i:s', strtotime('+4 hour'));
-        $data = $this->runSuccessJsonRequest('POST', '/volunteer/hours/', null, ['department' => '1', 'member' => '1000', 'enterer' => '1000', 'authorizer' => '1000', 'hours' => '2', 'end' => $when, 'modifier' => '1'], 201);
+        $data = $this->runSuccessJsonRequest('POST', '/volunteer/hours/', null, ['department' => '2', 'member' => '1000', 'enterer' => '1000', 'authorizer' => '1000', 'hours' => '2', 'end' => $when, 'modifier' => '1'], 201);
         $this->assertNotEmpty($data);
         $ids[] = $data->id;
 
@@ -255,7 +255,7 @@ class VolunteersTest extends CiabTestCase
         $data = $this->runSuccessJsonRequest('POST', '/volunteer/rewards', null, ['name' => 'Prize B', 'promo' => 0, 'inventory' => 100, 'value' => 1.0, 'reward_group' => $gid], 201);
         $pid2 = $data->id;
 
-        $data = $this->runSuccessJsonRequest('GET', "/volunteer/reward_group/$gid");
+        $data = $this->runSuccessJsonRequest('GET', "/volunteer/reward_group/$gid/list");
         $this->assertNotEmpty($data);
         $this->assertEquals(count($data->data), 2);
 
@@ -292,7 +292,7 @@ class VolunteersTest extends CiabTestCase
         $this->runRequest('POST', '/volunteer/claims', null, ['member' => '1000', 'reward' => $rewards[0]], 400);
 
         $when = date('Y-m-d h:i:s', strtotime('+4 hour'));
-        $data = $this->runSuccessJsonRequest('POST', '/volunteer/hours/', null, ['department' => '1', 'member' => '1000',  'enterer' => 1000, 'authorizer' => '1000', 'hours' => '2', 'end' => $when], 201);
+        $data = $this->runSuccessJsonRequest('POST', '/volunteer/hours/', null, ['department' => '2', 'member' => '1000',  'enterer' => 1000, 'authorizer' => '1000', 'hours' => '2', 'end' => $when], 201);
         $this->assertNotEmpty($data);
         $hours[] = $data->id;
 
@@ -319,8 +319,8 @@ class VolunteersTest extends CiabTestCase
 
         $data = $this->runSuccessJsonRequest('GET', '/volunteer/claims/'.$claims[0]->id);
         $this->assertNotEmpty($data);
-        $claims[0]->reward->inventory = 98;
-        $claims[0]->reward->claimed = 2;
+        $claims[0]->reward->inventory = 99;
+        $claims[0]->reward->claimed = 1;
         $this->assertEquals($claims[0], $data);
 
         $data = $this->runSuccessJsonRequest('GET', '/volunteer/claims/'.$claims[1]->id);

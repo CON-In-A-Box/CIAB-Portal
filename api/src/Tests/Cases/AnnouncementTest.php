@@ -14,7 +14,7 @@ class AnnouncementTest extends CiabTestCase
 
     protected function addAnnouncement($scope): string
     {
-        $data = $this->runSuccessJsonRequest('GET', '/department/1/announcements');
+        $data = $this->runSuccessJsonRequest('GET', '/department/2/announcements');
         $initial_ids = [];
         foreach ($data->data as $item) {
             $initial_ids[] = $item->id;
@@ -22,7 +22,7 @@ class AnnouncementTest extends CiabTestCase
 
         $this->runSuccessRequest(
             'POST',
-            '/department/1/announcement',
+            '/department/2/announcement',
             null,
             ['scope' => $scope,
              'text' => 'testing',
@@ -30,7 +30,7 @@ class AnnouncementTest extends CiabTestCase
             201
         );
 
-        $data = $this->runSuccessJsonRequest('GET', '/department/1/announcements');
+        $data = $this->runSuccessJsonRequest('GET', '/department/2/announcements');
 
         # Find New Index
         $target = null;
@@ -73,7 +73,7 @@ class AnnouncementTest extends CiabTestCase
         parent::setUp();
         $this->target = $this->addAnnouncement(0);
         $id = $this->testing_accounts[0];
-        $this->position = $this->runSuccessJsonRequest('POST', "/member/$id/staff_membership", null, ['Department' => '1', 'Position' => '3', 'Note' => 'PHPUnit Testing'], 201);
+        $this->position = $this->runSuccessJsonRequest('POST', "/member/$id/staff_membership", null, ['Department' => '2', 'Position' => '3', 'Note' => 'PHPUnit Testing'], 201);
 
     }
 
@@ -81,7 +81,7 @@ class AnnouncementTest extends CiabTestCase
     protected function tearDown(): void
     {
         $this->runRequest('DELETE', '/announcement/'.$this->target, null, null, 204);
-        $this->runRequest('DELETE', '/staff_membership/'.$this->position->id, null, null, 204);
+        $this->runRequest('DELETE', '/staff/membership/'.$this->position->id, null, null, 204);
 
         parent::tearDown();
 
@@ -92,17 +92,17 @@ class AnnouncementTest extends CiabTestCase
     {
         return [
             /* Loki, concom member, same department */
-        [1, 0, 0, true],
-        [1, 1, 0, true],
-        [1, 2, 0, true],
+        [2, 0, 0, true],
+        [2, 1, 0, true],
+        [2, 2, 0, true],
             /* Loki, concom member, other department*/
         [4, 0, 0, true],
         [4, 1, 0, true],
         [4, 2, 0, false],
             /* Frigga , normal member */
-        [1, 0, 1, true],
-        [1, 1, 1, false],
-        [1, 2, 1, false],
+        [2, 0, 1, true],
+        [2, 1, 1, false],
+        [2, 2, 1, false],
             /* Thor, Admin member, other department */
         [4, 0, null, true],
         [5, 1, null, true],
@@ -245,7 +245,7 @@ class AnnouncementTest extends CiabTestCase
             404
         );
 
-        $this->runRequest('POST', '/department/1/announcement', null, null, 400);
+        $this->runRequest('POST', '/department/2/announcement', null, null, 400);
 
         $this->runRequest(
             'POST',
@@ -259,7 +259,7 @@ class AnnouncementTest extends CiabTestCase
 
         $this->runRequest(
             'POST',
-            '/department/1/announcement',
+            '/department/2/announcement',
             null,
             ['text' => 'testing',
              'email' => 0],
@@ -268,7 +268,7 @@ class AnnouncementTest extends CiabTestCase
 
         $this->runRequest(
             'POST',
-            '/department/1/announcement',
+            '/department/2/announcement',
             null,
             ['scope' => 2,
              'email' => 0],

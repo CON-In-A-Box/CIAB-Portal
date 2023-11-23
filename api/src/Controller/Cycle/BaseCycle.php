@@ -93,6 +93,19 @@ abstract class BaseCycle extends BaseController
     }
 
 
+    public static function install($container): void
+    {
+
+    }
+
+
+    public static function permissions($database): ?array
+    {
+        return ([ 'api.delete.cycle', 'api.post.cycle', 'api.put.cycle' ]);
+
+    }
+
+
     protected function getCycle(Request $request, Response $response, $params)
     {
         $cycle = new GetCycle($this->container);
