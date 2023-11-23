@@ -2,7 +2,7 @@
 /* globals Vue, showSidebar */
 
 import volunteerReport from './volunteerReport.js'
-import hourTable from '../../sitesupport/hourTable.js'
+import hourTable from '../../vue/hourTable.js'
 import reportGeneration from '../../../../sitesupport/vue/reportGeneration.js'
 
 var reportHourTable = {

@@ -2,7 +2,7 @@
 /* globals Vue, apiRequest, adminMode, checkAuthentication, userEmail, alertbox */
 
 import lookupUser from '../../../../sitesupport/vue/lookupuser.js'
-import hourTable from '../../sitesupport/hourTable.js'
+import hourTable from '../../vue/hourTable.js'
 import editHours from './editHours.js'
 import editPrize from './editPrize.js'
 import checkout from './checkout.js'
