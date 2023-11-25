@@ -663,6 +663,23 @@ paths:
       security:
         -
           ciab_auth: []
+  /divisions:
+    get:
+      tags:
+        - departments
+      summary: 'Lists all divisions and their departments'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/division_list'
+        '401':
+          $ref: '#/components/responses/401'
+      security:
+        -
+          ciab_auth: []
   '/event/{id}':
     get:
       tags:
@@ -2852,6 +2869,37 @@ paths:
       security:
         -
           ciab_auth: []
+  '/division/{id}/staff':
+    get:
+      tags:
+        - departments
+      summary: 'List staff for a division'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Division being listed'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/staff_list'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          description: 'Event or Department not found in the system.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+      security:
+        -
+          ciab_auth: []
   /staff:
     get:
       tags:
@@ -4127,6 +4175,22 @@ components:
                 - department_list
             data:
               description: 'List of departments'
+              type: array
+              items:
+                $ref: '#/components/schemas/department'
+        -
+          $ref: '#/components/schemas/resource_list'
+    division_list:
+      type: object
+      allOf:
+        -
+          properties:
+            type:
+              type: string
+              enum:
+                - division_list
+            data:
+              description: 'List of divisions and departments'
               type: array
               items:
                 $ref: '#/components/schemas/department'

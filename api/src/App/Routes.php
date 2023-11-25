@@ -44,6 +44,13 @@ function setupAPIRoutes(App $app, $authMiddleware)
     )->add(new \App\Middleware\CiabMiddleware($app))->add($authMiddleware);
 
     $app->group(
+        '/divisions',
+        function () use ($app, $authMiddleware) {
+            $app->get('[/]', 'App\Controller\Department\ListDivisions');
+        }
+    )->add(new \App\Middleware\CiabMiddleware($app))->add($authMiddleware);
+
+    $app->group(
         '/deadline',
         function () use ($app, $authMiddleware) {
             $app->get('[/]', 'App\Controller\Deadline\ListMemberDeadlines');

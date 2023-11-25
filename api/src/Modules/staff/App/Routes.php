@@ -33,4 +33,11 @@ function setupStaffAPI($app, $authMiddleware)
         }
     )->add(new App\Middleware\CiabMiddleware($app))->add($authMiddleware);
 
+    $app->group(
+        '/division',
+        function () use ($app, $authMiddleware) {
+            $app->get('/{id}/staff', 'App\Modules\staff\Controller\ListDivisionStaff');
+        }
+    )->add(new App\Middleware\CiabMiddleware($app))->add($authMiddleware);
+
 }
