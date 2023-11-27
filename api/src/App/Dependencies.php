@@ -6,6 +6,8 @@
 use Psr\Container\ContainerInterface;
 use App\Handler\ApiError;
 use App\Handler\RBAC;
+use App\Repository\DepartmentRepository;
+use App\Service\DepartmentService;
 use Slim\App;
 
 /* setupAPIDependencies */
@@ -33,6 +35,12 @@ function setupAPIDependencies(App $app, array $settings)
 
     $container['RBAC'] = function (): RBAC {
         return new RBAC;
+    };
+
+    $container['DepartmentService'] = function ($c): DepartmentService {
+        return new DepartmentService(
+            new DepartmentRepository($c['db'])
+        );
     };
 
 }
