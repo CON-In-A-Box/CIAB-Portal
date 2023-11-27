@@ -2,6 +2,7 @@
 import { extractDivisionHierarchy, createDonutData } from '../../../../../modules/concom/sitesupport/division-parser';
 import departmentList from './department_list.json';
 import departmentListCircular from './department_list_circular_fallback.json';
+import departmentListProd from './department_list_prod_sample.json';
 
 const verifyDonutData = (data, fallbackDepts) => {
   data.forEach((item, idx) => {
@@ -79,5 +80,12 @@ describe('Staff Division Parser', () => {
     const fallbackDeptNames = ['Activities', 'Administration', 'External Relations and Communications', 'Facilities', 'Hospitality', 'Productions',
       'Systems'];
     verifyDonutData(result, fallbackDeptNames);
+  });
+
+  it('can parse donut data from prod setup', () => {
+    const divisions = extractDivisionHierarchy(departmentListProd.data);
+    const result = createDonutData(divisions);
+
+    expect(divisions.length === result.length).toEqual(true);
   });
 });

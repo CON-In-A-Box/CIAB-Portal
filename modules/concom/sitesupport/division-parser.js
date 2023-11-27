@@ -45,21 +45,23 @@ const prepareDonutData = (divisions) => {
     return memo;
   }, {});
 
-  // Fallback division data is effectively a linked list.
-  let divisionToAdd = divisions.filter((division) => division.fallback != null)?.[0];
+  const divisionsToAdd = divisions.filter((division) => division.fallback != null);
+
   let donutDivisionData = [];
-
   let addedDivisionNames = [];
-  while (divisionToAdd?.fallback != null && !addedDivisionNames.includes(divisionToAdd.name)) {
-    donutDivisionData.push(divisionToAdd);
-    addedDivisionNames.push(divisionToAdd.name);
+  for (const division of divisionsToAdd) {
+    if (!addedDivisionNames.includes(division.name)) {
+      donutDivisionData.push(division);
+      addedDivisionNames.push(division.name);
+    }
 
-    divisionToAdd = divisionMap[divisionToAdd.fallback];
-  }
+    let fallback = divisionMap[division.fallback];
+    while (fallback != null && !addedDivisionNames.includes(fallback.name)) {
+      donutDivisionData.push(fallback);
+      addedDivisionNames.push(fallback.name);
 
-  if (divisionToAdd != null && !addedDivisionNames.includes(divisionToAdd.name)) {
-    donutDivisionData.push(divisionToAdd);
-    addedDivisionNames.push(divisionToAdd.name);
+      fallback = divisionMap[fallback.fallback];
+    }
   }
 
   // Add remaining divisions without fallbacks
