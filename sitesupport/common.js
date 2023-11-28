@@ -5,7 +5,7 @@
 /* jshint browser: true */
 /* jshint -W097 */
 /* globals alertbox */
-/* exported escapeHtml, showSpinner, hideSpinner, urlsafeB64Encode,
+/* exported escapeHtml, showSpinner, hideSpinner, urlsafeB64Encode, progressSpinner,
             urlsafeB64Decode, basicBackendRequest, apiRequest, apiRefresh,
             simpleObjectToRequest */
 
@@ -29,12 +29,16 @@ function simpleObjectToRequest(obj) {
     .join('&');
 }
 
-function showSpinner() {
-  var dlg = document.getElementById('refresh_spinner');
+function showSpinner(progress = 0) {
+  var id = 'refresh_spinner';
+  if (progress > 0) {
+    id = 'refresh_spinner_progress'
+  }
+  var dlg = document.getElementById(id);
   if (!dlg) {
     dlg = document.createElement('DIV');
     dlg.classList.add('UI-modal');
-    dlg.id = 'refresh_spinner';
+    dlg.id = id;
     var content = document.createElement('DIV');
     dlg.appendChild(content);
     content.classList.add('UI-spinner-div');
@@ -43,13 +47,35 @@ function showSpinner() {
     var span = document.createElement('SPAN');
     span.innerHTML = '<i class="fas fa-sync UI-spin"></i>';
     content.appendChild(span);
+    if (progress > 0) {
+      var prog = document.createElement('PROGRESS');
+      prog.style.width = '90px';
+      prog.style.height = '20px';
+      prog.style.position = 'absolute';
+      prog.style.marginLeft = '-76px';
+      prog.style.marginTop = '37px';
+      prog.id = 'refresh_spinner_progress_bar';
+      content.appendChild(prog);
+    }
     document.body.appendChild(dlg);
+  }
+  if (progress > 0) {
+    var prog2 = document.getElementById('refresh_spinner_progress_bar');
+    prog2.setAttribute('max', progress);
+    prog2.value = 0;
   }
   dlg.style.display = 'block';
 }
 
 function hideSpinner() {
-  document.getElementById('refresh_spinner').style.display = 'none';
+  var d = document.getElementById('refresh_spinner');
+  if (d) {d.style.display = 'none';}
+  var d2 = document.getElementById('refresh_spinner_progress');
+  if (d2) {d2.style.display = 'none';}
+}
+
+function progressSpinner(progress) {
+  document.getElementById('refresh_spinner_progress_bar').value = progress;
 }
 
 function urlsafeB64Encode(data) {
