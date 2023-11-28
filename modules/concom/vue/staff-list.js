@@ -1,5 +1,6 @@
 /* globals apiRequest, Vue */
 import { extractDivisionHierarchy } from '../sitesupport/division-parser.js';
+import { extractDepartmentStaff } from '../sitesupport/department-staff-parser.js';
 
 const SUBHEAD_POSITION_ID = 2;
 
@@ -8,7 +9,7 @@ const TEMPLATE = `
     <div class="CONCOM-list-page-top-section">ConCom</div>
     <org-donut :divisions=divisions></org-donut>
     <div class="CONCOM-list-page-content">
-      <staff-division v-for="division in divisions" :division=division></staff-division>
+      <staff-division v-for="division in divisions" :division=division :divisionStaff=divisionStaffMap[division.id]></staff-division>
     </div>
   </div>
   <staff-sidebar v-if="showSidebar" @sidebar-closed="closeSidebar" @sidebar-form-submitted="updateDepartment"></staff-sidebar>
@@ -59,7 +60,7 @@ const fetchStaffPositions = async() => {
 }
 
 const onMounted = async(componentInstance) => {
-  componentInstance.updateLoading();
+  componentInstance.updateLoading(true);
   // Make sure we have all of the data we need before allowing child component rendering.
   const [divisionResult, userResult, positionResult] = await Promise.all([
     fetchDivisionData(),
@@ -67,10 +68,18 @@ const onMounted = async(componentInstance) => {
     fetchStaffPositions()
   ]);
 
+  for await (const division of divisionResult) {
+    const divisionStaffResponse = await apiRequest('GET', `department/${division.id}/staff?subdepartments=1&max_results=all`);
+    const divisionStaffData = JSON.parse(divisionStaffResponse.responseText);
+    const parsed = extractDepartmentStaff(divisionStaffData.data);
+
+    componentInstance.divisionStaffMap[division.id] = parsed;
+  }
+
   componentInstance.divisions.push(...divisionResult);
   componentInstance.currentUser = userResult;
   componentInstance.staffPositions = positionResult;
-  componentInstance.updateLoading();
+  componentInstance.updateLoading(false);
 };
 
 function componentSetup() {
@@ -82,6 +91,8 @@ function componentSetup() {
 
   const staffPositions = Vue.ref({ departmentPositions: [], divisionPositions: [] });
   Vue.provide('staffPositions', Vue.readonly(staffPositions));
+
+  const divisionStaffMap = Vue.ref({});
 
   const showSidebar = Vue.ref(false);
   Vue.provide('showSidebar', showSidebar);
@@ -107,6 +118,7 @@ function componentSetup() {
     currentUser,
     divisions,
     staffPositions,
+    divisionStaffMap,
     showSidebar,
     sidebarDept,
     sidebarDivision,
