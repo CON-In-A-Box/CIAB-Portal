@@ -69,11 +69,16 @@ const onMounted = async(componentInstance) => {
   ]);
 
   for await (const division of divisionResult) {
-    const divisionStaffResponse = await apiRequest('GET', `department/${division.id}/staff?subdepartments=1&max_results=all`);
-    const divisionStaffData = JSON.parse(divisionStaffResponse.responseText);
-    const parsed = extractDepartmentStaff(divisionStaffData.data);
+    try {
+      const divisionStaffResponse = await apiRequest('GET', `department/${division.id}/staff?subdepartments=1&max_results=all`);
+      const divisionStaffData = JSON.parse(divisionStaffResponse.responseText);
+      const parsed = extractDepartmentStaff(divisionStaffData.data);
 
-    componentInstance.divisionStaffMap[division.id] = parsed;
+      componentInstance.divisionStaffMap[division.id] = parsed;
+    } catch (error)  {
+      componentInstance.divisionStaffMap[division.id] = [];
+      console.error(`Division ${division.id} bad response: ${error.statusText}`);
+    }
   }
 
   componentInstance.divisions.push(...divisionResult);
