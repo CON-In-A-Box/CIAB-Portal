@@ -9,8 +9,8 @@ import staffSidebarComponent from './staff-sidebar.js';
 import lookupuser from '../../../sitesupport/vue/lookupuser.js';
 import staffDivisionVisualComponent from './staff-division-visual.js';
 
-function updateLoading() {
-  this.isLoading = !this.isLoading;
+function updateLoading(value) {
+  this.isLoading = value;
   this.isLoading ? showSpinner() : hideSpinner();
 }
 
