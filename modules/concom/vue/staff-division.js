@@ -1,8 +1,9 @@
-/* globals Vue, apiRequest */
-import { extractDepartmentStaff, sortStaffByPosition } from '../sitesupport/department-staff-parser.js';
+/* globals Vue */
+import { sortStaffByPosition } from '../sitesupport/department-staff-parser.js';
 
 const PROPS = {
-  division: Object
+  division: Object,
+  divisionStaff: Array
 };
 
 const TEMPLATE = `
@@ -41,16 +42,8 @@ const INITIAL_DATA = () => {
   }
 };
 
-const fetchDivisionStaff = async(divisionId) => {
-  const response = await apiRequest('GET', `department/${divisionId}/staff?subdepartments=1`);
-  const divisionStaffData = JSON.parse(response.responseText);
-  return extractDepartmentStaff(divisionStaffData.data);
-}
-
 const onMounted = async(componentInstance) => {
-  const divisionStaffResult = await fetchDivisionStaff(componentInstance.division.id);
-
-  for (const staff of divisionStaffResult) {
+  for (const staff of componentInstance.divisionStaff) {
     const deptId = `${staff.deptId}`;
     if (componentInstance.divisionStaffMap[deptId] == null) {
       componentInstance.divisionStaffMap[deptId] = [];

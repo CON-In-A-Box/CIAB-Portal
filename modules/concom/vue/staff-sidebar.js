@@ -121,7 +121,7 @@ async function onSubmit() {
 }
 
 async function editStaff(component) {
-  component.updateLoading();
+  component.updateLoading(true);
   const putData = {
     Department: component.department.id,
     Position: component.selectedPosition.id,
@@ -143,11 +143,11 @@ async function editStaff(component) {
 
     component.$emit('sidebarFormSubmitted', emittedEventData);
   }
-  component.updateLoading();
+  component.updateLoading(false);
 }
 
 async function addStaff(component) {
-  component.updateLoading();
+  component.updateLoading(true);
   const postData = {
     Department: component.department.id,
     Position: component.selectedPosition.id
@@ -179,11 +179,11 @@ async function addStaff(component) {
       component.$emit('sidebarFormSubmitted', emittedEventData);
     }
   }
-  component.updateLoading();
+  component.updateLoading(false);
 }
 
 async function onRemoveStaff() {
-  this.updateLoading();
+  this.updateLoading(true);
   const staffDeleteResponse = await apiRequest('DELETE', `staff/membership/${this.deptStaffId}`);
 
   if (staffDeleteResponse.status === 204) {
@@ -195,7 +195,7 @@ async function onRemoveStaff() {
 
     this.$emit('sidebarFormSubmitted', emittedEventData);
   }
-  this.updateLoading();
+  this.updateLoading(false);
 }
 
 function componentSetup() {
