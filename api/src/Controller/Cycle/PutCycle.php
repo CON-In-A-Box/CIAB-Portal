@@ -56,7 +56,7 @@ namespace App\Controller\Cycle;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
-use App\Controller\InvalidParameterException;
+use App\Error\InvalidParameterException;
 use Atlas\Query\Update;
 
 class PutCycle extends BaseCycle

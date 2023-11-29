@@ -61,9 +61,9 @@ namespace App\Controller\Member;
 use Slim\Http\Request;
 use Slim\Http\Response;
 use Atlas\Query\Update;
-use App\Controller\PermissionDeniedException;
-use App\Controller\NotFoundException;
-use App\Controller\InvalidParameterException;
+use App\Error\PermissionDeniedException;
+use App\Error\NotFoundException;
+use App\Error\InvalidParameterException;
 
 class PutMember extends BaseMember
 {

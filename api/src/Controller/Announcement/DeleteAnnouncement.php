@@ -37,7 +37,7 @@ namespace App\Controller\Announcement;
 use Slim\Http\Request;
 use Slim\Http\Response;
 use Atlas\Query\Delete;
-use App\Controller\NotFoundException;
+use App\Error\NotFoundException;
 
 class DeleteAnnouncement extends BaseAnnouncement
 {

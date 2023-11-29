@@ -49,7 +49,7 @@ namespace App\Controller\System;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
-use App\Controller\InvalidParameterException;
+use App\Error\InvalidParameterException;
 
 class PutConfiguration extends BaseSystem
 {

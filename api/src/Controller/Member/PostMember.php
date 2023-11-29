@@ -43,8 +43,8 @@ use Slim\Http\Request;
 use Slim\Http\Response;
 use Atlas\Query\Insert;
 use Atlas\Query\Select;
-use App\Controller\InvalidParameterException;
-use App\Controller\ConflictException;
+use App\Error\InvalidParameterException;
+use App\Error\ConflictException;
 
 class PostMember extends BaseMember
 {

@@ -71,8 +71,8 @@ use Slim\Http\Request;
 use Slim\Http\Response;
 use Atlas\Query\Select;
 
-use App\Controller\NotFoundException;
-use App\Controller\InvalidParameterException;
+use App\Error\NotFoundException;
+use App\Error\InvalidParameterException;
 
 class FindMembers extends BaseMember
 {

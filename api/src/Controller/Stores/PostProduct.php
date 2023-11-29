@@ -7,8 +7,8 @@ use Atlas\Query\Select;
 use Slim\Http\Request;
 use Slim\Http\Response;
 use App\Controller\BaseController;
-use App\Controller\PermissionDeniedException;
-use App\Controller\InvalidParameterException;
+use App\Error\PermissionDeniedException;
+use App\Error\InvalidParameterException;
 
 class PostProduct extends BaseProduct
 {

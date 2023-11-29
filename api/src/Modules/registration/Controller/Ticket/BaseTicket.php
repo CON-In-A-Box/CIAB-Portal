@@ -308,9 +308,9 @@ use Slim\Http\Response;
 use Atlas\Query\Select;
 use Atlas\Query\Update;
 use App\Modules\registration\Controller\BaseRegistration;
-use App\Controller\PermissionDeniedException;
-use App\Controller\NotFoundException;
-use App\Controller\ConflictException;
+use App\Error\PermissionDeniedException;
+use App\Error\NotFoundException;
+use App\Error\ConflictException;
 
 abstract class BaseTicket extends BaseRegistration
 {

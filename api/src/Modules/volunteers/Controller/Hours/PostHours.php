@@ -81,7 +81,7 @@ namespace App\Modules\volunteers\Controller\Hours;
 use Slim\Http\Request;
 use Slim\Http\Response;
 use Atlas\Query\Insert;
-use App\Controller\InvalidParameterException;
+use App\Error\InvalidParameterException;
 
 class PostHours extends BaseHours
 {

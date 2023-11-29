@@ -3,8 +3,8 @@
 namespace App\Controller\Stores;
 
 use App\Controller\BaseController;
-use App\Controller\PermissionDeniedException;
-use App\Controller\NotFoundException;
+use App\Error\PermissionDeniedException;
+use App\Error\NotFoundException;
 
 use Atlas\Query\Delete;
 

@@ -54,8 +54,8 @@ use Slim\Http\Request;
 use Slim\Http\Response;
 use Atlas\Query\Update;
 use Atlas\Query\Select;
-use App\Controller\NotFoundException;
-use App\Controller\InvalidParameterException;
+use App\Error\NotFoundException;
+use App\Error\InvalidParameterException;
 
 class PutDeadline extends BaseDeadline
 {

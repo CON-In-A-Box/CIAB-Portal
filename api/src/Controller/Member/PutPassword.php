@@ -114,9 +114,9 @@ use Atlas\Query\Select;
 use Atlas\Query\Insert;
 use Atlas\Query\Update;
 
-use App\Controller\PermissionDeniedException;
-use App\Controller\ConflictException;
-use App\Controller\InvalidParameterException;
+use App\Error\PermissionDeniedException;
+use App\Error\ConflictException;
+use App\Error\InvalidParameterException;
 
 class PutPassword extends BaseMember
 {

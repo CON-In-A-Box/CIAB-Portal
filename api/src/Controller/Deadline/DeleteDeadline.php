@@ -38,7 +38,7 @@ use Slim\Http\Request;
 use Slim\Http\Response;
 use Atlas\Query\Delete;
 use Atlas\Query\Select;
-use App\Controller\NotFoundException;
+use App\Error\NotFoundException;
 
 class DeleteDeadline extends BaseDeadline
 {

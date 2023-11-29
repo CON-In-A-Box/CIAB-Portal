@@ -69,7 +69,7 @@ use Slim\Http\Response;
 use Slim\Views;
 use Atlas\Query\Insert;
 use Atlas\Query\Select;
-use App\Controller\InvalidParameterException;
+use App\Error\InvalidParameterException;
 
 class PostAnnouncement extends BaseAnnouncement
 {

@@ -499,7 +499,7 @@ use Slim\Http\Request;
 use Slim\Http\Response;
 use Slim\Container;
 use App\Controller\BaseController;
-use App\Controller\NotFoundException;
+use App\Error\NotFoundException;
 
 require_once __DIR__.'/../../../../functions/divisional.inc';
 
