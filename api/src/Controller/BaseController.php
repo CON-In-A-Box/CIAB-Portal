@@ -413,19 +413,11 @@ abstract class BaseController
             $data = $child->handle($request, $response, $data, $code, $this->container);
         }
 
-        $parameters = null;
-        $value = $request->getQueryParam('pretty', false);
-        if ($value) {
-            $value = filter_var($value, FILTER_VALIDATE_BOOLEAN);
-            if ($value) {
-                $parameters = JSON_PRETTY_PRINT;
-            }
-        }
         if (!empty($data) && !array_key_exists('type', $data)) {
             $data['type'] = $this->api_type;
         }
         $output = $this->filterOutput($request, $data, $code);
-        return $response->withJson($output, $code, $parameters);
+        return $response->withJson($output, $code);
 
     }
 
