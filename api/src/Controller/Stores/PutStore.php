@@ -57,8 +57,8 @@ use Slim\Http\Request;
 use Slim\Http\Response;
 
 use App\Controller\BaseController;
-use App\Controller\NotFoundException;
-use App\Controller\PermissionDeniedException;
+use App\Error\NotFoundException;
+use App\Error\PermissionDeniedException;
 
 class PutStore extends BaseStore
 {

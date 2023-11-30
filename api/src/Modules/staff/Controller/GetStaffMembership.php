@@ -41,8 +41,8 @@ namespace App\Modules\staff\Controller;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
-use App\Controller\PermissionDeniedException;
-use App\Controller\NotFoundException;
+use App\Error\PermissionDeniedException;
+use App\Error\NotFoundException;
 use Atlas\Query\Select;
 
 class GetStaffMembership extends BaseStaff

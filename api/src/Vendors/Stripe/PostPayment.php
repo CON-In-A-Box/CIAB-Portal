@@ -7,7 +7,7 @@ namespace Vendor\Payment;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
-use App\Controller\InternalServerErrorException;
+use App\Error\InternalServerErrorException;
 
 class PostPayment extends BasePayment
 {

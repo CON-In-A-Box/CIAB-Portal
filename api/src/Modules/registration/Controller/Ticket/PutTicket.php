@@ -73,8 +73,8 @@ use Slim\Http\Request;
 use Slim\Http\Response;
 use Atlas\Query\Update;
 
-use App\Controller\ConflictException;
-use App\Controller\InvalidParameterException;
+use App\Error\ConflictException;
+use App\Error\InvalidParameterException;
 
 class PutTicket extends BaseTicketInclude
 {

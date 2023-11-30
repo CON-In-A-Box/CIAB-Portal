@@ -52,7 +52,7 @@ use Slim\Http\Request;
 use Slim\Http\Response;
 use Atlas\Query\Insert;
 
-use App\Controller\InvalidParameterException;
+use App\Error\InvalidParameterException;
 
 class PostCycle extends BaseCycle
 {

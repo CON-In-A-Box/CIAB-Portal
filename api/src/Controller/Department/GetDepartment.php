@@ -53,7 +53,7 @@ namespace App\Controller\Department;
 use Slim\Http\Request;
 use Slim\Http\Response;
 use Slim\Container;
-use App\Controller\NotFoundException;
+use App\Error\NotFoundException;
 
 class GetDepartment extends BaseDepartment
 {

@@ -68,7 +68,7 @@ use Slim\Http\Request;
 use Slim\Http\Response;
 use Atlas\Query\Select;
 
-use App\Controller\InvalidParameterException;
+use App\Error\InvalidParameterException;
 
 class ListCycles extends BaseCycle
 {

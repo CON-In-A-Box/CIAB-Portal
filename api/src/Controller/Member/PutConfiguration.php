@@ -67,7 +67,7 @@ namespace App\Controller\Member;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
-use App\Controller\PermissionDeniedException;
+use App\Error\PermissionDeniedException;
 
 class PutConfiguration extends BaseMember
 {

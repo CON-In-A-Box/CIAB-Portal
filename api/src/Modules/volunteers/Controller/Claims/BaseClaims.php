@@ -120,7 +120,7 @@ namespace App\Modules\volunteers\Controller\Claims;
 use Slim\Container;
 use App\Controller\BaseController;
 use Atlas\Query\Select;
-use App\Controller\InvalidParameterException;
+use App\Error\InvalidParameterException;
 
 abstract class BaseClaims extends BaseController
 {

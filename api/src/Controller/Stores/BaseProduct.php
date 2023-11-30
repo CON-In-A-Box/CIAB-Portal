@@ -9,7 +9,7 @@ use Slim\Http\Request;
 use Slim\Http\Response;
 
 use App\Controller\BaseController;
-use App\Controller\NotFoundException;
+use App\Error\NotFoundException;
 
 abstract class BaseProduct extends BaseController
 {

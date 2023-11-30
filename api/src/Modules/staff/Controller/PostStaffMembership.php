@@ -77,7 +77,7 @@ namespace App\Modules\staff\Controller;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
-use App\Controller\InvalidParameterException;
+use App\Error\InvalidParameterException;
 use Atlas\Query\Insert;
 
 class PostStaffMembership extends BaseStaff
