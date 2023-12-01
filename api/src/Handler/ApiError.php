@@ -12,6 +12,7 @@ use Psr\Http\Message\ResponseInterface as Response;
 final class ApiError extends \Slim\Handlers\Error
 {
 
+
     protected function errorResponse(Request $request, Response $response, string $message, $status, int $code):  Response
     {
         $result = [
@@ -27,14 +28,13 @@ final class ApiError extends \Slim\Handlers\Error
 
     public function __invoke(Request $request, Response $response, \Exception $exception)
     {
-
         if (is_a($exception, '\App\Error\NotFoundException')) {
             return $this->errorResponse($request, $response, $exception->getMessage(), 'Not Found', 404);
         } elseif (is_a($exception, '\App\Error\PermissionDeniedException')) {
             return $this->errorResponse($request, $response, $exception->getMessage(), 'Permission Denied', 403);
         } elseif (is_a($exception, '\App\Error\InvalidParameterException')) {
             return $this->errorResponse($request, $response, $exception->getMessage(), 'Invalid Parameter', 400);
-        } elseif (is_a($exception, '\App\Error\ConflictException'))  {
+        } elseif (is_a($exception, '\App\Error\ConflictException')) {
             return $this->errorResponse($request, $response, $exception->getMessage(), 'Conflict', 409);
         } elseif (is_a($exception, '\App\Error\InternalServerErrorException')) {
             return $this->errorResponse($request, $response, $exception->getMessage(), 'Internal Server Error', 500);
