@@ -72,6 +72,7 @@ use Slim\Http\Request;
 use Slim\Http\Response;
 use Atlas\Query\Insert;
 use App\Error\InvalidParameterException;
+use App\Controller\IncludeResource;
 
 class PostClaim extends BaseClaims
 {
@@ -127,10 +128,7 @@ class PostClaim extends BaseClaims
 
         $target = new GetClaim($this->container);
         $data = $target->buildResource($request, $response, ['id' => $id])[1];
-        $short = $request->getQueryParam('short_response', false);
-        if (!boolval($short)) {
-            $target->processIncludes($request, $response, $params, $data);
-        }
+        IncludeResource::processIncludes($target->includes, $request, $response, $target->container, $params, $data);
         return [
         \App\Controller\BaseController::RESOURCE_TYPE,
         $target->arrayResponse($request, $response, $data),

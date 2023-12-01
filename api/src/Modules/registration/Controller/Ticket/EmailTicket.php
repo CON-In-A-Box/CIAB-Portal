@@ -45,6 +45,7 @@ require_once __DIR__.'/../../../../../../functions/locations.inc';
 use Slim\Http\Request;
 use Slim\Http\Response;
 use Slim\Views;
+use App\Controller\IncludeResource;
 
 class EmailTicket extends BaseTicket
 {
@@ -75,7 +76,7 @@ class EmailTicket extends BaseTicket
         if ($newdata['type'] == 'error') {
             return $output;
         }
-        $target->processIncludes($request, $response, $params, $newdata);
+        IncludeResource::processIncludes($target->includes, $request, $response, $target->container, $params, $newdata);
         $data = $target->arrayResponse($request, $response, $newdata);
 
         $checkin = $request->getUri()->getBaseUrl();
