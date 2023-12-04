@@ -54,7 +54,9 @@ class ListDepartments extends BaseDepartment
         parent::__construct($container);
         $this->departmentService = $container->get("DepartmentService");
         $this->includes = null;
+
     }
+    
 
     public function buildResource(Request $request, Response $response, $params): array
     {

@@ -64,20 +64,42 @@
 
 namespace App\Modules\staff\Controller;
 
+use Slim\Container;
 use Slim\Http\Request;
 use Slim\Http\Response;
+
+use App\Handler\RBAC;
+use App\Modules\staff\Service\StaffService;
 
 class ListDepartmentStaff extends BaseStaff
 {
 
+    /**
+     * @var RBAC
+     */
+    protected $rbac;
+
+    /**
+     * @var StaffService
+     */
+    protected $staffService;
+
+
+    public function __construct(Container $container)
+    {
+        parent::__construct($container);
+        $this->rbac = $container->get("RBAC");
+        $this->staffService = $container->get("StaffService");
+        $this->includes = null;
+
+    }
+    
 
     public function buildResource(Request $request, Response $response, $params) :array
     {
         $permissions = ['api.get.staff'];
         $this->checkPermissions($permissions);
-        $event = $this->getEventId($request);
-        $sub = boolval($request->getQueryParam('subdepartments', 0));
-        $data = $this->selectStaff($event, $params['id'], null, $sub);
+        $data = $this->staffService->getStaffInDepartment($params['id']);
         return [
         \App\Controller\BaseController::LIST_TYPE,
         $data,
