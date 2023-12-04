@@ -5,6 +5,7 @@
 
 return [
 'setupRoutes' => 'setupStaffAPI',
+'setupDependencies' => 'setupStaffAPIDependencies',
 'module' => 'App\\Modules\\staff\\ModuleStaff',
 'baseControllers' => [
     'App\Modules\staff\Controller\BaseStaff'

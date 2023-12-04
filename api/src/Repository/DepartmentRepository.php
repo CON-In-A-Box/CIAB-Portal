@@ -59,5 +59,23 @@ class DepartmentRepository
     }
 
 
+    public function findDepartmentsById($departmentId)
+    {
+        $select = Select::new($this->db);
+        $select->columns(
+            'depts.DepartmentID',
+            'depts.Name'
+        )
+            ->from('Departments as depts')
+            ->where('depts.Name != "Historical Placeholder"')
+            ->andWhere('(depts.DepartmentID = ', $departmentId)
+            ->catWhere(' OR depts.ParentDepartmentID = ', $departmentId)
+            ->catWhere(')');
+
+        return $select->fetchAll();
+
+    }
+
+
     /* End DepartmentRepository */
 }

@@ -7,7 +7,11 @@ use Psr\Container\ContainerInterface;
 use App\Handler\ApiError;
 use App\Handler\RBAC;
 use App\Repository\DepartmentRepository;
+use App\Repository\EventRepository;
+use App\Repository\MemberRepository;
 use App\Service\DepartmentService;
+use App\Service\EventService;
+use App\Service\MemberService;
 use Slim\App;
 
 /* setupAPIDependencies */
@@ -40,6 +44,18 @@ function setupAPIDependencies(App $app, array $settings)
     $container['DepartmentService'] = function ($c): DepartmentService {
         return new DepartmentService(
             new DepartmentRepository($c['db'])
+        );
+    };
+
+    $container['EventService'] = function ($c): EventService {
+        return new EventService(
+            new EventRepository($c['db'])
+        );
+    };
+
+    $container['MemberService'] = function ($c): MemberService {
+        return new MemberService(
+            new MemberRepository($c['db'])
         );
     };
 
