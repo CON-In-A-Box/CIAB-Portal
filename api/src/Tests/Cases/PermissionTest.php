@@ -123,6 +123,7 @@ class PermissionsTest extends CiabTestCase
         foreach ($json_data_p2 as $entry) {
             $this->assertContains($entry, $json_data_p1);
         }
+        $this->runRequest('DELETE', '/staff/membership/'.$staff_record->id, null, null, 204);
 
     }
 
