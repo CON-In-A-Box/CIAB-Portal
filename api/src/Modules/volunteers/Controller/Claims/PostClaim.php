@@ -71,7 +71,7 @@ namespace App\Modules\volunteers\Controller\Claims;
 use Slim\Http\Request;
 use Slim\Http\Response;
 use Atlas\Query\Insert;
-use App\Controller\InvalidParameterException;
+use App\Error\InvalidParameterException;
 
 class PostClaim extends BaseClaims
 {

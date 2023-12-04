@@ -88,7 +88,7 @@ use Slim\Http\Request;
 use Slim\Http\Response;
 use App\Controller\BaseController;
 use App\Controller\IncludeResource;
-use App\Controller\InvalidParameterException;
+use App\Error\InvalidParameterException;
 
 abstract class BaseEvent extends BaseController
 {

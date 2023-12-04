@@ -224,7 +224,6 @@ use Slim\Container;
 use Slim\Http\Request;
 use Slim\Http\Response;
 use App\Controller\BaseController;
-use App\Controller\NotFoundException;
 
 require_once __DIR__.'/../../../../backends/CRM.inc';
 

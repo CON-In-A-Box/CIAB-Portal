@@ -54,7 +54,7 @@ namespace App\Modules\volunteers\Controller\Rewards;
 use Slim\Http\Request;
 use Slim\Http\Response;
 use Atlas\Query\Update;
-use App\Controller\InvalidParameterException;
+use App\Error\InvalidParameterException;
 
 class PutRewardGroup extends BaseRewardGroup
 {

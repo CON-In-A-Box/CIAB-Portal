@@ -77,7 +77,7 @@ namespace App\Modules\staff\Controller;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
-use App\Controller\PermissionDeniedException;
+use App\Error\PermissionDeniedException;
 
 class GetMemberPosition extends BaseStaff
 {

@@ -34,16 +34,33 @@
 
 namespace App\Controller\Department;
 
+use Slim\Container;
 use Slim\Http\Request;
 use Slim\Http\Response;
+
+use App\Service\DepartmentService;
 
 class ListDepartments extends BaseDepartment
 {
 
+    /**
+     * @var DepartmentService
+     */
+    protected $departmentService;
+
+
+    public function __construct(Container $container)
+    {
+        parent::__construct($container);
+        $this->departmentService = $container->get("DepartmentService");
+        $this->includes = null;
+
+    }
+    
 
     public function buildResource(Request $request, Response $response, $params): array
     {
-        $output = $this->getDepartment(null);
+        $output = $this->departmentService->getAllDepartments();
         return [
         \App\Controller\BaseController::LIST_TYPE,
         $output,

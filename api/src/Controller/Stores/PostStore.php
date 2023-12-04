@@ -49,8 +49,8 @@ namespace App\Controller\Stores;
 use Atlas\Query\Insert;
 use Slim\Http\Request;
 use Slim\Http\Response;
-use App\Controller\PermissionDeniedException;
-use App\Controller\InvalidParameterException;
+use App\Error\PermissionDeniedException;
+use App\Error\InvalidParameterException;
 
 class PostStore extends BaseStore
 {

@@ -3,30 +3,6 @@
     require_module 'standard';
 .*/
 /**
- *  @OA\Schema(
- *      schema="error",
- *      @OA\Property(
- *          property="type",
- *          type="string",
- *          enum={"error"}
- *      ),
- *      @OA\Property(
- *          property="code",
- *          type="integer",
- *          description="announcement ID"
- *      ),
- *      @OA\Property(
- *          property="status",
- *          type="string",
- *          description="Error Status"
- *      ),
- *      @OA\Property(
- *          property="message",
- *          type="string",
- *          description="Error Message"
- *      )
- *  )
- *
  *  @OA\Parameter(
  *      parameter="max_results",
  *      description="Maximum members of the list per page or 'all' (default 100).",
@@ -117,34 +93,9 @@ use Slim\Http\Request;
 use Slim\Http\Environment;
 use Atlas\Query\Select;
 
-class NotFoundException extends Exception
-{
-
-}
-
-
-class PermissionDeniedException extends Exception
-{
-
-}
-
-
-class InvalidParameterException extends Exception
-{
-
-}
-
-
-class ConflictException extends Exception
-{
-
-}
-
-
-class InternalServerErrorException extends Exception
-{
-
-}
+use App\Error\NotFoundException;
+use App\Error\PermissionDeniedException;
+use App\Error\InvalidParameterException;
 
 class IncludeResource
 {
@@ -266,34 +217,7 @@ abstract class BaseController
 
     public function __invoke(Request $request, Response $response, $args)
     {
-        try {
-            $result = $this->buildResource($request, $response, $args);
-        } catch (NotFoundException $e) {
-            $result = [
-            BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, $e->getMessage(), 'Not Found', 404)
-            ];
-        } catch (PermissionDeniedException $e) {
-            $result = [
-            BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, $e->getMessage(), 'Permission Denied', 403)
-            ];
-        } catch (InvalidParameterException $e) {
-            $result = [
-            BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, $e->getMessage(), 'Invalid Parameter', 400)
-            ];
-        } catch (ConflictException $e) {
-            $result = [
-            BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, $e->getMessage(), 'Conflict', 409)
-            ];
-        } catch (InternalServerErrorException $e) {
-            $result = [
-            BaseController::RESULT_TYPE,
-            $this->errorResponse($request, $response, $e->getMessage(), 'Internal Server Error', 500)
-            ];
-        }
+        $result = $this->buildResource($request, $response, $args);
 
         if ($result === null || $result[0] === null) {
             return null;
@@ -413,19 +337,11 @@ abstract class BaseController
             $data = $child->handle($request, $response, $data, $code, $this->container);
         }
 
-        $parameters = null;
-        $value = $request->getQueryParam('pretty', false);
-        if ($value) {
-            $value = filter_var($value, FILTER_VALIDATE_BOOLEAN);
-            if ($value) {
-                $parameters = JSON_PRETTY_PRINT;
-            }
-        }
         if (!empty($data) && !array_key_exists('type', $data)) {
             $data['type'] = $this->api_type;
         }
         $output = $this->filterOutput($request, $data, $code);
-        return $response->withJson($output, $code, $parameters);
+        return $response->withJson($output, $code);
 
     }
 

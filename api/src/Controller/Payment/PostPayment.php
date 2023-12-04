@@ -70,7 +70,7 @@ namespace App\Controller\Payment;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
-use App\Controller\NotFoundException;
+use App\Error\NotFoundException;
 
 class PostPayment extends BasePayment
 {

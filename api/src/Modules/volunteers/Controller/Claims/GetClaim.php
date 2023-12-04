@@ -38,7 +38,7 @@ namespace App\Modules\volunteers\Controller\Claims;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
-use App\Controller\NotFoundException;
+use App\Error\NotFoundException;
 use Atlas\Query\Select;
 use App\Controller\BaseController;
 use \App\Controller\IncludeResource;

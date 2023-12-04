@@ -37,7 +37,7 @@ namespace App\Modules\staff\Controller;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
-use App\Controller\NotFoundException;
+use App\Error\NotFoundException;
 use Atlas\Query\Delete;
 use Atlas\Query\Select;
 

@@ -100,7 +100,7 @@ use Slim\Http\Request;
 use Slim\Http\Response;
 use Atlas\Query\Select;
 use App\Controller\BaseController;
-use App\Controller\NotFoundException;
+use App\Error\NotFoundException;
 use App\Controller\IncludeResource;
 
 abstract class BaseAnnouncement extends BaseController

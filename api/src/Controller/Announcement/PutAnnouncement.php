@@ -58,7 +58,7 @@ namespace App\Controller\Announcement;
 use Slim\Http\Request;
 use Slim\Http\Response;
 use Atlas\Query\Update;
-use App\Controller\InvalidParameterException;
+use App\Error\InvalidParameterException;
 
 class PutAnnouncement extends BaseAnnouncement
 {

@@ -59,9 +59,9 @@ use Slim\Http\Response;
 use Atlas\Query\Select;
 use Atlas\Query\Insert;
 use Atlas\Query\Update;
-use App\Controller\InvalidParameterException;
-use App\Controller\NotFoundException;
-use App\Controller\ConflictException;
+use App\Error\InvalidParameterException;
+use App\Error\NotFoundException;
+use App\Error\ConflictException;
 
 trait TraitConfiguration
 {

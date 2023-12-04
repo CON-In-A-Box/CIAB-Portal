@@ -38,7 +38,7 @@ namespace App\Controller\Cycle;
 use Slim\Http\Request;
 use Slim\Http\Response;
 use Atlas\Query\Select;
-use App\Controller\NotFoundException;
+use App\Error\NotFoundException;
 
 class GetCycle extends BaseCycle
 {

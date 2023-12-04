@@ -44,8 +44,8 @@ use Slim\Http\Request;
 use Slim\Http\Response;
 use Atlas\Query\Update;
 
-use App\Controller\NotFoundException;
-use App\Controller\InvalidParameterException;
+use App\Error\NotFoundException;
+use App\Error\InvalidParameterException;
 
 class VoidTicket extends BaseTicket
 {
