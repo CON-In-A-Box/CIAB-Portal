@@ -2,9 +2,10 @@
 
 namespace App\Repository;
 
+use Exception;
 use Atlas\Query\Select;
 
-class MemberRepository
+class MemberRepository implements RepositoryInterface
 {
 
     protected $db;
@@ -17,7 +18,7 @@ class MemberRepository
     }
 
 
-    public function findMembersByIds($accountIds)
+    public function selectById(/*.mixed.*/$accountIds): array
     {
         $select = Select::new($this->db);
         $select->columns(
@@ -53,10 +54,42 @@ class MemberRepository
             '(CASE WHEN PreferredLastName IS NOT NULL THEN PreferredLastName ELSE LastName END) as LastName',
             '(SELECT GROUP_CONCAT(AccountID SEPARATOR \', \') FROM Members sqMembers WHERE sqMembers.Email = members.Email AND NOT sqMembers.AccountID = members.AccountID) as Duplicates'
         )
-            ->from('Members as members')
-            ->where('AccountID IN ', $accountIds);
+            ->from('Members as members');
+        if (is_array($accountIds)) {
+            $select->where('AccountID IN ', $accountIds);
+        } else {
+            $select->where('AccountID = ', $accountIds);
+        }
 
         return $select->fetchAll();
+
+    }
+
+
+    public function insert(/*.mixed.*/$data): void
+    {
+        throw new Exception(__CLASS__.": Method '__FUNCTION__' not implemented");
+
+    }
+
+
+    public function selectAll(): array
+    {
+        throw new Exception(__CLASS__.": Method '__FUNCTION__' not implemented");
+
+    }
+
+
+    public function update(/*.string.*/$id, /*.mixed.*/$data): void
+    {
+        throw new Exception(__CLASS__.":Method '__FUNCTION__' not implemented");
+
+    }
+
+
+    public function deleteById(/*.mixed.*/$id): void
+    {
+        throw new Exception(__CLASS__.": Method '__FUNCTION__' not implemented");
 
     }
 
