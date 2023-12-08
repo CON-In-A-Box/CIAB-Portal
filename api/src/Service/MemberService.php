@@ -19,6 +19,10 @@ class MemberService
 
     public function getMembersByIds($memberIds)
     {
+        if (count($memberIds) == 0) {
+            return [];
+        }
+
         $result = $this->memberRepository->findMembersByIds($memberIds);
 
         $formatted = [];
