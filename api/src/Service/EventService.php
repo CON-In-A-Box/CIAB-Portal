@@ -2,9 +2,10 @@
 
 namespace App\Service;
 
+use Exception;
 use App\Repository\EventRepository;
 
-class EventService
+class EventService implements ServiceInterface
 {
 
   /**
@@ -44,9 +45,44 @@ class EventService
         $formatted["cycle"]["date_from"] = $event["AnnualCycleFrom"];
         $formatted["cycle"]["date_to"] = $event["AnnualCycleTo"];
         $formatted["cycle"]["type"] = "cycle";
-    
+
         $this->currentEvent = $formatted;
         return $formatted;
+
+    }
+
+
+    public function post(/*.mixed.*/$data): void
+    {
+        throw new Exception(__CLASS__.": Method '__FUNCTION__' not implemented");
+
+    }
+
+
+    public function listAll(): array
+    {
+        throw new Exception(__CLASS__.": Method '__FUNCTION__' not implemented");
+
+    }
+
+
+    public function getById(/*.mixed.*/$id): array
+    {
+        throw new Exception(__CLASS__.": Method '__FUNCTION__' not implemented");
+
+    }
+
+
+    public function put(/*.string.*/$id, /*.mixed.*/$data): void
+    {
+        throw new Exception(__CLASS__.": Method '__FUNCTION__' not implemented");
+
+    }
+
+
+    public function deleteById(/*.mixed.*/$id): void
+    {
+        throw new Exception(__CLASS__.": Method '__FUNCTION__' not implemented");
 
     }
 

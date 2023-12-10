@@ -2,9 +2,10 @@
 
 namespace App\Service;
 
+use Exception;
 use App\Repository\DepartmentRepository;
 
-class DepartmentService
+class DepartmentService implements ServiceInterface
 {
 
   /**
@@ -20,7 +21,7 @@ class DepartmentService
     }
 
 
-    public function getAllDepartments()
+    public function listAll(): array
     {
         $result = $this->departmentRepository->selectAll();
 
@@ -33,8 +34,8 @@ class DepartmentService
 
     }
 
-    
-    public function getDepartmentsById($departmentId)
+
+    public function getById(/*.mixed.*/$departmentId): array
     {
         $result = $this->departmentRepository->selectById($departmentId);
 
@@ -84,6 +85,27 @@ class DepartmentService
         }
 
         return $output;
+
+    }
+
+
+    public function post(/*.mixed.*/$data): void
+    {
+        throw new Exception(__CLASS__.": Method '__FUNCTION__' not implemented");
+
+    }
+
+
+    public function put(/*.string.*/$id, /*.mixed.*/$data): void
+    {
+        throw new Exception(__CLASS__.": Method '__FUNCTION__' not implemented");
+
+    }
+
+
+    public function deleteById(/*.mixed.*/$id): void
+    {
+        throw new Exception(__CLASS__.": Method '__FUNCTION__' not implemented");
 
     }
 

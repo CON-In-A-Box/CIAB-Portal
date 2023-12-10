@@ -56,11 +56,11 @@ class ListDepartments extends BaseDepartment
         $this->includes = null;
 
     }
-    
+
 
     public function buildResource(Request $request, Response $response, $params): array
     {
-        $output = $this->departmentService->getAllDepartments();
+        $output = $this->departmentService->listAll();
         return [
         \App\Controller\BaseController::LIST_TYPE,
         $output,

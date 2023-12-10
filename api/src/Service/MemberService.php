@@ -2,9 +2,10 @@
 
 namespace App\Service;
 
+use Exception;
 use App\Repository\MemberRepository;
 
-class MemberService
+class MemberService implements ServiceInterface
 {
 
     protected $memberRepository;
@@ -17,7 +18,7 @@ class MemberService
     }
 
 
-    public function getMembersByIds($memberIds)
+    public function getById($memberIds): array
     {
         if (count($memberIds) == 0) {
             return [];
@@ -64,6 +65,34 @@ class MemberService
         }
 
         return $formatted;
+
+    }
+
+
+    public function post(/*.mixed.*/$data): void
+    {
+        throw new Exception(__CLASS__.": Method '__FUNCTION__' not implemented");
+
+    }
+
+
+    public function listAll(): array
+    {
+        throw new Exception(__CLASS__.": Method '__FUNCTION__' not implemented");
+
+    }
+
+
+    public function put(/*.string.*/$id, /*.mixed.*/$data): void
+    {
+        throw new Exception(__CLASS__.": Method '__FUNCTION__' not implemented");
+
+    }
+
+
+    public function deleteById(/*.mixed.*/$id): void
+    {
+        throw new Exception(__CLASS__.": Method '__FUNCTION__' not implemented");
 
     }
 
