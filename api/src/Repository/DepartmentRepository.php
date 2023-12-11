@@ -2,9 +2,10 @@
 
 namespace App\Repository;
 
+use Exception;
 use Atlas\Query\Select;
 
-class DepartmentRepository
+class DepartmentRepository implements RepositoryInterface
 {
 
     protected $db;
@@ -17,7 +18,14 @@ class DepartmentRepository
     }
 
 
-    public function findAll()
+    public function insert(/*.mixed.*/$data): void
+    {
+        throw new Exception(__CLASS__.": Method '__FUNCTION__' not implemented");
+
+    }
+
+
+    public function selectAll(): array
     {
         $select = Select::new($this->db);
         $select->columns(
@@ -59,7 +67,7 @@ class DepartmentRepository
     }
 
 
-    public function findDepartmentsById($departmentId)
+    public function selectById(/*.mixed.*/$departmentId): array
     {
         $select = Select::new($this->db);
         $select->columns(
@@ -67,12 +75,30 @@ class DepartmentRepository
             'depts.Name'
         )
             ->from('Departments as depts')
-            ->where('depts.Name != "Historical Placeholder"')
-            ->andWhere('(depts.DepartmentID = ', $departmentId)
-            ->catWhere(' OR depts.ParentDepartmentID = ', $departmentId)
+            ->where('depts.Name != "Historical Placeholder"');
+        if (is_array($departmentId)) {
+            $select->andWhere('(depts.DepartmentID IN ', $departmentId);
+        } else {
+            $select->andWhere('(depts.DepartmentID = ', $departmentId);
+        }
+        $select->catWhere(' OR depts.ParentDepartmentID = ', $departmentId)
             ->catWhere(')');
 
         return $select->fetchAll();
+
+    }
+
+
+    public function update(/*.string.*/$id, /*.mixed.*/$data): void
+    {
+        throw new Exception(__CLASS__.":Method '__FUNCTION__' not implemented");
+
+    }
+
+
+    public function deleteById(/*.mixed.*/$id): void
+    {
+        throw new Exception(__CLASS__.": Method '__FUNCTION__' not implemented");
 
     }
 

@@ -23,7 +23,7 @@ class MemberService
             return [];
         }
 
-        $result = $this->memberRepository->findMembersByIds($memberIds);
+        $result = $this->memberRepository->selectById($memberIds);
 
         $formatted = [];
         foreach ($result as $value) {

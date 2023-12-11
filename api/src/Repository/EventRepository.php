@@ -2,9 +2,10 @@
 
 namespace App\Repository;
 
+use Exception;
 use Atlas\Query\Select;
 
-class EventRepository
+class EventRepository implements RepositoryInterface
 {
 
     protected $db;
@@ -52,6 +53,41 @@ class EventRepository
             ->join('INNER', 'AnnualCycles', 'Events.AnnualCycleID = AnnualCycles.AnnualCycleID');
 
         return $select;
+
+    }
+
+
+    public function insert(/*.mixed.*/$data): void
+    {
+        throw new Exception(__CLASS__.": Method '__FUNCTION__' not implemented");
+
+    }
+
+
+    public function selectAll(): array
+    {
+        throw new Exception(__CLASS__.": Method '__FUNCTION__' not implemented");
+
+    }
+
+
+    public function selectById(/*.mixed.*/$departmentId): array
+    {
+        throw new Exception(__CLASS__.": Method '__FUNCTION__' not implemented");
+
+    }
+
+
+    public function update(/*.string.*/$id, /*.mixed.*/$data): void
+    {
+        throw new Exception(__CLASS__.":Method '__FUNCTION__' not implemented");
+
+    }
+
+
+    public function deleteById(/*.mixed.*/$id): void
+    {
+        throw new Exception(__CLASS__.": Method '__FUNCTION__' not implemented");
 
     }
 

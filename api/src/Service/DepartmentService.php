@@ -22,7 +22,7 @@ class DepartmentService
 
     public function getAllDepartments()
     {
-        $result = $this->departmentRepository->findAll();
+        $result = $this->departmentRepository->selectAll();
 
         $formatted = [];
         foreach ($result as $value) {
@@ -36,7 +36,7 @@ class DepartmentService
     
     public function getDepartmentsById($departmentId)
     {
-        $result = $this->departmentRepository->findDepartmentsById($departmentId);
+        $result = $this->departmentRepository->selectById($departmentId);
 
         $formatted = [];
         foreach ($result as $value) {
