@@ -75,6 +75,7 @@ namespace App\Modules\volunteers\Controller\Claims;
 use Slim\Http\Request;
 use Slim\Http\Response;
 use Atlas\Query\Update;
+use App\Controller\IncludeResource;
 
 class PutClaim extends BaseClaims
 {
@@ -109,10 +110,7 @@ class PutClaim extends BaseClaims
 
         /* Nothing Changed? */
         if ($same_member && $old_reward['id'] == $reward['id']) {
-            $short = $request->getQueryParam('short_response', false);
-            if (!boolval($short)) {
-                $target->processIncludes($request, $response, $params, $current);
-            }
+            IncludeResource::processIncludes($target->includes, $request, $response, $target->container, $params, $current);
             return [
             \App\Controller\BaseController::RESOURCE_TYPE,
             $target->arrayResponse($request, $response, $current),
@@ -151,10 +149,7 @@ class PutClaim extends BaseClaims
 
         $target = new GetClaim($this->container);
         $data = $target->buildResource($request, $response, ['id' => $params['id']])[1];
-        $short = $request->getQueryParam('short_response', false);
-        if (!boolval($short)) {
-            $target->processIncludes($request, $response, $params, $data);
-        }
+        IncludeResource::processIncludes($target->includes, $request, $response, $target->container, $params, $data);
         return [
         \App\Controller\BaseController::RESOURCE_TYPE,
         $target->arrayResponse($request, $response, $data),
