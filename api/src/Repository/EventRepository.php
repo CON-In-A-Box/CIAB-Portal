@@ -3,7 +3,9 @@
 namespace App\Repository;
 
 use Exception;
+use App\Error\InvalidParameterException;
 use Atlas\Query\Select;
+use Atlas\Query\Delete;
 
 class EventRepository implements RepositoryInterface
 {
@@ -99,7 +101,17 @@ class EventRepository implements RepositoryInterface
 
     public function deleteById(/*.mixed.*/$id): void
     {
-        throw new Exception(__CLASS__.": Method '__FUNCTION__' not implemented");
+        $delete = Delete::new($this->db)
+            ->from('Events');
+        if (is_array($id)) {
+            $select->where('EventID IN ', $id);
+        } else {
+            $delete->whereEquals(['EventID' => $id]);
+        }
+        $result = $delete->perform();
+        if ($result->rowCount() == 0) {
+            throw new InvalidParameterException("Delete of Event $id failed");
+        }
 
     }
 
