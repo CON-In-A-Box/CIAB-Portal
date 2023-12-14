@@ -66,14 +66,26 @@ class EventRepository implements RepositoryInterface
 
     public function selectAll(): array
     {
-        throw new Exception(__CLASS__.": Method '__FUNCTION__' not implemented");
+        return $this->getInitialSelect()->fetchAll();
 
     }
 
 
-    public function selectById(/*.mixed.*/$departmentId): array
+    public function selectById(/*.mixed.*/$id): array
     {
-        throw new Exception(__CLASS__.": Method '__FUNCTION__' not implemented");
+        if ($id === 'current') {
+            return [$this->getCurrentEvent()];
+        }
+
+        $select = $this->getInitialSelect();
+        if (is_array($id)) {
+            $select->where('EventID IN ', $id);
+        } else {
+            $select->whereEquals(['EventID' => $id]);
+        }
+
+        $data = $select->fetchAll();
+        return $data;
 
     }
 

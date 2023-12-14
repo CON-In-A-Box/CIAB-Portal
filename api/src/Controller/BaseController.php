@@ -443,20 +443,20 @@ abstract class BaseController
     }
 
 
-    protected function getEvent(string $id)
+    public static function staticGetEvent($container, string $id)
     {
-        return BaseController::staticGetEvent($this->container, $id);
+        $data = $container->EventService->getById($id);
+        if (empty($data)) {
+            throw new NotFoundException("Event '{$id}' Not Found");
+        }
+        return $data[0];
 
     }
 
 
-    public static function staticGetEvent($container, string $id)
+    protected function getEvent(string $id)
     {
-        $event = new \App\Controller\Event\GetEvent($container);
-        $env = Environment::mock([]);
-        $request = Request::createFromEnvironment($env);
-        $response = new Response();
-        return $event->buildResource($request, $response, ['id' => $id])[1];
+        return $this->staticGetEvent($this->container, $id);
 
     }
 
