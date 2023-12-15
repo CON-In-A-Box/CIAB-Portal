@@ -50,6 +50,27 @@ class DepartmentService implements ServiceInterface
     }
 
 
+    public function post(/*.mixed.*/$data): void
+    {
+        throw new Exception(__CLASS__.": Method '__FUNCTION__' not implemented");
+
+    }
+
+
+    public function put(/*.string.*/$id, /*.mixed.*/$data): void
+    {
+        throw new Exception(__CLASS__.": Method '__FUNCTION__' not implemented");
+
+    }
+
+
+    public function deleteById(/*.mixed.*/$id): void
+    {
+        throw new Exception(__CLASS__.": Method '__FUNCTION__' not implemented");
+
+    }
+
+
     private function formatDepartmentValue($value)
     {
         $output = [];
@@ -85,27 +106,6 @@ class DepartmentService implements ServiceInterface
         }
 
         return $output;
-
-    }
-
-
-    public function post(/*.mixed.*/$data): void
-    {
-        throw new Exception(__CLASS__.": Method '__FUNCTION__' not implemented");
-
-    }
-
-
-    public function put(/*.string.*/$id, /*.mixed.*/$data): void
-    {
-        throw new Exception(__CLASS__.": Method '__FUNCTION__' not implemented");
-
-    }
-
-
-    public function deleteById(/*.mixed.*/$id): void
-    {
-        throw new Exception(__CLASS__.": Method '__FUNCTION__' not implemented");
 
     }
 
