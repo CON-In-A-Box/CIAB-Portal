@@ -36,7 +36,6 @@ namespace App\Controller\Event;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
-use Atlas\Query\Delete;
 
 class DeleteEvent extends BaseEvent
 {
@@ -46,10 +45,7 @@ class DeleteEvent extends BaseEvent
     {
         $permissions = ['api.delete.event'];
         $this->checkPermissions($permissions);
-        $this->getEvent($params['id']);
-
-        $delete = Delete::new($this->container->db);
-        $result = $delete->from('Events')->whereEquals(['EventID' => $params['id']])->perform();
+        $this->container->EventService->deleteById($params['id']);
 
         return [
         \App\Controller\BaseController::RESOURCE_TYPE,

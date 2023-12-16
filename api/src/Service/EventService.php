@@ -23,6 +23,24 @@ class EventService implements ServiceInterface
     }
 
 
+    private function formatEvent($event)
+    {
+        $formatted = [];
+        $formatted["id"] = $event["EventID"];
+        $formatted["name"] = $event["EventName"];
+        $formatted["date_from"] = $event["EventFrom"];
+        $formatted["date_to"] = $event["EventTo"];
+        $formatted["type"] = "event";
+        $formatted["cycle"]["id"] = $event["AnnualCycleID"];
+        $formatted["cycle"]["date_from"] = $event["AnnualCycleFrom"];
+        $formatted["cycle"]["date_to"] = $event["AnnualCycleTo"];
+        $formatted["cycle"]["type"] = "cycle";
+
+        return $formatted;
+
+    }
+
+
     public function getCurrentEvent()
     {
         if ($this->currentEvent != null) {
@@ -35,19 +53,8 @@ class EventService implements ServiceInterface
             $event = $this->eventRepository->getLastActiveEvent();
         }
 
-        $formatted = [];
-        $formatted["id"] = $event["EventID"];
-        $formatted["name"] = $event["EventName"];
-        $formatted["date_from"] = $event["EventFrom"];
-        $formatted["date_to"] = $event["EventTo"];
-        $formatted["type"] = "event";
-        $formatted["cycle"]["id"] = $event["AnnualCycleID"];
-        $formatted["cycle"]["date_from"] = $event["AnnualCycleFrom"];
-        $formatted["cycle"]["date_to"] = $event["AnnualCycleTo"];
-        $formatted["cycle"]["type"] = "cycle";
-
-        $this->currentEvent = $formatted;
-        return $formatted;
+        $this->currentEvent = $this->formatEvent($event);
+        return $this->currentEvent;
 
     }
 
@@ -68,7 +75,17 @@ class EventService implements ServiceInterface
 
     public function getById(/*.mixed.*/$id): array
     {
-        throw new Exception(__CLASS__.": Method '__FUNCTION__' not implemented");
+        $data = $this->eventRepository->selectById($id);
+        if ($data === null) {
+            return null;
+        }
+
+        $output = [];
+        foreach ($data as $event) {
+            $output[] = $this->formatEvent($event);
+        }
+
+        return $output;
 
     }
 
@@ -82,7 +99,7 @@ class EventService implements ServiceInterface
 
     public function deleteById(/*.mixed.*/$id): void
     {
-        throw new Exception(__CLASS__.": Method '__FUNCTION__' not implemented");
+        $this->eventRepository->deleteById($id);
 
     }
 
