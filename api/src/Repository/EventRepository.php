@@ -104,7 +104,7 @@ class EventRepository implements RepositoryInterface
         $delete = Delete::new($this->db)
             ->from('Events');
         if (is_array($id)) {
-            $select->where('EventID IN ', $id);
+            $delete->where('EventID IN ', $id);
         } else {
             $delete->whereEquals(['EventID' => $id]);
         }

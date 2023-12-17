@@ -77,7 +77,7 @@ class EventService implements ServiceInterface
     {
         $data = $this->eventRepository->selectById($id);
         if ($data === null) {
-            return null;
+            return [];
         }
 
         $output = [];
