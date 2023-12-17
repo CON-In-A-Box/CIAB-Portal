@@ -20,7 +20,7 @@ class MemberService implements ServiceInterface
 
     public function getById($memberIds): array
     {
-        if (count($memberIds) == 0) {
+        if (empty($memberIds)) {
             return [];
         }
 
