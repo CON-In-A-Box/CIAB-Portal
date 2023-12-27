@@ -35,6 +35,8 @@ paths:
                 $ref: '#/components/schemas/announcement'
         '401':
           $ref: '#/components/responses/401'
+        '400':
+          $ref: '#/components/responses/400'
         '404':
           $ref: '#/components/responses/announce_not_found'
       security:
@@ -74,6 +76,8 @@ paths:
           $ref: '#/components/responses/401'
         '404':
           $ref: '#/components/responses/department_not_found'
+        '400':
+          $ref: '#/components/responses/400'
       security:
         -
           ciab_auth: []
@@ -198,6 +202,8 @@ paths:
           description: OK
         '401':
           $ref: '#/components/responses/401'
+        '400':
+          $ref: '#/components/responses/400'
         '404':
           description: 'Department or Member not found in the system'
           content:
@@ -3914,6 +3920,8 @@ paths:
 components:
   schemas:
     announcement:
+      required:
+        - id
       type: object
       allOf:
         -
@@ -3924,7 +3932,7 @@ components:
                 - announcement
             id:
               description: 'announcement ID'
-              type: integer
+              type: string
             posted_on:
               description: 'Date the announcement was first posted'
               type: string
@@ -3936,7 +3944,7 @@ components:
                   $ref: '#/components/schemas/department'
                 -
                   description: 'Department Id'
-                  type: integer
+                  type: string
             posted_by:
               description: 'The member who created the announcement'
               oneOf:
@@ -3944,10 +3952,10 @@ components:
                   $ref: '#/components/schemas/member'
                 -
                   description: 'Member Id'
-                  type: integer
+                  type: string
             scope:
               description: 'The scope of the announcement'
-              type: integer
+              type: string
             text:
               description: 'Text of the announcement'
               type: string
@@ -4093,7 +4101,7 @@ components:
                 - department
             id:
               description: 'department Id'
-              type: integer
+              type: string
             name:
               description: 'department name'
               type: string
@@ -4104,10 +4112,10 @@ components:
                   $ref: '#/components/schemas/department'
                 -
                   description: 'Department Id'
-                  type: integer
+                  type: string
             child_count:
               description: 'Number of child departments'
-              type: integer
+              type: string
             fallback:
               description: 'Department that is this departments fallback.'
               oneOf:
@@ -4115,7 +4123,7 @@ components:
                   $ref: '#/components/schemas/department'
                 -
                   description: 'Department Id'
-                  type: integer
+                  type: string
             email:
               description: 'Department''s email addresses.'
               type: array
@@ -4203,97 +4211,125 @@ components:
                 - member
             id:
               description: 'member ID'
-              type: integer
+              type: string
         -
           $ref: '#/components/schemas/member_body'
     member_body:
       properties:
         first_name:
+          nullable: true
           description: 'Members preferred first name'
           type: string
         last_name:
+          nullable: true
           description: 'Members preferred last name'
           type: string
         email:
           description: 'Members primary email'
           type: string
         legal_first_name:
+          nullable: true
           description: 'Members legal first name.'
           type: string
         legal_last_name:
+          nullable: true
           description: 'Members legal last name.'
           type: string
         middle_name:
+          nullable: true
           description: 'Member''s middle name.'
           type: string
         suffix:
+          nullable: true
           description: 'Suffix for members name.'
           type: string
         email2:
+          nullable: true
           description: 'Member''s second email.'
           type: string
         email3:
+          nullable: true
           description: 'Member''s third email'
           type: string
         phone:
+          nullable: true
           description: 'Member''s primary phone'
           type: string
         phone2:
+          nullable: true
           description: 'Member''s secondary phone'
           type: string
         address_line1:
+          nullable: true
           description: 'Member''s address line 1'
           type: string
         address_line2:
+          nullable: true
           description: 'Member''s address line 2'
           type: string
         city:
+          nullable: true
           description: 'Member''s address city.'
           type: string
         state:
+          nullable: true
           description: 'Member''s address state'
           type: string
         zip_code:
+          nullable: true
           description: 'Member''s Address Zip code.'
           type: string
         zip_plus4:
+          nullable: true
           description: 'Member''s Address Zip code suffix'
           type: string
         country:
+          nullable: true
           description: 'Member''s Address country.'
           type: string
         province:
+          nullable: true
           description: 'Member''s Address province.'
           type: string
         preferred_first_name:
+          nullable: true
           description: 'Member''s Preferred First Name.'
           type: string
         preferred_last_name:
+          nullable: true
           description: 'Member''s Preferred Last Name.'
           type: string
         deceased:
+          nullable: true
           description: 'Is member deceased.'
           type: boolean
         do_not_contact:
+          nullable: true
           description: 'Do not contact member.'
           type: boolean
         email_optout:
+          nullable: true
           description: 'Do not mass email member.'
           type: boolean
         birthdate:
+          nullable: true
           description: 'Member''s birth date.'
           type: string
           format: date
         gender:
+          nullable: true
           description: 'Member''s preferred gender string.'
           type: string
         concom_display_phone:
+          nullable: true
           description: 'If Concom display phone on list.'
           type: boolean
         duplicates:
+          nullable: true
           description: 'Comma seperated list of other account IDs with the same email address'
           type: string
         pronouns:
+          nullable: true
           description: 'Prefered pronouns.'
           type: string
       type: object
@@ -4305,7 +4341,7 @@ components:
             - member_reference
         id:
           description: 'Member Id'
-          type: integer
+          type: string
       type: object
     member_list:
       type: object

@@ -17,7 +17,7 @@
  *      ),
  *      @OA\Property(
  *          property="id",
- *          type="integer",
+ *          type="string",
  *          description="department Id"
  *      ),
  *      @OA\Property(
@@ -33,14 +33,14 @@
  *                  ref="#/components/schemas/department"
  *              ),
  *              @OA\Schema(
- *                  type="integer",
+ *                  type="string",
  *                  description="Department Id"
  *              )
  *          }
  *      ),
  *      @OA\Property(
  *          property="child_count",
- *          type="integer",
+ *          type="string",
  *          description="Number of child departments"
  *      ),
  *      @OA\Property(
@@ -51,7 +51,7 @@
  *                  ref="#/components/schemas/department"
  *              ),
  *              @OA\Schema(
- *                  type="integer",
+ *                  type="string",
  *                  description="Department Id"
  *              )
  *          }

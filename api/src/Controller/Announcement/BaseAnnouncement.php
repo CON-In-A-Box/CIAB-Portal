@@ -10,6 +10,7 @@
  *
  *  @OA\Schema(
  *      schema="announcement",
+ *      required={"id"},
  *      @OA\Property(
  *          property="type",
  *          type="string",
@@ -17,7 +18,7 @@
  *      ),
  *      @OA\Property(
  *          property="id",
- *          type="integer",
+ *          type="string",
  *          description="announcement ID"
  *      ),
  *      @OA\Property(
@@ -34,7 +35,7 @@
  *                  ref="#/components/schemas/department"
  *              ),
  *              @OA\Schema(
- *                  type="integer",
+ *                  type="string",
  *                  description="Department Id"
  *              )
  *          }
@@ -47,14 +48,14 @@
  *                  ref="#/components/schemas/member"
  *              ),
  *              @OA\Schema(
- *                  type="integer",
+ *                  type="string",
  *                  description="Member Id"
  *              )
  *          }
  *      ),
  *      @OA\Property(
  *          property="scope",
- *          type="integer",
+ *          type="string",
  *          description="The scope of the announcement"
  *      ),
  *      @OA\Property(

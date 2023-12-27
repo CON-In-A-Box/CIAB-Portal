@@ -157,7 +157,7 @@ class MemberTest extends CiabTestCase
             ->perform();
         $this->runRequest('GET', '/member/-1', null, null, 404);
 
-        $basedata = $this->runSuccessJsonRequest('GET', '/member');
+        $basedata = $this->runSuccessJsonRequest('GET', '/member', null, null, 200, null, '/member');
         $this->assertSame($basedata->id, '1000');
 
         $data = $this->runSuccessJsonRequest('GET', '/member/current');

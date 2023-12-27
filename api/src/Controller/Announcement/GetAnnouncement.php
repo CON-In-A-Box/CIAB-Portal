@@ -30,6 +30,10 @@
  *          ref="#/components/responses/401"
  *      ),
  *      @OA\Response(
+ *          response=400,
+ *          ref="#/components/responses/400"
+ *      ),
+ *      @OA\Response(
  *          response=404,
  *          ref="#/components/responses/announce_not_found"
  *      ),
