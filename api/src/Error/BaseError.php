@@ -1,3 +1,8 @@
+<?php declare(strict_types=1);
+/*.
+    require_module 'standard';
+.*/
+
 /**
  *  @OA\Schema(
  *      schema="error",
@@ -9,7 +14,7 @@
  *      @OA\Property(
  *          property="code",
  *          type="integer",
- *          description="announcement ID"
+ *          description="Error ID"
  *      ),
  *      @OA\Property(
  *          property="status",
@@ -23,3 +28,5 @@
  *      )
  *  )
  **/
+
+namespace App\Error;

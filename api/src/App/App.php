@@ -40,6 +40,11 @@
  *      response=401,
  *      description="User is not authenticated or not authorized for the API."
  *   )
+ *
+ *   @OA\Response(
+ *      response=400,
+ *      description="Malformed request syntax"
+ *   )
  **/
 
 use Chadicus\Slim\OAuth2\Middleware;
