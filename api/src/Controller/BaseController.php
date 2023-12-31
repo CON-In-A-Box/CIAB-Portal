@@ -80,6 +80,10 @@
  *          type="integer",
  *      )
  *  )
+ *
+ *  @OA\Schema(
+ *      schema="BaseController"
+ *  )
  */
 
 namespace App\Controller;

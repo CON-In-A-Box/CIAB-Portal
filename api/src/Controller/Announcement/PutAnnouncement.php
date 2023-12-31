@@ -49,6 +49,10 @@
  *          response=404,
  *          ref="#/components/responses/department_not_found"
  *      ),
+ *      @OA\Response(
+ *          response=400,
+ *          ref="#/components/responses/400"
+ *      ),
  *      security={{"ciab_auth":{}}}
  *  )
  **/

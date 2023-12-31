@@ -50,6 +50,10 @@
  *          ref="#/components/responses/401"
  *      ),
  *      @OA\Response(
+ *          response=400,
+ *          ref="#/components/responses/400"
+ *      ),
+ *      @OA\Response(
  *          response=404,
  *          description="Department or Member not found in the system",
  *          @OA\JsonContent(

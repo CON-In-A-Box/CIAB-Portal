@@ -14,7 +14,7 @@ class AnnouncementTest extends CiabTestCase
 
     protected function addAnnouncement($scope): string
     {
-        $data = $this->runSuccessJsonRequest('GET', '/department/2/announcements');
+        $data = $this->runSuccessJsonRequest('GET', '/department/2/announcements', null, null, 200, null, '/department/{id}/announcements');
         $initial_ids = [];
         foreach ($data->data as $item) {
             $initial_ids[] = $item->id;
@@ -27,10 +27,12 @@ class AnnouncementTest extends CiabTestCase
             ['scope' => $scope,
              'text' => 'testing',
              'email' => 1],
-            201
+            201,
+            null,
+            '/department/{id}/announcement'
         );
 
-        $data = $this->runSuccessJsonRequest('GET', '/department/2/announcements');
+        $data = $this->runSuccessJsonRequest('GET', '/department/2/announcements', null, null, 200, null, '/department/{id}/announcements');
 
         # Find New Index
         $target = null;
@@ -124,15 +126,16 @@ class AnnouncementTest extends CiabTestCase
             $id = $this->testing_accounts[$account];
         }
 
-        $this->runRequest(
+        $request = $this->runRequest(
             'PUT',
             '/announcement/'.$this->target,
             null,
             ['department' => $department,
              'scope' => $scope ],
-            200
+             200,
+             null,
+             '/announcement/{id}'
         );
-
 
         /* check member access */
 
@@ -230,22 +233,26 @@ class AnnouncementTest extends CiabTestCase
             '/department/-1/announcements',
             null,
             null,
-            404
+            404,
+            null,
+            '/department/{id}/announcements'
         );
 
-        $this->runRequest('PUT', '/announcement/'.$this->target, null, null, 400);
+        $this->runRequest('PUT', '/announcement/'.$this->target, null, null, 400, null, '/announcement/{id}');
 
-        $this->runRequest('PUT', '/announcement/-1', null, null, 404);
+        $this->runRequest('PUT', '/announcement/-1', null, null, 404, null, '/announcement/{id}');
 
         $this->runRequest(
             'PUT',
             '/announcement/'.$this->target,
             null,
             ['department' => -1],
-            404
+            404,
+            null,
+            '/announcement/{id}'
         );
 
-        $this->runRequest('POST', '/department/2/announcement', null, null, 400);
+        $this->runRequest('POST', '/department/2/announcement', null, null, 400, null, '/department/{id}/announcement');
 
         $this->runRequest(
             'POST',
@@ -254,7 +261,9 @@ class AnnouncementTest extends CiabTestCase
             ['scope' => 2,
              'text' => 'testing',
              'email' => 0],
-            404
+            404,
+            null,
+            '/department/{id}/announcement'
         );
 
         $this->runRequest(
@@ -263,7 +272,9 @@ class AnnouncementTest extends CiabTestCase
             null,
             ['text' => 'testing',
              'email' => 0],
-            400
+            400,
+            null,
+            '/department/{id}/announcement'
         );
 
         $this->runRequest(
@@ -272,7 +283,9 @@ class AnnouncementTest extends CiabTestCase
             null,
             ['scope' => 2,
              'email' => 0],
-            400
+            400,
+            null,
+            '/department/{id}/announcement'
         );
 
     }

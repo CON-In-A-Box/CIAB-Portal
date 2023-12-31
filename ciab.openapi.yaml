@@ -35,6 +35,8 @@ paths:
                 $ref: '#/components/schemas/announcement'
         '401':
           $ref: '#/components/responses/401'
+        '400':
+          $ref: '#/components/responses/400'
         '404':
           $ref: '#/components/responses/announce_not_found'
       security:
@@ -74,6 +76,8 @@ paths:
           $ref: '#/components/responses/401'
         '404':
           $ref: '#/components/responses/department_not_found'
+        '400':
+          $ref: '#/components/responses/400'
       security:
         -
           ciab_auth: []
@@ -198,6 +202,8 @@ paths:
           description: OK
         '401':
           $ref: '#/components/responses/401'
+        '400':
+          $ref: '#/components/responses/400'
         '404':
           description: 'Department or Member not found in the system'
           content:
@@ -3914,41 +3920,47 @@ paths:
 components:
   schemas:
     announcement:
-      properties:
-        type:
-          type: string
-          enum:
-            - announcement
-        id:
-          description: 'announcement ID'
-          type: integer
-        posted_on:
-          description: 'Date the announcement was first posted'
-          type: string
-          format: date
-        department:
-          description: 'Department for the announcement'
-          oneOf:
-            -
-              $ref: '#/components/schemas/department'
-            -
-              description: 'Department Id'
-              type: integer
-        posted_by:
-          description: 'The member who created the announcement'
-          oneOf:
-            -
-              $ref: '#/components/schemas/member'
-            -
-              description: 'Member Id'
-              type: integer
-        scope:
-          description: 'The scope of the announcement'
-          type: integer
-        text:
-          description: 'Text of the announcement'
-          type: string
+      required:
+        - id
       type: object
+      allOf:
+        -
+          properties:
+            type:
+              type: string
+              enum:
+                - announcement
+            id:
+              description: 'announcement ID'
+              type: string
+            posted_on:
+              description: 'Date the announcement was first posted'
+              type: string
+              format: date
+            department:
+              description: 'Department for the announcement'
+              oneOf:
+                -
+                  $ref: '#/components/schemas/department'
+                -
+                  description: 'Department Id'
+                  type: string
+            posted_by:
+              description: 'The member who created the announcement'
+              oneOf:
+                -
+                  $ref: '#/components/schemas/member'
+                -
+                  description: 'Member Id'
+                  type: string
+            scope:
+              description: 'The scope of the announcement'
+              type: string
+            text:
+              description: 'Text of the announcement'
+              type: string
+        -
+          $ref: '#/components/schemas/BaseController'
     announcement_list:
       type: object
       allOf:
@@ -3965,22 +3977,8 @@ components:
                 $ref: '#/components/schemas/announcement'
         -
           $ref: '#/components/schemas/resource_list'
-    error:
-      properties:
-        type:
-          type: string
-          enum:
-            - error
-        code:
-          description: 'announcement ID'
-          type: integer
-        status:
-          description: 'Error Status'
-          type: string
-        message:
-          description: 'Error Message'
-          type: string
-      type: object
+        -
+          $ref: '#/components/schemas/BaseController'
     resource_list:
       properties:
         type:
@@ -3993,24 +3991,29 @@ components:
           description: 'If present, the `page_token` for the next page of results'
           type: integer
       type: object
+    BaseController: {  }
     cycle:
-      properties:
-        type:
-          type: string
-          enum:
-            - cycle
-        id:
-          description: 'cycle Id'
-          type: integer
-        date_from:
-          description: 'cycle start date'
-          type: string
-          format: date
-        date_to:
-          description: 'cycle ending date'
-          type: string
-          format: date
       type: object
+      allOf:
+        -
+          properties:
+            type:
+              type: string
+              enum:
+                - cycle
+            id:
+              description: 'cycle Id'
+              type: integer
+            date_from:
+              description: 'cycle start date'
+              type: string
+              format: date
+            date_to:
+              description: 'cycle ending date'
+              type: string
+              format: date
+        -
+          $ref: '#/components/schemas/BaseController'
     cycle_list:
       type: object
       allOf:
@@ -4027,42 +4030,48 @@ components:
                 $ref: '#/components/schemas/cycle'
         -
           $ref: '#/components/schemas/resource_list'
+        -
+          $ref: '#/components/schemas/BaseController'
     deadline:
-      properties:
-        type:
-          type: string
-          enum:
-            - deadline
-        id:
-          description: 'Deadline Id'
-          type: integer
-        deadline:
-          description: 'When this deadline expires'
-          type: string
-          format: date
-        department:
-          description: 'Department for the deadline'
-          oneOf:
-            -
-              $ref: '#/components/schemas/department'
-            -
-              description: 'Department Id'
-              type: integer
-        note:
-          description: 'Note about the deadline.'
-          type: string
-        scope:
-          description: 'The scope of the deadline'
-          type: integer
-        posted_by:
-          description: 'The member who created the deadline'
-          oneOf:
-            -
-              $ref: '#/components/schemas/member'
-            -
-              description: 'Member Id'
-              type: integer
       type: object
+      allOf:
+        -
+          properties:
+            type:
+              type: string
+              enum:
+                - deadline
+            id:
+              description: 'Deadline Id'
+              type: integer
+            deadline:
+              description: 'When this deadline expires'
+              type: string
+              format: date
+            department:
+              description: 'Department for the deadline'
+              oneOf:
+                -
+                  $ref: '#/components/schemas/department'
+                -
+                  description: 'Department Id'
+                  type: integer
+            note:
+              description: 'Note about the deadline.'
+              type: string
+            scope:
+              description: 'The scope of the deadline'
+              type: integer
+            posted_by:
+              description: 'The member who created the deadline'
+              oneOf:
+                -
+                  $ref: '#/components/schemas/member'
+                -
+                  description: 'Member Id'
+                  type: integer
+        -
+          $ref: '#/components/schemas/BaseController'
     deadline_list:
       type: object
       allOf:
@@ -4079,43 +4088,49 @@ components:
                 $ref: '#/components/schemas/deadline'
         -
           $ref: '#/components/schemas/resource_list'
+        -
+          $ref: '#/components/schemas/BaseController'
     department:
-      properties:
-        type:
-          type: string
-          enum:
-            - department
-        id:
-          description: 'department Id'
-          type: integer
-        name:
-          description: 'department name'
-          type: string
-        parent:
-          description: 'Department that is the parent of this department.'
-          oneOf:
-            -
-              $ref: '#/components/schemas/department'
-            -
-              description: 'Department Id'
-              type: integer
-        child_count:
-          description: 'Number of child departments'
-          type: integer
-        fallback:
-          description: 'Department that is this departments fallback.'
-          oneOf:
-            -
-              $ref: '#/components/schemas/department'
-            -
-              description: 'Department Id'
-              type: integer
-        email:
-          description: 'Department''s email addresses.'
-          type: array
-          items:
-            type: string
       type: object
+      allOf:
+        -
+          properties:
+            type:
+              type: string
+              enum:
+                - department
+            id:
+              description: 'department Id'
+              type: string
+            name:
+              description: 'department name'
+              type: string
+            parent:
+              description: 'Department that is the parent of this department.'
+              oneOf:
+                -
+                  $ref: '#/components/schemas/department'
+                -
+                  description: 'Department Id'
+                  type: string
+            child_count:
+              description: 'Number of child departments'
+              type: string
+            fallback:
+              description: 'Department that is this departments fallback.'
+              oneOf:
+                -
+                  $ref: '#/components/schemas/department'
+                -
+                  description: 'Department Id'
+                  type: string
+            email:
+              description: 'Department''s email addresses.'
+              type: array
+              items:
+                type: string
+        -
+          $ref: '#/components/schemas/BaseController'
     department_list:
       type: object
       allOf:
@@ -4132,35 +4147,41 @@ components:
                 $ref: '#/components/schemas/department'
         -
           $ref: '#/components/schemas/resource_list'
+        -
+          $ref: '#/components/schemas/BaseController'
     event:
-      properties:
-        type:
-          type: string
-          enum:
-            - event
-        id:
-          description: 'event Id'
-          type: integer
-        cycle:
-          description: 'Annual cycle this event is part of'
-          oneOf:
-            -
-              $ref: '#/components/schemas/cycle'
-            -
-              description: 'Cycle Id'
-              type: integer
-        date_from:
-          description: 'Date the event starts'
-          type: string
-          format: date
-        date_to:
-          description: 'Date the event ends'
-          type: string
-          format: date
-        name:
-          description: 'Name of the event'
-          type: string
       type: object
+      allOf:
+        -
+          properties:
+            type:
+              type: string
+              enum:
+                - event
+            id:
+              description: 'event Id'
+              type: integer
+            cycle:
+              description: 'Annual cycle this event is part of'
+              oneOf:
+                -
+                  $ref: '#/components/schemas/cycle'
+                -
+                  description: 'Cycle Id'
+                  type: integer
+            date_from:
+              description: 'Date the event starts'
+              type: string
+              format: date
+            date_to:
+              description: 'Date the event ends'
+              type: string
+              format: date
+            name:
+              description: 'Name of the event'
+              type: string
+        -
+          $ref: '#/components/schemas/BaseController'
     event_list:
       type: object
       allOf:
@@ -4177,6 +4198,8 @@ components:
                 $ref: '#/components/schemas/event'
         -
           $ref: '#/components/schemas/resource_list'
+        -
+          $ref: '#/components/schemas/BaseController'
     member:
       type: object
       allOf:
@@ -4188,97 +4211,125 @@ components:
                 - member
             id:
               description: 'member ID'
-              type: integer
+              type: string
         -
           $ref: '#/components/schemas/member_body'
     member_body:
       properties:
         first_name:
+          nullable: true
           description: 'Members preferred first name'
           type: string
         last_name:
+          nullable: true
           description: 'Members preferred last name'
           type: string
         email:
           description: 'Members primary email'
           type: string
         legal_first_name:
+          nullable: true
           description: 'Members legal first name.'
           type: string
         legal_last_name:
+          nullable: true
           description: 'Members legal last name.'
           type: string
         middle_name:
+          nullable: true
           description: 'Member''s middle name.'
           type: string
         suffix:
+          nullable: true
           description: 'Suffix for members name.'
           type: string
         email2:
+          nullable: true
           description: 'Member''s second email.'
           type: string
         email3:
+          nullable: true
           description: 'Member''s third email'
           type: string
         phone:
+          nullable: true
           description: 'Member''s primary phone'
           type: string
         phone2:
+          nullable: true
           description: 'Member''s secondary phone'
           type: string
         address_line1:
+          nullable: true
           description: 'Member''s address line 1'
           type: string
         address_line2:
+          nullable: true
           description: 'Member''s address line 2'
           type: string
         city:
+          nullable: true
           description: 'Member''s address city.'
           type: string
         state:
+          nullable: true
           description: 'Member''s address state'
           type: string
         zip_code:
+          nullable: true
           description: 'Member''s Address Zip code.'
           type: string
         zip_plus4:
+          nullable: true
           description: 'Member''s Address Zip code suffix'
           type: string
         country:
+          nullable: true
           description: 'Member''s Address country.'
           type: string
         province:
+          nullable: true
           description: 'Member''s Address province.'
           type: string
         preferred_first_name:
+          nullable: true
           description: 'Member''s Preferred First Name.'
           type: string
         preferred_last_name:
+          nullable: true
           description: 'Member''s Preferred Last Name.'
           type: string
         deceased:
+          nullable: true
           description: 'Is member deceased.'
           type: boolean
         do_not_contact:
+          nullable: true
           description: 'Do not contact member.'
           type: boolean
         email_optout:
+          nullable: true
           description: 'Do not mass email member.'
           type: boolean
         birthdate:
+          nullable: true
           description: 'Member''s birth date.'
           type: string
           format: date
         gender:
+          nullable: true
           description: 'Member''s preferred gender string.'
           type: string
         concom_display_phone:
+          nullable: true
           description: 'If Concom display phone on list.'
           type: boolean
         duplicates:
+          nullable: true
           description: 'Comma seperated list of other account IDs with the same email address'
           type: string
         pronouns:
+          nullable: true
           description: 'Prefered pronouns.'
           type: string
       type: object
@@ -4290,7 +4341,7 @@ components:
             - member_reference
         id:
           description: 'Member Id'
-          type: integer
+          type: string
       type: object
     member_list:
       type: object
@@ -4309,12 +4360,16 @@ components:
         -
           $ref: '#/components/schemas/resource_list'
     payment:
-      properties:
-        type:
-          type: string
-          enum:
-            - payment
       type: object
+      allOf:
+        -
+          properties:
+            type:
+              type: string
+              enum:
+                - payment
+        -
+          $ref: '#/components/schemas/BaseController'
     permission_entry:
       properties:
         type:
@@ -4368,71 +4423,87 @@ components:
         -
           $ref: '#/components/schemas/resource_list'
     store:
-      properties:
-        type:
-          type: string
-          enum:
-            - store
-        id:
-          description: 'store Id'
-          type: integer
-        store_slug:
-          description: 'short, unique name for store'
-          type: string
-        name:
-          description: 'public-facing name for store, e.g. ''Membership'''
-          type: string
-        description:
-          description: 'description of store, eventually public facing'
-          type: string
       type: object
+      allOf:
+        -
+          properties:
+            type:
+              type: string
+              enum:
+                - store
+            id:
+              description: 'store Id'
+              type: integer
+            store_slug:
+              description: 'short, unique name for store'
+              type: string
+            name:
+              description: 'public-facing name for store, e.g. ''Membership'''
+              type: string
+            description:
+              description: 'description of store, eventually public facing'
+              type: string
+        -
+          $ref: '#/components/schemas/BaseController'
     store_list:
-      properties:
-        type:
-          type: string
-          enum:
-            - store_list
-        data:
-          description: 'List of stores'
-          type: array
-          items:
-            $ref: '#/components/schemas/store'
       type: object
+      allOf:
+        -
+          properties:
+            type:
+              type: string
+              enum:
+                - store_list
+            data:
+              description: 'List of stores'
+              type: array
+              items:
+                $ref: '#/components/schemas/store'
+        -
+          $ref: '#/components/schemas/BaseController'
     log_entry:
-      properties:
-        type:
-          type: string
-          enum:
-            - log_entry
-        id:
-          description: 'Entry ID'
-          type: string
-        account:
-          description: 'Member account generating the log'
-          type: string
-        function:
-          description: 'Function generating the log'
-          type: string
-        query:
-          description: 'The query string being logged'
-          type: string
-        date:
-          description: 'When the log entry was generated'
-          type: string
-          format: date-time
       type: object
+      allOf:
+        -
+          properties:
+            type:
+              type: string
+              enum:
+                - log_entry
+            id:
+              description: 'Entry ID'
+              type: string
+            account:
+              description: 'Member account generating the log'
+              type: string
+            function:
+              description: 'Function generating the log'
+              type: string
+            query:
+              description: 'The query string being logged'
+              type: string
+            date:
+              description: 'When the log entry was generated'
+              type: string
+              format: date-time
+        -
+          $ref: '#/components/schemas/BaseController'
     log:
-      properties:
-        type:
-          type: string
-          enum:
-            - log
-        data:
-          description: 'List of entries'
-          type: array
-          items:
-            $ref: '#/components/schemas/log_entry'
       type: object
+      allOf:
+        -
+          properties:
+            type:
+              type: string
+              enum:
+                - log
+            data:
+              description: 'List of entries'
+              type: array
+              items:
+                $ref: '#/components/schemas/log_entry'
+        -
+          $ref: '#/components/schemas/BaseController'
     configuration:
       properties:
         type:
@@ -4462,125 +4533,149 @@ components:
                 $ref: '#/components/schemas/configuration'
         -
           $ref: '#/components/schemas/resource_list'
+    error:
+      properties:
+        type:
+          type: string
+          enum:
+            - error
+        code:
+          description: 'Error ID'
+          type: integer
+        status:
+          description: 'Error Status'
+          type: string
+        message:
+          description: 'Error Message'
+          type: string
+      type: object
     ticket:
-      properties:
-        type:
-          type: string
-          enum:
-            - ticket
-        id:
-          type: integer
-        badge_dependent_on:
-          description: 'Member badge is dependent on'
-          oneOf:
-            -
-              $ref: '#/components/schemas/member'
-            -
-              description: 'Member Id'
-              type: integer
-        badge_id:
-          description: 'The badge number of unique distinguishing ID'
-          type: string
-        badge_name:
-          type: string
-        badges_picked_up:
-          description: 'The number of times this badge has been printed and picked up'
-          type: integer
-        emergency_contact:
-          type: string
-        event:
-          description: 'Event the badge is for'
-          oneOf:
-            -
-              $ref: '#/components/schemas/event'
-            -
-              description: 'Event Id'
-              type: integer
-        registered_by:
-          description: 'Member who create the ticket'
-          oneOf:
-            -
-              $ref: '#/components/schemas/member'
-            -
-              description: 'Member Id'
-              type: integer
-        registration_date:
-          type: string
-          format: date
-        boarding_pass_generated:
-          type: string
-          format: date
-        print_requested:
-          type: string
-          format: date
-        last_printed_date:
-          type: string
-          format: date
-        print_request_ip:
-          type: string
-          format: ip
-        note:
-          type: string
-        void_date:
-          type: string
-          format: date
-        void_by:
-          description: 'Member who voided the ticket'
-          oneOf:
-            -
-              $ref: '#/components/schemas/member'
-            -
-              description: 'Member Id'
-              type: integer
-        void_reason:
-          type: string
-        ticket_type:
-          description: 'Type of the ticket'
-          oneOf:
-            -
-              $ref: '#/components/schemas/ticket_type'
-            -
-              description: 'Ticket Type Id'
-              type: integer
-        member:
-          description: 'Member who the ticket is for'
-          oneOf:
-            -
-              $ref: '#/components/schemas/member'
-            -
-              description: 'Member Id'
-              type: integer
       type: object
+      allOf:
+        -
+          properties:
+            type:
+              type: string
+              enum:
+                - ticket
+            id:
+              type: integer
+            badge_dependent_on:
+              description: 'Member badge is dependent on'
+              oneOf:
+                -
+                  $ref: '#/components/schemas/member'
+                -
+                  description: 'Member Id'
+                  type: integer
+            badge_id:
+              description: 'The badge number of unique distinguishing ID'
+              type: string
+            badge_name:
+              type: string
+            badges_picked_up:
+              description: 'The number of times this badge has been printed and picked up'
+              type: integer
+            emergency_contact:
+              type: string
+            event:
+              description: 'Event the badge is for'
+              oneOf:
+                -
+                  $ref: '#/components/schemas/event'
+                -
+                  description: 'Event Id'
+                  type: integer
+            registered_by:
+              description: 'Member who create the ticket'
+              oneOf:
+                -
+                  $ref: '#/components/schemas/member'
+                -
+                  description: 'Member Id'
+                  type: integer
+            registration_date:
+              type: string
+              format: date
+            boarding_pass_generated:
+              type: string
+              format: date
+            print_requested:
+              type: string
+              format: date
+            last_printed_date:
+              type: string
+              format: date
+            print_request_ip:
+              type: string
+              format: ip
+            note:
+              type: string
+            void_date:
+              type: string
+              format: date
+            void_by:
+              description: 'Member who voided the ticket'
+              oneOf:
+                -
+                  $ref: '#/components/schemas/member'
+                -
+                  description: 'Member Id'
+                  type: integer
+            void_reason:
+              type: string
+            ticket_type:
+              description: 'Type of the ticket'
+              oneOf:
+                -
+                  $ref: '#/components/schemas/ticket_type'
+                -
+                  description: 'Ticket Type Id'
+                  type: integer
+            member:
+              description: 'Member who the ticket is for'
+              oneOf:
+                -
+                  $ref: '#/components/schemas/member'
+                -
+                  description: 'Member Id'
+                  type: integer
+        -
+          $ref: '#/components/schemas/BaseController'
     ticket_type:
-      properties:
-        type:
-          type: string
-          enum:
-            - ticket_type
-        id:
-          type: integer
-        event:
-          description: 'Event the badge is for'
-          oneOf:
-            -
-              $ref: '#/components/schemas/event'
-            -
-              description: 'Event Id'
-              type: integer
-        name:
-          type: string
-        avaliable_from:
-          type: string
-          format: date
-        avaliable_to:
-          type: string
-          format: date
-        cost:
-          type: number
-          format: float
-        background_image:
-          type: string
       type: object
+      allOf:
+        -
+          properties:
+            type:
+              type: string
+              enum:
+                - ticket_type
+            id:
+              type: integer
+            event:
+              description: 'Event the badge is for'
+              oneOf:
+                -
+                  $ref: '#/components/schemas/event'
+                -
+                  description: 'Event Id'
+                  type: integer
+            name:
+              type: string
+            avaliable_from:
+              type: string
+              format: date
+            avaliable_to:
+              type: string
+              format: date
+            cost:
+              type: number
+              format: float
+            background_image:
+              type: string
+        -
+          $ref: '#/components/schemas/BaseController'
     ticket_type_list:
       type: object
       allOf:
@@ -4596,6 +4691,8 @@ components:
                 $ref: '#/components/schemas/ticket_type'
         -
           $ref: '#/components/schemas/resource_list'
+        -
+          $ref: '#/components/schemas/BaseController'
     ticket_list:
       type: object
       allOf:
@@ -4611,25 +4708,31 @@ components:
                 $ref: '#/components/schemas/ticket'
         -
           $ref: '#/components/schemas/resource_list'
+        -
+          $ref: '#/components/schemas/BaseController'
     print_job:
-      properties:
-        type:
-          type: string
-          enum:
-            - print_job
-        id:
-          type: integer
-        method:
-          type: string
-          enum:
-            - claim
-        request:
-          type: string
-          enum:
-            - PUT
-        href:
-          type: string
       type: object
+      allOf:
+        -
+          properties:
+            type:
+              type: string
+              enum:
+                - print_job
+            id:
+              type: integer
+            method:
+              type: string
+              enum:
+                - claim
+            request:
+              type: string
+              enum:
+                - PUT
+            href:
+              type: string
+        -
+          $ref: '#/components/schemas/BaseController'
     print_queue:
       type: object
       allOf:
@@ -4646,38 +4749,44 @@ components:
                 $ref: '#/components/schemas/print_job'
         -
           $ref: '#/components/schemas/resource_list'
+        -
+          $ref: '#/components/schemas/BaseController'
     staff_entry:
-      properties:
-        type:
-          type: string
-          enum:
-            - staff_entry
-        id:
-          description: 'Entry Id'
-          type: integer
-        member:
-          description: 'Member resource'
-          oneOf:
-            -
-              $ref: '#/components/schemas/member'
-            -
-              description: 'Member Id'
-              type: integer
-        note:
-          description: 'Note about this staffing entry'
-          type: string
-        position:
-          description: 'Title of the staff position.'
-          type: string
-        departemnt:
-          description: 'The department of the staff position.'
-          oneOf:
-            -
-              $ref: '#/components/schemas/department'
-            -
-              description: 'departemnt Id'
-              type: integer
       type: object
+      allOf:
+        -
+          properties:
+            type:
+              type: string
+              enum:
+                - staff_entry
+            id:
+              description: 'Entry Id'
+              type: integer
+            member:
+              description: 'Member resource'
+              oneOf:
+                -
+                  $ref: '#/components/schemas/member'
+                -
+                  description: 'Member Id'
+                  type: integer
+            note:
+              description: 'Note about this staffing entry'
+              type: string
+            position:
+              description: 'Title of the staff position.'
+              type: string
+            departemnt:
+              description: 'The department of the staff position.'
+              oneOf:
+                -
+                  $ref: '#/components/schemas/department'
+                -
+                  description: 'departemnt Id'
+                  type: integer
+        -
+          $ref: '#/components/schemas/BaseController'
     staff_list:
       type: object
       allOf:
@@ -4697,58 +4806,72 @@ components:
                 $ref: '#/components/schemas/staff_entry'
         -
           $ref: '#/components/schemas/resource_list'
+        -
+          $ref: '#/components/schemas/BaseController'
     staff_position_entry:
-      properties:
-        id:
-          type: integer
-        position:
-          type: string
       type: object
+      allOf:
+        -
+          properties:
+            id:
+              type: integer
+            position:
+              type: string
+        -
+          $ref: '#/components/schemas/BaseController'
     staff_position_list:
-      properties:
-        type:
-          type: string
-          enum:
-            - staff_position_list
-        data:
-          description: 'List of department position types'
-          type: array
-          items:
-            $ref: '#/components/schemas/staff_position_entry'
       type: object
+      allOf:
+        -
+          properties:
+            type:
+              type: string
+              enum:
+                - staff_position_list
+            data:
+              description: 'List of department position types'
+              type: array
+              items:
+                $ref: '#/components/schemas/staff_position_entry'
+        -
+          $ref: '#/components/schemas/BaseController'
     volunteer_claim:
-      properties:
-        type:
-          type: string
-          enum:
-            - volunteer_claim
-        id:
-          type: integer
-        member:
-          description: 'Member badge who volunteered'
-          oneOf:
-            -
-              $ref: '#/components/schemas/member'
-            -
-              description: 'Member Id'
-              type: integer
-        event:
-          description: 'Event the badge is for'
-          oneOf:
-            -
-              $ref: '#/components/schemas/event'
-            -
-              description: 'Event Id'
-              type: integer
-        reward:
-          description: 'The Reward.'
-          oneOf:
-            -
-              $ref: '#/components/schemas/volunteer_reward'
-            -
-              description: 'Reward Id'
-              type: integer
       type: object
+      allOf:
+        -
+          properties:
+            type:
+              type: string
+              enum:
+                - volunteer_claim
+            id:
+              type: integer
+            member:
+              description: 'Member badge who volunteered'
+              oneOf:
+                -
+                  $ref: '#/components/schemas/member'
+                -
+                  description: 'Member Id'
+                  type: integer
+            event:
+              description: 'Event the badge is for'
+              oneOf:
+                -
+                  $ref: '#/components/schemas/event'
+                -
+                  description: 'Event Id'
+                  type: integer
+            reward:
+              description: 'The Reward.'
+              oneOf:
+                -
+                  $ref: '#/components/schemas/volunteer_reward'
+                -
+                  description: 'Reward Id'
+                  type: integer
+        -
+          $ref: '#/components/schemas/BaseController'
     volunteer_claim_list:
       type: object
       allOf:
@@ -4765,25 +4888,31 @@ components:
                 $ref: '#/components/schemas/volunteer_claim'
         -
           $ref: '#/components/schemas/resource_list'
+        -
+          $ref: '#/components/schemas/BaseController'
     volunteer_claim_summary:
-      properties:
-        type:
-          type: string
-          enum:
-            - volunteer_claim_summary
-        reward_count:
-          type: integer
-        spent_hours:
-          type: integer
-        event:
-          description: 'Event of the claim summary'
-          oneOf:
-            -
-              $ref: '#/components/schemas/event'
-            -
-              description: 'Event Id'
-              type: integer
       type: object
+      allOf:
+        -
+          properties:
+            type:
+              type: string
+              enum:
+                - volunteer_claim_summary
+            reward_count:
+              type: integer
+            spent_hours:
+              type: integer
+            event:
+              description: 'Event of the claim summary'
+              oneOf:
+                -
+                  $ref: '#/components/schemas/event'
+                -
+                  description: 'Event Id'
+                  type: integer
+        -
+          $ref: '#/components/schemas/BaseController'
     volunteer_hour_entry:
       type: object
       allOf:
@@ -4846,6 +4975,8 @@ components:
               description: 'Time Modifier.'
               type: number
         -
+          $ref: '#/components/schemas/BaseController'
+        -
           $ref: '#/components/schemas/configuration'
     volunteer_hour_summary:
       type: object
@@ -4862,6 +4993,8 @@ components:
               type: number
             total_hours:
               type: number
+        -
+          $ref: '#/components/schemas/BaseController'
         -
           $ref: '#/components/schemas/configuration'
       oneOf:
@@ -4904,6 +5037,8 @@ components:
         -
           $ref: '#/components/schemas/resource_list'
         -
+          $ref: '#/components/schemas/BaseController'
+        -
           $ref: '#/components/schemas/configuration'
     volunteer_hour_summary_list:
       type: object
@@ -4924,31 +5059,37 @@ components:
         -
           $ref: '#/components/schemas/resource_list'
         -
+          $ref: '#/components/schemas/BaseController'
+        -
           $ref: '#/components/schemas/configuration'
     volunteer_reward:
-      properties:
-        type:
-          type: string
-          enum:
-            - volunteer_reward
-        id:
-          type: integer
-        name:
-          type: string
-        promo:
-          type: boolean
-        reward_group:
-          oneOf:
-            -
-              $ref: '#/components/schemas/volunteer_reward_group'
-            -
-              description: 'Reward Group Id'
-              type: integer
-        inventory:
-          type: integer
-        retired:
-          type: boolean
       type: object
+      allOf:
+        -
+          properties:
+            type:
+              type: string
+              enum:
+                - volunteer_reward
+            id:
+              type: integer
+            name:
+              type: string
+            promo:
+              type: boolean
+            reward_group:
+              oneOf:
+                -
+                  $ref: '#/components/schemas/volunteer_reward_group'
+                -
+                  description: 'Reward Group Id'
+                  type: integer
+            inventory:
+              type: integer
+            retired:
+              type: boolean
+        -
+          $ref: '#/components/schemas/BaseController'
     volunteer_reward_entry_list:
       type: object
       allOf:
@@ -4965,42 +5106,58 @@ components:
                 $ref: '#/components/schemas/volunteer_reward'
         -
           $ref: '#/components/schemas/resource_list'
+        -
+          $ref: '#/components/schemas/BaseController'
     volunteer_reward_group:
-      properties:
-        type:
-          type: string
-          enum:
-            - volunteer_reward_group
-        id:
-          type: integer
-        reward_limit:
-          description: 'Number of items allowed from the group.'
-          type: integer
-        name:
-          description: 'Optional name of the reward group.'
-          type: string
       type: object
+      allOf:
+        -
+          properties:
+            type:
+              type: string
+              enum:
+                - volunteer_reward_group
+            id:
+              type: integer
+            reward_limit:
+              description: 'Number of items allowed from the group.'
+              type: integer
+            name:
+              description: 'Optional name of the reward group.'
+              type: string
+        -
+          $ref: '#/components/schemas/BaseController'
     volunteer_reward_group_prize_list:
-      properties:
-        type:
-          type: string
-          enum:
-            - volunteer_reward_group_prize_list
-        data:
-          description: 'Items in the group.'
       type: object
+      allOf:
+        -
+          properties:
+            type:
+              type: string
+              enum:
+                - volunteer_reward_group_prize_list
+            data:
+              description: 'Items in the group.'
+        -
+          $ref: '#/components/schemas/BaseController'
     volunteer_reward_group_list:
-      properties:
-        type:
-          type: string
-          enum:
-            - volunteer_reward_group_list
-        data:
-          description: 'Items in the group.'
       type: object
+      allOf:
+        -
+          properties:
+            type:
+              type: string
+              enum:
+                - volunteer_reward_group_list
+            data:
+              description: 'Items in the group.'
+        -
+          $ref: '#/components/schemas/BaseController'
   responses:
     '401':
       description: 'User is not authenticated or not authorized for the API.'
+    '400':
+      description: 'Malformed request syntax'
     announce_not_found:
       description: 'Announcement not found in the system.'
       content:
