@@ -233,6 +233,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/cycle'
+        '400':
+          $ref: '#/components/responses/400'
         '401':
           $ref: '#/components/responses/401'
         '404':
@@ -273,6 +275,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/cycle'
+        '400':
+          $ref: '#/components/responses/400'
         '401':
           $ref: '#/components/responses/401'
         '404':
@@ -343,6 +347,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/cycle_list'
+        '400':
+          $ref: '#/components/responses/400'
         '401':
           $ref: '#/components/responses/401'
         '404':
@@ -373,6 +379,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/cycle'
+        '400':
+          $ref: '#/components/responses/400'
         '401':
           $ref: '#/components/responses/401'
         '404':
@@ -4003,7 +4011,7 @@ components:
                 - cycle
             id:
               description: 'cycle Id'
-              type: integer
+              type: string
             date_from:
               description: 'cycle start date'
               type: string

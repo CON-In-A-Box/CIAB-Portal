@@ -56,6 +56,11 @@ abstract class CiabTestCase extends TestCase
     protected static $client = 'ciab';
 
     /**
+     * @var object
+     */
+    protected static $validator;
+
+    /**
      * @var Container
      */
     protected $container;
@@ -100,7 +105,8 @@ abstract class CiabTestCase extends TestCase
      */
     protected $testing_accounts = [];
 
-    const yamlFile = __DIR__.'/../../../../ciab.openapi.yaml';
+    const YAMLFILE = __DIR__.'/../../../../ciab.openapi.yaml';
+
 
     public static function setUpBeforeClass(): void
     {
@@ -125,6 +131,8 @@ abstract class CiabTestCase extends TestCase
                 }
             }
         }
+
+        CiabTestCase::$validator = ValidatorBuilder::fromYamlFile(CiabTestCase::YAMLFILE)->getValidator();
 
     }
 
@@ -191,8 +199,6 @@ abstract class CiabTestCase extends TestCase
             }
         }
         setupInstall($this->container);
-
-        $this->validator = ValidatorBuilder::fromYamlFile(CiabTestCase::yamlFile)->getValidator();
 
     }
 
@@ -298,7 +304,7 @@ abstract class CiabTestCase extends TestCase
         }
         $request = $this->createRequest($method, $uri, $serverParams, $token);
         if ($yamlUri) {
-            $this->validator->validate($request, $yamlUri, $method);
+            self::$validator->validate($request, $yamlUri, $method);
         }
         if (!empty($body)) {
             $request = $request->withParsedBody($body);
@@ -315,7 +321,12 @@ abstract class CiabTestCase extends TestCase
         }
 
         if ($yamlUri) {
-            $this->validator->validate($response, $yamlUri, $method);
+            try {
+                self::$validator->validate($response, $yamlUri, $method);
+            } catch (\Exception $e) {
+                error_log((string)$response->getBody());
+                throw($e);
+            }
         }
 
         return $response;

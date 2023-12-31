@@ -17,7 +17,7 @@
  *      ),
  *      @OA\Property(
  *          property="id",
- *          type="integer",
+ *          type="string",
  *          description="cycle Id"
  *      ),
  *      @OA\Property(

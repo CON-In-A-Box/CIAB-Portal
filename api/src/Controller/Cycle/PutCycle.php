@@ -41,6 +41,10 @@
  *          ),
  *      ),
  *      @OA\Response(
+ *          response=400,
+ *          ref="#/components/responses/400"
+ *      ),
+ *      @OA\Response(
  *          response=401,
  *          ref="#/components/responses/401"
  *      ),
@@ -79,7 +83,13 @@ class PutCycle extends BaseCycle
         $update->whereEquals(['AnnualCycleID' => $params['id']]);
         $result = $update->perform();
 
-        return [null];
+        $target = new \App\Controller\Cycle\GetCycle($this->container);
+        $data = $target->buildResource($request, $response, ['id' => $params['id']])[1];
+        return [
+        \App\Controller\BaseController::RESOURCE_TYPE,
+        $target->arrayResponse($request, $response, $data),
+        200
+        ];
 
     }
 
