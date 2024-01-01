@@ -89,7 +89,12 @@ class DeadlineTest extends CiabTestCase
     {
         $data = $this->runSuccessJsonRequest(
             'GET',
-            '/department/2/deadlines'
+            '/department/2/deadlines',
+            null,
+            null,
+            200,
+            null,
+            '/department/{id}/deadlines'
         );
         $this->assertNotEmpty($data->data);
         $this->assertIncludes($data->data[0], 'department');
@@ -97,6 +102,11 @@ class DeadlineTest extends CiabTestCase
 
         $data = $this->runSuccessJsonRequest(
             'GET',
+            '/deadline',
+            null,
+            null,
+            200,
+            null,
             '/deadline'
         );
         $this->assertNotEmpty($data->data);
@@ -110,12 +120,19 @@ class DeadlineTest extends CiabTestCase
             ['department' => 3,
              'note' => 'New Message',
              'deadline' => "$when" ],
-            200
+            200,
+            null,
+            '/deadline/{id}'
         );
 
         $data = $this->runSuccessJsonRequest(
             'GET',
-            '/deadline/'.$this->target
+            '/deadline/'.$this->target,
+            null,
+            null,
+            200,
+            null,
+            '/deadline/{id}'
         );
         $this->assertSame($data->note, 'New Message');
         $this->assertIncludes($data, 'department');
@@ -164,7 +181,9 @@ class DeadlineTest extends CiabTestCase
             null,
             ['department' => $department,
              'scope' => $scope ],
-            200
+            200,
+            null,
+            '/deadline/{id}'
         );
 
 
@@ -173,7 +192,12 @@ class DeadlineTest extends CiabTestCase
         if ($account === null) {
             $data = $this->RunSuccessJsonRequest(
                 'GET',
-                "/deadline"
+                "/deadline",
+                null,
+                null,
+                200,
+                null,
+                '/deadline'
             );
         } else {
             $data = $this->NPRunSuccessJsonRequest(
@@ -182,7 +206,8 @@ class DeadlineTest extends CiabTestCase
                 null,
                 null,
                 200,
-                $account
+                $account,
+                '/deadline'
             );
         }
         $found = false;
@@ -203,7 +228,12 @@ class DeadlineTest extends CiabTestCase
         if ($account === null) {
             $data = $this->RunSuccessJsonRequest(
                 'GET',
-                "/department/$department/deadlines"
+                "/department/$department/deadlines",
+                null,
+                null,
+                200,
+                null,
+                '/department/{id}/deadlines'
             );
         } else {
             $data = $this->NPRunSuccessJsonRequest(
@@ -212,7 +242,8 @@ class DeadlineTest extends CiabTestCase
                 null,
                 null,
                 200,
-                $account
+                $account,
+                '/department/{id}/deadlines'
             );
         }
         $found = false;
@@ -241,7 +272,9 @@ class DeadlineTest extends CiabTestCase
                 "/deadline/{$this->target}",
                 null,
                 null,
-                $code
+                $code,
+                null,
+                '/deadline/{id}'
             );
         } else {
             $this->NPRunSuccessJsonRequest(
@@ -250,7 +283,8 @@ class DeadlineTest extends CiabTestCase
                 null,
                 null,
                 $code,
-                $account
+                $account,
+                '/deadline/{id}'
             );
         }
 
@@ -259,17 +293,19 @@ class DeadlineTest extends CiabTestCase
 
     public function testDeadlineErrors(): void
     {
-        $this->runRequest('GET', '/department/-1/deadlines', null, null, 404);
-        $this->runRequest('GET', '/deadline/-1', null, null, 404);
-        $this->runRequest('PUT', '/deadline/'.$this->target, null, null, 400);
-        $this->runRequest('PUT', '/deadline/-1', null, null, 404);
+        $this->runRequest('GET', '/department/-1/deadlines', null, null, 404, null, '/department/{id}/deadlines');
+        $this->runRequest('GET', '/deadline/-1', null, null, 404, null, '/deadline/{id}');
+        $this->runRequest('PUT', '/deadline/'.$this->target, null, null, 400, null, '/deadline/{id}');
+        $this->runRequest('PUT', '/deadline/-1', null, null, 404, null, '/deadline/{id}');
 
         $this->runRequest(
             'PUT',
             '/deadline/'.$this->target,
             null,
             ['department' => -1],
-            404
+            404,
+            null,
+            '/deadline/{id}'
         );
 
         $this->runRequest(
@@ -277,7 +313,9 @@ class DeadlineTest extends CiabTestCase
             '/deadline/'.$this->target,
             null,
             ['nothing' => -1, 'we' => 1, 'Known' => 2],
-            400
+            400,
+            null,
+            '/deadline/{id}'
         );
 
         $this->runRequest(
@@ -285,7 +323,9 @@ class DeadlineTest extends CiabTestCase
             '/deadline/'.$this->target,
             null,
             ['deadline' => "not-a-date"],
-            400
+            400,
+            null,
+            '/deadline/{id}'
         );
 
         $when = date('Y-m-d', strtotime('-1 day'));
@@ -294,10 +334,12 @@ class DeadlineTest extends CiabTestCase
             '/deadline/'.$this->target,
             null,
             ['deadline' => "$when"],
-            400
+            400,
+            null,
+            '/deadline/{id}'
         );
 
-        $this->runRequest('POST', '/department/2/deadline', null, null, 400);
+        $this->runRequest('POST', '/department/2/deadline', null, null, 400, null, '/department/{id}/deadline');
 
         $when = date('Y-m-d', strtotime('+1 year'));
         $this->runRequest(
@@ -305,7 +347,9 @@ class DeadlineTest extends CiabTestCase
             '/department/-1/deadline',
             null,
             ['deadline' => $when, 'note' => 'testing'],
-            404
+            404,
+            null,
+            '/department/{id}/deadline'
         );
 
         $this->runRequest(
@@ -313,7 +357,9 @@ class DeadlineTest extends CiabTestCase
             '/department/2/deadline',
             null,
             ['note' => 'testing'],
-            400
+            400,
+            null,
+            '/department/{id}/deadline'
         );
 
         $this->runRequest(
@@ -321,7 +367,9 @@ class DeadlineTest extends CiabTestCase
             '/department/2/deadline',
             null,
             ['deadline' => "$when"],
-            400
+            400,
+            null,
+            '/department/{id}/deadline'
         );
 
         $this->runRequest(
@@ -329,7 +377,9 @@ class DeadlineTest extends CiabTestCase
             '/department/2/deadline',
             null,
             ['deadline' => "not-a-date", 'note' => 'testing'],
-            400
+            400,
+            null,
+            '/department/{id}/deadline'
         );
 
         $when = date('Y-m-d', strtotime('-1 day'));
@@ -338,10 +388,12 @@ class DeadlineTest extends CiabTestCase
             '/department/2/deadline',
             null,
             ['deadline' => "$when", 'note' => 'testing'],
-            400
+            400,
+            null,
+            '/department/{id}/deadline'
         );
 
-        $this->runRequest('DELETE', '/deadline/-1', null, null, 404);
+        $this->runRequest('DELETE', '/deadline/-1', null, null, 404, null, '/deadline/{id}');
 
     }
 

@@ -414,8 +414,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/deadline'
+        '400':
+          $ref: '#/components/responses/400'
         '401':
           $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
         '404':
           $ref: '#/components/responses/deadline_not_found'
       security:
@@ -449,8 +453,12 @@ paths:
       responses:
         '200':
           description: OK
+        '400':
+          $ref: '#/components/responses/400'
         '401':
           $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
         '404':
           $ref: '#/components/responses/deadline_not_found'
       security:
@@ -471,8 +479,12 @@ paths:
       responses:
         '204':
           description: OK
+        '400':
+          $ref: '#/components/responses/400'
         '401':
           $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
         '404':
           $ref: '#/components/responses/deadline_not_found'
       security:
@@ -506,8 +518,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/deadline_list'
+        '400':
+          $ref: '#/components/responses/400'
         '401':
           $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
         '404':
           $ref: '#/components/responses/department_not_found'
       security:
@@ -532,8 +548,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/deadline_list'
+        '400':
+          $ref: '#/components/responses/400'
         '401':
           $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
         '404':
           $ref: '#/components/responses/member_not_found'
       security:
@@ -574,8 +594,12 @@ paths:
       responses:
         '201':
           description: OK
+        '400':
+          $ref: '#/components/responses/400'
         '401':
           $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
         '404':
           $ref: '#/components/responses/department_not_found'
       security:
@@ -4051,7 +4075,7 @@ components:
                 - deadline
             id:
               description: 'Deadline Id'
-              type: integer
+              type: string
             deadline:
               description: 'When this deadline expires'
               type: string
@@ -4063,13 +4087,13 @@ components:
                   $ref: '#/components/schemas/department'
                 -
                   description: 'Department Id'
-                  type: integer
+                  type: string
             note:
               description: 'Note about the deadline.'
               type: string
             scope:
               description: 'The scope of the deadline'
-              type: integer
+              type: string
             posted_by:
               description: 'The member who created the deadline'
               oneOf:
@@ -4077,7 +4101,7 @@ components:
                   $ref: '#/components/schemas/member'
                 -
                   description: 'Member Id'
-                  type: integer
+                  type: string
         -
           $ref: '#/components/schemas/BaseController'
     deadline_list:
@@ -5166,6 +5190,8 @@ components:
       description: 'User is not authenticated or not authorized for the API.'
     '400':
       description: 'Malformed request syntax'
+    '403':
+      description: 'Permission Denied'
     announce_not_found:
       description: 'Announcement not found in the system.'
       content:
