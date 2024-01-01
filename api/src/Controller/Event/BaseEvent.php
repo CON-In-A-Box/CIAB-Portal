@@ -17,7 +17,7 @@
  *      ),
  *      @OA\Property(
  *          property="id",
- *          type="integer",
+ *          type="string",
  *          description="event Id"
  *      ),
  *      @OA\Property(
@@ -28,7 +28,7 @@
  *                  ref="#/components/schemas/cycle"
  *              ),
  *              @OA\Schema(
- *                  type="integer",
+ *                  type="string",
  *                  description="Cycle Id"
  *              )
  *          }

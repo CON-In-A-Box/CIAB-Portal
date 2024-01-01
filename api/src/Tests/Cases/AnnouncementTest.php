@@ -132,9 +132,9 @@ class AnnouncementTest extends CiabTestCase
             null,
             ['department' => $department,
              'scope' => $scope ],
-             200,
-             null,
-             '/announcement/{id}'
+            200,
+            null,
+            '/announcement/{id}'
         );
 
         /* check member access */
