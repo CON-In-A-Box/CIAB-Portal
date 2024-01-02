@@ -14,16 +14,8 @@
  *          name="id",
  *          required=true,
  *          @OA\Schema(
- *              oneOf = {
- *                  @OA\Schema(
- *                      description="Member login",
- *                      type="string"
- *                  ),
- *                  @OA\Schema(
- *                      description="Member id",
- *                      type="integer"
- *                  )
- *              }
+ *              description="Member login or id",
+ *              type="string"
  *          )
  *      ),
  *      @OA\RequestBody(
@@ -51,12 +43,23 @@
  *          )
  *      ),
  *      @OA\Response(
+ *          response=400,
+ *          ref="#/components/responses/400"
+ *      ),
+ *      @OA\Response(
  *          response=401,
  *          ref="#/components/responses/401"
  *      ),
  *      @OA\Response(
  *          response=404,
  *          ref="#/components/responses/configuration_not_found"
+ *      ),
+ *      @OA\Response(
+ *          response=409,
+ *          description="Field Invalid.",
+ *          @OA\JsonContent(
+ *              ref="#/components/schemas/error"
+ *          )
  *      ),
  *      security={{"ciab_auth":{}}}
  *  )

@@ -21,11 +21,19 @@
  *          name="from",
  *          required=false,
  *          @OA\Schema(
- *              type="array",
- *              @OA\Items(
- *                  type="string",
- *                  enum={"all","email","id","legal_name","name","badge", "badge_id"}
- *              )
+ *             oneOf = {
+ *                  @OA\Schema(
+ *                      type="array",
+ *                      @OA\Items(
+ *                          type="string",
+ *                          enum={"all","email","id","legal_name","name","badge", "badge_id"}
+ *                      )
+ *                  ),
+ *                  @OA\Schema(
+ *                      type="string",
+ *                      enum={"all","email","id","legal_name","name","badge", "badge_id"}
+ *                  )
+ *              }
  *          ),
  *          style="simple",
  *          explode=false

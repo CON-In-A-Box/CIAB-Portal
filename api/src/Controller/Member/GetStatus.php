@@ -6,12 +6,12 @@
 /**
  *  @OA\Get(
  *      tags={"members"},
- *      path="/member/{name}/status",
+ *      path="/member/{id}/status",
  *      summary="Gets the status of an member account.",
  *      @OA\Parameter(
- *          description="login for the account",
+ *          description="login name or member id for the account",
  *          in="path",
- *          name="name",
+ *          name="id",
  *          required=true,
  *          @OA\Schema(type="string")
  *      ),

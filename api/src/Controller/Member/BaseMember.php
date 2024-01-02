@@ -154,19 +154,19 @@
  *      ),
  *      @OA\Property(
  *          property="deceased",
- *          type="boolean",
+ *          type="string",
  *          nullable=true,
  *          description="Is member deceased."
  *      ),
  *      @OA\Property(
  *          property="do_not_contact",
- *          type="boolean",
+ *          type="string",
  *          nullable=true,
  *          description="Do not contact member."
  *      ),
  *      @OA\Property(
  *          property="email_optout",
- *          type="boolean",
+ *          type="string",
  *          nullable=true,
  *          description="Do not mass email member."
  *      ),
@@ -185,7 +185,7 @@
  *      ),
  *      @OA\Property(
  *          property="concom_display_phone",
- *          type="boolean",
+ *          type="string",
  *          nullable=true,
  *          description="If Concom display phone on list."
  *      ),
@@ -232,7 +232,7 @@
  *          type="array",
  *          description="List of members",
  *          @OA\Items(
- *              ref="#/components/schemas/member_reference"
+ *              ref="#/components/schemas/member"
  *          )
  *      )
  *  )

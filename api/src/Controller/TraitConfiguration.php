@@ -8,7 +8,7 @@
  *      @OA\Property(
  *          property="type",
  *          type="string",
- *          enum={"configuration"}
+ *          enum={"configuration_entry"}
  *      ),
  *      @OA\Property(
  *          property="field",
