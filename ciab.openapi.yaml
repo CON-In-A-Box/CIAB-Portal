@@ -233,6 +233,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/cycle'
+        '400':
+          $ref: '#/components/responses/400'
         '401':
           $ref: '#/components/responses/401'
         '404':
@@ -273,6 +275,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/cycle'
+        '400':
+          $ref: '#/components/responses/400'
         '401':
           $ref: '#/components/responses/401'
         '404':
@@ -343,6 +347,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/cycle_list'
+        '400':
+          $ref: '#/components/responses/400'
         '401':
           $ref: '#/components/responses/401'
         '404':
@@ -373,6 +379,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/cycle'
+        '400':
+          $ref: '#/components/responses/400'
         '401':
           $ref: '#/components/responses/401'
         '404':
@@ -406,8 +414,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/deadline'
+        '400':
+          $ref: '#/components/responses/400'
         '401':
           $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
         '404':
           $ref: '#/components/responses/deadline_not_found'
       security:
@@ -441,8 +453,12 @@ paths:
       responses:
         '200':
           description: OK
+        '400':
+          $ref: '#/components/responses/400'
         '401':
           $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
         '404':
           $ref: '#/components/responses/deadline_not_found'
       security:
@@ -463,8 +479,12 @@ paths:
       responses:
         '204':
           description: OK
+        '400':
+          $ref: '#/components/responses/400'
         '401':
           $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
         '404':
           $ref: '#/components/responses/deadline_not_found'
       security:
@@ -498,8 +518,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/deadline_list'
+        '400':
+          $ref: '#/components/responses/400'
         '401':
           $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
         '404':
           $ref: '#/components/responses/department_not_found'
       security:
@@ -524,8 +548,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/deadline_list'
+        '400':
+          $ref: '#/components/responses/400'
         '401':
           $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
         '404':
           $ref: '#/components/responses/member_not_found'
       security:
@@ -566,8 +594,12 @@ paths:
       responses:
         '201':
           description: OK
+        '400':
+          $ref: '#/components/responses/400'
         '401':
           $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
         '404':
           $ref: '#/components/responses/department_not_found'
       security:
@@ -681,7 +713,7 @@ paths:
           description: 'Id of the event'
           required: true
           schema:
-            type: integer
+            type: string
         -
           $ref: '#/components/parameters/short_response'
       responses:
@@ -691,6 +723,46 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/event'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/event_not_found'
+      security:
+        -
+          ciab_auth: []
+    put:
+      tags:
+        - events
+      summary: 'Modifies an existing event.'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Id of the event'
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                date_from:
+                  type: string
+                  format: date
+                date_to:
+                  type: string
+                  format: date
+                name:
+                  type: string
+              type: object
+      responses:
+        '200':
+          description: OK
+        '400':
+          $ref: '#/components/responses/400'
         '401':
           $ref: '#/components/responses/401'
         '404':
@@ -713,6 +785,8 @@ paths:
       responses:
         '204':
           description: OK
+        '400':
+          $ref: '#/components/responses/400'
         '401':
           $ref: '#/components/responses/401'
         '404':
@@ -757,44 +831,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/event_list'
+        '400':
+          $ref: '#/components/responses/400'
         '401':
           $ref: '#/components/responses/401'
-      security:
-        -
-          ciab_auth: []
-    put:
-      tags:
-        - events
-      summary: 'Modifies an existing event.'
-      parameters:
-        -
-          name: id
-          in: path
-          description: 'Id of the event'
-          required: true
-          schema:
-            type: integer
-      requestBody:
-        content:
-          multipart/form-data:
-            schema:
-              properties:
-                date_from:
-                  type: string
-                  format: date
-                date_to:
-                  type: string
-                  format: date
-                name:
-                  type: string
-              type: object
-      responses:
-        '200':
-          description: OK
-        '401':
-          $ref: '#/components/responses/401'
-        '404':
-          $ref: '#/components/responses/event_not_found'
       security:
         -
           ciab_auth: []
@@ -851,17 +891,22 @@ paths:
           style: simple
           explode: false
           schema:
-            type: array
-            items:
-              type: string
-              enum:
-                - all
-                - email
-                - id
-                - legal_name
-                - name
-                - badge
-                - badge_id
+            oneOf:
+              -
+                type: array
+                items:
+                  type: string
+                  enum: [all, email, id, legal_name, name, badge, badge_id]
+              -
+                type: string
+                enum:
+                  - all
+                  - email
+                  - id
+                  - legal_name
+                  - name
+                  - badge
+                  - badge_id
         -
           name: partial
           in: query
@@ -901,13 +946,8 @@ paths:
           description: 'The id or login of the member'
           required: true
           schema:
-            oneOf:
-              -
-                description: 'Member login'
-                type: string
-              -
-                description: 'Member id'
-                type: integer
+            description: 'Member login or Id'
+            type: string
         -
           name: field
           in: path
@@ -941,13 +981,8 @@ paths:
           description: 'The id or login of the member'
           required: true
           schema:
-            oneOf:
-              -
-                description: 'Member login'
-                type: string
-              -
-                description: 'Member id'
-                type: integer
+            description: 'Member login or id'
+            type: string
         -
           $ref: '#/components/parameters/max_results'
         -
@@ -977,13 +1012,8 @@ paths:
           description: 'The id or login of the member'
           required: true
           schema:
-            oneOf:
-              -
-                description: 'Member login'
-                type: string
-              -
-                description: 'Member id'
-                type: integer
+            description: 'Member login or id'
+            type: string
       requestBody:
         content:
           multipart/form-data:
@@ -1003,10 +1033,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/configuration'
+        '400':
+          $ref: '#/components/responses/400'
         '401':
           $ref: '#/components/responses/401'
         '404':
           $ref: '#/components/responses/configuration_not_found'
+        '409':
+          description: 'Field Invalid.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
       security:
         -
           ciab_auth: []
@@ -1022,7 +1060,7 @@ paths:
           description: 'Id of the member.'
           required: true
           schema:
-            type: integer
+            type: string
       responses:
         '200':
           description: 'Member found'
@@ -1048,13 +1086,8 @@ paths:
           description: 'The id or login of the member'
           required: true
           schema:
-            oneOf:
-              -
-                description: 'Member login'
-                type: string
-              -
-                description: 'Member id'
-                type: integer
+            description: 'Member login or id'
+            type: string
       requestBody:
         content:
           multipart/form-data:
@@ -1075,6 +1108,8 @@ paths:
                 $ref: '#/components/schemas/error'
         '401':
           $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/member_not_found'
       security:
         -
           ciab_auth: []
@@ -1121,16 +1156,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/error'
-  '/member/{name}/status':
+  '/member/{id}/status':
     get:
       tags:
         - members
       summary: 'Gets the status of an member account.'
       parameters:
         -
-          name: name
+          name: id
           in: path
-          description: 'login for the account'
+          description: 'login name or member id for the account'
           required: true
           schema:
             type: string
@@ -1146,30 +1181,6 @@ paths:
                 type: object
         '404':
           $ref: '#/components/responses/member_not_found'
-  '/member/{email}/password':
-    post:
-      tags:
-        - members
-      summary: 'Requests a password reset for a member'
-      parameters:
-        -
-          name: email
-          in: path
-          description: 'The id or login email for the member'
-          required: true
-          schema:
-            oneOf:
-              -
-                description: 'Member ID'
-                type: integer
-              -
-                description: 'Member login email'
-                type: string
-      responses:
-        '201':
-          description: OK
-        '404':
-          $ref: '#/components/responses/member_not_found'
   '/member/{id}/password':
     put:
       tags:
@@ -1182,13 +1193,8 @@ paths:
           description: 'The id or login of the member'
           required: true
           schema:
-            oneOf:
-              -
-                description: 'Member login'
-                type: string
-              -
-                description: 'Member id'
-                type: integer
+            description: 'Member login or id'
+            type: string
       requestBody:
         content:
           multipart/form-data:
@@ -1204,10 +1210,6 @@ paths:
       responses:
         '200':
           description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/member'
         '400':
           description: 'Parameter is missing or invalid'
           content:
@@ -1216,9 +1218,31 @@ paths:
                 $ref: '#/components/schemas/error'
         '401':
           $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/member_not_found'
       security:
         -
           ciab_auth: []
+    post:
+      tags:
+        - members
+      summary: 'Requests a password reset for a member'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'The id or login email for the member'
+          required: true
+          schema:
+            description: 'Member ID or login email'
+            type: string
+      responses:
+        '201':
+          description: OK
+        '404':
+          $ref: '#/components/responses/member_not_found'
   '/member/{email}/password/recovery':
     put:
       tags:
@@ -1253,6 +1277,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/error'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/member_not_found'
   '/admin/SUDO/{id}':
     post:
       tags:
@@ -1265,13 +1293,8 @@ paths:
           description: 'The id or login of the member'
           required: true
           schema:
-            oneOf:
-              -
-                description: 'Member login'
-                type: string
-              -
-                description: 'Member id'
-                type: integer
+            description: 'Member login or id'
+            type: string
       responses:
         '200':
           description: OK
@@ -4003,7 +4026,7 @@ components:
                 - cycle
             id:
               description: 'cycle Id'
-              type: integer
+              type: string
             date_from:
               description: 'cycle start date'
               type: string
@@ -4043,7 +4066,7 @@ components:
                 - deadline
             id:
               description: 'Deadline Id'
-              type: integer
+              type: string
             deadline:
               description: 'When this deadline expires'
               type: string
@@ -4055,13 +4078,13 @@ components:
                   $ref: '#/components/schemas/department'
                 -
                   description: 'Department Id'
-                  type: integer
+                  type: string
             note:
               description: 'Note about the deadline.'
               type: string
             scope:
               description: 'The scope of the deadline'
-              type: integer
+              type: string
             posted_by:
               description: 'The member who created the deadline'
               oneOf:
@@ -4069,7 +4092,7 @@ components:
                   $ref: '#/components/schemas/member'
                 -
                   description: 'Member Id'
-                  type: integer
+                  type: string
         -
           $ref: '#/components/schemas/BaseController'
     deadline_list:
@@ -4160,7 +4183,7 @@ components:
                 - event
             id:
               description: 'event Id'
-              type: integer
+              type: string
             cycle:
               description: 'Annual cycle this event is part of'
               oneOf:
@@ -4168,7 +4191,7 @@ components:
                   $ref: '#/components/schemas/cycle'
                 -
                   description: 'Cycle Id'
-                  type: integer
+                  type: string
             date_from:
               description: 'Date the event starts'
               type: string
@@ -4302,15 +4325,15 @@ components:
         deceased:
           nullable: true
           description: 'Is member deceased.'
-          type: boolean
+          type: string
         do_not_contact:
           nullable: true
           description: 'Do not contact member.'
-          type: boolean
+          type: string
         email_optout:
           nullable: true
           description: 'Do not mass email member.'
-          type: boolean
+          type: string
         birthdate:
           nullable: true
           description: 'Member''s birth date.'
@@ -4323,7 +4346,7 @@ components:
         concom_display_phone:
           nullable: true
           description: 'If Concom display phone on list.'
-          type: boolean
+          type: string
         duplicates:
           nullable: true
           description: 'Comma seperated list of other account IDs with the same email address'
@@ -4356,7 +4379,7 @@ components:
               description: 'List of members'
               type: array
               items:
-                $ref: '#/components/schemas/member_reference'
+                $ref: '#/components/schemas/member'
         -
           $ref: '#/components/schemas/resource_list'
     payment:
@@ -4509,7 +4532,7 @@ components:
         type:
           type: string
           enum:
-            - configuration
+            - configuration_entry
         field:
           description: 'Configuration Field'
           type: string
@@ -5158,6 +5181,8 @@ components:
       description: 'User is not authenticated or not authorized for the API.'
     '400':
       description: 'Malformed request syntax'
+    '403':
+      description: 'Permission Denied'
     announce_not_found:
       description: 'Announcement not found in the system.'
       content:

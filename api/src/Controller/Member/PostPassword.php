@@ -6,24 +6,16 @@
 /**
  *  @OA\Post(
  *      tags={"members"},
- *      path="/member/{email}/password",
+ *      path="/member/{id}/password",
  *      summary="Requests a password reset for a member",
  *      @OA\Parameter(
  *          description="The id or login email for the member",
  *          in="path",
- *          name="email",
+ *          name="id",
  *          required=true,
  *          @OA\Schema(
- *              oneOf = {
- *                  @OA\Schema(
- *                      description="Member ID",
- *                      type="integer"
- *                  ),
- *                  @OA\Schema(
- *                      description="Member login email",
- *                      type="string"
- *                  )
- *              }
+ *              description="Member ID or login email",
+ *              type="string"
  *          )
  *      ),
  *      @OA\Response(

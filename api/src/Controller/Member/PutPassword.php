@@ -14,16 +14,8 @@
  *          name="id",
  *          required=true,
  *          @OA\Schema(
- *              oneOf = {
- *                  @OA\Schema(
- *                      description="Member login",
- *                      type="string"
- *                  ),
- *                  @OA\Schema(
- *                      description="Member id",
- *                      type="integer"
- *                  )
- *              }
+ *               description="Member login or id",
+ *               type="string"
  *          )
  *      ),
  *      @OA\RequestBody(
@@ -45,10 +37,7 @@
  *      ),
  *      @OA\Response(
  *          response=200,
- *          description="OK",
- *          @OA\JsonContent(
- *              ref="#/components/schemas/member"
- *          )
+ *          description="OK"
  *      ),
  *      @OA\Response(
  *          response=400,
@@ -60,6 +49,14 @@
  *      @OA\Response(
  *          response=401,
  *          ref="#/components/responses/401"
+ *      ),
+ *      @OA\Response(
+ *          response=403,
+ *          ref="#/components/responses/403"
+ *      ),
+ *      @OA\Response(
+ *          response=404,
+ *          ref="#/components/responses/member_not_found"
  *      ),
  *      security={{"ciab_auth":{}}}
  *  )
@@ -102,7 +99,15 @@
  *          @OA\JsonContent(
  *              ref="#/components/schemas/error"
  *          )
- *      )
+ *      ),
+ *      @OA\Response(
+ *          response=403,
+ *          ref="#/components/responses/403"
+ *      ),
+ *      @OA\Response(
+ *          response=404,
+ *          ref="#/components/responses/member_not_found"
+ *      ),
  *  )
  **/
 

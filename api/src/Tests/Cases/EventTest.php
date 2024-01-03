@@ -46,31 +46,43 @@ class EventTest extends CiabTestCase
         $when = date('Y-m-d', strtotime('+1999 years'));
         $to = date('Y-m-d', strtotime('+1999 years'));
 
-        $data = $this->runSuccessJsonRequest('GET', '/event');
+        $data = $this->runSuccessJsonRequest('GET', '/event', null, null, 200, null, '/event');
         $this->assertSame($data->type, 'event_list');
 
-        $data = $this->runSuccessJsonRequest('GET', '/event/current');
+        $data = $this->runSuccessJsonRequest('GET', '/event/current', null, null, 200, null, '/event/{id}');
         $this->assertSame($data->type, 'event');
 
         $this->runSuccessJsonRequest(
             'GET',
             '/event',
-            ['begin' => $when]
+            ['begin' => $when],
+            null,
+            200,
+            null,
+            '/event'
         );
 
         $this->runSuccessJsonRequest(
             'GET',
             '/event',
-            ['end' => $to]
+            ['end' => $to],
+            null,
+            200,
+            null,
+            '/event'
         );
 
         $data = $this->runSuccessJsonRequest(
             'GET',
             '/event',
-            ['end' => $to,'begin' => $when]
+            ['end' => $to,'begin' => $when],
+            null,
+            200,
+            null,
+            '/event'
         );
         $id = $data->data[0]->id;
-        $data = $this->runSuccessJsonRequest('GET', '/event/'.$id);
+        $data = $this->runSuccessJsonRequest('GET', '/event/'.$id, null, null, 200, null, '/event/{id}');
         $this->assertIncludes($data, 'cycle');
 
     }
@@ -80,22 +92,22 @@ class EventTest extends CiabTestCase
     {
         $when = date('Y-m-d', strtotime('+2000 years'));
         $to = date('Y-m-d', strtotime('+2001 years'));
-        $this->runRequest('POST', '/event', null, null, 400);
-        $this->runRequest('POST', '/event', null, ['date_from' => $when], 400);
-        $this->runRequest('POST', '/event', null, ['date_from' => $when, 'date_to' => 'notadate'], 400);
-        $this->runRequest('POST', '/event', null, ['date_from' => 'notadate', 'date_to' => $to], 400);
-        $this->runRequest('POST', '/event', null, ['date_from' => $when, 'date_to' => $to], 400);
-        $this->runRequest('POST', '/event', null, ['date_from' => $when, 'date_to' => $to], 400);
+        $this->runRequest('POST', '/event', null, null, 400, null, '/event');
+        $this->runRequest('POST', '/event', null, ['date_from' => $when], 400, null, '/event');
+        $this->runRequest('POST', '/event', null, ['date_from' => $when, 'date_to' => 'notadate'], 400, null, '/event');
+        $this->runRequest('POST', '/event', null, ['date_from' => 'notadate', 'date_to' => $to], 400, null, '/event');
+        $this->runRequest('POST', '/event', null, ['date_from' => $when, 'date_to' => $to], 400, null, '/event');
+        $this->runRequest('POST', '/event', null, ['date_from' => $when, 'date_to' => $to], 400, null, '/event');
         $when = date('Y-m-d', strtotime('+3000 years'));
         $to = date('Y-m-d', strtotime('+3001 years'));
-        $this->runRequest('POST', '/event', null, ['date_from' => $when, 'date_to' => $to, 'name' => 'PHPTest-a-con'], 400);
+        $this->runRequest('POST', '/event', null, ['date_from' => $when, 'date_to' => $to, 'name' => 'PHPTest-a-con'], 400, null, '/event');
         $when = date('Y-m-d', strtotime('+2001 years'));
         $to = date('Y-m-d', strtotime('+2003 years'));
-        $this->runRequest('POST', '/event', null, ['date_from' => $when, 'date_to' => $to, 'name' => 'PHPTest-a-con'], 400);
+        $this->runRequest('POST', '/event', null, ['date_from' => $when, 'date_to' => $to, 'name' => 'PHPTest-a-con'], 400, null, '/event');
 
         $when = date('Y-m-d', strtotime('+2000 years'));
         $to = date('Y-m-d', strtotime('+2001 years'));
-        $this->events[] = $this->runSuccessJsonRequest('POST', '/event', null, ['date_from' => $when, 'date_to' => $to, 'name' => 'NEW PHPTest-a-con'], 201);
+        $this->events[] = $this->runSuccessJsonRequest('POST', '/event', null, ['date_from' => $when, 'date_to' => $to, 'name' => 'NEW PHPTest-a-con'], 201, null, '/event');
 
     }
 
@@ -104,30 +116,30 @@ class EventTest extends CiabTestCase
     {
         $when = date('Y-m-d', strtotime('+1998 years'));
         $to = date('Y-m-d', strtotime("$when +1 day"));
-        $this->events[] = $this->runSuccessJsonRequest('POST', '/event', null, ['date_from' => $when, 'date_to' => $to, 'name' => 'NEW PHPTest-a-con'], 201);
+        $this->events[] = $this->runSuccessJsonRequest('POST', '/event', null, ['date_from' => $when, 'date_to' => $to, 'name' => 'NEW PHPTest-a-con'], 201, null, '/event');
         $id = $this->events[0]->id;
 
-        $this->runRequest('PUT', '/event/unknown', null, null, 404);
-        $this->runRequest('PUT', "/event/$id", null, null, 400);
+        $this->runRequest('PUT', '/event/unknown', null, null, 404, null, '/event/{id}');
+        $this->runRequest('PUT', "/event/$id", null, null, 400, null, '/event/{id}');
 
         $date = date('Y-m-d', strtotime("$when +1000 years"));
-        $this->runRequest('PUT', "/event/$id", null, ['date_from' => $date], 400);
-        $this->runRequest('PUT', "/event/$id", null, ['date_from' => 'notadate'], 400);
-        $this->runRequest('PUT', "/event/$id", null, ['date_to' => $date], 400);
-        $this->runRequest('PUT', "/event/$id", null, ['date_to' => 'notadate'], 400);
+        $this->runRequest('PUT', "/event/$id", null, ['date_from' => $date], 400, null, '/event/{id}');
+        $this->runRequest('PUT', "/event/$id", null, ['date_from' => 'notadate'], 400, null, '/event/{id}');
+        $this->runRequest('PUT', "/event/$id", null, ['date_to' => $date], 400, null, '/event/{id}');
+        $this->runRequest('PUT', "/event/$id", null, ['date_to' => 'notadate'], 400, null, '/event/{id}');
         $when = date('Y-m-d', strtotime('+2001 years'));
         $to = date('Y-m-d', strtotime('+2003 years'));
-        $this->runRequest('PUT', "/event/$id", null, ['date_from' => $when, 'date_to' => $to], 400);
+        $this->runRequest('PUT', "/event/$id", null, ['date_from' => $when, 'date_to' => $to], 400, null, '/event/{id}');
 
         $date = date('Y-m-d', strtotime("$when +1 day"));
-        $data = $this->runSuccessJsonRequest('PUT', "/event/$id", null, ['date_from' => $date]);
+        $data = $this->runSuccessJsonRequest('PUT', "/event/$id", null, ['date_from' => $date], 200, null, '/event/{id}');
         $this->assertSame($data->date_from, $date);
 
         $date = date('Y-m-d', strtotime("$when +2 days"));
-        $data = $this->runSuccessJsonRequest('PUT', "/event/$id", null, ['date_to' => $date]);
+        $data = $this->runSuccessJsonRequest('PUT', "/event/$id", null, ['date_to' => $date], 200, null, '/event/{id}');
         $this->assertSame($data->date_to, $date);
 
-        $data = $this->runSuccessJsonRequest('PUT', "/event/$id", null, ['name' => 'yet another CON']);
+        $data = $this->runSuccessJsonRequest('PUT', "/event/$id", null, ['name' => 'yet another CON'], 200, null, '/event/{id}');
         $this->assertSame($data->name, 'yet another CON');
 
     }
@@ -135,23 +147,7 @@ class EventTest extends CiabTestCase
 
     public function testEventErrors(): void
     {
-        $this->runRequest(
-            'GET',
-            '/event',
-            ['begin' => 'not-a-date'],
-            null,
-            400
-        );
-
-        $this->runRequest(
-            'GET',
-            '/event',
-            ['end' => 'not-a-date'],
-            null,
-            400
-        );
-
-        $this->runRequest('GET', '/event/-1', null, null, 404);
+        $this->runRequest('GET', '/event/-1', null, null, 404, null, '/event/{id}');
 
     }
 

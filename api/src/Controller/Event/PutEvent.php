@@ -5,14 +5,14 @@
 /**
  *  @OA\Put(
  *      tags={"events"},
- *      path="/event",
+ *      path="/event/{id}",
  *      summary="Modifies an existing event.",
  *      @OA\Parameter(
  *          description="Id of the event",
  *          in="path",
  *          name="id",
  *          required=true,
- *          @OA\Schema(type="integer")
+ *          @OA\Schema(type="string")
  *      ),
  *      @OA\RequestBody(
  *          @OA\MediaType(
@@ -38,6 +38,10 @@
  *      @OA\Response(
  *          response=200,
  *          description="OK"
+ *      ),
+ *      @OA\Response(
+ *          response=400,
+ *          ref="#/components/responses/400"
  *      ),
  *      @OA\Response(
  *          response=401,

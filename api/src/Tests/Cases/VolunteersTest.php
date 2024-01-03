@@ -210,8 +210,8 @@ class VolunteersTest extends CiabTestCase
         $this->assertNotEmpty($data);
         $this->assertEquals($data2, $data);
 
-        $data = $this->runRequest('PUT', "/volunteer/rewards/$id", null, ['inventory' => 'blue'], null, null, 400);
-        $data = $this->runRequest('PUT', "/volunteer/rewards/$id", null, ['value' => 'blue'], null, null, 400);
+        $data = $this->runRequest('PUT', "/volunteer/rewards/$id", null, ['inventory' => 'blue'], 400);
+        $data = $this->runRequest('PUT', "/volunteer/rewards/$id", null, ['value' => 'blue'], 400);
         $data = $this->runSuccessJsonRequest('PUT', "/volunteer/rewards/$id", null, ['name' => 'Prize Alpha', 'inventory' => 5]);
         $this->assertNotEmpty($data);
         $this->assertEquals($data->name, 'Prize Alpha');

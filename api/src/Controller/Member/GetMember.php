@@ -13,7 +13,7 @@
  *          in="path",
  *          name="id",
  *          required=true,
- *          @OA\Schema(type="integer")
+ *          @OA\Schema(type="string")
  *      ),
  *      @OA\Response(
  *          response=200,

@@ -13,7 +13,7 @@
  *          in="path",
  *          name="id",
  *          required=true,
- *          @OA\Schema(type="integer")
+ *          @OA\Schema(type="string")
  *      ),
  *      @OA\Parameter(
  *          ref="#/components/parameters/short_response",
@@ -24,6 +24,10 @@
  *          @OA\JsonContent(
  *           ref="#/components/schemas/event"
  *          ),
+ *      ),
+ *      @OA\Response(
+ *          response=400,
+ *          ref="#/components/responses/400"
  *      ),
  *      @OA\Response(
  *          response=401,
