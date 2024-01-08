@@ -6,7 +6,7 @@
 /**
  *  @OA\Get(
  *      tags={"volunteers"},
- *      path="/volunteers/rewards_group",
+ *      path="/volunteer/reward_group",
  *      summary="Lists the volunteer reward groups",
  *      @OA\Response(
  *          response=200,

@@ -13,7 +13,7 @@
  *      ),
  *      @OA\Property(
  *          property="id",
- *          type="integer",
+ *          type="string",
  *      ),
  *      @OA\Property(
  *          property="name",
@@ -21,7 +21,7 @@
  *      ),
  *      @OA\Property(
  *          property="promo",
- *          type="boolean"
+ *          type="string"
  *      ),
  *      @OA\Property(
  *          property="reward_group",
@@ -30,7 +30,7 @@
  *                  ref="#/components/schemas/volunteer_reward_group"
  *              ),
  *              @OA\Schema(
- *                  type="integer",
+ *                  type="string",
  *                  description="Reward Group Id"
  *              )
  *          }
@@ -41,7 +41,8 @@
  *      ),
  *      @OA\Property(
  *          property="retired",
- *          type="boolean"
+ *          type="string",
+ *          nullable=true
  *      )
  *  )
  *

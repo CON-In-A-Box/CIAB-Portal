@@ -13,7 +13,7 @@
  *          in="path",
  *          name="id",
  *          required=true,
- *          @OA\Schema(type="integer")
+ *          @OA\Schema(type="string")
  *      ),
  *      @OA\Parameter(
  *          ref="#/components/parameters/event"
@@ -75,7 +75,7 @@ class GetMemberHours extends BaseHours
             return [
             \App\Controller\BaseController::LIST_TYPE,
             [],
-            array('type' => 'volunteer_hour_entry_list', 'total_hours' => $sum)];
+            array('type' => 'volunteer_hour_entry_list', 'total_hours' => intval($sum))];
         }
 
         $data = Select::new($this->container->db)
@@ -89,8 +89,12 @@ class GetMemberHours extends BaseHours
         }
 
         $sum = 0;
-        foreach ($data as $entry) {
+        foreach ($data as &$entry) {
             $sum += $entry['hours'] * $entry['modifier'];
+
+            /* some data conversion */
+            $datetime = \DateTime::createFromFormat('Y-m-d H:i:s', $entry['end']);
+            $entry['end'] = $datetime->format(\DateTime::RFC3339);
         }
 
         return [

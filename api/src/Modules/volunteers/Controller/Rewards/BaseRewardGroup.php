@@ -13,16 +13,17 @@
  *      ),
  *      @OA\Property(
  *          property="id",
- *          type="integer"
+ *          type="string"
  *      ),
  *      @OA\Property(
  *          property="reward_limit",
- *          type="integer",
+ *          type="string",
  *          description="Number of items allowed from the group."
  *      ),
  *      @OA\Property(
  *          property="name",
  *          type="string",
+ *          nullable=true,
  *          description="Optional name of the reward group."
  *      )
  *  )

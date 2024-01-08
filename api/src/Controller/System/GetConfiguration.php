@@ -124,7 +124,7 @@ class GetConfiguration extends BaseSystem
             $output
             ];
         }
-        $result[0]['type'] = 'configuration';
+        $result[0]['type'] = 'configuration_entry';
         return [
         \App\Controller\BaseController::RESOURCE_TYPE,
         $result[0]

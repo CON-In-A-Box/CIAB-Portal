@@ -6,14 +6,14 @@
 /**
  *  @OA\Get(
  *      tags={"volunteers"},
- *      path="/volunteers/rewards_group/{id}",
+ *      path="/volunteer/reward_group/{id}",
  *      summary="Gets volunteer reward group data",
  *      @OA\Parameter(
  *          description="Id of the reward group.",
  *          in="path",
  *          name="id",
  *          required=true,
- *          @OA\Schema(type="integer")
+ *          @OA\Schema(type="string")
  *      ),
  *      @OA\Response(
  *          response=200,

@@ -13,7 +13,7 @@
  *          in="path",
  *          name="id",
  *          required=true,
- *          @OA\Schema(type="integer")
+ *          @OA\Schema(type="string")
  *      ),
  *      @OA\Parameter(
  *          ref="#/components/parameters/short_response"
@@ -22,7 +22,7 @@
  *          response=200,
  *          description="Member volunteer data found",
  *          @OA\JsonContent(
- *           ref="#/components/schemas/volunteer_hour_entry_list"
+ *           ref="#/components/schemas/volunteer_hour_summary_list"
  *          )
  *      ),
  *      @OA\Response(
@@ -60,6 +60,7 @@ class GetEventHoursSummary extends BaseHours
         $data = Select::new($this->container->db)
         ->columns('"volunteer_hour_summary" AS type')
         ->columns('DepartmentID AS department')
+        ->columns('AccountID AS member')
         ->columns('COUNT(HourEntryID) AS entry_count')
         ->columns('COUNT(DISTINCT AccountID) AS volunteer_count')
         ->columns('SUM(ActualHours * TimeModifier) AS total_hours')
@@ -86,7 +87,7 @@ class GetEventHoursSummary extends BaseHours
         return [
         \App\Controller\BaseController::LIST_TYPE,
         $data,
-        array('type' => 'volunteer_hour_entry_list', 'total_hours' => $sum, 'total_volunteer_count' => $data2[0]['t'])];
+        array('type' => 'volunteer_hour_summary_list', 'total_hours' => $sum, 'total_volunteer_count' => intval($data2[0]['t']))];
 
     }
 

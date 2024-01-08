@@ -18,7 +18,7 @@
  *      ),
  *      @OA\Property(
  *          property="id",
- *          type="integer",
+ *          type="string",
  *      ),
  *      @OA\Property(
  *          property="member",
@@ -28,7 +28,7 @@
  *                  ref="#/components/schemas/member"
  *              ),
  *              @OA\Schema(
- *                  type="integer",
+ *                  type="string",
  *                  description="Member Id"
  *              )
  *          }
@@ -41,14 +41,14 @@
  *                  ref="#/components/schemas/department"
  *              ),
  *              @OA\Schema(
- *                  type="integer",
+ *                  type="string",
  *                  description="departemnt Id"
  *              )
  *          }
  *      ),
  *      @OA\Property(
  *          property="hours",
- *          type="number",
+ *          type="string",
  *          description="Actual time in entry."
  *      ),
  *      @OA\Property(
@@ -59,7 +59,7 @@
  *                  ref="#/components/schemas/member"
  *              ),
  *              @OA\Schema(
- *                  type="integer",
+ *                  type="string",
  *                  description="Member Id"
  *              )
  *          }
@@ -78,7 +78,7 @@
  *                  ref="#/components/schemas/member"
  *              ),
  *              @OA\Schema(
- *                  type="integer",
+ *                  type="string",
  *                  description="Member Id"
  *              )
  *          }
@@ -91,14 +91,14 @@
  *                  ref="#/components/schemas/event"
  *              ),
  *              @OA\Schema(
- *                  type="integer",
+ *                  type="string",
  *                  description="Event Id"
  *              )
  *          }
  *      ),
  *      @OA\Property(
  *          property="modifier",
- *          type="number",
+ *          type="string",
  *          description="Time Modifier."
  *      )
  *  )
@@ -108,47 +108,41 @@
  *      @OA\Property(
  *          property="type",
  *          type="string",
- *          enum={"volunteer_hour_summary_entry"}
+ *          enum={"volunteer_hour_summary"}
  *      ),
- *      oneOf={
- *          @OA\Property(
- *              property="member",
- *              description="Member badge who volunteered",
- *              oneOf={
- *                  @OA\Schema(
- *                      ref="#/components/schemas/member"
- *                  ),
- *                  @OA\Schema(
- *                      type="integer",
- *                      description="Member Id"
- *                  )
- *              }
- *          ),
- *          @OA\Property(
- *              property="department",
- *              description="The department of the staff position.",
- *              oneOf={
- *                  @OA\Schema(
- *                      ref="#/components/schemas/department"
- *                  ),
- *                  @OA\Schema(
- *                      type="integer",
- *                      description="departemnt Id"
- *                  )
- *              }
- *          ),
- *      },
+ *      @OA\Property(
+ *          property="member",
+ *          description="Member badge who volunteered",
+ *          oneOf={
+ *              @OA\Schema(
+ *                  ref="#/components/schemas/member"
+ *              ),
+ *              @OA\Schema(
+ *                  type="string",
+ *                  description="Member Id"
+ *              )
+ *          }
+ *      ),
+ *      @OA\Property(
+ *          property="department",
+ *          description="The department of the staff position.",
+ *          oneOf={
+ *              @OA\Schema(
+ *                  ref="#/components/schemas/department"
+ *              ),
+ *              @OA\Schema(
+ *                  type="string",
+ *                  description="departemnt Id"
+ *              )
+ *          }
+ *      ),
  *      @OA\Property(
  *          property="entry_count",
- *          type="number"
- *      ),
- *      @OA\Property(
- *          property="volunteeer_count",
- *          type="number"
+ *          type="string"
  *      ),
  *      @OA\Property(
  *          property="total_hours",
- *          type="number"
+ *          type="string"
  *      )
  *  )
  *
@@ -164,11 +158,11 @@
  *      ),
  *      @OA\Property(
  *          property="total_hours",
- *          type="in",
+ *          type="number",
  *      ),
  *      @OA\Property(
- *          property="total_volunteers",
- *          type="integer",
+ *          property="total_volunteer_count",
+ *          type="number",
  *      ),
  *      @OA\Property(
  *          property="data",
@@ -192,7 +186,11 @@
  *      ),
  *      @OA\Property(
  *          property="total_hours",
- *          type="in",
+ *          type="number",
+ *      ),
+ *      @OA\Property(
+ *          property="total_volunteer_count",
+ *          type="number",
  *      ),
  *      @OA\Property(
  *          property="data",
