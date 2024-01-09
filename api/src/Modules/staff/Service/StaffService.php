@@ -84,7 +84,7 @@ class StaffService implements ServiceInterface
     }
 
 
-    public function post(/*.mixed.*/$data): void
+    public function post(/*.mixed.*/$data): int
     {
         throw new Exception(__CLASS__.": Method '__FUNCTION__' not implemented");
 
