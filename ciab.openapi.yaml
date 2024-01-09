@@ -701,6 +701,38 @@ paths:
       security:
         -
           ciab_auth: []
+    post:
+      tags:
+        - departments
+      summary: 'Create new department'
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                Name:
+                  nullable: false
+                  description: 'The name for the new department'
+                  type: string
+                ParentID:
+                  nullable: true
+                  description: 'The ID for the parent department'
+                  type: integer
+                FallbackID:
+                  nullable: true
+                  description: 'The ID for the fallback department'
+                  type: integer
+              type: object
+      responses:
+        '201':
+          $ref: '#/components/schemas/department'
+        '401':
+          $ref: '#/components/responses/401'
+        '400':
+          $ref: '#/components/responses/400'
+      security:
+        -
+          ciab_auth: []
   '/event/{id}':
     get:
       tags:
