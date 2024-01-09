@@ -59,7 +59,7 @@ class EventRepository implements RepositoryInterface
     }
 
 
-    public function insert(/*.mixed.*/$data): void
+    public function insert(/*.mixed.*/$data): int
     {
         throw new Exception(__CLASS__.": Method '__FUNCTION__' not implemented");
 

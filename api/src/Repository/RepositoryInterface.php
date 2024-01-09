@@ -9,7 +9,7 @@ interface RepositoryInterface
 {
 
 
-    public function insert(/*.mixed.*/$data): void;
+    public function insert(/*.mixed.*/$data): int;
 
 
     public function selectAll(): array;

@@ -4,6 +4,8 @@ namespace App\Repository;
 
 use Exception;
 use Atlas\Query\Select;
+use Atlas\Query\Insert;
+use Atlas\Query\Update;
 
 class DepartmentRepository implements RepositoryInterface
 {
@@ -18,14 +20,91 @@ class DepartmentRepository implements RepositoryInterface
     }
 
 
-    public function insert(/*.mixed.*/$data): void
+    public function insert(/*.mixed.*/$data): int
+    {
+        $insert = Insert::new($this->db);
+        $insert->into('Departments')
+            ->column('Name', $data["Name"]);
+
+        if (array_key_exists("ParentID", $data)) {
+            $insert->column('ParentDepartmentID', $data["ParentID"]);
+        } else {
+            $minDeptId = Select::new($this->db)
+                ->from("Departments")
+                ->columns("MIN(DepartmentID) as DepartmentID")
+                ->fetchOne();
+            $insert->column('ParentDepartmentID', $minDeptId["DepartmentID"]);
+        }
+
+        if (array_key_exists("FallbackID", $data)) {
+            $insert->column('FallbackID', $data["FallbackID"]);
+        } else {
+            $insert->set('FallbackID', null);
+        }
+
+        $insert->perform();
+        $lastInsertId = $insert->getLastInsertId();
+
+        // If there was no parent, then the department is also the parent.
+        if (!array_key_exists("ParentID", $data)) {
+            $parentUpdate = Update::new($this->db);
+            $parentUpdate->table('Departments')
+                ->column('ParentDepartmentID', $lastInsertId)
+                ->whereEquals(['DepartmentID' => $lastInsertId])
+                ->perform();
+        }
+
+        return intval($lastInsertId);
+        
+    }
+
+
+    public function selectAll(): array
+    {
+        $select = $this->getDepartmentLookupSelect();
+        $historicalPlaceholders = $select->subSelect()->columns('DepartmentID')->from('Departments')->where('Name = "Historical Placeholder"');
+
+        $select->where('depts.DepartmentID NOT IN ', $historicalPlaceholders)
+            ->where('depts.ParentDepartmentID NOT IN ', $historicalPlaceholders);
+
+        return $select->fetchAll();
+
+    }
+
+
+    public function selectById(/*.mixed.*/$departmentId): array
+    {
+        $select = $this->getDepartmentLookupSelect();
+        $select->where('depts.Name != "Historical Placeholder"');
+
+        if (is_array($departmentId)) {
+            $select->andWhere('(depts.DepartmentID IN ', $departmentId);
+        } else {
+            $select->andWhere('(depts.DepartmentID = ', $departmentId);
+        }
+        $select->catWhere(' OR depts.ParentDepartmentID = ', $departmentId)
+            ->catWhere(')');
+
+        return $select->fetchAll();
+
+    }
+
+
+    public function update(/*.string.*/$id, /*.mixed.*/$data): void
+    {
+        throw new Exception(__CLASS__.":Method '__FUNCTION__' not implemented");
+
+    }
+
+
+    public function deleteById(/*.mixed.*/$id): void
     {
         throw new Exception(__CLASS__.": Method '__FUNCTION__' not implemented");
 
     }
 
 
-    public function selectAll(): array
+    private function getDepartmentLookupSelect(): Select
     {
         $select = Select::new($this->db);
         $select->columns(
@@ -57,48 +136,7 @@ class DepartmentRepository implements RepositoryInterface
             ->join('LEFT', 'Departments as parentDepts', 'parentDepts.DepartmentID = depts.ParentDepartmentID')
             ->join('LEFT', 'Departments as fallbackDepts', 'fallbackDepts.DepartmentID = depts.FallbackID');
 
-        $historicalPlaceholders = $select->subSelect()->columns('DepartmentID')->from('Departments')->where('Name = "Historical Placeholder"');
-
-        $select->where('depts.DepartmentID NOT IN ', $historicalPlaceholders)
-            ->where('depts.ParentDepartmentID NOT IN ', $historicalPlaceholders);
-
-        return $select->fetchAll();
-
-    }
-
-
-    public function selectById(/*.mixed.*/$departmentId): array
-    {
-        $select = Select::new($this->db);
-        $select->columns(
-            'depts.DepartmentID',
-            'depts.Name'
-        )
-            ->from('Departments as depts')
-            ->where('depts.Name != "Historical Placeholder"');
-        if (is_array($departmentId)) {
-            $select->andWhere('(depts.DepartmentID IN ', $departmentId);
-        } else {
-            $select->andWhere('(depts.DepartmentID = ', $departmentId);
-        }
-        $select->catWhere(' OR depts.ParentDepartmentID = ', $departmentId)
-            ->catWhere(')');
-
-        return $select->fetchAll();
-
-    }
-
-
-    public function update(/*.string.*/$id, /*.mixed.*/$data): void
-    {
-        throw new Exception(__CLASS__.":Method '__FUNCTION__' not implemented");
-
-    }
-
-
-    public function deleteById(/*.mixed.*/$id): void
-    {
-        throw new Exception(__CLASS__.": Method '__FUNCTION__' not implemented");
+        return $select;
 
     }
 
