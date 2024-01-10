@@ -9,7 +9,7 @@ interface ServiceInterface
 {
 
 
-    public function post(/*.mixed.*/$data): void;
+    public function post(/*.mixed.*/$data): int;
 
 
     public function listAll(): array;

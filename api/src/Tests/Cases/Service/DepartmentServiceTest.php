@@ -1,14 +1,20 @@
 <?php declare(strict_types=1);
 
+namespace App\Tests\TestCase\Service;
+
 use App\Repository\DepartmentRepository;
 use App\Service\DepartmentService;
 use PHPUnit\Framework\TestCase;
+use Exception;
 
 final class DepartmentServiceTest extends TestCase
 {
 
     private $deptRepositoryStub;
 
+    /**
+     * @var DepartmentService
+     */
     private $systemUnderTest;
 
 
@@ -127,8 +133,16 @@ final class DepartmentServiceTest extends TestCase
 
     public function testPost()
     {
-        $this->expectException(Exception::class);
-        $this->systemUnderTest->post([]);
+        $deptId = 123;
+        $this->deptRepositoryStub->method('insert')
+            ->willReturn($deptId);
+
+        $testData = [
+          "Name" => "Test Name"
+        ];
+        
+        $result = $this->systemUnderTest->post($testData);
+        $this->assertEquals($deptId, $result);
 
     }
 
