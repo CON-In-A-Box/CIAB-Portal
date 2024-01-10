@@ -216,6 +216,11 @@ abstract class CiabTestCase extends TestCase
                 ->whereEquals(['AccountID' => $account])
                 ->perform();
         }
+
+        $this->middleware = null;
+        $this->container = null;
+        $this->app = null;
+
         parent::tearDown();
 
     }
