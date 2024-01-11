@@ -13,7 +13,7 @@
  *          in="path",
  *          name="id",
  *          required=true,
- *          @OA\Schema(type="integer")
+ *          @OA\Schema(type="string")
  *      ),
  *      @OA\RequestBody(
  *          @OA\MediaType(
@@ -21,7 +21,7 @@
  *              @OA\Schema(
  *                  @OA\Property(
  *                      property="difference",
- *                      type="integer"
+ *                      type="string"
  *                  )
  *              )
  *          )

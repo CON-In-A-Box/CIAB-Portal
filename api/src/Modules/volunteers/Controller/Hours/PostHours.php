@@ -19,7 +19,7 @@
  *          required=false,
  *          style="form",
  *          @OA\Schema(
- *              type="integer"
+ *              type="string"
  *          )
  *      ),
  *      @OA\RequestBody(
@@ -67,7 +67,11 @@
  *      ),
  *      @OA\Response(
  *          response=400,
- *          description="User not found in the system.",
+ *          ref="#/components/responses/400"
+ *      ),
+ *      @OA\Response(
+ *          response=404,
+ *          description="Argument invalid.",
  *          @OA\JsonContent(
  *              ref="#/components/schemas/error"
  *          )

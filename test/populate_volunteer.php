@@ -36,6 +36,7 @@ function random_department()
 {
     $sql = <<<SQL
         SELECT Name FROM Departments
+        WHERE NOT Name = 'Historical Placeholder'
         ORDER BY RAND()
         LIMIT 1
 SQL;

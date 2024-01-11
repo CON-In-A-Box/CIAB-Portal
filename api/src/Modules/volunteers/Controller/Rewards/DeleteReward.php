@@ -6,7 +6,7 @@
 /**
  *  @OA\Delete(
  *      tags={"volunteers"},
- *      path="/volunteers/rewards/{id}",
+ *      path="/volunteer/rewards/{id}",
  *      summary="Deletes or marks an existing volunteer reward retired",
  *      description="If the reward has never been distributed then it is deleted from the database.
  However, if that reward has been awarded then instead the reward is marked as retired and its inventory is set to the same as claimed, so effectively zero.",
@@ -15,7 +15,7 @@
  *          in="path",
  *          name="id",
  *          required=true,
- *          @OA\Schema(type="integer")
+ *          @OA\Schema(type="string")
  *      ),
  *      @OA\Response(
  *          response=204,

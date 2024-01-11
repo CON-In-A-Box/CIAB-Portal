@@ -6,14 +6,14 @@
 /**
  *  @OA\Delete(
  *      tags={"volunteers"},
- *      path="/volunteers/hours/{id}",
+ *      path="/volunteer/hours/{id}",
  *      summary="Deletes an existing volunteer entry",
  *      @OA\Parameter(
  *          description="Id of the volunteer entry",
  *          in="path",
  *          name="id",
  *          required=true,
- *          @OA\Schema(type="integer")
+ *          @OA\Schema(type="string")
  *      ),
  *      @OA\Response(
  *          response=204,

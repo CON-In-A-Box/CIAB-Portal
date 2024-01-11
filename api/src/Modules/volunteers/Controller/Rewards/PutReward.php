@@ -13,7 +13,7 @@
  *          in="path",
  *          name="id",
  *          required=true,
- *          @OA\Schema(type="integer")
+ *          @OA\Schema(type="string")
  *      ),
  *      @OA\RequestBody(
  *          @OA\MediaType(
@@ -29,12 +29,12 @@
  *                  ),
  *                  @OA\Property(
  *                      property="reward_group",
- *                          type="integer",
+ *                          type="string",
  *                          description="Reward Group Id. Remove reward group if set to -1."
  *                  ),
  *                  @OA\Property(
  *                      property="inventory",
- *                      type="integer"
+ *                      type="string"
  *                  ),
  *                  @OA\Property(
  *                      property="value",
@@ -46,6 +46,10 @@
  *      @OA\Response(
  *          response=200,
  *          description="OK"
+ *      ),
+ *      @OA\Response(
+ *          response=400,
+ *          ref="#/components/responses/400"
  *      ),
  *      @OA\Response(
  *          response=401,

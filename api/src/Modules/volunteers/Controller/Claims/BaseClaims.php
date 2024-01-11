@@ -13,7 +13,7 @@
  *      ),
  *      @OA\Property(
  *          property="id",
- *          type="integer",
+ *          type="string",
  *      ),
  *      @OA\Property(
  *          property="member",
@@ -23,7 +23,7 @@
  *                  ref="#/components/schemas/member"
  *              ),
  *              @OA\Schema(
- *                  type="integer",
+ *                  type="string",
  *                  description="Member Id"
  *              )
  *          }
@@ -36,7 +36,7 @@
  *                  ref="#/components/schemas/event"
  *              ),
  *              @OA\Schema(
- *                  type="integer",
+ *                  type="string",
  *                  description="Event Id"
  *              )
  *          }
@@ -49,7 +49,7 @@
  *                  ref="#/components/schemas/volunteer_reward"
  *              ),
  *              @OA\Schema(
- *                  type="integer",
+ *                  type="string",
  *                  description="Reward Id"
  *              )
  *          }
@@ -89,7 +89,7 @@
  *      ),
  *      @OA\Property(
  *          property="spent_hours",
- *          type="integer",
+ *          type="number",
  *      ),
  *      @OA\Property(
  *          property="event",
@@ -99,7 +99,7 @@
  *                  ref="#/components/schemas/event"
  *              ),
  *              @OA\Schema(
- *                  type="integer",
+ *                  type="string",
  *                  description="Event Id"
  *              )
  *          }

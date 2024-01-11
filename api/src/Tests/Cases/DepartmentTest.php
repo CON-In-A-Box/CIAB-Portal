@@ -10,16 +10,27 @@ class DepartmentTest extends CiabTestCase
 
     public function testGetDepartmentList(): void
     {
-        $data = $this->runSuccessJsonRequest('GET', '/department', null, null, 200, null);
+        $data = $this->runSuccessJsonRequest('GET', '/department', null, null, 200, null, '/department');
         $this->assertNotEmpty($data->data);
+        $data = $this->runSuccessJsonRequest('GET', '/department/Activities', null, null, 200, null, '/department/{id}');
+        $data2 = $this->runSuccessJsonRequest('GET', '/department/2', null, null, 200, null, '/department/{id}');
+        $this->assertEquals($data, $data2);
+        $this->runSuccessJsonRequest('GET', '/department/2/children', null, null, 200, null, '/department/{id}/children');
+        $this->runSuccessJsonRequest('GET', '/department');
+        $data = $this->runSuccessJsonRequest(
+            'GET',
+            '/department/100'
+        );
+        $this->assertIsObject($data->parent);
+        $this->assertIncludes($data, 'parent');
 
     }
 
 
     public function testGetDepartmentByName(): void
     {
-        $data = $this->runSuccessJsonRequest('GET', '/department/Activities', null, null, 200, null, '/department/{id}');
-        $this->assertEquals("Activities", $data->name);
+        $this->runRequest('GET', '/department/-1', null, null, 404, null, '/department/{id}');
+        $this->runRequest('GET', '/department/not-a-dept', null, null, 404, null, '/department/{id}');
 
     }
 

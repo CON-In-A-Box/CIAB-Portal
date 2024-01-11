@@ -53,7 +53,7 @@ export default {
       ];
       this.detailColumns = [
         {value:'name', title:'Department Worked', source:null},
-        {value:'end', title:'Ended', source: this.hours},
+        {value:'end', title:'Ended', source: this.hours, type: 'Date'},
         {value:'hours', title:'Hours', source: this.hours}
       ];
 
@@ -148,7 +148,12 @@ export default {
         if (column.value == 'total_hours' || column.value == 'hours') {
           return this.printHours(record[column.value]);
         } else {
-          return record[column.value];
+          if (column.type == 'Date') {
+            const constructedDate = new Date(record[column.value]);
+            return constructedDate.toLocaleString();
+          } else {
+            return record[column.value];
+          }
         }
       }
 

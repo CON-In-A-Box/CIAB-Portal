@@ -14,16 +14,8 @@
  *          name="id",
  *          required=true,
  *          @OA\Schema(
- *              oneOf = {
- *                  @OA\Schema(
- *                      description="Department id",
- *                      type="integer"
- *                  ),
- *                  @OA\Schema(
- *                      description="Department name",
- *                      type="string"
- *                  )
- *              }
+ *              description="Department id or name",
+ *              type="string"
  *          )
  *      ),
  *      @OA\Parameter(
@@ -36,7 +28,7 @@
  *          response=200,
  *          description="Member volunteer data found",
  *          @OA\JsonContent(
- *           ref="#/components/schemas/volunteer_hour_entry_list"
+ *           ref="#/components/schemas/volunteer_hour_summary_list"
  *          )
  *      ),
  *      @OA\Response(
@@ -75,6 +67,7 @@ class GetDepartmentHoursSummary extends BaseHours
         $data = Select::new($this->container->db)
         ->columns('"volunteer_hour_summary" AS type')
         ->columns('AccountID AS member')
+        ->columns('DepartmentID AS department')
         ->columns('COUNT(HourEntryID) AS entry_count')
         ->columns('SUM(ActualHours * TimeModifier) AS total_hours')
         ->from('VolunteerHours')
@@ -87,14 +80,18 @@ class GetDepartmentHoursSummary extends BaseHours
         }
 
         $sum = 0;
+        $volunteers = [];
         foreach ($data as $entry) {
             $sum += $entry['total_hours'];
+            if (!in_array($entry['member'], $volunteers)) {
+                $volunteers[] = $entry['member'];
+            }
         }
 
         return [
         \App\Controller\BaseController::LIST_TYPE,
         $data,
-        array('type' => 'volunteer_hour_entry_list', 'total_hours' => $sum)];
+        array('type' => 'volunteer_hour_summary_list', 'total_hours' => $sum, 'total_volunteer_count' => count($volunteers))];
 
     }
 

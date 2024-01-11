@@ -19,7 +19,7 @@
  *          required=false,
  *          style="form",
  *          @OA\Schema(
- *              type="integer"
+ *              type="string"
  *          )
  *      ),
  *      @OA\RequestBody(

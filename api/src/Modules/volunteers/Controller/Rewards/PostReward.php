@@ -22,7 +22,7 @@
  *                  ),
  *                  @OA\Property(
  *                      property="reward_group",
- *                          type="integer",
+ *                          type="string",
  *                          description="Reward Group Id"
  *                  ),
  *                  @OA\Property(
@@ -35,6 +35,10 @@
  *      @OA\Response(
  *          response=201,
  *          description="OK"
+ *      ),
+ *      @OA\Response(
+ *          response=400,
+ *          ref="#/components/responses/400"
  *      ),
  *      @OA\Response(
  *          response=401,
