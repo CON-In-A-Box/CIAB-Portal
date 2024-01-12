@@ -291,7 +291,7 @@ abstract class CiabTestCase extends TestCase
     }
 
 
-    protected function runRequest(
+    public function runRequest(
         string $method,
         string $uri,
         array $serverParams = null,
@@ -339,7 +339,7 @@ abstract class CiabTestCase extends TestCase
     }
 
 
-    protected function NPRunRequest(
+    public function NPRunRequest(
         string $method,
         string $uri,
         array $serverParams = null,
