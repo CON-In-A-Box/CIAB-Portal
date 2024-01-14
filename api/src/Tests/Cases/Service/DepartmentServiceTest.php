@@ -149,9 +149,16 @@ final class DepartmentServiceTest extends TestCase
 
     public function testPut()
     {
-        $this->expectException(Exception::class);
-        $this->systemUnderTest->put("1", []);
+        $deptId = 123;
+        $data = [
+          "Name" => "Updated Name"
+        ];
 
+        $this->deptRepositoryStub->expects($this->once())
+            ->method('update');
+
+        $this->systemUnderTest->put($deptId, $data);
+        
     }
 
 

@@ -59,7 +59,7 @@ class DepartmentService implements ServiceInterface
 
     public function put(/*.string.*/$id, /*.mixed.*/$data): void
     {
-        throw new Exception(__CLASS__.": Method '__FUNCTION__' not implemented");
+        $this->departmentRepository->update($id, $data);
 
     }
 
