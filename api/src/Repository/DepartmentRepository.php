@@ -92,8 +92,25 @@ class DepartmentRepository implements RepositoryInterface
 
     public function update(/*.string.*/$id, /*.mixed.*/$data): void
     {
-        throw new Exception(__CLASS__.":Method '__FUNCTION__' not implemented");
+        $update = Update::new($this->db);
+        $update->table('Departments');
 
+        if (array_key_exists("Name", $data)) {
+            $update->column("Name", $data["Name"]);
+        }
+
+        // Fallback
+        if (array_key_exists("FallbackID", $data)) {
+            $update->column("FallbackID", $data["FallbackID"]);
+        }
+
+        if (array_key_exists("ParentID", $data)) {
+            $update->column("ParentDepartmentID", $data["ParentID"]);
+        }
+
+        $update->whereEquals(["DepartmentID" => $id])
+            ->perform();
+        
     }
 
 

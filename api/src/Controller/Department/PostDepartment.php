@@ -32,8 +32,10 @@
  *     ),
  *     @OA\Response(
  *         response=201,
- *         description="Created",
- *         ref="#/components/schemas/department"
+ *         description="OK",
+ *         @OA\JsonContent(
+ *             ref="#/components/schemas/department"
+ *         )
  *     ),
  *     @OA\Response(
  *         response=401,

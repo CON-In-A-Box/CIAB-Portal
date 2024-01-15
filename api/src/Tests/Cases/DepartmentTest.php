@@ -158,6 +158,71 @@ class DepartmentTest extends CiabTestCase
     }
 
 
+    public function testPutDepartmentUpdateNameOnly(): void
+    {
+        $department = [
+            "Name" => "Department Name"
+        ];
+
+        $departmentData = $this->runSuccessJsonRequest('POST', '/department', null, $department, 201, null);
+
+        $updatedDepartment = [
+            "Name" => "Updated Department Name"
+        ];
+
+        $updatedData = $this->runSuccessJsonRequest('PUT', "/department/$departmentData->id", null, $updatedDepartment, 200, null, '/department/{id}');
+        $this->assertEquals($departmentData->id, $updatedData->id);
+        $this->assertEquals("Updated Department Name", $updatedData->name);
+
+    }
+
+
+    public function testPutDepartmentUpdateParentOnly(): void
+    {
+        $department = [
+            "Name" => "Parent Department"
+        ];
+        $departmentData = $this->runSuccessJsonRequest('POST', '/department', null, $department, 201, null);
+
+        $childDepartment = [
+            "Name" => "Child Department"
+        ];
+        $childDepartmentData = $this->runSuccessJsonRequest('POST', '/department', null, $childDepartment, 201, null);
+
+        $updatedChild = [
+            "ParentID" => $departmentData->id
+        ];
+        
+        $updatedChildData = $this->runSuccessJsonRequest('PUT', "/department/$childDepartmentData->id", null, $updatedChild, 200, null);
+        $this->assertEquals($childDepartmentData->id, $updatedChildData->id);
+        $this->assertEquals($departmentData->id, $updatedChildData->parent->id);
+
+    }
+
+
+    public function testPutDepartmentUpdateFallbackOnly(): void
+    {
+        $department = [
+            "Name" => "Fallback Department"
+        ];
+        $departmentData = $this->runSuccessJsonRequest('POST', '/department', null, $department, 201, null);
+
+        $departmentWithFallback = [
+            "Name" => "Department with Fallback"
+        ];
+        $departmentFallbackData = $this->runSuccessJsonRequest('POST', '/department', null, $departmentWithFallback, 201, null);
+
+        $updatedDepartmentWithFallback = [
+            "FallbackID" => $departmentData->id
+        ];
+
+        $updatedDepartmentData = $this->runSuccessJsonRequest('PUT', "/department/$departmentFallbackData->id", null, $updatedDepartmentWithFallback, 200, null);
+        $this->assertEquals($departmentFallbackData->id, $updatedDepartmentData->id);
+        $this->assertEquals($departmentData->id, $updatedDepartmentData->fallback->id);
+
+    }
+
+
     public function testGetDepartmentInvalidId(): void
     {
         $this->runRequest('GET', '/department/-1', null, null, 404, null, '/department/{id}');
@@ -175,7 +240,7 @@ class DepartmentTest extends CiabTestCase
     public function testPostDepartmentMissingName(): void
     {
         $body = [];
-        $this->runRequest('POST', '/department', null, $body, 400, null, null, '/department');
+        $this->runRequest('POST', '/department', null, $body, 400, null, '/department');
 
     }
 
@@ -186,7 +251,7 @@ class DepartmentTest extends CiabTestCase
             "Name" => "Test Department",
             "ParentID" => -1
         ];
-        $this->runRequest('POST', '/department', null, $body, 400, null, null, '/department');
+        $this->runRequest('POST', '/department', null, $body, 400, null, '/department');
 
     }
 
@@ -197,10 +262,159 @@ class DepartmentTest extends CiabTestCase
             "Name" => "Test Department",
             "FallbackID" => -1
         ];
-        $this->runRequest('POST', '/department', null, $body, 400, null, null, '/department');
+        $this->runRequest('POST', '/department', null, $body, 400, null, '/department');
         
     }
 
 
+    public function testPutDepartmentInvalidDepartmentIdNumber(): void
+    {
+        $body = [
+            "Name" => "Updated Department Name"
+        ];
+
+        $this->runRequest('PUT', '/department/-1', null, $body, 400, null, '/department/{id}');
+
+    }
+
+
+    public function testPutDepartmentInvalidDepartmentIdValue(): void
+    {
+        $body = [
+            "Name" => "Updated Department Name"
+        ];
+
+        // Not validating against OpenAPI schema because it calls this invalid, but we should still protect against it
+        $this->runRequest('PUT', '/department/not-an-id', null, $body, 400, null);
+
+    }
+
+
+    public function testPutDepartmentWithEmptyDepartmentName(): void
+    {
+        $department = [
+            "Name" => "Department Name"
+        ];
+        $departmentData = $this->runSuccessJsonRequest('POST', '/department', null, $department, 201, null, null);
+
+        $body = [
+            "Name" => ""
+        ];
+
+        $this->runRequest('PUT', "/department/$departmentData->id", null, $body, 400, null, '/department/{id}');
+
+    }
+
+
+    public function testPutDepartmentWithInvalidDepartmentName(): void
+    {
+        $department = [
+            "Name" => "Department Name"
+        ];
+        $departmentData = $this->runSuccessJsonRequest('POST', '/department', null, $department, 201, null, null);
+
+        $body = [
+            "Name" => "               "
+        ];
+
+        $this->runRequest('PUT', "/department/$departmentData->id", null, $body, 400, null, '/department/{id}');
+
+    }
+
+
+    public function testPutDepartmentInvalidParentID(): void
+    {
+        $department = [
+            "Name" => "Department Name"
+        ];
+        $departmentData = $this->runSuccessJsonRequest('POST', '/department', null, $department, 201, null, null);
+
+        $body = [
+            "ParentID" => -1
+        ];
+
+        $this->runRequest('PUT', "/department/$departmentData->id", null, $body, 400, null, '/department/{id}');
+
+    }
+
+
+    public function testPutDepartmentInvalidParentIDValue(): void
+    {
+        $department = [
+            "Name" => "Department Name"
+        ];
+        $departmentData = $this->runSuccessJsonRequest('POST', '/department', null, $department, 201, null, null);
+
+        $body = [
+            "ParentID" => 'Parent Department'
+        ];
+
+        // Not validating against OpenAPI schema because it calls this invalid, but we should still protect against it
+        $this->runRequest('PUT', "/department/$departmentData->id", null, $body, 400, null);
+
+    }
+
+
+    public function testPutDepartmentInvalidFallbackID(): void
+    {
+        $department = [
+            "Name" => "Department Name"
+        ];
+        $departmentData = $this->runSuccessJsonRequest('POST', '/department', null, $department, 201, null, null);
+        
+        $body = [
+            "FallbackID" => -1
+        ];
+
+        $this->runRequest('PUT', "/department/$departmentData->id", null, $body, 400, null, '/department/{id}');
+
+    }
+
+
+    public function testPutDepartmentInvalidFallbackIDValue(): void
+    {
+        $department = [
+            "Name" => "Department Name"
+        ];
+        $departmentData = $this->runSuccessJsonRequest('POST', '/department', null, $department, 201, null, null);
+        
+        $body = [
+            "FallbackID" => "Fallback Department"
+        ];
+
+        // Not validating against OpenAPI schema because it calls this invalid, but we should still protect against it
+        $this->runRequest('PUT', "/department/$departmentData->id", null, $body, 400, null);
+
+    }
+    
+
+    public function testPutDepartmentNoRequestBodyParams(): void
+    {
+        $department = [
+            "Name" => "Department Name"
+        ];
+        $departmentData = $this->runSuccessJsonRequest('POST', '/department', null, $department, 201, null, null);
+
+        $updateBody = [];
+        $this->runRequest('PUT', "/department/$departmentData->id", null, $updateBody, 400, null, '/department/{id}');
+
+    }
+
+
+    public function testPutDepartmentNoValidRequestBodyParams(): void
+    {
+        $department = [
+            "Name" => "Department Name"
+        ];
+        $departmentData = $this->runSuccessJsonRequest('POST', '/department', null, $department, 201, null, null);
+
+        $updateBody = [
+            "Foo" => "Bar"
+        ];
+        $this->runRequest('PUT', "/department/$departmentData->id", null, $updateBody, 400, null, '/department/{id}');
+        
+    }
+
+    
     /* End */
 }
