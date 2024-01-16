@@ -6,7 +6,7 @@
 /**
  *  @OA\Post(
  *      tags={"members"},
- *      path="member/{id}/staff_membership",
+ *      path="/member/{id}/staff_membership",
  *      summary="Adds a new staff membership to a member",
  *      @OA\Parameter(
  *          description="The id or email of the member",
