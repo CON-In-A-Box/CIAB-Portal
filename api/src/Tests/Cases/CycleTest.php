@@ -3,6 +3,7 @@
 namespace App\Tests\TestCase\Controller;
 
 use App\Tests\Base\CiabTestCase;
+use App\Tests\Base\TestRun;
 
 class CycleTest extends CiabTestCase
 {
@@ -15,15 +16,9 @@ class CycleTest extends CiabTestCase
         parent::setUp();
         $when = date('Y-m-d', strtotime('+1999 years'));
         $to = date('Y-m-d', strtotime('+2001 years'));
-        $this->cycle = $this->runSuccessJsonRequest(
-            'POST',
-            '/cycle',
-            null,
-            ['date_from' => $when, 'date_to' => $to],
-            201,
-            null,
-            '/cycle'
-        );
+        $this->cycle = testRun::testRun($this, 'POST', '/cycle')
+            ->setBody(['date_from' => $when, 'date_to' => $to])
+            ->run();
 
     }
 
@@ -31,7 +26,9 @@ class CycleTest extends CiabTestCase
     protected function tearDown(): void
     {
         if ($this->cycle != null) {
-            $this->runRequest('DELETE', '/cycle/'.$this->cycle->id, null, null, 204, null, '/cycle/{id}');
+            testRun::testRun($this, 'DELETE', '/cycle/{id}')
+                ->setUriParts(['id' => $this->cycle->id])
+                ->run();
         }
         parent::tearDown();
 
@@ -40,7 +37,7 @@ class CycleTest extends CiabTestCase
 
     protected function addCycle(): string
     {
-        $data = $this->runSuccessJsonRequest('GET', '/cycle', null, null, 200, null, '/cycle');
+        $data = testRun::testRun($this, 'GET', '/cycle')->run();
         $initial_ids = [];
         foreach ($data->data as $item) {
             $initial_ids[] = $item->id;
@@ -48,17 +45,13 @@ class CycleTest extends CiabTestCase
 
         $when = date('Y-m-d', strtotime('-1 month'));
         $to = date('Y-m-d', strtotime('+1 month'));
-        $data = $this->runSuccessJsonRequest(
-            'POST',
-            '/cycle',
-            null,
-            ['date_from' => $when, 'date_to' => $to],
-            201,
-            null,
-            '/cycle'
-        );
+        $data = testRun::testRun($this, 'POST', '/cycle')
+            ->setBody(['date_from' => $when, 'date_to' => $to])
+            ->run();
 
-        $data2 = $this->runSuccessJsonRequest('GET', '/cycle/'.$data->id, null, null, 200, null, '/cycle/{id}');
+        $data2 = testRun::testRun($this, 'GET', '/cycle/{id}')
+            ->setUriParts(['id' => $data->id])
+            ->run();
         $this->assertSame((array)$data, (array)$data2);
 
         return $data->id;
@@ -72,54 +65,33 @@ class CycleTest extends CiabTestCase
         $to = date('Y-m-d', strtotime('+2 month'));
         $target = $this->addCycle();
 
-        $data = $this->runSuccessJsonRequest('GET', '/cycle', null, null, 200, null, '/cycle');
+        $data = testRun::testRun($this, 'GET', '/cycle')->run();
         $this->assertNotEmpty($data->data);
 
-        $data = $this->runSuccessJsonRequest(
-            'GET',
-            '/cycle',
-            ['begin' => $when],
-            null,
-            200,
-            null,
-            '/cycle'
-        );
+        $data = testRun::testRun($this, 'GET', '/cycle')
+            ->setMethodParameters(['begin' => $when])
+            ->run();
         $this->assertNotEmpty($data->data);
 
-        $data = $this->runSuccessJsonRequest(
-            'GET',
-            '/cycle',
-            ['end' => $to],
-            null,
-            200,
-            null,
-            '/cycle'
-        );
+        $data = testRun::testRun($this, 'GET', '/cycle')
+            ->setMethodParameters(['end' => $to])
+            ->run();
         $this->assertNotEmpty($data->data);
 
-        $data = $this->runSuccessJsonRequest(
-            'GET',
-            '/cycle',
-            ['end' => $to, 'begin' => $when],
-            null,
-            200,
-            null,
-            '/cycle'
-        );
+        $data = testRun::testRun($this, 'GET', '/cycle')
+            ->setMethodParameters(['end' => $to, 'begin' => $when])
+            ->run();
         $this->assertNotEmpty($data->data);
 
-        $this->runSuccessRequest(
-            'PUT',
-            '/cycle/'.$target,
-            null,
-            ['date_from' => $when,
-             'date_to' => $to],
-            200,
-            null,
-            '/cycle/{id}'
-        );
+        testRun::testRun($this, 'PUT', '/cycle/{id}')
+            ->setUriParts(['id' => $target])
+            ->setBody(['date_from' => $when,
+                       'date_to' => $to])
+            ->run();
 
-        $this->runRequest('DELETE', '/cycle/'.$target, null, null, 204, null, '/cycle/{id}');
+        testRun::testRun($this, 'DELETE', '/cycle/{id}')
+            ->setUriParts(['id' => $target])
+            ->run();
 
     }
 
@@ -127,10 +99,14 @@ class CycleTest extends CiabTestCase
     public function testIncludesDate(): void
     {
         $target = date('Y-m-d', strtotime('+3000 years'));
-        $data = $this->runSuccessJsonRequest('GET', '/cycle', ['includesDate' => $target], null, 200, null, '/cycle');
+        $data = testRun::testRun($this, 'GET', '/cycle')
+            ->setMethodParameters(['includesDate' => $target])
+            ->run();
         $this->assertTrue(empty($data->data));
         $target = date('Y-m-d', strtotime('+2000 years'));
-        $data = $this->runSuccessJsonRequest('GET', '/cycle', ['includesDate' => $target], null, 200, null, '/cycle');
+        $data = testRun::testRun($this, 'GET', '/cycle')
+            ->setMethodParameters(['includesDate' => $target])
+            ->run();
         $this->assertTrue(!empty($data->data));
         $this->assertEquals(count($data->data), 1);
         $this->assertEquals($data->data[0], $this->cycle);
@@ -138,70 +114,90 @@ class CycleTest extends CiabTestCase
     }
 
 
-    public function testCycleErrors(): void
+    public function testCycleGetErrors(): void
+    {
+        testRun::testRun($this, 'GET', '/cycle')
+            ->setMethodParameters(['begin' => 'not-a-date'])
+            ->setExpectedResult(400)
+            ->run();
+
+        testRun::testRun($this, 'GET', '/cycle')
+            ->setMethodParameters(['end' => 'not-a-date'])
+            ->setExpectedResult(400)
+            ->run();
+
+        testRun::testRun($this, 'GET', '/cycle/{id}')
+            ->setUriParts(['id' => -1])
+            ->setExpectedResult(404)
+            ->run();
+
+    }
+
+
+    public function testCyclePutErrors(): void
     {
         $target = $this->addCycle();
 
-        $this->runRequest(
-            'GET',
-            '/cycle',
-            ['begin' => 'not-a-date'],
-            null,
-            400,
-            null,
-            '/cycle'
-        );
+        testRun::testRun($this, 'PUT', '/cycle/{id}')
+            ->setUriParts(['id' => $target])
+            ->setExpectedResult(400)
+            ->run();
 
-        $this->runRequest(
-            'GET',
-            '/cycle',
-            ['end' => 'not-a-date'],
-            null,
-            400,
-            null,
-            '/cycle'
-        );
+        testRun::testRun($this, 'PUT', '/cycle/{id}')
+            ->setUriParts(['id' => -1])
+            ->setExpectedResult(404)
+            ->run();
 
-        $this->runRequest('GET', '/cycle/-1', null, null, 404, null, '/cycle/{id}');
-        $this->runRequest('PUT', '/cycle/'.$target, null, null, 400, null, '/cycle/{id}');
-        $this->runRequest('PUT', '/cycle/-1', null, null, 404, null, '/cycle/{id}');
-        $this->runRequest('POST', '/cycle', null, null, 400, null, '/cycle');
+        testRun::testRun($this, 'DELETE', '/cycle/{id}')
+            ->setUriParts(['id' => $target])
+            ->run();
+
+    }
+
+
+    public function testCyclePostErrors(): void
+    {
+        testRun::testRun($this, 'POST', '/cycle')
+            ->setExpectedResult(400)
+            ->run();
 
         $when = date('Y-m-d', strtotime('-2 month'));
         $to = date('Y-m-d', strtotime('+2 month'));
-        $this->runRequest(
-            'POST',
-            '/cycle',
-            null,
-            ['date_from' => $when, 'date_to' => 'not-a-date'],
-            400,
-            null,
-            '/cycle'
-        );
+        testRun::testRun($this, 'POST', '/cycle')
+            ->setBody(['date_from' => $when, 'date_to' => 'not-a-date'])
+            ->setExpectedResult(400)
+            ->run();
 
-        $this->runRequest(
-            'POST',
-            '/cycle',
-            null,
-            ['date_to' => $to, 'date_from' => 'not-a-date'],
-            400,
-            null,
-            '/cycle'
-        );
+        testRun::testRun($this, 'POST', '/cycle')
+            ->setBody(['date_to' => $to, 'date_from' => 'not-a-date'])
+            ->setExpectedResult(400)
+            ->run();
 
-        $this->runRequest(
-            'POST',
-            '/cycle',
-            null,
-            ['date_from' => $when],
-            400,
-            null,
-            '/cycle'
-        );
+        testRun::testRun($this, 'POST', '/cycle')
+            ->setBody(['date_from' => $when])
+            ->setExpectedResult(400)
+            ->run();
 
-        $this->runRequest('POST', '/cycle', ['date_to' => $to], null, 400, null, '/cycle');
-        $this->runRequest('DELETE', '/cycle/-1', null, null, 404, null, '/cycle/{id}');
-        $this->runRequest('DELETE', '/cycle/'.$target, null, null, 204, null, '/cycle/{id}');
+        testRun::testRun($this, 'POST', '/cycle')
+            ->setBody(['date_to' => $to])
+            ->setExpectedResult(400)
+            ->run();
+
+    }
+
+
+    public function testCycleDelete(): void
+    {
+        $target = $this->addCycle();
+
+        testRun::testRun($this, 'DELETE', '/cycle/{id}')
+            ->setUriParts(['id' => -1])
+            ->setExpectedResult(404)
+            ->run();
+
+        testRun::testRun($this, 'DELETE', '/cycle/{id}')
+            ->setUriParts(['id' => $target])
+            ->run();
 
     }
 
