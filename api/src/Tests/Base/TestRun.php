@@ -20,6 +20,7 @@ class TestRun
         $this->token = null;
         $this->verifyYaml = true;
         $this->json = true;
+        $this->nullReturn = false;
         if (strcasecmp($method, 'post') == 0) {
             $this->expectedResult = 201;
         } elseif (strcasecmp($method, 'delete') == 0) {
@@ -95,6 +96,14 @@ class TestRun
     }
 
 
+    public function setNullReturn(): TestRun
+    {
+        $this->nullReturn = true;
+        return $this;
+
+    }
+
+
     public function run()
     {
         if (!$this->method) {
@@ -138,7 +147,11 @@ class TestRun
         }
         if ($this->json) {
             $data = json_decode((string)$response->getBody());
-            $this->ciabCase->assertNotEmpty($data);
+            if (!$this->nullReturn) {
+                $this->ciabCase->assertNotEmpty($data);
+            } else {
+                $this->ciabCase->assertNull($data);
+            }
             return $data;
         }
 
