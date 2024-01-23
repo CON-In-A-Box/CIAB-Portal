@@ -3,6 +3,7 @@
 namespace App\Tests\TestCase\Controller;
 
 use App\Tests\Base\CiabTestCase;
+use App\Tests\Base\TestRun;
 
 class DeadlineTest extends CiabTestCase
 {
@@ -15,7 +16,9 @@ class DeadlineTest extends CiabTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $data = $this->runSuccessJsonRequest('GET', '/department/2/deadlines');
+        $data = testRun::testRun($this, 'GET', '/department/{id}/deadlines')
+            ->setUriParts(['id' => '2'])
+            ->run();
 
         $initial_ids = [];
         foreach ($data->data as $item) {
@@ -23,16 +26,16 @@ class DeadlineTest extends CiabTestCase
         }
 
         $when = date('Y-m-d', strtotime('+1 month'));
-        $this->runRequest(
-            'POST',
-            '/department/2/deadline',
-            null,
-            ['deadline' => $when,
-             'note' => 'testing'],
-            201
-        );
+        testRun::testRun($this, 'POST', '/department/{id}/deadline')
+            ->setUriParts(['id' => '2'])
+            ->setBody(['deadline' => $when,
+                'note' => 'testing'])
+            ->run();
 
-        $data = $this->runSuccessJsonRequest('GET', '/department/2/deadlines');
+        $data = testRun::testRun($this, 'GET', '/department/{id}/deadlines')
+            ->setUriParts(['id' => '2'])
+            ->run();
+
         # Find New Index
         $target = null;
         foreach ($data->data as $item) {
@@ -53,7 +56,9 @@ class DeadlineTest extends CiabTestCase
             }
         }
 
-        $data = $this->runSuccessJsonRequest('GET', '/deadline/'.$target);
+        $data = testRun::testRun($this, 'GET', '/deadline/{id}')
+            ->setUriParts(['id' => $target])
+            ->run();
         $this->assertIncludes($data, 'department');
         $this->assertEquals($data->posted_by->id, '1000');
         $this->assertEquals($data->department->id, '2');
@@ -70,15 +75,22 @@ class DeadlineTest extends CiabTestCase
         $this->target = $target;
 
         $id = $this->testing_accounts[0];
-        $this->position = $this->runSuccessJsonRequest('POST', "/member/$id/staff_membership", null, ['Department' => '2', 'Position' => '3', 'Note' => 'PHPUnit Testing'], 201);
+        $this->position = testRun::testRun($this, 'POST', "/member/{id}/staff_membership")
+            ->setUriParts(['id' => $id])
+            ->setBody(['Department' => '2', 'Position' => '3', 'Note' => 'PHPUnit Testing'])
+            ->run();
 
     }
 
 
     protected function tearDown(): void
     {
-        $this->runRequest('DELETE', '/deadline/'.$this->target, null, null, 204);
-        $this->runRequest('DELETE', '/staff/membership/'.$this->position->id, null, null, 204);
+        testRun::testRun($this, 'DELETE', '/deadline/{id}')
+            ->setUriParts(['id' => $this->target])
+            ->run();
+        testRun::testRun($this, 'DELETE', '/staff/membership/{id}')
+            ->setUriParts(['id' => $this->position->id])
+            ->run();
 
         parent::tearDown();
 
@@ -87,53 +99,29 @@ class DeadlineTest extends CiabTestCase
 
     public function testDeadline(): void
     {
-        $data = $this->runSuccessJsonRequest(
-            'GET',
-            '/department/2/deadlines',
-            null,
-            null,
-            200,
-            null,
-            '/department/{id}/deadlines'
-        );
+        $data = testRun::testRun($this, 'GET', '/department/{id}/deadlines')
+            ->setUriParts(['id' => 2])
+            ->run();
         $this->assertNotEmpty($data->data);
         $this->assertIncludes($data->data[0], 'department');
 
 
-        $data = $this->runSuccessJsonRequest(
-            'GET',
-            '/deadline',
-            null,
-            null,
-            200,
-            null,
-            '/deadline'
-        );
+        $data = testRun::testRun($this, 'GET', '/deadline')->run();
         $this->assertNotEmpty($data->data);
         $this->assertIncludes($data->data[0], 'department');
 
         $when = date('Y-m-d', strtotime('+1 year'));
-        $this->runRequest(
-            'PUT',
-            '/deadline/'.$this->target,
-            null,
-            ['department' => 3,
+        testRun::testRun($this, 'PUT', '/deadline/{id}')
+            ->setUriParts(['id' => $this->target])
+            ->setBody(['department' => 3,
              'note' => 'New Message',
-             'deadline' => "$when" ],
-            200,
-            null,
-            '/deadline/{id}'
-        );
+             'deadline' => "$when"])
+            ->setNullReturn()
+            ->run();
 
-        $data = $this->runSuccessJsonRequest(
-            'GET',
-            '/deadline/'.$this->target,
-            null,
-            null,
-            200,
-            null,
-            '/deadline/{id}'
-        );
+        $data = testRun::testRun($this, 'GET', '/deadline/{id}')
+            ->setUriParts(['id' => $this->target])
+            ->run();
         $this->assertSame($data->note, 'New Message');
         $this->assertIncludes($data, 'department');
 
@@ -175,41 +163,18 @@ class DeadlineTest extends CiabTestCase
         } else {
             $id = $this->testing_accounts[$account];
         }
-        $this->runRequest(
-            'PUT',
-            '/deadline/'.$this->target,
-            null,
-            ['department' => $department,
-             'scope' => $scope ],
-            200,
-            null,
-            '/deadline/{id}'
-        );
-
+        testRun::testRun($this, 'PUT', '/deadline/{id}')
+            ->setUriParts(['id' => $this->target])
+            ->setBody(['department' => $department,
+                'scope' => $scope ])
+            ->setNullReturn()
+            ->run();
 
         /* check member access */
 
-        if ($account === null) {
-            $data = $this->RunSuccessJsonRequest(
-                'GET',
-                "/deadline",
-                null,
-                null,
-                200,
-                null,
-                '/deadline'
-            );
-        } else {
-            $data = $this->NPRunSuccessJsonRequest(
-                'GET',
-                "/deadline",
-                null,
-                null,
-                200,
-                $account,
-                '/deadline'
-            );
-        }
+        $data = testRun::testRun($this, 'GET', "/deadline")
+            ->setNpLoginIndex($account)
+            ->run();
         $found = false;
         foreach ($data->data as $entry) {
             if ($entry->id == $this->target) {
@@ -225,27 +190,10 @@ class DeadlineTest extends CiabTestCase
 
         /* check department access */
 
-        if ($account === null) {
-            $data = $this->RunSuccessJsonRequest(
-                'GET',
-                "/department/$department/deadlines",
-                null,
-                null,
-                200,
-                null,
-                '/department/{id}/deadlines'
-            );
-        } else {
-            $data = $this->NPRunSuccessJsonRequest(
-                'GET',
-                "/department/$department/deadlines",
-                null,
-                null,
-                200,
-                $account,
-                '/department/{id}/deadlines'
-            );
-        }
+        $data = testRun::testRun($this, 'GET', "/department/{id}/deadlines")
+            ->setUriParts(['id' => $department])
+            ->setNpLoginIndex($account)
+            ->run();
         $found = false;
         foreach ($data->data as $entry) {
             if ($entry->id == $this->target) {
@@ -266,134 +214,116 @@ class DeadlineTest extends CiabTestCase
         } else {
             $code = 403;
         }
-        if ($account === null) {
-            $this->RunSuccessJsonRequest(
-                'GET',
-                "/deadline/{$this->target}",
-                null,
-                null,
-                $code,
-                null,
-                '/deadline/{id}'
-            );
-        } else {
-            $this->NPRunSuccessJsonRequest(
-                'GET',
-                "/deadline/{$this->target}",
-                null,
-                null,
-                $code,
-                $account,
-                '/deadline/{id}'
-            );
-        }
+        testRun::testRun($this, 'GET', "/deadline/{id}")
+            ->setUriParts(['id' => $this->target])
+            ->setExpectedResult($code)
+            ->setNpLoginIndex($account)
+            ->run();
 
     }
 
 
-    public function testDeadlineErrors(): void
+    public function testDeadlineGetErrors(): void
     {
-        $this->runRequest('GET', '/department/-1/deadlines', null, null, 404, null, '/department/{id}/deadlines');
-        $this->runRequest('GET', '/deadline/-1', null, null, 404, null, '/deadline/{id}');
-        $this->runRequest('PUT', '/deadline/'.$this->target, null, null, 400, null, '/deadline/{id}');
-        $this->runRequest('PUT', '/deadline/-1', null, null, 404, null, '/deadline/{id}');
+        testRun::testRun($this, 'GET', '/department/{id}/deadlines')
+            ->setUriParts(['id' => -1])
+            ->setExpectedResult(404)
+            ->run();
+        testRun::testRun($this, 'GET', '/deadline/{id}')
+            ->setUriParts(['id' => -1])
+            ->setExpectedResult(404)
+            ->run();
 
-        $this->runRequest(
-            'PUT',
-            '/deadline/'.$this->target,
-            null,
-            ['department' => -1],
-            404,
-            null,
-            '/deadline/{id}'
-        );
+    }
 
-        $this->runRequest(
-            'PUT',
-            '/deadline/'.$this->target,
-            null,
-            ['nothing' => -1, 'we' => 1, 'Known' => 2],
-            400,
-            null,
-            '/deadline/{id}'
-        );
 
-        $this->runRequest(
-            'PUT',
-            '/deadline/'.$this->target,
-            null,
-            ['deadline' => "not-a-date"],
-            400,
-            null,
-            '/deadline/{id}'
-        );
+    public function testDeadlinePutErrors(): void
+    {
+        testRun::testRun($this, 'PUT', '/deadline/{id}')
+            ->setUriParts(['id' => $this->target])
+            ->setExpectedResult(400)
+            ->run();
+        testRun::testRun($this, 'PUT', '/deadline/{id}')
+            ->setUriParts(['id' => -1])
+            ->setExpectedResult(404)
+            ->run();
+
+        testRun::testRun($this, 'PUT', '/deadline/{id}')
+            ->setUriParts(['id' => $this->target])
+            ->setBody(['department' => -1])
+            ->setExpectedResult(404)
+            ->run();
+
+        testRun::testRun($this, 'PUT', '/deadline/{id}')
+            ->setUriParts(['id' => $this->target])
+            ->setBody(['nothing' => -1, 'we' => 1, 'Known' => 2])
+            ->setExpectedResult(400)
+            ->run();
+
+        testRun::testRun($this, 'PUT', '/deadline/{id}')
+            ->setUriParts(['id' => $this->target])
+            ->setBody(['deadline' => "not-a-date"])
+            ->setExpectedResult(400)
+            ->run();
 
         $when = date('Y-m-d', strtotime('-1 day'));
-        $this->runRequest(
-            'PUT',
-            '/deadline/'.$this->target,
-            null,
-            ['deadline' => "$when"],
-            400,
-            null,
-            '/deadline/{id}'
-        );
+        testRun::testRun($this, 'PUT', '/deadline/{id}')
+            ->setUriParts(['id' => $this->target])
+            ->setBody(['deadline' => "$when"])
+            ->setExpectedResult(400)
+            ->run();
 
-        $this->runRequest('POST', '/department/2/deadline', null, null, 400, null, '/department/{id}/deadline');
+    }
+
+
+    public function testDeadlinePostErrors(): void
+    {
+        testRun::testRun($this, 'POST', '/department/{id}/deadline')
+            ->setUriParts(['id' => -1])
+            ->setExpectedResult(404)
+            ->run();
 
         $when = date('Y-m-d', strtotime('+1 year'));
-        $this->runRequest(
-            'POST',
-            '/department/-1/deadline',
-            null,
-            ['deadline' => $when, 'note' => 'testing'],
-            404,
-            null,
-            '/department/{id}/deadline'
-        );
+        testRun::testRun($this, 'POST', '/department/{id}/deadline')
+            ->setUriParts(['id' => -1])
+            ->setBody(['deadline' => $when, 'note' => 'testing'])
+            ->setExpectedResult(404)
+            ->run();
 
-        $this->runRequest(
-            'POST',
-            '/department/2/deadline',
-            null,
-            ['note' => 'testing'],
-            400,
-            null,
-            '/department/{id}/deadline'
-        );
+        testRun::testRun($this, 'POST', '/department/{id}/deadline')
+            ->setUriParts(['id' => 2])
+            ->setBody(['note' => 'testing'])
+            ->setExpectedResult(400)
+            ->run();
 
-        $this->runRequest(
-            'POST',
-            '/department/2/deadline',
-            null,
-            ['deadline' => "$when"],
-            400,
-            null,
-            '/department/{id}/deadline'
-        );
+        testRun::testRun($this, 'POST', '/department/{id}/deadline')
+            ->setUriParts(['id' => 2])
+            ->setBody(['deadline' => "$when"])
+            ->setExpectedResult(400)
+            ->run();
 
-        $this->runRequest(
-            'POST',
-            '/department/2/deadline',
-            null,
-            ['deadline' => "not-a-date", 'note' => 'testing'],
-            400,
-            null,
-            '/department/{id}/deadline'
-        );
+        testRun::testRun($this, 'POST', '/department/{id}/deadline')
+            ->setUriParts(['id' => 2])
+            ->setBody(['deadline' => "not-a-date", 'note' => 'testing'])
+            ->setExpectedResult(400)
+            ->run();
 
         $when = date('Y-m-d', strtotime('-1 day'));
-        $this->runRequest(
-            'POST',
-            '/department/2/deadline',
-            null,
-            ['deadline' => "$when", 'note' => 'testing'],
-            400,
-            null,
-            '/department/{id}/deadline'
-        );
+        testRun::testRun($this, 'POST', '/department/{id}/deadline')
+            ->setUriParts(['id' => 2])
+            ->setBody(['deadline' => "$when", 'note' => 'testing'])
+            ->setExpectedResult(400)
+            ->run();
 
-        $this->runRequest('DELETE', '/deadline/-1', null, null, 404, null, '/deadline/{id}');
+    }
+
+
+    public function testDeadlineDeleteErrors(): void
+    {
+        testRun::testRun($this, 'DELETE', '/deadline/{id}')
+            ->setUriParts(['id' => -1])
+            ->setExpectedResult(404)
+            ->run();
 
     }
 

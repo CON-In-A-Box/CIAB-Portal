@@ -78,7 +78,6 @@ class AnnouncementTest extends CiabTestCase
         $this->position = testRun::testRun($this, 'POST', "/member/{id}/staff_membership")
             ->setUriParts(['id' => $id])
             ->setBody(['Department' => '2', 'Position' => '3', 'Note' => 'PHPUnit Testing'])
-            ->setVerifyYaml(false)
             ->run();
 
     }
@@ -100,6 +99,12 @@ class AnnouncementTest extends CiabTestCase
 
     public function provider(): array
     {
+        /*
+         *  $department,
+         *  $scope,
+         *  $account,
+         *  $result
+         */
         return [
             /* Loki, concom member, same department */
         [2, 0, 0, true],
@@ -195,34 +200,59 @@ class AnnouncementTest extends CiabTestCase
     }
 
 
-    public function testAnnounceErrors(): void
+    public function testAnnounceErrorGetBadId(): void
     {
         testRun::testRun($this, 'GET', '/department/{id}/announcements')
             ->setUriParts(['id' => -1])
             ->setExpectedResult(404)
             ->run();
 
+    }
+
+
+    public function testAnnounceErrorPutDuplicateId(): void
+    {
         testRun::testRun($this, 'PUT', '/announcement/{id}')
             ->setUriParts(['id' => $this->target])
             ->setExpectedResult(400)
             ->run();
 
+    }
+
+
+    public function testAnnounceErrorPutBadId(): void
+    {
         testRun::testRun($this, 'PUT', '/announcement/{id}')
             ->setUriParts(['id' => -1])
             ->setExpectedResult(404)
             ->run();
 
+    }
+
+
+    public function testAnnounceErrorPutBadDepartment(): void
+    {
         testRun::testRun($this, 'PUT', '/announcement/{id}')
             ->setUriParts(['id' => $this->target])
             ->setBody(['department' => -1])
             ->setExpectedResult(404)
             ->run();
 
+    }
+
+
+    public function testAnnounceErrorPostNoBody(): void
+    {
         testRun::testRun($this, 'POST', '/department/{id}/announcement')
             ->setUriParts(['id' => 2])
             ->setExpectedResult(400)
             ->run();
 
+    }
+
+
+    public function testAnnounceErrorPostBadId(): void
+    {
         testRun::testRun($this, 'POST', '/department/{id}/announcement')
             ->setUriParts(['id' => -1])
             ->setBody(['scope' => 2,
@@ -231,6 +261,11 @@ class AnnouncementTest extends CiabTestCase
             ->setExpectedResult(404)
             ->run();
 
+    }
+
+
+    public function testAnnounceErrorPostNoScope(): void
+    {
         testRun::testRun($this, 'POST', '/department/{id}/announcement')
             ->setUriParts(['id' => 2])
             ->setBody(['text' => 'testing',
@@ -238,6 +273,11 @@ class AnnouncementTest extends CiabTestCase
             ->setExpectedResult(400)
             ->run();
 
+    }
+
+
+    public function testAnnounceErrorPostBadScope(): void
+    {
         testRun::testRun($this, 'POST', '/department/{id}/announcement')
             ->setUriParts(['id' => 2])
             ->setBody(['scope' => 2,

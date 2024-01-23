@@ -2888,6 +2888,55 @@ paths:
       security:
         -
           ciab_auth: []
+    post:
+      tags:
+        - members
+      summary: 'Adds a new staff membership to a member'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'The id or email of the member'
+          required: true
+          schema:
+            oneOf:
+              -
+                description: 'Member ID'
+                type: integer
+              -
+                description: 'Member login email'
+                type: string
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                Department:
+                  nullable: false
+                  description: 'Id or name of the department'
+                  type: string
+                Position:
+                  nullable: false
+                  description: 'ID of the position'
+                  type: integer
+                Note:
+                  nullable: true
+                  type: string
+                Event:
+                  nullable: true
+                  description: 'If not present, current event'
+                  type: integer
+              type: object
+      responses:
+        '201':
+          description: OK
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/department_not_found'
+      security:
+        -
+          ciab_auth: []
   /member/staff_membership/:
     get:
       tags:
@@ -3009,56 +3058,6 @@ paths:
                 $ref: '#/components/schemas/staff_position_list'
         '401':
           $ref: '#/components/responses/401'
-      security:
-        -
-          ciab_auth: []
-  'member/{id}/staff_membership':
-    post:
-      tags:
-        - members
-      summary: 'Adds a new staff membership to a member'
-      parameters:
-        -
-          name: id
-          in: path
-          description: 'The id or email of the member'
-          required: true
-          schema:
-            oneOf:
-              -
-                description: 'Member ID'
-                type: integer
-              -
-                description: 'Member login email'
-                type: string
-      requestBody:
-        content:
-          multipart/form-data:
-            schema:
-              properties:
-                Department:
-                  nullable: false
-                  description: 'Id or name of the department'
-                  type: string
-                Position:
-                  nullable: false
-                  description: 'ID of the position'
-                  type: integer
-                Note:
-                  nullable: true
-                  type: string
-                Event:
-                  nullable: true
-                  description: 'If not present, current event'
-                  type: integer
-              type: object
-      responses:
-        '201':
-          description: OK
-        '401':
-          $ref: '#/components/responses/401'
-        '404':
-          $ref: '#/components/responses/department_not_found'
       security:
         -
           ciab_auth: []
