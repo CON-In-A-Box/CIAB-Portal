@@ -2,7 +2,6 @@
 
 namespace App\Repository;
 
-use Exception;
 use Atlas\Query\Select;
 use Atlas\Query\Insert;
 use Atlas\Query\Update;
@@ -116,7 +115,24 @@ class DepartmentRepository implements RepositoryInterface
 
     public function deleteById(/*.mixed.*/$id): void
     {
-        throw new Exception(__CLASS__.": Method '__FUNCTION__' not implemented");
+        $placeholderDeptId = Select::new($this->db)
+            ->columns("DepartmentID")
+            ->from("Departments")
+            ->where("Name = 'Historical Placeholder'")
+            ->fetchOne();
+        
+        $update = Update::new($this->db);
+        $update->table("Departments")
+            ->column("FallbackID", null)
+            ->column("ParentDepartmentID", $placeholderDeptId["DepartmentID"])
+            ->whereEquals(["DepartmentID" => $id])
+            ->perform();
+
+        $update = Update::new($this->db);
+        $update->table("Departments")
+            ->column("FallbackID", null)
+            ->whereEquals(["FallbackID" => $id])
+            ->perform();
 
     }
 

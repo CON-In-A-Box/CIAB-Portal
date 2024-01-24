@@ -59,6 +59,8 @@ function setupAPIDependencies(App $app, array $settings)
 
     $container['DepartmentService'] = function ($c): DepartmentService {
         return new DepartmentService(
+            $c->get('EmailService'),
+            $c->get('EmailListAccessService'),
             new DepartmentRepository($c['db'])
         );
     };

@@ -3,6 +3,7 @@
 namespace App\Tests\TestCase\Controller;
 
 use App\Tests\Base\CiabTestCase;
+use App\Tests\Base\TestRun;
 
 class DepartmentTest extends CiabTestCase
 {
@@ -223,6 +224,23 @@ class DepartmentTest extends CiabTestCase
     }
 
 
+    public function testDeleteDepartment(): void
+    {
+        $department = [
+            "Name" => "Test Delete Department"
+        ];
+        $departmentData = testRun::testRun($this, 'POST', '/department')
+            ->setBody($department)
+            ->run();
+
+        testRun::testRun($this, 'DELETE', "/department/{id}")
+            ->setUriParts(["id" => $departmentData->id])
+            ->setVerifyYaml(true)
+            ->run();
+
+    }
+
+
     public function testGetDepartmentInvalidId(): void
     {
         $this->runRequest('GET', '/department/-1', null, null, 404, null, '/department/{id}');
@@ -416,5 +434,26 @@ class DepartmentTest extends CiabTestCase
     }
 
     
+    public function testDeleteDepartmentInvalidId(): void
+    {
+        testRun::testRun($this, 'DELETE', '/department/{id}')
+            ->setUriParts(["id" => "-1"])
+            ->setExpectedResult(400)
+            ->setVerifyYaml(true)
+            ->run();
+
+    }
+
+    
+    public function testDeleteDepartmentInvalidVeryHighId(): void
+    {
+        testRun::testRun($this, 'DELETE', '/department/{id}')
+            ->setUriParts(["id" => "99999"])
+            ->setVerifyYaml(true)
+            ->run();
+
+    }
+    
+
     /* End */
 }
