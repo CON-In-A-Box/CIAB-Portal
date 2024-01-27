@@ -4,11 +4,16 @@ namespace App\Tests\TestCase\Service;
 
 use App\Repository\DepartmentRepository;
 use App\Service\DepartmentService;
+use App\Service\EmailService;
+use App\Service\EmailListAccessService;
 use PHPUnit\Framework\TestCase;
-use Exception;
 
 final class DepartmentServiceTest extends TestCase
 {
+
+    private $emailServiceStub;
+
+    private $emailAccessListServiceStub;
 
     private $deptRepositoryStub;
 
@@ -20,8 +25,10 @@ final class DepartmentServiceTest extends TestCase
 
     protected function setUp(): void
     {
+        $this->emailServiceStub = $this->createStub(EmailService::class);
+        $this->emailAccessListServiceStub = $this->createStub(EmailListAccessService::class);
         $this->deptRepositoryStub = $this->createStub(DepartmentRepository::class);
-        $this->systemUnderTest = new DepartmentService($this->deptRepositoryStub);
+        $this->systemUnderTest = new DepartmentService($this->emailServiceStub, $this->emailAccessListServiceStub, $this->deptRepositoryStub);
 
     }
 
@@ -164,8 +171,16 @@ final class DepartmentServiceTest extends TestCase
 
     public function testDeleteById()
     {
-        $this->expectException(Exception::class);
-        $this->systemUnderTest->deleteById("1");
+        $deptId = 123;
+
+        $this->emailServiceStub->expects($this->once())
+            ->method('deleteByDepartmentId');
+        $this->emailAccessListServiceStub->expects($this->once())
+            ->method('deleteByDepartmentId');
+        $this->deptRepositoryStub->expects($this->once())
+            ->method('deleteById');
+
+        $this->systemUnderTest->deleteById($deptId);
 
     }
 

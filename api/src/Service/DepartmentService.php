@@ -2,20 +2,33 @@
 
 namespace App\Service;
 
-use Exception;
+use App\Service\EmailService;
+use App\Service\EmailListAccessService;
 use App\Repository\DepartmentRepository;
 
 class DepartmentService implements ServiceInterface
 {
 
-  /**
-   * @var DepartmentRepository
-   */
+    /**
+     * @var EmailService
+     */
+    protected $emailService;
+
+    /**
+     * @var EmailListAccessService
+     */
+    protected $emailListAccessService;
+
+    /**
+     * @var DepartmentRepository
+     */
     protected $departmentRepository;
 
 
-    public function __construct(DepartmentRepository $departmentRepository)
+    public function __construct(EmailService $emailService, EmailListAccessService $emailListAccessService, DepartmentRepository $departmentRepository)
     {
+        $this->emailService = $emailService;
+        $this->emailListAccessService = $emailListAccessService;
         $this->departmentRepository = $departmentRepository;
 
     }
@@ -66,7 +79,9 @@ class DepartmentService implements ServiceInterface
 
     public function deleteById(/*.mixed.*/$id): void
     {
-        throw new Exception(__CLASS__.": Method '__FUNCTION__' not implemented");
+        $this->emailService->deleteByDepartmentId($id);
+        $this->emailListAccessService->deleteByDepartmentId($id);
+        $this->departmentRepository->deleteById($id);
 
     }
 
