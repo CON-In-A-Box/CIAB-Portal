@@ -7,9 +7,11 @@ use Psr\Container\ContainerInterface;
 use App\Handler\ApiError;
 use App\Handler\RBAC;
 use App\Repository\DepartmentRepository;
+use App\Repository\EmailRepository;
 use App\Repository\EventRepository;
 use App\Repository\MemberRepository;
 use App\Service\DepartmentService;
+use App\Service\EmailService;
 use App\Service\EventService;
 use App\Service\MemberService;
 use Slim\App;
@@ -39,6 +41,12 @@ function setupAPIDependencies(App $app, array $settings)
 
     $container['RBAC'] = function (): RBAC {
         return new RBAC;
+    };
+
+    $container['EmailService'] = function ($c): EmailService {
+        return new EmailService(
+            new EmailRepository($c['db'])
+        );
     };
 
     $container['DepartmentService'] = function ($c): DepartmentService {
