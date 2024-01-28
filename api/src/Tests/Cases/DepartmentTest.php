@@ -11,17 +11,20 @@ class DepartmentTest extends CiabTestCase
 
     public function testGetDepartmentList(): void
     {
-        $data = $this->runSuccessJsonRequest('GET', '/department', null, null, 200, null, '/department');
-        $this->assertNotEmpty($data->data);
-        $data = $this->runSuccessJsonRequest('GET', '/department/Activities', null, null, 200, null, '/department/{id}');
-        $data2 = $this->runSuccessJsonRequest('GET', '/department/2', null, null, 200, null, '/department/{id}');
+        testRun::testRun($this, 'GET', '/department')->run();
+        $data = testRun::testRun($this, 'GET', '/department/{id}')
+            ->setUriParts(['id' => 'Activities'])
+            ->run();
+        $data2 = testRun::testRun($this, 'GET', '/department/{id}')
+            ->setUriParts(['id' => 2])
+            ->run();
         $this->assertEquals($data, $data2);
-        $this->runSuccessJsonRequest('GET', '/department/2/children', null, null, 200, null, '/department/{id}/children');
-        $this->runSuccessJsonRequest('GET', '/department');
-        $data = $this->runSuccessJsonRequest(
-            'GET',
-            '/department/100'
-        );
+        testRun::testRun($this, 'GET', '/department/{id}/children')
+            ->setUriParts(['id' => 2])
+            ->run();
+        $data = testRun::testRun($this, 'GET', '/department/{id}')
+            ->setUriParts(['id' => 100])
+            ->run();
         $this->assertIsObject($data->parent);
         $this->assertIncludes($data, 'parent');
 
@@ -30,15 +33,23 @@ class DepartmentTest extends CiabTestCase
 
     public function testGetDepartmentByName(): void
     {
-        $this->runRequest('GET', '/department/-1', null, null, 404, null, '/department/{id}');
-        $this->runRequest('GET', '/department/not-a-dept', null, null, 404, null, '/department/{id}');
+        testRun::testRun($this, 'GET', '/department/{id}')
+            ->setUriParts(['id' => -1])
+            ->setExpectedResult(404)
+            ->run();
+        testRun::testRun($this, 'GET', '/department/{id}')
+            ->setUriParts(['id' => 'not-a-department'])
+            ->setExpectedResult(404)
+            ->run();
 
     }
 
 
     public function testGetDepartmentById(): void
     {
-        $data = $this->runSuccessJsonRequest('GET', '/department/2', null, null, 200, null, '/department/{id}');
+        $data = testRun::testRun($this, 'GET', '/department/{id}')
+            ->setUriParts(['id' => 2])
+            ->run();
         $this->assertEquals("2", $data->id);
 
     }
@@ -46,24 +57,31 @@ class DepartmentTest extends CiabTestCase
 
     public function testGetDepartmentByIdOrName(): void
     {
-        $dataByName = $this->runSuccessJsonRequest('GET', '/department/Activities');
-        $dataById = $this->runSuccessJsonRequest('GET', '/department/2');
+        $dataByName = testRun::testRun($this, 'GET', '/department/{id}')
+            ->setUriParts(['id' => 'Activities'])
+            ->run();
+        $dataById = testRun::testRun($this, 'GET', '/department/{id}')
+            ->setUriParts(['id' => 2])
+            ->run();
         $this->assertEquals($dataByName, $dataById);
 
     }
 
-    
+
     public function testGetDepartmentChildren(): void
     {
-        $data = $this->runSuccessJsonRequest('GET', '/department/2/children', null, null, 200, null, '/department/{id}/children');
-        $this->assertNotEmpty($data->data);
+        testRun::testRun($this, 'GET', '/department/{id}/children')
+            ->setUriParts(['id' => 2])
+            ->run();
 
     }
 
 
     public function testGetDepartmentWithParent(): void
     {
-        $data = $this->runSuccessJsonRequest('GET', '/department/100');
+        $data = testRun::testRun($this, 'GET', '/department/{id}')
+            ->setUriParts(['id' => 100])
+            ->run();
         $this->assertEquals('100', $data->id);
         $this->assertIncludes($data, 'parent');
         $this->assertIsObject($data->parent);
@@ -77,7 +95,9 @@ class DepartmentTest extends CiabTestCase
             "Name" => "Test Department"
         ];
 
-        $data = $this->runSuccessJsonRequest('POST', '/department', null, $body, 201, null, '/department');
+        $data = testRun::testRun($this, 'POST', '/department')
+            ->setBody($body)
+            ->run();
         $this->assertEquals('Test Department', $data->name);
         $this->assertNotEmpty($data->id);
         $this->assertEmpty($data->parent);
@@ -85,21 +105,25 @@ class DepartmentTest extends CiabTestCase
 
     }
 
-    
+
     public function testPostDepartmentWithParent(): void
     {
         $parentDept = [
             "Name" => "Test Parent Department"
         ];
 
-        $parentData = $this->runSuccessJsonRequest('POST', '/department', null, $parentDept, 201, null);
+        $parentData = testRun::testRun($this, 'POST', '/department')
+            ->setBody($parentDept)
+            ->run();
 
         $withParentRef = [
             "Name" => "Test Department with Parent",
             "ParentID" => $parentData->id
         ];
 
-        $withParentData = $this->runSuccessJsonRequest('POST', '/department', null, $withParentRef, 201, null, '/department');
+        $withParentData = testRun::testRun($this, 'POST', '/department')
+            ->setBody($withParentRef)
+            ->run();
         $this->assertEquals('Test Department with Parent', $withParentData->name);
         $this->assertNotEmpty($withParentData->id);
         $this->assertEmpty($withParentData->fallback);
@@ -114,14 +138,18 @@ class DepartmentTest extends CiabTestCase
             "Name" => "Test Fallback Department"
         ];
 
-        $fallbackData = $this->runSuccessJsonRequest('POST', '/department', null, $fallbackDept, 201, null);
+        $fallbackData = testRun::testRun($this, 'POST', '/department')
+            ->setBody($fallbackDept)
+            ->run();
 
         $withFallbackRef = [
             "Name" => "Test Department with Fallback",
             "FallbackID" => $fallbackData->id
         ];
 
-        $withFallbackData = $this->runSuccessJsonRequest('POST', '/department', null, $withFallbackRef, 201, null, '/department');
+        $withFallbackData = testRun::testRun($this, 'POST', '/department')
+            ->setBody($withFallbackRef)
+            ->run();
         $this->assertEquals('Test Department with Fallback', $withFallbackData->name);
         $this->assertNotEmpty($withFallbackData->id);
         $this->assertEmpty($withFallbackData->parent);
@@ -136,13 +164,17 @@ class DepartmentTest extends CiabTestCase
             "Name" => "Test Parent Department"
         ];
 
-        $parentData = $this->runSuccessJsonRequest('POST', '/department', null, $parentDept, 201, null);
+        $parentData = testRun::testRun($this, 'POST', '/department')
+            ->setBody($parentDept)
+            ->run();
 
         $fallbackDept = [
             "Name" => "Test Fallback Department"
         ];
 
-        $fallbackData = $this->runSuccessJsonRequest('POST', '/department', null, $fallbackDept, 201, null);
+        $fallbackData = testRun::testRun($this, 'POST', '/department')
+            ->setBody($fallbackDept)
+            ->run();
 
         $withParentAndFallbackRef = [
             "Name" => "Test Department with Parent and Fallback",
@@ -150,12 +182,14 @@ class DepartmentTest extends CiabTestCase
             "FallbackID" => $fallbackData->id
         ];
 
-        $withParentFallbackData = $this->runSuccessJsonRequest('POST', '/department', null, $withParentAndFallbackRef, 201, null);
+        $withParentFallbackData = testRun::testRun($this, 'POST', '/department')
+            ->setBody($withParentAndFallbackRef)
+            ->run();
         $this->assertEquals('Test Department with Parent and Fallback', $withParentFallbackData->name);
         $this->assertNotEmpty($withParentFallbackData->id);
         $this->assertEquals($parentData->id, $withParentFallbackData->parent->id);
         $this->assertEquals($fallbackData->id, $withParentFallbackData->fallback->id);
-        
+
     }
 
 
@@ -165,13 +199,18 @@ class DepartmentTest extends CiabTestCase
             "Name" => "Department Name"
         ];
 
-        $departmentData = $this->runSuccessJsonRequest('POST', '/department', null, $department, 201, null);
+        $departmentData = testRun::testRun($this, 'POST', '/department')
+            ->setBody($department)
+            ->run();
 
         $updatedDepartment = [
             "Name" => "Updated Department Name"
         ];
 
-        $updatedData = $this->runSuccessJsonRequest('PUT', "/department/$departmentData->id", null, $updatedDepartment, 200, null, '/department/{id}');
+        $updatedData = testRun::testRun($this, 'PUT', "/department/{id}")
+            ->setUriParts(['id' => $departmentData->id])
+            ->setBody($updatedDepartment)
+            ->run();
         $this->assertEquals($departmentData->id, $updatedData->id);
         $this->assertEquals("Updated Department Name", $updatedData->name);
 
@@ -183,18 +222,25 @@ class DepartmentTest extends CiabTestCase
         $department = [
             "Name" => "Parent Department"
         ];
-        $departmentData = $this->runSuccessJsonRequest('POST', '/department', null, $department, 201, null);
+        $departmentData = testRun::testRun($this, 'POST', '/department')
+            ->setBody($department)
+            ->run();
 
         $childDepartment = [
             "Name" => "Child Department"
         ];
-        $childDepartmentData = $this->runSuccessJsonRequest('POST', '/department', null, $childDepartment, 201, null);
+        $childDepartmentData = testRun::testRun($this, 'POST', '/department')
+            ->setBody($childDepartment)
+            ->run();
 
         $updatedChild = [
             "ParentID" => $departmentData->id
         ];
-        
-        $updatedChildData = $this->runSuccessJsonRequest('PUT', "/department/$childDepartmentData->id", null, $updatedChild, 200, null);
+
+        $updatedChildData = testRun::testRun($this, 'PUT', "/department/{id}")
+            ->setUriParts(['id' => $childDepartmentData->id])
+            ->setBody($updatedChild)
+            ->run();
         $this->assertEquals($childDepartmentData->id, $updatedChildData->id);
         $this->assertEquals($departmentData->id, $updatedChildData->parent->id);
 
@@ -206,18 +252,25 @@ class DepartmentTest extends CiabTestCase
         $department = [
             "Name" => "Fallback Department"
         ];
-        $departmentData = $this->runSuccessJsonRequest('POST', '/department', null, $department, 201, null);
+        $departmentData = testRun::testRun($this, 'POST', '/department')
+            ->setBody($department)
+            ->run();
 
         $departmentWithFallback = [
             "Name" => "Department with Fallback"
         ];
-        $departmentFallbackData = $this->runSuccessJsonRequest('POST', '/department', null, $departmentWithFallback, 201, null);
+        $departmentFallbackData = testRun::testRun($this, 'POST', '/department')
+            ->setBody($departmentWithFallback)
+            ->run();
 
         $updatedDepartmentWithFallback = [
             "FallbackID" => $departmentData->id
         ];
 
-        $updatedDepartmentData = $this->runSuccessJsonRequest('PUT', "/department/$departmentFallbackData->id", null, $updatedDepartmentWithFallback, 200, null);
+        $updatedDepartmentData = testRun::testRun($this, 'PUT', "/department/{id}")
+            ->setUriParts(['id' => $departmentFallbackData->id])
+            ->setBody($updatedDepartmentWithFallback)
+            ->run();
         $this->assertEquals($departmentFallbackData->id, $updatedDepartmentData->id);
         $this->assertEquals($departmentData->id, $updatedDepartmentData->fallback->id);
 
@@ -243,22 +296,31 @@ class DepartmentTest extends CiabTestCase
 
     public function testGetDepartmentInvalidId(): void
     {
-        $this->runRequest('GET', '/department/-1', null, null, 404, null, '/department/{id}');
+        testRun::testRun($this, 'GET', '/department/{id}')
+            ->setUriParts(['id' => -1])
+            ->setExpectedResult(404)
+            ->run();
 
     }
 
 
     public function testGetDepartmentInvalidName(): void
     {
-        $this->runRequest('GET', '/department/not-real-department', null, null, 404, null, '/department/{id}');
+        testRun::testRun($this, 'GET', '/department/{id}')
+            ->setUriParts(['id' => 'not-real-department'])
+            ->setExpectedResult(404)
+            ->run();
 
     }
 
-    
+
     public function testPostDepartmentMissingName(): void
     {
         $body = [];
-        $this->runRequest('POST', '/department', null, $body, 400, null, '/department');
+        testRun::testRun($this, 'POST', '/department')
+            ->setBody($body)
+            ->setExpectedResult(400)
+            ->run();
 
     }
 
@@ -269,19 +331,25 @@ class DepartmentTest extends CiabTestCase
             "Name" => "Test Department",
             "ParentID" => -1
         ];
-        $this->runRequest('POST', '/department', null, $body, 400, null, '/department');
+        testRun::testRun($this, 'POST', '/department')
+            ->setBody($body)
+            ->setExpectedResult(400)
+            ->run();
 
     }
 
-    
+
     public function testPostDepartmentInvalidFallbackId(): void
     {
         $body = [
             "Name" => "Test Department",
             "FallbackID" => -1
         ];
-        $this->runRequest('POST', '/department', null, $body, 400, null, '/department');
-        
+        testRun::testRun($this, 'POST', '/department')
+            ->setBody($body)
+            ->setExpectedResult(400)
+            ->run();
+
     }
 
 
@@ -291,7 +359,11 @@ class DepartmentTest extends CiabTestCase
             "Name" => "Updated Department Name"
         ];
 
-        $this->runRequest('PUT', '/department/-1', null, $body, 400, null, '/department/{id}');
+        testRun::testRun($this, 'PUT', '/department/{id}')
+            ->setUriParts(['id' => -1])
+            ->setBody($body)
+            ->setExpectedResult(400)
+            ->run();
 
     }
 
@@ -303,7 +375,12 @@ class DepartmentTest extends CiabTestCase
         ];
 
         // Not validating against OpenAPI schema because it calls this invalid, but we should still protect against it
-        $this->runRequest('PUT', '/department/not-an-id', null, $body, 400, null);
+        testRun::testRun($this, 'PUT', '/department/{id}')
+            ->setUriParts(['id' => 'not-an-id'])
+            ->setBody($body)
+            ->setExpectedResult(400)
+            ->setVerifyYaml(false)
+            ->run();
 
     }
 
@@ -313,13 +390,19 @@ class DepartmentTest extends CiabTestCase
         $department = [
             "Name" => "Department Name"
         ];
-        $departmentData = $this->runSuccessJsonRequest('POST', '/department', null, $department, 201, null, null);
+        $departmentData = testRun::testRun($this, 'POST', '/department')
+            ->setBody($department)
+            ->run();
 
         $body = [
             "Name" => ""
         ];
 
-        $this->runRequest('PUT', "/department/$departmentData->id", null, $body, 400, null, '/department/{id}');
+        testRun::testRun($this, 'PUT', "/department/{id}")
+            ->setUriParts(['id' => $departmentData->id])
+            ->setBody($body)
+            ->setExpectedResult(400)
+            ->run();
 
     }
 
@@ -329,13 +412,19 @@ class DepartmentTest extends CiabTestCase
         $department = [
             "Name" => "Department Name"
         ];
-        $departmentData = $this->runSuccessJsonRequest('POST', '/department', null, $department, 201, null, null);
+        $departmentData = testRun::testRun($this, 'POST', '/department')
+            ->setBody($department)
+            ->run();
 
         $body = [
             "Name" => "               "
         ];
 
-        $this->runRequest('PUT', "/department/$departmentData->id", null, $body, 400, null, '/department/{id}');
+        testRun::testRun($this, 'PUT', "/department/{id}")
+            ->setUriParts(['id' => $departmentData->id])
+            ->setBody($body)
+            ->setExpectedResult(400)
+            ->run();
 
     }
 
@@ -345,13 +434,19 @@ class DepartmentTest extends CiabTestCase
         $department = [
             "Name" => "Department Name"
         ];
-        $departmentData = $this->runSuccessJsonRequest('POST', '/department', null, $department, 201, null, null);
+        $departmentData = testRun::testRun($this, 'POST', '/department')
+            ->setBody($department)
+            ->run();
 
         $body = [
             "ParentID" => -1
         ];
 
-        $this->runRequest('PUT', "/department/$departmentData->id", null, $body, 400, null, '/department/{id}');
+        testRun::testRun($this, 'PUT', "/department/{id}")
+            ->setUriParts(['id' => $departmentData->id])
+            ->setBody($body)
+            ->setExpectedResult(400)
+            ->run();
 
     }
 
@@ -361,14 +456,21 @@ class DepartmentTest extends CiabTestCase
         $department = [
             "Name" => "Department Name"
         ];
-        $departmentData = $this->runSuccessJsonRequest('POST', '/department', null, $department, 201, null, null);
+        $departmentData = testRun::testRun($this, 'POST', '/department')
+            ->setBody($department)
+            ->run();
 
         $body = [
             "ParentID" => 'Parent Department'
         ];
 
         // Not validating against OpenAPI schema because it calls this invalid, but we should still protect against it
-        $this->runRequest('PUT', "/department/$departmentData->id", null, $body, 400, null);
+        testRun::testRun($this, 'PUT', "/department/{id}")
+            ->setUriParts(['id' => $departmentData->id])
+            ->setBody($body)
+            ->setExpectedResult(400)
+            ->setVerifyYaml(false)
+            ->run();
 
     }
 
@@ -378,13 +480,19 @@ class DepartmentTest extends CiabTestCase
         $department = [
             "Name" => "Department Name"
         ];
-        $departmentData = $this->runSuccessJsonRequest('POST', '/department', null, $department, 201, null, null);
-        
+        $departmentData = testRun::testRun($this, 'POST', '/department')
+            ->setBody($department)
+            ->run();
+
         $body = [
             "FallbackID" => -1
         ];
 
-        $this->runRequest('PUT', "/department/$departmentData->id", null, $body, 400, null, '/department/{id}');
+        testRun::testRun($this, 'PUT', "/department/{id}")
+            ->setUriParts(['id' => $departmentData->id])
+            ->setBody($body)
+            ->setExpectedResult(400)
+            ->run();
 
     }
 
@@ -394,27 +502,40 @@ class DepartmentTest extends CiabTestCase
         $department = [
             "Name" => "Department Name"
         ];
-        $departmentData = $this->runSuccessJsonRequest('POST', '/department', null, $department, 201, null, null);
-        
+        $departmentData = testRun::testRun($this, 'POST', '/department')
+            ->setBody($department)
+            ->run();
+
         $body = [
             "FallbackID" => "Fallback Department"
         ];
 
         // Not validating against OpenAPI schema because it calls this invalid, but we should still protect against it
-        $this->runRequest('PUT', "/department/$departmentData->id", null, $body, 400, null);
+        testRun::testRun($this, 'PUT', "/department/{id}")
+            ->setUriParts(['id' => $departmentData->id])
+            ->setBody($body)
+            ->setExpectedResult(400)
+            ->setVerifyYaml(false)
+            ->run();
 
     }
-    
+
 
     public function testPutDepartmentNoRequestBodyParams(): void
     {
         $department = [
             "Name" => "Department Name"
         ];
-        $departmentData = $this->runSuccessJsonRequest('POST', '/department', null, $department, 201, null, null);
+        $departmentData = testRun::testRun($this, 'POST', '/department')
+            ->setBody($department)
+            ->run();
 
         $updateBody = [];
-        $this->runRequest('PUT', "/department/$departmentData->id", null, $updateBody, 400, null, '/department/{id}');
+        testRun::testRun($this, 'PUT', "/department/{id}")
+            ->setUriParts(['id' => $departmentData->id])
+            ->setBody($updateBody)
+            ->setExpectedResult(400)
+            ->run();
 
     }
 
@@ -424,16 +545,22 @@ class DepartmentTest extends CiabTestCase
         $department = [
             "Name" => "Department Name"
         ];
-        $departmentData = $this->runSuccessJsonRequest('POST', '/department', null, $department, 201, null, null);
+        $departmentData = testRun::testRun($this, 'POST', '/department')
+            ->setBody($department)
+            ->run();
 
         $updateBody = [
             "Foo" => "Bar"
         ];
-        $this->runRequest('PUT', "/department/$departmentData->id", null, $updateBody, 400, null, '/department/{id}');
-        
+        testRun::testRun($this, 'PUT', "/department/{id}")
+            ->setUriParts(['id' => $departmentData->id])
+            ->setBody($updateBody)
+            ->setExpectedResult(400)
+            ->run();
+
     }
 
-    
+
     public function testDeleteDepartmentInvalidId(): void
     {
         testRun::testRun($this, 'DELETE', '/department/{id}')
@@ -444,7 +571,7 @@ class DepartmentTest extends CiabTestCase
 
     }
 
-    
+
     public function testDeleteDepartmentInvalidVeryHighId(): void
     {
         testRun::testRun($this, 'DELETE', '/department/{id}')
@@ -453,7 +580,7 @@ class DepartmentTest extends CiabTestCase
             ->run();
 
     }
-    
+
 
     /* End */
 }
