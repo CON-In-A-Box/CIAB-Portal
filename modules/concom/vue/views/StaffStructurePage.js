@@ -1,6 +1,8 @@
 /* globals Vue, showSpinner, hideSpinner */
 import { useCurrentUser } from '../composables/currentUser.js';
 import { useDivisionHierarchy } from '../composables/divisionHierarchy.js';
+import { useSidebar } from '../composables/sidebar.js';
+import { useSidebarActions } from '../composables/sidebarActions.js';
 
 const TEMPLATE = `
   <div class="UI-container">
@@ -32,17 +34,17 @@ const TEMPLATE = `
     </div>
 
     <staff-structure-sidebar :name="sidebarName" :data="sidebarData" 
-      @sidebar-closed="closeSidebarClicked"></staff-structure-sidebar>
+      @sidebar-view-changed="sidebarViewChanged" @sidebar-closed="sidebarClosed"
+      @sidebar-save-clicked="sidebarSaveClicked"></staff-structure-sidebar>
   </div>
 `;
 
 function setup() {
   const { user, loadingUser, fetchUser, hasPermission } = useCurrentUser();
   const { divisions, loadingDivisions, fetchDivisions } = useDivisionHierarchy();
+  const { showSidebar, sidebarName, sidebarData, prepareSidebar, changeSidebar, closeSidebar } = useSidebar();
+  const { saveSidebarData } = useSidebarActions();
   const canEditRbac = Vue.ref(false);
-  const showSidebar = Vue.ref(false);
-  const sidebarName = Vue.ref(null);
-  const sidebarData = Vue.ref(null);
 
   const loadingValues = [loadingUser, loadingDivisions];
   const sidebarDisplayClass = Vue.computed(() => showSidebar.value ? 'UI-maincontent UI-mainsection-sidebar-shown' : 'UI-maincontent')
@@ -61,6 +63,10 @@ function setup() {
   return {
     fetchUser,
     fetchDivisions,
+    prepareSidebar,
+    changeSidebar,
+    closeSidebar,
+    saveSidebarData,
     divisions,
     canEditRbac,
     showSidebar,
@@ -78,19 +84,29 @@ async function onCreated() {
 }
 
 function addDepartmentClicked(division) {
-  if (division == null) {
-    this.sidebarData = { isDivision: true };
-  } else {
-    this.sidebarData = { isDivision: false };
-  }
-
-  this.sidebarName = 'department';
-  this.showSidebar = !this.showSidebar;
+  this.prepareSidebar({
+    eventName: 'addDepartment',
+    division
+  });
 }
 
-function closeSidebarClicked() {
-  this.showSidebar = false;
-  this.sidebarName = null;
+function sidebarViewChanged(data) {
+  this.changeSidebar(data);
+}
+
+function sidebarClosed() {
+  this.closeSidebar();
+}
+
+async function sidebarSaveClicked(data) {
+  try {
+    await this.saveSidebarData(data);
+    await this.fetchDivisions();
+
+    this.closeSidebar();
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 const StaffStructurePage = {
@@ -98,7 +114,9 @@ const StaffStructurePage = {
   created: onCreated,
   methods: {
     addDepartmentClicked,
-    closeSidebarClicked
+    sidebarClosed,
+    sidebarViewChanged,
+    sidebarSaveClicked
   },
   template: TEMPLATE
 };
