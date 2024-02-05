@@ -72,7 +72,7 @@ class TestRun
     }
 
 
-    public function setToken(int $token): TestRun
+    public function setToken(object $token): TestRun
     {
         $this->token = $token;
         return $this;
