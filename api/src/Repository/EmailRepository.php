@@ -3,6 +3,8 @@
 namespace App\Repository;
 
 use Exception;
+use Atlas\Query\Insert;
+use Atlas\Query\Select;
 use Atlas\Query\Delete;
 
 class EmailRepository implements RepositoryInterface
@@ -20,15 +22,31 @@ class EmailRepository implements RepositoryInterface
 
     public function insert(/*.mixed.*/$data): int
     {
-        throw new Exception(__CLASS__." Method '__FUNCTION__' not implemented");
+        $insert = Insert::new($this->db);
+        $insert->into("EMails")
+            ->column('EMail', $data['Email'])
+            ->column('DepartmentID', $data['DepartmentID']);
+
+        if (array_key_exists("Alias", $data)) {
+            $insert->column('IsAlias', $data['Alias']);
+        }
+        
+        $insert->perform();
+        return intval($insert->getLastInsertId());
 
     }
 
     
     public function selectById(/*.mixed.*/$id): array
     {
-        throw new Exception(__CLASS__." Method '__FUNCTION__' not implemented");
+        $select = Select::new($this->db);
+        $result = $select->from("EMails")
+            ->columns("EMailAliasID", "DepartmentID", "IsAlias", "EMail")
+            ->whereEquals(["EMailAliasID" => $id])
+            ->fetchOne();
           
+        return $result;
+        
     }
 
 
