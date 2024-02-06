@@ -60,6 +60,7 @@ function setupAPIRoutes(App $app, $authMiddleware)
         '/email',
         function () use ($app, $authMiddleware) {
             $app->post('[/]', 'App\Controller\Email\PostEmail');
+            $app->get('/{id}', 'App\Controller\Email\GetEmail');
         }
     )->add(new \App\Middleware\CiabMiddleware($app))->add($authMiddleware);
 

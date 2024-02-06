@@ -141,5 +141,37 @@ class EmailTest extends CiabTestCase
     }
 
 
+    public function testGetEmail(): void
+    {
+        $body = [
+          "Email" => "test-email@test.com",
+          "DepartmentID" => $this->departmentId
+        ];
+
+        $emailObj = testRun::testRun($this, 'POST', '/email')
+            ->setBody($body)
+            ->run();
+
+        $this->emailId = $emailObj->id;
+
+        $result = testRun::testRun($this, 'GET', '/email/{id}')
+            ->setUriParts(["id" => $emailObj->id])
+            ->run();
+
+        $this->assertEquals($emailObj, $result);
+
+    }
+
+
+    public function testGetEmailInvalidId(): void
+    {
+        $result = testRun::testRun($this, 'GET', '/email/{id}')
+            ->setUriParts(["id" => -1])
+            ->setExpectedResult(404)
+            ->run();
+
+    }
+
+
   /* End EmailTest */
 }
