@@ -28,8 +28,17 @@ final class EmailServiceTest extends TestCase
 
     public function testPost(): void
     {
-        $this->expectException(Exception::class);
-        $this->systemUnderTest->post("id");
+        $emailId = 123;
+        $this->emailRepositoryStub->method('insert')
+            ->willReturn($emailId);
+        
+        $data = [
+            "Email" => "test-email@test.com",
+            "DepartmentID" => 100
+        ];
+
+        $result = $this->systemUnderTest->post($data);
+        $this->assertEquals($emailId, $result);
 
     }
 
@@ -44,9 +53,21 @@ final class EmailServiceTest extends TestCase
 
     public function testGetById(): void
     {
-        $this->expectException(Exception::class);
-        $this->systemUnderTest->getById("id");
+        $emailId = 123;
+        $this->emailRepositoryStub->method("selectById")
+            ->willReturn([
+                "EMailAliasID" => $emailId,
+                "DepartmentID" => 456,
+                "IsAlias" => null,
+                "EMail" => "test-email@test.com"
+            ]);
 
+        $result = $this->systemUnderTest->getById($emailId);
+        $this->assertEquals($emailId, $result["id"]);
+        $this->assertEquals(456, $result["departmentId"]);
+        $this->assertEquals(false, $result["isAlias"]);
+        $this->assertEquals("test-email@test.com", $result["email"]);
+                
     }
 
 

@@ -805,6 +805,43 @@ paths:
       security:
         -
           ciab_auth: []
+  /email:
+    post:
+      tags:
+        - emails
+      summary: 'Create new email for a department'
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                Email:
+                  nullable: false
+                  description: 'The email address for the department'
+                  type: string
+                DepartmentID:
+                  nullable: false
+                  description: 'The ID for the department'
+                  type: integer
+                IsAlias:
+                  nullable: true
+                  description: 'Indicates whether this email address is an alias'
+                  type: integer
+              type: object
+      responses:
+        '201':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/email'
+        '401':
+          $ref: '#/components/responses/401'
+        '400':
+          $ref: '#/components/responses/400'
+      security:
+        -
+          ciab_auth: []
   '/event/{id}':
     get:
       tags:
@@ -4268,6 +4305,29 @@ components:
           $ref: '#/components/schemas/resource_list'
         -
           $ref: '#/components/schemas/BaseController'
+    email:
+      type: object
+      allOf:
+        -
+          properties:
+            type:
+              type: string
+              enum:
+                - email
+            id:
+              description: 'Email ID'
+              type: string
+            email:
+              description: 'Email address'
+              type: string
+            departmentId:
+              description: 'The department ID associated with this email'
+              type: string
+            isAlias:
+              description: 'Flag indicating whether this email is an alias'
+              type: integer
+        -
+          $ref: '#/components/schemas/BaseController'
     event:
       type: object
       allOf:
@@ -5467,6 +5527,9 @@ tags:
   -
     name: departments
     description: 'Features around staffing departments for events'
+  -
+    name: emails
+    description: 'Features around emails for departments'
   -
     name: events
     description: 'Features around events'

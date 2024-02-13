@@ -23,7 +23,7 @@ class EmailService implements ServiceInterface
 
     public function post(/*.mixed.*/$data): int
     {
-        throw new Exception(__CLASS__." Method '__FUNCTION__' not implemented");
+        return $this->emailRepository->insert($data);
 
     }
 
@@ -37,7 +37,20 @@ class EmailService implements ServiceInterface
 
     public function getById(/*.mixed.*/$id): array
     {
-        throw new Exception(__CLASS__." Method '__FUNCTION__' not implemented");
+        $data = $this->emailRepository->selectById($id);
+
+        $isAlias = 0;
+        if ($data["IsAlias"] != null) {
+            $isAlias = $data["IsAlias"];
+        }
+
+        return [
+            "type" => "email",
+            "id" => $data["EMailAliasID"],
+            "departmentId" => $data["DepartmentID"],
+            "email" => $data["EMail"],
+            "isAlias" => $isAlias
+        ];
 
     }
 
