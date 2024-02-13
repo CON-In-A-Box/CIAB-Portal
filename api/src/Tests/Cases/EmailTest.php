@@ -171,6 +171,274 @@ class EmailTest extends CiabTestCase
             ->run();
 
     }
+    
+
+    public function testPutEmailUpdateEmailOnly(): void
+    {
+        $originalBody = [
+            "Email" => "test-email@test.com",
+            "DepartmentID" => $this->departmentId
+        ];
+        $originalEmail = testRun::testRun($this, 'POST', '/email')
+            ->setBody($originalBody)
+            ->setVerifyYaml(false)
+            ->run();
+
+        $this->emailId = $originalEmail->id;
+
+        $updatedBody = [
+            "Email" => "updated-test-email@test.com"
+        ];
+        $updatedEmail = testRun::testRun($this, 'PUT', '/email/{id}')
+            ->setBody($updatedBody)
+            ->setUriParts(["id" => $originalEmail->id])
+            ->run();
+
+        $this->assertEquals($originalEmail->id, $updatedEmail->id);
+        $this->assertEquals("updated-test-email@test.com", $updatedEmail->email);
+
+    }
+
+    
+    public function testPutEmailUpdateDepartmentIDOnly(): void
+    {
+        $otherDeptBody = [
+            "Name" => "Test Department For Email"
+          ];
+  
+        $otherDept = testRun::testRun($this, 'POST', '/department')
+            ->setBody($otherDeptBody)
+            ->setVerifyYaml(false)
+            ->run();
+
+        $originalBody = [
+            "Email" => "test-email@test.com",
+            "DepartmentID" => $otherDept->id
+        ];
+        $originalEmail = testRun::testRun($this, 'POST', '/email')
+            ->setBody($originalBody)
+            ->setVerifyYaml(false)
+            ->run();
+
+        $this->emailId = $originalEmail->id;
+
+        $updatedBody = [
+            "DepartmentID" => $this->departmentId
+        ];
+        $updatedEmail = testRun::testRun($this, 'PUT', '/email/{id}')
+            ->setBody($updatedBody)
+            ->setUriParts(["id" => $originalEmail->id])
+            ->run();
+
+        $this->assertEquals($originalEmail->id, $updatedEmail->id);
+        $this->assertEquals($this->departmentId, $updatedEmail->departmentId);
+
+        testRun::testRun($this, 'DELETE', '/department/{id}')
+            ->setUriParts(["id" => $otherDept->id])
+            ->setVerifyYaml(false)
+            ->run();
+
+    }
+
+
+    public function testPutEmailUpdateAliasOnly(): void
+    {
+        $originalBody = [
+            "Email" => "test-email@test.com",
+            "DepartmentID" => $this->departmentId
+        ];
+        $originalEmail = testRun::testRun($this, 'POST', '/email')
+            ->setBody($originalBody)
+            ->setVerifyYaml(false)
+            ->run();
+
+        $this->emailId = $originalEmail->id;
+
+        $updatedBody = [
+            "IsAlias" => 1
+        ];
+        $updatedEmail = testRun::testRun($this, 'PUT', '/email/{id}')
+            ->setBody($updatedBody)
+            ->setUriParts(["id" => $originalEmail->id])
+            ->run();
+
+        $this->assertEquals($originalEmail->id, $updatedEmail->id);
+        $this->assertEquals(1, $updatedEmail->isAlias);
+
+    }
+
+
+    public function testPutEmailNoParams(): void
+    {
+        $originalBody = [
+            "Email" => "test-email@test.com",
+            "DepartmentID" => $this->departmentId
+        ];
+        $originalEmail = testRun::testRun($this, 'POST', '/email')
+            ->setBody($originalBody)
+            ->setVerifyYaml(false)
+            ->run();
+
+        $this->emailId = $originalEmail->id;
+
+        $updatedBody = [];
+        testRun::testRun($this, 'PUT', '/email/{id}')
+            ->setBody($updatedBody)
+            ->setUriParts(["id" => $originalEmail->id])
+            ->setExpectedResult(400)
+            ->run();
+
+    }
+
+
+    public function testPutEmailInvalidParams(): void
+    {
+        $originalBody = [
+            "Email" => "test-email@test.com",
+            "DepartmentID" => $this->departmentId
+        ];
+        $originalEmail = testRun::testRun($this, 'POST', '/email')
+            ->setBody($originalBody)
+            ->setVerifyYaml(false)
+            ->run();
+
+        $this->emailId = $originalEmail->id;
+
+        $updatedBody = [
+            "Unknown" => "Value"
+        ];
+        testRun::testRun($this, 'PUT', '/email/{id}')
+            ->setBody($updatedBody)
+            ->setUriParts(["id" => $originalEmail->id])
+            ->setExpectedResult(400)
+            ->run();
+
+    }
+
+
+    public function testPutEmailInvalidEmail(): void
+    {
+        $originalBody = [
+            "Email" => "test-email@test.com",
+            "DepartmentID" => $this->departmentId
+        ];
+        $originalEmail = testRun::testRun($this, 'POST', '/email')
+            ->setBody($originalBody)
+            ->setVerifyYaml(false)
+            ->run();
+
+        $this->emailId = $originalEmail->id;
+
+        $updatedBody = [
+            "Email" => ""
+        ];
+        testRun::testRun($this, 'PUT', '/email/{id}')
+            ->setBody($updatedBody)
+            ->setUriParts(["id" => $originalEmail->id])
+            ->setExpectedResult(400)
+            ->run();
+            
+    }
+
+
+    public function testPutEmailInvalidDepartmentIDNumber(): void
+    {
+        $originalBody = [
+            "Email" => "test-email@test.com",
+            "DepartmentID" => $this->departmentId
+        ];
+        $originalEmail = testRun::testRun($this, 'POST', '/email')
+            ->setBody($originalBody)
+            ->setVerifyYaml(false)
+            ->run();
+
+        $this->emailId = $originalEmail->id;
+
+        $updatedBody = [
+            "DepartmentID" => "-1"
+        ];
+        testRun::testRun($this, 'PUT', '/email/{id}')
+            ->setBody($updatedBody)
+            ->setUriParts(["id" => $originalEmail->id])
+            ->setExpectedResult(400)
+            ->run();
+            
+    }
+
+
+    public function testPutEmailInvalidDepartmentIDValue(): void
+    {
+        $originalBody = [
+            "Email" => "test-email@test.com",
+            "DepartmentID" => $this->departmentId
+        ];
+        $originalEmail = testRun::testRun($this, 'POST', '/email')
+            ->setBody($originalBody)
+            ->setVerifyYaml(false)
+            ->run();
+
+        $this->emailId = $originalEmail->id;
+
+        $updatedBody = [
+            "DepartmentID" => "Value"
+        ];
+        testRun::testRun($this, 'PUT', '/email/{id}')
+            ->setBody($updatedBody)
+            ->setUriParts(["id" => $originalEmail->id])
+            ->setExpectedResult(400)
+            ->run();
+            
+    }
+
+
+    public function testPutEmailInvalidAliasNumber(): void
+    {
+        $originalBody = [
+            "Email" => "test-email@test.com",
+            "DepartmentID" => $this->departmentId
+        ];
+        $originalEmail = testRun::testRun($this, 'POST', '/email')
+            ->setBody($originalBody)
+            ->setVerifyYaml(false)
+            ->run();
+
+        $this->emailId = $originalEmail->id;
+
+        $updatedBody = [
+            "IsAlias" => 5
+        ];
+        testRun::testRun($this, 'PUT', '/email/{id}')
+            ->setBody($updatedBody)
+            ->setUriParts(["id" => $originalEmail->id])
+            ->setExpectedResult(400)
+            ->run();
+            
+    }
+
+
+    public function testPutEmailInvalidAliasValue(): void
+    {
+        $originalBody = [
+            "Email" => "test-email@test.com",
+            "DepartmentID" => $this->departmentId
+        ];
+        $originalEmail = testRun::testRun($this, 'POST', '/email')
+            ->setBody($originalBody)
+            ->setVerifyYaml(false)
+            ->run();
+
+        $this->emailId = $originalEmail->id;
+
+        $updatedBody = [
+            "IsAlias" => "Value"
+        ];
+        testRun::testRun($this, 'PUT', '/email/{id}')
+            ->setBody($updatedBody)
+            ->setUriParts(["id" => $originalEmail->id])
+            ->setExpectedResult(400)
+            ->run();
+            
+    }
 
 
   /* End EmailTest */

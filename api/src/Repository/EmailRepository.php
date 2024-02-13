@@ -7,6 +7,7 @@ use Exception;
 use Atlas\Query\Insert;
 use Atlas\Query\Select;
 use Atlas\Query\Delete;
+use Atlas\Query\Update;
 
 class EmailRepository implements RepositoryInterface
 {
@@ -64,7 +65,23 @@ class EmailRepository implements RepositoryInterface
 
     public function update(/*.string.*/$id, /*.mixed.*/$data): void
     {
-        throw new Exception(__CLASS__." Method '__FUNCTION__' not implemented");
+        $update = Update::new($this->db);
+        $update->table('EMails');
+
+        if (array_key_exists('Email', $data)) {
+            $update->column("EMail", $data['Email']);
+        }
+
+        if (array_key_exists('DepartmentID', $data)) {
+            $update->column('DepartmentID', $data['DepartmentID']);
+        }
+
+        if (array_key_exists('IsAlias', $data)) {
+            $update->column('IsAlias', $data['IsAlias']);
+        }
+
+        $update->whereEquals(["EMailAliasID" => $id])
+            ->perform();
           
     }
 
