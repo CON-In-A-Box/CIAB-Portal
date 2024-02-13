@@ -88,7 +88,10 @@ class EmailRepository implements RepositoryInterface
 
     public function deleteById(/*.mixed.*/$id): void
     {
-        throw new Exception(__CLASS__." Method '__FUNCTION__' not implemented");
+        $delete = Delete::new($this->db);
+        $delete->from("EMails")
+            ->whereEquals(["EMailAliasID" => $id])
+            ->perform();
           
     }
 
