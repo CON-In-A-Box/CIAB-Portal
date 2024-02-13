@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Error\NotFoundException;
 use Exception;
 use Atlas\Query\Insert;
 use Atlas\Query\Select;
@@ -44,6 +45,10 @@ class EmailRepository implements RepositoryInterface
             ->columns("EMailAliasID", "DepartmentID", "IsAlias", "EMail")
             ->whereEquals(["EMailAliasID" => $id])
             ->fetchOne();
+
+        if (empty($result)) {
+            throw new NotFoundException("Email with '$id' Not Found");
+        }
           
         return $result;
         

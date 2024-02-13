@@ -805,6 +805,34 @@ paths:
       security:
         -
           ciab_auth: []
+  '/email/{id}':
+    get:
+      tags:
+        - emails
+      summary: 'Gets an email'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Id of the email'
+          required: true
+          schema:
+            description: 'Email id'
+            type: integer
+      responses:
+        '200':
+          description: 'Email found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/email'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/email_not_found'
+      security:
+        -
+          ciab_auth: []
   /email:
     post:
       tags:
@@ -5356,6 +5384,12 @@ components:
             $ref: '#/components/schemas/error'
     department_not_found:
       description: 'Department not found in the system.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/error'
+    email_not_found:
+      description: 'Email not found in the system'
       content:
         application/json:
           schema:
