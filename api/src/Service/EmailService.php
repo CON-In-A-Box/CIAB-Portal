@@ -41,7 +41,7 @@ class EmailService implements ServiceInterface
 
         $isAlias = 0;
         if ($data["IsAlias"] != null) {
-            $isAlias = $data["IsAlias"];
+            $isAlias = intval($data["IsAlias"]);
         }
 
         return [
@@ -57,7 +57,7 @@ class EmailService implements ServiceInterface
     
     public function put(/*.string.*/$id, /*.mixed.*/$data): void
     {
-        throw new Exception(__CLASS__." Method '__FUNCTION__' not implemented");
+        $this->emailRepository->update($id, $data);
 
     }
 

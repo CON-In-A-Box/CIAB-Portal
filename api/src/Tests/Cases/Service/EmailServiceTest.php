@@ -71,9 +71,28 @@ final class EmailServiceTest extends TestCase
     }
 
 
+    public function testGetByIdWithAlias(): void
+    {
+        $emailId = 123;
+        $this->emailRepositoryStub->method("selectById")
+            ->willReturn([
+                "EMailAliasID" => $emailId,
+                "DepartmentID" => 456,
+                "IsAlias" => 1,
+                "EMail" => "test-email@test.com"
+            ]);
+
+        $result = $this->systemUnderTest->getById($emailId);
+        $this->assertEquals(1, $result["isAlias"]);
+
+    }
+
+
     public function testPut(): void
     {
-        $this->expectException(Exception::class);
+        $this->emailRepositoryStub->expects($this->once())
+            ->method('update');
+
         $this->systemUnderTest->put("id", []);
 
     }
