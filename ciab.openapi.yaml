@@ -877,6 +877,30 @@ paths:
       security:
         -
           ciab_auth: []
+    delete:
+      tags:
+        - emails
+      summary: 'Delete existing email'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID of email being deleted'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: OK
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/email_not_found'
+      security:
+        -
+          ciab_auth: []
   /email:
     post:
       tags:

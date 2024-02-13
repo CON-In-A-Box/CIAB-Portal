@@ -100,7 +100,8 @@ final class EmailServiceTest extends TestCase
 
     public function testDeleteById(): void
     {
-        $this->expectException(Exception::class);
+        $this->emailRepositoryStub->expects($this->once())
+            ->method('deleteById');
         $this->systemUnderTest->deleteById("id");
 
     }

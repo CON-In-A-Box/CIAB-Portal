@@ -441,5 +441,33 @@ class EmailTest extends CiabTestCase
     }
 
 
+    public function testDeleteEmail(): void
+    {
+        $originalBody = [
+            "Email" => "test-email@test.com",
+            "DepartmentID" => $this->departmentId
+        ];
+        $originalEmail = testRun::testRun($this, 'POST', '/email')
+            ->setBody($originalBody)
+            ->setVerifyYaml(false)
+            ->run();
+
+        testRun::testRun($this, 'DELETE', '/email/{id}')
+            ->setUriParts(["id" => $originalEmail->id])
+            ->run();
+
+    }
+
+
+    public function testDeleteEmailInvalidID(): void
+    {
+        testRun::testRun($this, 'DELETE', '/email/{id}')
+            ->setUriParts(["id" => -1])
+            ->setExpectedResult(400)
+            ->run();
+            
+    }
+
+
   /* End EmailTest */
 }
