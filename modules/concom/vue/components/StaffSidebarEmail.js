@@ -1,4 +1,5 @@
 const PROPS = {
+  data: Object,
   edit: Boolean
 }
 
@@ -18,13 +19,14 @@ const TEMPLATE = `
   <div class="UI-center">
     <hr/>
     <button class="UI-eventbutton">Save</button>
-    <button class="UI-yellowbutton">Close</button>
+    <button class="UI-yellowbutton" @click="$emit('closeClicked')">Close</button>
     <button class="UI-redbutton">Delete</button>
   </div>
 `;
 
 const StaffSidebarEmail = {
   props: PROPS,
+  emits: [ 'closeClicked' ],
   template: TEMPLATE
 };
 
