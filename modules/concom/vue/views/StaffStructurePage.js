@@ -28,7 +28,8 @@ const TEMPLATE = `
           </template>
           
           <staff-structure-division :divisions="divisions" @add-division="addDepartmentClicked" 
-            @add-department="addDepartmentClicked"></staff-structure-division>
+            @add-department="addDepartmentClicked" @edit-department="editDepartmentClicked" 
+            @edit-division="editDepartmentClicked"></staff-structure-division>
         </div>
       </div>
     </div>
@@ -90,6 +91,13 @@ function addDepartmentClicked(division) {
   });
 }
 
+function editDepartmentClicked(existingData) {
+  this.prepareSidebar({
+    eventName: 'editDepartment',
+    existingData
+  });
+}
+
 function sidebarViewChanged(data) {
   this.changeSidebar(data);
 }
@@ -114,6 +122,7 @@ const StaffStructurePage = {
   created: onCreated,
   methods: {
     addDepartmentClicked,
+    editDepartmentClicked,
     sidebarClosed,
     sidebarViewChanged,
     sidebarSaveClicked

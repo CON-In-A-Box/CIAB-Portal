@@ -77,13 +77,13 @@ const TEMPLATE = `
 function addEmailClicked() {
   const data = {
     id: this.departmentId,
-    departmentName: this.departmentName,
-    departmentEmails: this.departmentEmails,
-    departmentPermissions: this.departmentPermissions,
+    name: this.departmentName,
+    email: this.departmentEmails,
+    permissions: this.departmentPermissions,
     staffCount: this.staffCount,
-    subDepartments: this.subDepartments,
-    fallbackDepartment: this.selectedFallbackDepartment,
-    parentDepartment: this.selectedParentDepartment,
+    departments: this.subDepartments,
+    fallback: this.selectedFallbackDepartment,
+    parentId: this.selectedParentDepartment,
     isDivision: this.isDivisionToggle
   }
 
@@ -108,19 +108,25 @@ function onDelete() {
 
 function setup(props) {
   const departmentId = Vue.ref(props.data?.id ?? -1);
-  const departmentName = Vue.ref(props.data?.departmentName ?? (props.data?.isDivision ? 'New Division' : 'New Department'));
-  const departmentEmails = Vue.ref(props.data?.departmentEmails ?? []);
-  const departmentPermissions = Vue.ref(props.data?.departmentPermissions ?? { 'Head': [], 'Sub-Head': [], 'Specialist': [] });
+  const departmentName = Vue.ref(props.data?.name ?? (props.data?.isDivision ? 'New Division' : 'New Department'));
+  const departmentEmails = Vue.ref(props.data?.email ?? []);
+  const departmentPermissions = Vue.ref(props.data?.permissions ?? { 'Head': [], 'Sub-Head': [], 'Specialist': [] });
   const staffCount = Vue.ref(props.data?.staffCount ?? 0);
   const subDepartments = Vue.ref(props.data?.subDepartments ?? 0);
-  const selectedFallbackDepartment = Vue.ref(props.data?.fallbackDepartment ?? {});
-  const selectedParentDepartment = Vue.ref(props.data?.parentDepartment ?? {});
   const isDivisionToggle = Vue.ref(props.data?.isDivision ?? props.isDivision);
 
   const canEditRbac = Vue.inject('canEditRbac');
   const divisions = Vue.inject('divisions');
 
-  const fallbackDivisions = divisions.value.filter((division) => division.id !== departmentId);
+  const fallbackDepartment = props.data?.fallback ? divisions.value.find((division) => division.id === props.data?.fallback) : {};
+  const parentDepartment = props.data?.parentId ? divisions.value.find((division) => division.id === props.data?.parentId) : {};
+
+  const selectedFallbackDepartment = Vue.ref(fallbackDepartment);
+  const selectedParentDepartment = Vue.ref(parentDepartment);
+
+  const fallbackReferences = divisions.value.filter((division) => division.fallback != null).map((division) => division.fallback);
+  const fallbackDivisions = divisions.value.filter((division) => division.id !== departmentId &&
+    (fallbackDepartment?.id === division.id || !fallbackReferences.includes(division.fallback)));
 
   return {
     departmentId,
