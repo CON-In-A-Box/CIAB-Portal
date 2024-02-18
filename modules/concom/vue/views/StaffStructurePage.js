@@ -36,7 +36,7 @@ const TEMPLATE = `
 
     <staff-structure-sidebar :name="sidebarName" :data="sidebarData" 
       @sidebar-view-changed="sidebarViewChanged" @sidebar-closed="sidebarClosed"
-      @sidebar-save-clicked="sidebarSaveClicked"></staff-structure-sidebar>
+      @sidebar-save-clicked="sidebarSaveClicked" @sidebar-delete-clicked="sidebarDeleteClicked"></staff-structure-sidebar>
   </div>
 `;
 
@@ -44,7 +44,7 @@ function setup() {
   const { user, loadingUser, fetchUser, hasPermission } = useCurrentUser();
   const { divisions, loadingDivisions, fetchDivisions } = useDivisionHierarchy();
   const { showSidebar, sidebarName, sidebarData, prepareSidebar, changeSidebar, closeSidebar } = useSidebar();
-  const { saveSidebarData } = useSidebarActions();
+  const { saveSidebarData, deleteSidebarData } = useSidebarActions();
   const canEditRbac = Vue.ref(false);
 
   const loadingValues = [loadingUser, loadingDivisions];
@@ -68,6 +68,7 @@ function setup() {
     changeSidebar,
     closeSidebar,
     saveSidebarData,
+    deleteSidebarData,
     divisions,
     canEditRbac,
     showSidebar,
@@ -117,6 +118,17 @@ async function sidebarSaveClicked(data) {
   }
 }
 
+async function sidebarDeleteClicked(data) {
+  try {
+    await this.deleteSidebarData(data);
+    await this.fetchDivisions();
+
+    this.closeSidebar();
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 const StaffStructurePage = {
   setup,
   created: onCreated,
@@ -125,7 +137,8 @@ const StaffStructurePage = {
     editDepartmentClicked,
     sidebarClosed,
     sidebarViewChanged,
-    sidebarSaveClicked
+    sidebarSaveClicked,
+    sidebarDeleteClicked
   },
   template: TEMPLATE
 };
