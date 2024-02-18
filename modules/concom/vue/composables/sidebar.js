@@ -4,8 +4,23 @@ function addDepartmentView(data) {
   const { division } = data;
   const sidebarData = {
     isDivision: division == null,
-    parentDepartment: division
+    parentId: division?.id
+  };
+
+  return {
+    sidebarData,
+    sidebarName: 'department'
   }
+}
+
+function editDepartmentView(data) {
+  const { existingData } = data;
+  const isDivision = existingData.departments != null;
+  const sidebarData = {
+    ...existingData,
+    isDivision,
+    subDepartments: existingData.departments?.length ?? 0,
+  };
 
   return {
     sidebarData,
@@ -26,6 +41,10 @@ export function useSidebar() {
 
     if (data.eventName === 'addDepartment') {
       const viewData = addDepartmentView(data);
+      sidebarName.value = viewData.sidebarName;
+      sidebarData.value = viewData.sidebarData;
+    } else if (data.eventName === 'editDepartment') {
+      const viewData = editDepartmentView(data);
       sidebarName.value = viewData.sidebarName;
       sidebarData.value = viewData.sidebarData;
     }

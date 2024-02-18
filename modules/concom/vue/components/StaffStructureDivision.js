@@ -10,9 +10,9 @@ const TEMPLATE = `
 </div>
 
 <div class="UI-container UI-margin" v-for="division in divisions" :key="division.name">
-  <span class="CONCOM-division-span">{{ division.name }}</span>
+  <span class="CONCOM-division-span" @dblclick="$emit('editDepartment', division)">{{ division.name }}</span>
   <div class="CONCOM-division-drag-div">
-    <div class="CONCOM-department" v-for="department in division.departments" :key="department.name">
+    <div class="CONCOM-department" @dblclick="$emit('editDepartment', department)" v-for="department in division.departments" :key="department.name">
       {{ department.name }}
     </div>
     <div class="CONCOM-new-department-div">
@@ -24,7 +24,7 @@ const TEMPLATE = `
 
 const StaffStructureDivision = {
   props: PROPS,
-  emits: ['addDivision', 'addDepartment'],
+  emits: ['addDivision', 'addDepartment', 'editDivision', 'editDepartment'],
   template: TEMPLATE
 };
 
