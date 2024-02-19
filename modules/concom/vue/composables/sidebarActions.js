@@ -27,6 +27,12 @@ async function updateDepartment(data) {
   await apiRequest('PUT', `department/${sidebarData.id}`, params);
 }
 
+async function deleteDepartment(data) {
+  const { sidebarData } = data;
+
+  await apiRequest('DELETE', `department/${sidebarData.id}`);
+}
+
 
 export function useSidebarActions() {
   async function saveSidebarData(data) {
@@ -39,5 +45,11 @@ export function useSidebarActions() {
     }
   }
 
-  return { saveSidebarData };
+  async function deleteSidebarData(data) {
+    if (data.eventName === 'deleteDepartment') {
+      await deleteDepartment(data);
+    }
+  }
+
+  return { saveSidebarData, deleteSidebarData };
 }

@@ -8,7 +8,8 @@ const TEMPLATE = `
     <div class="UI-sidebar-shown UI-fixed">
       <template v-if="name === 'department'">
         <staff-sidebar-department :data="data" @add-email-clicked="addEmailClicked" 
-          @sidebar-closed="$emit('sidebarClosed')" @save-department-clicked="saveDepartmentClicked"></staff-sidebar-department>
+          @sidebar-closed="$emit('sidebarClosed')" @save-department-clicked="saveDepartmentClicked"
+          @delete-department-clicked="deleteDepartmentClicked"></staff-sidebar-department>
       </template>
       <template v-if="name === 'department_email'">
         <staff-sidebar-email :data="data" @close-clicked="closeEmailClicked"></staff-sidebar-email>
@@ -55,13 +56,23 @@ function saveDepartmentClicked(data) {
   this.$emit('sidebarSaveClicked', eventData);
 }
 
+function deleteDepartmentClicked(data) {
+  const eventData = {
+    eventName: 'deleteDepartment',
+    sidebarData: data
+  };
+
+  this.$emit('sidebarDeleteClicked', eventData);
+}
+
 const StaffStructureSidebar = {
   props: PROPS,
-  emits: ['sidebarClosed', 'sidebarViewChanged', 'sidebarSaveClicked'],
+  emits: ['sidebarClosed', 'sidebarViewChanged', 'sidebarSaveClicked', 'sidebarDeleteClicked'],
   methods: {
     addEmailClicked,
     closeEmailClicked,
-    saveDepartmentClicked
+    saveDepartmentClicked,
+    deleteDepartmentClicked
   },
   template: TEMPLATE
 };

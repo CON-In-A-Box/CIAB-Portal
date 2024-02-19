@@ -1,4 +1,6 @@
-/* globals Vue */
+/* globals Vue, showSpinner, hideSpinner */
+import { useDepartmentStaff } from '../composables/departmentStaff.js';
+
 const PROPS = {
   data: Object
 };
@@ -69,7 +71,7 @@ const TEMPLATE = `
       <hr/>
       <button class="UI-eventbutton" @click="onSave">Save</button>
       <button class="UI-yellowbutton" @click="$emit('sidebarClosed')">Close</button>
-      <button class="UI-redbutton" @click="onDelete" :disabled="departmentId === -1">Delete</button>
+      <button class="UI-redbutton" @click="onDelete" :disabled="departmentId === -1 || subDepartments > 0 || staffCount > 0">Delete</button>
     </div>
   </div>
 `;
@@ -85,7 +87,7 @@ function addEmailClicked() {
     fallback: this.selectedFallbackDepartment,
     parentId: this.selectedParentDepartment,
     isDivision: this.isDivisionToggle
-  }
+  };
 
   this.$emit('addEmailClicked', data);
 }
@@ -97,13 +99,17 @@ function onSave() {
     fallbackDepartment: this.selectedFallbackDepartment,
     parentDepartment: this.selectedParentDepartment,
     isDivision: this.isDivisionToggle
-  }
+  };
 
   this.$emit('saveDepartmentClicked', data);
 }
 
 function onDelete() {
-  console.log('onDelete clicked');
+  const data = {
+    id: this.departmentId
+  };
+
+  this.$emit('deleteDepartmentClicked', data);
 }
 
 function setup(props) {
@@ -114,6 +120,8 @@ function setup(props) {
   const staffCount = Vue.ref(props.data?.staffCount ?? 0);
   const subDepartments = Vue.ref(props.data?.subDepartments ?? 0);
   const isDivisionToggle = Vue.ref(props.data?.isDivision ?? props.isDivision);
+
+  const { departmentStaff, loadingDepartment, departmentError, fetchDepartmentStaff } = useDepartmentStaff();
 
   const canEditRbac = Vue.inject('canEditRbac');
   const divisions = Vue.inject('divisions');
@@ -128,6 +136,18 @@ function setup(props) {
   const fallbackDivisions = divisions.value.filter((division) => division.id !== departmentId &&
     (fallbackDepartment?.id === division.id || !fallbackReferences.includes(division.fallback)));
 
+  Vue.watch(departmentStaff, () => {
+    staffCount.value = departmentStaff.value?.length ?? 0;
+  })
+
+  Vue.watch(loadingDepartment, () => {
+    if (loadingDepartment.value) {
+      showSpinner();
+    } else {
+      hideSpinner();
+    }
+  });
+
   return {
     departmentId,
     departmentName,
@@ -140,14 +160,23 @@ function setup(props) {
     isDivisionToggle,
     canEditRbac: canEditRbac.value,
     divisions,
-    fallbackDivisions
+    fallbackDivisions,
+    departmentStaff,
+    loadingDepartment,
+    departmentError,
+    fetchDepartmentStaff
   }
+}
+
+async function onCreated() {
+  await this.fetchDepartmentStaff(this.departmentId);
 }
 
 const StaffSidebarDepartment = {
   props: PROPS,
-  emits: ['sidebarClosed', 'addEmailClicked', 'saveDepartmentClicked'],
+  emits: ['sidebarClosed', 'addEmailClicked', 'saveDepartmentClicked', 'deleteDepartmentClicked'],
   setup,
+  created: onCreated,
   methods: {
     addEmailClicked,
     onSave,
