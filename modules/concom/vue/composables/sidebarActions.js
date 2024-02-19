@@ -33,6 +33,12 @@ async function deleteDepartment(data) {
   await apiRequest('DELETE', `department/${sidebarData.id}`);
 }
 
+async function saveEmail(data) {
+  const { sidebarData } = data;
+
+  await apiRequest('POST', 'email', `Email=${sidebarData.email}&DepartmentID=${sidebarData.departmentId}`);
+}
+
 
 export function useSidebarActions() {
   async function saveSidebarData(data) {
@@ -41,6 +47,14 @@ export function useSidebarActions() {
         await updateDepartment(data);
       } else {
         await saveDepartment(data);
+      }
+    }
+
+    if (data.eventName === 'saveEmail') {
+      if (data.sidebarData?.id > 0) {
+        // This will be for update
+      } else {
+        await saveEmail(data);
       }
     }
   }

@@ -12,7 +12,7 @@ const TEMPLATE = `
           @delete-department-clicked="deleteDepartmentClicked"></staff-sidebar-department>
       </template>
       <template v-if="name === 'department_email'">
-        <staff-sidebar-email :data="data" @close-clicked="closeEmailClicked"></staff-sidebar-email>
+        <staff-sidebar-email :data="data" @close-clicked="closeEmailClicked" @save-email-clicked="saveEmailClicked"></staff-sidebar-email>
       </template>
       <template v-if="name === 'department_permissions'">
         <staff-sidebar-department-permissions></staff-sidebar-department-permissions>
@@ -33,7 +33,9 @@ function addEmailClicked(data) {
     sidebarData: data,
     viewName: this.name,
     newView: 'department_email',
-    newData: {}
+    newData: {
+      departmentId: data.id
+    }
   }
 
   this.$emit('sidebarViewChanged', eventData);
@@ -65,6 +67,15 @@ function deleteDepartmentClicked(data) {
   this.$emit('sidebarDeleteClicked', eventData);
 }
 
+function saveEmailClicked(data) {
+  const eventData = {
+    eventName: 'saveEmail',
+    sidebarData: data
+  };
+
+  this.$emit('sidebarSaveClicked', eventData);
+}
+
 const StaffStructureSidebar = {
   props: PROPS,
   emits: ['sidebarClosed', 'sidebarViewChanged', 'sidebarSaveClicked', 'sidebarDeleteClicked'],
@@ -72,7 +83,8 @@ const StaffStructureSidebar = {
     addEmailClicked,
     closeEmailClicked,
     saveDepartmentClicked,
-    deleteDepartmentClicked
+    deleteDepartmentClicked,
+    saveEmailClicked
   },
   template: TEMPLATE
 };
