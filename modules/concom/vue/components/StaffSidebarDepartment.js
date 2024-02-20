@@ -20,7 +20,7 @@ const TEMPLATE = `
         <button class="UI-roundbutton">{{ email }}</button>
         <br/>
       </template>
-      <button class="UI-roundbutton" @click="addEmailClicked"><i class="fas fa-plus-square"></i></button>
+      <button class="UI-roundbutton" @click="addEmailClicked" :disabled="departmentId === -1"><i class="fas fa-plus-square"></i></button>
     </div>
 
     <button class="UI-redbutton UI-padding UI-margin" v-if="canEditRbac" disabled="departmentId === -1">

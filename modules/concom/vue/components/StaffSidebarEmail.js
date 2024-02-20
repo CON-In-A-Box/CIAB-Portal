@@ -1,3 +1,4 @@
+/* globals Vue */
 const PROPS = {
   data: Object,
   edit: Boolean
@@ -9,24 +10,46 @@ const TEMPLATE = `
   </div>
   <div>
     <hr/>
-    <label class="UI-label" for="updated_email_email">EMail:</label>
-    <input id="updated_email_email" class="UI-input" value="test@test-con.org" />
-    <input id="updated_email_original" class="UI-hide" readonly />
-    <input id="updated_email_alias" class="UI-hide" readonly />
-    <input id="updated_email_index" class="UI-hide" readonly />
-    <input id="updated_email_dept" class="UI-hide" readonly />
+    <label class="UI-label" for="email">EMail:</label>
+    <input id="email" class="UI-input" v-model="email" />
   </div>
   <div class="UI-center">
     <hr/>
-    <button class="UI-eventbutton">Save</button>
+    <button class="UI-eventbutton" @click="onSave">Save</button>
     <button class="UI-yellowbutton" @click="$emit('closeClicked')">Close</button>
-    <button class="UI-redbutton">Delete</button>
+    <button class="UI-redbutton" :disabled="emailId === -1">Delete</button>
   </div>
 `;
 
+function onSave() {
+  const data = {
+    id: this.emailId,
+    email: this.email,
+    departmentId: this.departmentId
+  };
+
+  this.$emit('saveEmailClicked', data);
+}
+
+function setup(props) {
+  const emailId = Vue.ref(props.data?.emailId ?? -1);
+  const email = Vue.ref(props.data?.email ?? '');
+  const departmentId = props.data.departmentId;
+
+  return {
+    emailId,
+    email,
+    departmentId
+  }
+}
+
 const StaffSidebarEmail = {
   props: PROPS,
-  emits: [ 'closeClicked' ],
+  emits: ['closeClicked', 'saveEmailClicked'],
+  setup,
+  methods: {
+    onSave
+  },
   template: TEMPLATE
 };
 

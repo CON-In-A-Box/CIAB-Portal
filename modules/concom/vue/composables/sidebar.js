@@ -61,6 +61,8 @@ export function useSidebar() {
     if (data.eventName === 'closeEmail') {
       const tempData = storedTempData.value.pop();
 
+      tempData.data.email.push(data.sidebarData.email);
+
       sidebarData.value = tempData.data;
       sidebarName.value = tempData.name;
     }
