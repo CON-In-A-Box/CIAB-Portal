@@ -86,6 +86,13 @@ class DepartmentService implements ServiceInterface
     }
 
 
+    public function listAllEmails(/*.mixed.*/$id): array
+    {
+        return $this->emailService->listAllByDepartmentId($id);
+        
+    }
+
+
     private function formatDepartmentValue($value)
     {
         $output = [];

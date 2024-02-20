@@ -185,5 +185,17 @@ final class DepartmentServiceTest extends TestCase
     }
 
 
+    public function testListAllEmails()
+    {
+        $deptId = 123;
+
+        $this->emailServiceStub->expects($this->once())
+            ->method('listAllByDepartmentId');
+
+        $this->systemUnderTest->listAllEmails($deptId);
+        
+    }
+
+
     /* End DepartmentServiceTest */
 }

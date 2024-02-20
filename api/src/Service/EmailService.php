@@ -39,18 +39,7 @@ class EmailService implements ServiceInterface
     {
         $data = $this->emailRepository->selectById($id);
 
-        $isAlias = 0;
-        if ($data["IsAlias"] != null) {
-            $isAlias = intval($data["IsAlias"]);
-        }
-
-        return [
-            "type" => "email",
-            "id" => $data["EMailAliasID"],
-            "departmentId" => $data["DepartmentID"],
-            "email" => $data["EMail"],
-            "isAlias" => $isAlias
-        ];
+        return $this->formatEmailValue($data);
 
     }
 
@@ -69,9 +58,42 @@ class EmailService implements ServiceInterface
     }
 
 
+    public function listAllByDepartmentId(/*.mixed.*/$departmentId): array
+    {
+        $result = $this->emailRepository->listAllByDepartmentId($departmentId);
+
+        $formatted = [];
+        foreach ($result as $value) {
+            $formattedValue = $this->formatEmailValue($value);
+            $formatted[] = $formattedValue;
+        }
+
+        return $formatted;
+
+    }
+
+
     public function deleteByDepartmentId(/*.mixed.*/$departmentId): void
     {
         $this->emailRepository->deleteByDepartmentId($departmentId);
+
+    }
+
+    
+    private function formatEmailValue(/*.mixed.*/$data): array
+    {
+        $isAlias = 0;
+        if ($data["IsAlias"] != null) {
+            $isAlias = intval($data["IsAlias"]);
+        }
+
+        return [
+            "type" => "email",
+            "id" => $data["EMailAliasID"],
+            "departmentId" => $data["DepartmentID"],
+            "email" => $data["EMail"],
+            "isAlias" => $isAlias
+        ];
 
     }
 

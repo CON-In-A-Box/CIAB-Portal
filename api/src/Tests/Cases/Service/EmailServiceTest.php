@@ -107,6 +107,33 @@ final class EmailServiceTest extends TestCase
     }
 
 
+    public function testListAllByDepartmentId(): void
+    {
+        $emails = [
+            0 => [
+                "EMailAliasID" => 111,
+                "DepartmentID" => 222,
+                "IsAlias" => null,
+                "EMail" => "test-email@test.com"
+            ],
+            1 => [
+                "EMailAliasID" => 222,
+                "DepartmentID" => 222,
+                "IsAlias" => null,
+                "EMail" => "test-email@test.com"
+            ]
+        ];
+        $this->emailRepositoryStub->method("listAllByDepartmentId")
+            ->willReturn($emails);
+
+        $result = $this->systemUnderTest->listAllByDepartmentId(222);
+
+        $this->assertEquals($emails[0]["EMailAliasID"], $result[0]["id"]);
+        $this->assertEquals($emails[1]["EMailAliasID"], $result[1]["id"]);
+        
+    }
+
+
     public function testDeleteByDepartmentId(): void
     {
         $departmentId = 123;

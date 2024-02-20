@@ -745,6 +745,35 @@ paths:
       security:
         -
           ciab_auth: []
+  '/department/{id}/email':
+    get:
+      tags:
+        - departments
+      summary: 'Gets emails for the department'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'The department ID'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Department Emails found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/email_list'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/department_not_found'
+      security:
+        -
+          ciab_auth: []
   /department:
     get:
       tags:
@@ -4422,6 +4451,24 @@ components:
             isAlias:
               description: 'Flag indicating whether this email is an alias'
               type: integer
+        -
+          $ref: '#/components/schemas/BaseController'
+    email_list:
+      type: object
+      allOf:
+        -
+          properties:
+            type:
+              type: string
+              enum:
+                - email_list
+            data:
+              description: 'List of emails'
+              type: array
+              items:
+                $ref: '#/components/schemas/email'
+        -
+          $ref: '#/components/schemas/resource_list'
         -
           $ref: '#/components/schemas/BaseController'
     event:
