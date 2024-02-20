@@ -35,6 +35,26 @@
  *     )
  * )
  *
+ * @OA\Schema(
+ *     schema="email_list",
+ *     allOf = {
+ *         @OA\Schema(ref="#/components/schemas/resource_list")
+ *     },
+ *     @OA\Property(
+ *         property="type",
+ *         type="string",
+ *         enum={"email_list"}
+ *     ),
+ *     @OA\Property(
+ *         property="data",
+ *         type="array",
+ *         description="List of emails",
+ *         @OA\Items(
+ *             ref="#/components/schemas/email"
+ *         )
+ *     )
+ * )
+ *
  * @OA\Response(
  *     response="email_not_found",
  *     description="Email not found in the system",

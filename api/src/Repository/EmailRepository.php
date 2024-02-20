@@ -96,6 +96,18 @@ class EmailRepository implements RepositoryInterface
     }
 
 
+    public function listAllByDepartmentId(/*.mixed.*/$departmentId): array
+    {
+        $select = Select::new($this->db);
+        $select->from("EMails")
+            ->columns("EMailAliasID", "DepartmentID", "IsAlias", "EMail")
+            ->whereEquals(["DepartmentID" => $departmentId]);
+        
+        return $select->fetchAll();
+        
+    }
+
+
     public function deleteByDepartmentId(/*.mixed.*/$departmentId): void
     {
         $delete = Delete::new($this->db);

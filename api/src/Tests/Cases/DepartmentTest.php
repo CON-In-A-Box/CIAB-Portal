@@ -582,5 +582,43 @@ class DepartmentTest extends CiabTestCase
     }
 
 
+    public function testGetDepartmentEmail(): void
+    {
+        $emailBody = [
+            "Email" => "test-email@example.com",
+            "DepartmentID" => 2
+        ];
+        $emailResult = testRun::testRun($this, 'POST', '/email')
+            ->setBody($emailBody)
+            ->setVerifyYaml(false)
+            ->run();
+
+        $result = testRun::testRun($this, 'GET', '/department/{id}/email')
+            ->setUriParts(["id" => 2])
+            ->run();
+
+        $this->assertEquals($emailResult->id, $result->data[0]->id);
+        $this->assertEquals($emailResult->departmentId, $result->data[0]->departmentId);
+        $this->assertEquals($emailResult->email, $result->data[0]->email);
+        $this->assertEquals($emailResult->isAlias, $result->data[0]->isAlias);
+
+        testRun::testRun($this, 'DELETE', '/email/{id}')
+            ->setUriParts(["id" => $emailResult->id])
+            ->setVerifyYaml(false)
+            ->run();
+
+    }
+
+
+    public function testGetDepartmentEmailInvalidId(): void
+    {
+        testRun::testRun($this, 'GET', '/department/{id}/email')
+            ->setUriParts(["id" => -1])
+            ->setExpectedResult(400)
+            ->run();
+
+    }
+
+
     /* End */
 }
