@@ -620,5 +620,32 @@ class DepartmentTest extends CiabTestCase
     }
 
 
+    public function testGetDepartmentPermissions(): void
+    {
+        $result = testRun::testRun($this, 'GET', '/department/{id}/permission')
+            ->setUriParts(["id" => 2])
+            ->run();
+
+        foreach ($result->data as $permission) {
+            $deptValue = $permission->departmentId;
+            $this->assertTrue($deptValue == "all" || $deptValue == 2);
+        }
+
+    }
+
+
+    public function testGetDepartmentPermissionsNewDept(): void
+    {
+        $result = testRun::testRun($this, 'GET', '/department/{id}/permission')
+            ->setUriParts(["id" => -1])
+            ->run();
+
+        foreach ($result->data as $permission) {
+            $this->assertTrue($permission->departmentId == "all");
+        }
+
+    }
+
+
     /* End */
 }

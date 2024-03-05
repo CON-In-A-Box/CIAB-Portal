@@ -20,15 +20,21 @@ class DepartmentService implements ServiceInterface
     protected $emailListAccessService;
 
     /**
+     * @var PermissionService
+     */
+    protected $permissionService;
+
+    /**
      * @var DepartmentRepository
      */
     protected $departmentRepository;
 
 
-    public function __construct(EmailService $emailService, EmailListAccessService $emailListAccessService, DepartmentRepository $departmentRepository)
+    public function __construct(EmailService $emailService, EmailListAccessService $emailListAccessService, PermissionService $permissionService, DepartmentRepository $departmentRepository)
     {
         $this->emailService = $emailService;
         $this->emailListAccessService = $emailListAccessService;
+        $this->permissionService = $permissionService;
         $this->departmentRepository = $departmentRepository;
 
     }
@@ -89,6 +95,13 @@ class DepartmentService implements ServiceInterface
     public function listAllEmails(/*.mixed.*/$id): array
     {
         return $this->emailService->listAllByDepartmentId($id);
+        
+    }
+
+
+    public function listPermissionsByDepartment(/*.mixed.*/$id): array
+    {
+        return $this->permissionService->getByDepartmentId($id);
         
     }
 

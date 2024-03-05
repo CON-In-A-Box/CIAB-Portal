@@ -6,6 +6,7 @@ use App\Repository\DepartmentRepository;
 use App\Service\DepartmentService;
 use App\Service\EmailService;
 use App\Service\EmailListAccessService;
+use App\Service\PermissionService;
 use PHPUnit\Framework\TestCase;
 
 final class DepartmentServiceTest extends TestCase
@@ -14,6 +15,8 @@ final class DepartmentServiceTest extends TestCase
     private $emailServiceStub;
 
     private $emailAccessListServiceStub;
+
+    private $permissionServiceStub;
 
     private $deptRepositoryStub;
 
@@ -27,8 +30,9 @@ final class DepartmentServiceTest extends TestCase
     {
         $this->emailServiceStub = $this->createStub(EmailService::class);
         $this->emailAccessListServiceStub = $this->createStub(EmailListAccessService::class);
+        $this->permissionServiceStub = $this->createStub(PermissionService::class);
         $this->deptRepositoryStub = $this->createStub(DepartmentRepository::class);
-        $this->systemUnderTest = new DepartmentService($this->emailServiceStub, $this->emailAccessListServiceStub, $this->deptRepositoryStub);
+        $this->systemUnderTest = new DepartmentService($this->emailServiceStub, $this->emailAccessListServiceStub, $this->permissionServiceStub, $this->deptRepositoryStub);
 
     }
 
@@ -193,6 +197,17 @@ final class DepartmentServiceTest extends TestCase
             ->method('listAllByDepartmentId');
 
         $this->systemUnderTest->listAllEmails($deptId);
+        
+    }
+
+
+    public function testListPermissionsByDept()
+    {
+        $deptId = 2;
+
+        $this->permissionServiceStub->expects($this->once())
+            ->method('getByDepartmentId');
+        $this->systemUnderTest->listPermissionsByDepartment($deptId);
         
     }
 

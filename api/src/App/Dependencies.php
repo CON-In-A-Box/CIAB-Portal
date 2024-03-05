@@ -11,11 +11,13 @@ use App\Repository\EmailListAccessRepository;
 use App\Repository\EmailRepository;
 use App\Repository\EventRepository;
 use App\Repository\MemberRepository;
+use App\Repository\PermissionRepository;
 use App\Service\DepartmentService;
 use App\Service\EmailListAccessService;
 use App\Service\EmailService;
 use App\Service\EventService;
 use App\Service\MemberService;
+use App\Service\PermissionService;
 use Slim\App;
 
 /* setupAPIDependencies */
@@ -57,10 +59,17 @@ function setupAPIDependencies(App $app, array $settings)
         );
     };
 
+    $container['PermissionService'] = function ($c): PermissionService {
+        return new PermissionService(
+            new PermissionRepository($c['db'])
+        );
+    };
+
     $container['DepartmentService'] = function ($c): DepartmentService {
         return new DepartmentService(
             $c->get('EmailService'),
             $c->get('EmailListAccessService'),
+            $c->get('PermissionService'),
             new DepartmentRepository($c['db'])
         );
     };

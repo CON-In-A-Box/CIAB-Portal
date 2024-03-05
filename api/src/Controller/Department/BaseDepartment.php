@@ -84,6 +84,60 @@
  *      )
  *  )
  *
+ *   @OA\Schema(
+ *     schema="department_permission",
+ *     @OA\Property(
+ *         property="type",
+ *         type="string",
+ *         enum={"department_permission"}
+ *     ),
+ *     @OA\Property(
+ *         property="id",
+ *         type="integer",
+ *         description="The permission ID"
+ *     ),
+ *     @OA\Property(
+ *         property="departmentId",
+ *         type="string",
+ *         description="The department ID"
+ *     ),
+ *     @OA\Property(
+ *         property="position",
+ *         type="string",
+ *         description="The department position"
+ *     ),
+ *     @OA\Property(
+ *         property="name",
+ *         type="string",
+ *         description="The name of the permission"
+ *     ),
+ *     @OA\Property(
+ *         property="note",
+ *         type="string",
+ *         description="The note associated with this permission"
+ *     )
+ *   )
+ *
+ *   @OA\Schema(
+ *     schema="department_permission_list",
+ *     allOf = {
+ *         @OA\Schema(ref="#/components/schemas/resource_list")
+ *     },
+ *     @OA\Property(
+ *         property="type",
+ *         type="string",
+ *         enum={"department_permission_list"}
+ *     ),
+ *     @OA\Property(
+ *         property="data",
+ *         type="array",
+ *         description="List of department permissions",
+ *         @OA\Items(
+ *             ref="#/components/schemas/department_permission"
+ *         )
+ *     )
+ *   )
+ *
  *   @OA\Response(
  *      response="department_not_found",
  *      description="Department not found in the system.",
