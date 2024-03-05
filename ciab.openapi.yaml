@@ -774,6 +774,31 @@ paths:
       security:
         -
           ciab_auth: []
+  '/department/{id}/permission':
+    get:
+      tags:
+        - departments
+      summary: 'List department permissions'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'The department ID'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/department_permission_list'
+        '401':
+          $ref: '#/components/responses/401'
+      security:
+        -
+          ciab_auth: []
   /department:
     get:
       tags:
@@ -4426,6 +4451,50 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/department'
+        -
+          $ref: '#/components/schemas/resource_list'
+        -
+          $ref: '#/components/schemas/BaseController'
+    department_permission:
+      type: object
+      allOf:
+        -
+          properties:
+            type:
+              type: string
+              enum:
+                - department_permission
+            id:
+              description: 'The permission ID'
+              type: integer
+            departmentId:
+              description: 'The department ID'
+              type: string
+            position:
+              description: 'The department position'
+              type: string
+            name:
+              description: 'The name of the permission'
+              type: string
+            note:
+              description: 'The note associated with this permission'
+              type: string
+        -
+          $ref: '#/components/schemas/BaseController'
+    department_permission_list:
+      type: object
+      allOf:
+        -
+          properties:
+            type:
+              type: string
+              enum:
+                - department_permission_list
+            data:
+              description: 'List of department permissions'
+              type: array
+              items:
+                $ref: '#/components/schemas/department_permission'
         -
           $ref: '#/components/schemas/resource_list'
         -
