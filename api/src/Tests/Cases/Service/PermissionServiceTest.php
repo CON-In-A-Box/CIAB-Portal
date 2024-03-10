@@ -83,7 +83,8 @@ final class PermissionServiceTest extends TestCase
 
     public function testDeleteById(): void
     {
-        $this->expectException(Exception::class);
+        $this->permissionRepositoryStub->expects($this->once())
+            ->method('deleteById');
         $this->systemUnderTest->deleteById(123);
 
     }

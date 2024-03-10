@@ -5,6 +5,7 @@ namespace App\Repository;
 use Exception;
 use Atlas\Query\Select;
 use Atlas\Query\Insert;
+use Atlas\Query\Delete;
 
 class PermissionRepository implements RepositoryInterface
 {
@@ -72,7 +73,10 @@ class PermissionRepository implements RepositoryInterface
 
     public function deleteById(/*.mixed.*/$id): void
     {
-        throw new Exception(__CLASS__.": Method '__FUNCTION__' not implemented");
+        $delete = Delete::new($this->db);
+        $delete->from('ConComPermissions')
+            ->whereEquals(["PermissionID" => $id])
+            ->perform();
 
     }
 

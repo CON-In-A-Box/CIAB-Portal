@@ -764,5 +764,54 @@ class DepartmentTest extends CiabTestCase
     }
 
 
+    public function testDeleteDepartmentPermission(): void
+    {
+        $data = [
+            "PositionID" => 1,
+            "Permission" => "concom.view"
+        ];
+
+        $result = testRun::testRun($this, 'POST', '/department/{id}/permission')
+            ->setUriParts(["id" => "all"])
+            ->setBody($data)
+            ->run();
+
+        testRun::testRun($this, 'DELETE', '/department/{id}/permission/{permissionId}')
+            ->setUriParts(["id" => "all", "permissionId" => $result->id])
+            ->run();
+
+    }
+
+
+    public function testDeleteDepartmentPermissionInvalidDeptId(): void
+    {
+        testRun::testRun($this, 'DELETE', '/department/{id}/permission/{permissionId}')
+            ->setUriParts(["id" => "invalid", "permissionId" => 123])
+            ->setExpectedResult(400)
+            ->run();
+
+    }
+
+
+    public function testDeleteDepartmentPermissionNegativeDeptId(): void
+    {
+        testRun::testRun($this, 'DELETE', '/department/{id}/permission/{permissionId}')
+            ->setUriParts(["id" => "-2", "permissionId" => 123])
+            ->setExpectedResult(400)
+            ->run();
+
+    }
+
+
+    public function testDeleteDepartmentPermissionNegativePermissionId(): void
+    {
+        testRun::testRun($this, 'DELETE', '/department/{id}/permission/{permissionId}')
+            ->setUriParts(["id" => "all", "permissionId" => -1])
+            ->setExpectedResult(400)
+            ->run();
+
+    }
+
+
     /* End */
 }
