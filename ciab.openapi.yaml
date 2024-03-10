@@ -708,6 +708,36 @@ paths:
       security:
         -
           ciab_auth: []
+  '/department/{id}/permission/{permissionId}':
+    delete:
+      tags:
+        - departments
+      summary: 'Delete department permission'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'The department ID or ''all'''
+          required: true
+          schema:
+            type: string
+        -
+          name: permissionId
+          in: path
+          description: 'The permission ID'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: OK
+        '401':
+          $ref: '#/components/responses/401'
+        '400':
+          $ref: '#/components/responses/400'
+      security:
+        -
+          ciab_auth: []
   '/department/{id}/children':
     get:
       tags:

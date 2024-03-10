@@ -52,7 +52,7 @@ class PermissionService implements ServiceInterface
 
     public function deleteById(/*.mixed.*/$id): void
     {
-        throw new Exception(__CLASS__.": Method '__FUNCTION__' not implemented");
+        $this->permissionRepository->deleteById($id);
 
     }
 
