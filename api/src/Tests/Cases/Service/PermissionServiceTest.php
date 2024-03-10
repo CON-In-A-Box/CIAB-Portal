@@ -33,17 +33,43 @@ final class PermissionServiceTest extends TestCase
 
     public function testPost(): void
     {
-        $this->expectException(Exception::class);
-        $this->systemUnderTest->post(123);
+        $permissionId = 123;
+        $this->permissionRepositoryStub->method('insert')
+            ->willReturn($permissionId);
+        $result = $this->systemUnderTest->post([
+          "Position" => "all.1",
+          "Permission" => "site.concom.view"
+        ]);
+
+        $this->assertEquals($permissionId, $result);
 
     }
 
 
     public function testGetById(): void
     {
-        $this->expectException(Exception::class);
-        $this->systemUnderTest->getById(123);
+        $data = [
+          "PermissionID" => 123,
+          "Position" => "1.2",
+          "Permission" => "site.concom.view",
+          "Note" => null
+        ];
 
+        $this->permissionRepositoryStub->method('selectById')
+            ->willReturn($data);
+        $result = $this->systemUnderTest->getById(123);
+
+        $expected = [
+          "type" => "department_permission",
+          "name" => "site.concom.view",
+          "id" => 123,
+          "position" => 2,
+          "departmentId" => 1,
+          "note" => null
+        ];
+
+        $this->assertEquals($expected, $result);
+        
     }
 
 

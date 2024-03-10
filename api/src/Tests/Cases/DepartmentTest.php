@@ -647,5 +647,122 @@ class DepartmentTest extends CiabTestCase
     }
 
 
+    public function testPostDepartmentPermissionWithDeptId(): void
+    {
+        $data = [
+            "PositionID" => 1,
+            "Permission" => "concom.view"
+        ];
+
+        $result = testRun::testRun($this, 'POST', '/department/{id}/permission')
+            ->setUriParts(["id" => "2"])
+            ->setBody($data)
+            ->run();
+
+        $this->assertNotNull($result->id);
+        $this->assertEquals(2, $result->departmentId);
+        $this->assertEquals(1, $result->position);
+        $this->assertEquals("concom.view", $result->name);
+        $this->assertNull($result->note);
+
+    }
+
+
+    public function testPostDepartmentPermissionWithAll(): void
+    {
+        $data = [
+            "PositionID" => 1,
+            "Permission" => "concom.view"
+        ];
+
+        $result = testRun::testRun($this, 'POST', '/department/{id}/permission')
+            ->setUriParts(["id" => "all"])
+            ->setBody($data)
+            ->run();
+
+        $this->assertNotNull($result->id);
+        $this->assertEquals("all", $result->departmentId);
+
+    }
+
+
+    public function testPostDepartmentPermissionInvalidDeptId(): void
+    {
+        $data = [
+            "PositionID" => 1,
+            "Permission" => "concom.view"
+        ];
+
+        testRun::testRun($this, 'POST', '/department/{id}/permission')
+            ->setUriParts(["id" => "invalid"])
+            ->setBody($data)
+            ->setExpectedResult(400)
+            ->run();
+
+    }
+
+
+    public function testPostDepartmentPermissionNegativeDeptId(): void
+    {
+        $data = [
+            "PositionID" => 1,
+            "Permission" => "concom.view"
+        ];
+
+        testRun::testRun($this, 'POST', '/department/{id}/permission')
+            ->setUriParts(["id" => "-1"])
+            ->setBody($data)
+            ->setExpectedResult(400)
+            ->run();
+
+    }
+
+
+    public function testPostDepartmentPermissionMissingPosition(): void
+    {
+        $data = [
+            "Permission" => "concom.view"
+        ];
+
+        testRun::testRun($this, 'POST', '/department/{id}/permission')
+            ->setUriParts(["id" => "2"])
+            ->setBody($data)
+            ->setExpectedResult(400)
+            ->run();
+
+    }
+
+
+    public function testPostDepartmentPermissionMissingPermission(): void
+    {
+        $data = [
+            "PositionID" => 1
+        ];
+
+        testRun::testRun($this, 'POST', '/department/{id}/permission')
+            ->setUriParts(["id" => "all"])
+            ->setBody($data)
+            ->setExpectedResult(400)
+            ->run();
+
+    }
+
+
+    public function testPostDepartmentPermissionEmptyPermission(): void
+    {
+        $data = [
+            "PositionID" => 1,
+            "Permission" => ""
+        ];
+
+        testRun::testRun($this, 'POST', '/department/{id}/permission')
+            ->setUriParts(["id" => "all"])
+            ->setBody($data)
+            ->setExpectedResult(400)
+            ->run();
+            
+    }
+
+
     /* End */
 }

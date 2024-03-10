@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use Exception;
 use Atlas\Query\Select;
+use Atlas\Query\Insert;
 
 class PermissionRepository implements RepositoryInterface
 {
@@ -20,8 +21,14 @@ class PermissionRepository implements RepositoryInterface
 
     public function insert(/*.mixed.*/$data): int
     {
-        throw new Exception(__CLASS__.": Method '__FUNCTION__' not implemented");
-
+        $insert = Insert::new($this->db);
+        $insert->into("ConComPermissions")
+            ->column("Position", $data["Position"])
+            ->column("Permission", $data["Permission"]);
+        
+        $insert->perform();
+        return intval($insert->getLastInsertId());
+        
     }
 
 
@@ -42,7 +49,16 @@ class PermissionRepository implements RepositoryInterface
 
     public function selectById(/*.mixed.*/$id): array
     {
-        throw new Exception(__CLASS__.": Method '__FUNCTION__' not implemented");
+        $select = Select::new($this->db);
+        $select->columns(
+            'PermissionID',
+            'Position',
+            'Permission',
+            'Note'
+        )->from('ConComPermissions')
+            ->whereEquals(["PermissionID" => $id]);
+
+        return $select->fetchOne();
 
     }
 
