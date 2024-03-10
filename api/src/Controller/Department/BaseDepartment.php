@@ -114,7 +114,8 @@
  *     @OA\Property(
  *         property="note",
  *         type="string",
- *         description="The note associated with this permission"
+ *         description="The note associated with this permission",
+ *         nullable=true
  *     )
  *   )
  *

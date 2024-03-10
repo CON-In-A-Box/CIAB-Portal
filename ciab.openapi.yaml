@@ -799,6 +799,50 @@ paths:
       security:
         -
           ciab_auth: []
+    post:
+      tags:
+        - departments
+      summary: 'Create new department permission'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'The department ID or ''all'''
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                PositionID:
+                  nullable: false
+                  description: 'The position ID for the permission'
+                  type: integer
+                Permission:
+                  nullable: false
+                  description: 'The name of the permission'
+                  type: string
+                Note:
+                  nullable: true
+                  description: 'The note for the permission'
+                  type: string
+              type: object
+      responses:
+        '201':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/department_permission'
+        '401':
+          $ref: '#/components/responses/401'
+        '400':
+          $ref: '#/components/responses/400'
+      security:
+        -
+          ciab_auth: []
   /department:
     get:
       tags:
@@ -4477,6 +4521,7 @@ components:
               description: 'The name of the permission'
               type: string
             note:
+              nullable: true
               description: 'The note associated with this permission'
               type: string
         -

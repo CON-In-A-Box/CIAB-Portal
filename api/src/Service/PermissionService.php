@@ -30,14 +30,15 @@ class PermissionService implements ServiceInterface
 
     public function post(/*.mixed.*/$data): int
     {
-        throw new Exception(__CLASS__.": Method '__FUNCTION__' not implemented");
+        return $this->permissionRepository->insert($data);
 
     }
 
 
     public function getById(/*.mixed.*/$id): array
     {
-        throw new Exception(__CLASS__.": Method '__FUNCTION__' not implemented");
+        $result = $this->permissionRepository->selectById($id);
+        return $this->formatOutput($result);
 
     }
 
@@ -64,18 +65,26 @@ class PermissionService implements ServiceInterface
         foreach ($allPermissions as $permission) {
             $positionSplit = explode(".", $permission["Position"]);
             if ($positionSplit[0] == "all" || $positionSplit[0] == $departmentId) {
-                $filteredResult[] = [
-                    "type" => "department_permission",
-                    "id" => $permission["PermissionID"],
-                    "departmentId" => $positionSplit[0],
-                    "position" => $positionSplit[1],
-                    "name" => $permission["Permission"],
-                    "note" => $permission["Note"]
-                ];
+                $filteredResult[] = $this->formatOutput($permission);
             }
         }
 
         return $filteredResult;
+
+    }
+
+
+    private function formatOutput($item): array
+    {
+        $positionSplit = explode(".", $item["Position"]);
+        return [
+            "type" => "department_permission",
+            "id" => intval($item["PermissionID"]),
+            "departmentId" => $positionSplit[0],
+            "position" => $positionSplit[1],
+            "name" => $item["Permission"],
+            "note" => $item["Note"]
+        ];
 
     }
 
