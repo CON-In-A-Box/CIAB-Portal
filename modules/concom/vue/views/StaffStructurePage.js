@@ -125,9 +125,13 @@ async function sidebarSaveClicked(data) {
 async function sidebarDeleteClicked(data) {
   try {
     await this.deleteSidebarData(data);
-    await this.fetchDivisions();
 
-    this.closeSidebar();
+    if (data.eventName === 'deleteEmail') {
+      this.sidebarViewChanged({ eventName: 'closeEmail' });
+    } else {
+      await this.fetchDivisions();
+      this.closeSidebar();
+    }
   } catch (error) {
     console.error(error);
   }

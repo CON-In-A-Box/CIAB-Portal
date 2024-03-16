@@ -45,6 +45,12 @@ async function updateEmail(data) {
   await apiRequest('PUT', `email/${sidebarData.id}`, `Email=${sidebarData.email}`);
 }
 
+async function deleteEmail(data) {
+  const { sidebarData } = data;
+
+  await apiRequest('DELETE', `email/${sidebarData.id}`);
+}
+
 
 export function useSidebarActions() {
   async function saveSidebarData(data) {
@@ -68,6 +74,10 @@ export function useSidebarActions() {
   async function deleteSidebarData(data) {
     if (data.eventName === 'deleteDepartment') {
       await deleteDepartment(data);
+    }
+
+    if (data.eventName === 'deleteEmail') {
+      await deleteEmail(data);
     }
   }
 
