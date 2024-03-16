@@ -10,14 +10,14 @@ const TEMPLATE = `
         <staff-sidebar-department :data="data" @add-email-clicked="addEmailClicked"
           @edit-email-clicked="editEmailClicked"
           @sidebar-closed="$emit('sidebarClosed')" @save-department-clicked="saveDepartmentClicked"
-          @delete-department-clicked="deleteDepartmentClicked"></staff-sidebar-department>
+          @delete-department-clicked="deleteDepartmentClicked" @add-permissions-clicked="addDepartmentPermissionsClicked"></staff-sidebar-department>
       </template>
       <template v-if="name === 'department_email'">
         <staff-sidebar-email :data="data" @close-clicked="closeEmailClicked" @save-email-clicked="saveEmailClicked"
           @delete-email-clicked="deleteEmailClicked"></staff-sidebar-email>
       </template>
       <template v-if="name === 'department_permissions'">
-        <staff-sidebar-department-permissions></staff-sidebar-department-permissions>
+        <staff-sidebar-department-permissions :data="data" @close-clicked="closeDepartmentPermissionsClicked"></staff-sidebar-department-permissions>
       </template>
       <template v-if="name === 'permissions'">
         <staff-sidebar-permissions></staff-sidebar-permissions>
@@ -95,10 +95,32 @@ function saveEmailClicked(data) {
 function deleteEmailClicked(data) {
   const eventData = {
     eventName:'deleteEmail',
-    sidebarData: data,
+    sidebarData: data
   };
 
   this.$emit('sidebarDeleteClicked', eventData);
+}
+
+function addDepartmentPermissionsClicked(data) {
+  const eventData = {
+    eventName: 'addDepartmentPermissions',
+    viewName: this.name,
+    sidebarData: data,
+    newView: 'department_permissions',
+    newData: {
+      departmentId: data.id
+    }
+  }
+
+  this.$emit('sidebarViewChanged', eventData);
+}
+
+function closeDepartmentPermissionsClicked() {
+  const eventData = {
+    eventName: 'closeDepartmentPermissions'
+  }
+
+  this.$emit('sidebarViewChanged', eventData);
 }
 
 const StaffStructureSidebar = {
@@ -111,7 +133,9 @@ const StaffStructureSidebar = {
     deleteDepartmentClicked,
     saveEmailClicked,
     editEmailClicked,
-    deleteEmailClicked
+    deleteEmailClicked,
+    addDepartmentPermissionsClicked,
+    closeDepartmentPermissionsClicked
   },
   template: TEMPLATE
 };
