@@ -112,7 +112,7 @@ async function sidebarSaveClicked(data) {
     await this.saveSidebarData(data);
 
     if (data.eventName === 'saveEmail') {
-      this.sidebarViewChanged({ eventName: 'closeEmail', sidebarData: data.sidebarData });
+      this.sidebarViewChanged({ eventName: 'closeEmail' });
     } else {
       await this.fetchDivisions();
       this.closeSidebar();

@@ -1,5 +1,6 @@
 /* globals Vue, showSpinner, hideSpinner */
 import { useDepartmentStaff } from '../composables/departmentStaff.js';
+import { useDepartmentEmail } from '../composables/departmentEmail.js';
 
 const PROPS = {
   data: Object
@@ -16,8 +17,8 @@ const TEMPLATE = `
 
     <label class="UI-label" for="department_email">Position Emails:</label>
     <div class="UI-border" id="department_email">
-      <template v-for="email in departmentEmails">
-        <button class="UI-roundbutton">{{ email }}</button>
+      <template v-for="departmentEmail in departmentEmails">
+        <button class="UI-roundbutton" @click="editEmailClicked(departmentEmail)">{{ departmentEmail.email }}</button>
         <br/>
       </template>
       <button class="UI-roundbutton" @click="addEmailClicked" :disabled="departmentId === -1"><i class="fas fa-plus-square"></i></button>
@@ -92,6 +93,22 @@ function addEmailClicked() {
   this.$emit('addEmailClicked', data);
 }
 
+function editEmailClicked(departmentEmail) {
+  const data = {
+    id: this.departmentId,
+    name: this.departmentName,
+    email: this.departmentEmails,
+    permissions: this.departmentPermissions,
+    staffCount: this.staffCount,
+    departments: this.subDepartments,
+    fallback: this.selectedFallbackDepartment,
+    parentId: this.selectedParentDepartment,
+    isDivision: this.isDivisionToggle,
+  }
+
+  this.$emit('editEmailClicked', data, departmentEmail);
+}
+
 function onSave() {
   const data = {
     id: this.departmentId,
@@ -122,6 +139,7 @@ function setup(props) {
   const isDivisionToggle = Vue.ref(props.data?.isDivision ?? props.isDivision);
 
   const { departmentStaff, loadingDepartment, departmentError, fetchDepartmentStaff } = useDepartmentStaff();
+  const { departmentEmail, loadingDepartmentEmail, departmentEmailError, fetchDepartmentEmail } = useDepartmentEmail();
 
   const canEditRbac = Vue.inject('canEditRbac');
   const divisions = Vue.inject('divisions');
@@ -138,14 +156,16 @@ function setup(props) {
 
   Vue.watch(departmentStaff, () => {
     staffCount.value = departmentStaff.value?.length ?? 0;
+  });
+
+  Vue.watch(departmentEmail, () => {
+    departmentEmails.value = departmentEmail.value;
   })
 
-  Vue.watch(loadingDepartment, () => {
-    if (loadingDepartment.value) {
-      showSpinner();
-    } else {
-      hideSpinner();
-    }
+  const loadingValues = [loadingDepartment, loadingDepartmentEmail];
+
+  Vue.watch([loadingDepartment, loadingDepartmentEmail], () => {
+    loadingValues.some((item) => item.value) ? showSpinner() : hideSpinner();
   });
 
   return {
@@ -164,21 +184,28 @@ function setup(props) {
     departmentStaff,
     loadingDepartment,
     departmentError,
-    fetchDepartmentStaff
+    fetchDepartmentStaff,
+    loadingDepartmentEmail,
+    departmentEmailError,
+    fetchDepartmentEmail
   }
 }
 
 async function onCreated() {
+  // Staff count is adjusted by the Vue Watcher
   await this.fetchDepartmentStaff(this.departmentId);
+  // Email list is adjusted by the Vue Watcher
+  await this.fetchDepartmentEmail(this.departmentId);
 }
 
 const StaffSidebarDepartment = {
   props: PROPS,
-  emits: ['sidebarClosed', 'addEmailClicked', 'saveDepartmentClicked', 'deleteDepartmentClicked'],
+  emits: ['sidebarClosed', 'addEmailClicked', 'editEmailClicked', 'saveDepartmentClicked', 'deleteDepartmentClicked'],
   setup,
   created: onCreated,
   methods: {
     addEmailClicked,
+    editEmailClicked,
     onSave,
     onDelete
   },

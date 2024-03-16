@@ -7,7 +7,8 @@ const TEMPLATE = `
   <template v-if="name != null">
     <div class="UI-sidebar-shown UI-fixed">
       <template v-if="name === 'department'">
-        <staff-sidebar-department :data="data" @add-email-clicked="addEmailClicked" 
+        <staff-sidebar-department :data="data" @add-email-clicked="addEmailClicked"
+          @edit-email-clicked="editEmailClicked"
           @sidebar-closed="$emit('sidebarClosed')" @save-department-clicked="saveDepartmentClicked"
           @delete-department-clicked="deleteDepartmentClicked"></staff-sidebar-department>
       </template>
@@ -35,6 +36,20 @@ function addEmailClicked(data) {
     newView: 'department_email',
     newData: {
       departmentId: data.id
+    }
+  }
+
+  this.$emit('sidebarViewChanged', eventData);
+}
+
+function editEmailClicked(data, departmentEmail) {
+  const eventData = {
+    eventName: 'displayEmail',
+    sidebarData: data,
+    viewName: this.name,
+    newView: 'department_email',
+    newData: {
+      email: departmentEmail
     }
   }
 
@@ -84,7 +99,8 @@ const StaffStructureSidebar = {
     closeEmailClicked,
     saveDepartmentClicked,
     deleteDepartmentClicked,
-    saveEmailClicked
+    saveEmailClicked,
+    editEmailClicked
   },
   template: TEMPLATE
 };
