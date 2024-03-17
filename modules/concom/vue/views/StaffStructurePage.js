@@ -113,6 +113,8 @@ async function sidebarSaveClicked(data) {
 
     if (data.eventName === 'saveEmail') {
       this.sidebarViewChanged({ eventName: 'closeEmail' });
+    } else if (data.eventName === 'savePermission') {
+      this.sidebarViewChanged({ eventName: 'closeAddPermission' });
     } else {
       await this.fetchDivisions();
       this.closeSidebar();

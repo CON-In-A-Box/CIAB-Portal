@@ -21,7 +21,8 @@ const TEMPLATE = `
           @add-permission-clicked="addPermissionClicked"></staff-sidebar-department-permissions>
       </template>
       <template v-if="name === 'permissions'">
-        <staff-sidebar-permissions :data="data" @close-clicked="closeAddPermissionClicked"></staff-sidebar-permissions>
+        <staff-sidebar-permissions :data="data" @close-clicked="closeAddPermissionClicked"
+          @save-permission-clicked="savePermissionClicked"></staff-sidebar-permissions>
       </template>
     </div>
   </template>
@@ -149,6 +150,15 @@ function closeAddPermissionClicked() {
   this.$emit('sidebarViewChanged', eventData);
 }
 
+function savePermissionClicked(data) {
+  const eventData = {
+    eventName: 'savePermission',
+    sidebarData: data
+  }
+
+  this.$emit('sidebarSaveClicked', eventData);
+}
+
 const StaffStructureSidebar = {
   props: PROPS,
   emits: ['sidebarClosed', 'sidebarViewChanged', 'sidebarSaveClicked', 'sidebarDeleteClicked'],
@@ -163,7 +173,8 @@ const StaffStructureSidebar = {
     addDepartmentPermissionsClicked,
     closeDepartmentPermissionsClicked,
     addPermissionClicked,
-    closeAddPermissionClicked
+    closeAddPermissionClicked,
+    savePermissionClicked
   },
   template: TEMPLATE
 };
