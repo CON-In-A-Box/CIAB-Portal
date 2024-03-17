@@ -58,6 +58,12 @@ async function savePermission(data) {
     `PositionID=${sidebarData.positionId}&Permission=${sidebarData.permission}`);
 }
 
+async function deletePermission(data) {
+  const { sidebarData } = data;
+
+  await apiRequest('DELETE', `department/${sidebarData.departmentId}/permission/${sidebarData.permissionId}`);
+}
+
 
 export function useSidebarActions() {
   async function saveSidebarData(data) {
@@ -89,6 +95,10 @@ export function useSidebarActions() {
 
     if (data.eventName === 'deleteEmail') {
       await deleteEmail(data);
+    }
+
+    if (data.eventName === 'deletePermission') {
+      await deletePermission(data);
     }
   }
 
