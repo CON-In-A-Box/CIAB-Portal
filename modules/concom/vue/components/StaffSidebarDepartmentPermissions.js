@@ -37,7 +37,7 @@ const TEMPLATE = `
               </span>
             </template>
           </template>
-          <span><button class="UI-roundbutton"><i class="fas fa-plus-square"></i></button></span>
+          <span><button class="UI-roundbutton" @click="addPermissionClicked(key)"><i class="fas fa-plus-square"></i></button></span>
         </span><br/>
       </template>
     </div>
@@ -46,6 +46,15 @@ const TEMPLATE = `
     <button class="UI-yellowbutton" @click="$emit('closeClicked')">Close</button>
   </div>
 `;
+
+function addPermissionClicked(positionId) {
+  const data = {
+    departmentId: this.departmentId,
+    positionId
+  }
+
+  this.$emit('addPermissionClicked', data);
+}
 
 function reducePermissions(permissions) {
   return permissions.reduce((acc, current) => {
@@ -111,10 +120,11 @@ async function onCreated() {
 
 const StaffSidebarDepartmentPermissions = {
   props: PROPS,
-  emits: [ 'closeClicked' ],
+  emits: ['closeClicked', 'addPermissionClicked'],
   setup,
   created: onCreated,
   methods: {
+    addPermissionClicked,
     reducePermissions
   },
   template: TEMPLATE
