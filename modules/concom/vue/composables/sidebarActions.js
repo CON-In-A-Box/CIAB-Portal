@@ -39,6 +39,12 @@ async function saveEmail(data) {
   await apiRequest('POST', 'email', `Email=${sidebarData.email}&DepartmentID=${sidebarData.departmentId}`);
 }
 
+async function updateEmail(data) {
+  const { sidebarData } = data;
+
+  await apiRequest('PUT', `email/${sidebarData.id}`, `Email=${sidebarData.email}`);
+}
+
 
 export function useSidebarActions() {
   async function saveSidebarData(data) {
@@ -52,7 +58,7 @@ export function useSidebarActions() {
 
     if (data.eventName === 'saveEmail') {
       if (data.sidebarData?.id > 0) {
-        // This will be for update
+        await updateEmail(data);
       } else {
         await saveEmail(data);
       }

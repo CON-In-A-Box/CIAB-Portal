@@ -32,9 +32,9 @@ function onSave() {
 }
 
 function setup(props) {
-  const emailId = Vue.ref(props.data?.emailId ?? -1);
-  const email = Vue.ref(props.data?.email ?? '');
-  const departmentId = props.data.departmentId;
+  const emailId = Vue.ref(props.data?.email ? props.data.email.id : -1);
+  const email = Vue.ref(props.data?.email ? props.data.email.email : '');
+  const departmentId = props.data?.email ? props.data.email.departmentId : props.data.departmentId;
 
   return {
     emailId,
