@@ -84,8 +84,8 @@ function getCurrentData() {
     email: this.departmentEmails,
     staffCount: this.staffCount,
     departments: this.subDepartments,
-    fallback: this.selectedFallbackDepartment,
-    parentId: this.selectedParentDepartment,
+    fallback: this.selectedFallbackDepartment?.id,
+    parentId: this.selectedParentDepartment?.id,
     isDivision: this.isDivisionToggle
   }
 }
