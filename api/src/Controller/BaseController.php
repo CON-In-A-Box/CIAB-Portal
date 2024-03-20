@@ -449,12 +449,15 @@ abstract class BaseController
 
     public static function staticGetEvent($container, string $id)
     {
-        $data = $container->EventService->getById($id);
-        if (empty($data)) {
-            throw new NotFoundException("Event '{$id}' Not Found");
+        if ($id == 'current') {
+            return $container->EventService->getCurrentEvent();
+        } else {
+            $data = $container->EventService->getById($id);
+            if (empty($data)) {
+                throw new NotFoundException("Event '{$id}' Not Found");
+            }
+            return $data[0];
         }
-        return $data[0];
-
     }
 
 
