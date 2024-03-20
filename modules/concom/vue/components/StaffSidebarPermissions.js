@@ -47,7 +47,7 @@ const TEMPLATE = `
 async function onSave() {
   try {
     const confirmBoxTitle = 'Confirms Permission Addition';
-    const confirmBoxMessage = `Really add permission ${this.selectedPermission.name}?`;
+    const confirmBoxMessage = `Really add permission "${this.selectedPermission.name}"?`;
 
     await confirmbox(confirmBoxTitle, confirmBoxMessage);
 
