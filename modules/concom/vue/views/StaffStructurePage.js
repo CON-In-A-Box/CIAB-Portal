@@ -23,7 +23,7 @@ const TEMPLATE = `
 
           <template v-if="canEditRbac">
             <div class="UI-container UI-margin UI-center">
-              <button class="UI-redbutton UI-padding UI-margin">All ConCom Site Permissions (RBAC)</button>
+              <button class="UI-redbutton UI-padding UI-margin" @click="addDepartmentPermissionsClicked">All ConCom Site Permissions (RBAC)</button>
             </div>
           </template>
           
@@ -137,6 +137,13 @@ async function sidebarDeleteClicked(data) {
   }
 }
 
+function addDepartmentPermissionsClicked() {
+  this.prepareSidebar({
+    eventName: 'addDepartmentPermissions',
+    departmentId: 'all'
+  });
+}
+
 const StaffStructurePage = {
   setup,
   created: onCreated,
@@ -146,7 +153,8 @@ const StaffStructurePage = {
     sidebarClosed,
     sidebarViewChanged,
     sidebarSaveClicked,
-    sidebarDeleteClicked
+    sidebarDeleteClicked,
+    addDepartmentPermissionsClicked
   },
   template: TEMPLATE
 };

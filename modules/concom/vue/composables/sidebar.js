@@ -28,6 +28,15 @@ function editDepartmentView(data) {
   }
 }
 
+function addDepartmentPermissionsView(data) {
+  return {
+    sidebarData: {
+      departmentId: data.departmentId
+    },
+    sidebarName: 'department_permissions'
+  }
+}
+
 export function useSidebar() {
   const showSidebar = Vue.ref(false);
   const sidebarName = Vue.ref(null);
@@ -47,22 +56,30 @@ export function useSidebar() {
       const viewData = editDepartmentView(data);
       sidebarName.value = viewData.sidebarName;
       sidebarData.value = viewData.sidebarData;
+    } else if (data.eventName === 'addDepartmentPermissions') {
+      const viewData = addDepartmentPermissionsView(data);
+      sidebarName.value = viewData.sidebarName;
+      sidebarData.value = viewData.sidebarData;
     }
   }
 
   function changeSidebar(data) {
-    if (data.eventName === 'displayEmail') {
+    if (data.eventName === 'displayEmail' || data.eventName === 'addDepartmentPermissions') {
       storedTempData.value.push({ data: data.sidebarData, name: data.viewName });
 
       sidebarData.value = data.newData;
       sidebarName.value = data.newView;
     }
 
-    if (data.eventName === 'closeEmail') {
+    if (data.eventName === 'closeEmail' || data.eventName === 'closeDepartmentPermissions') {
       const tempData = storedTempData.value.pop();
 
-      sidebarData.value = tempData.data;
-      sidebarName.value = tempData.name;
+      if (tempData != null) {
+        sidebarData.value = tempData.data;
+        sidebarName.value = tempData.name;
+      } else {
+        closeSidebar();
+      }
     }
   }
 

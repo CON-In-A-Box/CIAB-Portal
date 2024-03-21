@@ -24,7 +24,7 @@ const TEMPLATE = `
       <button class="UI-roundbutton" @click="addEmailClicked" :disabled="departmentId === -1"><i class="fas fa-plus-square"></i></button>
     </div>
 
-    <button class="UI-redbutton UI-padding UI-margin" v-if="canEditRbac" disabled="departmentId === -1">
+    <button class="UI-redbutton UI-padding UI-margin" v-if="canEditRbac" :disabled="departmentId === -1" @click="addPermissionsClicked">
       Position Site Permissions (RBAC)
     </button><br/>
 
@@ -77,36 +77,35 @@ const TEMPLATE = `
   </div>
 `;
 
-function addEmailClicked() {
-  const data = {
+function getCurrentData() {
+  return {
     id: this.departmentId,
     name: this.departmentName,
     email: this.departmentEmails,
-    permissions: this.departmentPermissions,
     staffCount: this.staffCount,
     departments: this.subDepartments,
     fallback: this.selectedFallbackDepartment,
     parentId: this.selectedParentDepartment,
     isDivision: this.isDivisionToggle
-  };
+  }
+}
+
+function addEmailClicked() {
+  const data = this.getCurrentData();
 
   this.$emit('addEmailClicked', data);
 }
 
 function editEmailClicked(departmentEmail) {
-  const data = {
-    id: this.departmentId,
-    name: this.departmentName,
-    email: this.departmentEmails,
-    permissions: this.departmentPermissions,
-    staffCount: this.staffCount,
-    departments: this.subDepartments,
-    fallback: this.selectedFallbackDepartment,
-    parentId: this.selectedParentDepartment,
-    isDivision: this.isDivisionToggle,
-  }
+  const data = this.getCurrentData();
 
   this.$emit('editEmailClicked', data, departmentEmail);
+}
+
+function addPermissionsClicked() {
+  const data = this.getCurrentData();
+
+  this.$emit('addPermissionsClicked', data);
 }
 
 function onSave() {
@@ -133,7 +132,6 @@ function setup(props) {
   const departmentId = Vue.ref(props.data?.id ?? -1);
   const departmentName = Vue.ref(props.data?.name ?? (props.data?.isDivision ? 'New Division' : 'New Department'));
   const departmentEmails = Vue.ref(props.data?.email ?? []);
-  const departmentPermissions = Vue.ref(props.data?.permissions ?? { 'Head': [], 'Sub-Head': [], 'Specialist': [] });
   const staffCount = Vue.ref(props.data?.staffCount ?? 0);
   const subDepartments = Vue.ref(props.data?.subDepartments ?? 0);
   const isDivisionToggle = Vue.ref(props.data?.isDivision ?? props.isDivision);
@@ -172,7 +170,6 @@ function setup(props) {
     departmentId,
     departmentName,
     departmentEmails,
-    departmentPermissions,
     staffCount,
     subDepartments,
     selectedFallbackDepartment,
@@ -200,12 +197,14 @@ async function onCreated() {
 
 const StaffSidebarDepartment = {
   props: PROPS,
-  emits: ['sidebarClosed', 'addEmailClicked', 'editEmailClicked', 'saveDepartmentClicked', 'deleteDepartmentClicked'],
+  emits: ['sidebarClosed', 'addEmailClicked', 'editEmailClicked', 'saveDepartmentClicked', 'deleteDepartmentClicked', 'addPermissionsClicked'],
   setup,
   created: onCreated,
   methods: {
+    getCurrentData,
     addEmailClicked,
     editEmailClicked,
+    addPermissionsClicked,
     onSave,
     onDelete
   },
