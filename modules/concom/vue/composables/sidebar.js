@@ -1,5 +1,8 @@
 /* globals Vue */
 
+const OPEN_VIEW_EVENT_NAMES = ['displayEmail', 'addDepartmentPermissions', 'addPermission'];
+const CLOSE_VIEW_EVENT_NAMES = ['closeEmail', 'closeDepartmentPermissions', 'closeAddPermission'];
+
 function addDepartmentView(data) {
   const { division } = data;
   const sidebarData = {
@@ -64,14 +67,14 @@ export function useSidebar() {
   }
 
   function changeSidebar(data) {
-    if (data.eventName === 'displayEmail' || data.eventName === 'addDepartmentPermissions') {
+    if (OPEN_VIEW_EVENT_NAMES.includes(data.eventName)) {
       storedTempData.value.push({ data: data.sidebarData, name: data.viewName });
 
       sidebarData.value = data.newData;
       sidebarName.value = data.newView;
     }
 
-    if (data.eventName === 'closeEmail' || data.eventName === 'closeDepartmentPermissions') {
+    if (CLOSE_VIEW_EVENT_NAMES.includes(data.eventName)) {
       const tempData = storedTempData.value.pop();
 
       if (tempData != null) {

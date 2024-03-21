@@ -17,10 +17,11 @@ const TEMPLATE = `
           @delete-email-clicked="deleteEmailClicked"></staff-sidebar-email>
       </template>
       <template v-if="name === 'department_permissions'">
-        <staff-sidebar-department-permissions :data="data" @close-clicked="closeDepartmentPermissionsClicked"></staff-sidebar-department-permissions>
+        <staff-sidebar-department-permissions :data="data" @close-clicked="closeDepartmentPermissionsClicked"
+          @add-permission-clicked="addPermissionClicked"></staff-sidebar-department-permissions>
       </template>
       <template v-if="name === 'permissions'">
-        <staff-sidebar-permissions></staff-sidebar-permissions>
+        <staff-sidebar-permissions :data="data" @close-clicked="closeAddPermissionClicked"></staff-sidebar-permissions>
       </template>
     </div>
   </template>
@@ -123,6 +124,31 @@ function closeDepartmentPermissionsClicked() {
   this.$emit('sidebarViewChanged', eventData);
 }
 
+function addPermissionClicked(data) {
+  const eventData = {
+    eventName: 'addPermission',
+    viewName: this.name,
+    sidebarData: {
+      departmentId: data.departmentId
+    },
+    newView: 'permissions',
+    newData: {
+      departmentId: data.departmentId,
+      positionId: data.positionId
+    }
+  }
+
+  this.$emit('sidebarViewChanged', eventData);
+}
+
+function closeAddPermissionClicked() {
+  const eventData = {
+    eventName: 'closeAddPermission'
+  }
+
+  this.$emit('sidebarViewChanged', eventData);
+}
+
 const StaffStructureSidebar = {
   props: PROPS,
   emits: ['sidebarClosed', 'sidebarViewChanged', 'sidebarSaveClicked', 'sidebarDeleteClicked'],
@@ -135,7 +161,9 @@ const StaffStructureSidebar = {
     editEmailClicked,
     deleteEmailClicked,
     addDepartmentPermissionsClicked,
-    closeDepartmentPermissionsClicked
+    closeDepartmentPermissionsClicked,
+    addPermissionClicked,
+    closeAddPermissionClicked
   },
   template: TEMPLATE
 };
