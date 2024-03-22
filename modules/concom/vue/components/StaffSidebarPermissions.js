@@ -1,4 +1,4 @@
-/* globals Vue */
+/* globals Vue, confirmbox */
 const PROPS = {
   data: Object
 };
@@ -39,10 +39,29 @@ const TEMPLATE = `
   </div>
   <div class="UI-center">
     <hr/>
-    <button class="UI-eventbutton" :disabled="selectedPermission?.name == null">Save</button>
+    <button class="UI-eventbutton" :disabled="selectedPermission?.name == null" @click="onSave">Save</button>
     <button class="UI-yellowbutton" @click="$emit('closeClicked')">Close</button>
   </div>
 `;
+
+async function onSave() {
+  try {
+    const confirmBoxTitle = 'Confirms Permission Addition';
+    const confirmBoxMessage = `Really add permission ${this.selectedPermission.name}?`;
+
+    await confirmbox(confirmBoxTitle, confirmBoxMessage);
+
+    const data = {
+      permission: this.selectedPermission.name,
+      departmentId: this.departmentId,
+      positionId: this.positionId
+    };
+
+    this.$emit('savePermissionClicked', data);
+  } catch (error) {
+    // User canceled.
+  }
+}
 
 function setup(props) {
   const selectedPermission = Vue.ref({});
@@ -60,8 +79,11 @@ function setup(props) {
 
 const StaffSidebarPermissions = {
   props: PROPS,
-  emits: [ 'closeClicked' ],
+  emits: ['closeClicked', 'savePermissionClicked'],
   setup,
+  methods: {
+    onSave
+  },
   template: TEMPLATE
 };
 
