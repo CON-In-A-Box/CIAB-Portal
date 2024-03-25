@@ -130,6 +130,8 @@ async function sidebarDeleteClicked(data) {
 
     if (data.eventName === 'deleteEmail') {
       this.sidebarViewChanged({ eventName: 'closeEmail' });
+    } else if (data.eventName === 'deletePermission') {
+      this.sidebarViewChanged({ eventName: 'closeDepartmentPermissions' });
     } else {
       await this.fetchDivisions();
       this.closeSidebar();

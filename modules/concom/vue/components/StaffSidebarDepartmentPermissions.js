@@ -1,4 +1,4 @@
-/* globals Vue, showSpinner, hideSpinner */
+/* globals Vue, showSpinner, hideSpinner, confirmbox */
 import { useDepartmentPermissions } from '../composables/departmentPermissions.js';
 import { useDepartmentStaff } from '../composables/departmentStaff.js';
 
@@ -32,7 +32,7 @@ const TEMPLATE = `
           <template v-for="(permissions, permissionKey) in permissions">
             <template v-if="permissionKey === key">
               <span v-for="item in permissions">
-                <span><button class="UI-roundbutton"><i class="fas fa-minus-square"></i></button></span>
+                <span><button class="UI-roundbutton" @click="deletePermissionClicked(item)"><i class="fas fa-minus-square"></i></button></span>
                 {{ item.permission }}&nbsp;
               </span>
             </template>
@@ -54,6 +54,24 @@ function addPermissionClicked(positionId) {
   }
 
   this.$emit('addPermissionClicked', data);
+}
+
+async function deletePermissionClicked(item) {
+  try {
+    const confirmBoxTitle = 'Confirms Permission Deletion';
+    const confirmBoxMessage = `Really delete "${item.permission}" permission?`;
+
+    await confirmbox(confirmBoxTitle, confirmBoxMessage);
+
+    const data = {
+      departmentId: this.departmentId,
+      permissionId: item.id
+    };
+
+    this.$emit('deletePermissionClicked', data);
+  } catch (error) {
+    // User canceled.
+  }
 }
 
 function reducePermissions(permissions) {
@@ -120,11 +138,12 @@ async function onCreated() {
 
 const StaffSidebarDepartmentPermissions = {
   props: PROPS,
-  emits: ['closeClicked', 'addPermissionClicked'],
+  emits: ['closeClicked', 'addPermissionClicked', 'deletePermissionClicked'],
   setup,
   created: onCreated,
   methods: {
     addPermissionClicked,
+    deletePermissionClicked,
     reducePermissions
   },
   template: TEMPLATE
