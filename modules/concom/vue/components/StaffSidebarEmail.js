@@ -4,8 +4,6 @@ const PROPS = {
   edit: Boolean
 }
 
-const confirmBoxTitle = 'Confirms Email Deletion';
-
 const TEMPLATE = `
   <div class="UI-center">
     <h2 class="UI-red">Position Email</h2>
@@ -23,18 +21,28 @@ const TEMPLATE = `
   </div>
 `;
 
-function onSave() {
-  const data = {
-    id: this.emailId,
-    email: this.email,
-    departmentId: this.departmentId
-  };
+async function onSave() {
+  try {
+    const confirmBoxTitle = 'Confirms Save Email';
+    const confirmBoxMessage = `Really save the e-mail address "${this.email}"?`;
 
-  this.$emit('saveEmailClicked', data);
+    await confirmbox(confirmBoxTitle, confirmBoxMessage);
+
+    const data = {
+      id: this.emailId,
+      email: this.email,
+      departmentId: this.departmentId
+    };
+
+    this.$emit('saveEmailClicked', data);
+  } catch (error) {
+    // User canceled.
+  }
 }
 
 async function onDelete() {
   try {
+    const confirmBoxTitle = 'Confirms Email Deletion';
     const confirmBoxMessage = `Really delete the e-mail address "${this.email}"?`;
     await confirmbox(confirmBoxTitle, confirmBoxMessage);
 

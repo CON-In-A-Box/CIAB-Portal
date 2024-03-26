@@ -1,4 +1,4 @@
-/* globals Vue, showSpinner, hideSpinner */
+/* globals Vue, showSpinner, hideSpinner, confirmbox */
 import { useDepartmentStaff } from '../composables/departmentStaff.js';
 import { useDepartmentEmail } from '../composables/departmentEmail.js';
 
@@ -108,24 +108,42 @@ function addPermissionsClicked() {
   this.$emit('addPermissionsClicked', data);
 }
 
-function onSave() {
-  const data = {
-    id: this.departmentId,
-    departmentName: this.departmentName,
-    fallbackDepartment: this.selectedFallbackDepartment,
-    parentDepartment: this.selectedParentDepartment,
-    isDivision: this.isDivisionToggle
-  };
+async function onSave() {
+  try {
+    const confirmBoxTitle = 'Confirms Position Details';
+    const confirmBoxMessage = 'Are the position details correct?';
 
-  this.$emit('saveDepartmentClicked', data);
+    await confirmbox(confirmBoxTitle, confirmBoxMessage);
+
+    const data = {
+      id: this.departmentId,
+      departmentName: this.departmentName,
+      fallbackDepartment: this.selectedFallbackDepartment,
+      parentDepartment: this.selectedParentDepartment,
+      isDivision: this.isDivisionToggle
+    };
+
+    this.$emit('saveDepartmentClicked', data);
+  } catch (error) {
+    // User canceled.
+  }
 }
 
-function onDelete() {
-  const data = {
-    id: this.departmentId
-  };
+async function onDelete() {
+  try {
+    const confirmBoxTitle = 'Confirms Position Deletion';
+    const confirmBoxMessage = 'Really delete this position?';
 
-  this.$emit('deleteDepartmentClicked', data);
+    await confirmbox(confirmBoxTitle, confirmBoxMessage);
+
+    const data = {
+      id: this.departmentId
+    };
+
+    this.$emit('deleteDepartmentClicked', data);
+  } catch (error) {
+    // User canceled.
+  }
 }
 
 function setup(props) {
