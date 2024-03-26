@@ -3147,7 +3147,7 @@ paths:
             type: integer
       requestBody:
         content:
-          application/x-www-form-urlencoded:
+          multipart/form-data:
             schema:
               properties:
                 Department:
@@ -4847,7 +4847,7 @@ components:
           type: string
         allowed:
           description: 'Is the permission enabled'
-          type: boolean
+          type: integer
         action:
           $ref: '#/components/schemas/permission_action'
         subdata:
@@ -4859,6 +4859,7 @@ components:
           description: 'Id for the target department'
           type: integer
       type: object
+      nullable: true
     permission_action:
       properties:
         method:
@@ -4872,6 +4873,7 @@ components:
           description: 'HTTP request type for the method'
           type: string
       type: object
+      nullable: true
     permission_list:
       type: object
       allOf:
