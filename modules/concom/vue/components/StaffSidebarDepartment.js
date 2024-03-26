@@ -39,7 +39,7 @@ const TEMPLATE = `
     <div v-if="isDivisionToggle">
       <label class="UI-label" for="department_fallback_dept">Fallback For:</label>
       <select class="UI-select" style="width:auto" id="department_fallback_dept" v-model="selectedFallbackDepartment">
-        <option disabled value="">Please select a fallback department</option>
+        <option :key="defaultFallbackDepartment.id" :value="defaultFallbackDepartment">Please select a fallback department</option>
         <option v-for="division in fallbackDivisions" :key="division.id" :value="division">
           {{ division.name }}
         </option>
@@ -184,12 +184,31 @@ function setup(props) {
     loadingValues.some((item) => item.value) ? showSpinner() : hideSpinner();
   });
 
+  // When an existing division or department is toggled to the opposite thing, replace the values so that if it is updated,
+  // it has the correct parent and fallback department values.
+  Vue.watch(isDivisionToggle, () => {
+    if (isDivisionToggle.value) {
+      if (selectedParentDepartment.value?.id != null) {
+        selectedParentDepartment.value.id = departmentId.value;
+      }
+
+      selectedFallbackDepartment.value = fallbackDepartment;
+    } else {
+      if (selectedFallbackDepartment.value?.id != null) {
+        selectedFallbackDepartment.value = { id: -1 };
+      }
+
+      selectedParentDepartment.value = parentDepartment;
+    }
+  });
+
   return {
     departmentId,
     departmentName,
     departmentEmails,
     staffCount,
     subDepartments,
+    defaultFallbackDepartment: { id: -1 },
     selectedFallbackDepartment,
     selectedParentDepartment,
     isDivisionToggle,

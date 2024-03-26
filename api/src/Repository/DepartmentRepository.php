@@ -100,7 +100,12 @@ class DepartmentRepository implements RepositoryInterface
 
         // Fallback
         if (array_key_exists("FallbackID", $data)) {
-            $update->column("FallbackID", $data["FallbackID"]);
+            $fallbackID = $data["FallbackID"];
+            if ($fallbackID == -1) {
+                $fallbackID = null;
+            }
+
+            $update->column("FallbackID", $fallbackID);
         }
 
         if (array_key_exists("ParentID", $data)) {
