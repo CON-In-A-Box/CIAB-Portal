@@ -23,7 +23,7 @@
  *      ),
  *      @OA\Property(
  *          property="allowed",
- *          type="boolean",
+ *          type="integer",
  *          description="Is the permission enabled"
  *      ),
  *      @OA\Property(
@@ -38,6 +38,7 @@
  *
  *  @OA\Schema(
  *      schema="permission_subdata",
+ *      nullable=true,
  *      @OA\Property(
  *          property="department",
  *          type="integer",
@@ -47,6 +48,7 @@
  *
  *  @OA\Schema(
  *      schema="permission_action",
+ *      nullable=true,
  *      @OA\Property(
  *          property="method",
  *          type="string",
@@ -544,7 +546,7 @@ abstract class BasePermission extends BaseController
         'action' => $link
         ];
         $entry['subdata'] = [
-        'department' => $id
+        'department' => intval($id)
         ];
         return $entry;
 

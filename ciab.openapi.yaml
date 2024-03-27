@@ -1292,6 +1292,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/member_list'
+        '400':
+          $ref: '#/components/responses/400'
         '401':
           $ref: '#/components/responses/401'
         '404':
@@ -1547,13 +1549,32 @@ paths:
         '404':
           $ref: '#/components/responses/member_not_found'
   '/member/{id}/password':
+    post:
+      tags:
+        - members
+      summary: 'Requests a password reset for a member'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'The id or login email for the member'
+          required: true
+          schema:
+            description: 'Member ID or login email'
+            type: string
+      responses:
+        '201':
+          description: OK
+        '404':
+          $ref: '#/components/responses/member_not_found'
+  '/member/{email}/password':
     put:
       tags:
         - members
       summary: 'Updates a member''s password'
       parameters:
         -
-          name: id
+          name: email
           in: path
           description: 'The id or login of the member'
           required: true
@@ -1590,24 +1611,6 @@ paths:
       security:
         -
           ciab_auth: []
-    post:
-      tags:
-        - members
-      summary: 'Requests a password reset for a member'
-      parameters:
-        -
-          name: id
-          in: path
-          description: 'The id or login email for the member'
-          required: true
-          schema:
-            description: 'Member ID or login email'
-            type: string
-      responses:
-        '201':
-          description: OK
-        '404':
-          $ref: '#/components/responses/member_not_found'
   '/member/{email}/password/recovery':
     put:
       tags:
@@ -3147,7 +3150,7 @@ paths:
             type: integer
       requestBody:
         content:
-          application/x-www-form-urlencoded:
+          multipart/form-data:
             schema:
               properties:
                 Department:
@@ -4847,7 +4850,7 @@ components:
           type: string
         allowed:
           description: 'Is the permission enabled'
-          type: boolean
+          type: integer
         action:
           $ref: '#/components/schemas/permission_action'
         subdata:
@@ -4859,6 +4862,7 @@ components:
           description: 'Id for the target department'
           type: integer
       type: object
+      nullable: true
     permission_action:
       properties:
         method:
@@ -4872,6 +4876,7 @@ components:
           description: 'HTTP request type for the method'
           type: string
       type: object
+      nullable: true
     permission_list:
       type: object
       allOf:

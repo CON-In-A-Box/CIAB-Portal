@@ -62,6 +62,10 @@
  *          ),
  *      ),
  *      @OA\Response(
+ *          response=400,
+ *          ref="#/components/responses/400"
+ *      ),
+ *      @OA\Response(
  *          response=401,
  *          ref="#/components/responses/401"
  *      ),
@@ -94,7 +98,7 @@ class FindMembers extends BaseMember
     public function buildResource(Request $request, Response $response, $args): array
     {
         $q = $request->getQueryParam('q', null);
-        if ($q === null) {
+        if ($q === null || strlen($q) == 0) {
             throw new InvalidParameterException("'q' not present");
         }
         $q = trim($q);

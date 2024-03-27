@@ -6,12 +6,12 @@
 /**
  *  @OA\Put(
  *      tags={"members"},
- *      path="/member/{id}/password",
+ *      path="/member/{email}/password",
  *      summary="Updates a member's password",
  *      @OA\Parameter(
  *          description="The id or login of the member",
  *          in="path",
- *          name="id",
+ *          name="email",
  *          required=true,
  *          @OA\Schema(
  *               description="Member login or id",
