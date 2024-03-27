@@ -2129,7 +2129,7 @@ paths:
             type: integer
       requestBody:
         content:
-          application/json:
+          multipart/form-data:
             schema:
               properties:
                 store_slug:
@@ -2193,7 +2193,7 @@ paths:
       summary: 'Adds a new store'
       requestBody:
         content:
-          application/json:
+          multipart/form-data:
             schema:
               properties:
                 store_slug:
@@ -4910,7 +4910,7 @@ components:
                 - store
             id:
               description: 'store Id'
-              type: integer
+              type: string
             store_slug:
               description: 'short, unique name for store'
               type: string
