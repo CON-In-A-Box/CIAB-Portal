@@ -475,7 +475,7 @@ class DepartmentTest extends CiabTestCase
     }
 
 
-    public function testPutDepartmentInvalidFallbackID(): void
+    public function testPutDepartmentFallbackIDIsZero(): void
     {
         $department = [
             "Name" => "Department Name"
@@ -485,7 +485,7 @@ class DepartmentTest extends CiabTestCase
             ->run();
 
         $body = [
-            "FallbackID" => -1
+            "FallbackID" => 0
         ];
 
         testRun::testRun($this, 'PUT', "/department/{id}")
@@ -494,6 +494,28 @@ class DepartmentTest extends CiabTestCase
             ->setExpectedResult(400)
             ->run();
 
+    }
+
+
+    public function testPutDepartmentFallbackIDIsLessThanNegativeOne(): void
+    {
+        $department = [
+            "Name" => "Department Name"
+        ];
+        $departmentData = testRun::testRun($this, 'POST', '/department')
+            ->setBody($department)
+            ->run();
+
+        $body = [
+            "FallbackID" => -2
+        ];
+
+        testRun::testRun($this, 'PUT', "/department/{id}")
+            ->setUriParts(['id' => $departmentData->id])
+            ->setBody($body)
+            ->setExpectedResult(400)
+            ->run();
+            
     }
 
 

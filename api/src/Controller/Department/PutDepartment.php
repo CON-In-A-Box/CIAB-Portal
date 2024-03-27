@@ -125,8 +125,8 @@ class PutDepartment extends BaseDepartment
             throw new InvalidParameterException("ParentID must be greater than 0");
         }
 
-        if (array_key_exists("FallbackID", $body) && (!is_numeric($body["FallbackID"]) || $body["FallbackID"] <= 0)) {
-            throw new InvalidParameterException("FallbackID must be greater than 0");
+        if (array_key_exists("FallbackID", $body) && (!is_numeric($body["FallbackID"]) || ($body["FallbackID"] < -1 || $body["FallbackID"] == 0))) {
+            throw new InvalidParameterException("FallbackID must be -1 or greater than 0");
         }
 
         return $body;
