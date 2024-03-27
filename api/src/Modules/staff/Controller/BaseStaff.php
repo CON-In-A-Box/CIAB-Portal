@@ -18,7 +18,7 @@
  *      ),
  *      @OA\Property(
  *          property="id",
- *          type="integer",
+ *          type="string",
  *          description="Entry Id"
  *      ),
  *      @OA\Property(
@@ -71,7 +71,7 @@
  *      ),
  *      @OA\Property(
  *          property="event",
- *          type="integer",
+ *          type="string",
  *          description="Id of the event being listed."
  *      ),
  *      @OA\Property(
@@ -88,7 +88,7 @@
  *      schema="staff_position_entry",
  *      @OA\Property(
  *          property="id",
- *          type="integer"
+ *          type="string"
  *      ),
  *      @OA\Property(
  *          property="position",

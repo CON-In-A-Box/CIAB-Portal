@@ -3061,7 +3061,7 @@ paths:
           description: 'Id of the staff position.'
           required: true
           schema:
-            type: integer
+            type: string
         -
           $ref: '#/components/parameters/short_response'
       responses:
@@ -3169,8 +3169,12 @@ paths:
       responses:
         '200':
           description: OK
+        '400':
+          $ref: '#/components/responses/400'
         '401':
           $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/department_not_found'
       security:
         -
           ciab_auth: []
@@ -3216,6 +3220,8 @@ paths:
       responses:
         '201':
           description: OK
+        '400':
+          $ref: '#/components/responses/400'
         '401':
           $ref: '#/components/responses/401'
         '404':
@@ -5239,7 +5245,7 @@ components:
                 - staff_entry
             id:
               description: 'Entry Id'
-              type: integer
+              type: string
             member:
               description: 'Member resource'
               oneOf:
@@ -5275,7 +5281,7 @@ components:
                 - staff_list
             event:
               description: 'Id of the event being listed.'
-              type: integer
+              type: string
             data:
               description: 'List of staff positions'
               type: array
@@ -5291,7 +5297,7 @@ components:
         -
           properties:
             id:
-              type: integer
+              type: string
             position:
               type: string
         -
