@@ -17,7 +17,7 @@
  *      ),
  *      @OA\Property(
  *          property="id",
- *          type="integer",
+ *          type="string",
  *          description="department Id"
  *      ),
  *      @OA\Property(
@@ -33,14 +33,14 @@
  *                  ref="#/components/schemas/department"
  *              ),
  *              @OA\Schema(
- *                  type="integer",
+ *                  type="string",
  *                  description="Department Id"
  *              )
  *          }
  *      ),
  *      @OA\Property(
  *          property="child_count",
- *          type="integer",
+ *          type="string",
  *          description="Number of child departments"
  *      ),
  *      @OA\Property(
@@ -51,7 +51,7 @@
  *                  ref="#/components/schemas/department"
  *              ),
  *              @OA\Schema(
- *                  type="integer",
+ *                  type="string",
  *                  description="Department Id"
  *              )
  *          }
@@ -83,6 +83,61 @@
  *          ),
  *      )
  *  )
+ *
+ *   @OA\Schema(
+ *     schema="department_permission",
+ *     @OA\Property(
+ *         property="type",
+ *         type="string",
+ *         enum={"department_permission"}
+ *     ),
+ *     @OA\Property(
+ *         property="id",
+ *         type="integer",
+ *         description="The permission ID"
+ *     ),
+ *     @OA\Property(
+ *         property="departmentId",
+ *         type="string",
+ *         description="The department ID"
+ *     ),
+ *     @OA\Property(
+ *         property="position",
+ *         type="string",
+ *         description="The department position"
+ *     ),
+ *     @OA\Property(
+ *         property="name",
+ *         type="string",
+ *         description="The name of the permission"
+ *     ),
+ *     @OA\Property(
+ *         property="note",
+ *         type="string",
+ *         description="The note associated with this permission",
+ *         nullable=true
+ *     )
+ *   )
+ *
+ *   @OA\Schema(
+ *     schema="department_permission_list",
+ *     allOf = {
+ *         @OA\Schema(ref="#/components/schemas/resource_list")
+ *     },
+ *     @OA\Property(
+ *         property="type",
+ *         type="string",
+ *         enum={"department_permission_list"}
+ *     ),
+ *     @OA\Property(
+ *         property="data",
+ *         type="array",
+ *         description="List of department permissions",
+ *         @OA\Items(
+ *             ref="#/components/schemas/department_permission"
+ *         )
+ *     )
+ *   )
  *
  *   @OA\Response(
  *      response="department_not_found",

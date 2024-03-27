@@ -13,7 +13,7 @@
  *          in="path",
  *          name="id",
  *          required=true,
- *          @OA\Schema(type="integer")
+ *          @OA\Schema(type="string")
  *      ),
  *      @OA\Parameter(
  *          ref="#/components/parameters/short_response",
@@ -24,6 +24,10 @@
  *          @OA\JsonContent(
  *           ref="#/components/schemas/event"
  *          ),
+ *      ),
+ *      @OA\Response(
+ *          response=400,
+ *          ref="#/components/responses/400"
  *      ),
  *      @OA\Response(
  *          response=401,
@@ -51,17 +55,7 @@ class GetEvent extends BaseEvent
 
     public function buildResource(Request $request, Response $response, $params): array
     {
-        if ($params['id'] == 'current') {
-            $params['id'] = $this->currentEvent();
-        }
-        $select = Select::new($this->container->db);
-        $select->columns(...BaseEvent::selectMapping());
-        $select->from('Events');
-        $select->whereEquals(['EventID' => $params['id']]);
-        $data = $select->fetchOne();
-        if (empty($data)) {
-            throw new NotFoundException("Event '{$params['id']}' Not Found");
-        }
+        $data = $this->getEvent($params['id']);
         $this->id = $data['id'];
 
         return [

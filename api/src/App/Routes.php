@@ -34,6 +34,13 @@ function setupAPIRoutes(App $app, $authMiddleware)
         '/department',
         function () use ($app, $authMiddleware) {
             $app->get('[/]', 'App\Controller\Department\ListDepartments');
+            $app->post('[/]', 'App\Controller\Department\PostDepartment');
+            $app->put('/{id}', 'App\Controller\Department\PutDepartment');
+            $app->delete('/{id}', 'App\Controller\Department\DeleteDepartment');
+            $app->get('/{id}/email', 'App\Controller\Department\GetDepartmentEmail');
+            $app->get('/{id}/permission', 'App\Controller\Department\GetDepartmentPermission');
+            $app->post('/{id}/permission', 'App\Controller\Department\PostDepartmentPermission');
+            $app->delete('/{id}/permission/{permissionId}', 'App\Controller\Department\DeleteDepartmentPermission');
             $app->get('/{name}', 'App\Controller\Department\GetDepartment');
             $app->get('/{name}/children', 'App\Controller\Department\GetDepartmentChildren');
             $app->get('/{name}/deadlines', 'App\Controller\Deadline\ListDepartmentDeadlines');
@@ -50,6 +57,16 @@ function setupAPIRoutes(App $app, $authMiddleware)
             $app->get('/{id}', 'App\Controller\Deadline\GetDeadline');
             $app->put('/{id}', 'App\Controller\Deadline\PutDeadline');
             $app->delete('/{id}', 'App\Controller\Deadline\DeleteDeadline');
+        }
+    )->add(new \App\Middleware\CiabMiddleware($app))->add($authMiddleware);
+
+    $app->group(
+        '/email',
+        function () use ($app, $authMiddleware) {
+            $app->post('[/]', 'App\Controller\Email\PostEmail');
+            $app->get('/{id}', 'App\Controller\Email\GetEmail');
+            $app->put('/{id}', 'App\Controller\Email\PutEmail');
+            $app->delete('/{id}', 'App\Controller\Email\DeleteEmail');
         }
     )->add(new \App\Middleware\CiabMiddleware($app))->add($authMiddleware);
 

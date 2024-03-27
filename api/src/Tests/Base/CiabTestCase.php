@@ -11,6 +11,7 @@ use App\Tests\Base\BlankMiddleWare;
 use Chadicus\Slim\OAuth2\Middleware;
 use Atlas\Query\Insert;
 use Atlas\Query\Delete;
+use Osteel\OpenApi\Testing\ValidatorBuilder;
 
 if (is_file(__DIR__.'/../../../../.env')) {
     $dotenv = \Dotenv\Dotenv::create(__DIR__.'/../../../..');
@@ -53,6 +54,11 @@ abstract class CiabTestCase extends TestCase
      * @var string
      */
     protected static $client = 'ciab';
+
+    /**
+     * @var object
+     */
+    protected static $validator;
 
     /**
      * @var Container
@@ -99,6 +105,8 @@ abstract class CiabTestCase extends TestCase
      */
     protected $testing_accounts = [];
 
+    const YAMLFILE = __DIR__.'/../../../../ciab.openapi.yaml';
+
 
     public static function setUpBeforeClass(): void
     {
@@ -123,6 +131,8 @@ abstract class CiabTestCase extends TestCase
                 }
             }
         }
+
+        CiabTestCase::$validator = ValidatorBuilder::fromYamlFile(CiabTestCase::YAMLFILE)->getValidator();
 
     }
 
@@ -206,6 +216,11 @@ abstract class CiabTestCase extends TestCase
                 ->whereEquals(['AccountID' => $account])
                 ->perform();
         }
+
+        $this->middleware = null;
+        $this->container = null;
+        $this->app = null;
+
         parent::tearDown();
 
     }
@@ -265,6 +280,7 @@ abstract class CiabTestCase extends TestCase
             'QUERY_STRING'   => $serverParams
             ]);
         $request = Request::createFromEnvironment($env);
+        $request = $request->withHeader('Content-Type', 'multipart/form-data');
         if ($token) {
             $request = $request->withHeader('Authorization', 'Bearer '.$token->access_token);
         } elseif ($this->token) {
@@ -275,13 +291,14 @@ abstract class CiabTestCase extends TestCase
     }
 
 
-    protected function runRequest(
+    public function runRequest(
         string $method,
         string $uri,
         array $serverParams = null,
         array $body = null,
         int $code = null,
-        object $token = null
+        object $token = null,
+        string $yamlUri = null
     ) {
         if (!empty($serverParams)) {
             $params = [];
@@ -291,6 +308,9 @@ abstract class CiabTestCase extends TestCase
             $serverParams = implode('&', $params);
         }
         $request = $this->createRequest($method, $uri, $serverParams, $token);
+        if ($yamlUri) {
+            self::$validator->validate($request, $yamlUri, $method);
+        }
         if (!empty($body)) {
             $request = $request->withParsedBody($body);
         }
@@ -304,20 +324,31 @@ abstract class CiabTestCase extends TestCase
                 throw($e);
             }
         }
+
+        if ($yamlUri) {
+            try {
+                self::$validator->validate($response, $yamlUri, $method);
+            } catch (\Exception $e) {
+                error_log((string)$response->getBody());
+                throw($e);
+            }
+        }
+
         return $response;
 
     }
 
 
-    protected function NPRunRequest(
+    public function NPRunRequest(
         string $method,
         string $uri,
         array $serverParams = null,
         array $body = null,
         int $code = null,
-        int $loginIndex = 0
+        int $loginIndex = 0,
+        string $yamlUri = null
     ) {
-        return $this->runRequest($method, $uri, $serverParams, $body, $code, $this->unpriv_tokens[$loginIndex]);
+        return $this->runRequest($method, $uri, $serverParams, $body, $code, $this->unpriv_tokens[$loginIndex], $yamlUri);
 
     }
 
@@ -328,9 +359,10 @@ abstract class CiabTestCase extends TestCase
         array $params = null,
         array $body = null,
         int $code = 200,
-        object $token = null
+        object $token = null,
+        string $yamlUri = null
     ) {
-        return $this->runRequest($method, $uri, $params, $body, $code, $token);
+        return $this->runRequest($method, $uri, $params, $body, $code, $token, $yamlUri);
 
     }
 
@@ -341,9 +373,10 @@ abstract class CiabTestCase extends TestCase
         array $params = null,
         array $body = null,
         int $code = 200,
-        int $loginIndex = 0
+        int $loginIndex = 0,
+        string $yamlUri = null
     ) {
-        return $this->runSuccessRequest($method, $uri, $params, $body, $code, $this->unpriv_tokens[$loginIndex]);
+        return $this->runSuccessRequest($method, $uri, $params, $body, $code, $this->unpriv_tokens[$loginIndex], $yamlUri);
 
     }
 
@@ -354,9 +387,10 @@ abstract class CiabTestCase extends TestCase
         array $params = null,
         array $body = null,
         int $code = 200,
-        object $token = null
+        object $token = null,
+        string $yamlUri = null
     ) {
-        $response = $this->runRequest($method, $uri, $params, $body, $code, $token);
+        $response = $this->runRequest($method, $uri, $params, $body, $code, $token, $yamlUri);
         $data = json_decode((string)$response->getBody());
         $this->assertNotEmpty($data);
         return $data;
@@ -370,9 +404,10 @@ abstract class CiabTestCase extends TestCase
         array $params = null,
         array $body = null,
         int $code = 200,
-        int $loginIndex = 0
+        int $loginIndex = 0,
+        string $yamlUri = null
     ) {
-        return $this->runSuccessJsonRequest($method, $uri, $params, $body, $code, $this->unpriv_tokens[$loginIndex]);
+        return $this->runSuccessJsonRequest($method, $uri, $params, $body, $code, $this->unpriv_tokens[$loginIndex], $yamlUri);
 
     }
 

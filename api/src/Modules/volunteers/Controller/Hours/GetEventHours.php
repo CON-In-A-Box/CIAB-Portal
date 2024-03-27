@@ -13,7 +13,7 @@
  *          in="path",
  *          name="id",
  *          required=true,
- *          @OA\Schema(type="integer")
+ *          @OA\Schema(type="string")
  *      ),
  *      @OA\Parameter(
  *          ref="#/components/parameters/short_response",
@@ -68,8 +68,12 @@ class GetEventHours extends BaseHours
         }
 
         $sum = 0;
-        foreach ($data as $entry) {
+        foreach ($data as &$entry) {
             $sum += $entry['hours'] * $entry['modifier'];
+
+            /* some data conversion */
+            $datetime = \DateTime::createFromFormat('Y-m-d H:i:s', $entry['end']);
+            $entry['end'] = $datetime->format(\DateTime::RFC3339);
         }
 
         return [

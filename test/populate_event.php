@@ -57,7 +57,7 @@ function rand_word($len)
     $v  = 'aeiou';              // vowels
     $a  = $c.$v;                // all
 
-    for ($i = 0; $i <= $len; $i++) {
+    for ($i = 0; $i < $len; $i++) {
         $sy = $c[rand(0, strlen($c) - 1)];
         $sy .= $v[rand(0, strlen($v) - 1)];
         $sy .= $a[rand(0, strlen($a) - 1)];
@@ -76,13 +76,15 @@ function rand_name()
     $fn = '';
     /*.string.*/ $mn = null;
     $ln = '';
+    $l = 0;
 
     $s = rand(0, 1) + 1;
     $fn = rand_word($s);
 
-    if (rand(0, 1) > 0) {
+    if (rand(0, 1) > 0 && $l < 3) {
         $s = rand(0, 1) + 1;
         $mn = rand_word($s);
+        $l++;
     }
 
     $s = rand(0, 2) + 2;
@@ -268,15 +270,19 @@ function populate_badges($event)
 function random_member()
 {
     $name = rand_name();
-    $email = $name[0].'@email.net';
+    $email = $name[0].$name[2].rand(1, 9999).'@email.net';
     $updateData = rand_address();
     $updateData['firstName'] = $name[0];
     $updateData['middleName'] = $name[1];
     $updateData['lastName'] = $name[2];
 
     $account = createUser($email);
-    $updateData['accountId'] = $account;
-    updateAccount($updateData, $account);
+    if ($account) {
+        $updateData['accountId'] = $account;
+        updateAccount($updateData, $account);
+    } else {
+        random_member();
+    }
 
 }
 
@@ -287,9 +293,9 @@ function populate_members()
     $result = \DB::run($sql);
     $value = $result->fetch();
     $t = intval($value['count']);
-    if ($t < 501) {
-        print "populate ".(strval(501 - $t))." members\n";
-        for ($i = 0; $i < 501 - $t; $i++) {
+    if ($t < 5001) {
+        print "populate ".(strval(5001 - $t))." members\n";
+        for ($i = 0; $i < 5001 - $t; $i++) {
             random_member();
         }
     }
@@ -324,7 +330,7 @@ function populate_concom()
     $sql = "SELECT COUNT(`AccountID`) AS count FROM  `ConComList`;";
     $result = \DB::run($sql);
     $value = $result->fetch();
-    if (intval($value['count']) > 0) {
+    if (intval($value['count']) > 999) {
         return;
     }
 
@@ -346,6 +352,10 @@ function populate_concom()
         }
         $aid = rand_member();
         AddConComPosition($aid, $value['Name'], 'Sub-Head', '');
+        $aid = rand_member();
+        AddConComPosition($aid, $value['Name'], 'Specialist', '');
+        $aid = rand_member();
+        AddConComPosition($aid, $value['Name'], 'Specialist', '');
         $aid = rand_member();
         AddConComPosition($aid, $value['Name'], 'Specialist', '');
         $value = $result->fetch();

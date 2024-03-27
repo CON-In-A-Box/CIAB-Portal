@@ -3,8 +3,9 @@
 namespace App\Modules\staff\Repository;
 
 use Atlas\Query\Select;
+use App\Repository\RepositoryInterface;
 
-class StaffRepository
+class StaffRepository implements RepositoryInterface
 {
 
     protected $db;
@@ -41,6 +42,41 @@ class StaffRepository
             ->where('Staff.DepartmentID IN ', $departmentIds);
 
         return $select->fetchAll();
+
+    }
+
+
+    public function insert(/*.mixed.*/$data): int
+    {
+        throw new Exception(__CLASS__.": Method '__FUNCTION__' not implemented");
+
+    }
+
+
+    public function selectById(/*.mixed.*/$accountIds, $event = null): array
+    {
+        throw new Exception(__CLASS__.": Method '__FUNCTION__' not implemented");
+
+    }
+
+
+    public function selectAll($event = null): array
+    {
+        throw new Exception(__CLASS__.": Method '__FUNCTION__' not implemented");
+
+    }
+
+
+    public function update(/*.string.*/$id, /*.mixed.*/$data): void
+    {
+        throw new Exception(__CLASS__.":Method '__FUNCTION__' not implemented");
+
+    }
+
+
+    public function deleteById(/*.mixed.*/$id): void
+    {
+        throw new Exception(__CLASS__.": Method '__FUNCTION__' not implemented");
 
     }
 

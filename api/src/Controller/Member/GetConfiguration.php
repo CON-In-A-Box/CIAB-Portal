@@ -14,16 +14,8 @@
  *          name="id",
  *          required=true,
  *          @OA\Schema(
- *              oneOf = {
- *                  @OA\Schema(
- *                      description="Member login",
- *                      type="string"
- *                  ),
- *                  @OA\Schema(
- *                      description="Member id",
- *                      type="integer"
- *                  )
- *              }
+ *              description="Member login or Id",
+ *              type="string"
  *          )
  *      ),
  *      @OA\Parameter(
@@ -63,16 +55,8 @@
  *          name="id",
  *          required=true,
  *          @OA\Schema(
- *              oneOf = {
- *                  @OA\Schema(
- *                      description="Member login",
- *                      type="string"
- *                  ),
- *                  @OA\Schema(
- *                      description="Member id",
- *                      type="integer"
- *                  )
- *              }
+ *              description="Member login or id",
+ *              type="string"
  *          )
  *      ),
  *      @OA\Parameter(
@@ -137,7 +121,7 @@ class GetConfiguration extends BaseMember
             $output
             ];
         }
-        $result[0]['type'] = 'configuration';
+        $result[0]['type'] = 'configuration_entry';
         $result[1]['account'] = $user;
         return [
         \App\Controller\BaseController::RESOURCE_TYPE,

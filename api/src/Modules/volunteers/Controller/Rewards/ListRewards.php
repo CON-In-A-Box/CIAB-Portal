@@ -6,7 +6,7 @@
 /**
  *  @OA\Get(
  *      tags={"volunteers"},
- *      path="/volunteers/rewards",
+ *      path="/volunteer/rewards",
  *      summary="List volunteer reward data",
  *      @OA\Parameter(
  *          description="Show sold out items, default if false",
@@ -77,6 +77,7 @@ class ListRewards extends BaseReward
 
         foreach ($data as $index => $entry) {
             $data[$index]['claimed'] = $this->getClaimed($entry['id']);
+            $data[$index]['inventory'] = intval($data[$index]['inventory']);
             if (!$soldout) {
                 if ($data[$index]['inventory'] == 0 || $data[$index]['claimed'] >= $data[$index]['inventory']) {
                     unset($data[$index]);

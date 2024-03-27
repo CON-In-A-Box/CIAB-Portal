@@ -6,6 +6,7 @@ use Atlas\Query\Delete;
 use Atlas\Query\Insert;
 use Atlas\Query\Update;
 use App\Tests\Base\CiabTestCase;
+use App\Tests\Base\TestRun;
 
 class MemberTest extends CiabTestCase
 {
@@ -28,7 +29,10 @@ class MemberTest extends CiabTestCase
             ->columns(['Field' => 'phptestmember', 'TargetTable' => 'AccountConfiguration', 'Type' => 'text', 'InitialValue' => 'no', 'Description' => 'PHPTest value'])
             ->perform();
 
-        $this->runSuccessJsonRequest('PUT', '/member/1000', null, ['email2' => '']);
+        testRun::testRun($this, 'PUT', '/member/{id}')
+            ->setUriParts(['id' => 1000])
+            ->setBody(['email2' => ''])
+            ->run();
         $when = date('Y-m-d', strtotime('+1 year'));
         Update::new($this->container->db)
             ->table('Authentication')
@@ -60,7 +64,10 @@ class MemberTest extends CiabTestCase
             ->whereEquals(['Field' => 'phptestmember'])
             ->perform();
 
-        $this->runSuccessJsonRequest('PUT', '/member/1000', null, ['email2' => '']);
+        testRun::testRun($this, 'PUT', '/member/{id}')
+            ->setUriParts(['id' => 1000])
+            ->setBody(['email2' => ''])
+            ->run();
 
         $this->deleteTestUser();
 
@@ -78,66 +85,130 @@ class MemberTest extends CiabTestCase
 
     public function testMemberConfiguration(): void
     {
-        $data = $this->runSuccessJsonRequest('GET', '/member/1000/configuration/phptestmember');
+        $data = testRun::testRun($this, 'GET', '/member/{id}/configuration/{field}')
+            ->setUriParts(['id' => 1000, 'field' => 'phptestmember'])
+            ->run();
         $this->assertSame($data->value, 'no');
 
-        $this->runSuccessJsonRequest(
-            'PUT',
-            '/member/1000/configuration',
-            null,
-            ['Value' => 'yes', 'Field' => 'phptestmember']
-        );
+        testRun::testRun($this, 'PUT', '/member/{id}/configuration')
+            ->setUriParts(['id' => 1000])
+            ->setBody(['Value' => 'yes', 'Field' => 'phptestmember'])
+            ->run();
 
-        $data = $this->runSuccessJsonRequest('GET', '/member/1000/configuration/phptestmember');
+        $data = testRun::testRun($this, 'GET', '/member/{id}/configuration/{field}')
+            ->setUriParts(['id' => 1000, 'field' => 'phptestmember'])
+            ->run();
         $this->assertSame($data->value, 'yes');
 
-        $this->runSuccessJsonRequest('GET', '/member/1000/configuration');
-        $this->runRequest(
-            'PUT',
-            '/member/1000/configuration',
-            null,
-            ['Value' => 'yes', 'Field' => 'notafield'],
-            409
-        );
+        testRun::testRun($this, 'GET', '/member/{id}/configuration')
+            ->setUriParts(['id' => 1000])
+            ->run();
 
-        $this->runRequest('PUT', '/member/1000/configuration', null, null, 400);
+        testRun::testRun($this, 'PUT', '/member/{id}/configuration')
+            ->setUriParts(['id' => 1000])
+            ->setBody(['Value' => 'yes', 'Field' => 'notafield'])
+            ->setExpectedResult(409)
+            ->run();
 
-        $this->runRequest(
-            'PUT',
-            '/member/1000/configuration',
-            null,
-            ['Field' => 'phptestmember'],
-            400
-        );
+        testRun::testRun($this, 'PUT', '/member/{id}/configuration')
+            ->setUriParts(['id' => 1000])
+            ->setExpectedResult(400)
+            ->run();
 
-        $this->runRequest(
-            'PUT',
-            '/member/1000/configuration',
-            null,
-            ['Value' => 'yes'],
-            400
-        );
+        testRun::testRun($this, 'PUT', '/member/{id}/configuration')
+            ->setUriParts(['id' => 1000])
+            ->setBody(['Field' => 'phptestmember'])
+            ->setExpectedResult(400)
+            ->run();
 
-        $this->runRequest('GET', '/member/1000/configuration/notavalue', null, null, 404);
+        testRun::testRun($this, 'PUT', '/member/{id}/configuration')
+            ->setUriParts(['id' => 1000])
+            ->setBody(['Value' => 'yes'])
+            ->setExpectedResult(400)
+            ->run();
+
+        testRun::testRun($this, 'GET', '/member/{id}/configuration/{field}')
+            ->setUriParts(['id' => 1000, 'field' => 'notavalue'])
+            ->setExpectedResult(404)
+            ->run();
 
     }
 
 
-    public function testMemberGet(): void
+    public function getStatusProvider(): array
     {
-        $this->runRequest('GET', '/member/-1/status', null, null, 404);
-        $this->runRequest('GET', '/member/billybob/status', null, null, 404);
-        $this->runSuccessJsonRequest('GET', '/member/allfather@oneeye.com/status');
-        $data = $this->runSuccessJsonRequest('GET', '/member/1000/status');
-        $this->assertEquals($data->status, 0);
+        return [
+            [-1, 404],
+            ['billybob', 404],
+            ['allfather@oneeye.com', 200],
+            [1000, 200],
+        ];
 
+    }
+
+
+    /**
+     * @test
+     * @dataProvider getStatusProvider
+     **/
+    public function testMemberGetStatus($id, $expected)
+    {
+        testRun::testRun($this, 'GET', '/member/{id}/status')
+            ->setUriParts(['id' => $id])
+            ->setExpectedResult($expected)
+            ->run();
+
+    }
+
+
+    public function getProvider(): array
+    {
+        return [
+            [-1, 404],
+            ['billybob', 404],
+            [null, 200, '1000'],
+            ['allfather@oneeye.com', 200, '1000'],
+            ['current', 200, '1000'],
+            [1000, 200, '1000'],
+        ];
+
+    }
+
+
+    /**
+     * @test
+     * @dataProvider getProvider
+     **/
+    public function testMemberGet($id, $expected, $resultId = null)
+    {
+        if ($id !== null) {
+            $data = testRun::testRun($this, 'GET', '/member/{id}')
+                ->setUriParts(['id' => $id])
+                ->setExpectedResult($expected)
+                ->run();
+        } else {
+            $data = testRun::testRun($this, 'GET', '/member')
+                ->setExpectedResult($expected)
+                ->run();
+        }
+        if ($resultId !== null) {
+            $this->assertSame($data->id, $resultId);
+        }
+
+    }
+
+
+    public function testMemberGetSpecial(): void
+    {
         Update::new($this->container->db)
             ->table('Authentication')
             ->columns(['FailedAttempts' => 999999999])
             ->whereEquals(['AccountID' => 1000])
             ->perform();
 
-        $data = $this->runSuccessJsonRequest('GET', '/member/1000/status');
+        $data = testRun::testRun($this, 'GET', '/member/{id}/status')
+            ->setUriParts(['id' => 1000])
+            ->run();
         $this->assertEquals($data->status, 3);
 
         $when = date('Y-m-d', strtotime('-1 month'));
@@ -146,7 +217,9 @@ class MemberTest extends CiabTestCase
             ->columns(['FailedAttempts' => 0, 'Expires' => $when])
             ->whereEquals(['AccountID' => 1000])
             ->perform();
-        $data = $this->runSuccessJsonRequest('GET', '/member/1000/status');
+        $data = testRun::testRun($this, 'GET', '/member/{id}/status')
+            ->setUriParts(['id' => 1000])
+            ->run();
         $this->assertEquals($data->status, 2);
 
         $when = date('Y-m-d', strtotime('+1 year'));
@@ -155,68 +228,78 @@ class MemberTest extends CiabTestCase
             ->columns(['FailedAttempts' => 0, 'Expires' => $when])
             ->whereEquals(['AccountID' => 1000])
             ->perform();
-        $this->runRequest('GET', '/member/-1', null, null, 404);
-
-        $basedata = $this->runSuccessJsonRequest('GET', '/member');
-        $this->assertSame($basedata->id, '1000');
-
-        $data = $this->runSuccessJsonRequest('GET', '/member/current');
-        $this->assertEquals($basedata, $data);
-
-        $data = $this->runSuccessJsonRequest('GET', '/member/1000');
-        $this->assertEquals($basedata, $data);
 
     }
 
 
-    public function testMemberPut(): void
+    public function putProvider(): array
     {
-        $this->runRequest('PUT', '/member/-1', null, null, 404);
+        return [
+            [-1, 404],
+            [1000, 404],
+            [1000, 200, ['email2' => 'phpunit@testing.test']],
+        ];
 
-        $basedata = $this->runSuccessJsonRequest('GET', '/member');
-        $this->assertSame($basedata->id, '1000');
+    }
 
-        $this->runRequest('PUT', '/member/1000', null, null, 404);
 
-        $data = $this->runSuccessJsonRequest('PUT', '/member/1000', null, ['email2' => 'phpunit@testing.test']);
-        $this->assertEquals($data->email2, 'phpunit@testing.test');
+    /**
+     * @test
+     * @dataProvider putProvider
+     **/
+    public function testMemberPut($id, $expected, $body = null)
+    {
+        $test = testRun::testRun($this, 'PUT', '/member/{id}')
+            ->setUriParts(['id' => $id])
+            ->setExpectedResult($expected);
+        if ($body !== null) {
+            $test->setBody($body);
+        }
+        $data = $test->run();
 
-        $data = $this->runSuccessJsonRequest('GET', '/member/current');
-        $this->assertEquals($data->email2, 'phpunit@testing.test');
-        $data->email2 = null;
-        $this->assertEquals($basedata, $data);
+        if ($expected == 200 && $body !== null) {
+            foreach ($body as $key => $value) {
+                $this->assertEquals($data->$key, $value);
+            }
+        }
 
+    }
+
+
+    public function testMemberPutSpecial(): void
+    {
         $this->deleteTestUser();
-        $userdata = $this->runSuccessJsonRequest('POST', '/member', null, ['email' => 'phpunit@unit.test', 'legal_first_name' => 'Testie', 'legal_last_name' => 'McTester'], 201);
+        $userdata = testRun::testRun($this, 'POST', '/member')
+            ->setBody(['email' => 'phpunit@unit.test', 'legal_first_name' => 'Testie', 'legal_last_name' => 'McTester'])
+            ->run();
 
         $when = date('Y-m-d', strtotime('-1 year'));
-        $data = $this->runSuccessJsonRequest(
-            'PUT',
-            '/member/'.$userdata->id,
-            null,
-            ['legal_first_name' => 'Testie2',
-            'legal_last_name' => 'McTestie2',
-            'deceased' => '1',
-            'do_not_contact' => '1',
-            'email_optout' => '1',
-            'birthdate' => $when,
-            'email2' => 'email2@com.com',
-            'email3' => 'email3@com.com',
-            'phone' => '1231231234',
-            'middle_name' => 'tost',
-            'phone2' => '3213213213',
-            'address_line1' => '123 1st st.',
-            'address_line2' => 'Apt 13',
-            'city' => 'Minneapolis',
-            'state' => 'MN',
-            'zip_code' => '55405',
-            'zip_plus4' => '1111',
-            'country' => 'USA',
-            'province' => 'Northland',
-            'gender' => 'alien',
-            'preferred_first_name' => 'tee',
-            'preferred_last_name' => 'Micky']
-        );
+        $data = testRun::testRun($this, 'PUT', '/member/{id}')
+            ->setUriParts(['id' => $userdata->id])
+            ->setBody(['legal_first_name' => 'Testie2',
+                        'legal_last_name' => 'McTestie2',
+                        'deceased' => '1',
+                        'do_not_contact' => '1',
+                        'email_optout' => '1',
+                        'birthdate' => $when,
+                        'email2' => 'email2@com.com',
+                        'email3' => 'email3@com.com',
+                        'phone' => '1231231234',
+                        'middle_name' => 'tost',
+                        'phone2' => '3213213213',
+                        'address_line1' => '123 1st st.',
+                        'address_line2' => 'Apt 13',
+                        'city' => 'Minneapolis',
+                        'state' => 'MN',
+                        'zip_code' => '55405',
+                        'zip_plus4' => '1111',
+                        'country' => 'USA',
+                        'province' => 'Northland',
+                        'gender' => 'alien',
+                        'preferred_first_name' => 'tee',
+                        'preferred_last_name' => 'Micky'])
+            ->run();
+
         $this->assertEquals($data->first_name, 'tee');
         $this->assertEquals($data->last_name, 'Micky');
         $this->assertEquals($data->legal_first_name, 'Testie2');
@@ -242,96 +325,192 @@ class MemberTest extends CiabTestCase
         $this->assertEquals($data->preferred_first_name, 'tee');
         $this->assertEquals($data->preferred_last_name, 'Micky');
 
-        $data = $this->runSuccessJsonRequest(
-            'PUT',
-            '/member/'.$userdata->id,
-            null,
-            ['preferred_first_name' => 'a&#39;d',
-            'preferred_last_name' => 'b&#39;c']
-        );
+        $data = testRun::testRun($this, 'PUT', '/member/{id}')
+            ->setUriParts(['id' => $userdata->id])
+            ->setBody(['preferred_first_name' => 'a&#39;d',
+                'preferred_last_name' => 'b&#39;c'])
+            ->run();
         $this->assertEquals($data->first_name, 'a\'d');
         $this->assertEquals($data->last_name, 'b\'c');
 
-        $data = $this->runRequest('PUT', '/member/'.$userdata->id, null, ['birthdate' => 'not a date'], 400);
-        $data = $this->runRequest('PUT', '/member/'.$userdata->id, null, ['deceased' => 'not a boolean'], 400);
-        $data = $this->runRequest('PUT', '/member/'.$userdata->id, null, ['do_not_contact' => 'not a boolean'], 400);
-        $data = $this->runRequest('PUT', '/member/'.$userdata->id, null, ['email_optout' => 'not a boolean'], 400);
+        testRun::testRun($this, 'PUT', '/member/{id}')
+            ->setUriParts(['id' => $userdata->id])
+            ->setBody(['birthdate' => 'not a date'])
+            ->setExpectedResult(400)
+            ->run();
+        testRun::testRun($this, 'PUT', '/member/{id}')
+            ->setUriParts(['id' => $userdata->id])
+            ->setBody(['deceased' => 'not a boolean'])
+            ->setExpectedResult(400)
+            ->run();
+        testRun::testRun($this, 'PUT', '/member/{id}')
+            ->setUriParts(['id' => $userdata->id])
+            ->setBody(['do_not_contact' => 'not a boolean'])
+            ->setExpectedResult(400)
+            ->run();
+        testRun::testRun($this, 'PUT', '/member/{id}')
+            ->setUriParts(['id' => $userdata->id])
+            ->setBody(['email_optout' => 'not a boolean'])
+            ->setExpectedResult(400)
+            ->run();
 
     }
 
 
     public function testNewMember(): void
     {
-        $this->runRequest('POST', '/member', null, null, 400);
-        $this->runRequest('POST', '/member', null, ['email' => 'phpunit@unit.test'], 400);
-        $this->runRequest('POST', '/member', null, ['legal_first_name' => 'phpunit'], 400);
-        $this->runRequest('POST', '/member', null, ['legal_last_name' => 'phpunit'], 400);
+        testRun::testRun($this, 'POST', '/member')
+            ->setExpectedResult(400)
+            ->run();
+        testRun::testRun($this, 'POST', '/member')
+            ->setBody(['email' => 'phpunit@unit.test'])
+            ->setExpectedResult(400)
+            ->run();
+        testRun::testRun($this, 'POST', '/member')
+            ->setBody(['legal_first_name' => 'phpunit'])
+            ->setExpectedResult(400)
+            ->run();
+        testRun::testRun($this, 'POST', '/member')
+            ->setBody(['legal_last_name' => 'phpunit'])
+            ->setExpectedResult(400)
+            ->run();
 
-        $userdata = $this->runSuccessJsonRequest('POST', '/member', null, ['email' => 'phpunit@unit.test', 'legal_first_name' => 'Testie'], 201);
+        testRun::testRun($this, 'POST', '/member')
+            ->setBody(['email' => 'phpunit@unit.test', 'legal_first_name' => 'Testie'])
+            ->run();
 
-        $this->runRequest('POST', '/member', null, ['email' => 'phpunit@unit.test', 'legal_first_name' => 'Testie'], 409);
+        testRun::testRun($this, 'POST', '/member')
+            ->setBody(['email' => 'phpunit@unit.test', 'legal_first_name' => 'Testie'])
+            ->setExpectedResult(409)
+            ->run();
 
-        $this->runRequest('POST', '/member/phpunit@unit.test/password', null, null, 201);
+        testRun::testRun($this, 'POST', '/member/{id}/password')
+            ->setUriParts(['id' => 'phpunit@unit.test'])
+            ->run();
 
         $this->deleteTestUser();
-        $userdata = $this->runSuccessJsonRequest('POST', '/member', null, ['email' => 'phpunit@unit.test', 'legal_first_name' => 'Testie', 'legal_last_name' => 'McTester'], 201);
+        $userdata = testRun::testRun($this, 'POST', '/member')
+            ->setBody(['email' => 'phpunit@unit.test', 'legal_first_name' => 'Testie', 'legal_last_name' => 'McTester'])
+            ->run();
 
-
-        $this->runRequest('PUT', '/member/phpunit@unit.test/password/recovery', null, null, 400);
-        $this->runRequest('PUT', '/member/phpunit@unit.test/password/recovery', null, ['OneTimeCode' => 'asdfasdf'], 403);
-        $this->runRequest('PUT', '/member/phpunit@unit.test/password/recovery', null, ['NewPassword' => 'asdfasdf'], 200);
-        $this->runRequest('PUT', '/member/phpunit@unit.test/password/recovery', null, ['NewPassword' => 'asdfasdf', 'OneTimeCode' => 'asdfasdf'], 403);
-        $this->runRequest('PUT', '/member/phpunit@unit.test/password', null, null, 400);
-        $this->runRequest('PUT', '/member/phpunit@unit.test/password', null, ['NewPassword' => 'asdfasdf'], 200);
-        $this->runRequest('PUT', '/member/badmember@bad.bad/password/recovery', null, ['NewPassword' => 'asdfasdf'], 404);
+        testRun::testRun($this, 'PUT', '/member/{email}/password/recovery')
+            ->setUriParts(['email' => 'phpunit@unit.test'])
+            ->setExpectedResult(400)
+            ->run();
+        testRun::testRun($this, 'PUT', '/member/{email}/password/recovery')
+            ->setUriParts(['email' => 'phpunit@unit.test'])
+            ->setBody(['OneTimeCode' => 'asdfasdf'])
+            ->setExpectedResult(403)
+            ->run();
+        testRun::testRun($this, 'PUT', '/member/{email}/password/recovery')
+            ->setUriParts(['email' => 'phpunit@unit.test'])
+            ->setBody(['NewPassword' => 'asdfasdf'])
+            ->setNullReturn()
+            ->run();
+        testRun::testRun($this, 'PUT', '/member/{email}/password/recovery')
+            ->setUriParts(['email' => 'phpunit@unit.test'])
+            ->setBody(['NewPassword' => 'asdfasdf', 'OneTimeCode' => 'asdfasdf'])
+            ->setExpectedResult(403)
+            ->run();
+        testRun::testRun($this, 'PUT', '/member/{email}/password')
+            ->setUriParts(['email' => 'phpunit@unit.test'])
+            ->setExpectedResult(400)
+            ->run();
+        testRun::testRun($this, 'PUT', '/member/{email}/password')
+            ->setUriParts(['email' => 'phpunit@unit.test'])
+            ->setBody(['NewPassword' => 'asdfasdf'])
+            ->setNullReturn()
+            ->run();
+        testRun::testRun($this, 'PUT', '/member/{email}/password/recovery')
+            ->setUriParts(['email' => 'badmember@bad.bad'])
+            ->setBody(['NewPassword' => 'asdfasdf'])
+            ->setExpectedResult(404)
+            ->run();
 
     }
 
 
     public function testFindMember() :void
     {
-        $this->runRequest('GET', '/member/find', null, null, 400);
+        testRun::testRun($this, 'GET', '/member/find')
+            ->setMethodParameters(['q' => ''])
+            ->setExpectedResult(400)
+            ->run();
 
-        $this->runRequest('GET', '/member/find', ['q' => 'Billy Bob'], null, 404);
+        testRun::testRun($this, 'GET', '/member/find')
+            ->setMethodParameters(['q' => 'Billy Bob'])
+            ->setExpectedResult(404)
+            ->run();
 
-        $data = $this->runSuccessJsonRequest('GET', '/member/find', ['q' => 'A1000', 'from' => 'id']);
+        $data = testRun::testRun($this, 'GET', '/member/find')
+            ->setMethodParameters(['q' => 'A1000', 'from' => 'id'])
+            ->run();
         $this->assertEquals($data->type, 'member_list');
         $this->assertNotEmpty($data->data);
         $this->assertEquals(count($data->data), 1);
         $this->assertEquals($data->data[0]->id, 1000);
 
-        $data = $this->runSuccessJsonRequest('GET', '/member/find', ['q' => '1000', 'from' => 'id']);
+        $data = testRun::testRun($this, 'GET', '/member/find')
+            ->setMethodParameters(['q' => '1000', 'from' => 'id'])
+            ->run();
         $this->assertEquals($data->type, 'member_list');
         $this->assertNotEmpty($data->data);
         $this->assertEquals(count($data->data), 1);
         $this->assertEquals($data->data[0]->id, 1000);
 
-        $data = $this->runRequest('GET', '/member/find', ['q' => 'Odin'], null, 404);
+        $data = testRun::testRun($this, 'GET', '/member/find')
+            ->setMethodParameters(['q' => 'Odin'])
+            ->setExpectedResult(404)
+            ->run();
 
-        $data = $this->runSuccessJsonRequest('GET', '/member/find', ['q' => 'Od', 'partial' => 'true']);
+        $data = testRun::testRun($this, 'GET', '/member/find')
+            ->setMethodParameters(['q' => 'Od', 'partial' => 'true'])
+            ->run();
         $this->assertEquals($data->type, 'member_list');
         $this->assertNotEmpty($data->data);
         $this->assertEquals($data->data[0]->id, 1000);
 
-        $this->runRequest('GET', '/member/find', ['q' => 'Od', 'partial' => 'false'], null, 404);
-        $this->runRequest('GET', '/member/find', ['q' => 'Odin', 'from' => 'name', 'partial' => 'false'], null, 404);
-        $this->runRequest('GET', '/member/find', ['q' => 'Odin Allf', 'from' => 'name', 'partial' => 'false'], null, 404);
+        testRun::testRun($this, 'GET', '/member/find')
+            ->setMethodParameters(['q' => 'Od', 'partial' => 'false'])
+            ->setExpectedResult(404)
+            ->run();
+        testRun::testRun($this, 'GET', '/member/find')
+            ->setMethodParameters(['q' => 'Odin', 'from' => 'name', 'partial' => 'false'])
+            ->setExpectedResult(404)
+            ->run();
+        testRun::testRun($this, 'GET', '/member/find')
+            ->setMethodParameters(['q' => 'Odin Allf', 'from' => 'name', 'partial' => 'false'])
+            ->setExpectedResult(404)
+            ->run();
 
-        $data = $this->runSuccessJsonRequest('GET', '/member/find', ['q' => 'Odin Allfather', 'from' => 'name', 'partial' => 'false']);
+        $data = testRun::testRun($this, 'GET', '/member/find')
+            ->setMethodParameters(['q' => 'Odin Allfather', 'from' => 'name', 'partial' => 'false'])
+            ->run();
         $this->assertEquals($data->type, 'member_list');
         $this->assertNotEmpty($data->data);
         $this->assertEquals($data->data[0]->id, 1000);
 
-        $data = $this->runRequest('GET', '/member/find', ['q' => 'Odin billybob', 'from' => 'name', 'partial' => 'false'], null, 404);
+        $data = testRun::testRun($this, 'GET', '/member/find')
+            ->setMethodParameters(['q' => 'Odin billybob', 'from' => 'name', 'partial' => 'false'])
+            ->setExpectedResult(404)
+            ->run();
 
-        $data = $this->runSuccessJsonRequest('GET', '/member/find', ['q' => 'Odin', 'from' => 'legal_name', 'partial' => 'true']);
+        $data = testRun::testRun($this, 'GET', '/member/find')
+            ->setMethodParameters(['q' => 'Odin', 'from' => 'legal_name', 'partial' => 'true'])
+            ->run();
         $this->assertEquals($data->type, 'member_list');
         $this->assertNotEmpty($data->data);
         $this->assertEquals($data->data[0]->id, 1000);
 
-        $this->runRequest('GET', '/member/find', ['q' => 'Odin', 'from' => 'email'], null, 404);
+        testRun::testRun($this, 'GET', '/member/find')
+            ->setMethodParameters(['q' => 'Odin', 'from' => 'email'])
+            ->setExpectedResult(404)
+            ->run();
 
-        $this->runRequest('GET', '/member/find', ['q' => 'thiswillnotbefound'], null, 404);
+        testRun::testRun($this, 'GET', '/member/find')
+            ->setMethodParameters(['q' => 'thiswillnotbefound'])
+            ->setExpectedResult(404)
+            ->run();
 
     }
 
@@ -386,15 +565,27 @@ class MemberTest extends CiabTestCase
         ])->perform();
 
 
-        $token1 = $this->runSuccessJsonRequest('POST', '/token', null, ['grant_type' => 'password', 'username' => 'phpDupUnit@unit.test', 'password' => 'PassWord1', 'client_id' => 'ciab']);
+        $token1 = testRun::testRun($this, 'POST', '/token')
+            ->setBody(['grant_type' => 'password', 'username' => 'phpDupUnit@unit.test', 'password' => 'PassWord1', 'client_id' => 'ciab'])
+            ->setVerifyYaml(false)
+            ->setExpectedResult(200)
+            ->run();
 
-        $basedata = $this->runSuccessJsonRequest('GET', '/member', null, null, 200, $token1);
+        $basedata = testRun::testRun($this, 'GET', '/member')
+            ->setToken($token1)
+            ->run();
         $this->assertSame($basedata->id, '8000');
         $this->assertSame($basedata->duplicates, '8001');
 
-        $token2 = $this->runSuccessJsonRequest('POST', '/token', null, ['grant_type' => 'password', 'username' => 'phpDupUnit@unit.test', 'password' => 'PassWord2', 'client_id' => 'ciab']);
+        $token2 = testRun::testRun($this, 'POST', '/token')
+            ->setBody(['grant_type' => 'password', 'username' => 'phpDupUnit@unit.test', 'password' => 'PassWord2', 'client_id' => 'ciab'])
+            ->setVerifyYaml(false)
+            ->setExpectedResult(200)
+            ->run();
 
-        $basedata = $this->runSuccessJsonRequest('GET', '/member', null, null, 200, $token2);
+        $basedata = testRun::testRun($this, 'GET', '/member')
+            ->setToken($token2)
+            ->run();
         $this->assertSame($basedata->id, '8001');
         $this->assertSame($basedata->duplicates, '8000');
 

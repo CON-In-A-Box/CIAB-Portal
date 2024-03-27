@@ -3,6 +3,7 @@
 namespace App\Tests\TestCase\Controller;
 
 use App\Tests\Base\CiabTestCase;
+use App\Tests\Base\TestRun;
 
 class AnnouncementTest extends CiabTestCase
 {
@@ -14,23 +15,24 @@ class AnnouncementTest extends CiabTestCase
 
     protected function addAnnouncement($scope): string
     {
-        $data = $this->runSuccessJsonRequest('GET', '/department/2/announcements');
+        $data = testRun::testRun($this, 'GET', '/department/{id}/announcements')
+            ->setUriParts(['id' => 2])
+            ->run();
         $initial_ids = [];
         foreach ($data->data as $item) {
             $initial_ids[] = $item->id;
         }
 
-        $this->runSuccessRequest(
-            'POST',
-            '/department/2/announcement',
-            null,
-            ['scope' => $scope,
-             'text' => 'testing',
-             'email' => 1],
-            201
-        );
+        testRun::testRun($this, 'POST', '/department/{id}/announcement')
+            ->setUriParts(['id' => 2])
+            ->setBody(['scope' => $scope,
+                      'text' => 'testing',
+                      'email' => 1])
+            ->run();
 
-        $data = $this->runSuccessJsonRequest('GET', '/department/2/announcements');
+        $data = testRun::testRun($this, 'GET', '/department/{id}/announcements')
+            ->setUriParts(['id' => 2])
+            ->run();
 
         # Find New Index
         $target = null;
@@ -51,11 +53,11 @@ class AnnouncementTest extends CiabTestCase
             }
         }
 
-        $data = $this->runSuccessJsonRequest(
-            'GET',
-            '/announcement/'.$target,
-            ['fields' => 'type,id,scope,text']
-        );
+        $data = testRun::testRun($this, 'GET', '/announcement/{id}')
+            ->setUriParts(['id' => $target])
+            ->setMethodParameters(['fields' => 'type,id,scope,text'])
+            ->run();
+
         $this->assertSame([
             'type' => 'announcement',
             'id' => $target,
@@ -73,15 +75,22 @@ class AnnouncementTest extends CiabTestCase
         parent::setUp();
         $this->target = $this->addAnnouncement(0);
         $id = $this->testing_accounts[0];
-        $this->position = $this->runSuccessJsonRequest('POST', "/member/$id/staff_membership", null, ['Department' => '2', 'Position' => '3', 'Note' => 'PHPUnit Testing'], 201);
+        $this->position = testRun::testRun($this, 'POST', "/member/{id}/staff_membership")
+            ->setUriParts(['id' => $id])
+            ->setBody(['Department' => '2', 'Position' => '3', 'Note' => 'PHPUnit Testing'])
+            ->run();
 
     }
 
 
     protected function tearDown(): void
     {
-        $this->runRequest('DELETE', '/announcement/'.$this->target, null, null, 204);
-        $this->runRequest('DELETE', '/staff/membership/'.$this->position->id, null, null, 204);
+        testRun::testRun($this, 'DELETE', '/announcement/{id}')
+            ->setUriParts(['id' => $this->target])
+            ->run();
+        testRun::testRun($this, 'DELETE', '/staff/membership/{id}')
+            ->setUriParts(['id' => $this->position->id])
+            ->run();
 
         parent::tearDown();
 
@@ -90,6 +99,12 @@ class AnnouncementTest extends CiabTestCase
 
     public function provider(): array
     {
+        /*
+         *  $department,
+         *  $scope,
+         *  $account,
+         *  $result
+         */
         return [
             /* Loki, concom member, same department */
         [2, 0, 0, true],
@@ -124,33 +139,19 @@ class AnnouncementTest extends CiabTestCase
             $id = $this->testing_accounts[$account];
         }
 
-        $this->runRequest(
-            'PUT',
-            '/announcement/'.$this->target,
-            null,
-            ['department' => $department,
-             'scope' => $scope ],
-            200
-        );
-
+        testRun::testRun($this, 'PUT', '/announcement/{id}')
+            ->setUriParts(['id' => $this->target])
+            ->setBody(['department' => $department,
+                        'scope' => $scope ])
+            ->setJson(false)
+            ->run();
 
         /* check member access */
 
-        if ($account === null) {
-            $data = $this->RunSuccessJsonRequest(
-                'GET',
-                "/announcement"
-            );
-        } else {
-            $data = $this->NPRunSuccessJsonRequest(
-                'GET',
-                "/announcement",
-                null,
-                null,
-                200,
-                $account
-            );
-        }
+
+        $data = testRun::testRun($this, 'GET', '/announcement')
+            ->setNpLoginIndex($account)
+            ->run();
         $found = false;
         foreach ($data->data as $entry) {
             if ($entry->id == $this->target) {
@@ -165,22 +166,10 @@ class AnnouncementTest extends CiabTestCase
         }
 
         /* check department access */
-
-        if ($account === null) {
-            $data = $this->RunSuccessJsonRequest(
-                'GET',
-                "/department/$department/announcements"
-            );
-        } else {
-            $data = $this->NPRunSuccessJsonRequest(
-                'GET',
-                "/department/$department/announcements",
-                null,
-                null,
-                200,
-                $account
-            );
-        }
+        $data = testRun::testRun($this, 'GET', '/department/{id}/announcements')
+            ->setUriParts(['id' => $department])
+            ->setNpLoginIndex($account)
+            ->run();
         $found = false;
         foreach ($data->data as $entry) {
             if ($entry->id == $this->target) {
@@ -201,79 +190,100 @@ class AnnouncementTest extends CiabTestCase
         } else {
             $code = 403;
         }
-        if ($account === null) {
-            $this->RunSuccessJsonRequest(
-                'GET',
-                "/announcement/{$this->target}",
-                null,
-                null,
-                $code
-            );
-        } else {
-            $this->NPRunSuccessJsonRequest(
-                'GET',
-                "/announcement/{$this->target}",
-                null,
-                null,
-                $code,
-                $account
-            );
-        }
+
+        testRun::testRun($this, 'GET', '/announcement/{id}')
+            ->setUriParts(['id' => $this->target])
+            ->setNpLoginIndex($account)
+            ->setExpectedResult($code)
+            ->run();
 
     }
 
 
-    public function testAnnounceErrors(): void
+    public function testAnnounceErrorGetBadId(): void
     {
-        $this->runRequest(
-            'GET',
-            '/department/-1/announcements',
-            null,
-            null,
-            404
-        );
+        testRun::testRun($this, 'GET', '/department/{id}/announcements')
+            ->setUriParts(['id' => -1])
+            ->setExpectedResult(404)
+            ->run();
 
-        $this->runRequest('PUT', '/announcement/'.$this->target, null, null, 400);
+    }
 
-        $this->runRequest('PUT', '/announcement/-1', null, null, 404);
 
-        $this->runRequest(
-            'PUT',
-            '/announcement/'.$this->target,
-            null,
-            ['department' => -1],
-            404
-        );
+    public function testAnnounceErrorPutDuplicateId(): void
+    {
+        testRun::testRun($this, 'PUT', '/announcement/{id}')
+            ->setUriParts(['id' => $this->target])
+            ->setExpectedResult(400)
+            ->run();
 
-        $this->runRequest('POST', '/department/2/announcement', null, null, 400);
+    }
 
-        $this->runRequest(
-            'POST',
-            '/department/-1/announcement',
-            null,
-            ['scope' => 2,
-             'text' => 'testing',
-             'email' => 0],
-            404
-        );
 
-        $this->runRequest(
-            'POST',
-            '/department/2/announcement',
-            null,
-            ['text' => 'testing',
-             'email' => 0],
-            400
-        );
+    public function testAnnounceErrorPutBadId(): void
+    {
+        testRun::testRun($this, 'PUT', '/announcement/{id}')
+            ->setUriParts(['id' => -1])
+            ->setExpectedResult(404)
+            ->run();
 
-        $this->runRequest(
-            'POST',
-            '/department/2/announcement',
-            null,
-            ['scope' => 2,
-             'email' => 0],
-            400
-        );
+    }
+
+
+    public function testAnnounceErrorPutBadDepartment(): void
+    {
+        testRun::testRun($this, 'PUT', '/announcement/{id}')
+            ->setUriParts(['id' => $this->target])
+            ->setBody(['department' => -1])
+            ->setExpectedResult(404)
+            ->run();
+
+    }
+
+
+    public function testAnnounceErrorPostNoBody(): void
+    {
+        testRun::testRun($this, 'POST', '/department/{id}/announcement')
+            ->setUriParts(['id' => 2])
+            ->setExpectedResult(400)
+            ->run();
+
+    }
+
+
+    public function testAnnounceErrorPostBadId(): void
+    {
+        testRun::testRun($this, 'POST', '/department/{id}/announcement')
+            ->setUriParts(['id' => -1])
+            ->setBody(['scope' => 2,
+                       'text' => 'testing',
+                       'email' => 0])
+            ->setExpectedResult(404)
+            ->run();
+
+    }
+
+
+    public function testAnnounceErrorPostNoScope(): void
+    {
+        testRun::testRun($this, 'POST', '/department/{id}/announcement')
+            ->setUriParts(['id' => 2])
+            ->setBody(['text' => 'testing',
+                       'email' => 0])
+            ->setExpectedResult(400)
+            ->run();
+
+    }
+
+
+    public function testAnnounceErrorPostBadScope(): void
+    {
+        testRun::testRun($this, 'POST', '/department/{id}/announcement')
+            ->setUriParts(['id' => 2])
+            ->setBody(['scope' => 2,
+                       'email' => 0])
+            ->setExpectedResult(400)
+            ->run();
 
     }
 

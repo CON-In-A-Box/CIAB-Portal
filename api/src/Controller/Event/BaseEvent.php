@@ -17,7 +17,7 @@
  *      ),
  *      @OA\Property(
  *          property="id",
- *          type="integer",
+ *          type="string",
  *          description="event Id"
  *      ),
  *      @OA\Property(
@@ -28,7 +28,7 @@
  *                  ref="#/components/schemas/cycle"
  *              ),
  *              @OA\Schema(
- *                  type="integer",
+ *                  type="string",
  *                  description="Cycle Id"
  *              )
  *          }
@@ -170,10 +170,14 @@ abstract class BaseEvent extends BaseController
         $cycle = $this->handleDate($request, $response, $params, $body, 'date_from');
         if ($cycle != null) {
             $cycle_from = $cycle;
+        } elseif ($cycle_from) {
+            $cycle_from = $cycle_from['id'];
         }
         $cycle = $this->handleDate($request, $response, $params, $body, 'date_to');
         if ($cycle != null) {
             $cycle_to = $cycle;
+        } elseif ($cycle_to) {
+            $cycle_to = $cycle_to['id'];
         }
         if (!$cycle_to || !$cycle_from || $cycle_to != $cycle_from) {
             throw new InvalidParameterException("Event dates not allowed to span cycles ($cycle_from - $cycle_to).");

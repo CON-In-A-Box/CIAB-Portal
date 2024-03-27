@@ -117,11 +117,18 @@ function AddConComPosition($accountid, $department, $position, $note, $notify = 
 
     if ($notify && $result) {
         /* Notify the Division Director, so they know */
-        $to = getDepartmentEmails(getDivision($department))[0];
-        $subject = 'ConCom Division addition to '.$department;
-        $name = $user['First Name'].' '.$user['Last Name'];
-        $message = $_SESSION['preferredName'].' has added '.$name." to ".$department.'.';
-        \ciab\Email::mail($to, getNoReplyAddress(), $subject, $message);
+        $emails = getDepartmentEmails(getDivision($department));
+        if (count($emails) > 0) {
+            $to = $emails[0];
+            $subject = 'ConCom Division addition to '.$department;
+            $name = $user['First Name'].' '.$user['Last Name'];
+            if ($_SESSION['preferredName']) {
+                $message = $_SESSION['preferredName'].' has added '.$name." to ".$department.'.';
+            } else {
+                $message = $name." has been added to ".$department.' by an automated process.';
+            }
+            \ciab\Email::mail($to, getNoReplyAddress(), $subject, $message);
+        }
         return true;
     } elseif (!$result) {
         print("Failed Add comcon member to database!");

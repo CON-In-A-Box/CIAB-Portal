@@ -3,6 +3,7 @@
 namespace App\Tests\TestCase\Controller;
 
 use App\Tests\Base\CiabTestCase;
+use App\Tests\Base\TestRun;
 
 class PermissionsTest extends CiabTestCase
 {
@@ -10,35 +11,58 @@ class PermissionsTest extends CiabTestCase
 
     public function testPermissions(): void
     {
-        $this->runSuccessJsonRequest('GET', '/permissions/resource/deadline/2/get');
-        $this->runSuccessJsonRequest('GET', '/permissions/method/deadline');
+        testRun::testRun($this, 'GET', '/permissions/resource/{resource}/{department}/{method}')
+            ->setUriParts(['resource' => 'deadline', 'department' => '2', 'method' => 'get'])
+            ->run();
+        testRun::testRun($this, 'GET', '/permissions/method/{resource}')
+            ->setUriParts(['resource' => 'deadline'])
+            ->run();
 
-        $this->runSuccessJsonRequest('GET', '/permissions/resource/announcement/2/put');
-        $this->runSuccessJsonRequest('GET', '/permissions/method/announcement');
+        testRun::testRun($this, 'GET', '/permissions/resource/{resource}/{department}/{method}')
+            ->setUriParts(['resource' => 'announcement', 'department' => '2', 'method' => 'put'])
+            ->run();
+        testRun::testRun($this, 'GET', '/permissions/method/{resource}')
+            ->setUriParts(['resource' => 'announcement'])
+            ->run();
 
-        $data = $this->runSuccessJsonRequest('GET', '/member/1/permissions');
+        $data = testRun::testRun($this, 'GET', '/member/{id}/permissions')
+            ->setUriParts(['id' => '1'])
+            ->run();
         $this->assertEquals($data->type, 'permission_list');
         $this->assertNotEmpty($data->data);
 
         $id = $this->testing_accounts[0];
 
-        $data = $this->NPRunSuccessJsonRequest('GET', "/member/$id/permissions");
+        $data = testRun::testRun($this, 'GET', "/member/{id}/permissions")
+            ->setUriParts(['id' => $id])
+            ->setNpLoginIndex(0)
+            ->run();
         $this->assertEquals($data->type, 'permission_list');
         $this->assertEmpty($data->data);
 
-        $data = $this->NPRunSuccessJsonRequest('GET', '/permissions/generic/announcement/put/all');
+        $data = testRun::testRun($this, 'GET', '/permissions/generic/{resource}/{method}/{detail}')
+            ->setUriParts(['resource' => 'announcement', 'method' => 'put', 'detail' => 'all'])
+            ->setNpLoginIndex(0)
+            ->run();
         $this->assertEquals($data->type, 'permission_list');
         $this->assertEquals($data->data[0]->allowed, 0);
 
-        $data = $this->NPRunSuccessJsonRequest('GET', '/permissions/generic/bad/get/one');
+        $data = testRun::testRun($this, 'GET', '/permissions/generic/{resource}/{method}/{detail}')
+            ->setUriParts(['resource' => 'bad', 'method' => 'get', 'detail' => 'one'])
+            ->setNpLoginIndex(0)
+            ->run();
         $this->assertEquals($data->type, 'permission_list');
         $this->assertEquals($data->data[0]->allowed, 0);
 
-        $data = $this->RunSuccessJsonRequest('GET', '/permissions/generic/announcement/put/all');
+        $data = testRun::testRun($this, 'GET', '/permissions/generic/{resource}/{method}/{detail}')
+            ->setUriParts(['resource' => 'announcement', 'method' => 'put', 'detail' => 'all'])
+            ->run();
         $this->assertEquals($data->type, 'permission_list');
         $this->assertEquals($data->data[0]->allowed, 1);
 
-        $data = $this->RunSuccessJsonRequest('GET', '/permissions/generic/bad/get/one');
+        $data = testRun::testRun($this, 'GET', '/permissions/generic/{resource}/{method}/{detail}')
+            ->setUriParts(['resource' => 'bad', 'method' => 'get', 'detail' => 'one'])
+            ->run();
         $this->assertEquals($data->type, 'permission_list');
         $this->assertEquals($data->data[0]->allowed, 1);
 
@@ -49,12 +73,22 @@ class PermissionsTest extends CiabTestCase
     {
         $id = $this->testing_accounts[0];
 
-        $data = $this->NPRunSuccessJsonRequest('GET', "/member/$id/permissions");
+        $data = testRun::testRun($this, 'GET', "/member/{id}/permissions")
+            ->setUriParts(['id' => $id])
+            ->setNpLoginIndex(0)
+            ->run();
         $this->assertEquals($data->type, 'permission_list');
         $this->assertEmpty($data->data);
 
-        $staff_record = $this->runSuccessJsonRequest('POST', "/member/$id/staff_membership", null, ['Department' => 100, 'Position' => 3], 201);
-        $data3 = $this->NPRunSuccessJsonRequest('GET', "/member/$id/permissions", ['max_results' => 'all']);
+        $staff_record = testRun::testRun($this, 'POST', "/member/{id}/staff_membership")
+            ->setUriParts(['id' => $id])
+            ->setBody(['Department' => 100, 'Position' => 3])
+            ->run();
+        $data3 = testRun::testRun($this, 'GET', "/member/{id}/permissions")
+            ->setUriParts(['id' => $id])
+            ->setNpLoginIndex(0)
+            ->setMethodParameters(['max_results' => 'all'])
+            ->run();
         $this->assertEquals($data3->type, 'permission_list');
         $this->assertNotEmpty($data3->data);
         $json_data3 = [];
@@ -62,8 +96,16 @@ class PermissionsTest extends CiabTestCase
             $json_data3[] = json_encode($entry);
         }
 
-        $this->runSuccessRequest('PUT', "/member/$id/staff_membership", null, ['Department' => 100, 'Position' => 2], 200);
-        $data2 = $this->NPRunSuccessJsonRequest('GET', "/member/$id/permissions", ['max_results' => 'all']);
+        testRun::testRun($this, 'PUT', "/member/{id}/staff_membership")
+            ->setUriParts(['id' => $id])
+            ->setBody(['Department' => 100, 'Position' => 2])
+            ->setNullReturn()
+            ->run();
+        $data2 = testRun::testRun($this, 'GET', "/member/{id}/permissions")
+            ->setUriParts(['id' => $id])
+            ->setMethodParameters(['max_results' => 'all'])
+            ->setNpLoginIndex(0)
+            ->run();
         $this->assertEquals($data2->type, 'permission_list');
         $this->assertNotEmpty($data2->data);
         $json_data2 = [];
@@ -74,8 +116,16 @@ class PermissionsTest extends CiabTestCase
             $this->assertContains($entry, $json_data2);
         }
 
-        $this->runSuccessRequest('PUT', "/member/$id/staff_membership", null, ['Department' => 100, 'Position' => 1], 200);
-        $data1 = $this->NPRunSuccessJsonRequest('GET', "/member/$id/permissions", ['max_results' => 'all']);
+        testRun::testRun($this, 'PUT', "/member/{id}/staff_membership")
+            ->setUriParts(['id' => $id])
+            ->setBody(['Department' => 100, 'Position' => 1])
+            ->setNullReturn()
+            ->run();
+        $data1 = testRun::testRun($this, 'GET', "/member/{id}/permissions")
+            ->setUriParts(['id' => $id])
+            ->setNpLoginIndex(0)
+            ->setMethodParameters(['max_results' => 'all'])
+            ->run();
         $this->assertEquals($data1->type, 'permission_list');
         $this->assertNotEmpty($data1->data);
         $json_data1 = [];
@@ -85,11 +135,20 @@ class PermissionsTest extends CiabTestCase
         foreach ($json_data2 as $entry) {
             $this->assertContains($entry, $json_data1);
         }
-        $this->runRequest('DELETE', '/staff/membership/'.$staff_record->id, null, null, 204);
+        testRun::testRun($this, 'DELETE', '/staff/membership/{id}')
+            ->setUriParts(['id' => $staff_record->id])
+            ->run();
 
         /* parent division */
-        $staff_record = $this->runSuccessJsonRequest('POST', "/member/$id/staff_membership", null, ['Department' => 4, 'Position' => 3], 201);
-        $data_p3 = $this->NPRunSuccessJsonRequest('GET', "/member/$id/permissions", ['max_results' => 'all']);
+        $staff_record = testRun::testRun($this, 'POST', "/member/{id}/staff_membership")
+            ->setUriParts(['id' => $id])
+            ->setBody(['Department' => 4, 'Position' => 3])
+            ->run();
+        $data_p3 = testRun::testRun($this, 'GET', "/member/{id}/permissions")
+            ->setUriParts(['id' => $id])
+            ->setNpLoginIndex(0)
+            ->setMethodParameters(['max_results' => 'all'])
+            ->run();
         $this->assertEquals($data_p3->type, 'permission_list');
         $this->assertNotEmpty($data_p3->data);
         $json_data_p3 = [];
@@ -100,8 +159,16 @@ class PermissionsTest extends CiabTestCase
             $this->assertContains($entry, $json_data_p3);
         }
 
-        $this->runSuccessRequest('PUT', "/member/$id/staff_membership", null, ['Department' => 4, 'Position' => 2], 200);
-        $data_p2 = $this->NPRunSuccessJsonRequest('GET', "/member/$id/permissions", ['max_results' => 'all']);
+        testRun::testRun($this, 'PUT', "/member/{id}/staff_membership")
+            ->setUriParts(['id' => $id])
+            ->setBody(['Department' => 4, 'Position' => 2])
+            ->setNullReturn()
+            ->run();
+        $data_p2 = testRun::testRun($this, 'GET', "/member/{id}/permissions")
+            ->setUriParts(['id' => $id])
+            ->setNpLoginIndex(0)
+            ->setMethodParameters(['max_results' => 'all'])
+            ->run();
         $this->assertEquals($data_p2->type, 'permission_list');
         $this->assertNotEmpty($data_p2->data);
         $json_data_p2 = [];
@@ -112,8 +179,15 @@ class PermissionsTest extends CiabTestCase
             $this->assertContains($entry, $json_data_p2);
         }
 
-        $this->runSuccessRequest('PUT', "/member/$id/staff_membership", null, ['Department' => 4, 'Position' => 1], 200);
-        $data_p1 = $this->NPRunSuccessJsonRequest('GET', "/member/$id/permissions", ['max_results' => 'all']);
+        testRun::testRun($this, 'PUT', "/member/{id}/staff_membership")
+            ->setUriParts(['id' => $id])
+            ->setBody(['Department' => 4, 'Position' => 1])
+            ->setNullReturn()
+            ->run();
+        $data_p1 = testRun::testRun($this, 'GET', "/member/{id}/permissions")
+            ->setUriParts(['id' => $id])
+            ->setMethodParameters(['max_results' => 'all'])
+            ->run();
         $this->assertEquals($data_p1->type, 'permission_list');
         $this->assertNotEmpty($data_p1->data);
         $json_data_p1 = [];
@@ -123,7 +197,9 @@ class PermissionsTest extends CiabTestCase
         foreach ($json_data_p2 as $entry) {
             $this->assertContains($entry, $json_data_p1);
         }
-        $this->runRequest('DELETE', '/staff/membership/'.$staff_record->id, null, null, 204);
+        testRun::testRun($this, 'DELETE', '/staff/membership/{id}')
+            ->setUriParts(['id' => $staff_record->id])
+            ->run();
 
     }
 

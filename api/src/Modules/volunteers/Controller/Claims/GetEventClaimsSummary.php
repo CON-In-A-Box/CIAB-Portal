@@ -13,7 +13,7 @@
  *          in="path",
  *          name="id",
  *          required=true,
- *          @OA\Schema(type="integer")
+ *          @OA\Schema(type="string")
  *      ),
  *      @OA\Parameter(
  *          ref="#/components/parameters/event"
@@ -92,7 +92,7 @@ class GetEventClaimsSummary extends BaseClaims
         }
 
         $output = [
-            'type' => 'volunteer_user_summary',
+            'type' => 'volunteer_claim_summary',
             'reward_count' => count($data),
             'spent_hours' => $sum,
             'event' => $data[0]['event']

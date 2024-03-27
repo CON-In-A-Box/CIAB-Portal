@@ -14,16 +14,8 @@
  *          name="id",
  *          required=true,
  *          @OA\Schema(
- *              oneOf = {
- *                  @OA\Schema(
- *                      description="Department id",
- *                      type="integer"
- *                  ),
- *                  @OA\Schema(
- *                      description="Department name",
- *                      type="string"
- *                  )
- *              }
+ *               description="Department id or name",
+ *               type="string"
  *          )
  *      ),
  *      @OA\Parameter(
@@ -83,8 +75,12 @@ class GetDepartmentHours extends BaseHours
         }
 
         $sum = 0;
-        foreach ($data as $entry) {
+        foreach ($data as &$entry) {
             $sum += $entry['hours'] * $entry['modifier'];
+
+            /* some data conversion */
+            $datetime = \DateTime::createFromFormat('Y-m-d H:i:s', $entry['end']);
+            $entry['end'] = $datetime->format(\DateTime::RFC3339);
         }
 
         return [

@@ -21,11 +21,19 @@
  *          name="from",
  *          required=false,
  *          @OA\Schema(
- *              type="array",
- *              @OA\Items(
- *                  type="string",
- *                  enum={"all","email","id","legal_name","name","badge", "badge_id"}
- *              )
+ *             oneOf = {
+ *                  @OA\Schema(
+ *                      type="array",
+ *                      @OA\Items(
+ *                          type="string",
+ *                          enum={"all","email","id","legal_name","name","badge", "badge_id"}
+ *                      )
+ *                  ),
+ *                  @OA\Schema(
+ *                      type="string",
+ *                      enum={"all","email","id","legal_name","name","badge", "badge_id"}
+ *                  )
+ *              }
  *          ),
  *          style="simple",
  *          explode=false
@@ -52,6 +60,10 @@
  *          @OA\JsonContent(
  *           ref="#/components/schemas/member_list"
  *          ),
+ *      ),
+ *      @OA\Response(
+ *          response=400,
+ *          ref="#/components/responses/400"
  *      ),
  *      @OA\Response(
  *          response=401,
@@ -86,7 +98,7 @@ class FindMembers extends BaseMember
     public function buildResource(Request $request, Response $response, $args): array
     {
         $q = $request->getQueryParam('q', null);
-        if ($q === null) {
+        if ($q === null || strlen($q) == 0) {
             throw new InvalidParameterException("'q' not present");
         }
         $q = trim($q);

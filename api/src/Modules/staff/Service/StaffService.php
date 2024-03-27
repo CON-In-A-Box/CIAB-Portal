@@ -2,12 +2,14 @@
 
 namespace App\Modules\staff\Service;
 
+use Exception;
 use App\Service\EventService;
 use App\Service\DepartmentService;
 use App\Service\MemberService;
+use App\Service\ServiceInterface;
 use App\Modules\staff\Repository\StaffRepository;
 
-class StaffService
+class StaffService implements ServiceInterface
 {
 
   /**
@@ -48,7 +50,7 @@ class StaffService
     public function getStaffInDepartment($departmentId)
     {
         $currentEvent = $this->eventService->getCurrentEvent();
-        $divisionDepartments = $this->departmentService->getDepartmentsById($departmentId);
+        $divisionDepartments = $this->departmentService->getById($departmentId);
 
         $eventId = $currentEvent["id"];
         $departmentIds = [];
@@ -62,7 +64,7 @@ class StaffService
             $accountIds[] = $staff["AccountID"];
         }
 
-        $members = $this->memberService->getMembersByIds($accountIds);
+        $members = $this->memberService->getById($accountIds);
 
         $formatted = [];
         foreach ($divisionStaff as $staff) {
@@ -78,6 +80,41 @@ class StaffService
         }
 
         return $formatted;
+
+    }
+
+
+    public function post(/*.mixed.*/$data): int
+    {
+        throw new Exception(__CLASS__.": Method '__FUNCTION__' not implemented");
+
+    }
+
+
+    public function listAll(): array
+    {
+        throw new Exception(__CLASS__.": Method '__FUNCTION__' not implemented");
+
+    }
+
+
+    public function getById(/*.mixed.*/$id): array
+    {
+        throw new Exception(__CLASS__.": Method '__FUNCTION__' not implemented");
+
+    }
+
+
+    public function put(/*.string.*/$id, /*.mixed.*/$data): void
+    {
+        throw new Exception(__CLASS__.": Method '__FUNCTION__' not implemented");
+
+    }
+
+
+    public function deleteById(/*.mixed.*/$id): void
+    {
+        throw new Exception(__CLASS__.": Method '__FUNCTION__' not implemented");
 
     }
 

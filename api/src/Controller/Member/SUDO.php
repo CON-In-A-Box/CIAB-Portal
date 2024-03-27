@@ -14,16 +14,8 @@
  *          name="id",
  *          required=true,
  *          @OA\Schema(
- *              oneOf = {
- *                  @OA\Schema(
- *                      description="Member login",
- *                      type="string"
- *                  ),
- *                  @OA\Schema(
- *                      description="Member id",
- *                      type="integer"
- *                  )
- *              }
+ *              description="Member login or id",
+ *              type="string"
  *          )
  *      ),
  *      @OA\Response(

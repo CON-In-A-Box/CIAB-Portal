@@ -23,7 +23,7 @@
  *      ),
  *      @OA\Property(
  *          property="allowed",
- *          type="boolean",
+ *          type="integer",
  *          description="Is the permission enabled"
  *      ),
  *      @OA\Property(
@@ -38,6 +38,7 @@
  *
  *  @OA\Schema(
  *      schema="permission_subdata",
+ *      nullable=true,
  *      @OA\Property(
  *          property="department",
  *          type="integer",
@@ -47,6 +48,7 @@
  *
  *  @OA\Schema(
  *      schema="permission_action",
+ *      nullable=true,
  *      @OA\Property(
  *          property="method",
  *          type="string",
@@ -544,7 +546,7 @@ abstract class BasePermission extends BaseController
         'action' => $link
         ];
         $entry['subdata'] = [
-        'department' => $id
+        'department' => intval($id)
         ];
         return $entry;
 
@@ -671,14 +673,14 @@ abstract class BasePermission extends BaseController
 
     public function processIncludes(Request $request, Response $response, $params, &$data, $history = [])
     {
-        parent::processIncludes($request, $response, $params, $data, $history);
+        IncludeResource::processIncludes($this->includes, $request, $response, $this->container, $params, $data, $history);
 
         $target = new \App\Controller\Department\GetDepartment($this->container);
         $newparams = $params;
         $newparams['name'] = $data['subdata']['department'];
         $newdata = $target->buildResource($request, $response, $newparams)[1];
         if ($newdata['id'] != $data['subdata']['department']) {
-            $target->processIncludes($request, $response, $params, $newdata, $history);
+            IncludeResource::processIncludes($target->includes, $request, $response, $target->container, $params, $newdata, $history);
             $data['subdata']['department'] = $target->arrayResponse($request, $response, $newdata);
         }
 

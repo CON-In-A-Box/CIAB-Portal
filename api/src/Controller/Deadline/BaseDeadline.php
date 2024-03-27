@@ -17,7 +17,7 @@
  *      ),
  *      @OA\Property(
  *          property="id",
- *          type="integer",
+ *          type="string",
  *          description="Deadline Id"
  *      ),
  *      @OA\Property(
@@ -34,7 +34,7 @@
  *                  ref="#/components/schemas/department"
  *              ),
  *              @OA\Schema(
- *                  type="integer",
+ *                  type="string",
  *                  description="Department Id"
  *              )
  *          }
@@ -46,7 +46,7 @@
  *      ),
  *      @OA\Property(
  *          property="scope",
- *          type="integer",
+ *          type="string",
  *          description="The scope of the deadline"
  *      ),
  *      @OA\Property(
@@ -57,7 +57,7 @@
  *                  ref="#/components/schemas/member"
  *              ),
  *              @OA\Schema(
- *                  type="integer",
+ *                  type="string",
  *                  description="Member Id"
  *              )
  *          }

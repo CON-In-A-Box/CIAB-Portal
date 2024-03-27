@@ -215,18 +215,6 @@ abstract class BaseVendorController extends BaseController
     }
 
 
-    public function processIncludes(Request $request, Response $response, $params, &$data, array $history = [])
-    {
-        if (self::$instance !== null &&
-            method_exists(self::$instance, __FUNCTION__)) {
-            return self::$instance->{__FUNCTION__}(...func_get_args());
-        } else {
-            return parent::{__FUNCTION__}(...func_get_args());
-        }
-
-    }
-
-
     protected function getEvent(string $id)
     {
         if (self::$instance !== null &&

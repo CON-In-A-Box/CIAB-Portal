@@ -6,14 +6,14 @@
 /**
  *  @OA\Get(
  *      tags={"volunteers"},
- *      path="/member/{id}/volunteers/claims",
+ *      path="/member/{id}/volunteer/claims",
  *      summary="Gets member volunteer claims",
  *      @OA\Parameter(
  *          description="Id of the member.",
  *          in="path",
  *          name="id",
  *          required=true,
- *          @OA\Schema(type="integer")
+ *          @OA\Schema(type="string")
  *      ),
  *      @OA\Parameter(
  *          ref="#/components/parameters/event"

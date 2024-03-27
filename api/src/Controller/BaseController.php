@@ -80,6 +80,10 @@
  *          type="integer",
  *      )
  *  )
+ *
+ *  @OA\Schema(
+ *      schema="BaseController"
+ *  )
  */
 
 namespace App\Controller;
@@ -96,63 +100,6 @@ use Atlas\Query\Select;
 use App\Error\NotFoundException;
 use App\Error\PermissionDeniedException;
 use App\Error\InvalidParameterException;
-
-class IncludeResource
-{
-
-    /**
-     * @var string
-     */
-    private $class;
-
-    /**
-     * @var string
-     */
-    private $field;
-
-    /**
-     * @var string
-     */
-    private $parameter;
-
-
-    public function __construct(string $class, string $parameter, string $field)
-    {
-        $this->class = $class;
-        $this->field = $field;
-        $this->parameter = $parameter;
-
-    }
-
-
-    public function process(Request $request, Response $response, Container $container, array $params, array &$data, array $history): void
-    {
-        if (in_array($this->field, array_keys($data), true) &&
-            $data[$this->field] !== null) {
-            if (!array_key_exists($this->class, $history)) {
-                $history[$this->class] = [];
-            }
-            if (in_array($data[$this->field], $history[$this->class])) {
-                return;
-            }
-            $newparams = $params;
-            $newparams[$this->parameter] = $data[$this->field];
-            $target = new $this->class($container);
-            try {
-                $newdata = $target->buildResource($request, $response, $newparams)[1];
-            } catch (Exception $e) {
-                return;
-            }
-            $history[$this->class][] = $data[$this->field];
-            $target->processIncludes($request, $response, $params, $newdata, $history);
-            $data[$this->field] = $target->arrayResponse($request, $response, $newdata);
-        }
-
-    }
-
-
-    /* End IncludeResource */
-}
 
 abstract class BaseController
 {
@@ -179,7 +126,7 @@ abstract class BaseController
     /**
      * @var array[]
     */
-    protected $includes;
+    public $includes;
 
     /**
      * @var array[]
@@ -256,11 +203,8 @@ abstract class BaseController
     {
         if ($this->includes !== null) {
             $cleandata = array_values($data);
-            $short = $request->getQueryParam('short_response', false);
-            if (!boolval($short)) {
-                foreach ($cleandata as $index => $entry) {
-                    $this->processIncludes($request, $response, $params, $cleandata[$index]);
-                }
+            foreach ($cleandata as $index => $entry) {
+                IncludeResource::processIncludes($this->includes, $request, $response, $this->container, $params, $cleandata[$index]);
             }
         } else {
             $cleandata = $data;
@@ -272,12 +216,7 @@ abstract class BaseController
 
     public function handleResourceType(Request $request, Response $response, $data, array $params, $code = 200)
     {
-        if ($this->includes !== null) {
-            $short = $request->getQueryParam('short_response', false);
-            if (!boolval($short)) {
-                $this->processIncludes($request, $response, $params, $data);
-            }
-        }
+        IncludeResource::processIncludes($this->includes, $request, $response, $this->container, $params, $data);
         return $this->jsonResponse($request, $response, $data, $code);
 
     }
@@ -508,12 +447,16 @@ abstract class BaseController
     }
 
 
-    public function processIncludes(Request $request, Response $response, $params, &$data, array $history = [])
+    public static function staticGetEvent($container, string $id)
     {
-        if ($this->includes !== null) {
-            foreach ($this->includes as $target) {
-                $target->process($request, $response, $this->container, $params, $data, $history);
+        if ($id == 'current') {
+            return $container->EventService->getCurrentEvent();
+        } else {
+            $data = $container->EventService->getById($id);
+            if (empty($data)) {
+                throw new NotFoundException("Event '{$id}' Not Found");
             }
+            return $data[0];
         }
 
     }
@@ -521,18 +464,7 @@ abstract class BaseController
 
     protected function getEvent(string $id)
     {
-        return BaseController::staticGetEvent($this->container, $id);
-
-    }
-
-
-    public static function staticGetEvent($container, string $id)
-    {
-        $event = new \App\Controller\Event\GetEvent($container);
-        $env = Environment::mock([]);
-        $request = Request::createFromEnvironment($env);
-        $response = new Response();
-        return $event->buildResource($request, $response, ['id' => $id])[1];
+        return $this->staticGetEvent($this->container, $id);
 
     }
 

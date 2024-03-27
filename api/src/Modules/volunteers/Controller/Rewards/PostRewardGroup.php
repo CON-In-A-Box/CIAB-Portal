@@ -14,7 +14,7 @@
  *              @OA\Schema(
  *                  @OA\Property(
  *                      property="reward_limit",
- *                      type="integer",
+ *                      type="string",
  *                      description="Number of items allowed from the group."
  *                  ),
  *                  @OA\Property(
@@ -28,6 +28,10 @@
  *      @OA\Response(
  *          response=201,
  *          description="OK"
+ *      ),
+ *      @OA\Response(
+ *          response=400,
+ *          ref="#/components/responses/400"
  *      ),
  *      @OA\Response(
  *          response=401,

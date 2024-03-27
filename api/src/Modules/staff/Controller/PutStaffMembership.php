@@ -20,7 +20,7 @@
  *      ),
  *      @OA\RequestBody(
  *          @OA\MediaType(
- *              mediaType="application/x-www-form-urlencoded",
+ *              mediaType="multipart/form-data",
  *              @OA\Schema(
  *                  @OA\Property(
  *                      property="Department",

@@ -2,55 +2,6 @@
 /*.
     require_module 'standard';
 .*/
-/**
- *  @OA\Schema(
- *      schema="configuration",
- *      @OA\Property(
- *          property="type",
- *          type="string",
- *          enum={"configuration"}
- *      ),
- *      @OA\Property(
- *          property="field",
- *          type="string",
- *          description="Configuration Field"
- *      ),
- *      @OA\Property(
- *          property="value",
- *          type="string",
- *          description="Configurtion Value"
- *      )
- *  )
- *
- *  @OA\Schema(
- *      schema="configuration_list",
- *      allOf = {
- *          @OA\Schema(ref="#/components/schemas/resource_list")
- *      },
- *      @OA\Property(
- *          property="type",
- *          type="string",
- *          enum={"configuration_list"}
- *      ),
- *      @OA\Property(
- *          property="data",
- *          type="array",
- *          description="List of configuration fields",
- *          @OA\Items(
- *              ref="#/components/schemas/configuration"
- *          )
- *      )
- *  )
- *
- *   @OA\Response(
- *      response="configuration_not_found",
- *      description="Configuration field not defined.",
- *      @OA\JsonContent(
- *          ref="#/components/schemas/error"
- *      )
- *   )
- **/
-
 
 namespace App\Controller;
 

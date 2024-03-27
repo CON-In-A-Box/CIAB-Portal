@@ -6,14 +6,14 @@
 /**
  *  @OA\Get(
  *      tags={"volunteers"},
- *      path="/volunteers/hours/{id}",
+ *      path="/volunteer/hours/{id}",
  *      summary="Gets volunteer data",
  *      @OA\Parameter(
  *          description="Id of the volunteer record.",
  *          in="path",
  *          name="id",
  *          required=true,
- *          @OA\Schema(type="integer")
+ *          @OA\Schema(type="string")
  *      ),
  *      @OA\Response(
  *          response=200,
@@ -61,6 +61,10 @@ class GetHours extends BaseHours
         if (empty($data)) {
             throw new NotFoundException('Volunteer records not found');
         }
+
+        /* some data conversion */
+        $datetime = \DateTime::createFromFormat('Y-m-d H:i:s', $data['end']);
+        $data['end'] = $datetime->format(\DateTime::RFC3339);
 
         if ($data['member'] !== $user) {
             $permissions = ['api.get.volunteer.hours'];

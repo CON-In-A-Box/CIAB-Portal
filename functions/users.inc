@@ -394,7 +394,8 @@ function listCountries()
 
     $countries = array();
     foreach ($data as $key => $line) {
-        array_push($countries, ['id' => $key, 'name' => $line]);
+        $name = mb_convert_encoding($line, 'UTF-8', mb_list_encodings());
+        array_push($countries, ['id' => $key, 'name' => $name]);
     }
 
     return $countries;

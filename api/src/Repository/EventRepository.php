@@ -2,9 +2,12 @@
 
 namespace App\Repository;
 
+use Exception;
+use App\Error\InvalidParameterException;
 use Atlas\Query\Select;
+use Atlas\Query\Delete;
 
-class EventRepository
+class EventRepository implements RepositoryInterface
 {
 
     protected $db;
@@ -52,6 +55,63 @@ class EventRepository
             ->join('INNER', 'AnnualCycles', 'Events.AnnualCycleID = AnnualCycles.AnnualCycleID');
 
         return $select;
+
+    }
+
+
+    public function insert(/*.mixed.*/$data): int
+    {
+        throw new Exception(__CLASS__.": Method '__FUNCTION__' not implemented");
+
+    }
+
+
+    public function selectAll(): array
+    {
+        return $this->getInitialSelect()->fetchAll();
+
+    }
+
+
+    public function selectById(/*.mixed.*/$id): array
+    {
+        if ($id === 'current') {
+            return [$this->getCurrentEvent()];
+        }
+
+        $select = $this->getInitialSelect();
+        if (is_array($id)) {
+            $select->where('EventID IN ', $id);
+        } else {
+            $select->whereEquals(['EventID' => $id]);
+        }
+
+        $data = $select->fetchAll();
+        return $data;
+
+    }
+
+
+    public function update(/*.string.*/$id, /*.mixed.*/$data): void
+    {
+        throw new Exception(__CLASS__.":Method '__FUNCTION__' not implemented");
+
+    }
+
+
+    public function deleteById(/*.mixed.*/$id): void
+    {
+        $delete = Delete::new($this->db)
+            ->from('Events');
+        if (is_array($id)) {
+            $delete->where('EventID IN ', $id);
+        } else {
+            $delete->whereEquals(['EventID' => $id]);
+        }
+        $result = $delete->perform();
+        if ($result->rowCount() == 0) {
+            throw new InvalidParameterException("Delete of Event $id failed");
+        }
 
     }
 

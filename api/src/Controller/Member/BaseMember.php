@@ -17,7 +17,7 @@
  *      ),
  *      @OA\Property(
  *          property="id",
- *          type="integer",
+ *          type="string",
  *          description="member ID"
  *      ),
  *      allOf={
@@ -30,11 +30,13 @@
  *      @OA\Property(
  *          property="first_name",
  *          type="string",
+ *          nullable=true,
  *          description="Members preferred first name"
  *      ),
  *      @OA\Property(
  *          property="last_name",
  *          type="string",
+ *          nullable=true,
  *          description="Members preferred last name"
  *      ),
  *      @OA\Property(
@@ -45,132 +47,158 @@
  *      @OA\Property(
  *          property="legal_first_name",
  *          type="string",
+ *          nullable=true,
  *          description="Members legal first name."
  *      ),
  *      @OA\Property(
  *          property="legal_last_name",
  *          type="string",
+ *          nullable=true,
  *          description="Members legal last name."
  *      ),
  *      @OA\Property(
  *          property="middle_name",
  *          type="string",
+ *          nullable=true,
  *          description="Member's middle name."
  *      ),
  *      @OA\Property(
  *          property="suffix",
  *          type="string",
+ *          nullable=true,
  *          description="Suffix for members name."
  *      ),
  *      @OA\Property(
  *          property="email2",
  *          type="string",
+ *          nullable=true,
  *          description="Member's second email."
  *      ),
  *      @OA\Property(
  *          property="email3",
  *          type="string",
+ *          nullable=true,
  *          description="Member's third email"
  *      ),
  *      @OA\Property(
  *          property="phone",
  *          type="string",
+ *          nullable=true,
  *          description="Member's primary phone"
  *      ),
  *      @OA\Property(
  *          property="phone2",
  *          type="string",
+ *          nullable=true,
  *          description="Member's secondary phone"
  *      ),
  *      @OA\Property(
  *          property="address_line1",
  *          type="string",
+ *          nullable=true,
  *          description="Member's address line 1"
  *      ),
  *      @OA\Property(
  *          property="address_line2",
  *          type="string",
+ *          nullable=true,
  *          description="Member's address line 2"
  *      ),
  *      @OA\Property(
  *          property="city",
  *          type="string",
+ *          nullable=true,
  *          description="Member's address city."
  *      ),
  *      @OA\Property(
  *          property="state",
  *          type="string",
+ *          nullable=true,
  *          description="Member's address state"
  *      ),
  *      @OA\Property(
  *          property="zip_code",
  *          type="string",
+ *          nullable=true,
  *          description="Member's Address Zip code."
  *      ),
  *      @OA\Property(
  *          property="zip_plus4",
  *          type="string",
+ *          nullable=true,
  *          description="Member's Address Zip code suffix"
  *      ),
  *      @OA\Property(
  *          property="country",
  *          type="string",
+ *          nullable=true,
  *          description="Member's Address country."
  *      ),
  *      @OA\Property(
  *          property="province",
  *          type="string",
+ *          nullable=true,
  *          description="Member's Address province."
  *      ),
  *      @OA\Property(
  *          property="preferred_first_name",
  *          type="string",
+ *          nullable=true,
  *          description="Member's Preferred First Name."
  *      ),
  *      @OA\Property(
  *          property="preferred_last_name",
  *          type="string",
+ *          nullable=true,
  *          description="Member's Preferred Last Name."
  *      ),
  *      @OA\Property(
  *          property="deceased",
- *          type="boolean",
+ *          type="string",
+ *          nullable=true,
  *          description="Is member deceased."
  *      ),
  *      @OA\Property(
  *          property="do_not_contact",
- *          type="boolean",
+ *          type="string",
+ *          nullable=true,
  *          description="Do not contact member."
  *      ),
  *      @OA\Property(
  *          property="email_optout",
- *          type="boolean",
+ *          type="string",
+ *          nullable=true,
  *          description="Do not mass email member."
  *      ),
  *      @OA\Property(
  *          property="birthdate",
  *          type="string",
  *          format="date",
+ *          nullable=true,
  *          description="Member's birth date."
  *      ),
  *      @OA\Property(
  *          property="gender",
  *          type="string",
+ *          nullable=true,
  *          description="Member's preferred gender string."
  *      ),
  *      @OA\Property(
  *          property="concom_display_phone",
- *          type="boolean",
+ *          type="string",
+ *          nullable=true,
  *          description="If Concom display phone on list."
  *      ),
  *      @OA\Property(
  *          property="duplicates",
  *          type="string",
+ *          nullable=true,
  *          description="Comma seperated list of other account IDs with the same email address"
  *      ),
  *      @OA\Property(
  *          property="pronouns",
  *          type="string",
+ *          nullable=true,
  *          description="Prefered pronouns."
  *      )
  *  )
@@ -185,7 +213,7 @@
  *      @OA\Property(
  *          property="id",
  *          description="Member Id",
- *          type="integer"
+ *          type="string"
  *      )
  *  )
  *
@@ -204,7 +232,7 @@
  *          type="array",
  *          description="List of members",
  *          @OA\Items(
- *              ref="#/components/schemas/member_reference"
+ *              ref="#/components/schemas/member"
  *          )
  *      )
  *  )
