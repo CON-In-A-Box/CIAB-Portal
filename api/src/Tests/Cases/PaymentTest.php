@@ -8,6 +8,7 @@ namespace App\Tests\TestCase\Controller;
 use Atlas\Query\Delete;
 use Atlas\Query\Insert;
 use App\Tests\Base\CiabTestCase;
+use App\Tests\Base\TestRun;
 
 class PaymentTest extends CiabTestCase
 {
@@ -32,11 +33,8 @@ class PaymentTest extends CiabTestCase
         global $BASEURL, $_ENV;
 
         if (array_key_exists('STRIPE_PRIVATE_KEY', $_ENV)) {
-            $this->runRequest(
-                'POST',
-                '/payment',
-                null,
-                [
+            testRun::testRun($this, 'POST', '/payment')
+                ->setBody([
                 'success' => 'http://localhost:8080/index.php?Function=payment',
                 'cancel' => 'http://localhost:8080/index.php?Function=payment',
                 'cart' => [[
@@ -44,15 +42,12 @@ class PaymentTest extends CiabTestCase
                     'price' => 100,
                     'quantity' => 1
                     ]],
-                ],
-                201
-            );
+                ])
+                ->setVerifyYaml(false)
+                ->run();
         } else {
-            $this->runRequest(
-                'POST',
-                '/payment',
-                null,
-                [
+            testRun::testRun($this, 'POST', '/payment')
+                ->setBody([
                 'success' => 'http://localhost:8080/index.php?Function=payment',
                 'cancel' => 'http://localhost:8080/index.php?Function=payment',
                 'cart' => [[
@@ -60,9 +55,10 @@ class PaymentTest extends CiabTestCase
                     'price' => 100,
                     'quantity' => 1
                     ]],
-                ],
-                500
-            );
+                ])
+                ->setExpectedResult(500)
+                ->setVerifyYaml(false)
+                ->run();
         }
 
     }
