@@ -3,6 +3,7 @@
 namespace App\Tests\TestCase\Controller;
 
 use App\Tests\Base\CiabTestCase;
+use App\Tests\Base\TestRun;
 
 class OAuth2Test extends CiabTestCase
 {
@@ -34,7 +35,11 @@ class OAuth2Test extends CiabTestCase
      **/
     public function testFailures($body, $code): void
     {
-        $this->runRequest('POST', '/token', null, $body, $code);
+        testRun::testRun($this, 'POST', '/token')
+            ->setBody($body)
+            ->setExpectedResult($code)
+            ->setVerifyYaml(false)
+            ->run();
 
     }
 
@@ -42,15 +47,26 @@ class OAuth2Test extends CiabTestCase
     public function testRefreshTokens(): void
     {
         /* no token */
-        $this->runRequest('GET', '/member', null, null, 401);
+        testRun::testRun($this, 'GET', '/member')
+            ->setExpectedResult(401)
+            ->setNullReturn()
+            ->run();
 
-        $this->token = $this->runSuccessJsonRequest('POST', '/token', null, ['grant_type' => 'password', 'username' => self::$login, 'password' => self::$password, 'client_id' => self::$client]);
+        $this->token = testRun::testRun($this, 'POST', '/token')
+            ->setBody(['grant_type' => 'password', 'username' => self::$login, 'password' => self::$password, 'client_id' => self::$client])
+            ->setVerifyYaml(false)
+            ->setExpectedResult(200)
+            ->run();
 
-        $this->runSuccessJsonRequest('GET', '/member');
+        testRun::testRun($this, 'GET', '/member')->run();
 
-        $this->token = $this->runSuccessJsonRequest('POST', '/token', null, ['grant_type' => 'refresh_token', 'refresh_token' => $this->token->refresh_token, 'client_id' => 'ciab']);
+        $this->token = testRun::testRun($this, 'POST', '/token')
+            ->setBody(['grant_type' => 'refresh_token', 'refresh_token' => $this->token->refresh_token, 'client_id' => 'ciab'])
+            ->setVerifyYaml(false)
+            ->setExpectedResult(200)
+            ->run();
 
-        $this->runSuccessJsonRequest('GET', '/member');
+        testRun::testRun($this, 'GET', '/member')->run();
 
     }
 
