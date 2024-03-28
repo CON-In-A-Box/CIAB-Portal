@@ -2293,10 +2293,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/configuration'
+        '400':
+          $ref: '#/components/responses/400'
         '401':
           $ref: '#/components/responses/401'
         '404':
           $ref: '#/components/responses/configuration_not_found'
+        '409':
+          description: 'Key already in use.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
       security:
         -
           ciab_auth: []
@@ -2305,9 +2313,48 @@ paths:
       tags:
         - administrative
       summary: 'Read the system log'
+      parameters:
+        -
+          $ref: '#/components/parameters/max_results'
+        -
+          $ref: '#/components/parameters/page_token'
       responses:
         '200':
-          description: 'Log entries found'
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/log'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          description: 'Log entries not found on the system.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+      security:
+        -
+          ciab_auth: []
+  '/admin/log/{lines}':
+    get:
+      tags:
+        - administrative
+      summary: 'Read the system log'
+      parameters:
+        -
+          name: lines
+          in: path
+          description: 'Number of lines to get'
+          schema:
+            type: integer
+        -
+          $ref: '#/components/parameters/max_results'
+        -
+          $ref: '#/components/parameters/page_token'
+      responses:
+        '200':
+          description: OK
           content:
             application/json:
               schema:
@@ -5018,6 +5065,8 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/log_entry'
+        -
+          $ref: '#/components/schemas/resource_list'
         -
           $ref: '#/components/schemas/configuration'
     error:

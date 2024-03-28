@@ -33,12 +33,23 @@
  *          )
  *      ),
  *      @OA\Response(
+ *          response=400,
+ *          ref="#/components/responses/400"
+ *      ),
+ *      @OA\Response(
  *          response=401,
  *          ref="#/components/responses/401"
  *      ),
  *      @OA\Response(
  *          response=404,
  *          ref="#/components/responses/configuration_not_found"
+ *      ),
+ *      @OA\Response(
+ *          response=409,
+ *          description="Key already in use.",
+ *          @OA\JsonContent(
+ *              ref="#/components/schemas/error"
+ *          )
  *      ),
  *      security={{"ciab_auth":{}}}
  *  )

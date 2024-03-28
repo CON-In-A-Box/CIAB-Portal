@@ -4,7 +4,6 @@
 .*/
 
 /**
- *
  * @OA\Schema(
  *      schema="log_entry",
  *      @OA\Property(
@@ -42,6 +41,9 @@
  *
  *  @OA\Schema(
  *      schema="log",
+ *      allOf = {
+ *          @OA\Schema(ref="#/components/schemas/resource_list")
+ *      },
  *      @OA\Property(
  *          property="type",
  *          type="string",
@@ -61,12 +63,18 @@
  *      tags={"administrative"},
  *      path="/admin/log",
  *      summary="Read the system log",
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/max_results",
+ *      ),
+ *      @OA\Parameter(
+ *          ref="#/components/parameters/page_token",
+ *      ),
  *      @OA\Response(
  *          response=200,
- *          description="Log entries found",
+ *          description="OK",
  *          @OA\JsonContent(
  *           ref="#/components/schemas/log"
- *          ),
+ *          )
  *      ),
  *      @OA\Response(
  *          response=401,
@@ -118,23 +126,11 @@ class GetLog extends BaseSystem
         $this->checkPermissions($permissions);
 
         $this->api_type = 'log';
-        $data = Select::new($this->container->db)
-            ->columns('MAX(LogEntryID) as mid')
-            ->from('ActivityLog')
-            ->fetchOne();
-        $max = intval($data['mid']);
-        $limit = 1000;
-        if (array_key_exists('lines', $params)) {
-            $limit = intval($params['lines']);
-        }
-        $max = $max - $limit;
-
         $select = Select::new($this->container->db);
         $data = $select->columns(...GetLog::selectMapping())
             ->from($select->subselect()
                 ->columns('*')
                 ->from('ActivityLog')
-                ->where('LogEntryID > ', $max)
                 ->as('sub')
                 ->getStatement())
             ->orderBy('LogEntryID DESC')
@@ -142,14 +138,15 @@ class GetLog extends BaseSystem
 
         foreach ($data as $idx => $line) {
             $data[$idx]['query'] = $this->filterLog($line['query']);
+            $data[$idx]['query'] = trim(preg_replace('/\s+/', ' ', $data[$idx]['query']));
+            $datetime = \DateTime::createFromFormat('Y-m-d H:i:s', $data[$idx]['date']);
+            $data[$idx]['date'] = $datetime->format(\DateTime::RFC3339);
         }
 
-        $result = [];
-        $result['data'] = $data;
         return [
-        \App\Controller\BaseController::RESOURCE_TYPE,
-        $result
-        ];
+        \App\Controller\BaseController::LIST_TYPE,
+        $data,
+        array('type' => 'log')];
 
     }
 
