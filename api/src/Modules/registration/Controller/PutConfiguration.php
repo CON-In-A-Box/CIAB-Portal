@@ -6,7 +6,7 @@
 /**
  *  @OA\Put(
  *      tags={"registration"},
- *      path="/registration/admin/configuration",
+ *      path="/registration/configuration",
  *      summary="Updates a registration configuration setting",
  *      @OA\RequestBody(
  *          @OA\MediaType(
@@ -31,6 +31,10 @@
  *          @OA\JsonContent(
  *              ref="#/components/schemas/configuration"
  *          )
+ *      ),
+ *      @OA\Response(
+ *          response=400,
+ *          ref="#/components/responses/400"
  *      ),
  *      @OA\Response(
  *          response=401,

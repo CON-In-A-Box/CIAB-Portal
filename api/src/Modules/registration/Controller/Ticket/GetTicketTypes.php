@@ -25,7 +25,14 @@
  *          response=200,
  *          description="Ticket type found",
  *          @OA\JsonContent(
- *           ref="#/components/schemas/ticket_type"
+ *              oneOf={
+ *                  @OA\Schema(
+ *                      ref="#/components/schemas/ticket_type"
+ *                  ),
+ *                  @OA\Schema(
+ *                      ref="#/components/schemas/ticket_type_list"
+ *                  )
+ *              }
  *          ),
  *      ),
  *      @OA\Response(

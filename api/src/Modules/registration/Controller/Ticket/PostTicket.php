@@ -57,6 +57,10 @@
  *          ),
  *      ),
  *      @OA\Response(
+ *          response=400,
+ *          ref="#/components/responses/400"
+ *      ),
+ *      @OA\Response(
  *          response=401,
  *          ref="#/components/responses/401"
  *      ),

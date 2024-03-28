@@ -2323,7 +2323,7 @@ paths:
       security:
         -
           ciab_auth: []
-  '/registration/admin/configuration/{field}':
+  '/registration/configuration/{field}':
     get:
       tags:
         - registration
@@ -2350,7 +2350,7 @@ paths:
       security:
         -
           ciab_auth: []
-  /registration/admin/configuration:
+  /registration/configuration:
     get:
       tags:
         - registration
@@ -2397,6 +2397,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/configuration'
+        '400':
+          $ref: '#/components/responses/400'
         '401':
           $ref: '#/components/responses/401'
         '404':
@@ -2461,9 +2463,7 @@ paths:
         '200':
           description: OK
           content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ticket'
+            text/html: {  }
         '401':
           $ref: '#/components/responses/401'
         '409':
@@ -2551,6 +2551,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ticket'
+        '400':
+          $ref: '#/components/responses/400'
         '401':
           $ref: '#/components/responses/401'
         '409':
@@ -2638,7 +2640,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ticket_type'
+                oneOf:
+                  - { $ref: '#/components/schemas/ticket_type' }
+                  - { $ref: '#/components/schemas/ticket_type_list' }
         '401':
           $ref: '#/components/responses/401'
         '404':
@@ -2704,16 +2708,16 @@ paths:
       security:
         -
           ciab_auth: []
-  '/registration/ticket/list/{member}':
+  '/registration/ticket/list/{id}':
     get:
       tags:
         - registration
       summary: 'Gets tickets for an event for a member'
       parameters:
         -
-          name: member
+          name: id
           in: path
-          description: 'The member'
+          description: 'The member id'
           required: true
           schema:
             oneOf:
@@ -2804,9 +2808,7 @@ paths:
         '200':
           description: OK
           content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ticket'
+            text/html: {  }
         '401':
           $ref: '#/components/responses/401'
         '409':
@@ -2837,9 +2839,7 @@ paths:
         '200':
           description: OK
           content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ticket'
+            text/html: {  }
         '401':
           $ref: '#/components/responses/401'
         '409':
@@ -2890,6 +2890,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ticket'
+        '400':
+          $ref: '#/components/responses/400'
         '401':
           $ref: '#/components/responses/401'
         '404':
@@ -3036,6 +3038,8 @@ paths:
       responses:
         '200':
           description: OK
+        '400':
+          $ref: '#/components/responses/400'
         '401':
           $ref: '#/components/responses/401'
         '409':
@@ -5042,7 +5046,7 @@ components:
               enum:
                 - ticket
             id:
-              type: integer
+              type: string
             badge_dependent_on:
               description: 'Member badge is dependent on'
               oneOf:
@@ -5055,11 +5059,14 @@ components:
               description: 'The badge number of unique distinguishing ID'
               type: string
             badge_name:
+              nullable: true
               type: string
             badges_picked_up:
+              nullable: true
               description: 'The number of times this badge has been printed and picked up'
-              type: integer
+              type: string
             emergency_contact:
+              nullable: true
               type: string
             event:
               description: 'Event the badge is for'
@@ -5079,25 +5086,32 @@ components:
                   type: integer
             registration_date:
               type: string
-              format: date
+              format: date-time
             boarding_pass_generated:
+              nullable: true
               type: string
-              format: date
+              format: date-time
             print_requested:
+              nullable: true
               type: string
-              format: date
+              format: date-time
             last_printed_date:
+              nullable: true
               type: string
-              format: date
+              format: date-time
             print_request_ip:
+              nullable: true
               type: string
               format: ip
             note:
+              nullable: true
               type: string
             void_date:
+              nullable: true
               type: string
-              format: date
+              format: date-time
             void_by:
+              nullable: true
               description: 'Member who voided the ticket'
               oneOf:
                 -
@@ -5106,6 +5120,7 @@ components:
                   description: 'Member Id'
                   type: integer
             void_reason:
+              nullable: true
               type: string
             ticket_type:
               description: 'Type of the ticket'
@@ -5135,7 +5150,7 @@ components:
               enum:
                 - ticket_type
             id:
-              type: integer
+              type: string
             event:
               description: 'Event the badge is for'
               oneOf:
@@ -5148,14 +5163,14 @@ components:
               type: string
             avaliable_from:
               type: string
-              format: date
+              format: date-time
             avaliable_to:
               type: string
-              format: date
+              format: date-time
             cost:
-              type: number
-              format: float
+              type: string
             background_image:
+              nullable: true
               type: string
         -
           $ref: '#/components/schemas/BaseController'
@@ -5203,7 +5218,7 @@ components:
               enum:
                 - print_job
             id:
-              type: integer
+              type: string
             method:
               type: string
               enum:

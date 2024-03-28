@@ -56,6 +56,17 @@ class GetTicket extends BaseTicketInclude
 {
 
 
+    private static function convertDate($data, $field): ?string
+    {
+        if ($data[$field]) {
+            $datetime = \DateTime::createFromFormat('Y-m-d H:i:s', $data[$field]);
+            return $datetime->format(\DateTime::RFC3339);
+        }
+        return null;
+
+    }
+
+
     public function buildResource(Request $request, Response $response, $params): array
     {
         $id = $params['id'];
@@ -77,6 +88,13 @@ class GetTicket extends BaseTicketInclude
         if (empty($ticket)) {
             throw new NotFoundException('Ticket Not Found');
         }
+        $ticket['type'] = 'ticket';
+
+        $ticket['registration_date'] = $this->convertDate($ticket, 'registration_date');
+        $ticket['boarding_pass_generated'] = $this->convertDate($ticket, 'boarding_pass_generated');
+        $ticket['print_requested'] = $this->convertDate($ticket, 'print_requested');
+        $ticket['void_date'] = $this->convertDate($ticket, 'void_date');
+        $ticket['last_printed_date'] = $this->convertDate($ticket, 'last_printed_date');
 
         return [
         \App\Controller\BaseController::RESOURCE_TYPE,

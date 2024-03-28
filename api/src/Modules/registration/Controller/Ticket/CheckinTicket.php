@@ -18,9 +18,9 @@
  *      @OA\Response(
  *          response=200,
  *          description="OK",
- *          @OA\JsonContent(
- *              ref="#/components/schemas/ticket"
- *          ),
+ *          @OA\MediaType(
+ *              mediaType="text/html"
+ *          )
  *      ),
  *      @OA\Response(
  *          response=401,
