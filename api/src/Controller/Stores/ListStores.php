@@ -32,7 +32,7 @@ class ListStores extends BaseStore
         $stores = $select->columns(...BaseStore::selectMapping())->from('Stores')->fetchAll();
 
         $output = array();
-        $output['type'] = 'stores_list';
+        $output['type'] = 'store_list';
         return [
         \App\Controller\BaseController::LIST_TYPE,
         $stores,

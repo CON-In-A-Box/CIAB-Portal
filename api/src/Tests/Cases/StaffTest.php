@@ -3,6 +3,7 @@
 namespace App\Tests\TestCase\Controller;
 
 use App\Tests\Base\CiabTestCase;
+use App\Tests\Base\TestRun;
 
 class StaffTest extends CiabTestCase
 {
@@ -10,28 +11,78 @@ class StaffTest extends CiabTestCase
 
     public function testPostMembership(): void
     {
-        $this->runRequest('POST', '/member/1000/staff_membership', null, null, 400);
-        $this->runRequest('POST', '/member/-1/staff_membership', null, null, 404);
-        $this->runRequest('POST', '/member/1000/staff_membership', null, ['Nothing' => 0], 400);
-        $this->runRequest('POST', '/member/1000/staff_membership', null, ['Department' => -1], 404);
-        $this->runRequest('POST', '/member/1000/staff_membership', null, ['Department' => 2], 400);
-        $data = $this->runSuccessJsonRequest('POST', '/member/1000/staff_membership', null, ['Department' => 2, 'Position' => 1], 201);
+        testRun::testRun($this, 'POST', '/member/{id}/staff_membership')
+            ->setUriParts(['id' => 1000])
+            ->setExpectedResult(400)
+            ->run();
+        testRun::testRun($this, 'POST', '/member/{id}/staff_membership')
+            ->setUriParts(['id' => -1])
+            ->setExpectedResult(404)
+            ->run();
+        testRun::testRun($this, 'POST', '/member/{id}/staff_membership')
+            ->setUriParts(['id' => 1000])
+            ->setBody(['Nothing' => 0])
+            ->setExpectedResult(400)
+            ->run();
+        testRun::testRun($this, 'POST', '/member/{id}/staff_membership')
+            ->setUriParts(['id' => 1000])
+            ->setBody(['Department' => -1])
+            ->setExpectedResult(404)
+            ->run();
+        testRun::testRun($this, 'POST', '/member/{id}/staff_membership')
+            ->setUriParts(['id' => 1000])
+            ->setBody(['Department' => 2])
+            ->setExpectedResult(400)
+            ->run();
+        $data = testRun::testRun($this, 'POST', '/member/{id}/staff_membership')
+            ->setUriParts(['id' => 1000])
+            ->setBody(['Department' => 2, 'Position' => 1])
+            ->run();
         $this->assertNotEmpty($data);
-        $this->runRequest('DELETE', '/staff/membership/'.$data->id, null, null, 204);
-        $this->runRequest('DELETE', '/staff/membership/-1', null, null, 404);
+        testRun::testRun($this, 'DELETE', '/staff/membership/{id}')
+            ->setUriParts(['id' => $data->id])
+            ->run();
+        testRun::testRun($this, 'DELETE', '/staff/membership/{id}')
+            ->setUriParts(['id' => -1])
+            ->setExpectedResult(404)
+            ->run();
 
     }
 
 
     public function testPutMembership(): void
     {
-        $this->runRequest('PUT', '/member/1000/staff_membership', null, null, 400);
-        $this->runRequest('PUT', '/member/-1/staff_membership', null, null, 400);
-        $this->runRequest('PUT', '/member/1000/staff_membership', null, ['Nothing' => 0], 400);
-        $this->runRequest('PUT', '/member/1000/staff_membership', null, ['Department' => -1, 'Position' => 1], 404);
-        $this->runRequest('PUT', '/member/1000/staff_membership', null, ['Department' => 2], 400);
-        $this->runRequest('PUT', '/member/1000/staff_membership', null, ['Department' => 2, 'Position' => 1, 'Note' => 'phpunitAddedNote'], 200);
-        $data = $this->runSuccessJsonRequest('GET', '/member/1000/staff_membership');
+        testRun::testRun($this, 'PUT', '/member/{id}/staff_membership')
+            ->setUriParts(['id' => 1000])
+            ->setExpectedResult(400)
+            ->run();
+        testRun::testRun($this, 'PUT', '/member/{id}/staff_membership')
+            ->setUriParts(['id' => -1])
+            ->setExpectedResult(400)
+            ->run();
+        testRun::testRun($this, 'PUT', '/member/{id}/staff_membership')
+            ->setUriParts(['id' => 1000])
+            ->setBody(['Nothing' => 0])
+            ->setExpectedResult(400)
+            ->run();
+        testRun::testRun($this, 'PUT', '/member/{id}/staff_membership')
+            ->setUriParts(['id' => 1000])
+            ->setBody(['Department' => -1, 'Position' => 1])
+            ->setExpectedResult(404)
+            ->run();
+        testRun::testRun($this, 'PUT', '/member/{id}/staff_membership')
+            ->setUriParts(['id' => 1000])
+            ->setBody(['Department' => 2])
+            ->setExpectedResult(400)
+            ->run();
+        testRun::testRun($this, 'PUT', '/member/{id}/staff_membership')
+            ->setUriParts(['id' => 1000])
+            ->setBody(['Department' => 2, 'Position' => 1, 'Note' => 'phpunitAddedNote'])
+            ->setNullReturn()
+            ->run();
+        $data = testRun::testRun($this, 'GET', '/member/{id}/staff_membership')
+            ->setUriParts(['id' => 1000])
+            ->run();
         $this->assertEquals($data->data[0]->position, 'Head');
         $this->assertEquals($data->data[0]->note, 'phpunitAddedNote');
 
@@ -40,40 +91,61 @@ class StaffTest extends CiabTestCase
 
     public function testMembership(): void
     {
-        $position = $this->runSuccessJsonRequest('POST', '/member/1000/staff_membership', null, ['Department' => '105', 'Position' => '1', 'Note' => 'PHPUnit Testing'], 201);
+        $position = testRun::testRun($this, 'POST', '/member/{id}/staff_membership')
+            ->setUriParts(['id' => 1000])
+            ->setBody(['Department' => '105', 'Position' => '1', 'Note' => 'PHPUnit Testing'])
+            ->run();
         $this->assertNotEmpty($position);
 
-        $data = $this->runSuccessJsonRequest('GET', '/member/1000/staff_membership');
+        $data = testRun::testRun($this, 'GET', '/member/{id}/staff_membership')
+            ->setUriParts(['id' => 1000])
+            ->run();
         $this->assertNotEmpty($data);
 
-        $data2 = $this->runSuccessJsonRequest('GET', '/member/staff_membership/');
+        $data2 = testRun::testRun($this, 'GET', '/member/staff_membership/')
+            ->run();
         $this->assertNotEmpty($data);
         $this->assertEquals($data, $data2);
         $this->assertIncludes($data->data[0], 'department');
         $this->assertIncludes($data->data[0], 'member');
 
-        $this->runRequest('GET', '/staff_membership/-1', null, null, 404);
+        testRun::testRun($this, 'GET', '/staff/membership/{id}')
+            ->setUriParts(['id' => -1])
+            ->setExpectedResult(404)
+            ->run();
 
-        $data = $this->runSuccessJsonRequest('GET', '/staff/membership/'.$position->id);
+        $data = testRun::testRun($this, 'GET', '/staff/membership/{id}')
+            ->setUriParts(['id' => $position->id])
+            ->run();
         $this->assertNotEmpty($data);
 
-        $data = $this->runSuccessJsonRequest('GET', '/staff');
+        $data = testRun::testRun($this, 'GET', '/staff')
+            ->run();
         $this->assertNotEmpty($data);
         $this->assertNotEmpty($data->data);
 
-        $data = $this->runSuccessJsonRequest('GET', '/department/105/staff');
+        $data = testRun::testRun($this, 'GET', '/department/{id}/staff')
+            ->setUriParts(['id' => 105])
+            ->run();
         $this->assertNotEmpty($data);
         $this->assertNotEmpty($data->data);
 
-        $data = $this->runSuccessJsonRequest('GET', '/department/3/staff');
+        $data = testRun::testRun($this, 'GET', '/department/{id}/staff')
+            ->setUriParts(['id' => 3])
+            ->run();
         $this->assertNotEmpty($data);
         $this->assertEmpty($data->data);
 
-        $data = $this->runSuccessJsonRequest('GET', '/department/2/staff', ['subdepartments' => 1]);
+        $data = testRun::testRun($this, 'GET', '/department/{id}/staff')
+            ->setUriParts(['id' => 2])
+            ->setMethodParameters(['subdepartments' => 1])
+            ->run();
         $this->assertNotEmpty($data);
         $this->assertNotEmpty($data->data);
 
-        $this->runRequest('DELETE', '/staff/membership/'.$position->id, null, null, 204);
+        testRun::testRun($this, 'DELETE', '/staff/membership/{id}')
+            ->setUriParts(['id' => $position->id])
+            ->run();
 
     }
 

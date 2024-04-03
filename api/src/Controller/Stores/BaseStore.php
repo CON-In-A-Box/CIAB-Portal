@@ -15,7 +15,7 @@
  *      ),
  *      @OA\Property(
  *          property="id",
- *          type="integer",
+ *          type="string",
  *          description="store Id"
  *      ),
  *      @OA\Property(

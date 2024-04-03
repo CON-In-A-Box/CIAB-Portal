@@ -6,7 +6,7 @@
 /**
  *  @OA\Get(
  *      tags={"registration"},
- *      path="/registration/admin/configuration/{field}",
+ *      path="/registration/configuration/{field}",
  *      summary="Get a configuration setting for registration",
  *      @OA\Parameter(
  *          description="Configuration setting field",
@@ -37,7 +37,7 @@
  *
  *  @OA\Get(
  *      tags={"registration"},
- *      path="/registration/admin/configuration",
+ *      path="/registration/configuration",
  *      summary="Get all configuration settings for registration",
  *      @OA\Parameter(
  *          ref="#/components/parameters/max_results",
@@ -89,7 +89,7 @@ class GetConfiguration extends BaseRegistration
             $output
             ];
         }
-        $result[0]['type'] = 'configuration';
+        $result[0]['type'] = 'configuration_entry';
         return [
         \App\Controller\BaseController::RESOURCE_TYPE,
         $result[0]

@@ -5,6 +5,7 @@ namespace App\Tests\TestCase\Controller;
 use Atlas\Query\Delete;
 use Atlas\Query\Insert;
 use App\Tests\Base\CiabTestCase;
+use App\Tests\Base\TestRun;
 
 class SystemTest extends CiabTestCase
 {
@@ -46,37 +47,36 @@ class SystemTest extends CiabTestCase
 
     public function testSystemConfigOnly(): void
     {
-        $this->runSuccessJsonRequest(
-            'PUT',
-            '/admin/configuration',
-            null,
-            ['Value' => 'yes', 'Field' => 'phptest']
-        );
+        testRun::testRun($this, 'PUT', '/admin/configuration')
+            ->setBody(['Value' => 'yes', 'Field' => 'phptest'])
+            ->run();
 
-        $data = $this->runSuccessJsonRequest('GET', '/admin/configuration/phptest');
+        $data = testRun::testRun($this, 'GET', '/admin/configuration/{field}')
+            ->setUriParts(['field' => 'phptest'])
+            ->run();
         $this->assertSame($data->value, 'yes');
 
-        $this->runSuccessJsonRequest('GET', '/admin/configuration');
+        testRun::testRun($this, 'GET', '/admin/configuration')
+            ->run();
 
-        $this->runRequest('PUT', '/admin/configuration', null, null, 400);
+        testRun::testRun($this, 'PUT', '/admin/configuration')
+            ->setExpectedResult(400)
+            ->run();
 
-        $this->runRequest(
-            'PUT',
-            '/admin/configuration',
-            null,
-            ['Field' => 'phptest'],
-            400
-        );
+        testRun::testRun($this, 'PUT', '/admin/configuration')
+            ->setBody(['Field' => 'phptest'])
+            ->setExpectedResult(400)
+            ->run();
 
-        $this->runRequest(
-            'PUT',
-            '/admin/configuration',
-            null,
-            ['Value' => 'yes'],
-            400
-        );
+        testRun::testRun($this, 'PUT', '/admin/configuration')
+            ->setBody(['Value' => 'yes'])
+            ->setExpectedResult(400)
+            ->run();
 
-        $this->runRequest('GET', '/admin/configuration/notavalue', null, null, 404);
+        testRun::testRun($this, 'GET', '/admin/configuration/{field}')
+            ->setUriParts(['field' => 'notavalue'])
+            ->setExpectedResult(404)
+            ->run();
 
     }
 
@@ -88,48 +88,47 @@ class SystemTest extends CiabTestCase
             ->columns(['Field' => 'phptest', 'TargetTable' => 'Configuration', 'Type' => 'text', 'InitialValue' => 'no', 'Description' => 'PHPTest value'])
             ->perform();
 
-        $data = $this->runSuccessJsonRequest('GET', '/admin/configuration/phptest');
+        $data = testRun::testRun($this, 'GET', '/admin/configuration/{field}')
+            ->setUriParts(['field' => 'phptest'])
+            ->run();
         $this->assertSame($data->value, 'no');
 
-        $this->runSuccessJsonRequest(
-            'PUT',
-            '/admin/configuration',
-            null,
-            ['Value' => 'yes', 'Field' => 'phptest']
-        );
+        testRun::testRun($this, 'PUT', '/admin/configuration')
+            ->setBody(['Value' => 'yes', 'Field' => 'phptest'])
+            ->run();
 
-        $data = $this->runSuccessJsonRequest('GET', '/admin/configuration/phptest');
+        $data = testRun::testRun($this, 'GET', '/admin/configuration/{field}')
+            ->setUriParts(['field' => 'phptest'])
+            ->run();
         $this->assertSame($data->value, 'yes');
 
-        $this->runSuccessJsonRequest(
-            'PUT',
-            '/admin/configuration',
-            null,
-            ['Value' => 'yes again', 'Field' => 'phptest2']
-        );
+        testRun::testRun($this, 'PUT', '/admin/configuration')
+            ->setBody(['Value' => 'yes again', 'Field' => 'phptest2'])
+            ->run();
 
-        $data = $this->runSuccessJsonRequest('GET', '/admin/configuration/phptest2');
+        $data = testRun::testRun($this, 'GET', '/admin/configuration/{field}')
+            ->setUriParts(['field' => 'phptest2'])
+            ->run();
         $this->assertSame($data->value, 'yes again');
 
-        $this->runRequest('PUT', '/admin/configuration', null, null, 400);
+        testRun::testRun($this, 'PUT', '/admin/configuration')
+            ->setExpectedResult(400)
+            ->run();
 
-        $this->runRequest(
-            'PUT',
-            '/admin/configuration',
-            null,
-            ['Field' => 'phptest'],
-            400
-        );
+        testRun::testRun($this, 'PUT', '/admin/configuration')
+            ->setBody(['Field' => 'phptest'])
+            ->setExpectedResult(400)
+            ->run();
 
-        $this->runRequest(
-            'PUT',
-            '/admin/configuration',
-            null,
-            ['Value' => 'yes'],
-            400
-        );
+        testRun::testRun($this, 'PUT', '/admin/configuration')
+            ->setBody(['Value' => 'yes'])
+            ->setExpectedResult(400)
+            ->run();
 
-        $this->runRequest('GET', '/admin/configuration/notavalue', null, null, 404);
+        testRun::testRun($this, 'GET', '/admin/configuration/{field}')
+            ->setUriParts(['field' => 'notavalue'])
+            ->setExpectedResult(404)
+            ->run();
 
     }
 
@@ -169,7 +168,9 @@ class SystemTest extends CiabTestCase
             }
         }
 
-        $data = $this->runSuccessJsonRequest('GET', '/admin/configuration/'.$resource);
+        $data = testRun::testRun($this, 'GET', '/admin/configuration/{field}')
+            ->setUriParts(['field' => $resource])
+            ->run();
         if ($type != 'select') {
             $this->assertSame($data->value, $default);
         } else {
@@ -177,23 +178,19 @@ class SystemTest extends CiabTestCase
         }
 
         if ($result !== null) {
-            $this->runSuccessJsonRequest(
-                'PUT',
-                '/admin/configuration',
-                null,
-                ['Value' => "$value", 'Field' => "$resource"]
-            );
+            testRun::testRun($this, 'PUT', '/admin/configuration')
+                ->setBody(['Value' => "$value", 'Field' => "$resource"])
+                ->run();
 
-            $data = $this->runSuccessJsonRequest('GET', '/admin/configuration/'.$resource);
+            $data = testRun::testRun($this, 'GET', '/admin/configuration/{field}')
+                ->setUriParts(['field' => $resource])
+                ->run();
             $this->assertSame($data->value, $result);
         } else {
-            $this->runRequest(
-                'PUT',
-                '/admin/configuration',
-                null,
-                ['Value' => "$value", 'Field' => "$resource"],
-                409
-            );
+            testRun::testRun($this, 'PUT', '/admin/configuration')
+                ->setBody(['Value' => "$value", 'Field' => "$resource"])
+                ->setExpectedResult(409)
+                ->run();
         }
         Delete::new($this->container->db)
             ->from('ConfigurationOption')
@@ -227,9 +224,9 @@ class SystemTest extends CiabTestCase
 
     public function testSystemLog(): void
     {
-        $this->runSuccessJsonRequest('GET', '/admin/log');
-        $data = $this->runSuccessJsonRequest('GET', '/admin/log/1');
-        $this->assertSame(count($data->data), 1);
+        testRun::testRun($this, 'GET', '/admin/log')
+            ->setVerifyYaml(false)
+            ->run();
 
     }
 

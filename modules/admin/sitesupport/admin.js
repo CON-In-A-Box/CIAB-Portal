@@ -106,7 +106,7 @@ function getLog(size) {
     return;
   }
   showSpinner();
-  apiRequest('GET', 'admin/log/' + size, null)
+  apiRequest('GET', 'admin/log', 'max_results=' + size)
     .then(function(response) {
       var d = JSON.parse(response.responseText);
       d.data.forEach(addLogRow);
