@@ -8,6 +8,7 @@
  *      tags={"registration"},
  *      path="/registration/configuration/{field}",
  *      summary="Get a configuration setting for registration",
+ *      deprecated=true,
  *      @OA\Parameter(
  *          description="Configuration setting field",
  *          in="path",
@@ -39,6 +40,7 @@
  *      tags={"registration"},
  *      path="/registration/configuration",
  *      summary="Get all configuration settings for registration",
+ *      deprecated=true,
  *      @OA\Parameter(
  *          ref="#/components/parameters/max_results",
  *      ),

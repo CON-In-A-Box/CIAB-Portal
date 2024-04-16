@@ -8,6 +8,7 @@
  *      tags={"registration"},
  *      path="/registration/configuration",
  *      summary="Updates a registration configuration setting",
+ *      deprecated=true,
  *      @OA\RequestBody(
  *          @OA\MediaType(
  *              mediaType="multipart/form-data",

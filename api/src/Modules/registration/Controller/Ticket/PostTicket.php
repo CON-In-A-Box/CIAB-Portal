@@ -7,6 +7,7 @@
  *      tags={"registration"},
  *      path="/registration/ticket",
  *      summary="Create a new Ticket",
+ *      deprecated=true,
  *      @OA\Parameter(
  *          ref="#/components/parameters/short_response",
  *      ),

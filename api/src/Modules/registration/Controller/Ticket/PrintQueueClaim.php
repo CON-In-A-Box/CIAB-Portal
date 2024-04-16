@@ -8,6 +8,7 @@
  *      tags={"registration"},
  *      path="/registration/ticket/printqueue/claim/{id}",
  *      summary="Claim and clear a job from the print queue.",
+ *      deprecated=true,
  *      @OA\Parameter(
  *          description="Id of the ticket",
  *          in="path",

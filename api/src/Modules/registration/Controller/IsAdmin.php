@@ -8,6 +8,7 @@
  *      tags={"registration"},
  *      path="/registration/admin",
  *      summary="Returns is the current account is a registration admin.",
+ *      deprecated=true,
  *      @OA\Response(
  *          response=200,
  *          description="Member status found",

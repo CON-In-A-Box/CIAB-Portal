@@ -8,6 +8,7 @@
  *      tags={"registration"},
  *      path="/registration/open",
  *      summary="Returns if event registration is open or not..",
+ *      deprecated=true,
  *      @OA\Parameter(
  *          ref="#/components/parameters/event",
  *      ),
