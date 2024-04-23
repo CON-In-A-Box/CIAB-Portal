@@ -11,6 +11,7 @@
  *
  *  @OA\Schema(
  *      schema="ticket",
+ *      deprecated=true,
  *      @OA\Property(
  *          property="type",
  *          type="string",
@@ -169,6 +170,7 @@
  *
  *  @OA\Schema(
  *      schema="ticket_type",
+ *      deprecated=true,
  *      @OA\Property(
  *          property="type",
  *          type="string",
@@ -218,6 +220,7 @@
  *
  *  @OA\Schema(
  *      schema="ticket_type_list",
+ *      deprecated=true,
  *      allOf = {
  *          @OA\Schema(ref="#/components/schemas/resource_list")
  *      },
@@ -237,6 +240,7 @@
  *
  *  @OA\Schema(
  *      schema="ticket_list",
+ *      deprecated=true,
  *      allOf = {
  *          @OA\Schema(ref="#/components/schemas/resource_list")
  *      },
@@ -256,6 +260,7 @@
  *
  *  @OA\Schema(
  *      schema="print_job",
+ *      deprecated=true,
  *      @OA\Property(
  *          property="type",
  *          type="string",
@@ -283,6 +288,7 @@
  *
  *  @OA\Schema(
  *      schema="print_queue",
+ *      deprecated=true,
  *      allOf = {
  *          @OA\Schema(ref="#/components/schemas/resource_list")
  *      },

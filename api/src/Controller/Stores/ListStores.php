@@ -5,6 +5,7 @@
  *      tags={"stores"},
  *      path="/stores",
  *      summary="Lists stores",
+ *      deprecated=true,
  *      @OA\Response(
  *          response=200,
  *          description="OK",

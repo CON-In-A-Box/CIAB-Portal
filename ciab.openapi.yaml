@@ -2112,6 +2112,7 @@ paths:
                 $ref: '#/components/schemas/store'
         '404':
           $ref: '#/components/responses/store_not_found'
+      deprecated: true
       security:
         -
           ciab_auth: []
@@ -2150,6 +2151,7 @@ paths:
           $ref: '#/components/responses/401'
         '404':
           $ref: '#/components/responses/store_not_found'
+      deprecated: true
       security:
         -
           ciab_auth: []
@@ -2172,6 +2174,7 @@ paths:
           $ref: '#/components/responses/401'
         '404':
           $ref: '#/components/responses/store_not_found'
+      deprecated: true
       security:
         -
           ciab_auth: []
@@ -2187,6 +2190,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/store_list'
+      deprecated: true
     post:
       tags:
         - stores
@@ -2216,6 +2220,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/error'
+      deprecated: true
       security:
         -
           ciab_auth: []
@@ -2336,40 +2341,6 @@ paths:
       security:
         -
           ciab_auth: []
-  '/admin/log/{lines}':
-    get:
-      tags:
-        - administrative
-      summary: 'Read the system log'
-      parameters:
-        -
-          name: lines
-          in: path
-          description: 'Number of lines to get'
-          schema:
-            type: integer
-        -
-          $ref: '#/components/parameters/max_results'
-        -
-          $ref: '#/components/parameters/page_token'
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/log'
-        '401':
-          $ref: '#/components/responses/401'
-        '404':
-          description: 'Log entries not found on the system.'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/error'
-      security:
-        -
-          ciab_auth: []
   '/registration/configuration/{field}':
     get:
       tags:
@@ -2394,6 +2365,7 @@ paths:
           $ref: '#/components/responses/401'
         '404':
           $ref: '#/components/responses/configuration_not_found'
+      deprecated: true
       security:
         -
           ciab_auth: []
@@ -2418,6 +2390,7 @@ paths:
           $ref: '#/components/responses/401'
         '404':
           $ref: '#/components/responses/configuration_not_found'
+      deprecated: true
       security:
         -
           ciab_auth: []
@@ -2450,6 +2423,7 @@ paths:
           $ref: '#/components/responses/401'
         '404':
           $ref: '#/components/responses/configuration_not_found'
+      deprecated: true
       security:
         -
           ciab_auth: []
@@ -2474,6 +2448,7 @@ paths:
                 type: object
         '404':
           $ref: '#/components/responses/event_not_found'
+      deprecated: true
   /registration/admin:
     get:
       tags:
@@ -2490,6 +2465,7 @@ paths:
                 type: object
         '401':
           $ref: '#/components/responses/401'
+      deprecated: true
       security:
         -
           ciab_auth: []
@@ -2521,6 +2497,7 @@ paths:
                 $ref: '#/components/schemas/error'
         '404':
           $ref: '#/components/responses/ticket_not_found'
+      deprecated: true
       security:
         -
           ciab_auth: []
@@ -2560,6 +2537,7 @@ paths:
           $ref: '#/components/responses/401'
         '404':
           $ref: '#/components/responses/member_not_found'
+      deprecated: true
       security:
         -
           ciab_auth: []
@@ -2610,6 +2588,7 @@ paths:
                 $ref: '#/components/schemas/error'
         '404':
           $ref: '#/components/responses/ticket_not_found'
+      deprecated: true
       security:
         -
           ciab_auth: []
@@ -2632,6 +2611,7 @@ paths:
           $ref: '#/components/responses/401'
         '404':
           $ref: '#/components/responses/ticket_not_found'
+      deprecated: true
       security:
         -
           ciab_auth: []
@@ -2661,6 +2641,7 @@ paths:
                 $ref: '#/components/schemas/error'
         '404':
           $ref: '#/components/responses/ticket_not_found'
+      deprecated: true
       security:
         -
           ciab_auth: []
@@ -2694,6 +2675,7 @@ paths:
           $ref: '#/components/responses/401'
         '404':
           $ref: '#/components/responses/event_not_found'
+      deprecated: true
       security:
         -
           ciab_auth: []
@@ -2720,6 +2702,7 @@ paths:
                 $ref: '#/components/schemas/ticket_type_list'
         '401':
           $ref: '#/components/responses/401'
+      deprecated: true
       security:
         -
           ciab_auth: []
@@ -2752,6 +2735,7 @@ paths:
           $ref: '#/components/responses/401'
         '404':
           $ref: '#/components/responses/event_not_found'
+      deprecated: true
       security:
         -
           ciab_auth: []
@@ -2799,6 +2783,7 @@ paths:
           $ref: '#/components/responses/401'
         '404':
           $ref: '#/components/responses/event_not_found'
+      deprecated: true
       security:
         -
           ciab_auth: []
@@ -2835,6 +2820,7 @@ paths:
           $ref: '#/components/responses/401'
         '404':
           $ref: '#/components/responses/event_not_found'
+      deprecated: true
       security:
         -
           ciab_auth: []
@@ -2866,6 +2852,7 @@ paths:
                 $ref: '#/components/schemas/error'
         '404':
           $ref: '#/components/responses/ticket_not_found'
+      deprecated: true
       security:
         -
           ciab_auth: []
@@ -2897,6 +2884,7 @@ paths:
                 $ref: '#/components/schemas/error'
         '404':
           $ref: '#/components/responses/ticket_not_found'
+      deprecated: true
       security:
         -
           ciab_auth: []
@@ -2943,6 +2931,7 @@ paths:
           $ref: '#/components/responses/401'
         '404':
           $ref: '#/components/responses/event_not_found'
+      deprecated: true
       security:
         -
           ciab_auth: []
@@ -2972,6 +2961,7 @@ paths:
                 $ref: '#/components/schemas/error'
         '404':
           $ref: '#/components/responses/ticket_not_found'
+      deprecated: true
       security:
         -
           ciab_auth: []
@@ -2996,6 +2986,7 @@ paths:
                 $ref: '#/components/schemas/print_queue'
         '401':
           $ref: '#/components/responses/401'
+      deprecated: true
       security:
         -
           ciab_auth: []
@@ -3031,6 +3022,7 @@ paths:
                 $ref: '#/components/schemas/error'
         '404':
           $ref: '#/components/responses/ticket_not_found'
+      deprecated: true
       security:
         -
           ciab_auth: []
@@ -3066,6 +3058,7 @@ paths:
                 $ref: '#/components/schemas/error'
         '404':
           $ref: '#/components/responses/ticket_not_found'
+      deprecated: true
       security:
         -
           ciab_auth: []
@@ -3097,6 +3090,7 @@ paths:
                 $ref: '#/components/schemas/error'
         '404':
           $ref: '#/components/responses/ticket_not_found'
+      deprecated: true
       security:
         -
           ciab_auth: []
@@ -4952,6 +4946,7 @@ components:
           $ref: '#/components/schemas/resource_list'
     store:
       type: object
+      deprecated: true
       allOf:
         -
           properties:
@@ -4975,6 +4970,7 @@ components:
           $ref: '#/components/schemas/BaseController'
     store_list:
       type: object
+      deprecated: true
       allOf:
         -
           properties:
@@ -5087,6 +5083,7 @@ components:
       type: object
     ticket:
       type: object
+      deprecated: true
       allOf:
         -
           properties:
@@ -5191,6 +5188,7 @@ components:
           $ref: '#/components/schemas/BaseController'
     ticket_type:
       type: object
+      deprecated: true
       allOf:
         -
           properties:
@@ -5225,6 +5223,7 @@ components:
           $ref: '#/components/schemas/BaseController'
     ticket_type_list:
       type: object
+      deprecated: true
       allOf:
         -
           properties:
@@ -5242,6 +5241,7 @@ components:
           $ref: '#/components/schemas/BaseController'
     ticket_list:
       type: object
+      deprecated: true
       allOf:
         -
           properties:
@@ -5259,6 +5259,7 @@ components:
           $ref: '#/components/schemas/BaseController'
     print_job:
       type: object
+      deprecated: true
       allOf:
         -
           properties:
@@ -5282,6 +5283,7 @@ components:
           $ref: '#/components/schemas/BaseController'
     print_queue:
       type: object
+      deprecated: true
       allOf:
         -
           properties:

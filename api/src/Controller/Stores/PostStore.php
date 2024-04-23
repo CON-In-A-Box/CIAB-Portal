@@ -5,6 +5,7 @@
  *      tags={"stores"},
  *      path="/stores",
  *      summary="Adds a new store",
+ *      deprecated=true,
  *      @OA\RequestBody(
  *          @OA\MediaType(
  *              mediaType="multipart/form-data",

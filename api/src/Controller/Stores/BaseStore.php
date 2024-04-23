@@ -8,6 +8,7 @@
  *
  *  @OA\Schema(
  *      schema="store",
+ *      deprecated=true,
  *      @OA\Property(
  *          property="type",
  *          type="string",
@@ -37,6 +38,7 @@
  *
  *  @OA\Schema(
  *      schema="store_list",
+ *      deprecated=true,
  *      @OA\Property(
  *          property="type",
  *          type="string",

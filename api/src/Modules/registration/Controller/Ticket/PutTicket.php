@@ -8,6 +8,7 @@
  *      tags={"registration"},
  *      path="/registration/ticket/{id}",
  *      summary="Updates ticket information.",
+ *      deprecated=true,
  *      @OA\Parameter(
  *          description="Id of the ticket",
  *          in="path",

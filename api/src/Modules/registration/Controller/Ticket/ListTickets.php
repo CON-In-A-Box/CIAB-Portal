@@ -35,6 +35,7 @@
  *      tags={"registration"},
  *      path="/registration/ticket/list/unclaimed",
  *      summary="Gets all unclaimed tickets for an event",
+ *      deprecated=true,
  *      @OA\Parameter(
  *          ref="#/components/parameters/event",
  *      ),
@@ -75,6 +76,7 @@
  *      tags={"registration"},
  *      path="/registration/ticket/list/{id}",
  *      summary="Gets tickets for an event for a member",
+ *      deprecated=true,
  *      @OA\Parameter(
  *          description="The member id",
  *          in="path",
@@ -136,6 +138,7 @@
  *      tags={"registration"},
  *      path="/registration/ticket/list",
  *      summary="Gets tickets for the current member for the event",
+ *      deprecated=true,
  *      @OA\Parameter(
  *          ref="#/components/parameters/event",
  *      ),

@@ -8,6 +8,7 @@
  *      tags={"registration"},
  *      path="/registration/ticket/{id}/reinstate",
  *      summary="Reinstate a voided ticket.",
+ *      deprecated=true,
  *      @OA\Parameter(
  *          description="Id of the ticket",
  *          in="path",

@@ -8,6 +8,7 @@
  *      tags={"registration"},
  *      path="/registration/ticket/type/{id}",
  *      summary="Gets a ticket type for an event",
+ *      deprecated=true,
  *      @OA\Parameter(
  *          description="Id of the ticket type",
  *          in="path",
@@ -51,6 +52,7 @@
  *      tags={"registration"},
  *      path="/registration/ticket/type",
  *      summary="List all ticket types for the event",
+ *      deprecated=true,
  *      @OA\Parameter(
  *          ref="#/components/parameters/event",
  *      ),

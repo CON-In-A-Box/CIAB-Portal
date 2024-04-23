@@ -8,6 +8,7 @@
  *      tags={"registration"},
  *      path="/registration/ticket/printqueue",
  *      summary="Get the current print queue for badges for the event.",
+ *      deprecated=true,
  *      @OA\Parameter(
  *          ref="#/components/parameters/event",
  *      ),

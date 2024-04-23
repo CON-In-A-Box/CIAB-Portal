@@ -7,6 +7,7 @@
  *      tags={"registration"},
  *      path="/registration/ticket/{id}/email",
  *      summary="Email the boarding pass to the ticket holder.",
+ *      deprecated=true,
  *      @OA\Parameter(
  *          description="Id of the ticket",
  *          in="path",

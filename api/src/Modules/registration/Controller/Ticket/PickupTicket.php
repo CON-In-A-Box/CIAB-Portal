@@ -8,6 +8,7 @@
  *      tags={"registration"},
  *      path="/registration/ticket/{id}/pickup",
  *      summary="Report the badge for the ticket as picked up.",
+ *      deprecated=true,
  *      @OA\Parameter(
  *          description="Id of the ticket",
  *          in="path",
