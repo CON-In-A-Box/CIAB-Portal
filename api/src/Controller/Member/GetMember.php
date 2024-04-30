@@ -74,7 +74,7 @@ class GetMember extends BaseMember
         if ($id == null) {
             $id = $request->getAttribute('oauth2-token')['user_id'];
         }
-        $data = $this->getMember($request, $id, null, false)[0];
+        $data = $this->getMember($request, $id, null, $this->internal)[0];
         return [
         \App\Controller\BaseController::RESOURCE_TYPE,
         $data];
