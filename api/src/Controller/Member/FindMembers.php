@@ -89,11 +89,6 @@ use App\Error\InvalidParameterException;
 class FindMembers extends BaseMember
 {
 
-    /**
-     * boolean
-     */
-    public $internal = false;
-
 
     public function buildResource(Request $request, Response $response, $args): array
     {
@@ -117,11 +112,6 @@ class FindMembers extends BaseMember
             ->columns('(SELECT GROUP_CONCAT(AccountID SEPARATOR \', \') FROM `Members` m2 WHERE m2.Email = m1.Email AND NOT m2.AccountID = m1.AccountID) AS duplicates')
             ->from('`Members` m1')
             ->orderBy('AccountID ASC');
-
-        if (!$this->internal && !$this->container->RBAC->havePermission('api.get.member')) {
-            $id = $request->getAttribute('oauth2-token')['user_id'];
-            $select->andWhere('AccountID = ', $id);
-        }
 
         if (in_array('email', $from)) {
             if ($partial) {
@@ -218,6 +208,21 @@ class FindMembers extends BaseMember
         }
 
         $result = $select->fetchAll();
+
+        if (!$this->internal && !$this->container->RBAC->havePermission('api.get.member')) {
+            $id = $request->getAttribute('oauth2-token')['user_id'];
+            foreach ($result as $index => $member) {
+                if ($member['id'] != $id) {
+                    $result[$index] = [
+                        'type' => 'member',
+                        'id' => $member['id'],
+                        'first_name' => $member['first_name'],
+                        'last_name' => $member['last_name']
+                    ];
+                }
+            }
+        }
+
         if (count($result) == 0) {
             throw new NotFoundException('Member Not Found');
         }
