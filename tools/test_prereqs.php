@@ -50,6 +50,51 @@ function __seedConventionDepartments()
 }
 
 
+function _addMember($db, $id, $firstName, $lastName, $email, $gender, $password)
+{
+    $insert = Insert::new($db);
+    $insert->into('Members')->columns([
+        'AccountID' => $id,
+        'FirstName' => $firstName,
+        'LastName' => $lastName,
+        'Email' => $email,
+        'Gender' => $gender
+    ])->perform();
+
+    $auth = \password_hash($password, PASSWORD_DEFAULT);
+
+    $insert = Insert::new($db);
+    $insert->into('Authentication')->columns([
+        'AccountID' => $id,
+        'Authentication' => $auth,
+        'LastLogin' => null,
+        'Expires' => date('Y-m-d', strtotime('+1 year')),
+        'FailedAttempts' => 0,
+        'OneTime' => null,
+        'OneTimeExpires' => null
+    ])->perform();
+
+}
+
+
+function _addMemberToDepartment($db, $id, $eventId, $pos, $departmentId)
+{
+    $select = Select::new($db);
+    $select->columns('PositionID')->from('ConComPositions')->whereEquals(['Name' => $pos]);
+    $val = $select->fetchOne();
+    $posId = $val['PositionID'];
+
+    $insert = Insert::new($db);
+    $insert->into('ConComList')->columns([
+        'AccountID' => $id,
+        'DepartmentID' => $departmentId,
+        'EventID' => $eventId,
+        'PositionID' => $posId
+    ])->perform();
+
+}
+
+
 // Build what we need.
 
 $db = MyPDO::instance();
@@ -114,37 +159,10 @@ $insert->into('BadgeTypes')->columns([
     'EventID' => $eventId
 ])->perform();
 
-$insert = Insert::new($db);
-$insert->into('Members')->columns([
-    'AccountID' => 1000,
-    'FirstName' => 'Odin',
-    'LastName' => 'Allfather',
-    'Email' => 'allfather@oneeye.com',
-    'Gender' => 'Allfather'
-])->perform();
-
-$auth = \password_hash('Sleipnir', PASSWORD_DEFAULT);
-
-$insert = Insert::new($db);
-$insert->into('Authentication')->columns([
-    'AccountID' => 1000,
-    'Authentication' => $auth,
-    'LastLogin' => null,
-    'Expires' => date('Y-m-d', strtotime('+1 year')),
-    'FailedAttempts' => 0,
-    'OneTime' => null,
-    'OneTimeExpires' => null
-])->perform();
-
-$select = Select::new($db);
-$select->columns('PositionID')->from('ConComPositions')->whereEquals(['Name' => 'Head']);
-$val = $select->fetchOne();
-$posId = $val['PositionID'];
-
-$insert = Insert::new($db);
-$insert->into('ConComList')->columns([
-    'AccountID' => 1000,
-    'DepartmentID' => 2,
-    'EventID' => $eventId,
-    'PositionID' => $posId
-])->perform();
+_addMember($db, 1000, 'Odin', 'Allfather', 'allfather@oneeye.com', 'Allfather', 'Sleipnir');
+_addMemberToDepartment($db, 1000, $eventId, 'Head', 2);
+_addMember($db, 1001, 'Thor', 'Odinson', 'thor@oneeye.com', 'He', 'Mjolnir');
+_addMemberToDepartment($db, 1001, $eventId, 'Head', 105);
+_addMember($db, 1002, 'Sif', 'Odinson', 'sif@oneeye.com', 'She', 'Ullr');
+_addMemberToDepartment($db, 1002, $eventId, 'Specialist', 105);
+_addMember($db, 1003, 'Ran', 'OfTheOcean', 'ran@oneeye.com', 'She', 'Aegir');

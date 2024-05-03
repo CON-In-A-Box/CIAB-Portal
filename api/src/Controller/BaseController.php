@@ -138,6 +138,11 @@ abstract class BaseController
     */
     protected $currentEvent = -1;
 
+    /**
+     * @var bool
+    */
+    public $internal = false;
+
 
     protected function __construct(string $api_type, Container $container)
     {
