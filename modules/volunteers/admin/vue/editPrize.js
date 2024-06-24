@@ -205,7 +205,7 @@ export default {
                       <span v-else>&lt;New&gt;</span>
                     </option>
                   </select>
-                  <button class="UI-eventbutton" @click="isEditingPrizeName=true;"><i class="fas fa-edit w3-right"></i></button>
+                  <span class="UI-eventbutton" @click="isEditingPrizeName=true;"><i class="fas fa-edit w3-right"></i></span>
               </div>
               <div v-if="reward_group != -1" class='VOL-gift-group-max'>
                   <label class='UI-label VOL-gift-group-max-label' for='edit_prize_group_count'>Limit:</label>
