@@ -8,6 +8,7 @@
  *      tags={"registration"},
  *      path="/registration/ticket/{id}/checkin",
  *      summary="Check in a ticket and generate boarding pass",
+ *      deprecated=true,
  *      @OA\Parameter(
  *          description="Id of the ticket",
  *          in="path",
@@ -18,9 +19,9 @@
  *      @OA\Response(
  *          response=200,
  *          description="OK",
- *          @OA\JsonContent(
- *              ref="#/components/schemas/ticket"
- *          ),
+ *          @OA\MediaType(
+ *              mediaType="text/html"
+ *          )
  *      ),
  *      @OA\Response(
  *          response=401,

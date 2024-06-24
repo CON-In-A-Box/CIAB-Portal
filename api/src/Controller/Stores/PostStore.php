@@ -5,9 +5,10 @@
  *      tags={"stores"},
  *      path="/stores",
  *      summary="Adds a new store",
+ *      deprecated=true,
  *      @OA\RequestBody(
  *          @OA\MediaType(
- *              mediaType="application/json",
+ *              mediaType="multipart/form-data",
  *              @OA\Schema(
  *                  @OA\Property(
  *                      property="store_slug",

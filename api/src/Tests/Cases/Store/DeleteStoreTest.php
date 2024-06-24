@@ -7,6 +7,7 @@ use Faker;
 
 use App\Tests\Base\StoreTestCase;
 use App\Controller\Stores\BaseStore;
+use App\Tests\Base\TestRun;
 
 class DeleteStoreTest extends StoreTestCase
 {
@@ -23,14 +24,19 @@ class DeleteStoreTest extends StoreTestCase
 
     public function testGoodDelete(): void
     {
-        $data = $this->runSuccessJsonRequest('DELETE', '/stores/'.$this->store['id'], null, null, 204);
+        $data = testRun::testRun($this, 'DELETE', '/stores/{id}')
+            ->setUriParts(['id' => $this->store['id']])
+            ->run();
 
     }
 
 
     public function testBadDelete(): void
     {
-        $this->runRequest('DELETE', '/stores/42424242422', null, null, 404);
+        testRun::testRun($this, 'DELETE', '/stores/{id}')
+            ->setUriParts(['id' => '42424242422'])
+            ->setExpectedResult(404)
+            ->run();
 
     }
 

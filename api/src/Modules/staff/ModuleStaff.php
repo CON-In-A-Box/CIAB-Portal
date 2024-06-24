@@ -60,6 +60,7 @@ class ModuleStaff extends BaseModule
     public function customzieStaffRBAC($rbac, $database)
     {
         $rbac->grantPermission('all.staff', 'api.get.staff');
+        $rbac->grantPermission('all.1', 'api.get.member');
 
         $positions = [];
         $values = Select::new($database)

@@ -263,7 +263,10 @@ abstract class CiabTestCase extends TestCase
 
     protected function createToken($email)
     {
-        return $this->runSuccessJsonRequest('POST', '/token', null, ['grant_type' => 'password', 'username' => $email, 'password' => self::$password, 'client_id' => self::$client]);
+        $response = $this->runRequest('POST', '/token', null, ['grant_type' => 'password', 'username' => $email, 'password' => self::$password, 'client_id' => self::$client]);
+        $data = json_decode((string)$response->getBody());
+        $this->assertNotEmpty($data);
+        return $data;
 
     }
 
@@ -349,65 +352,6 @@ abstract class CiabTestCase extends TestCase
         string $yamlUri = null
     ) {
         return $this->runRequest($method, $uri, $serverParams, $body, $code, $this->unpriv_tokens[$loginIndex], $yamlUri);
-
-    }
-
-
-    protected function runSuccessRequest(
-        string $method,
-        string $uri,
-        array $params = null,
-        array $body = null,
-        int $code = 200,
-        object $token = null,
-        string $yamlUri = null
-    ) {
-        return $this->runRequest($method, $uri, $params, $body, $code, $token, $yamlUri);
-
-    }
-
-
-    protected function NPRunSuccessRequest(
-        string $method,
-        string $uri,
-        array $params = null,
-        array $body = null,
-        int $code = 200,
-        int $loginIndex = 0,
-        string $yamlUri = null
-    ) {
-        return $this->runSuccessRequest($method, $uri, $params, $body, $code, $this->unpriv_tokens[$loginIndex], $yamlUri);
-
-    }
-
-
-    protected function runSuccessJsonRequest(
-        string $method,
-        string $uri,
-        array $params = null,
-        array $body = null,
-        int $code = 200,
-        object $token = null,
-        string $yamlUri = null
-    ) {
-        $response = $this->runRequest($method, $uri, $params, $body, $code, $token, $yamlUri);
-        $data = json_decode((string)$response->getBody());
-        $this->assertNotEmpty($data);
-        return $data;
-
-    }
-
-
-    protected function NPRunSuccessJsonRequest(
-        string $method,
-        string $uri,
-        array $params = null,
-        array $body = null,
-        int $code = 200,
-        int $loginIndex = 0,
-        string $yamlUri = null
-    ) {
-        return $this->runSuccessJsonRequest($method, $uri, $params, $body, $code, $this->unpriv_tokens[$loginIndex], $yamlUri);
 
     }
 

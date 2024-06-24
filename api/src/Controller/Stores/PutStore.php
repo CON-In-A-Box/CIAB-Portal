@@ -5,6 +5,7 @@
  *      tags={"stores"},
  *      path="/stores/{id}",
  *      summary="Updates a store",
+ *      deprecated=true,
  *      @OA\Parameter(
  *          description="Id of the store",
  *          in="path",
@@ -14,7 +15,7 @@
  *      ),
  *      @OA\RequestBody(
  *          @OA\MediaType(
- *              mediaType="application/json",
+ *              mediaType="multipart/form-data",
  *              @OA\Schema(
  *                  @OA\Property(
  *                      property="store_slug",

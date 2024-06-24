@@ -35,6 +35,7 @@
  *      tags={"registration"},
  *      path="/registration/ticket/list/unclaimed",
  *      summary="Gets all unclaimed tickets for an event",
+ *      deprecated=true,
  *      @OA\Parameter(
  *          ref="#/components/parameters/event",
  *      ),
@@ -73,12 +74,13 @@
  *
  *  @OA\Get(
  *      tags={"registration"},
- *      path="/registration/ticket/list/{member}",
+ *      path="/registration/ticket/list/{id}",
  *      summary="Gets tickets for an event for a member",
+ *      deprecated=true,
  *      @OA\Parameter(
- *          description="The member",
+ *          description="The member id",
  *          in="path",
- *          name="member",
+ *          name="id",
  *          required=true,
  *          @OA\Schema(
  *              oneOf = {
@@ -136,6 +138,7 @@
  *      tags={"registration"},
  *      path="/registration/ticket/list",
  *      summary="Gets tickets for the current member for the event",
+ *      deprecated=true,
  *      @OA\Parameter(
  *          ref="#/components/parameters/event",
  *      ),
@@ -192,6 +195,17 @@ class ListTickets extends BaseTicketInclude
 {
 
 
+    private static function convertDate($data, $field): ?string
+    {
+        if ($data[$field]) {
+            $datetime = \DateTime::createFromFormat('Y-m-d H:i:s', $data[$field]);
+            return $datetime->format(\DateTime::RFC3339);
+        }
+        return null;
+
+    }
+
+
     public function buildResource(Request $request, Response $response, $params): array
     {
         $user = $request->getAttribute('oauth2-token')['user_id'];
@@ -246,6 +260,14 @@ class ListTickets extends BaseTicketInclude
         $tickets = $select->fetchAll();
         if (empty($tickets)) {
             throw new NotFoundException('Ticket Not Found');
+        }
+
+        foreach ($tickets as $key => $ticket) {
+            $tickets[$key]['registration_date'] = $this->convertDate($ticket, 'registration_date');
+            $tickets[$key]['boarding_pass_generated'] = $this->convertDate($ticket, 'boarding_pass_generated');
+            $tickets[$key]['print_requested'] = $this->convertDate($ticket, 'print_requested');
+            $tickets[$key]['void_date'] = $this->convertDate($ticket, 'void_date');
+            $tickets[$key]['last_printed_date'] = $this->convertDate($ticket, 'last_printed_date');
         }
 
         $output = ['type' => 'ticket_list'];

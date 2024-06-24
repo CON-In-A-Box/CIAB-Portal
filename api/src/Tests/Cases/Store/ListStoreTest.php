@@ -8,6 +8,7 @@ use Faker;
 
 use App\Tests\Base\StoreTestCase;
 use App\Controller\Stores\BaseStore;
+use App\Tests\Base\TestRun;
 
 class ListStoreTest extends StoreTestCase
 {
@@ -37,7 +38,7 @@ class ListStoreTest extends StoreTestCase
 
     public function testGoodEventList(): void
     {
-        $data = $this->runSuccessJsonRequest('GET', '/stores');
+        $data = testRun::testRun($this, 'GET', '/stores')->run();
         $this->assertEquals(count($data->data), 5);
         for ($i = 0; $i < 5; $i++) {
             $this->assertEquals(get_object_vars($data->data[$i]), $this->data[$i]);

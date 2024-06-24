@@ -71,6 +71,7 @@ class IncludeResource
             }
 
             $target = new $this->class($container);
+            $target->internal = true;
             try {
                 $newdata = $this->collectResourceData($request, $response, $target, $params, $data);
 

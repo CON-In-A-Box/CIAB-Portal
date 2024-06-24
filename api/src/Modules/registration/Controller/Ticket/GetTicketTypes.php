@@ -8,6 +8,7 @@
  *      tags={"registration"},
  *      path="/registration/ticket/type/{id}",
  *      summary="Gets a ticket type for an event",
+ *      deprecated=true,
  *      @OA\Parameter(
  *          description="Id of the ticket type",
  *          in="path",
@@ -25,7 +26,14 @@
  *          response=200,
  *          description="Ticket type found",
  *          @OA\JsonContent(
- *           ref="#/components/schemas/ticket_type"
+ *              oneOf={
+ *                  @OA\Schema(
+ *                      ref="#/components/schemas/ticket_type"
+ *                  ),
+ *                  @OA\Schema(
+ *                      ref="#/components/schemas/ticket_type_list"
+ *                  )
+ *              }
  *          ),
  *      ),
  *      @OA\Response(
@@ -44,6 +52,7 @@
  *      tags={"registration"},
  *      path="/registration/ticket/type",
  *      summary="List all ticket types for the event",
+ *      deprecated=true,
  *      @OA\Parameter(
  *          ref="#/components/parameters/event",
  *      ),

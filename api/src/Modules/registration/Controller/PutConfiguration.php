@@ -6,8 +6,9 @@
 /**
  *  @OA\Put(
  *      tags={"registration"},
- *      path="/registration/admin/configuration",
+ *      path="/registration/configuration",
  *      summary="Updates a registration configuration setting",
+ *      deprecated=true,
  *      @OA\RequestBody(
  *          @OA\MediaType(
  *              mediaType="multipart/form-data",
@@ -31,6 +32,10 @@
  *          @OA\JsonContent(
  *              ref="#/components/schemas/configuration"
  *          )
+ *      ),
+ *      @OA\Response(
+ *          response=400,
+ *          ref="#/components/responses/400"
  *      ),
  *      @OA\Response(
  *          response=401,

@@ -6,6 +6,7 @@ use Atlas\Query\Insert;
 use Faker;
 
 use App\Tests\Base\StoreTestCase;
+use App\Tests\Base\TestRun;
 
 class PutStoreTest extends StoreTestCase
 {
@@ -22,7 +23,10 @@ class PutStoreTest extends StoreTestCase
 
     public function testGoodUpdate(): void
     {
-        $data = $this->runSuccessJsonRequest('PUT', "/stores/".$this->store['id'], null, ['name' => 'Foo']);
+        $data = testRun::testRun($this, 'PUT', "/stores/{id}")
+            ->setUriParts(['id' => $this->store['id']])
+            ->setBody(['name' => 'Foo'])
+            ->run();
 
     }
 

@@ -11,6 +11,7 @@
  *
  *  @OA\Schema(
  *      schema="ticket",
+ *      deprecated=true,
  *      @OA\Property(
  *          property="type",
  *          type="string",
@@ -18,7 +19,7 @@
  *      ),
  *      @OA\Property(
  *          property="id",
- *          type="integer",
+ *          type="string",
  *      ),
  *      @OA\Property(
  *          property="badge_dependent_on",
@@ -40,15 +41,18 @@
  *      ),
  *      @OA\Property(
  *          property="badge_name",
+ *          nullable=true,
  *          type="string",
  *      ),
  *      @OA\Property(
  *          property="badges_picked_up",
- *          type="integer",
+ *          type="string",
+ *          nullable=true,
  *          description="The number of times this badge has been printed and picked up"
  *      ),
  *      @OA\Property(
  *          property="emergency_contact",
+ *          nullable=true,
  *          type="string",
  *      ),
  *      @OA\Property(
@@ -80,39 +84,46 @@
  *      @OA\Property(
  *          property="registration_date",
  *          type="string",
- *          format="date",
+ *          format="date-time",
  *      ),
  *      @OA\Property(
  *          property="boarding_pass_generated",
  *          type="string",
- *          format="date",
+ *          nullable=true,
+ *          format="date-time",
  *      ),
  *      @OA\Property(
  *          property="print_requested",
  *          type="string",
- *          format="date",
+ *          nullable=true,
+ *          format="date-time",
  *      ),
  *      @OA\Property(
  *          property="last_printed_date",
  *          type="string",
- *          format="date",
+ *          nullable=true,
+ *          format="date-time",
  *      ),
  *      @OA\Property(
  *          property="print_request_ip",
  *          type="string",
+ *          nullable=true,
  *          format="ip",
  *      ),
  *      @OA\Property(
  *          property="note",
+ *          nullable=true,
  *          type="string",
  *      ),
  *      @OA\Property(
  *          property="void_date",
  *          type="string",
- *          format="date",
+ *          nullable=true,
+ *          format="date-time",
  *      ),
  *      @OA\Property(
  *          property="void_by",
+ *          nullable=true,
  *          description="Member who voided the ticket",
  *          oneOf={
  *              @OA\Schema(
@@ -126,6 +137,7 @@
  *      ),
  *      @OA\Property(
  *          property="void_reason",
+ *          nullable=true,
  *          type="string",
  *      ),
  *      @OA\Property(
@@ -158,6 +170,7 @@
  *
  *  @OA\Schema(
  *      schema="ticket_type",
+ *      deprecated=true,
  *      @OA\Property(
  *          property="type",
  *          type="string",
@@ -165,7 +178,7 @@
  *      ),
  *      @OA\Property(
  *          property="id",
- *          type="integer",
+ *          type="string",
  *      ),
  *      @OA\Property(
  *          property="event",
@@ -187,26 +200,27 @@
  *      @OA\Property(
  *          property="avaliable_from",
  *          type="string",
- *          format="date",
+ *          format="date-time",
  *      ),
  *      @OA\Property(
  *          property="avaliable_to",
  *          type="string",
- *          format="date",
+ *          format="date-time",
  *      ),
  *      @OA\Property(
  *          property="cost",
- *          type="number",
- *          format="float",
+ *          type="string",
  *      ),
  *      @OA\Property(
  *          property="background_image",
+ *          nullable=true,
  *          type="string",
  *      )
  *  )
  *
  *  @OA\Schema(
  *      schema="ticket_type_list",
+ *      deprecated=true,
  *      allOf = {
  *          @OA\Schema(ref="#/components/schemas/resource_list")
  *      },
@@ -226,6 +240,7 @@
  *
  *  @OA\Schema(
  *      schema="ticket_list",
+ *      deprecated=true,
  *      allOf = {
  *          @OA\Schema(ref="#/components/schemas/resource_list")
  *      },
@@ -245,6 +260,7 @@
  *
  *  @OA\Schema(
  *      schema="print_job",
+ *      deprecated=true,
  *      @OA\Property(
  *          property="type",
  *          type="string",
@@ -252,7 +268,7 @@
  *      ),
  *      @OA\Property(
  *          property="id",
- *          type="integer"
+ *          type="string"
  *      ),
  *      @OA\Property(
  *          property="method",
@@ -272,6 +288,7 @@
  *
  *  @OA\Schema(
  *      schema="print_queue",
+ *      deprecated=true,
  *      allOf = {
  *          @OA\Schema(ref="#/components/schemas/resource_list")
  *      },

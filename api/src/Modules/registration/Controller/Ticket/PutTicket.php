@@ -8,6 +8,7 @@
  *      tags={"registration"},
  *      path="/registration/ticket/{id}",
  *      summary="Updates ticket information.",
+ *      deprecated=true,
  *      @OA\Parameter(
  *          description="Id of the ticket",
  *          in="path",
@@ -47,6 +48,10 @@
  *          @OA\JsonContent(
  *              ref="#/components/schemas/ticket"
  *          )
+ *      ),
+ *      @OA\Response(
+ *          response=400,
+ *          ref="#/components/responses/400"
  *      ),
  *      @OA\Response(
  *          response=401,

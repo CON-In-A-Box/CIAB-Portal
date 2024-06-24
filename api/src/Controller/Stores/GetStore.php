@@ -5,6 +5,7 @@
  *      tags={"stores"},
  *      path="/stores/{id}",
  *      summary="Gets a store",
+ *      deprecated=true,
  *      @OA\Parameter(
  *          description="Id of the store.",
  *          in="path",

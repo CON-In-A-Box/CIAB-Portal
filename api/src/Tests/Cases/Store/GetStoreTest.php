@@ -8,6 +8,7 @@ use Faker;
 
 use App\Tests\Base\StoreTestCase;
 use App\Controller\Stores\BaseStore;
+use App\Tests\Base\TestRun;
 
 class GetStoreTest extends StoreTestCase
 {
@@ -24,7 +25,9 @@ class GetStoreTest extends StoreTestCase
 
     public function testGoodGet(): void
     {
-        $data = $this->runSuccessJsonRequest('GET', '/stores/'.$this->store['id']);
+        $data = testRun::testRun($this, 'GET', '/stores/{id}')
+            ->setUriParts(['id' => $this->store['id']])
+            ->run();
         $this->assertEquals(get_object_vars($data), $this->store);
 
     }
@@ -32,7 +35,10 @@ class GetStoreTest extends StoreTestCase
 
     public function testNotFoundGet(): void
     {
-        $this->runRequest('GET', '/stores/424242424242', null, null, 404);
+        testRun::testRun($this, 'GET', '/stores/{id}')
+            ->setUriParts(['id' => '424242424242'])
+            ->setExpectedResult(404)
+            ->run();
 
     }
 

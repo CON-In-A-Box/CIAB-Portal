@@ -7,6 +7,7 @@
  *      tags={"registration"},
  *      path="/registration/ticket",
  *      summary="Create a new Ticket",
+ *      deprecated=true,
  *      @OA\Parameter(
  *          ref="#/components/parameters/short_response",
  *      ),
@@ -55,6 +56,10 @@
  *          @OA\JsonContent(
  *           ref="#/components/schemas/ticket"
  *          ),
+ *      ),
+ *      @OA\Response(
+ *          response=400,
+ *          ref="#/components/responses/400"
  *      ),
  *      @OA\Response(
  *          response=401,
