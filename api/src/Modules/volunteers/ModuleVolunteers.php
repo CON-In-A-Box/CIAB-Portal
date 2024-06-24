@@ -72,6 +72,9 @@ class ModuleVolunteers extends BaseModule
             $rbac->grantPermission($target_h, 'api.put.volunteer.claims');
             $rbac->grantPermission($target_h, 'api.delete.volunteer.claims');
             $rbac->grantPermission($target_h, 'api.post.volunteers.admin');
+            $rbac->grantPermission($target_h, 'api.put.volunteers');
+            $rbac->grantPermission($target_h, 'api.post.volunteers');
+            $rbac->grantPermission($target_h, 'api.delete.volunteers');
         } catch (Exception\InvalidArgumentException $e) {
             error_log($e);
         }
