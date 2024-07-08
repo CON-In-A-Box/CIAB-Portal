@@ -214,7 +214,7 @@ export default {
         }
       }
       if (this.$parent.userId) {
-        return (parseFloat(record.value) < this.hoursRemaining);
+        return (parseFloat(record.value) <= this.hoursRemaining);
       }
       return true;
     },

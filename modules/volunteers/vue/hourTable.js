@@ -73,8 +73,10 @@ export default {
                   this.hours.push(entry);
                 })
                 this.hours.sort((a,b) => (a.department.name > b.department.name) ? 1 : -1);
-                this.totalSpentHours = 0;
                 this.totalHours = result.total_hours;
+              })
+              .finally(() => {
+                this.totalSpentHours = 0;
                 if (this.footer && this.$parent.userId != null) {
                   apiRequest('GET', '/member/' + this.$parent.userId + '/volunteer/claims/summary','max_results=all')
                     .then((response) => {
