@@ -60,7 +60,6 @@ class GetEventHoursSummary extends BaseHours
         $data = Select::new($this->container->db)
         ->columns('"volunteer_hour_summary" AS type')
         ->columns('DepartmentID AS department')
-        ->columns('AccountID AS member')
         ->columns('COUNT(HourEntryID) AS entry_count')
         ->columns('COUNT(DISTINCT AccountID) AS volunteer_count')
         ->columns('SUM(ActualHours * TimeModifier) AS total_hours')
