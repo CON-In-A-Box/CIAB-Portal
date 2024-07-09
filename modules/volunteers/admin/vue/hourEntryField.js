@@ -9,16 +9,6 @@ export default {
     'update:modelValue',
     'change'
   ],
-  data() {
-    return {
-      enterHours: null,
-      enterMin: null,
-    }
-  },
-  updated() {
-    this.enterHours = null;
-    this.enterMin = null;
-  },
   methods: {
     changed: function(evt) {
       evt.target.value = parseInt(this.hours) + parseInt(this.mins) / 60.0;
@@ -38,28 +28,22 @@ export default {
     },
     hours: {
       get() {
-        if (this.enterHours != null) {
-          const v = this.enterHours;
-          this.enterHours = null;
-          return v;
-        }
         return Math.floor(this.modelValue);
       },
       set(value) {
-        this.enterHours = Math.floor(value);
+        const enterHours = Math.floor(value);
+        value = enterHours + (this.modelValue % 1)
+        this.$emit('update:modelValue', value);
       }
     },
     mins: {
       get() {
-        if (this.enterMin != null) {
-          const v = this.enterMin;
-          this.enterMin = null;
-          return v;
-        }
         return Math.floor((this.modelValue - Math.floor(this.modelValue)) * 60);
       },
       set(value) {
-        this.enterMin = Math.floor(value);
+        const enterMin = Math.floor(value);
+        value = Math.floor(this.modelValue) + (enterMin / 60);
+        this.$emit('update:modelValue', value);
       }
     }
   },
