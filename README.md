@@ -68,7 +68,7 @@ In order to try to keep the code as orderly as possible we are having GitHub lin
 
 For JavaScript files we are using [ESLint](https://eslint.org/). This should be relatively straight forward for to configure to be used on your platform.
 
-For PHP file we are using [PHPCS](https://github.com/squizlabs/PHP_CodeSniffer). Again pretty easy to get installed on most platforms.
+For PHP file we are using [PHPCS](https://github.com/PHPCSStandards/PHP_CodeSniffer). Again pretty easy to get installed on most platforms.
 
 There are rules defined for each tool as well as simple wrapper tools in the tools/ directory. Expect that these tools will be run against any code submitted and it will have to pass.
 
